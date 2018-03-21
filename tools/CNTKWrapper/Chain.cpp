@@ -11,17 +11,17 @@
 #include "ParameterValues.h"
 #include "Exceptions.h"
 
-CChain::CChain()
+Chain::Chain()
 {
-	m_chainLinks = std::vector<CLink*>();
+	m_chainLinks = std::vector<Link*>();
 }
 
 
-CChain::~CChain()
+Chain::~Chain()
 {
 }
 
-CChain::CChain(tinyxml2::XMLElement* pParentNode) : CChain()
+Chain::Chain(tinyxml2::XMLElement* pParentNode) : Chain()
 {
 	//read name
 	m_name = pParentNode->Attribute(XML_ATTRIBUTE_Name);
@@ -33,14 +33,14 @@ CChain::CChain(tinyxml2::XMLElement* pParentNode) : CChain()
 	if (pNode == nullptr)
 		throw ProblemParserElementNotFound(XML_TAG_ChainLinks);
 
-	loadChildren<CLink>(pNode, XML_TAG_LinkBase, m_chainLinks);
+	loadChildren<Link>(pNode, XML_TAG_LinkBase, m_chainLinks);
 	for each (auto var in m_chainLinks)
 	{
 		var->setParentChain(this);
 	}
 }
 
-const CLink* CChain::getLinkById(const char * id) const
+const Link* Chain::getLinkById(const char * id) const
 {
 	for each (auto item in m_chainLinks)
 	{

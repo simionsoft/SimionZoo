@@ -7,25 +7,25 @@
 
 using namespace std;
 
-class CParameterBaseInteface
+class IParameter
 {
 protected:
 	string m_name;
 public:
 	string getName() { return m_name; }
 	void setName(string name) { m_name = name; }
-	static CParameterBaseInteface* getInstance(tinyxml2::XMLElement* pNode);
+	static IParameter* getInstance(tinyxml2::XMLElement* pNode);
 };
 
 template <typename T>
-class CParameterBase : public CParameterBaseInteface
+class CParameterBase : public IParameter
 {
 protected:
 	T m_value;
 	CParameterBase(tinyxml2::XMLElement* pNode);
 
 public:
-	CParameterBase() : CParameterBaseInteface() {};
+	CParameterBase() : IParameter() {};
 	~CParameterBase();
 
 	T getValue() const { return m_value; }
@@ -89,7 +89,7 @@ public:
 
 };
 
-class CLinkConnectionListParameter : public CParameterBase<vector<CLinkConnection*>>
+class CLinkConnectionListParameter : public CParameterBase<vector<LinkConnection*>>
 {
 public:
 	CLinkConnectionListParameter(tinyxml2::XMLElement* pNode);

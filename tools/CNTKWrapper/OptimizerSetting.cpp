@@ -7,7 +7,7 @@
 #include "xmltags.h"
 #include "Exceptions.h"
 
-COptimizerSetting::COptimizerSetting(tinyxml2::XMLElement * pParentNode)
+OptimizerSetting::OptimizerSetting(tinyxml2::XMLElement * pParentNode)
 {
 	const char* type = pParentNode->Attribute(XML_ATTRIBUTE_Type);
 	if (!strcmp(type, "OptimizerSGD"))
@@ -35,21 +35,21 @@ COptimizerSetting::COptimizerSetting(tinyxml2::XMLElement * pParentNode)
 	loadChildren<COptimizerParameter>(pNode, XML_TAG_OptimizerParameter, m_parameters);
 }
 
-COptimizerSetting::COptimizerSetting()
+OptimizerSetting::OptimizerSetting()
 {
 }
 
 
-COptimizerSetting::~COptimizerSetting()
+OptimizerSetting::~OptimizerSetting()
 {
 }
 
-COptimizerSetting * COptimizerSetting::getInstance(tinyxml2::XMLElement * pNode)
+OptimizerSetting * OptimizerSetting::getInstance(tinyxml2::XMLElement * pNode)
 {
-	return new COptimizerSetting(pNode);
+	return new OptimizerSetting(pNode);
 }
 
-const COptimizerParameter * COptimizerSetting::getParameterByKey(std::string key) const
+const COptimizerParameter * OptimizerSetting::getParameterByKey(std::string key) const
 {
 	for each (auto pParameter in m_parameters)
 	{

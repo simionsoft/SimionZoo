@@ -7,21 +7,21 @@
 class CIntTuple;
 using namespace std;
 
-class CInputData
+class InputData
 {
 protected:
 	string m_id;
 	string m_name;
 	CIntTuple* m_pShape= nullptr;
 	CNTK::Variable m_inputVariable; //TODO: Fix = nullptr
-	CInputData(tinyxml2::XMLElement* pNode);
+	InputData(tinyxml2::XMLElement* pNode);
 	bool m_isUsed = false; 
 
 public:
-	CInputData(string id, CNTK::Variable pInputVariable);
-	~CInputData();
+	InputData(string id, CNTK::Variable pInputVariable);
+	~InputData();
 
-	static CInputData* getInstance(tinyxml2::XMLElement* pNode);
+	static InputData* getInstance(tinyxml2::XMLElement* pNode);
 	
 	const string& getId() { return m_id; }
 	CNTK::NDShape getNDShape();

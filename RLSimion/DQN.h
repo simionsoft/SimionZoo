@@ -18,8 +18,8 @@ class DQN : public Simion
 protected:
 	ACTION_VARIABLE m_outputActionIndex;
 	CHILD_OBJECT<ExperienceReplay> m_experienceReplay;
-	NEURAL_NETWORK m_QNetwork;
-	INetwork* m_pPredictionNetwork= nullptr;
+	NEURAL_NETWORK m_pTargetQNetwork;
+	INetwork* m_pPredictionQNetwork= nullptr;
 
 	CHILD_OBJECT_FACTORY<DiscreteDeepPolicy> m_policy;
 	FeatureList* m_pStateOutFeatures;
@@ -50,4 +50,63 @@ public:
 	//updates the critic and the actor
 	virtual double update(const State *s, const Action *a, const State *s_p, double r, double behaviorProb);
 };
+
+class DoubleDQN : public DQN
+{
+protected:
+	INetwork* getPredictionNetwork();
+public:
+	//updates the target network and sometimes the prediction network
+	virtual double update(const State *s, const Action *a, const State *s_p, double r, double behaviorProb);
+};
+
+class DDPG : public Simion
+{
+protected:
+	ACTION_VARIABLE m_outputActionIndex;
+	CHILD_OBJECT<ExperienceReplay> m_experienceReplay;
+
+	NEURAL_NETWORK m_predictionQNetwork;
+	INetwork* m_pTargetQNetwork;
+
+	NEURAL_NETWORK m_predictionPolicyNetwork;
+	INetwork* m_pTargetPolicyNetwork;
+
+	CHILD_OBJECT_FACTORY<Noise> m_policyNoise;
+	DOUBLE_PARAM m_tau;
+
+	ExperienceTuple** m_pMinibatchExperienceTuples;
+
+	std::vector<double> m_stateVector;
+	std::vector<double> m_actionPredictionVector;
+
+	std::vector<double> m_minibatchStateVector;
+	std::vector<double> m_minibatchActionVector;
+	std::vector<double> m_minibatchQVector;
+
+	FeatureList* m_pStateFeatureList;
+	int m_numberOfStateFeatures;
+
+	void buildModelsParametersTransitionGraph();
+	void performModelsParametersTransition();
+
+	
+
+public:
+	~DDPG();
+	DDPG(ConfigNode* pParameters);
+
+	//selects an according to the learned policy's network
+	virtual double selectAction(const State *s, Action *a);
+
+	//updates the critic network and the actor's policy network (both the target and the prediction network)
+	virtual double update(const State *s, const Action *a, const State *s_p, double r, double behaviorProb);
+
+	//update policy network
+	void updateActor();
+
+	//update q network
+	void updateCritic();
+};
+
 #endif

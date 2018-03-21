@@ -15,14 +15,14 @@
 #include "Network.h"
 
 
-CNTK::FunctionPtr CNTKWrapper::InputLayer(const CLink * pLink, vector<const CLink*> dependencies, CNTK::DeviceDescriptor & device)
+CNTK::FunctionPtr CNTKWrapper::InputLayer(const Link * pLink, vector<const Link*> dependencies, CNTK::DeviceDescriptor & device)
 {
 	//determine the linked input data
 	string inputID = pLink->getParameterByName<CInputDataParameter>("Input Data")->getValue();
 	auto inputList = pLink->getParentChain()->getParentNetworkArchitecture()->getParentProblem()->getInputs();
 
 	CNTK::FunctionPtr pInput;
-	for each (CInputData* pItem in inputList)
+	for each (InputData* pItem in inputList)
 	{
 		if (!strcmp(pItem->getId().c_str(), inputID.c_str()))
 		{
@@ -33,13 +33,13 @@ CNTK::FunctionPtr CNTKWrapper::InputLayer(const CLink * pLink, vector<const CLin
 	return nullptr;
 }
 
-CNTK::FunctionPtr CNTKWrapper::ActivationLayer(const CLink * pLink, vector<const CLink*> dependencies, CNTK::DeviceDescriptor & device)
+CNTK::FunctionPtr CNTKWrapper::ActivationLayer(const Link * pLink, vector<const Link*> dependencies, CNTK::DeviceDescriptor & device)
 {
 	auto activationFunction = pLink->getParameterByName<CActivationFunctionParameter>("Activation")->getValue();
 	return CNTKWrapper::Internal::applyActivationFunction(dependencies.at(0)->getFunctionPtr(), activationFunction);
 }
 
-CNTK::FunctionPtr CNTKWrapper::Convolution1DLayer(const CLink * pLink, vector<const CLink*> dependencies, CNTK::DeviceDescriptor & device)
+CNTK::FunctionPtr CNTKWrapper::Convolution1DLayer(const Link * pLink, vector<const Link*> dependencies, CNTK::DeviceDescriptor & device)
 {
 
 	FunctionPtr input = dependencies.at(0)->getFunctionPtr();
@@ -58,7 +58,7 @@ CNTK::FunctionPtr CNTKWrapper::Convolution1DLayer(const CLink * pLink, vector<co
 	return CNTKWrapper::Internal::Convolution1D(input, filters, kernel, stride, activationFunction, 1.0, device, name);
 }
 
-CNTK::FunctionPtr CNTKWrapper::Convolution2DLayer(const CLink * pLink, vector<const CLink*> dependencies, CNTK::DeviceDescriptor & device)
+CNTK::FunctionPtr CNTKWrapper::Convolution2DLayer(const Link * pLink, vector<const Link*> dependencies, CNTK::DeviceDescriptor & device)
 {
 
 	FunctionPtr input = dependencies.at(0)->getFunctionPtr();
@@ -79,7 +79,7 @@ CNTK::FunctionPtr CNTKWrapper::Convolution2DLayer(const CLink * pLink, vector<co
 	return CNTKWrapper::Internal::Convolution2D(input, filters, kernelWidth, kernelHeight, strideWidth, strideHeight, activationFunction, 1.0, device, name);
 }
 
-CNTK::FunctionPtr CNTKWrapper::Convolution3DLayer(const CLink * pLink, vector<const CLink*> dependencies, CNTK::DeviceDescriptor & device)
+CNTK::FunctionPtr CNTKWrapper::Convolution3DLayer(const Link * pLink, vector<const Link*> dependencies, CNTK::DeviceDescriptor & device)
 {
 
 	FunctionPtr input = dependencies.at(0)->getFunctionPtr();
@@ -102,7 +102,7 @@ CNTK::FunctionPtr CNTKWrapper::Convolution3DLayer(const CLink * pLink, vector<co
 	return CNTKWrapper::Internal::Convolution3D(input, filters, kernelWidth, kernelHeight, kernelDepth, strideWidth, strideHeight, strideDepth, activationFunction, 1.0, device, name);
 }
 
-CNTK::FunctionPtr CNTKWrapper::DenseLayer(const CLink * pLink, vector<const CLink*> dependencies, CNTK::DeviceDescriptor& device)
+CNTK::FunctionPtr CNTKWrapper::DenseLayer(const Link * pLink, vector<const Link*> dependencies, CNTK::DeviceDescriptor& device)
 {
 
 	int output_nodes = pLink->getParameterByName<CIntParameter>("Units")->getValue();
@@ -112,13 +112,13 @@ CNTK::FunctionPtr CNTKWrapper::DenseLayer(const CLink * pLink, vector<const CLin
 	return CNTKWrapper::Internal::FullyConnectedDNNLayer(dependencies.at(0)->getFunctionPtr(), output_nodes, device, activationFunction, name);
 }
 
-CNTK::FunctionPtr CNTKWrapper::DropoutLayer(const CLink * pLink, vector<const CLink*> dependencies, CNTK::DeviceDescriptor & device)
+CNTK::FunctionPtr CNTKWrapper::DropoutLayer(const Link * pLink, vector<const Link*> dependencies, CNTK::DeviceDescriptor & device)
 {
 
 	return CNTK::FunctionPtr();
 }
 
-CNTK::FunctionPtr CNTKWrapper::FlattenLayer(const CLink * pLink, vector<const CLink*> dependencies, CNTK::DeviceDescriptor & device)
+CNTK::FunctionPtr CNTKWrapper::FlattenLayer(const Link * pLink, vector<const Link*> dependencies, CNTK::DeviceDescriptor & device)
 {
 
 	wstring name = Internal::string2wstring(pLink->getName());
@@ -127,7 +127,7 @@ CNTK::FunctionPtr CNTKWrapper::FlattenLayer(const CLink * pLink, vector<const CL
 	return Reshape(dependencies.at(0)->getFunctionPtr(), { inputShape.TotalSize() }, name);
 }
 
-CNTK::FunctionPtr CNTKWrapper::ReshapeLayer(const CLink * pLink, vector<const CLink*> dependencies, CNTK::DeviceDescriptor & device)
+CNTK::FunctionPtr CNTKWrapper::ReshapeLayer(const Link * pLink, vector<const Link*> dependencies, CNTK::DeviceDescriptor & device)
 {
 
 	wstring name = Internal::string2wstring(pLink->getName());
@@ -146,7 +146,7 @@ CNTK::FunctionPtr CNTKWrapper::ReshapeLayer(const CLink * pLink, vector<const CL
 
 }
 
-CNTK::FunctionPtr CNTKWrapper::MergeLayer(const CLink * pLink, vector<const CLink*> dependencies, CNTK::DeviceDescriptor & device)
+CNTK::FunctionPtr CNTKWrapper::MergeLayer(const Link * pLink, vector<const Link*> dependencies, CNTK::DeviceDescriptor & device)
 {
 
 	vector<Variable> inputs = vector<Variable>();
@@ -163,7 +163,44 @@ CNTK::FunctionPtr CNTKWrapper::MergeLayer(const CLink * pLink, vector<const CLin
 	return dependencies.at(0)->getFunctionPtr();
 }
 
-CNTK::TrainerPtr CNTKWrapper::CreateOptimizer(const COptimizerSetting * pOptimizerSetting, CNTK::FunctionPtr& output, CNTK::FunctionPtr& lossFunction)
+CNTK::FunctionPtr CNTKWrapper::BatchNormalizationLayer(const Link * pLink, vector<const Link*> dependencies, CNTK::DeviceDescriptor & device)
+{
+
+	wstring name = CNTKWrapper::Internal::string2wstring(pLink->getName());
+
+	auto biasParams = Parameter({ NDShape::InferredDimension }, (float)0.0, device);
+
+	auto scaleParams = Parameter({ NDShape::InferredDimension }, (float)0.0, device);
+
+	auto runningMean = Parameter({ NDShape::InferredDimension }, (float)0.0, device);
+
+	auto runningInvStd = Parameter({ NDShape::InferredDimension }, (float)0.0, device);
+	
+	auto runningCount = Constant::Scalar(0.0f, device);
+
+	//TODO: check if spatial=false and 5000 are good values.
+	return BatchNormalization(dependencies[0]->getFunctionPtr(), scaleParams, biasParams, runningMean, runningInvStd, runningCount, false, 5000, 0, 1e-05, true, name);
+
+}
+
+
+CNTK::FunctionPtr CNTKWrapper::LinearTransformationLayer(const Link * pLink, vector<const Link*> dependencies, CNTK::DeviceDescriptor & device)
+{
+	wstring name = Internal::string2wstring(pLink->getName());
+	double offset = pLink->getParameterByName<CDoubleParameter>("Offset")->getValue();
+	double scale = pLink->getParameterByName<CDoubleParameter>("Scale")->getValue();
+
+	auto timesParam = Constant::Scalar(DataType::Float, (float)scale, device);
+
+	auto timesFunction = ElementTimes(timesParam, dependencies.at(0)->getFunctionPtr());
+
+	auto plusParam = Constant::Constant(dependencies.at(0)->getFunctionPtr()->Output().Shape(), (float)offset, device);
+	
+	return Plus(plusParam, timesFunction, name);
+
+}
+
+CNTK::TrainerPtr CNTKWrapper::CreateOptimizer(const OptimizerSetting * pOptimizerSetting, CNTK::FunctionPtr& output, CNTK::FunctionPtr& lossFunction)
 {
 
 	CNTK::LearnerPtr pLearner;

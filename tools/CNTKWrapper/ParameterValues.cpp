@@ -127,11 +127,11 @@ CInputDataValue* CInputDataValue::getInstance(tinyxml2::XMLElement* pNode)
 	return new CInputDataValue(pNode);
 }
 
-CLinkConnection* CLinkConnection::getInstance(tinyxml2::XMLElement* pNode)
+LinkConnection* LinkConnection::getInstance(tinyxml2::XMLElement* pNode)
 {
 	if (!strcmp(pNode->Name(), XML_TAG_LinkConnection))
 	{
-		return new CLinkConnection(pNode);
+		return new LinkConnection(pNode);
 	}
 	return nullptr;
 }
@@ -152,18 +152,18 @@ CInputDataValue::CInputDataValue(tinyxml2::XMLElement* pParentNode) : CInputData
 	m_pShape = CIntTuple::getInstance(pNode);
 }
 
-CLinkConnection::CLinkConnection(tinyxml2::XMLElement* pNode) : CLinkConnection()
+LinkConnection::LinkConnection(tinyxml2::XMLElement* pNode) : LinkConnection()
 {
 	m_targetID = pNode->Attribute(XML_ATTRIBUTE_TargetId);
 	if (m_targetID.empty())
 		throw ProblemParserElementValueNotValid(XML_ATTRIBUTE_TargetId);
 }
 
-CLinkConnection::CLinkConnection()
+LinkConnection::LinkConnection()
 {
 }
 
-CLinkConnection::~CLinkConnection()
+LinkConnection::~LinkConnection()
 {
 }
 

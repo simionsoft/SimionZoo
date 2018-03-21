@@ -156,15 +156,15 @@ public:
 	void setShape(CIntTuple* shape) { m_pShape = shape; }
 };
 
-class CLinkConnection
+class LinkConnection
 {
 protected:
 	string m_targetID;
-	CLinkConnection(tinyxml2::XMLElement* pNode);
+	LinkConnection(tinyxml2::XMLElement* pNode);
 public:
-	CLinkConnection();
-	~CLinkConnection();
+	LinkConnection();
+	~LinkConnection();
 	const string& getTargetId() const { return m_targetID; }
 
-	static CLinkConnection* getInstance(tinyxml2::XMLElement* pNode);
+	static LinkConnection* getInstance(tinyxml2::XMLElement* pNode);
 };

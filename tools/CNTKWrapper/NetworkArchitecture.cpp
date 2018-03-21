@@ -13,24 +13,24 @@
 #include "ParameterValues.h"
 #include "Exceptions.h"
 
-CNetworkArchitecture::CNetworkArchitecture()
+NetworkArchitecture::NetworkArchitecture()
 {
-	m_chains = std::vector<CChain*>();
+	m_chains = std::vector<Chain*>();
 }
 
 
-CNetworkArchitecture::~CNetworkArchitecture()
+NetworkArchitecture::~NetworkArchitecture()
 {
 
 }
 
-CNetworkArchitecture::CNetworkArchitecture(tinyxml2::XMLElement* pParentNode) : CNetworkArchitecture()
+NetworkArchitecture::NetworkArchitecture(tinyxml2::XMLElement* pParentNode) : NetworkArchitecture()
 {
 	tinyxml2::XMLElement *pNode = pParentNode->FirstChildElement(XML_TAG_Chains);
 	if (pNode == nullptr)
 		throw ProblemParserElementNotFound(XML_TAG_Chains);
 
-	loadChildren<CChain>(pNode, XML_TAG_Chain, m_chains);
+	loadChildren<Chain>(pNode, XML_TAG_Chain, m_chains);
 	for each (auto var in m_chains)
 	{
 		var->setParentNetworkArchitecture(this);
@@ -38,17 +38,17 @@ CNetworkArchitecture::CNetworkArchitecture(tinyxml2::XMLElement* pParentNode) : 
 }
 
 
-CNetworkArchitecture* CNetworkArchitecture::getInstance(tinyxml2::XMLElement* pNode)
+NetworkArchitecture* NetworkArchitecture::getInstance(tinyxml2::XMLElement* pNode)
 {
 	if (!strcmp(pNode->Name(), XML_TAG_NETWORK_ARCHITECTURE))
-		return new CNetworkArchitecture(pNode);
+		return new NetworkArchitecture(pNode);
 
 	return nullptr;
 }
 
-const CLink* CNetworkArchitecture::getLinkById(const char* id) const
+const Link* NetworkArchitecture::getLinkById(const char* id) const
 {
-	const CLink* result = NULL;
+	const Link* result = NULL;
 	for each (auto cItem in m_chains)
 	{
 		result = cItem->getLinkById(id);

@@ -9,23 +9,25 @@
 
 using namespace CNTK;
 using namespace std;
-class CLink;
-class COptimizerSetting;
+class Link;
+class OptimizerSetting;
 
 namespace CNTKWrapper
 {
-	CNTK::FunctionPtr InputLayer(const CLink* pLink, vector<const CLink*> dependencies, CNTK::DeviceDescriptor& device);
-	CNTK::FunctionPtr ActivationLayer(const CLink* pLink, vector<const CLink*> dependencies, CNTK::DeviceDescriptor& device);
-	CNTK::FunctionPtr Convolution1DLayer(const CLink* pLink, vector<const CLink*> dependencies, CNTK::DeviceDescriptor& device);
-	CNTK::FunctionPtr Convolution2DLayer(const CLink* pLink, vector<const CLink*> dependencies, CNTK::DeviceDescriptor& device);
-	CNTK::FunctionPtr Convolution3DLayer(const CLink* pLink, vector<const CLink*> dependencies, CNTK::DeviceDescriptor& device);
-	CNTK::FunctionPtr DenseLayer(const CLink* pLink, vector<const CLink*> dependencies, CNTK::DeviceDescriptor& device);
-	CNTK::FunctionPtr DropoutLayer(const CLink* pLink, vector<const CLink*> dependencies, CNTK::DeviceDescriptor& device);
-	CNTK::FunctionPtr FlattenLayer(const CLink* pLink, vector<const CLink*> dependencies, CNTK::DeviceDescriptor& device);
-	CNTK::FunctionPtr ReshapeLayer(const CLink* pLink, vector<const CLink*> dependencies, CNTK::DeviceDescriptor& device);
-	CNTK::FunctionPtr MergeLayer(const CLink* pLink, vector<const CLink*> dependencies, CNTK::DeviceDescriptor& device);
+	CNTK::FunctionPtr InputLayer(const Link* pLink, vector<const Link*> dependencies, CNTK::DeviceDescriptor& device);
+	CNTK::FunctionPtr ActivationLayer(const Link* pLink, vector<const Link*> dependencies, CNTK::DeviceDescriptor& device);
+	CNTK::FunctionPtr Convolution1DLayer(const Link* pLink, vector<const Link*> dependencies, CNTK::DeviceDescriptor& device);
+	CNTK::FunctionPtr Convolution2DLayer(const Link* pLink, vector<const Link*> dependencies, CNTK::DeviceDescriptor& device);
+	CNTK::FunctionPtr Convolution3DLayer(const Link* pLink, vector<const Link*> dependencies, CNTK::DeviceDescriptor& device);
+	CNTK::FunctionPtr DenseLayer(const Link* pLink, vector<const Link*> dependencies, CNTK::DeviceDescriptor& device);
+	CNTK::FunctionPtr DropoutLayer(const Link* pLink, vector<const Link*> dependencies, CNTK::DeviceDescriptor& device);
+	CNTK::FunctionPtr FlattenLayer(const Link* pLink, vector<const Link*> dependencies, CNTK::DeviceDescriptor& device);
+	CNTK::FunctionPtr ReshapeLayer(const Link* pLink, vector<const Link*> dependencies, CNTK::DeviceDescriptor& device);
+	CNTK::FunctionPtr MergeLayer(const Link* pLink, vector<const Link*> dependencies, CNTK::DeviceDescriptor& device);
 
-	CNTK::TrainerPtr CreateOptimizer(const COptimizerSetting* pOptimizerSetting, CNTK::FunctionPtr& model, CNTK::FunctionPtr& lossFunction);
+	CNTK::FunctionPtr BatchNormalizationLayer(const Link * pLink, vector<const Link*> dependencies, CNTK::DeviceDescriptor & device);
+	CNTK::FunctionPtr LinearTransformationLayer(const Link * pLink, vector<const Link*> dependencies, CNTK::DeviceDescriptor & device);
+	CNTK::TrainerPtr CreateOptimizer(const OptimizerSetting * pOptimizerSetting, CNTK::FunctionPtr& output, CNTK::FunctionPtr& lossFunction);
 
 	namespace Internal
 	{

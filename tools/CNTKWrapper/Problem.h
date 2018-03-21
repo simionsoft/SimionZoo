@@ -3,19 +3,19 @@
 #include "../../3rd-party/tinyxml2/tinyxml2.h"
 #include <vector>
 
-class CNetworkArchitecture;
-class CInputData;
-class CNetwork;
-class CLinkConnection;
-class COptimizerSetting;
+class NetworkArchitecture;
+class InputData;
+class Network;
+class LinkConnection;
+class OptimizerSetting;
 
 class CProblem: public IProblem
 {
 protected:
-	std::vector<CInputData*> m_inputs;
-	CNetworkArchitecture* m_pNetworkArchitecture;
-	CLinkConnection* m_pOutput;
-	COptimizerSetting* m_pOptimizerSetting;
+	std::vector<InputData*> m_inputs;
+	NetworkArchitecture* m_pNetworkArchitecture;
+	LinkConnection* m_pOutput;
+	OptimizerSetting* m_pOptimizerSetting;
 	
 	
 public:
@@ -25,10 +25,10 @@ public:
 
 	void destroy();
 
-	CNetworkArchitecture* getNetworkArchitecture() { return m_pNetworkArchitecture; }
-	const std::vector<CInputData*>& getInputs() const { return m_inputs; }
-	const CLinkConnection* getOutput() const { return m_pOutput; }
-	const COptimizerSetting* getOptimizerSetting() const { return m_pOptimizerSetting; }
+	NetworkArchitecture* getNetworkArchitecture() { return m_pNetworkArchitecture; }
+	const std::vector<InputData*>& getInputs() const { return m_inputs; }
+	const LinkConnection* getOutput() const { return m_pOutput; }
+	const OptimizerSetting* getOptimizerSetting() const { return m_pOptimizerSetting; }
 
 	static CProblem* getInstance(tinyxml2::XMLElement* pNode);
 

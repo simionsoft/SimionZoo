@@ -15,16 +15,16 @@
 #include "Exceptions.h"
 #include "CNTKWrapperInternals.h"
 
-CLink::CLink()
+Link::Link()
 {
 }
 
 
-CLink::~CLink()
+Link::~Link()
 {
 }
 
-CLink::CLink(tinyxml2::XMLElement* pParentNode)
+Link::Link(tinyxml2::XMLElement* pParentNode)
 {
 	//read type
 	const char* type = pParentNode->Attribute(XML_ATTRIBUTE_Type);
@@ -66,23 +66,23 @@ CLink::CLink(tinyxml2::XMLElement* pParentNode)
 	if (pNode == nullptr)
 		throw ProblemParserElementNotFound(XML_TAG_Parameters);
 
-	loadChildren<CParameterBaseInteface>(pNode, XML_TAG_ParameterBase, m_parameters);
+	loadChildren<IParameter>(pNode, XML_TAG_ParameterBase, m_parameters);
 }
 
-std::vector<const CLink*> CLink::getDependencies() const
+std::vector<const Link*> Link::getDependencies() const
 {
-	std::vector<const CLink*> result = std::vector<const CLink*>();
+	std::vector<const Link*> result = std::vector<const Link*>();
 
 	if (m_linkType == LinkType::MergeLayer)
 	{
 		auto dependenciesList = getParameterByName<CLinkConnectionListParameter>("Links");
-		for each (CLinkConnection* var in dependenciesList->getValue())
+		for each (LinkConnection* var in dependenciesList->getValue())
 			result.push_back(m_pParentChain->getParentNetworkArchitecture()->getLinkById(var->getTargetId().c_str()));
 	}
 	else
 	{
 		//just add the item which is placed in front of this item in the chain
-		CLink* previousLink = getPreviousLink();
+		Link* previousLink = getPreviousLink();
 		if (previousLink != nullptr)
 			result.push_back(previousLink);
 	}
@@ -90,12 +90,12 @@ std::vector<const CLink*> CLink::getDependencies() const
 	return result;
 }
 
-void CLink::createCNTKFunctionPtr()
+void Link::createCNTKFunctionPtr()
 {
 	createCNTKFunctionPtr(getDependencies());
 }
 
-void CLink::createCNTKFunctionPtr(vector<const CLink*> dependencies)
+void Link::createCNTKFunctionPtr(vector<const Link*> dependencies)
 {
 	auto device = CNTK::DeviceDescriptor::CPUDevice();
 	switch (m_linkType)
@@ -134,38 +134,38 @@ void CLink::createCNTKFunctionPtr(vector<const CLink*> dependencies)
 }
 
 
-CLink * CLink::getNextLink() const
+Link * Link::getNextLink() const
 {
 	//determine position and get the next element
-	vector<CLink*> chainLinks = m_pParentChain->getChainLinks();
+	vector<Link*> chainLinks = m_pParentChain->getChainLinks();
 	ptrdiff_t position = std::distance(chainLinks.begin(), std::find(chainLinks.begin(), chainLinks.end(), this));
 	if (position >= chainLinks.size() - 1)
 		return nullptr;
 	return chainLinks.at(position + 1);
 }
 
-CLink * CLink::getPreviousLink() const
+Link * Link::getPreviousLink() const
 {
 	//determine position and get the previous element
-	vector<CLink*> chainLinks = m_pParentChain->getChainLinks();
+	vector<Link*> chainLinks = m_pParentChain->getChainLinks();
 	ptrdiff_t position = std::distance(chainLinks.begin(), std::find(chainLinks.begin(), chainLinks.end(), this));
 	if (position <= 0)
 		return nullptr;
 	return chainLinks.at(position - 1);
 }
 
-CChain* CChain::getInstance(tinyxml2::XMLElement* pNode)
+Chain* Chain::getInstance(tinyxml2::XMLElement* pNode)
 {
 	if (!strcmp(pNode->Name(), XML_TAG_Chain))
-		return new CChain(pNode);
+		return new Chain(pNode);
 
 	return nullptr;
 }
 
-CLink* CLink::getInstance(tinyxml2::XMLElement* pNode)
+Link* Link::getInstance(tinyxml2::XMLElement* pNode)
 {
 	if (!strcmp(pNode->Name(), XML_TAG_LinkBase))
-		return new CLink(pNode);
+		return new Link(pNode);
 
 	return nullptr;
 }

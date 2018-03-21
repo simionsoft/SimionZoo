@@ -13,7 +13,7 @@
 
 
 
-CInputData::CInputData(tinyxml2::XMLElement * pParentNode)
+InputData::InputData(tinyxml2::XMLElement * pParentNode)
 {
 	m_id = pParentNode->Attribute(XML_ATTRIBUTE_Id);
 	if (m_id.empty())
@@ -30,30 +30,30 @@ CInputData::CInputData(tinyxml2::XMLElement * pParentNode)
 
 }
 
-CInputData::CInputData(string id, CNTK::Variable pInputVariable)
+InputData::InputData(string id, CNTK::Variable pInputVariable)
 {
 	m_id = id;
 	m_inputVariable = pInputVariable;
 }
 
 
-CInputData::~CInputData()
+InputData::~InputData()
 {
 }
 
-CInputData * CInputData::getInstance(tinyxml2::XMLElement * pNode)
+InputData * InputData::getInstance(tinyxml2::XMLElement * pNode)
 {
 	if (!strcmp(pNode->Name(), XML_TAG_InputData))
-		return new CInputData(pNode);
+		return new InputData(pNode);
 	return nullptr;
 }
 
-NDShape CInputData::getNDShape()
+NDShape InputData::getNDShape()
 {
 	return m_pShape->getNDShape();
 }
 
-void CInputData::createInputVariable()
+void InputData::createInputVariable()
 {
 	m_inputVariable = CNTK::InputVariable(m_pShape->getNDShape(), CNTK::DataType::Double, CNTKWrapper::Internal::string2wstring(m_id));
 }

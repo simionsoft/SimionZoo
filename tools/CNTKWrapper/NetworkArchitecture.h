@@ -4,28 +4,28 @@
 
 using namespace std;
 
-class CChain;
-class CLink;
+class Chain;
+class Link;
 class CProblem;
 
-class CNetworkArchitecture
+class NetworkArchitecture
 {
 protected:
-	vector<CChain*> m_chains;
+	vector<Chain*> m_chains;
 	CProblem* m_pParentProblem;
-	CNetworkArchitecture(tinyxml2::XMLElement* pNode);
+	NetworkArchitecture(tinyxml2::XMLElement* pNode);
 	
 public:
-	CNetworkArchitecture();
-	~CNetworkArchitecture();
+	NetworkArchitecture();
+	~NetworkArchitecture();
 
-	const vector<CChain*> getChains() { return m_chains; }
+	const vector<Chain*> getChains() { return m_chains; }
 
 	void setParentProblem(CProblem* pParentProblem) { m_pParentProblem = pParentProblem; }
 	const CProblem* getParentProblem() const { return m_pParentProblem; }
 
-	static CNetworkArchitecture* getInstance(tinyxml2::XMLElement* pNode);
+	static NetworkArchitecture* getInstance(tinyxml2::XMLElement* pNode);
 
-	const CLink* getLinkById(const char* id) const;
+	const Link* getLinkById(const char* id) const;
 };
 

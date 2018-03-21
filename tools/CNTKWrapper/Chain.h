@@ -4,30 +4,30 @@
 using namespace std;
 #include "../../3rd-party/tinyxml2/tinyxml2.h"
 
-class CLink;
-class CNetworkArchitecture;
+class Link;
+class NetworkArchitecture;
 
-class CChain
+class Chain
 {
 protected:
-	vector<CLink*> m_chainLinks;
+	vector<Link*> m_chainLinks;
 	string m_name;
-	CChain(tinyxml2::XMLElement* pNode);
+	Chain(tinyxml2::XMLElement* pNode);
 
-	CNetworkArchitecture* m_pParentNetworkArchitecture;
+	NetworkArchitecture* m_pParentNetworkArchitecture;
 public:
-	CChain();
-	~CChain();
+	Chain();
+	~Chain();
 
-	const std::vector<CLink*> getChainLinks() const { return m_chainLinks; }
-	void setChainLinks(vector<CLink*> pChainLinks) { m_chainLinks = pChainLinks; }
+	const std::vector<Link*> getChainLinks() const { return m_chainLinks; }
+	void setChainLinks(vector<Link*> pChainLinks) { m_chainLinks = pChainLinks; }
 	const string& getName() const { return m_name; }
 
-	const CLink* getLinkById(const char* id) const;
+	const Link* getLinkById(const char* id) const;
 
-	void setParentNetworkArchitecture(CNetworkArchitecture* pParentNetworkArchitecture) { m_pParentNetworkArchitecture = pParentNetworkArchitecture; }
-	const CNetworkArchitecture* getParentNetworkArchitecture() const { return m_pParentNetworkArchitecture; }
+	void setParentNetworkArchitecture(NetworkArchitecture* pParentNetworkArchitecture) { m_pParentNetworkArchitecture = pParentNetworkArchitecture; }
+	const NetworkArchitecture* getParentNetworkArchitecture() const { return m_pParentNetworkArchitecture; }
 
-	static CChain* getInstance(tinyxml2::XMLElement* pNode);
+	static Chain* getInstance(tinyxml2::XMLElement* pNode);
 };
 

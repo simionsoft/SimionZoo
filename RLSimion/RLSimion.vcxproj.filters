@@ -218,6 +218,9 @@
     <ClCompile Include="worlds\Box.cpp">
       <Filter>world\BulletPhysics</Filter>
     </ClCompile>
+    <ClCompile Include="async-deep-simion.cpp">
+      <Filter>learning</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="resource1.h" />
@@ -415,6 +418,9 @@
     </ClInclude>
     <ClInclude Include="worlds\Box.h">
       <Filter>world\BulletPhysics</Filter>
+    </ClInclude>
+    <ClInclude Include="async-deep-simion.h">
+      <Filter>learning</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

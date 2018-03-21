@@ -5,13 +5,13 @@
 
 using namespace std;
 
-class COptimizerSetting;
-class CInputData;
+class OptimizerSetting;
+class InputData;
 
-class CNetwork:public INetwork
+class Network:public INetwork
 {
 protected:
-	vector<CInputData*> m_inputs;
+	vector<InputData*> m_inputs;
 	vector<CNTK::FunctionPtr> m_functionPtrs;
 	vector<CNTK::FunctionPtr> m_outputsFunctionPtr;
 	CNTK::FunctionPtr m_networkFunctionPtr;
@@ -20,13 +20,13 @@ protected:
 	CNTK::Variable m_targetOutput;
 
 public:
-	CNetwork();
-	~CNetwork();
+	Network();
+	~Network();
 
 	size_t getTotalSize();
 	void destroy();
 
-	vector<CInputData*>& getInputs() { return m_inputs; }
+	vector<InputData*>& getInputs() { return m_inputs; }
 	vector<CNTK::FunctionPtr>& getOutputsFunctionPtr() { return m_outputsFunctionPtr; }
 	vector<CNTK::FunctionPtr>& getFunctionPtrs() { return m_functionPtrs; }
 	CNTK::FunctionPtr getNetworkFunctionPtr() { return m_networkFunctionPtr; }
@@ -34,12 +34,15 @@ public:
 	CNTK::TrainerPtr getTrainer() { return m_trainer; }
 	CNTK::Variable getTargetOutput() { return m_targetOutput; }
 
-	void buildNetworkFunctionPtr(const COptimizerSetting* optimizer);
+	void buildNetworkFunctionPtr(const OptimizerSetting* optimizer);
 	void save(string fileName);
-	static CNetwork load(string fileName, CNTK::DeviceDescriptor &device);
+	static Network load(string fileName, CNTK::DeviceDescriptor &device);
 
 	INetwork* cloneNonTrainable() const;
 
 	void train(std::unordered_map<std::string, std::vector<double>&>& inputDataMap, std::vector<double>& targetOutputData);
 	void predict(std::unordered_map<std::string, std::vector<double>&>& inputDataMap, std::vector<double>& predictionData);
+	
+	void gradients(std::unordered_map<std::string, std::vector<double>&>& inputDataMap, std::unordered_map<CNTK::Variable, CNTK::ValuePtr>& gradients);
+	void gradients(std::unordered_map<std::string, std::vector<double>&>& inputDataMap, std::vector<double>& targetOutputData, std::unordered_map<CNTK::Variable, CNTK::ValuePtr>& gradients);
 };

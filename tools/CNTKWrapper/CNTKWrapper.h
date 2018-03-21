@@ -29,10 +29,10 @@ namespace CNTK
 	class Variable;
 	class NDShape;
 }
-class CNetworkArchitecture;
-class CInputData;
-class CLinkConnection;
-class COptimizerSetting;
+class NetworkArchitecture;
+class InputData;
+class LinkConnection;
+class OptimizerSetting;
 class INetwork;
 
 //Interface class
@@ -42,10 +42,10 @@ public:
 	//virtual IProblem(tinyxml2::XMLElement* pNode)= 0;
 	virtual void destroy() = 0;
 
-	virtual CNetworkArchitecture* getNetworkArchitecture() = 0;
-	virtual const std::vector<CInputData*>& getInputs() const = 0;
-	virtual const CLinkConnection* getOutput() const = 0;
-	virtual const COptimizerSetting* getOptimizerSetting() const = 0;
+	virtual NetworkArchitecture* getNetworkArchitecture() = 0;
+	virtual const std::vector<InputData*>& getInputs() const = 0;
+	virtual const LinkConnection* getOutput() const = 0;
+	virtual const OptimizerSetting* getOptimizerSetting() const = 0;
 
 	virtual INetwork* createNetwork() = 0;
 };
@@ -58,7 +58,7 @@ public:
 
 	virtual size_t getTotalSize() = 0;
 
-	virtual vector<CInputData*>& getInputs()= 0;
+	virtual vector<InputData*>& getInputs()= 0;
 	virtual vector<CNTK::FunctionPtr>& getOutputsFunctionPtr()= 0;
 	virtual vector<CNTK::FunctionPtr>& getFunctionPtrs()= 0;
 	virtual CNTK::FunctionPtr getNetworkFunctionPtr()= 0;
@@ -66,7 +66,7 @@ public:
 	virtual CNTK::TrainerPtr getTrainer()= 0;
 	virtual CNTK::Variable getTargetOutput()= 0;
 
-	virtual void buildNetworkFunctionPtr(const COptimizerSetting* optimizer)= 0;
+	virtual void buildNetworkFunctionPtr(const OptimizerSetting* optimizer)= 0;
 	virtual void save(string fileName)= 0;
 
 	virtual INetwork* cloneNonTrainable() const= 0;

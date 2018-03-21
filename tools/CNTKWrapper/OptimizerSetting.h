@@ -16,16 +16,16 @@ enum class OptimizerType
 
 class COptimizerParameter;
 
-class COptimizerSetting
+class OptimizerSetting
 {
 protected:
-	COptimizerSetting(tinyxml2::XMLElement *pNode);
+	OptimizerSetting(tinyxml2::XMLElement *pNode);
 	OptimizerType m_optimizerType;
 	std::vector<COptimizerParameter*> m_parameters;
 public:
-	COptimizerSetting();
-	~COptimizerSetting();
-	static COptimizerSetting* getInstance(tinyxml2::XMLElement* pNode);
+	OptimizerSetting();
+	~OptimizerSetting();
+	static OptimizerSetting* getInstance(tinyxml2::XMLElement* pNode);
 
 	const OptimizerType& getOptimizerType() const { return m_optimizerType; }
 	const std::vector<COptimizerParameter*>& getParameteres() const { return m_parameters; }

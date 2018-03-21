@@ -7,8 +7,8 @@
 
 using namespace std;
 
-class CChain;
-class CParameterBaseInteface;
+class Chain;
+class IParameter;
 
 enum class LinkType
 {
@@ -24,24 +24,24 @@ enum class LinkType
 	MergeLayer,
 };
 
-class CLink
+class Link
 {
 protected:
 	string m_name;
 	string m_id;
-	vector<CParameterBaseInteface*> m_parameters;
+	vector<IParameter*> m_parameters;
 	LinkType m_linkType;
 	CNTK::FunctionPtr m_functionPtr = nullptr;
-	CChain* m_pParentChain;
+	Chain* m_pParentChain;
 
-	CLink(tinyxml2::XMLElement* pNode);	
+	Link(tinyxml2::XMLElement* pNode);	
 
 public:
-	CLink();
-	~CLink();
+	Link();
+	~Link();
 
 	LinkType getLinkType() const { return m_linkType; }
-	const vector<CParameterBaseInteface*> getParameters() const { return m_parameters; }
+	const vector<IParameter*> getParameters() const { return m_parameters; }
 
 	const string& getId() const { return m_id; }
 	const string& getName() const { return m_name; }
@@ -49,10 +49,10 @@ public:
 	const CNTK::FunctionPtr& getFunctionPtr() const { return m_functionPtr; }
 	void setFunctionPtr(const CNTK::FunctionPtr& value) { m_functionPtr = value; }
 
-	void setParentChain(CChain* pParentChain) { m_pParentChain = pParentChain; }
-	const CChain* getParentChain() const { return m_pParentChain; }
+	void setParentChain(Chain* pParentChain) { m_pParentChain = pParentChain; }
+	const Chain* getParentChain() const { return m_pParentChain; }
 
-	template <typename T = CParameterBaseInteface>
+	template <typename T = IParameter>
 	const T* getParameterByName(const string name) const
 	{
 		for each (auto item in this->m_parameters)
@@ -67,14 +67,14 @@ public:
 	}
 
 
-	CLink* getNextLink() const;
-	CLink* getPreviousLink() const;
+	Link* getNextLink() const;
+	Link* getPreviousLink() const;
 
-	std::vector<const CLink*> getDependencies() const;
+	std::vector<const Link*> getDependencies() const;
 
 	void createCNTKFunctionPtr();
-	void createCNTKFunctionPtr(vector<const CLink*> dependencies);
+	void createCNTKFunctionPtr(vector<const Link*> dependencies);
 
 
-	static CLink* CLink::getInstance(tinyxml2::XMLElement* pNode);
+	static Link* Link::getInstance(tinyxml2::XMLElement* pNode);
 };

@@ -20,14 +20,14 @@ CProblem::CProblem(tinyxml2::XMLElement * pParentNode)
 	if (pNode == nullptr)
 		throw ProblemParserElementNotFound(XML_TAG_NETWORK_ARCHITECTURE);
 
-	m_pNetworkArchitecture = CNetworkArchitecture::getInstance(pNode);
+	m_pNetworkArchitecture = NetworkArchitecture::getInstance(pNode);
 	m_pNetworkArchitecture->setParentProblem(this);
 
 	//load inputs
 	pNode = pParentNode->FirstChildElement(XML_TAG_Inputs);
 	if (pNode == nullptr)
 		throw ProblemParserElementNotFound(XML_TAG_Inputs);
-	loadChildren<CInputData>(pNode, XML_TAG_InputData, m_inputs);
+	loadChildren<InputData>(pNode, XML_TAG_InputData, m_inputs);
 
 	//load output
 	pNode = pParentNode->FirstChildElement(XML_TAG_Output);
@@ -36,13 +36,13 @@ CProblem::CProblem(tinyxml2::XMLElement * pParentNode)
 	pNode = pNode->FirstChildElement(XML_TAG_LinkConnection);
 	if (pNode == nullptr)
 		throw ProblemParserElementNotFound(XML_TAG_LinkConnection);
-	m_pOutput = CLinkConnection::getInstance(pNode);
+	m_pOutput = LinkConnection::getInstance(pNode);
 
 	//load optimizer
 	pNode = pParentNode->FirstChildElement(XML_TAG_OptimizerSetting)->FirstChildElement(XML_TAG_Optimizer);
 	if (pNode == nullptr)
 		throw ProblemParserElementNotFound(XML_TAG_Optimizer);
-	m_pOptimizerSetting = COptimizerSetting::getInstance(pNode);
+	m_pOptimizerSetting = OptimizerSetting::getInstance(pNode);
 }
 
 CProblem::CProblem()
@@ -101,7 +101,7 @@ CProblem * CProblem::loadFromString(std::string content)
 
 INetwork * CProblem::createNetwork()
 {
-	CNetwork* result = new CNetwork();
+	Network* result = new Network();
 	/*
 	basic idea of this algorithm: we traverse all chains to create the real model
 	to achieve this we follow this pseudo-code:
@@ -115,7 +115,7 @@ INetwork * CProblem::createNetwork()
 	*/
 
 	//create the inputs
-	for each (CInputData* input in m_inputs)
+	for each (InputData* input in m_inputs)
 	{
 		//TODO: Fix
 		//if (input->getInputVariable() == nullptr)
@@ -129,13 +129,13 @@ INetwork * CProblem::createNetwork()
 	CNTK::FunctionPtr pOutputFunction = nullptr;
 
 	//stores the progress of each chain
-	auto progressMap = std::map<CChain*, CLink*>();
+	auto progressMap = std::map<Chain*, Link*>();
 
 	//the currently processed link
-	CLink* pCurrentLink;
+	Link* pCurrentLink;
 
 	//the dependencies of the current link
-	vector<const CLink*> dependencies;
+	vector<const Link*> dependencies;
 
 	//termination condition
 	bool architectureDeadEndReached = false;
@@ -146,7 +146,7 @@ INetwork * CProblem::createNetwork()
 	{
 		architectureDeadEndReached = true;
 
-		for each (CChain* pChain in m_pNetworkArchitecture->getChains())
+		for each (Chain* pChain in m_pNetworkArchitecture->getChains())
 		{
 			//get current link of the chain
 			if (progressMap.find(pChain) == progressMap.end())
@@ -168,7 +168,7 @@ INetwork * CProblem::createNetwork()
 
 				//check if dependencies have already been traversed
 				bool dependencies_satisfied = true;
-				for each (const CLink* item in dependencies)
+				for each (const Link* item in dependencies)
 				{
 					if (item->getFunctionPtr() == nullptr)
 					{

@@ -94,7 +94,7 @@ CIntTuple4DParameter::CIntTuple4DParameter(tinyxml2::XMLElement* pParentNode) : 
 	m_value = *CIntTuple4D::getInstance(pNode);
 }
 
-CParameterBaseInteface* CParameterBaseInteface::getInstance(tinyxml2::XMLElement* pNode)
+IParameter* IParameter::getInstance(tinyxml2::XMLElement* pNode)
 {
 	if (!strcmp(pNode->Name(), XML_TAG_ParameterBase))
 	{
@@ -124,10 +124,10 @@ CParameterBaseInteface* CParameterBaseInteface::getInstance(tinyxml2::XMLElement
 	return nullptr;
 }
 
-CLinkConnectionListParameter::CLinkConnectionListParameter(tinyxml2::XMLElement * pParentNode) : CParameterBase<vector<CLinkConnection*>>(pParentNode)
+CLinkConnectionListParameter::CLinkConnectionListParameter(tinyxml2::XMLElement * pParentNode) : CParameterBase<vector<LinkConnection*>>(pParentNode)
 {
 	tinyxml2::XMLElement *pNode = pParentNode->FirstChildElement(XML_TAG_Value);
-	loadChildren<CLinkConnection>(pNode, XML_TAG_LinkConnection, m_value);
+	loadChildren<LinkConnection>(pNode, XML_TAG_LinkConnection, m_value);
 }
 
 #endif // _WIN64
