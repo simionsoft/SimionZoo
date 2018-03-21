@@ -353,7 +353,7 @@ namespace Badger.ViewModels
         {
             switch (definitionNode.Name)
             {
-                case XMLConfig.neuralNetworkProblemDescriptionNodeTag:
+                case XMLConfig.neuralNetworkNodeTag:
                     return new NeuralNetworkProblemDescriptionConfigViewModel(parentExperiment, parent, definitionNode,
                         parentXPath, configNode);
 

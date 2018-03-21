@@ -231,7 +231,7 @@ double DoubleDQN::update(const State * s, const Action * a, const State * s_p, d
 	return 0.0;
 }
 
-#include "CNTKLibrary.h"
+#include "../tools/CNTKWrapper/CNTKLibrary.h"
 
 //quick fix to make it compile. Will fix it later
 std::unordered_map<CNTK::Parameter, CNTK::FunctionPtr> m_weightTransitions;

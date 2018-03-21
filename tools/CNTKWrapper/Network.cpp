@@ -92,7 +92,9 @@ void Network::gradients(std::unordered_map<std::string, std::vector<double>&>& i
 		//only use inputs, which are actually needed/used in the model
 		if (item->getIsUsed())
 		{
-				inputs[item->getInputVariable()] = CNTK::Value::CreateBatch(item->getInputVariable().Shape(), inputDataMap.at(item->getId()), CNTK::DeviceDescriptor::CPUDevice());
+			inputs[item->getInputVariable()] =
+				CNTK::Value::CreateBatch(item->getInputVariable().Shape()
+					, inputDataMap.at(item->getId()), CNTK::DeviceDescriptor::CPUDevice());
 		}
 	}
 
@@ -126,7 +128,9 @@ void Network::gradients(std::unordered_map<std::string, std::vector<double>&>& i
 		//only use inputs, which are actually needed/used in the model
 		if (item->getIsUsed())
 		{
-				inputs[item->getInputVariable()] = CNTK::Value::CreateBatch(item->getInputVariable().Shape(), inputDataMap.at(item->getId()), CNTK::DeviceDescriptor::CPUDevice());
+				inputs[item->getInputVariable()] = 
+					CNTK::Value::CreateBatch(item->getInputVariable().Shape()
+						, inputDataMap.at(item->getId()), CNTK::DeviceDescriptor::CPUDevice());
 		}
 	}
 	outputPtr->Gradients(inputs, gradients);

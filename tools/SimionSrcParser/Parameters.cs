@@ -99,7 +99,7 @@ namespace SimionSrcParser
             m_name = name;
             m_comment = comment;
             m_default = "";
-            m_xmlTag = XMLConfig.neuralNetworkProblemDescriptionNodeTag;
+            m_xmlTag = XMLConfig.neuralNetworkNodeTag;
         }
     }
     public class EnumParameter : IParameter
