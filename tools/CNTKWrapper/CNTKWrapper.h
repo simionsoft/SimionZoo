@@ -75,7 +75,7 @@ public:
 	virtual void predict(std::unordered_map<std::string, std::vector<double>&>& inputDataMap
 		, std::vector<double>& predictionData)= 0;
 
-	virtual void setParent() = 0;
+	virtual void setParent(IProblem* pParent) = 0;
 };
 
 

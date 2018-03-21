@@ -21,7 +21,7 @@ AsyncQLearning::AsyncQLearning(ConfigNode* pConfigNode)
 {
 	CNTKWrapperLoader::Load();
 	m_policy = CHILD_OBJECT_FACTORY<DiscreteDeepPolicy>(pConfigNode, "Policy", "The policy");
-	m_predictionQNetwork = NEURAL_NETWORK(pConfigNode, "neural-network", "Neural Network Architecture");
+	m_predictionQNetwork = NN_DEFINITION(pConfigNode, "neural-network", "Neural Network Architecture");
 	m_outputActionIndex = ACTION_VARIABLE(pConfigNode, "Output-Action", "The output action variable");
 	m_experienceReplay = CHILD_OBJECT<ExperienceReplay>(pConfigNode, "experience-replay", "Experience replay", false);
 

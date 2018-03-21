@@ -39,7 +39,7 @@ public:
 	void save(string fileName);
 	static Network load(string fileName, CNTK::DeviceDescriptor &device);
 
-	virtual void setParent(Problem* pProblem);
+	virtual void setParent(IProblem* pParent);
 
 	INetwork* cloneNonTrainable() const;
 

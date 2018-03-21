@@ -16,7 +16,7 @@ class AsyncQLearning : public Simion
 protected:
 	ACTION_VARIABLE m_outputActionIndex;
 	CHILD_OBJECT<ExperienceReplay> m_experienceReplay;
-	NEURAL_NETWORK m_predictionQNetwork;
+	NN_DEFINITION m_predictionQNetwork;
 	
 	CHILD_OBJECT_FACTORY<DiscreteDeepPolicy> m_policy;
 	FeatureList* m_pStateOutFeatures;

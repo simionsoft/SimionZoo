@@ -18,7 +18,7 @@ class DQN : public Simion
 protected:
 	ACTION_VARIABLE m_outputActionIndex;
 	CHILD_OBJECT<ExperienceReplay> m_experienceReplay;
-	NEURAL_NETWORK m_pTargetQNetwork;
+	NN_DEFINITION m_pTargetQNetwork;
 	INetwork* m_pPredictionQNetwork= nullptr;
 
 	CHILD_OBJECT_FACTORY<DiscreteDeepPolicy> m_policy;
@@ -66,10 +66,10 @@ protected:
 	ACTION_VARIABLE m_outputActionIndex;
 	CHILD_OBJECT<ExperienceReplay> m_experienceReplay;
 
-	NEURAL_NETWORK m_predictionQNetwork;
+	NN_DEFINITION m_predictionQNetwork;
 	INetwork* m_pTargetQNetwork;
 
-	NEURAL_NETWORK m_predictionPolicyNetwork;
+	NN_DEFINITION m_predictionPolicyNetwork;
 	INetwork* m_pTargetPolicyNetwork;
 
 	CHILD_OBJECT_FACTORY<Noise> m_policyNoise;

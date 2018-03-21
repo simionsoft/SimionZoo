@@ -26,7 +26,7 @@ DQN::DQN(ConfigNode* pConfigNode)
 {
 	CNTKWrapperLoader::Load();
 	m_policy = CHILD_OBJECT_FACTORY<DiscreteDeepPolicy>(pConfigNode, "Policy", "The policy");
-	m_pTargetQNetwork = NEURAL_NETWORK(pConfigNode, "neural-network", "Neural Network Architecture");
+	m_pTargetQNetwork = NN_DEFINITION(pConfigNode, "neural-network", "Neural Network Architecture");
 	m_outputActionIndex = ACTION_VARIABLE(pConfigNode, "Output-Action", "The output action variable");
 	m_experienceReplay = CHILD_OBJECT<ExperienceReplay>(pConfigNode, "experience-replay", "Experience replay", false);
 
@@ -290,8 +290,8 @@ DDPG::~DDPG()
 DDPG::DDPG(ConfigNode * pConfigNode)
 {
 	m_experienceReplay = CHILD_OBJECT<ExperienceReplay>(pConfigNode, "experience-replay", "Experience Replay", false);
-	m_predictionQNetwork = NEURAL_NETWORK(pConfigNode, "q-neural-network", "Neural Network Architecture of Critic (Q)");
-	m_predictionPolicyNetwork = NEURAL_NETWORK(pConfigNode, "policy-neural-network", "Neural Network Architecture of Actor (mu)");
+	m_predictionQNetwork = NN_DEFINITION(pConfigNode, "q-neural-network", "Neural Network Architecture of Critic (Q)");
+	m_predictionPolicyNetwork = NN_DEFINITION(pConfigNode, "policy-neural-network", "Neural Network Architecture of Actor (mu)");
 	m_policyNoise = CHILD_OBJECT_FACTORY<Noise>(pConfigNode, "noise", "Policy Noise", false);
 	m_tau = DOUBLE_PARAM(pConfigNode, "tau", "tau", 0.001);
 	m_outputActionIndex = ACTION_VARIABLE(pConfigNode, "Output-Action", "The output action variable");

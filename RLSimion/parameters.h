@@ -392,30 +392,28 @@ class INetwork;
 //Because NN objects are created from the CNTKWrapper DLL, this objects needs to be created using "new" and cannot
 //use shared_ptr as in the rest of the objects
 //The copy assignment operator is overriden to avoid destroying m_pProblem and m_pNetwork after a copy-construct
-class NEURAL_NETWORK
+class NN_DEFINITION
 {
 protected:
 	IProblem* m_pProblem= nullptr;
-	INetwork* m_pNetwork= nullptr;
 
 	const char* m_name;
 	const char* m_comment;
 
 public:
-	NEURAL_NETWORK() = default;
-	NEURAL_NETWORK(ConfigNode* pConfigNode, const char* name, const char* comment)
+	NN_DEFINITION() = default;
+	NN_DEFINITION(ConfigNode* pConfigNode, const char* name, const char* comment)
 	{
 		m_name = name;
 		m_comment = comment;
 		m_pProblem = CNTKWrapperLoader::getProblem(pConfigNode->FirstChildElement(m_name)->FirstChildElement("Problem"));
 	}
-	NEURAL_NETWORK& operator=(NEURAL_NETWORK& copied);
+	NN_DEFINITION& operator=(NN_DEFINITION& copied);
 
-	~NEURAL_NETWORK();
+	~NN_DEFINITION();
 
-	void buildNetwork();
+	INetwork* buildNetwork();
 
-	INetwork* getNetwork();
-	IProblem* getProblem();
+	IProblem* get();
 };
 #endif
