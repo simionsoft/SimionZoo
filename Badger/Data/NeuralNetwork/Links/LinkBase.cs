@@ -23,6 +23,8 @@ namespace Badger.Data.NeuralNetwork.Links
     [XmlInclude(typeof(FlattenLayer))]
     [XmlInclude(typeof(ReshapeLayer))]
     [XmlInclude(typeof(MergeLayer))]
+    [XmlInclude(typeof(LinearTransformationLayer))]
+    [XmlInclude(typeof(BatchNormalizationLayer))]
     [Serializable]
     public abstract class LinkBase : IDeserializationCallback
     {
@@ -88,7 +90,7 @@ namespace Badger.Data.NeuralNetwork.Links
         public LinkBase GetPreviousLink()
         {
             int index = ParentChain.ChainLinks.IndexOf(this);
-            if (index == 0)
+            if (index <= 0)
                 return null;
             return ParentChain.ChainLinks[index - 1];
         }

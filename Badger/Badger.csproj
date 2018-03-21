@@ -204,6 +204,8 @@
     <Compile Include="ViewModels\NeuralNetwork\ChainViewModel.cs" />
     <Compile Include="ViewModels\NeuralNetwork\InputDataViewModel.cs" />
     <Compile Include="ViewModels\NeuralNetwork\LinkConnectionViewModel.cs" />
+    <Compile Include="ViewModels\NeuralNetwork\Links\BatchNormalizationLayer.cs" />
+    <Compile Include="ViewModels\NeuralNetwork\Links\LinearTransformationLayer.cs" />
     <Compile Include="ViewModels\NeuralNetwork\Links\LinkBaseViewModel.cs" />
     <Compile Include="ViewModels\NeuralNetwork\NetworkArchitectureViewModel.cs" />
     <Compile Include="ViewModels\NeuralNetwork\Optimizers\OptimizerParameterViewModel.cs" />

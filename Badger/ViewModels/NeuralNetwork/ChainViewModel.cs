@@ -2,19 +2,13 @@
 using Badger.Data.NeuralNetwork;
 using Badger.ViewModels.NeuralNetwork.Links;
 using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using GongSolutions.Wpf.DragDrop;
 using Badger.Data.NeuralNetwork.Links;
 using System.Windows;
 using System.Collections.Specialized;
 using Badger.ViewModels.NeuralNetwork.Windows;
 using Badger.Data.NeuralNetwork.Parameters;
-using Badger.Utils;
-using Badger.Data;
 
 namespace Badger.ViewModels.NeuralNetwork
 {
@@ -40,10 +34,11 @@ namespace Badger.ViewModels.NeuralNetwork
             switch (e.Action)
             {
                 case NotifyCollectionChangedAction.Add:
+                    int index = 0;
                     foreach (LinkBaseViewModel item in e.NewItems)
                     {
                         if (!ChainData.ChainLinks.Contains(item.LinkBaseData))
-                            ChainData.ChainLinks.Add(item.LinkBaseData);
+                            ChainData.ChainLinks.Insert(e.NewStartingIndex + index++, item.LinkBaseData);
                     }
                     break;
 
@@ -91,9 +86,9 @@ namespace Badger.ViewModels.NeuralNetwork
                     case LinkType.InputLayer:
                         if (ChainLinks.Count > 0)
                         {
-                            if (ChainData.ChainLinks.CountListType(typeof(InputLayer)) > 0)
+                            if (ChainData.CountLinksOfType(typeof(InputLayer)) > 0)
                             {
-                                MessageBox.Show("Only one Input Layer is allowed (or usefull) per chain.");
+                                MessageBox.Show("Only one Input Layer is allowed (or useful) per chain.");
                                 return;
                             }
                         }
@@ -138,6 +133,14 @@ namespace Badger.ViewModels.NeuralNetwork
 
                     case LinkType.MergeLayer:
                         link = new MergeLayer(ChainData, String.Format("Merge Layer"));
+                        break;
+
+                    case LinkType.BatchNormalizationLayer:
+                        link = new BatchNormalizationLayer(ChainData, String.Format("Batch Normalization Layer"));
+                        break;
+
+                    case LinkType.LinearTransformationLayer:
+                        link = new LinearTransformationLayer(ChainData, String.Format("Linear Transformation"));
                         break;
                 }
 

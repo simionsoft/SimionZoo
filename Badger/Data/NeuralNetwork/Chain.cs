@@ -32,6 +32,17 @@ namespace Badger.Data.NeuralNetwork
 
         public List<LinkBase> ChainLinks { get; }
 
+        public int CountLinksOfType (Type type)
+        {
+            int count = 0;
+            foreach(LinkBase link in ChainLinks)
+            {
+                if (link.GetType() == type)
+                    count++;
+            }
+            return count;
+        }
+
         public void OnDeserialization(object sender)
         {
             foreach (var link in ChainLinks)

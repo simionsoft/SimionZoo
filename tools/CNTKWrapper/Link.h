@@ -22,6 +22,8 @@ enum class LinkType
 	FlattenLayer,
 	ReshapeLayer,
 	MergeLayer,
+	BatchNormalizationLayer,
+	LinearTransformationLayer,
 };
 
 class Link

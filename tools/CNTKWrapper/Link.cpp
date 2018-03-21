@@ -48,6 +48,10 @@ Link::Link(tinyxml2::XMLElement* pParentNode)
 		m_linkType = LinkType::ReshapeLayer;
 	else if (!strcmp(type, "MergeLayer"))
 		m_linkType = LinkType::MergeLayer;
+	else if (!strcmp(type, "BatchNormalizationLayer"))
+		m_linkType = LinkType::BatchNormalizationLayer;
+	else if (!strcmp(type, "LinearTransformationLayer"))
+		m_linkType = LinkType::LinearTransformationLayer;
 	else
 		throw ProblemParserElementValueNotValid(XML_ATTRIBUTE_Type);
 
@@ -129,6 +133,12 @@ void Link::createCNTKFunctionPtr(vector<const Link*> dependencies)
 		break;
 	case LinkType::MergeLayer:
 		m_functionPtr = CNTKWrapper::MergeLayer(this, dependencies, device);
+		break;
+	case LinkType::BatchNormalizationLayer:
+		m_functionPtr = CNTKWrapper::BatchNormalizationLayer(this, dependencies, device);
+		break;
+	case LinkType::LinearTransformationLayer:
+		m_functionPtr = CNTKWrapper::LinearTransformationLayer(this, dependencies, device);
 		break;
 	}
 }

@@ -2,17 +2,9 @@
 using Badger.Data.NeuralNetwork.Parameters;
 using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.ComponentModel;
-using System.Linq;
 using System.Runtime.Serialization;
-using System.Text;
-using System.Threading.Tasks;
 using System.Xml;
-using System.Xml.Serialization;
 using Xml.Serialization;
-using GongSolutions.Wpf.DragDrop;
-using System.Windows.Controls;
 using Badger.Data.NeuralNetwork.Optimizers;
 
 namespace Badger.Data.NeuralNetwork
@@ -39,6 +31,7 @@ namespace Badger.Data.NeuralNetwork
                     typeof(NetworkArchitecture),
                     typeof(ActivationLayer), typeof(Convolution1DLayer), typeof(Convolution2DLayer), typeof(Convolution3DLayer), typeof(DenseLayer),
                     typeof(DropoutLayer), typeof(FlattenLayer), typeof(ReshapeLayer), typeof(MergeLayer),
+                    typeof(BatchNormalizationLayer), typeof(LinearTransformationLayer),
                     typeof(ActivationFunctionParameter), typeof(DoubleParameter), typeof(IntParameter),
                     typeof(IntTuple2DParameter),  typeof(IntTuple3DParameter),  typeof(IntTuple4DParameter)
                 });
@@ -55,7 +48,9 @@ namespace Badger.Data.NeuralNetwork
         {
             var serializer = new XmlCallbackSerializer(typeof(Problem), new Type[] {
                     typeof(NetworkArchitecture),
-                    typeof(ActivationLayer), typeof(Convolution1DLayer), typeof(Convolution2DLayer), typeof(Convolution3DLayer), typeof(DenseLayer),
+                    typeof(ActivationLayer), typeof(Convolution1DLayer), typeof(Convolution2DLayer),
+                    typeof(Convolution3DLayer), typeof(DenseLayer),
+                    typeof(BatchNormalizationLayer), typeof(LinearTransformationLayer),
                     typeof(DropoutLayer), typeof(FlattenLayer), typeof(ReshapeLayer), typeof(MergeLayer),
                     typeof(ActivationFunctionParameter), typeof(DoubleParameter), typeof(IntParameter),
                     typeof(IntTuple2DParameter),  typeof(IntTuple3DParameter),  typeof(IntTuple4DParameter)
@@ -74,8 +69,10 @@ namespace Badger.Data.NeuralNetwork
         {
             var serializer = new XmlCallbackSerializer(typeof(Problem), new Type[] {
                     typeof(NetworkArchitecture),
-                    typeof(ActivationLayer), typeof(Convolution1DLayer), typeof(Convolution2DLayer), typeof(Convolution3DLayer), typeof(DenseLayer),
+                    typeof(ActivationLayer), typeof(Convolution1DLayer), typeof(Convolution2DLayer),
+                    typeof(Convolution3DLayer), typeof(DenseLayer),
                     typeof(DropoutLayer), typeof(FlattenLayer), typeof(ReshapeLayer), typeof(MergeLayer),
+                    typeof(BatchNormalizationLayer), typeof(LinearTransformationLayer),
                     typeof(ActivationFunctionParameter), typeof(DoubleParameter), typeof(IntParameter),
                     typeof(IntTuple2DParameter),  typeof(IntTuple3DParameter),  typeof(IntTuple4DParameter)
                 });
@@ -112,6 +109,7 @@ namespace Badger.Data.NeuralNetwork
                     typeof(NetworkArchitecture),
                     typeof(ActivationLayer), typeof(Convolution1DLayer), typeof(Convolution2DLayer), typeof(Convolution3DLayer), typeof(DenseLayer),
                     typeof(DropoutLayer), typeof(FlattenLayer), typeof(ReshapeLayer), typeof(MergeLayer),
+                    typeof(BatchNormalizationLayer), typeof(LinearTransformationLayer),
                     typeof(ActivationFunctionParameter), typeof(DoubleParameter), typeof(IntParameter),
                     typeof(IntTuple2DParameter),  typeof(IntTuple3DParameter),  typeof(IntTuple4DParameter)
                 });

@@ -1,12 +1,7 @@
 ﻿using Caliburn.Micro;
 using Badger.Data.NeuralNetwork;
-using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Badger.ViewModels.NeuralNetwork
 {
@@ -31,8 +26,9 @@ namespace Badger.ViewModels.NeuralNetwork
                 case NotifyCollectionChangedAction.Add:
                     foreach (ChainViewModel item in e.NewItems)
                     {
+                        int index = 0;
                         if (!NetworkArchitectureData.Chains.Contains(item.ChainData))
-                            NetworkArchitectureData.Chains.Add(item.ChainData);
+                            NetworkArchitectureData.Chains.Insert(e.NewStartingIndex + index++, item.ChainData);
                     }
                     break;
 

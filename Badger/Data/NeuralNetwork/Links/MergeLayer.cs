@@ -29,7 +29,7 @@ namespace Badger.Data.NeuralNetwork.Links
             get
             {
                 //now check, of we have to make this false again
-                var list = (Parameters[0] as LinkConnectionListParameter).Value;
+                var list = (Parameters[1] as LinkConnectionListParameter).Value;
                 if (list.Count > 0)
                 {
                     //check the ranks

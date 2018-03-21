@@ -29,5 +29,9 @@ namespace Badger.Data.NeuralNetwork.Links
         ReshapeLayer,
         [Description("Merge Layer")]
         MergeLayer,
+        [Description("Batch Normalization Layer")]
+        BatchNormalizationLayer,
+        [Description("Linear Transformation Layer")]
+        LinearTransformationLayer,
     }
 }
