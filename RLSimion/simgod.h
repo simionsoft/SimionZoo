@@ -68,6 +68,8 @@ public:
 	//Target-Function freeze
 	//returns the freq. (in steps) at which the V-functions should be updated (0 if they aren't deferred)
 	int getTargetFunctionUpdateFreq();
+	//returns whether we should update frozen functions in the current step update
+	bool bUpdateFrozenWeightsNow();
 
 	//Use sample importance weights for off-policy learning?
 	bool useSampleImportanceWeights();

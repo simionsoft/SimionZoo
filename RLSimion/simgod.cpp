@@ -133,6 +133,18 @@ int SimGod::getTargetFunctionUpdateFreq()
 	return 0;
 }
 
+//We return true if:
+//	-freeze target functions is enabled
+//	-current step is a multiple of the update freq
+//	-we are not replaying experience
+bool SimGod::bUpdateFrozenWeightsNow()
+{
+	int updateFreq = getTargetFunctionUpdateFreq();
+	Experiment* pExperiment = SimionApp::get()->pExperiment.ptr();
+	return (updateFreq && !bReplayingExperience() && 
+		(pExperiment->getExperimentStep() % updateFreq == 0));
+}
+
 bool SimGod::useSampleImportanceWeights()
 {
 	return m_bUseImportanceWeights.get();

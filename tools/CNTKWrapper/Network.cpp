@@ -180,6 +180,7 @@ INetwork* Network::cloneNonTrainable() const
 	Network* result = new Network();
 	result->m_trainer = nullptr;
 	result->m_lossFunctionPtr = nullptr;
+	result->setParent(m_pParent);
 
 	result->m_networkFunctionPtr = m_networkFunctionPtr->Clone(CNTK::ParameterCloningMethod::Clone);
 
@@ -207,7 +208,7 @@ INetwork* Network::cloneNonTrainable() const
 	return result;
 }
 
-void Network::setParent(Problem* pProblem)
+void Network::setParent(IProblem* pProblem)
 {
 	m_pParent = pProblem;
 }

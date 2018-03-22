@@ -17,7 +17,6 @@ protected:
 	LinkConnection* m_pOutput;
 	OptimizerSetting* m_pOptimizerSetting;
 	
-	
 public:
 	Problem();
 	~Problem();

@@ -19,7 +19,7 @@ protected:
 	CNTK::FunctionPtr m_lossFunctionPtr;
 	CNTK::TrainerPtr m_trainer;
 	CNTK::Variable m_targetOutput;
-	Problem *m_pParent;
+	IProblem *m_pParent;
 public:
 	Network();
 	~Network();
@@ -39,7 +39,7 @@ public:
 	void save(string fileName);
 	static Network load(string fileName, CNTK::DeviceDescriptor &device);
 
-	virtual void setParent(IProblem* pParent);
+	void setParent(IProblem* pParent);
 
 	INetwork* cloneNonTrainable() const;
 

@@ -14,7 +14,7 @@ std::shared_ptr<StateFeatureMap> StateFeatureMap::getInstance(ConfigNode* pConfi
 	{
 		{"Discrete-State-Grid", CHOICE_ELEMENT_NEW<DiscreteStateFeatureMap>},
 		{"RBF-State-Grid", CHOICE_ELEMENT_NEW<GaussianRBFStateGridFeatureMap>},
-		{ "Tile-Coding-State-Grid", CHOICE_ELEMENT_NEW<TileCodingStateFeatureMap>},
+		{"Tile-Coding-State-Grid", CHOICE_ELEMENT_NEW<TileCodingStateFeatureMap>},
 		{"State-Bag", CHOICE_ELEMENT_NEW<BagStateFeatureMap>}
 	});
 }

@@ -23,10 +23,9 @@ NN_DEFINITION&  NN_DEFINITION::operator=(NN_DEFINITION& copied)
 {
 	//we move pointers to the copy
 	m_pProblem = copied.m_pProblem;
-	m_pNetwork = copied.m_pNetwork;
-	//we remove pointers in the copy so that the destructor doesn't call destructors
-	copied.m_pProblem = 0;
-	copied.m_pNetwork = 0;
+
+	copied.m_pProblem = nullptr;
+
 	m_name = copied.m_name;
 	m_comment = copied.m_comment;
 
@@ -37,23 +36,17 @@ NN_DEFINITION&  NN_DEFINITION::operator=(NN_DEFINITION& copied)
 NN_DEFINITION::~NN_DEFINITION()
 {
 	if (m_pProblem) m_pProblem->destroy();
-	if (m_pNetwork) m_pNetwork->destroy();
 }
 
-void NN_DEFINITION::buildNetwork()
+INetwork* NN_DEFINITION::buildNetwork()
 {
-	if (m_pNetwork)
-		return;
-
-	m_pNetwork = m_pProblem->createNetwork();
-	m_pNetwork->buildNetworkFunctionPtr(m_pProblem->getOptimizerSetting());
+	INetwork* pNetwork= m_pProblem->createNetwork();
+	pNetwork->buildNetworkFunctionPtr(m_pProblem->getOptimizerSetting());
+	pNetwork->setParent(m_pProblem);
+	return pNetwork;
 }
 
-INetwork* NN_DEFINITION::getNetwork()
-{
-	buildNetwork();
-	return m_pNetwork;
-}
+
 IProblem* NN_DEFINITION::get() { return m_pProblem; }
 
 #endif

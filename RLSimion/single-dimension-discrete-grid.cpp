@@ -53,7 +53,7 @@ int SingleDimensionDiscreteGrid::getClosestCenter(double value)
 SingleDimensionDiscreteStateVariableGrid::SingleDimensionDiscreteStateVariableGrid(ConfigNode* pConfigNode)
 {
 	m_hVariable = STATE_VARIABLE(pConfigNode, "Variable", "The state variable");
-	m_numCenters = INT_PARAM(pConfigNode, "Sampling points", "The number of sampling points in which the space will be discretized", 2);
+	m_numCenters = INT_PARAM(pConfigNode, "Steps", "The number of sampling points in which the space will be discretized", 2);
 	
 	if (m_numCenters.get() < 2)
 		Logger::logMessage(MessageType::Error, "Number of sampling points has to be greater than 1.");
@@ -104,13 +104,13 @@ NamedVarProperties& SingleDimensionDiscreteStateVariableGrid::getVarProperties(c
 SingleDimensionDiscreteActionVariableGrid::SingleDimensionDiscreteActionVariableGrid(ConfigNode* pConfigNode)
 {
 	m_hVariable = ACTION_VARIABLE(pConfigNode, "Variable", "The action variable");
-	m_numCenters = INT_PARAM(pConfigNode, "Sampling points", "The number of sampling points in which the space will be discretized", 2);
+	m_numCenters = INT_PARAM(pConfigNode, "Steps", "The number of sampling points in which the space will be discretized", 2);
 	
 	if (m_numCenters.get() < 2)
 		Logger::logMessage(MessageType::Error, "Number of sampling points has to be greater than 1.");
 
 	initVarRange();
-	m_stepSize = (m_max - m_min + 1.0) / m_numCenters.get();
+	m_stepSize = (m_max - m_min) / (m_numCenters.get() - 1);
 
 	initCenterPoints();
 }
@@ -130,7 +130,7 @@ SingleDimensionDiscreteActionVariableGrid::SingleDimensionDiscreteActionVariable
 	m_hVariable.set(m_hVar);
 	m_numCenters.set(steps);
 
-	m_stepSize = (m_max - m_min + 1.0) / m_numCenters.get();
+	m_stepSize = (m_max - m_min) / (m_numCenters.get() - 1);
 
 	initCenterPoints();
 }

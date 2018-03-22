@@ -19,6 +19,10 @@ DQN::~DQN()
 	delete[] m_pMinibatchExperienceTuples;
 	delete[] m_pMinibatchChosenActionTargetValues;
 	delete[] m_pMinibatchChosenActionIndex;
+
+	m_pNNDefinition.get()->destroy();
+	m_pTargetQNetwork->destroy();
+	m_pPredictionQNetwork->destroy();
 	CNTKWrapperLoader::UnLoad();
 }
 
@@ -26,7 +30,10 @@ DQN::DQN(ConfigNode* pConfigNode)
 {
 	CNTKWrapperLoader::Load();
 	m_policy = CHILD_OBJECT_FACTORY<DiscreteDeepPolicy>(pConfigNode, "Policy", "The policy");
-	m_pTargetQNetwork = NN_DEFINITION(pConfigNode, "neural-network", "Neural Network Architecture");
+	m_pNNDefinition = NN_DEFINITION(pConfigNode, "neural-network", "Neural Network Architecture");
+	m_pTargetQNetwork = m_pNNDefinition.buildNetwork();
+	m_pPredictionQNetwork = m_pTargetQNetwork->cloneNonTrainable();
+
 	m_outputActionIndex = ACTION_VARIABLE(pConfigNode, "Output-Action", "The output action variable");
 	m_experienceReplay = CHILD_OBJECT<ExperienceReplay>(pConfigNode, "experience-replay", "Experience replay", false);
 
@@ -41,7 +48,7 @@ DQN::DQN(ConfigNode* pConfigNode)
 	
 	m_pGrid = ((SingleDimensionDiscreteActionVariableGrid*)(((DiscreteActionFeatureMap*)SimGod::getGlobalActionFeatureMap().get())->returnGrid()[m_outputActionIndex.get()]));
 
-	m_numberOfActions = m_pTargetQNetwork.getNetwork()->getTotalSize();
+	m_numberOfActions = m_pTargetQNetwork->getTotalSize();
 
 	if (m_pGrid->getNumCenters() != m_numberOfActions)
 		Logger::logMessage(MessageType::Error, "Output of the network has not the same size as the discrete action grid has centers/discrete values");
@@ -55,20 +62,11 @@ DQN::DQN(ConfigNode* pConfigNode)
 	m_pMinibatchExperienceTuples = new ExperienceTuple*[m_experienceReplay->getMaxUpdateBatchSize()];
 	m_pMinibatchChosenActionTargetValues = new double[m_experienceReplay->getMaxUpdateBatchSize()];
 	m_pMinibatchChosenActionIndex = new int[m_experienceReplay->getMaxUpdateBatchSize()];
-
-	m_pPredictionQNetwork = nullptr;
 }
 
 INetwork* DQN::getPredictionNetwork()
 {
-	if (SimionApp::get()->pSimGod->getTargetFunctionUpdateFreq())
-	{
-		if (m_pPredictionQNetwork == nullptr)
-			m_pPredictionQNetwork = m_pTargetQNetwork.getNetwork()->cloneNonTrainable();
-		return m_pPredictionQNetwork;
-	}
-	else
-		return m_pTargetQNetwork.getNetwork();
+	return m_pPredictionQNetwork;
 }
 
 double DQN::selectAction(const State * s, Action * a)
@@ -144,14 +142,14 @@ double DQN::update(const State * s, const Action * a, const State * s_p, double 
 		m_minibatchActionValuePredictionVector[m_pMinibatchChosenActionIndex[i] + i*m_numberOfActions] = m_pMinibatchChosenActionTargetValues[i];
 
 	//update the network finally
-	m_pTargetQNetwork.getNetwork()->train(inputMap, m_minibatchActionValuePredictionVector);
-
-	if (SimionApp::get()->pSimGod->getTargetFunctionUpdateFreq())
-		if (SimionApp::get()->pExperiment->getExperimentStep() % SimionApp::get()->pSimGod->getTargetFunctionUpdateFreq() == 0)
-		{
-			delete m_pPredictionQNetwork;
-			m_pPredictionQNetwork = m_pTargetQNetwork.getNetwork()->cloneNonTrainable();
-		}
+	m_pTargetQNetwork->train(inputMap, m_minibatchActionValuePredictionVector);
+	//update the prediction network
+	if (SimionApp::get()->pSimGod->bUpdateFrozenWeightsNow())
+	{
+		if (m_pPredictionQNetwork)
+			m_pPredictionQNetwork->destroy();
+		m_pPredictionQNetwork = m_pTargetQNetwork->cloneNonTrainable();
+	}
 	return 1.0; //TODO: estimate the probability
 }
 /*
@@ -160,7 +158,7 @@ INetwork* DoubleDQN::getPredictionNetwork()
 	if (SimionApp::get()->pSimGod->getTargetFunctionUpdateFreq())
 	{
 		if (m_pPredictionQNetwork == nullptr)
-			m_pPredictionQNetwork = m_pTargetQNetwork.getNetwork()->cloneNonTrainable();
+			m_pPredictionQNetwork = m_pTargetQNetwork->cloneNonTrainable();
 		return m_pPredictionQNetwork;
 	}
 	else
@@ -192,7 +190,7 @@ double DoubleDQN::update(const State * s, const Action * a, const State * s_p, d
 	std::unordered_map<std::string, std::vector<double>&> inputMap =
 		{ { "state-input", m_minibatchStateVector } };
 	//this is the ONLY difference compared to normal DQN algorithm
-	m_pTargetQNetwork.getNetwork()->predict(inputMap, m_minibatchActionValuePredictionVector);
+	m_pTargetQNetwork->predict(inputMap, m_minibatchActionValuePredictionVector);
 
 
 	//create vector of target values for the entire minibatch
@@ -217,14 +215,14 @@ double DoubleDQN::update(const State * s, const Action * a, const State * s_p, d
 		m_minibatchActionValuePredictionVector[m_pMinibatchChosenActionIndex[i] + i * m_numberOfActions] = m_pMinibatchChosenActionTargetValues[i];
 
 	//update the network finally
-	m_pTargetQNetwork.getNetwork()->train(inputMap, m_minibatchActionValuePredictionVector);
+	m_pTargetQNetwork->train(inputMap, m_minibatchActionValuePredictionVector);
 
 	if (SimionApp::get()->pSimGod->getTargetFunctionUpdateFreq())
 	{
 		if (SimionApp::get()->pExperiment->getExperimentStep() % SimionApp::get()->pSimGod->getTargetFunctionUpdateFreq() == 0)
 		{
 			delete m_pPredictionQNetwork;
-			m_pPredictionQNetwork = m_pTargetQNetwork.getNetwork()->cloneNonTrainable();
+			m_pPredictionQNetwork = m_pTargetQNetwork->cloneNonTrainable();
 		}
 	}
 

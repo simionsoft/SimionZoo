@@ -18,7 +18,8 @@ class DQN : public Simion
 protected:
 	ACTION_VARIABLE m_outputActionIndex;
 	CHILD_OBJECT<ExperienceReplay> m_experienceReplay;
-	NN_DEFINITION m_pTargetQNetwork;
+	NN_DEFINITION m_pNNDefinition;
+	INetwork* m_pTargetQNetwork= nullptr;
 	INetwork* m_pPredictionQNetwork= nullptr;
 
 	CHILD_OBJECT_FACTORY<DiscreteDeepPolicy> m_policy;
@@ -38,7 +39,7 @@ protected:
 	ExperienceTuple** m_pMinibatchExperienceTuples;
 	double* m_pMinibatchChosenActionTargetValues;
 
-	INetwork* getPredictionNetwork();
+	virtual INetwork* getPredictionNetwork();
 	
 public:
 	~DQN();
