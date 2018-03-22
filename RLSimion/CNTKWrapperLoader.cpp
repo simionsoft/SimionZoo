@@ -19,7 +19,7 @@ void CNTKWrapperLoader::Load()
 		hCNTKWrapperDLL = LoadLibrary(".\\..\\Debug\\x64\\CNTKWrapper.dll");
 #else
 		hCNTKWrapperDLL = LoadLibrary(".\\..\\bin\\CNTKWrapper.dll");
-		if (hCNTKWrapperDLL==0)
+		if (hCNTKWrapperDLL == 0)
 			hCNTKWrapperDLL = LoadLibrary(".\\..\\bin\\x64\\CNTKWrapper.dll");
 		if (hCNTKWrapperDLL == 0)
 			Logger::logMessage(MessageType::Error, "Failed to load CNTKWrapper.dll");

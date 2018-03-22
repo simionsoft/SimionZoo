@@ -20,10 +20,12 @@ DQN::~DQN()
 	delete[] m_pMinibatchChosenActionTargetValues;
 	delete[] m_pMinibatchChosenActionIndex;
 
-	m_pNNDefinition.get()->destroy();
+	//We need to manually call the NN_DEFINITION destructor
+	m_pNNDefinition.destroy();
 	m_pTargetQNetwork->destroy();
 	m_pPredictionQNetwork->destroy();
 	CNTKWrapperLoader::UnLoad();
+	Logger::logMessage(MessageType::Info, "DQN destructor finished");
 }
 
 DQN::DQN(ConfigNode* pConfigNode)
@@ -71,13 +73,17 @@ INetwork* DQN::getPredictionNetwork()
 
 double DQN::selectAction(const State * s, Action * a)
 {
-	SimionApp::get()->pSimGod->getGlobalStateFeatureMap()->getFeatures(s, m_pStateOutFeatures);
+	//SimionApp::get()->pSimGod->getGlobalStateFeatureMap()->getFeatures(s, m_pStateOutFeatures);
 
-	//TODO: use sparse representation
-	for (size_t i = 0; i < m_pStateOutFeatures->m_numFeatures; i++)
+	////TODO: use sparse representation
+	//for (size_t i = 0; i < m_pStateOutFeatures->m_numFeatures; i++)
+	//{
+	//	auto item = m_pStateOutFeatures->m_pFeatures[i];
+	//	m_stateVector[item.m_index] = item.m_factor;
+	//}
+	for (size_t i = 0; i < s->getNumVars(); i++)
 	{
-		auto item = m_pStateOutFeatures->m_pFeatures[i];
-		m_stateVector[item.m_index] = item.m_factor;
+		m_stateVector[i] = s->get(i);
 	}
 
 	std::unordered_map<std::string, std::vector<double>&> inputMap = { { "state-input", m_stateVector } };
@@ -99,18 +105,22 @@ double DQN::update(const State * s, const Action * a, const State * s_p, double 
 	m_experienceReplay->addTuple(s, a, s_p, r, 1.0);
 
 	//don't update anything if the experience replay buffer does not contain enough elements for at least one minibatch
-	if (m_experienceReplay->getUpdateBatchSize() != m_experienceReplay->getMaxUpdateBatchSize())
+	if (m_experienceReplay->getUpdateBatchSize() != m_experienceReplay->getUpdateBatchSize())
 		return 0.0;
 
-	for (int i = 0; i < m_experienceReplay->getMaxUpdateBatchSize(); i++)
+	for (int i = 0; i < m_experienceReplay->getUpdateBatchSize(); i++)
 	{
 		m_pMinibatchExperienceTuples[i] = m_experienceReplay->getRandomTupleFromBuffer();
 
 		//get Q(s_p) for entire minibatch
-		SimionApp::get()->pSimGod->getGlobalStateFeatureMap()->getFeatures(m_pMinibatchExperienceTuples[i]->s_p, m_pStateOutFeatures);
-		for (size_t n = 0; n < m_pStateOutFeatures->m_numFeatures; n++)
-			m_minibatchStateVector[m_pStateOutFeatures->m_pFeatures[n].m_index + i*m_numberOfStateFeatures] = m_pStateOutFeatures->m_pFeatures[n].m_factor;
-
+		//SimionApp::get()->pSimGod->getGlobalStateFeatureMap()->getFeatures(m_pMinibatchExperienceTuples[i]->s_p, m_pStateOutFeatures);
+		//for (size_t n = 0; n < m_pStateOutFeatures->m_numFeatures; n++)
+		//	m_minibatchStateVector[m_pStateOutFeatures->m_pFeatures[n].m_index + i*m_numberOfStateFeatures] = m_pStateOutFeatures->m_pFeatures[n].m_factor;
+		for (size_t j = 0; j < s->getNumVars(); j++)
+		{
+			m_minibatchStateVector[i*s->getNumVars() + j] = 
+				m_pMinibatchExperienceTuples[i]->s_p->get(j);
+		}
 		m_pMinibatchChosenActionIndex[i] = m_pGrid->getClosestCenter(m_pMinibatchExperienceTuples[i]->a->get(m_outputActionIndex.get()));
 	}
 
@@ -119,9 +129,7 @@ double DQN::update(const State * s, const Action * a, const State * s_p, double 
 
 
 	//create vector of target values for the entire minibatch
-	for (int i = 0; i < m_experienceReplay->getMaxUpdateBatchSize(); i++)
-		//m_pMinibatchChosenActionTargetValues[i] = m_pMinibatchExperienceTuples[i]->r + gamma *m_minibatchActionValuePredictionVector[
-		//	i*m_numberOfActions + m_pMinibatchChosenActionIndex[i]];
+	for (int i = 0; i < m_experienceReplay->getUpdateBatchSize(); i++)
 	{
 		size_t argmaxQ = std::distance(m_minibatchActionValuePredictionVector.begin() + i * m_numberOfActions,
 			std::max_element(m_minibatchActionValuePredictionVector.begin() + i * m_numberOfActions, m_minibatchActionValuePredictionVector.begin() + (i + 1)*m_numberOfActions));
@@ -130,15 +138,20 @@ double DQN::update(const State * s, const Action * a, const State * s_p, double 
 
 
 	//get Q(s) for entire minibatch
-	for (int i = 0; i < m_experienceReplay->getMaxUpdateBatchSize(); i++)
+	for (int i = 0; i < m_experienceReplay->getUpdateBatchSize(); i++)
 	{
-		SimionApp::get()->pSimGod->getGlobalStateFeatureMap()->getFeatures(m_pMinibatchExperienceTuples[i]->s, m_pStateOutFeatures);
-		for (size_t n = 0; n < m_pStateOutFeatures->m_numFeatures; n++)
-			m_minibatchStateVector[m_pStateOutFeatures->m_pFeatures[n].m_index + i*m_numberOfStateFeatures] = m_pStateOutFeatures->m_pFeatures[n].m_factor;
+		//SimionApp::get()->pSimGod->getGlobalStateFeatureMap()->getFeatures(m_pMinibatchExperienceTuples[i]->s, m_pStateOutFeatures);
+		//for (size_t n = 0; n < m_pStateOutFeatures->m_numFeatures; n++)
+		//	m_minibatchStateVector[m_pStateOutFeatures->m_pFeatures[n].m_index + i*m_numberOfStateFeatures] = m_pStateOutFeatures->m_pFeatures[n].m_factor;
+		for (size_t j = 0; j < s->getNumVars(); j++)
+		{
+			m_minibatchStateVector[i*s->getNumVars() + j] = 
+				m_pMinibatchExperienceTuples[i]->s->get(j);
+		}
 	}
 	getPredictionNetwork()->predict(inputMap, m_minibatchActionValuePredictionVector);
 
-	for (int i = 0; i < m_experienceReplay->getMaxUpdateBatchSize(); i++)
+	for (int i = 0; i < m_experienceReplay->getUpdateBatchSize(); i++)
 		m_minibatchActionValuePredictionVector[m_pMinibatchChosenActionIndex[i] + i*m_numberOfActions] = m_pMinibatchChosenActionTargetValues[i];
 
 	//update the network finally
@@ -172,10 +185,10 @@ double DoubleDQN::update(const State * s, const Action * a, const State * s_p, d
 	m_experienceReplay->addTuple(s, a, s_p, r, 1.0);
 
 	//don't update anything if the experience replay buffer does not contain enough elements for at least one minibatch
-	if (m_experienceReplay->getUpdateBatchSize() != m_experienceReplay->getMaxUpdateBatchSize())
+	if (m_experienceReplay->getUpdateBatchSize() != m_experienceReplay->getUpdateBatchSize())
 		return 0.0;
 
-	for (int i = 0; i < m_experienceReplay->getMaxUpdateBatchSize(); i++)
+	for (int i = 0; i < m_experienceReplay->getUpdateBatchSize(); i++)
 	{
 		m_pMinibatchExperienceTuples[i] = m_experienceReplay->getRandomTupleFromBuffer();
 
@@ -194,7 +207,7 @@ double DoubleDQN::update(const State * s, const Action * a, const State * s_p, d
 
 
 	//create vector of target values for the entire minibatch
-	for (int i = 0; i < m_experienceReplay->getMaxUpdateBatchSize(); i++)
+	for (int i = 0; i < m_experienceReplay->getUpdateBatchSize(); i++)
 	{
 		int argmaxQ = std::distance(m_minibatchActionValuePredictionVector.begin() + i * m_numberOfActions,
 			std::max_element(m_minibatchActionValuePredictionVector.begin() + i * m_numberOfActions, m_minibatchActionValuePredictionVector.begin() + (i + 1)*m_numberOfActions));
@@ -203,7 +216,7 @@ double DoubleDQN::update(const State * s, const Action * a, const State * s_p, d
 
 
 	//get Q(s) for entire minibatch
-	for (int i = 0; i < m_experienceReplay->getMaxUpdateBatchSize(); i++)
+	for (int i = 0; i < m_experienceReplay->getUpdateBatchSize(); i++)
 	{
 		SimionApp::get()->pSimGod->getGlobalStateFeatureMap()->getFeatures(m_pMinibatchExperienceTuples[i]->s, m_pStateOutFeatures);
 		for (int n = 0; n < m_pStateOutFeatures->m_numFeatures; n++)
@@ -211,7 +224,7 @@ double DoubleDQN::update(const State * s, const Action * a, const State * s_p, d
 	}
 	getPredictionNetwork()->predict(inputMap, m_minibatchActionValuePredictionVector);
 
-	for (int i = 0; i < m_experienceReplay->getMaxUpdateBatchSize(); i++)
+	for (int i = 0; i < m_experienceReplay->getUpdateBatchSize(); i++)
 		m_minibatchActionValuePredictionVector[m_pMinibatchChosenActionIndex[i] + i * m_numberOfActions] = m_pMinibatchChosenActionTargetValues[i];
 
 	//update the network finally
@@ -300,14 +313,14 @@ DDPG::DDPG(ConfigNode * pConfigNode)
 	if (m_numberOfStateFeatures == 0)
 		Logger::logMessage(MessageType::Error, "Invalid State-Map chosen (it will return 0 features at most, but at least 1 has to be returned)");
 
-	m_pMinibatchExperienceTuples = new ExperienceTuple*[m_experienceReplay->getMaxUpdateBatchSize()];
+	m_pMinibatchExperienceTuples = new ExperienceTuple*[m_experienceReplay->getUpdateBatchSize()];
 
 	m_stateVector = std::vector<double>(m_numberOfStateFeatures);
 	m_actionPredictionVector = std::vector<double>(1);
 
-	m_minibatchStateVector = std::vector<double>(m_numberOfStateFeatures * m_experienceReplay->getMaxUpdateBatchSize(), 0.0);
-	m_minibatchActionVector = std::vector<double>(1 * m_experienceReplay->getMaxUpdateBatchSize(), 0.0);
-	m_minibatchQVector = std::vector<double>(1 * m_experienceReplay->getMaxUpdateBatchSize(), 0.0);
+	m_minibatchStateVector = std::vector<double>(m_numberOfStateFeatures * m_experienceReplay->getUpdateBatchSize(), 0.0);
+	m_minibatchActionVector = std::vector<double>(1 * m_experienceReplay->getUpdateBatchSize(), 0.0);
+	m_minibatchQVector = std::vector<double>(1 * m_experienceReplay->getUpdateBatchSize(), 0.0);
 
 	m_pTargetQNetwork = m_predictionQNetwork.getNetwork()->cloneNonTrainable();
 	m_pTargetPolicyNetwork = m_predictionPolicyNetwork.getNetwork()->cloneNonTrainable();
@@ -340,10 +353,10 @@ double DDPG::update(const State * s, const Action * a, const State * s_p, double
 	m_experienceReplay->addTuple(s, a, s_p, r, 1.0);
 
 	//don't update anything if the experience replay buffer does not contain enough elements for at least one minibatch
-	if (m_experienceReplay->getUpdateBatchSize() != m_experienceReplay->getMaxUpdateBatchSize())
+	if (m_experienceReplay->getUpdateBatchSize() != m_experienceReplay->getUpdateBatchSize())
 		return 0.0;
 
-	for (int i = 0; i < m_experienceReplay->getMaxUpdateBatchSize(); i++)
+	for (int i = 0; i < m_experienceReplay->getUpdateBatchSize(); i++)
 	{
 		m_pMinibatchExperienceTuples[i] = m_experienceReplay->getRandomTupleFromBuffer();
 	}
@@ -361,7 +374,7 @@ void DDPG::updateActor()
 	CNTK::FunctionPtr modelPolicyOutputPtr = m_predictionPolicyNetwork.getNetwork()->getOutputsFunctionPtr()[0];
 	CNTK::FunctionPtr modelQOutputPtr = m_predictionQNetwork.getNetwork()->getOutputsFunctionPtr()[0];
 
-	for (int i = 0; i < m_experienceReplay->getMaxUpdateBatchSize(); i++)
+	for (int i = 0; i < m_experienceReplay->getUpdateBatchSize(); i++)
 	{
 		//get Q(s_p) for entire minibatch
 		SimionApp::get()->pSimGod->getGlobalStateFeatureMap()->getFeatures(m_pMinibatchExperienceTuples[i]->s, m_pStateFeatureList);
@@ -440,7 +453,7 @@ void DDPG::updateCritic()
 {
 	double gamma = SimionApp::get()->pSimGod->getGamma();
 
-	for (int i = 0; i < m_experienceReplay->getMaxUpdateBatchSize(); i++)
+	for (int i = 0; i < m_experienceReplay->getUpdateBatchSize(); i++)
 	{
 		SimionApp::get()->pSimGod->getGlobalStateFeatureMap()->getFeatures(m_pMinibatchExperienceTuples[i]->s_p, m_pStateFeatureList);
 		for (int n = 0; n < m_pStateFeatureList->m_numFeatures; n++)
@@ -461,13 +474,13 @@ void DDPG::updateCritic()
 	m_pTargetQNetwork->predict(inputMap, m_minibatchQVector);
 
 	//calculate y_i
-	for (int i = 0; i < m_experienceReplay->getMaxUpdateBatchSize(); i++)
+	for (int i = 0; i < m_experienceReplay->getUpdateBatchSize(); i++)
 	{
 		m_minibatchQVector[i] = m_pMinibatchExperienceTuples[i]->r + gamma * m_minibatchQVector[i];
 	}
 
 	//update the network finally
-	for (int i = 0; i < m_experienceReplay->getMaxUpdateBatchSize(); i++)
+	for (int i = 0; i < m_experienceReplay->getUpdateBatchSize(); i++)
 	{
 		m_minibatchActionVector[i] = m_pMinibatchExperienceTuples[i]->a->get(m_outputActionIndex.get());
 	}

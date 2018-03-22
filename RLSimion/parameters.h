@@ -412,6 +412,9 @@ public:
 
 	~NN_DEFINITION();
 
+	//need to explicitly destroy the object allocated from the CNTK wrapper DLL
+	void destroy();
+
 	INetwork* buildNetwork();
 
 	IProblem* get();

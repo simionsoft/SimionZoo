@@ -52,7 +52,7 @@
 		<Simion>
 			<Type>
 		<DQN>
-			<neural-network><Problem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema"><Inputs><InputData ID="state-input" Name="State"><Shape xsi:type="IntTuple1D"><x1>2</x1></Shape></InputData><InputData ID="action-input" Name="Action"><Shape xsi:type="IntTuple1D"><x1>-1</x1></Shape></InputData></Inputs><OptimizerSetting><Optimizer xsi:type="OptimizerAdam"><Parameters><OptimizerParameterOfStringDouble><Key>Learning rate</Key><Value>0.001</Value></OptimizerParameterOfStringDouble><OptimizerParameterOfStringDouble><Key>Momentum</Key><Value>0.9</Value></OptimizerParameterOfStringDouble><OptimizerParameterOfStringDouble><Key>Variance momentum</Key><Value>0.999</Value></OptimizerParameterOfStringDouble><OptimizerParameterOfStringDouble><Key>Epsilon</Key><Value>1E-08</Value></OptimizerParameterOfStringDouble></Parameters></Optimizer></OptimizerSetting><Output><LinkConnection TargetID="B59082A2" /></Output><NetworkArchitecture><Chains><Chain Name="Chain"><ChainLinks><LinkBase xsi:type="InputLayer" Name="Input Layer" ID="7BE1DFF4"><Parameters><ParameterBase xsi:type="InputDataParameter" Name="Input Data"><Value>state-input</Value></ParameterBase></Parameters></LinkBase><LinkBase xsi:type="DenseLayer" Name="Dense Layer" ID="DADF7F57"><Parameters><ParameterBase xsi:type="IntParameter" Name="Units"><Value>100</Value></ParameterBase><ParameterBase xsi:type="ActivationFunctionParameter" Name="Activation"><Value>relu</Value></ParameterBase></Parameters></LinkBase><LinkBase xsi:type="DenseLayer" Name="output" ID="B59082A2"><Parameters><ParameterBase xsi:type="IntParameter" Name="Units"><Value>3</Value></ParameterBase><ParameterBase xsi:type="ActivationFunctionParameter" Name="Activation"><Value>linear</Value></ParameterBase></Parameters></LinkBase></ChainLinks></Chain></Chains></NetworkArchitecture></Problem></neural-network>
+			<neural-network><Problem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema"><Inputs><InputData ID="state-input" Name="State"><Shape xsi:type="IntTuple1D"><x1>2</x1></Shape></InputData><InputData ID="action-input" Name="Action"><Shape xsi:type="IntTuple1D"><x1>-1</x1></Shape></InputData></Inputs><OptimizerSetting><Optimizer xsi:type="OptimizerAdam"><Parameters><OptimizerParameterOfStringDouble><Key>Learning rate</Key><Value>0.0001</Value></OptimizerParameterOfStringDouble><OptimizerParameterOfStringDouble><Key>Momentum</Key><Value>0.9</Value></OptimizerParameterOfStringDouble><OptimizerParameterOfStringDouble><Key>Variance momentum</Key><Value>0.999</Value></OptimizerParameterOfStringDouble><OptimizerParameterOfStringDouble><Key>Epsilon</Key><Value>1E-08</Value></OptimizerParameterOfStringDouble></Parameters></Optimizer></OptimizerSetting><Output><LinkConnection TargetID="B59082A2" /></Output><NetworkArchitecture><Chains><Chain Name="Chain"><ChainLinks><LinkBase xsi:type="InputLayer" Name="Input Layer" ID="7BE1DFF4"><Parameters><ParameterBase xsi:type="InputDataParameter" Name="Input Data"><Value>state-input</Value></ParameterBase></Parameters></LinkBase><LinkBase xsi:type="DenseLayer" Name="Dense Layer" ID="DADF7F57"><Parameters><ParameterBase xsi:type="IntParameter" Name="Units"><Value>100</Value></ParameterBase><ParameterBase xsi:type="ActivationFunctionParameter" Name="Activation"><Value>relu</Value></ParameterBase></Parameters></LinkBase><LinkBase xsi:type="DenseLayer" Name="output" ID="B59082A2"><Parameters><ParameterBase xsi:type="IntParameter" Name="Units"><Value>3</Value></ParameterBase><ParameterBase xsi:type="ActivationFunctionParameter" Name="Activation"><Value>linear</Value></ParameterBase></Parameters></LinkBase></ChainLinks></Chain></Chains></NetworkArchitecture></Problem></neural-network>
 			<Output-Action>pedal</Output-Action>
 			<experience-replay>
 				<Buffer-Size>500</Buffer-Size>
@@ -65,9 +65,9 @@
 				<Schedule>
 		<Linear-Schedule>
 			<Start-Offset>0.0</Start-Offset>
-			<End-Offset>0.8</End-Offset>
-			<Pre-Offset-Value>0.8</Pre-Offset-Value>
-			<Initial-Value>0.8</Initial-Value>
+			<End-Offset>0.5</End-Offset>
+			<Pre-Offset-Value>0.5</Pre-Offset-Value>
+			<Initial-Value>0.5</Initial-Value>
 			<End-Value>0.05</End-Value>
 			<Evaluation-Value>0.0</Evaluation-Value>
 			<Interpolation>linear</Interpolation>
