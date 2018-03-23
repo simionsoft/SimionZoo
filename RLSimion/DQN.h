@@ -2,48 +2,47 @@
 #ifdef _WIN64
 #include <vector>
 #include "simion.h"
-#include "critic.h"
 #include "parameters.h"
-#include "q-learners.h"
-#include "deep-vfa-policy.h"
-#include "experience-replay.h"
+#include "deferred-load.h"
 
-class SingleDimensionDiscreteActionVariableGrid;
-class ExperienceReplay;
-class ExperienceTuple;
 class INetwork;
+class SingleDimensionDiscreteActionVariableGrid;
+class DiscreteDeepPolicy;
 
-class DQN : public Simion
+class DQN : public Simion, DeferredLoad
 {
 protected:
 	ACTION_VARIABLE m_outputActionIndex;
-	CHILD_OBJECT<ExperienceReplay> m_experienceReplay;
+
 	NN_DEFINITION m_pNNDefinition;
 	INetwork* m_pTargetQNetwork= nullptr;
 	INetwork* m_pPredictionQNetwork= nullptr;
 
 	CHILD_OBJECT_FACTORY<DiscreteDeepPolicy> m_policy;
-	FeatureList* m_pStateOutFeatures;
-	SingleDimensionDiscreteActionVariableGrid* m_pGrid;
 
-	size_t m_numberOfActions;
-	size_t m_numberOfStateFeatures;
+	SingleDimensionDiscreteActionVariableGrid* m_pGrid= nullptr;
+
+	size_t m_numberOfActions= 0;
+	size_t m_numberOfStateVars= 0;
 	std::vector<double> m_stateVector;
 	std::vector<double> m_actionValuePredictionVector;
 
 	std::vector<double> m_minibatchStateVector;
 	std::vector<double> m_minibatchActionValuePredictionVector;
 
-	int* m_pMinibatchChosenActionIndex;
+	size_t m_minibatchTuples = 0;
+	size_t m_minibatchSize = 0;
+	size_t* m_pMinibatchChosenActionIndex= nullptr;
 
-	ExperienceTuple** m_pMinibatchExperienceTuples;
-	double* m_pMinibatchChosenActionTargetValues;
+	double* m_pMinibatchChosenActionTargetValues= nullptr;
 
 	virtual INetwork* getPredictionNetwork();
 	
 public:
 	~DQN();
 	DQN(ConfigNode *pParameters);
+
+	virtual void deferredLoadStep();
 
 	//selects an according to the learned policy pi(a|s)
 	virtual double selectAction(const State *s, Action *a);
@@ -86,7 +85,7 @@ protected:
 	std::vector<double> m_minibatchQVector;
 
 	FeatureList* m_pStateFeatureList;
-	int m_numberOfStateFeatures;
+	int m_numberOfStateVars;
 
 	void buildModelsParametersTransitionGraph();
 	void performModelsParametersTransition();

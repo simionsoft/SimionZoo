@@ -23,22 +23,22 @@ public:
 class ExperienceReplay: public DeferredLoad
 {
 	ExperienceTuple* m_pTupleBuffer;
-	INT_PARAM m_blockSize;
+	INT_PARAM m_bufferSize;
 	INT_PARAM m_updateBatchSize;
 
-	int m_currentPosition= 0;
-	int m_numTuples= 0;
-
+	size_t m_currentPosition= 0;
+	size_t m_numTuples= 0;
+	const unsigned int m_minUpdateSizeTimes = 4; //how many update-size times tuples we need to start updating
 public:
 	ExperienceReplay(ConfigNode* pParameters);
 	ExperienceReplay();
 	~ExperienceReplay();
 
 	bool bUsing();
+	bool bHaveEnoughTuples() const;
 
 	void addTuple(const State* s, const Action* a, const State* s_p, double r, double probability);
-	int getUpdateBatchSize();
-	int getMaxUpdateBatchSize() { return m_updateBatchSize.get(); }
+	size_t getUpdateBatchSize() const;
 	ExperienceTuple* getRandomTupleFromBuffer();
 
 	void deferredLoadStep();

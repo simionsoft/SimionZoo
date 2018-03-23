@@ -23,7 +23,7 @@ protected:
 	SingleDimensionDiscreteActionVariableGrid* m_pGrid;
 
 	int m_numberOfActions;
-	int m_numberOfStateFeatures;
+	int m_numberOfStateVars;
 	std::vector<double> m_stateVector;
 	std::vector<double> m_actionValuePredictionVector;
 

@@ -71,17 +71,17 @@ void SimGod::postUpdate()
 	ExperienceTuple* pExperienceTuple;
 
 	//Experience Replay
-	if (m_pExperienceReplay->bUsing())
+	if (m_pExperienceReplay->bUsing() && m_pExperienceReplay->bHaveEnoughTuples())
 	{
 		m_bReplayingExperience = true;
 
-		int updateBatchSize = m_pExperienceReplay->getUpdateBatchSize();
-		for (int tuple = 0; tuple < updateBatchSize; ++tuple)
+		size_t updateBatchSize = m_pExperienceReplay->getUpdateBatchSize();
+		for (size_t tuple = 0; tuple < updateBatchSize; ++tuple)
 		{
 			pExperienceTuple = m_pExperienceReplay->getRandomTupleFromBuffer();
 
 			//update step
-			for (unsigned int i = 0; i < m_simions.size(); i++)
+			for (size_t i = 0; i < m_simions.size(); i++)
 				m_simions[i]->update(pExperienceTuple->s, pExperienceTuple->a, pExperienceTuple->s_p
 					, pExperienceTuple->r, pExperienceTuple->probability);
 		}
@@ -148,4 +148,9 @@ bool SimGod::bUpdateFrozenWeightsNow()
 bool SimGod::useSampleImportanceWeights()
 {
 	return m_bUseImportanceWeights.get();
+}
+
+size_t SimGod::getExperienceReplayUpdateSize()
+{
+	return (size_t)m_pExperienceReplay->getUpdateBatchSize();
 }

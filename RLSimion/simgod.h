@@ -45,6 +45,7 @@ public:
 	virtual ~SimGod();
 
 	bool bReplayingExperience() const { return m_bReplayingExperience; }
+	size_t getExperienceReplayUpdateSize();
 
 	double selectAction(State* s,Action* a);
 	//regular update step after a simulation time-step

@@ -30,8 +30,8 @@ AsyncQLearning::AsyncQLearning(ConfigNode* pConfigNode)
 
 	m_pStateOutFeatures = new FeatureList("state-input");
 
-	m_numberOfStateFeatures = SimGod::getGlobalStateFeatureMap()->getTotalNumFeatures();
-	if (m_numberOfStateFeatures == 0)
+	m_numberOfStateVars = SimGod::getGlobalStateFeatureMap()->getTotalNumFeatures();
+	if (m_numberOfStateVars == 0)
 		Logger::logMessage(MessageType::Error, "Invalid State-Map chosen (it will return 0 features at most, but at least 1 has to be returned)");
 
 	if (dynamic_cast<DiscreteActionFeatureMap*>(SimGod::getGlobalActionFeatureMap().get()) == nullptr)
@@ -44,10 +44,10 @@ AsyncQLearning::AsyncQLearning(ConfigNode* pConfigNode)
 		Logger::logMessage(MessageType::Error, "Output of the network has not the same size as the discrete action grid has centers/discrete values");
 
 	m_numberOfActions = m_predictionQNetwork.getNetwork()->getTargetOutput().Shape().TotalSize();
-	m_stateVector = std::vector<float>(m_numberOfStateFeatures, 0.0);
+	m_stateVector = std::vector<float>(m_numberOfStateVars, 0.0);
 	m_actionValuePredictionVector = std::vector<float>(m_numberOfActions);
 
-	m_minibatchStateVector = std::vector<float>(m_numberOfStateFeatures * m_experienceReplay->getMaxUpdateBatchSize(), 0.0);
+	m_minibatchStateVector = std::vector<float>(m_numberOfStateVars * m_experienceReplay->getMaxUpdateBatchSize(), 0.0);
 	m_minibatchActionValuePredictionVector = std::vector<float>(m_numberOfActions * m_experienceReplay->getMaxUpdateBatchSize(), 0.0);
 
 	m_pMinibatchExperienceTuples = new ExperienceTuple*[m_experienceReplay->getMaxUpdateBatchSize()];
@@ -104,7 +104,7 @@ double AsyncQLearning::update(const State * s, const Action * a, const State * s
 		//get Q(s_p) for entire minibatch
 		SimionApp::get()->pSimGod->getGlobalStateFeatureMap()->getFeatures(m_pMinibatchExperienceTuples[i]->s_p, m_pStateOutFeatures);
 		for (int n = 0; n < m_pStateOutFeatures->m_numFeatures; n++)
-			m_minibatchStateVector[m_pStateOutFeatures->m_pFeatures[n].m_index + i*m_numberOfStateFeatures] = m_pStateOutFeatures->m_pFeatures[n].m_factor;
+			m_minibatchStateVector[m_pStateOutFeatures->m_pFeatures[n].m_index + i*m_numberOfStateVars] = m_pStateOutFeatures->m_pFeatures[n].m_factor;
 
 		m_pMinibatchChosenActionIndex[i] = m_pGrid->getClosestCenter(m_pMinibatchExperienceTuples[i]->a->get(m_outputActionIndex.get()));
 	}
@@ -128,7 +128,7 @@ double AsyncQLearning::update(const State * s, const Action * a, const State * s
 	{
 		SimionApp::get()->pSimGod->getGlobalStateFeatureMap()->getFeatures(m_pMinibatchExperienceTuples[i]->s, m_pStateOutFeatures);
 		for (int n = 0; n < m_pStateOutFeatures->m_numFeatures; n++)
-			m_minibatchStateVector[m_pStateOutFeatures->m_pFeatures[n].m_index + i*m_numberOfStateFeatures] = m_pStateOutFeatures->m_pFeatures[n].m_factor;
+			m_minibatchStateVector[m_pStateOutFeatures->m_pFeatures[n].m_index + i*m_numberOfStateVars] = m_pStateOutFeatures->m_pFeatures[n].m_factor;
 	}
 	m_predictionQNetwork.getNetwork()->predict(inputMap, m_minibatchActionValuePredictionVector);
 

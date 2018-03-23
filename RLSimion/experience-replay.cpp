@@ -25,7 +25,7 @@ void ExperienceTuple::copy(const State* s, const Action* a, const State* s_p, do
 
 ExperienceReplay::ExperienceReplay(ConfigNode* pConfigNode)
 {
-	m_blockSize = INT_PARAM(pConfigNode, "Buffer-Size", "Size of the buffer used to store experience tuples", 1000);
+	m_bufferSize = INT_PARAM(pConfigNode, "Buffer-Size", "Size of the buffer used to store experience tuples", 1000);
 	m_updateBatchSize = INT_PARAM(pConfigNode, "Update-Batch-Size", "Number of tuples used each time-step in the update", 10);
 
 	Logger::logMessage(MessageType::Info, "Experience replay buffer initialized");
@@ -38,7 +38,7 @@ ExperienceReplay::ExperienceReplay(ConfigNode* pConfigNode)
 ExperienceReplay::ExperienceReplay() : DeferredLoad()
 {
 	//default behaviour when experience replay is not used
-	m_blockSize.set(0);
+	m_bufferSize.set(0);
 	m_updateBatchSize.set(0);
 
 	m_pTupleBuffer = 0;
@@ -48,12 +48,12 @@ ExperienceReplay::ExperienceReplay() : DeferredLoad()
 
 bool ExperienceReplay::bUsing()
 {
-	return m_blockSize.get() != 0;
+	return m_bufferSize.get() != 0;
 }
 
 void ExperienceReplay::deferredLoadStep()
 {
-	m_pTupleBuffer = new ExperienceTuple[m_blockSize.get()];
+	m_pTupleBuffer = new ExperienceTuple[m_bufferSize.get()];
 }
 
 ExperienceReplay::~ExperienceReplay()
@@ -62,9 +62,17 @@ ExperienceReplay::~ExperienceReplay()
 		delete[] m_pTupleBuffer;
 }
 
-int ExperienceReplay::getUpdateBatchSize()
+size_t ExperienceReplay::getUpdateBatchSize() const
 {
-	return std::min(m_updateBatchSize.get(), m_numTuples);
+	return m_updateBatchSize.get();
+}
+
+bool ExperienceReplay::bHaveEnoughTuples() const
+{
+	size_t minNumTuplesForUpdate = 
+		std::min((size_t)m_bufferSize.get()
+			, (size_t)m_minUpdateSizeTimes* m_updateBatchSize.get());
+	return m_numTuples >= minNumTuplesForUpdate;
 }
 
 void ExperienceReplay::addTuple(const State* s, const  Action* a, const State* s_p, double r, double probability)
@@ -72,7 +80,7 @@ void ExperienceReplay::addTuple(const State* s, const  Action* a, const State* s
 	//add the experience tuple to the buffer
 	if (!bUsing()) return;
 
-	if (m_numTuples < m_blockSize.get())
+	if (m_numTuples < m_bufferSize.get())
 	{
 		//the buffer is not yet full
 		m_pTupleBuffer[m_currentPosition].copy(s, a, s_p, r, probability);
@@ -83,7 +91,7 @@ void ExperienceReplay::addTuple(const State* s, const  Action* a, const State* s
 		//the buffer is full
 		m_pTupleBuffer[m_currentPosition].copy(s, a, s_p, r, probability);
 	}
-	m_currentPosition = ++m_currentPosition % m_blockSize.get();
+	m_currentPosition = ++m_currentPosition % m_bufferSize.get();
 }
 
 ExperienceTuple* ExperienceReplay::getRandomTupleFromBuffer()
