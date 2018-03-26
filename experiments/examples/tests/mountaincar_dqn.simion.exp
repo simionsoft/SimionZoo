@@ -71,7 +71,7 @@
 			<Parameters>
 			  <OptimizerParameterOfStringDouble>
 			    <Key>Learning rate</Key>
-			    <Value>0.000001</Value>
+			    <Value>0.0000001</Value>
 			  </OptimizerParameterOfStringDouble>
 			  <OptimizerParameterOfStringDouble>
 			    <Key>Momentum</Key>

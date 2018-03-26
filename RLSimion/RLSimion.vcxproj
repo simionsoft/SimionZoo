@@ -273,7 +273,7 @@
     <ClCompile Include="policy-learner.cpp" />
     <ClCompile Include="q-learners.cpp" />
     <ClCompile Include="reward.cpp" />
-    <ClCompile Include="RLSimion.cpp" />
+    <ClCompile Include="app-main.cpp" />
     <ClCompile Include="simgod.cpp" />
     <ClCompile Include="simion.cpp" />
     <ClCompile Include="single-dimension-discrete-grid.cpp" />
