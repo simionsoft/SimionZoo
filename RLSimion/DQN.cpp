@@ -53,6 +53,9 @@ void DQN::deferredLoadStep()
 	m_pPredictionQNetwork = m_pTargetQNetwork->cloneNonTrainable();
 
 	m_numberOfActions = m_pTargetQNetwork->getTotalSize();
+
+	//The size of the minibatch is the experience replay update size plus 1
+	//This is because we only perform updates with in replaying-experience mode
 	m_minibatchSize = SimionApp::get()->pSimGod->getExperienceReplayUpdateSize();
 
 	if (m_pGrid->getNumCenters() != m_numberOfActions)
@@ -75,14 +78,6 @@ INetwork* DQN::getPredictionNetwork()
 
 double DQN::selectAction(const State * s, Action * a)
 {
-	//SimionApp::get()->pSimGod->getGlobalStateFeatureMap()->getFeatures(s, m_pStateOutFeatures);
-
-	////TODO: use sparse representation
-	//for (size_t i = 0; i < m_pStateOutFeatures->m_numFeatures; i++)
-	//{
-	//	auto item = m_pStateOutFeatures->m_pFeatures[i];
-	//	m_stateVector[item.m_index] = item.m_factor;
-	//}
 	for (size_t i = 0; i < s->getNumVars(); i++)
 	{
 		m_stateVector[i] = s->get((int) i);
@@ -103,61 +98,69 @@ double DQN::selectAction(const State * s, Action * a)
 
 double DQN::update(const State * s, const Action * a, const State * s_p, double r, double behaviorProb)
 {
-	double gamma = SimionApp::get()->pSimGod->getGamma();
+	std::unordered_map<std::string, std::vector<double>&> inputMap =
+	{ { "state-input", m_minibatchStateVector } };
 
-	size_t numInputVariables = s->getNumVars(); //TODO: FIX THIS
-	//get Q(s_p) for the current tuple
-	for (size_t i = 0; i < numInputVariables; i++)
+	if (SimionApp::get()->pSimGod->bReplayingExperience() && m_minibatchTuples<m_minibatchSize)
 	{
-		m_minibatchStateVector[m_minibatchTuples*numInputVariables + i] = s_p->get((int) i);
-	}
-	//store the index of the action taken
-	m_pMinibatchChosenActionIndex[m_minibatchTuples] =
-		m_pGrid->getClosestCenter(a->get(m_outputActionIndex.get()));
+		double gamma = SimionApp::get()->pSimGod->getGamma();
 
-	//estimate Q(s_p)
-	std::unordered_map<std::string, std::vector<double>&> inputMap = 
-		{ { "state-input", m_minibatchStateVector } };
-	getPredictionNetwork()->predict(inputMap, m_minibatchActionValuePredictionVector);
+		size_t numInputVariables = s->getNumVars(); //TODO: FIX THIS
+		//get Q(s_p) for the current tuple
+		for (size_t i = 0; i < numInputVariables; i++)
+		{
+			m_minibatchStateVector[m_minibatchTuples*numInputVariables + i] = s_p->get((int)i);
+		}
+		//store the index of the action taken
+		m_pMinibatchChosenActionIndex[m_minibatchTuples] =
+			m_pGrid->getClosestCenter(a->get(m_outputActionIndex.get()));
 
-	//calculate and store the target for the current tuple
-	size_t argmaxQ = 
-		std::distance(m_minibatchActionValuePredictionVector.begin() + m_minibatchTuples * m_numberOfActions,
-		std::max_element(m_minibatchActionValuePredictionVector.begin() 
-			+ m_minibatchTuples * m_numberOfActions, m_minibatchActionValuePredictionVector.begin() 
-			+ (m_minibatchTuples + 1)*m_numberOfActions));
-	m_pMinibatchChosenActionTargetValues[m_minibatchTuples] =
-		r + gamma * m_minibatchActionValuePredictionVector[m_minibatchTuples*m_numberOfActions + argmaxQ];
+		//estimate Q(s_p)
+		getPredictionNetwork()->predict(inputMap, m_minibatchActionValuePredictionVector);
 
-	//estimate Q(s,a)
-	for (size_t i = 0; i < s->getNumVars(); i++)
-	{
-		m_minibatchStateVector[m_minibatchTuples*s->getNumVars() + i] = s->get((int) i);
-	}
-	getPredictionNetwork()->predict(inputMap, m_minibatchActionValuePredictionVector);
+		//calculate and store the target for the current tuple
+		size_t argmaxQ =
+			std::distance(m_minibatchActionValuePredictionVector.begin() + m_minibatchTuples * m_numberOfActions,
+				std::max_element(m_minibatchActionValuePredictionVector.begin()
+					+ m_minibatchTuples * m_numberOfActions, m_minibatchActionValuePredictionVector.begin()
+					+ (m_minibatchTuples + 1)*m_numberOfActions));
 
-	m_minibatchActionValuePredictionVector
-		[m_pMinibatchChosenActionIndex[m_minibatchTuples] + m_minibatchTuples*m_numberOfActions] = 
+		//calculate r + gamma*Q(s_p,a)
+		m_pMinibatchChosenActionTargetValues[m_minibatchTuples] =
+			r + gamma * m_minibatchActionValuePredictionVector[m_minibatchTuples*m_numberOfActions + argmaxQ];
+
+		//estimate Q(s,a)
+		for (size_t i = 0; i < s->getNumVars(); i++)
+		{
+			m_minibatchStateVector[m_minibatchTuples*s->getNumVars() + i] = s->get((int)i);
+		}
+
+		//get the current value of Q(s) for every action
+		getPredictionNetwork()->predict(inputMap, m_minibatchActionValuePredictionVector);
+
+		//change only the target for the action in the tuple
+		m_minibatchActionValuePredictionVector
+			[m_pMinibatchChosenActionIndex[m_minibatchTuples] + m_minibatchTuples * m_numberOfActions] =
 			m_pMinibatchChosenActionTargetValues[m_minibatchTuples];
 
-	m_minibatchTuples++;
-
+		m_minibatchTuples++;
+	}
 	//We only train the network in direct-experience updates to simplify mini-batching
-	SimGod* pSimGod = SimionApp::get()->pSimGod.ptr();
-
-	//update the network finally
-	if (!pSimGod->bReplayingExperience() && m_minibatchTuples>1)
+	else if (m_minibatchTuples==m_minibatchSize)
 	{
+		SimGod* pSimGod = SimionApp::get()->pSimGod.ptr();
+
+		//update the network finally
 		m_pTargetQNetwork->train(inputMap, m_minibatchActionValuePredictionVector);
 		m_minibatchTuples = 0;
-	}
 
-	//update the prediction network
-	if (pSimGod->bUpdateFrozenWeightsNow())
-	{
-		if (m_pPredictionQNetwork)
-			m_pPredictionQNetwork->destroy();
-		m_pPredictionQNetwork = m_pTargetQNetwork->cloneNonTrainable();
+		//update the prediction network
+		if (pSimGod->bUpdateFrozenWeightsNow())
+		{
+			if (m_pPredictionQNetwork)
+				m_pPredictionQNetwork->destroy();
+			m_pPredictionQNetwork = m_pTargetQNetwork->cloneNonTrainable();
+		}
 	}
 	return 1.0; //TODO: Estimate the TD-error??
 }
