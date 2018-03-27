@@ -7,7 +7,7 @@ class NetworkArchitecture;
 class InputData;
 class Network;
 class LinkConnection;
-class OptimizerSetting;
+class OptimizerSettings;
 
 class Problem: public IProblem
 {
@@ -15,7 +15,7 @@ protected:
 	std::vector<InputData*> m_inputs;
 	NetworkArchitecture* m_pNetworkArchitecture;
 	LinkConnection* m_pOutput;
-	OptimizerSetting* m_pOptimizerSetting;
+	OptimizerSettings* m_pOptimizerSetting;
 	
 public:
 	Problem();
@@ -27,7 +27,7 @@ public:
 	NetworkArchitecture* getNetworkArchitecture() { return m_pNetworkArchitecture; }
 	const std::vector<InputData*>& getInputs() const { return m_inputs; }
 	const LinkConnection* getOutput() const { return m_pOutput; }
-	const OptimizerSetting* getOptimizerSetting() const { return m_pOptimizerSetting; }
+	const OptimizerSettings* getOptimizerSettings() const { return m_pOptimizerSetting; }
 
 	static Problem* getInstance(tinyxml2::XMLElement* pNode);
 

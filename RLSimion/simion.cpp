@@ -21,6 +21,7 @@ std::shared_ptr<Simion> Simion::getInstance(ConfigNode* pConfigNode)
 		{"Off-Policy-Actor-Critic", CHOICE_ELEMENT_NEW<OffPolicyActorCritic>}
 #ifdef _WIN64
 		,{"DQN", CHOICE_ELEMENT_NEW<DQN>}
+		,{"Double-DQN", CHOICE_ELEMENT_NEW<DoubleDQN>}
 /*		,{ "DDPG", CHOICE_ELEMENT_NEW<DDPG> }
 		,{ "Async-QL-earning", CHOICE_ELEMENT_NEW<AsyncQLearning > }*/
 #endif

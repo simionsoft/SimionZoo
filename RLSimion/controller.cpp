@@ -38,7 +38,7 @@ LQRGain::LQRGain(ConfigNode* pConfigNode)
 }
 LQRController::LQRController(ConfigNode* pConfigNode)
 {
-	m_outputActionIndex = ACTION_VARIABLE(pConfigNode, "Output-Actionn", "The output action");
+	m_outputAction = ACTION_VARIABLE(pConfigNode, "Output-Actionn", "The output action");
 	m_gains = MULTI_VALUE<LQRGain>(pConfigNode, "LQR-Gain", "An LQR gain on an input state variable");
 
 }
@@ -54,7 +54,7 @@ double LQRController::selectAction(const State *s, Action *a)
 		output+= s->get(m_gains[i]->m_variableIndex.get())*m_gains[i]->m_gain.get();
 	}
 	// delta= -K*x
-	a->set(m_outputActionIndex.get(), -output);
+	a->set(m_outputAction.get(), -output);
 
 	return 1.0;
 }
@@ -66,7 +66,7 @@ int LQRController::getNumOutputs()
 int LQRController::getOutputActionIndex(int output)
 {
 	if (output == 0)
-		return m_outputActionIndex.get();
+		return m_outputAction.get();
 	throw std::exception("LQRController. Invalid action output given.");
 	return -1;
 }
@@ -76,7 +76,7 @@ int LQRController::getOutputActionIndex(int output)
 
 PIDController::PIDController(ConfigNode* pConfigNode)
 {
-	m_outputActionIndex= ACTION_VARIABLE(pConfigNode, "Output-Action", "The output action");
+	m_outputAction= ACTION_VARIABLE(pConfigNode, "Output-Action", "The output action");
 	m_pKP = CHILD_OBJECT_FACTORY<NumericValue>(pConfigNode, "KP", "Proportional gain");
 	m_pKI = CHILD_OBJECT_FACTORY<NumericValue>(pConfigNode, "KI", "Integral gain");
 	m_pKD = CHILD_OBJECT_FACTORY<NumericValue>(pConfigNode, "KD", "Derivative gain");
@@ -96,7 +96,7 @@ int PIDController::getNumOutputs()
 int PIDController::getOutputActionIndex(int output)
 {
 	if (output == 0)
-		return m_outputActionIndex.get();
+		return m_outputAction.get();
 	throw std::exception("LQRController. Invalid action output given.");
 	return -1;
 }
@@ -110,7 +110,7 @@ double PIDController::selectAction(const State *s, Action *a)
 	double dError = error*SimionApp::get()->pWorld->getDT();
 	m_intError += error*SimionApp::get()->pWorld->getDT();
 
-	a->set(m_outputActionIndex.get()
+	a->set(m_outputAction.get()
 		,error*m_pKP->get() + m_intError*m_pKI->get() + dError*m_pKD->get());
 
 	return 1.0;

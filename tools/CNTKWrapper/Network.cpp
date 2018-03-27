@@ -22,7 +22,7 @@ Network::~Network()
 
 size_t Network::getTotalSize()
 {
-	return getTargetOutput().Shape().TotalSize();
+	return m_targetOutput.Shape().TotalSize();
 }
 
 void Network::destroy()
@@ -30,8 +30,9 @@ void Network::destroy()
 	delete this;
 }
 
-void Network::buildNetworkFunctionPtr(const OptimizerSetting* optimizer)
+void Network::buildQNetwork()
 {
+	const OptimizerSettings* optimizer = m_pParent->getOptimizerSettings();
 	auto shape = m_outputsFunctionPtr.at(0)->Output().Shape();
 
 	m_targetOutput = CNTK::InputVariable(shape, CNTK::DataType::Double, L"Target");
@@ -47,7 +48,7 @@ void Network::buildNetworkFunctionPtr(const OptimizerSetting* optimizer)
 void Network::save(string fileName)
 {
 	if (m_networkFunctionPtr == nullptr)
-		throw std::runtime_error("Network has not been built yet. Call buildNetworkFunctionPtr() before calling save().");
+		throw std::runtime_error("Network has not been built yet. Call buildQNetwork() before calling save().");
 	m_networkFunctionPtr->Save(CNTKWrapper::Internal::string2wstring(fileName));
 }
 
@@ -175,7 +176,7 @@ void Network::predict(std::unordered_map<std::string, std::vector<double>&>& inp
 }
 
 #include <iostream>
-INetwork* Network::cloneNonTrainable() const
+INetwork* Network::clone() const
 {
 	Network* result = new Network();
 	result->m_trainer = nullptr;

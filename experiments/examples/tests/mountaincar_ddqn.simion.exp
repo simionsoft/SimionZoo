@@ -55,7 +55,7 @@
 		</Action-Feature-Map>
 		<Simion>
 			<Type>
-		<DQN>
+		<Double-DQN>
 		<neural-network>
 		  <Problem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
 		    <Inputs>
@@ -148,7 +148,7 @@
 		</Discrete-Epsilon-Greedy-Deep-Policy>
 		</Policy>
 			</Policy>
-		</DQN>
+		</Double-DQN>
 		</Type>
 		</Simion>
 	</SimGod>

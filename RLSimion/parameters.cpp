@@ -54,8 +54,7 @@ void NN_DEFINITION::destroy()
 INetwork* NN_DEFINITION::buildNetwork()
 {
 	INetwork* pNetwork= m_pProblem->createNetwork();
-	pNetwork->setParent(m_pProblem);
-	pNetwork->buildNetworkFunctionPtr(m_pProblem->getOptimizerSetting());
+	pNetwork->buildQNetwork();
 	return pNetwork;
 }
 

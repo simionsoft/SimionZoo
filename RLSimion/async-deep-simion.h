@@ -14,7 +14,7 @@ class ExperienceTuple;
 class AsyncQLearning : public Simion
 {
 protected:
-	ACTION_VARIABLE m_outputActionIndex;
+	ACTION_VARIABLE m_outputAction;
 	CHILD_OBJECT<ExperienceReplay> m_experienceReplay;
 	NN_DEFINITION m_predictionQNetwork;
 	
@@ -27,10 +27,10 @@ protected:
 	std::vector<double> m_stateVector;
 	std::vector<double> m_actionValuePredictionVector;
 
-	std::vector<double> m_minibatchStateVector;
-	std::vector<double> m_minibatchActionValuePredictionVector;
+	std::vector<double> m_minibatch_s;
+	std::vector<double> m_minibatch_Q_s;
 
-	int* m_pMinibatchChosenActionIndex;
+	int* m_pMinibatchActionId;
 
 	ExperienceTuple** m_pMinibatchExperienceTuples;
 	double* m_pMinibatchChosenActionTargetValues;

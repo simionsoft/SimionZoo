@@ -42,7 +42,7 @@ Problem::Problem(tinyxml2::XMLElement * pParentNode)
 	pNode = pParentNode->FirstChildElement(XML_TAG_OptimizerSetting)->FirstChildElement(XML_TAG_Optimizer);
 	if (pNode == nullptr)
 		throw ProblemParserElementNotFound(XML_TAG_Optimizer);
-	m_pOptimizerSetting = OptimizerSetting::getInstance(pNode);
+	m_pOptimizerSetting = OptimizerSettings::getInstance(pNode);
 }
 
 Problem::Problem()
@@ -102,6 +102,7 @@ Problem * Problem::loadFromString(std::string content)
 INetwork * Problem::createNetwork()
 {
 	Network* result = new Network();
+	result->setParent(this);
 	/*
 	basic idea of this algorithm: we traverse all chains to create the real model
 	to achieve this we follow this pseudo-code:

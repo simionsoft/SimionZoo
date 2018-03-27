@@ -34,7 +34,7 @@ DiscreteSoftmaxDeepPolicy::DiscreteSoftmaxDeepPolicy(ConfigNode * pConfigNode) :
 	m_temperature = CHILD_OBJECT_FACTORY<NumericValue>(pConfigNode, "temperature", "Tempreature");
 }
 
-int DiscreteEpsilonGreedyDeepPolicy::selectAction(std::vector<double> values)
+int DiscreteEpsilonGreedyDeepPolicy::selectAction(std::vector<double>& values)
 {
 	double randomValue = getRandomValue();
 
@@ -56,7 +56,7 @@ int DiscreteEpsilonGreedyDeepPolicy::selectAction(std::vector<double> values)
 	return (int) resultingActionIndex;
 }
 
-int DiscreteSoftmaxDeepPolicy::selectAction(std::vector<double> values)
+int DiscreteSoftmaxDeepPolicy::selectAction(std::vector<double>& values)
 {
 	double sum = 0;
 	for (int i = 0; i < values.size(); i++)

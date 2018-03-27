@@ -15,7 +15,7 @@ class FeatureList;
 class Policy
 {
 protected:
-	ACTION_VARIABLE m_outputActionIndex;
+	ACTION_VARIABLE m_outputAction;
 	bool m_discreteActionSpace = false;
 
 	double m_space_density;
@@ -37,8 +37,8 @@ public:
 
 	virtual void getParameterGradient(const State* s, const Action* a, FeatureList* pOutGradient) = 0;
 
-	int getOutputActionIndex() { return m_outputActionIndex.get(); }
-	void setOutputActionIndex(unsigned int outputActionIndex) { m_outputActionIndex.set(outputActionIndex); }
+	int getOutputActionIndex() { return m_outputAction.get(); }
+	void setOutputActionIndex(unsigned int outputActionIndex) { m_outputAction.set(outputActionIndex); }
 
 	static std::shared_ptr<Policy> getInstance(ConfigNode* pParameters);
 

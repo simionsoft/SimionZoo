@@ -32,7 +32,7 @@ namespace CNTK
 class NetworkArchitecture;
 class InputData;
 class LinkConnection;
-class OptimizerSetting;
+class OptimizerSettings;
 class INetwork;
 
 //Interface class
@@ -44,7 +44,7 @@ public:
 	virtual NetworkArchitecture* getNetworkArchitecture() = 0;
 	virtual const std::vector<InputData*>& getInputs() const = 0;
 	virtual const LinkConnection* getOutput() const = 0;
-	virtual const OptimizerSetting* getOptimizerSetting() const = 0;
+	virtual const OptimizerSettings* getOptimizerSettings() const = 0;
 
 	virtual INetwork* createNetwork() = 0;
 };
@@ -57,18 +57,14 @@ public:
 
 	virtual size_t getTotalSize() = 0;
 
+	virtual vector<CNTK::FunctionPtr>& getFunctionPtrs() = 0;
 	virtual vector<InputData*>& getInputs()= 0;
 	virtual vector<CNTK::FunctionPtr>& getOutputsFunctionPtr()= 0;
-	virtual vector<CNTK::FunctionPtr>& getFunctionPtrs()= 0;
-	virtual CNTK::FunctionPtr getNetworkFunctionPtr()= 0;
-	virtual CNTK::FunctionPtr getLossFunctionPtr()= 0;
-	virtual CNTK::TrainerPtr getTrainer()= 0;
-	virtual CNTK::Variable getTargetOutput()= 0;
 
-	virtual void buildNetworkFunctionPtr(const OptimizerSetting* optimizer)= 0;
+	virtual void buildQNetwork()= 0;
 	virtual void save(string fileName)= 0;
 
-	virtual INetwork* cloneNonTrainable() const= 0;
+	virtual INetwork* clone() const= 0;
 
 	virtual void train(std::unordered_map<std::string, std::vector<double>&>& inputDataMap
 		, std::vector<double>& targetOutputData)= 0;

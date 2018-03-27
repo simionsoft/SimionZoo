@@ -5,7 +5,7 @@
 
 using namespace std;
 
-class OptimizerSetting;
+class OptimizerSettings;
 class InputData;
 class Problem;
 
@@ -27,21 +27,17 @@ public:
 	size_t getTotalSize();
 	void destroy();
 
+	vector<CNTK::FunctionPtr>& getFunctionPtrs() { return m_functionPtrs; }
 	vector<InputData*>& getInputs() { return m_inputs; }
 	vector<CNTK::FunctionPtr>& getOutputsFunctionPtr() { return m_outputsFunctionPtr; }
-	vector<CNTK::FunctionPtr>& getFunctionPtrs() { return m_functionPtrs; }
-	CNTK::FunctionPtr getNetworkFunctionPtr() { return m_networkFunctionPtr; }
-	CNTK::FunctionPtr getLossFunctionPtr() { return m_lossFunctionPtr; }
-	CNTK::TrainerPtr getTrainer() { return m_trainer; }
-	CNTK::Variable getTargetOutput() { return m_targetOutput; }
 
-	void buildNetworkFunctionPtr(const OptimizerSetting* optimizer);
+	void buildQNetwork();
 	void save(string fileName);
 	static Network load(string fileName, CNTK::DeviceDescriptor &device);
 
 	void setParent(IProblem* pParent);
 
-	INetwork* cloneNonTrainable() const;
+	INetwork* clone() const;
 
 	void train(std::unordered_map<std::string, std::vector<double>&>& inputDataMap, std::vector<double>& targetOutputData);
 	void predict(std::unordered_map<std::string, std::vector<double>&>& inputDataMap, std::vector<double>& predictionData);

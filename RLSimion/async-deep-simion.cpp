@@ -22,7 +22,7 @@ AsyncQLearning::AsyncQLearning(ConfigNode* pConfigNode)
 	CNTKWrapperLoader::Load();
 	m_policy = CHILD_OBJECT_FACTORY<DiscreteDeepPolicy>(pConfigNode, "Policy", "The policy");
 	m_predictionQNetwork = NN_DEFINITION(pConfigNode, "neural-network", "Neural Network Architecture");
-	m_outputActionIndex = ACTION_VARIABLE(pConfigNode, "Output-Action", "The output action variable");
+	m_outputAction = ACTION_VARIABLE(pConfigNode, "Output-Action", "The output action variable");
 	m_experienceReplay = CHILD_OBJECT<ExperienceReplay>(pConfigNode, "experience-replay", "Experience replay", false);
 
 	m_iAsyncUpdate = INT_PARAM(pConfigNode, "i-async-update", "Steps before the network's weights are updated by the optimizer with the accumulated DeltaTheta", 1);
@@ -38,7 +38,7 @@ AsyncQLearning::AsyncQLearning(ConfigNode* pConfigNode)
 		Logger::logMessage(MessageType::Error, "The CDiscreteEpsilonGreedyDeepPolicy requires a CDiscreteActionFeatureMap as the action-feature-map.");
 
 	m_pGrid = ((SingleDimensionDiscreteActionVariableGrid*)
-		(((DiscreteActionFeatureMap*)SimGod::getGlobalActionFeatureMap().get())->returnGrid()[m_outputActionIndex.get()]));
+		(((DiscreteActionFeatureMap*)SimGod::getGlobalActionFeatureMap().get())->returnGrid()[m_outputAction.get()]));
 
 	if (m_pGrid->getNumCenters() != m_predictionQNetwork.getNetwork()->getTotalSize());
 		Logger::logMessage(MessageType::Error, "Output of the network has not the same size as the discrete action grid has centers/discrete values");
@@ -47,15 +47,15 @@ AsyncQLearning::AsyncQLearning(ConfigNode* pConfigNode)
 	m_stateVector = std::vector<float>(m_numberOfStateVars, 0.0);
 	m_actionValuePredictionVector = std::vector<float>(m_numberOfActions);
 
-	m_minibatchStateVector = std::vector<float>(m_numberOfStateVars * m_experienceReplay->getMaxUpdateBatchSize(), 0.0);
-	m_minibatchActionValuePredictionVector = std::vector<float>(m_numberOfActions * m_experienceReplay->getMaxUpdateBatchSize(), 0.0);
+	m_minibatch_s = std::vector<float>(m_numberOfStateVars * m_experienceReplay->getMaxUpdateBatchSize(), 0.0);
+	m_minibatch_Q_s = std::vector<float>(m_numberOfActions * m_experienceReplay->getMaxUpdateBatchSize(), 0.0);
 
 	m_pMinibatchExperienceTuples = new ExperienceTuple*[m_experienceReplay->getMaxUpdateBatchSize()];
 	m_pMinibatchChosenActionTargetValues = new double[m_experienceReplay->getMaxUpdateBatchSize()];
-	m_pMinibatchChosenActionIndex = new int[m_experienceReplay->getMaxUpdateBatchSize()];
+	m_pMinibatchActionId = new int[m_experienceReplay->getMaxUpdateBatchSize()];
 
 	CNTKWrapperLoader::Load();
-	m_pTargetQNetwork = m_predictionQNetwork.getNetwork()->cloneNonTrainable();
+	m_pTargetQNetwork = m_predictionQNetwork.getNetwork()->clone();
 }
 
 AsyncQLearning::~AsyncQLearning()
@@ -82,7 +82,7 @@ double AsyncQLearning::selectAction(const State * s, Action * a)
 	int resultingActionIndex = m_policy->selectAction(m_actionValuePredictionVector);
 
 	double actionValue = m_pGrid->getCenters()[resultingActionIndex];
-	a->set(m_outputActionIndex.get(), actionValue);
+	a->set(m_outputAction.get(), actionValue);
 
 	return 1.0;
 }
@@ -104,22 +104,22 @@ double AsyncQLearning::update(const State * s, const Action * a, const State * s
 		//get Q(s_p) for entire minibatch
 		SimionApp::get()->pSimGod->getGlobalStateFeatureMap()->getFeatures(m_pMinibatchExperienceTuples[i]->s_p, m_pStateOutFeatures);
 		for (int n = 0; n < m_pStateOutFeatures->m_numFeatures; n++)
-			m_minibatchStateVector[m_pStateOutFeatures->m_pFeatures[n].m_index + i*m_numberOfStateVars] = m_pStateOutFeatures->m_pFeatures[n].m_factor;
+			m_minibatch_s[m_pStateOutFeatures->m_pFeatures[n].m_index + i*m_numberOfStateVars] = m_pStateOutFeatures->m_pFeatures[n].m_factor;
 
-		m_pMinibatchChosenActionIndex[i] = m_pGrid->getClosestCenter(m_pMinibatchExperienceTuples[i]->a->get(m_outputActionIndex.get()));
+		m_pMinibatchActionId[i] = m_pGrid->getClosestCenter(m_pMinibatchExperienceTuples[i]->a->get(m_outputAction.get()));
 	}
 
 	std::unordered_map<std::string, std::vector<double>&> inputMap
-		= { { "state-input", m_minibatchStateVector } };
-	m_pTargetQNetwork->predict(inputMap, m_minibatchActionValuePredictionVector);
+		= { { "state-input", m_minibatch_s } };
+	m_pTargetQNetwork->predict(inputMap, m_minibatch_Q_s);
 
 
 	//create vector of target values for the entire minibatch
 	for (int i = 0; i < m_experienceReplay->getMaxUpdateBatchSize(); i++)
 	{
-		int argmaxQ = std::distance(m_minibatchActionValuePredictionVector.begin() + i*m_numberOfActions,
-			std::max_element(m_minibatchActionValuePredictionVector.begin() + i*m_numberOfActions, m_minibatchActionValuePredictionVector.begin() + (i + 1)*m_numberOfActions));
-		m_pMinibatchChosenActionTargetValues[i] = m_pMinibatchExperienceTuples[i]->r + gamma * m_minibatchActionValuePredictionVector[i*m_numberOfActions + argmaxQ];
+		int argmaxQ = std::distance(m_minibatch_Q_s.begin() + i*m_numberOfActions,
+			std::max_element(m_minibatch_Q_s.begin() + i*m_numberOfActions, m_minibatch_Q_s.begin() + (i + 1)*m_numberOfActions));
+		m_pMinibatchChosenActionTargetValues[i] = m_pMinibatchExperienceTuples[i]->r + gamma * m_minibatch_Q_s[i*m_numberOfActions + argmaxQ];
 	}
 
 
@@ -128,17 +128,17 @@ double AsyncQLearning::update(const State * s, const Action * a, const State * s
 	{
 		SimionApp::get()->pSimGod->getGlobalStateFeatureMap()->getFeatures(m_pMinibatchExperienceTuples[i]->s, m_pStateOutFeatures);
 		for (int n = 0; n < m_pStateOutFeatures->m_numFeatures; n++)
-			m_minibatchStateVector[m_pStateOutFeatures->m_pFeatures[n].m_index + i*m_numberOfStateVars] = m_pStateOutFeatures->m_pFeatures[n].m_factor;
+			m_minibatch_s[m_pStateOutFeatures->m_pFeatures[n].m_index + i*m_numberOfStateVars] = m_pStateOutFeatures->m_pFeatures[n].m_factor;
 	}
-	m_predictionQNetwork.getNetwork()->predict(inputMap, m_minibatchActionValuePredictionVector);
+	m_predictionQNetwork.getNetwork()->predict(inputMap, m_minibatch_Q_s);
 
 	for (int i = 0; i < m_experienceReplay->getMaxUpdateBatchSize(); i++)
-		m_minibatchActionValuePredictionVector[m_pMinibatchChosenActionIndex[i] + i*m_numberOfActions] = m_pMinibatchChosenActionTargetValues[i];
+		m_minibatch_Q_s[m_pMinibatchActionId[i] + i*m_numberOfActions] = m_pMinibatchChosenActionTargetValues[i];
 
 	//calculate the weights changes of the network finally
 	std::unordered_map<CNTK::Variable, CNTK::ValuePtr> gradients;
 	std::static_pointer_cast<Network>(m_predictionQNetwork.getNetwork())
-		->gradients(inputMap, m_minibatchActionValuePredictionVector, gradients);
+		->gradients(inputMap, m_minibatch_Q_s, gradients);
 
 	//aggregate the weights
 	for each (auto tuple in m_aggregatedGradients)

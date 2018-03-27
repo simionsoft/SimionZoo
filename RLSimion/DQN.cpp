@@ -13,18 +13,19 @@
 #include "../tools/CNTKWrapper/CNTKWrapper.h"
 #include <algorithm>
 #include "deep-vfa-policy.h"
+#include "config.h"
 
 DQN::~DQN()
 {
 	if (m_pMinibatchChosenActionTargetValues)
 		delete[] m_pMinibatchChosenActionTargetValues;
-	if (m_pMinibatchChosenActionIndex)
-		delete[] m_pMinibatchChosenActionIndex;
+	if (m_pMinibatchActionId)
+		delete[] m_pMinibatchActionId;
 
 	//We need to manually call the NN_DEFINITION destructor
 	m_pNNDefinition.destroy();
 	m_pTargetQNetwork->destroy();
-	m_pPredictionQNetwork->destroy();
+	m_pOnlineQNetwork->destroy();
 	CNTKWrapperLoader::UnLoad();
 }
 
@@ -34,7 +35,7 @@ DQN::DQN(ConfigNode* pConfigNode)
 	m_policy = CHILD_OBJECT_FACTORY<DiscreteDeepPolicy>(pConfigNode, "Policy", "The policy");
 	m_pNNDefinition = NN_DEFINITION(pConfigNode, "neural-network", "Neural Network Architecture");
 
-	m_outputActionIndex = ACTION_VARIABLE(pConfigNode, "Output-Action", "The output action variable");
+	m_outputAction = ACTION_VARIABLE(pConfigNode, "Output-Action", "The output action variable");
 
 	m_numberOfStateVars = SimionApp::get()->pWorld->getDynamicModel()->getStateDescriptor().size();
 	if (m_numberOfStateVars == 0)
@@ -43,14 +44,14 @@ DQN::DQN(ConfigNode* pConfigNode)
 	if (dynamic_cast<DiscreteActionFeatureMap*>(SimGod::getGlobalActionFeatureMap().get()) == nullptr)
 		Logger::logMessage(MessageType::Error, "The DiscreteEpsilonGreedyDeepPolicy requires a DiscreteActionFeatureMap as the action-feature-map.");
 	
-	m_pGrid = ((SingleDimensionDiscreteActionVariableGrid*)(((DiscreteActionFeatureMap*)SimGod::getGlobalActionFeatureMap().get())->returnGrid()[m_outputActionIndex.get()]));
+	m_pGrid = ((SingleDimensionDiscreteActionVariableGrid*)(((DiscreteActionFeatureMap*)SimGod::getGlobalActionFeatureMap().get())->returnGrid()[m_outputAction.get()]));
 }
 
 void DQN::deferredLoadStep()
 {
 	//heavy-weight loading and stuff that relies on the SimGod
 	m_pTargetQNetwork = m_pNNDefinition.buildNetwork();
-	m_pPredictionQNetwork = m_pTargetQNetwork->cloneNonTrainable();
+	m_pOnlineQNetwork = m_pTargetQNetwork->clone();
 
 	m_numberOfActions = m_pTargetQNetwork->getTotalSize();
 
@@ -61,19 +62,14 @@ void DQN::deferredLoadStep()
 	if (m_pGrid->getNumCenters() != m_numberOfActions)
 		Logger::logMessage(MessageType::Error, "Output of the network has not the same size as the discrete action grid has centers/discrete values");
 
-	m_stateVector = std::vector<double>(m_numberOfStateVars, 0.0);
-	m_actionValuePredictionVector = std::vector<double>(m_numberOfActions);
+	m_stateVector = vector<double>(m_numberOfStateVars, 0.0);
+	m_actionValuePredictionVector = vector<double>(m_numberOfActions);
 
-	m_minibatchStateVector = std::vector<double>(m_numberOfStateVars * m_minibatchSize, 0.0);
-	m_minibatchActionValuePredictionVector = std::vector<double>(m_numberOfActions * m_minibatchSize, 0.0);
+	m_minibatch_s = vector<double>(m_numberOfStateVars * m_minibatchSize, 0.0);
+	m_minibatch_Q_s = vector<double>(m_numberOfActions * m_minibatchSize, 0.0);
 
 	m_pMinibatchChosenActionTargetValues = new double[m_minibatchSize];
-	m_pMinibatchChosenActionIndex = new size_t[m_minibatchSize];
-}
-
-INetwork* DQN::getPredictionNetwork()
-{
-	return m_pPredictionQNetwork;
+	m_pMinibatchActionId = new size_t[m_minibatchSize];
 }
 
 double DQN::selectAction(const State * s, Action * a)
@@ -83,168 +79,123 @@ double DQN::selectAction(const State * s, Action * a)
 		m_stateVector[i] = s->get((int) i);
 	}
 
-	std::unordered_map<std::string, std::vector<double>&> inputMap =
+	unordered_map<string, vector<double>&> inputMap =
 		{ { "state-input", m_stateVector } };
 
-	getPredictionNetwork()->predict(inputMap, m_actionValuePredictionVector);
+	m_pOnlineQNetwork->predict(inputMap, m_actionValuePredictionVector);
 
 	size_t resultingActionIndex = m_policy->selectAction(m_actionValuePredictionVector);
 
 	double actionValue = m_pGrid->getCenters()[resultingActionIndex];
-	a->set(m_outputActionIndex.get(), actionValue);
+	a->set(m_outputAction.get(), actionValue);
 
 	return 1.0;
 }
 
+INetwork* DQN::getPredictionNetwork()
+{
+	return m_pOnlineQNetwork;
+}
+
 double DQN::update(const State * s, const Action * a, const State * s_p, double r, double behaviorProb)
 {
-	std::unordered_map<std::string, std::vector<double>&> inputMap =
-	{ { "state-input", m_minibatchStateVector } };
+	unordered_map<string, vector<double>&> minibatchInputMap =
+	{ { "state-input", m_minibatch_s } };
+	size_t numInputVariables = s->getNumVars(); //TODO: FIX THIS
+
+	vector<double> lastState = vector<double>(numInputVariables);
+	vector<double> Q_s_p = vector<double>(m_numberOfActions);
+	unordered_map<string, vector<double>&> lastStateInputMap =
+	{ { "state-input", lastState } };
+	vector<double> state = vector<double>(numInputVariables);
+	vector<double> Q_s = vector<double>(m_numberOfActions);
+	unordered_map<string, vector<double>&> stateInputMap =
+	{ { "state-input", state } };
 
 	if (SimionApp::get()->pSimGod->bReplayingExperience() && m_minibatchTuples<m_minibatchSize)
 	{
 		double gamma = SimionApp::get()->pSimGod->getGamma();
 
-		size_t numInputVariables = s->getNumVars(); //TODO: FIX THIS
 		//get Q(s_p) for the current tuple
 		for (size_t i = 0; i < numInputVariables; i++)
 		{
-			m_minibatchStateVector[m_minibatchTuples*numInputVariables + i] = s_p->get((int)i);
+			lastState[i] = s_p->get((int)i);
 		}
 		//store the index of the action taken
-		m_pMinibatchChosenActionIndex[m_minibatchTuples] =
-			m_pGrid->getClosestCenter(a->get(m_outputActionIndex.get()));
+		m_pMinibatchActionId[m_minibatchTuples] =
+			m_pGrid->getClosestCenter(a->get(m_outputAction.get()));
 
-		//estimate Q(s_p)
-		getPredictionNetwork()->predict(inputMap, m_minibatchActionValuePredictionVector);
+		//estimate Q(s_p; online-weights)
+		m_pOnlineQNetwork->predict(lastStateInputMap, Q_s_p);
 
 		//calculate and store the target for the current tuple
-		size_t argmaxQ =
-			std::distance(m_minibatchActionValuePredictionVector.begin() + m_minibatchTuples * m_numberOfActions,
-				std::max_element(m_minibatchActionValuePredictionVector.begin()
-					+ m_minibatchTuples * m_numberOfActions, m_minibatchActionValuePredictionVector.begin()
-					+ (m_minibatchTuples + 1)*m_numberOfActions));
+		size_t argmaxQ = distance(Q_s_p.begin(), max_element(Q_s_p.begin(), Q_s_p.end()));
+
+		//estimate Q(s_p, argMaxQ; target-weights or online-weights)
+		//THIS is the only real difference between DQN and Double-DQN
+		if (getPredictionNetwork() != m_pOnlineQNetwork)
+			getPredictionNetwork()->predict(lastStateInputMap, Q_s_p);
 
 		//calculate r + gamma*Q(s_p,a)
 		m_pMinibatchChosenActionTargetValues[m_minibatchTuples] =
-			r + gamma * m_minibatchActionValuePredictionVector[m_minibatchTuples*m_numberOfActions + argmaxQ];
+			r + gamma * Q_s_p[argmaxQ];
 
 		//estimate Q(s,a)
 		for (size_t i = 0; i < s->getNumVars(); i++)
 		{
-			m_minibatchStateVector[m_minibatchTuples*s->getNumVars() + i] = s->get((int)i);
+			state[i] = s->get((int)i);
+			m_minibatch_s[m_minibatchTuples*s->getNumVars() + i] = s->get((int)i);
 		}
 
 		//get the current value of Q(s) for every action
-		getPredictionNetwork()->predict(inputMap, m_minibatchActionValuePredictionVector);
+		m_pOnlineQNetwork->predict(stateInputMap, Q_s);
+		for (size_t i = 0; i < m_numberOfActions; i++)
+		{
+			m_minibatch_Q_s[m_minibatchTuples * m_numberOfActions + i] =
+				Q_s[i];
+		}
 
 		//change only the target for the action in the tuple
-		m_minibatchActionValuePredictionVector
-			[m_pMinibatchChosenActionIndex[m_minibatchTuples] + m_minibatchTuples * m_numberOfActions] =
+		m_minibatch_Q_s
+			[m_pMinibatchActionId[m_minibatchTuples] + m_minibatchTuples * m_numberOfActions] =
 			m_pMinibatchChosenActionTargetValues[m_minibatchTuples];
 
 		m_minibatchTuples++;
 	}
 	//We only train the network in direct-experience updates to simplify mini-batching
-	else if (m_minibatchTuples==m_minibatchSize)
+	else if (m_minibatchTuples == m_minibatchSize)
 	{
 		SimGod* pSimGod = SimionApp::get()->pSimGod.ptr();
 
 		//update the network finally
-		m_pTargetQNetwork->train(inputMap, m_minibatchActionValuePredictionVector);
+		m_pTargetQNetwork->train(minibatchInputMap, m_minibatch_Q_s);
 		m_minibatchTuples = 0;
 
 		//update the prediction network
 		if (pSimGod->bUpdateFrozenWeightsNow())
 		{
-			if (m_pPredictionQNetwork)
-				m_pPredictionQNetwork->destroy();
-			m_pPredictionQNetwork = m_pTargetQNetwork->cloneNonTrainable();
+			if (m_pOnlineQNetwork)
+				m_pOnlineQNetwork->destroy();
+			m_pOnlineQNetwork = m_pTargetQNetwork->clone();
 		}
 	}
 	return 1.0; //TODO: Estimate the TD-error??
 }
-/*
+
+
+DoubleDQN::DoubleDQN(ConfigNode* pParameters): DQN (pParameters)
+{}
+
 INetwork* DoubleDQN::getPredictionNetwork()
 {
-	if (SimionApp::get()->pSimGod->getTargetFunctionUpdateFreq())
-	{
-		if (m_pPredictionQNetwork == nullptr)
-			m_pPredictionQNetwork = m_pTargetQNetwork->cloneNonTrainable();
-		return m_pPredictionQNetwork;
-	}
-	else
-		Logger::logMessage(MessageType::Error, "Freeze-Target-Function is disabled, but the Double-DQN algorithm relies on this feature.");
+	return m_pTargetQNetwork;
 }
 
-double DoubleDQN::update(const State * s, const Action * a, const State * s_p, double r, double behaviorProb)
-{
-	double gamma = SimionApp::get()->pSimGod->getGamma();
-
-	m_experienceReplay->addTuple(s, a, s_p, r, 1.0);
-
-	//don't update anything if the experience replay buffer does not contain enough elements for at least one minibatch
-	if (m_experienceReplay->getUpdateBatchSize() != m_experienceReplay->getUpdateBatchSize())
-		return 0.0;
-
-	for (int i = 0; i < m_experienceReplay->getUpdateBatchSize(); i++)
-	{
-		m_pMinibatchExperienceTuples[i] = m_experienceReplay->getRandomTupleFromBuffer();
-
-		//get Q(s_p) for entire minibatch
-		SimionApp::get()->pSimGod->getGlobalStateFeatureMap()->getFeatures(m_pMinibatchExperienceTuples[i]->s_p, m_pStateOutFeatures);
-		for (int n = 0; n < m_pStateOutFeatures->m_numFeatures; n++)
-			m_minibatchStateVector[m_pStateOutFeatures->m_pFeatures[n].m_index + i * m_numberOfStateVars] = m_pStateOutFeatures->m_pFeatures[n].m_factor;
-
-		m_pMinibatchChosenActionIndex[i] = m_pGrid->getClosestCenter(m_pMinibatchExperienceTuples[i]->a->get(m_outputActionIndex.get()));
-	}
-
-	std::unordered_map<std::string, std::vector<double>&> inputMap =
-		{ { "state-input", m_minibatchStateVector } };
-	//this is the ONLY difference compared to normal DQN algorithm
-	m_pTargetQNetwork->predict(inputMap, m_minibatchActionValuePredictionVector);
-
-
-	//create vector of target values for the entire minibatch
-	for (int i = 0; i < m_experienceReplay->getUpdateBatchSize(); i++)
-	{
-		int argmaxQ = std::distance(m_minibatchActionValuePredictionVector.begin() + i * m_numberOfActions,
-			std::max_element(m_minibatchActionValuePredictionVector.begin() + i * m_numberOfActions, m_minibatchActionValuePredictionVector.begin() + (i + 1)*m_numberOfActions));
-		m_pMinibatchChosenActionTargetValues[i] = m_pMinibatchExperienceTuples[i]->r + gamma * m_minibatchActionValuePredictionVector[i*m_numberOfActions + argmaxQ];
-	}
-
-
-	//get Q(s) for entire minibatch
-	for (int i = 0; i < m_experienceReplay->getUpdateBatchSize(); i++)
-	{
-		SimionApp::get()->pSimGod->getGlobalStateFeatureMap()->getFeatures(m_pMinibatchExperienceTuples[i]->s, m_pStateOutFeatures);
-		for (int n = 0; n < m_pStateOutFeatures->m_numFeatures; n++)
-			m_minibatchStateVector[m_pStateOutFeatures->m_pFeatures[n].m_index + i * m_numberOfStateVars] = m_pStateOutFeatures->m_pFeatures[n].m_factor;
-	}
-	getPredictionNetwork()->predict(inputMap, m_minibatchActionValuePredictionVector);
-
-	for (int i = 0; i < m_experienceReplay->getUpdateBatchSize(); i++)
-		m_minibatchActionValuePredictionVector[m_pMinibatchChosenActionIndex[i] + i * m_numberOfActions] = m_pMinibatchChosenActionTargetValues[i];
-
-	//update the network finally
-	m_pTargetQNetwork->train(inputMap, m_minibatchActionValuePredictionVector);
-
-	if (SimionApp::get()->pSimGod->getTargetFunctionUpdateFreq())
-	{
-		if (SimionApp::get()->pExperiment->getExperimentStep() % SimionApp::get()->pSimGod->getTargetFunctionUpdateFreq() == 0)
-		{
-			delete m_pPredictionQNetwork;
-			m_pPredictionQNetwork = m_pTargetQNetwork->cloneNonTrainable();
-		}
-	}
-
-	return 0.0;
-}
-
+/*
 #include "../tools/CNTKWrapper/CNTKLibrary.h"
 
 //quick fix to make it compile. Will fix it later
-std::unordered_map<CNTK::Parameter, CNTK::FunctionPtr> m_weightTransitions;
+unordered_map<CNTK::Parameter, CNTK::FunctionPtr> m_weightTransitions;
 
 
 void DDPG::buildModelsParametersTransitionGraph()
@@ -284,7 +235,7 @@ void DDPG::performModelsParametersTransition()
 			auto weightTransition = m_weightTransitions[targetParam];
 
 			CNTK::ValuePtr weightTransitionOutputValue;
-			std::unordered_map<CNTK::Variable, CNTK::ValuePtr> outputs = { { weightTransition->Output(), weightTransitionOutputValue } };
+			unordered_map<CNTK::Variable, CNTK::ValuePtr> outputs = { { weightTransition->Output(), weightTransitionOutputValue } };
 			weightTransition->Evaluate({}, outputs, CNTK::DeviceDescriptor::CPUDevice());
 			weightTransitionOutputValue = outputs[weightTransition->Output()];
 
@@ -304,7 +255,7 @@ DDPG::DDPG(ConfigNode * pConfigNode)
 	m_predictionPolicyNetwork = NN_DEFINITION(pConfigNode, "policy-neural-network", "Neural Network Architecture of Actor (mu)");
 	m_policyNoise = CHILD_OBJECT_FACTORY<Noise>(pConfigNode, "noise", "Policy Noise", false);
 	m_tau = DOUBLE_PARAM(pConfigNode, "tau", "tau", 0.001);
-	m_outputActionIndex = ACTION_VARIABLE(pConfigNode, "Output-Action", "The output action variable");
+	m_outputAction = ACTION_VARIABLE(pConfigNode, "Output-Action", "The output action variable");
 
 	m_pStateFeatureList = new FeatureList("state-input");
 
@@ -314,15 +265,15 @@ DDPG::DDPG(ConfigNode * pConfigNode)
 
 	m_pMinibatchExperienceTuples = new ExperienceTuple*[m_experienceReplay->getUpdateBatchSize()];
 
-	m_stateVector = std::vector<double>(m_numberOfStateVars);
-	m_actionPredictionVector = std::vector<double>(1);
+	m_stateVector = vector<double>(m_numberOfStateVars);
+	m_actionPredictionVector = vector<double>(1);
 
-	m_minibatchStateVector = std::vector<double>(m_numberOfStateVars * m_experienceReplay->getUpdateBatchSize(), 0.0);
-	m_minibatchActionVector = std::vector<double>(1 * m_experienceReplay->getUpdateBatchSize(), 0.0);
-	m_minibatchQVector = std::vector<double>(1 * m_experienceReplay->getUpdateBatchSize(), 0.0);
+	m_minibatch_s = vector<double>(m_numberOfStateVars * m_experienceReplay->getUpdateBatchSize(), 0.0);
+	m_minibatchActionVector = vector<double>(1 * m_experienceReplay->getUpdateBatchSize(), 0.0);
+	m_minibatchQVector = vector<double>(1 * m_experienceReplay->getUpdateBatchSize(), 0.0);
 
-	m_pTargetQNetwork = m_predictionQNetwork.getNetwork()->cloneNonTrainable();
-	m_pTargetPolicyNetwork = m_predictionPolicyNetwork.getNetwork()->cloneNonTrainable();
+	m_pTargetQNetwork = m_predictionQNetwork.getNetwork()->clone();
+	m_pTargetPolicyNetwork = m_predictionPolicyNetwork.getNetwork()->clone();
 
 	buildModelsParametersTransitionGraph();
 }
@@ -334,13 +285,13 @@ double DDPG::selectAction(const State * s, Action * a)
 	for (int i = 0; i < m_pStateFeatureList->m_numFeatures; i++)
 		m_stateVector[m_pStateFeatureList->m_pFeatures[i].m_index] = m_pStateFeatureList->m_pFeatures[i].m_factor;
 
-	std::unordered_map<std::string, std::vector<double>&> inputMap = 
+	unordered_map<string, vector<double>&> minibatchInputMap = 
 		{ { "state-input", m_stateVector } };
-	m_predictionPolicyNetwork.getNetwork()->predict(inputMap, m_actionPredictionVector);
+	m_predictionPolicyNetwork.getNetwork()->predict(minibatchInputMap, m_actionPredictionVector);
 
 	double actionValue = m_actionPredictionVector[0];
 	actionValue += m_policyNoise->getSample();
-	a->set(m_outputActionIndex.get(), actionValue);
+	a->set(m_outputAction.get(), actionValue);
 
 	return 1.0;
 }
@@ -378,38 +329,38 @@ void DDPG::updateActor()
 		//get Q(s_p) for entire minibatch
 		SimionApp::get()->pSimGod->getGlobalStateFeatureMap()->getFeatures(m_pMinibatchExperienceTuples[i]->s, m_pStateFeatureList);
 		for (int n = 0; n < m_pStateFeatureList->m_numFeatures; n++)
-			m_minibatchStateVector[m_pStateFeatureList->m_pFeatures[n].m_index + i * m_numberOfStateVars] = m_pStateFeatureList->m_pFeatures[n].m_factor;
+			m_minibatch_s[m_pStateFeatureList->m_pFeatures[n].m_index + i * m_numberOfStateVars] = m_pStateFeatureList->m_pFeatures[n].m_factor;
 
-		m_minibatchActionVector[i] = m_pMinibatchExperienceTuples[i]->a->get(m_outputActionIndex.get());
+		m_minibatchActionVector[i] = m_pMinibatchExperienceTuples[i]->a->get(m_outputAction.get());
 	}
 
-	CNTK::ValuePtr stateInputValue = CNTK::Value::CreateBatch(m_predictionQNetwork.getNetwork()->getInputs()[0]->getInputVariable().Shape(), m_minibatchStateVector, CNTK::DeviceDescriptor::CPUDevice());
+	CNTK::ValuePtr stateInputValue = CNTK::Value::CreateBatch(m_predictionQNetwork.getNetwork()->getInputs()[0]->getInputVariable().Shape(), m_minibatch_s, CNTK::DeviceDescriptor::CPUDevice());
 
 	//get gradient of Q
 	CNTK::ValuePtr chosenActionValuePtr;
-	std::unordered_map<CNTK::Variable, CNTK::ValuePtr> getChoosenActionInputMap =
+	unordered_map<CNTK::Variable, CNTK::ValuePtr> getChoosenActionInputMap =
 	{
 		{ m_predictionPolicyNetwork.getNetwork()->getInputs()[0]->getInputVariable()
 		, stateInputValue }
 	};
 
-	std::unordered_map<CNTK::Variable, CNTK::ValuePtr> chosenActionOutputMap = { { modelPolicyOutputPtr, chosenActionValuePtr } };
+	unordered_map<CNTK::Variable, CNTK::ValuePtr> chosenActionOutputMap = { { modelPolicyOutputPtr, chosenActionValuePtr } };
 	m_predictionPolicyNetwork.getNetwork()->getNetworkFunctionPtr()->Evaluate(getChoosenActionInputMap, chosenActionOutputMap, CNTK::DeviceDescriptor::CPUDevice());
 	chosenActionValuePtr = chosenActionOutputMap[modelPolicyOutputPtr];
 
-	std::unordered_map<CNTK::Variable, CNTK::ValuePtr> qGradientActionArgument = { { m_predictionQNetwork.getNetwork()->getInputs()[0]->getInputVariable(), stateInputValue } ,
+	unordered_map<CNTK::Variable, CNTK::ValuePtr> qGradientActionArgument = { { m_predictionQNetwork.getNetwork()->getInputs()[0]->getInputVariable(), stateInputValue } ,
 		{ m_predictionQNetwork.getNetwork()->getInputs()[1]->getInputVariable(), chosenActionValuePtr } };
-	std::unordered_map<CNTK::Variable, CNTK::ValuePtr> qGradientOutputMap =
+	unordered_map<CNTK::Variable, CNTK::ValuePtr> qGradientOutputMap =
 		{ { m_predictionQNetwork.getNetwork()->getInputs()[1]->getInputVariable(), nullptr } };
 	modelQOutputPtr->Gradients(qGradientActionArgument, qGradientOutputMap, CNTK::DeviceDescriptor::CPUDevice());
 
 	//get the gradient of mu/the policy
 	//forward propagation of values
 	//therefore, fill up the input variables
-	std::unordered_map<CNTK::Variable, CNTK::ValuePtr> policyInputMap;
+	unordered_map<CNTK::Variable, CNTK::ValuePtr> policyInputMap;
 	policyInputMap[m_predictionPolicyNetwork.getNetwork()->getInputs()[0]->getInputVariable()] = stateInputValue;
 
-	std::unordered_map<CNTK::Variable, CNTK::ValuePtr> policyOutputMap;
+	unordered_map<CNTK::Variable, CNTK::ValuePtr> policyOutputMap;
 	policyOutputMap[m_predictionPolicyNetwork.getNetwork()->getOutputsFunctionPtr()[0]->Output()] = nullptr;
 
 	//perform now the forward propagation
@@ -418,7 +369,7 @@ void DDPG::updateActor()
 
 	CNTK::ValuePtr rootGradientValue = qGradientOutputMap[m_predictionQNetwork.getNetwork()->getInputs()[1]->getInputVariable()];
 
-	std::unordered_map<CNTK::Variable, CNTK::ValuePtr> parameterGradients;
+	unordered_map<CNTK::Variable, CNTK::ValuePtr> parameterGradients;
 	for (const auto& parameter : modelPolicyOutputPtr->Parameters())
 		//This is not working: set the gradients to the Q gradient to multipy them with the current value
 		//therefore, use nullptr
@@ -427,7 +378,7 @@ void DDPG::updateActor()
 	modelPolicyOutputPtr->Backward(backPropState, { { modelPolicyOutputPtr, rootGradientValue } }, parameterGradients);
 
 	//update the parameters of the policy now
-	std::unordered_map<CNTK::Parameter, CNTK::NDArrayViewPtr> gradients;
+	unordered_map<CNTK::Parameter, CNTK::NDArrayViewPtr> gradients;
 	for (const auto& parameter : modelPolicyOutputPtr->Parameters())
 		gradients[parameter] = parameterGradients[parameter]->Data();
 
@@ -456,21 +407,21 @@ void DDPG::updateCritic()
 	{
 		SimionApp::get()->pSimGod->getGlobalStateFeatureMap()->getFeatures(m_pMinibatchExperienceTuples[i]->s_p, m_pStateFeatureList);
 		for (int n = 0; n < m_pStateFeatureList->m_numFeatures; n++)
-			m_minibatchStateVector[m_pStateFeatureList->m_pFeatures[n].m_index + i * m_numberOfStateVars] = m_pStateFeatureList->m_pFeatures[n].m_factor;
+			m_minibatch_s[m_pStateFeatureList->m_pFeatures[n].m_index + i * m_numberOfStateVars] = m_pStateFeatureList->m_pFeatures[n].m_factor;
 	}
 
 	//calculate mu'(s_p)
-	std::unordered_map<std::string, vector<double>&> inputMap =
-		{ { "state-input", m_minibatchStateVector } };
-	m_pTargetPolicyNetwork->predict(inputMap, m_minibatchActionVector);
+	unordered_map<string, vector<double>&> minibatchInputMap =
+		{ { "state-input", m_minibatch_s } };
+	m_pTargetPolicyNetwork->predict(minibatchInputMap, m_minibatchActionVector);
 
 	//calculate Q'(mu'(s_p)) now
-	inputMap = 
+	minibatchInputMap = 
 		{ 
-			{ "state-input", m_minibatchStateVector }
+			{ "state-input", m_minibatch_s }
 			,{ "action-input", m_minibatchActionVector } 
 		};
-	m_pTargetQNetwork->predict(inputMap, m_minibatchQVector);
+	m_pTargetQNetwork->predict(minibatchInputMap, m_minibatchQVector);
 
 	//calculate y_i
 	for (int i = 0; i < m_experienceReplay->getUpdateBatchSize(); i++)
@@ -481,16 +432,16 @@ void DDPG::updateCritic()
 	//update the network finally
 	for (int i = 0; i < m_experienceReplay->getUpdateBatchSize(); i++)
 	{
-		m_minibatchActionVector[i] = m_pMinibatchExperienceTuples[i]->a->get(m_outputActionIndex.get());
+		m_minibatchActionVector[i] = m_pMinibatchExperienceTuples[i]->a->get(m_outputAction.get());
 	}
 
-	inputMap = 
+	minibatchInputMap = 
 	{ 
-		{ "state-input", m_minibatchStateVector }
+		{ "state-input", m_minibatch_s }
 		,{ "action-input", m_minibatchActionVector }
 	};
 
-	m_predictionQNetwork.getNetwork()->train(inputMap, m_minibatchQVector);
+	m_predictionQNetwork.getNetwork()->train(minibatchInputMap, m_minibatchQVector);
 }
 */
 #endif

@@ -10,7 +10,7 @@
 using namespace CNTK;
 using namespace std;
 class Link;
-class OptimizerSetting;
+class OptimizerSettings;
 
 namespace CNTKWrapper
 {
@@ -27,7 +27,7 @@ namespace CNTKWrapper
 
 	CNTK::FunctionPtr BatchNormalizationLayer(const Link * pLink, vector<const Link*> dependencies, CNTK::DeviceDescriptor & device);
 	CNTK::FunctionPtr LinearTransformationLayer(const Link * pLink, vector<const Link*> dependencies, CNTK::DeviceDescriptor & device);
-	CNTK::TrainerPtr CreateOptimizer(const OptimizerSetting * pOptimizerSetting, CNTK::FunctionPtr& output, CNTK::FunctionPtr& lossFunction);
+	CNTK::TrainerPtr CreateOptimizer(const OptimizerSettings * pOptimizerSetting, CNTK::FunctionPtr& output, CNTK::FunctionPtr& lossFunction);
 
 	namespace Internal
 	{

@@ -38,7 +38,7 @@ public:
 class LQRController : public Controller
 {
 	MULTI_VALUE<LQRGain> m_gains;
-	ACTION_VARIABLE m_outputActionIndex;
+	ACTION_VARIABLE m_outputAction;
 public:
 	LQRController(ConfigNode* pConfigNode);
 	virtual ~LQRController();
@@ -55,7 +55,7 @@ class PIDController : public Controller
 	CHILD_OBJECT_FACTORY<NumericValue> m_pKP;
 	CHILD_OBJECT_FACTORY<NumericValue> m_pKI;
 	CHILD_OBJECT_FACTORY<NumericValue> m_pKD;
-	ACTION_VARIABLE m_outputActionIndex;
+	ACTION_VARIABLE m_outputAction;
 	double m_intError;
 	STATE_VARIABLE m_errorVariableIndex;
 public:

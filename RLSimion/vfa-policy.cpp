@@ -29,7 +29,7 @@ std::shared_ptr<Policy> Policy::getInstance(ConfigNode* pConfigNode)
 
 Policy::Policy(ConfigNode* pConfigNode)
 {
-	m_outputActionIndex = ACTION_VARIABLE(pConfigNode, "Output-Action", "The output action variable");
+	m_outputAction = ACTION_VARIABLE(pConfigNode, "Output-Action", "The output action variable");
 
 	//only DiscreteActionFeatureMap is supported for the discrete mode
 	if (SimGod::getGlobalActionFeatureMap().get() != NULL)
@@ -63,9 +63,9 @@ StochasticUniformPolicy::StochasticUniformPolicy(ConfigNode* pConfigNode)
 	: StochasticPolicy(pConfigNode)
 {
 	Descriptor& pActionDescriptor = World::getDynamicModel()->getActionDescriptor();
-	m_minActionValue = pActionDescriptor[m_outputActionIndex.get()].getMin();
-	m_maxActionValue = pActionDescriptor[m_outputActionIndex.get()].getMax();
-	m_action_width = pActionDescriptor[m_outputActionIndex.get()].getRangeWidth();
+	m_minActionValue = pActionDescriptor[m_outputAction.get()].getMin();
+	m_maxActionValue = pActionDescriptor[m_outputAction.get()].getMax();
+	m_action_width = pActionDescriptor[m_outputAction.get()].getRangeWidth();
 }
 
 StochasticUniformPolicy::~StochasticUniformPolicy()
@@ -79,7 +79,7 @@ void StochasticUniformPolicy::getParameterGradient(const State* s, const Action*
 
 double StochasticUniformPolicy::selectAction(const State *s, Action *a)
 {
-	int actionIndex = m_outputActionIndex.get();
+	int actionIndex = m_outputAction.get();
 
 	//values for the case of a continuous action space
 	double randomValue = getRandomValue() * m_action_width + m_minActionValue;
@@ -99,7 +99,7 @@ double StochasticUniformPolicy::selectAction(const State *s, Action *a)
 
 double StochasticUniformPolicy::getProbability(const State* s, const Action* a, bool bStochastic)
 {
-	int actionIndex = m_outputActionIndex.get();
+	int actionIndex = m_outputAction.get();
 
 	//values for the case of a continuous action space
 	double probability = 1.0 / m_action_width * PROBABILITY_INTEGRATION_WIDTH;
@@ -140,8 +140,8 @@ DeterministicPolicyGaussianNoise::DeterministicPolicyGaussianNoise(ConfigNode* p
 		, "Parameters of the noise used as exploration");
 
 	Descriptor& pActionDescriptor = World::getDynamicModel()->getActionDescriptor();
-	m_pDeterministicVFA->saturateOutput(pActionDescriptor[m_outputActionIndex.get()].getMin()
-		, pActionDescriptor[m_outputActionIndex.get()].getMax());
+	m_pDeterministicVFA->saturateOutput(pActionDescriptor[m_outputAction.get()].getMin()
+		, pActionDescriptor[m_outputAction.get()].getMax());
 
 	m_lastNoise = 0.0;
 	SimionApp::get()->pLogger->addVarToStats<double>("Policy", "Noise", m_lastNoise);
@@ -158,7 +158,7 @@ void DeterministicPolicyGaussianNoise::getParameterGradient(const State* s, cons
 
 	double sigma = std::max(0.0000001, m_pExpNoise->getVariance());
 
-	double noise = a->get(m_outputActionIndex.get())
+	double noise = a->get(m_outputAction.get())
 		- m_pDeterministicVFA->get((const FeatureList*)pOutGradient);
 
 	double unscaled_noise = m_pExpNoise->unscale(noise);
@@ -175,7 +175,7 @@ double DeterministicPolicyGaussianNoise::selectAction(const State *s, Action *a)
 
 	double output = m_pDeterministicVFA->get(s);
 
-	a->set(m_outputActionIndex.get(), output + m_lastNoise);
+	a->set(m_outputAction.get(), output + m_lastNoise);
 
 	if (!SimionApp::get()->pExperiment->isEvaluationEpisode())
 		return m_pExpNoise->getSampleProbability(m_lastNoise);
@@ -187,7 +187,7 @@ double DeterministicPolicyGaussianNoise::getProbability(const State* s, const Ac
 	double noise;
 	if (SimionApp::get()->pSimGod->useSampleImportanceWeights())
 	{
-		noise = a->get(m_outputActionIndex.get()) - m_pDeterministicVFA->get(s);
+		noise = a->get(m_outputAction.get()) - m_pDeterministicVFA->get(s);
 		return m_pExpNoise->getSampleProbability(noise, !bStochastic);
 	}
 	return 1.0;
@@ -255,7 +255,7 @@ double StochasticGaussianPolicy::selectAction(const State *s, Action *a)
 	}
 
 	//clip the output between the min and max value of the action space
-	unsigned int actionIndex = m_outputActionIndex.get();
+	unsigned int actionIndex = m_outputAction.get();
 	output = clip(output, a->getProperties()[actionIndex].getMin(), a->getProperties()[actionIndex].getMax());
 
 	//disctingtion between continuous and discrete action variables
@@ -290,7 +290,7 @@ double StochasticGaussianPolicy::getProbability(const State *s, const State *a, 
 
 	if (bStochastic && SimionApp::get()->pSimGod->useSampleImportanceWeights())
 	{
-		unsigned int actionIndex = m_outputActionIndex.get();
+		unsigned int actionIndex = m_outputAction.get();
 		double value = a->get(actionIndex);
 
 		if (m_discreteActionSpace)
@@ -323,7 +323,7 @@ void StochasticGaussianPolicy::getParameterGradient(const State* s, const Action
 	double sigma = exp(m_pSigmaVFA->get(m_pSigmaFeatures));
 
 	//a. Grad_u_mu pi(a|s)/pi(a|s) = (a - mu(s)) / sigma(s)^2 * x_mu(s)
-	double noise = a->get(m_outputActionIndex.get()) - mean;
+	double noise = a->get(m_outputAction.get()) - mean;
 
 	double factor = noise / (sigma*sigma);
 	pOutGradient->addFeatureList(m_pMeanFeatures, factor);

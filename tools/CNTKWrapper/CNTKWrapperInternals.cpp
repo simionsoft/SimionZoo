@@ -200,7 +200,7 @@ CNTK::FunctionPtr CNTKWrapper::LinearTransformationLayer(const Link * pLink, vec
 
 }
 
-CNTK::TrainerPtr CNTKWrapper::CreateOptimizer(const OptimizerSetting * pOptimizerSetting, CNTK::FunctionPtr& output, CNTK::FunctionPtr& lossFunction)
+CNTK::TrainerPtr CNTKWrapper::CreateOptimizer(const OptimizerSettings * pOptimizerSetting, CNTK::FunctionPtr& output, CNTK::FunctionPtr& lossFunction)
 {
 
 	CNTK::LearnerPtr pLearner;
