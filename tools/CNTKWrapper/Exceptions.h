@@ -9,8 +9,8 @@ private:
 	std::string m_elementName;
 public:
 	ProblemParserElementNotFound(std::string elementName)
-		: std::runtime_error("Error parsing the XML file of the Problem. "
-			"Error parsing the XML file of the Problem. "
+		: std::runtime_error("Error parsing the XML file of the NetworkDefinition. "
+			"Error parsing the XML file of the NetworkDefinition. "
 			"Element \"" + elementName + "\" not found.")
 	{
 		m_elementName = elementName;
@@ -26,8 +26,8 @@ private:
 	std::string m_elementName;
 public:
 	ProblemParserElementValueNotValid(std::string elementName)
-		: std::runtime_error("Error parsing the XML file of the Problem. "
-			"Error parsing the XML file of the Problem. "
+		: std::runtime_error("Error parsing the XML file of the NetworkDefinition. "
+			"Error parsing the XML file of the NetworkDefinition. "
 			"Value of element \"" + elementName + "\" is not valid.")
 	{
 		m_elementName = elementName;

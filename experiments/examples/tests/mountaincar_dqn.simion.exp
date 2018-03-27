@@ -56,6 +56,14 @@
 		<Simion>
 			<Type>
 		<DQN>
+                  <Input-State>
+                    <Input-State>position</Input-State>
+                  </Input-State>
+                  <Input-State>
+                    <Input-State>velocity</Input-State>
+                  </Input-State>
+		  <Output-Action>pedal</Output-Action>
+		  <Num-Action-Steps>3</Num-Action-Steps>
 		<neural-network>
 		  <Problem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
 		    <Inputs>
@@ -127,7 +135,6 @@
 		    </NetworkArchitecture>
 		  </Problem>
 		</neural-network>
-		<Output-Action>pedal</Output-Action>
 		<Policy>
 			<Policy>
 		<Discrete-Epsilon-Greedy-Deep-Policy>

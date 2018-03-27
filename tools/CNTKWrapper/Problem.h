@@ -8,19 +8,22 @@ class InputData;
 class Network;
 class LinkConnection;
 class OptimizerSettings;
+class Action;
 
-class Problem: public IProblem
+class NetworkDefinition: public INetworkDefinition
 {
 protected:
-	std::vector<InputData*> m_inputs;
+	vector<unsigned int> m_inputStateVars;
+
+	vector<InputData*> m_inputs;
 	NetworkArchitecture* m_pNetworkArchitecture;
 	LinkConnection* m_pOutput;
 	OptimizerSettings* m_pOptimizerSetting;
 	
 public:
-	Problem();
-	~Problem();
-	Problem(tinyxml2::XMLElement* pNode);
+	NetworkDefinition();
+	~NetworkDefinition();
+	NetworkDefinition(tinyxml2::XMLElement* pNode);
 
 	void destroy();
 
@@ -29,10 +32,14 @@ public:
 	const LinkConnection* getOutput() const { return m_pOutput; }
 	const OptimizerSettings* getOptimizerSettings() const { return m_pOptimizerSetting; }
 
-	static Problem* getInstance(tinyxml2::XMLElement* pNode);
+	static NetworkDefinition* getInstance(tinyxml2::XMLElement* pNode);
 
-	static Problem* loadFromFile(std::string fileName);
-	static Problem* loadFromString(std::string content);
+	static NetworkDefinition* loadFromFile(std::string fileName);
+	static NetworkDefinition* loadFromString(std::string content);
+
+	void addInputStateVar(unsigned int stateVarId);
+	void setOutputAction(Action* a, unsigned int actionId, unsigned int numSteps);
+	unsigned int getClosestAction(double action);
 
 	INetwork* createNetwork();
 };

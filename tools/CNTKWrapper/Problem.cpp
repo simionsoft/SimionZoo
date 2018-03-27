@@ -13,7 +13,7 @@
 #include "OptimizerSetting.h"
 #include "Exceptions.h"
 
-Problem::Problem(tinyxml2::XMLElement * pParentNode)
+NetworkDefinition::NetworkDefinition(tinyxml2::XMLElement * pParentNode)
 {
 	//load architecture
 	tinyxml2::XMLElement *pNode = pParentNode->FirstChildElement(XML_TAG_NETWORK_ARCHITECTURE);
@@ -45,28 +45,28 @@ Problem::Problem(tinyxml2::XMLElement * pParentNode)
 	m_pOptimizerSetting = OptimizerSettings::getInstance(pNode);
 }
 
-Problem::Problem()
+NetworkDefinition::NetworkDefinition()
 {
 }
 
-Problem::~Problem()
+NetworkDefinition::~NetworkDefinition()
 {
 }
 
-void Problem::destroy()
+void NetworkDefinition::destroy()
 {
 	delete this;
 }
 
-Problem * Problem::getInstance(tinyxml2::XMLElement * pNode)
+NetworkDefinition * NetworkDefinition::getInstance(tinyxml2::XMLElement * pNode)
 {
 	if (!strcmp(pNode->Name(), XML_TAG_Problem))
-		return new Problem(pNode);
+		return new NetworkDefinition(pNode);
 
 	return nullptr;
 }
 
-Problem * Problem::loadFromFile(std::string fileName)
+NetworkDefinition * NetworkDefinition::loadFromFile(std::string fileName)
 {
 	tinyxml2::XMLDocument doc;
 	doc.LoadFile(fileName.c_str());
@@ -76,14 +76,14 @@ Problem * Problem::loadFromFile(std::string fileName)
 		tinyxml2::XMLElement *pRoot = doc.RootElement();
 		if (pRoot)
 		{
-			return Problem::getInstance(pRoot);
+			return NetworkDefinition::getInstance(pRoot);
 		}
 	}
 
 	return nullptr;
 }
 
-Problem * Problem::loadFromString(std::string content)
+NetworkDefinition * NetworkDefinition::loadFromString(std::string content)
 {
 	tinyxml2::XMLDocument doc;
 
@@ -92,14 +92,14 @@ Problem * Problem::loadFromString(std::string content)
 		tinyxml2::XMLElement *pRoot = doc.RootElement();
 		if (pRoot)
 		{
-			return Problem::getInstance(pRoot);
+			return NetworkDefinition::getInstance(pRoot);
 		}
 	}
 
 	return nullptr;
 }
 
-INetwork * Problem::createNetwork()
+INetwork * NetworkDefinition::createNetwork()
 {
 	Network* result = new Network();
 	result->setParent(this);
@@ -218,6 +218,7 @@ INetwork * Problem::createNetwork()
 		}
 	}
 
+	result->buildQNetwork();
 	return result;
 }
 

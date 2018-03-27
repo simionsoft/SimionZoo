@@ -6,13 +6,13 @@ using namespace std;
 
 class Chain;
 class Link;
-class Problem;
+class NetworkDefinition;
 
 class NetworkArchitecture
 {
 protected:
 	vector<Chain*> m_chains;
-	Problem* m_pParentProblem;
+	NetworkDefinition* m_pParentProblem;
 	NetworkArchitecture(tinyxml2::XMLElement* pNode);
 	
 public:
@@ -21,8 +21,8 @@ public:
 
 	const vector<Chain*> getChains() { return m_chains; }
 
-	void setParentProblem(Problem* pParentProblem) { m_pParentProblem = pParentProblem; }
-	const Problem* getParentProblem() const { return m_pParentProblem; }
+	void setParentProblem(NetworkDefinition* pParentProblem) { m_pParentProblem = pParentProblem; }
+	const NetworkDefinition* getParentProblem() const { return m_pParentProblem; }
 
 	static NetworkArchitecture* getInstance(tinyxml2::XMLElement* pNode);
 

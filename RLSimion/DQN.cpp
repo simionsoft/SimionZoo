@@ -31,11 +31,14 @@ DQN::~DQN()
 
 DQN::DQN(ConfigNode* pConfigNode)
 {
+	m_inputState = MULTI_VALUE_VARIABLE<STATE_VARIABLE>(pConfigNode, "Input-State", "Set of variables used as input of the QNetwork");
+	m_numActionSteps = INT_PARAM(pConfigNode, "Num-Action-Steps", "Number of discrete values used for the output action", 2);
+	m_outputAction = ACTION_VARIABLE(pConfigNode, "Output-Action", "The output action variable");
+
 	CNTKWrapperLoader::Load();
 	m_policy = CHILD_OBJECT_FACTORY<DiscreteDeepPolicy>(pConfigNode, "Policy", "The policy");
 	m_pNNDefinition = NN_DEFINITION(pConfigNode, "neural-network", "Neural Network Architecture");
 
-	m_outputAction = ACTION_VARIABLE(pConfigNode, "Output-Action", "The output action variable");
 
 	m_numberOfStateVars = SimionApp::get()->pWorld->getDynamicModel()->getStateDescriptor().size();
 	if (m_numberOfStateVars == 0)
@@ -50,7 +53,7 @@ DQN::DQN(ConfigNode* pConfigNode)
 void DQN::deferredLoadStep()
 {
 	//heavy-weight loading and stuff that relies on the SimGod
-	m_pTargetQNetwork = m_pNNDefinition.buildNetwork();
+	m_pTargetQNetwork = m_pNNDefinition.get()->createNetwork();
 	m_pOnlineQNetwork = m_pTargetQNetwork->clone();
 
 	m_numberOfActions = m_pTargetQNetwork->getTotalSize();

@@ -13,6 +13,8 @@ class ConfigNode;
 class DQN : public Simion, DeferredLoad
 {
 protected:
+	MULTI_VALUE_VARIABLE<STATE_VARIABLE> m_inputState;
+	INT_PARAM m_numActionSteps;
 	ACTION_VARIABLE m_outputAction;
 
 	NN_DEFINITION m_pNNDefinition;

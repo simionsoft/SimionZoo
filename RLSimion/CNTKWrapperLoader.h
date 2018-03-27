@@ -1,7 +1,7 @@
 #pragma once
 
 
-class IProblem;
+class INetworkDefinition;
 namespace tinyxml2 { class XMLElement; }
 
 
@@ -9,7 +9,7 @@ namespace tinyxml2 { class XMLElement; }
 class CNTKWrapperLoader
 {
 public:
-	typedef IProblem* (__stdcall *getProblemInstanceDLL)(tinyxml2::XMLElement* pNode);
+	typedef INetworkDefinition* (__stdcall *getProblemInstanceDLL)(tinyxml2::XMLElement* pNode);
 	static getProblemInstanceDLL getProblem;
 
 	static void Load();

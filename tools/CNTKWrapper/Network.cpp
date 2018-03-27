@@ -209,7 +209,7 @@ INetwork* Network::clone() const
 	return result;
 }
 
-void Network::setParent(IProblem* pProblem)
+void Network::setParent(INetworkDefinition* pProblem)
 {
 	m_pParent = pProblem;
 }

@@ -395,7 +395,7 @@ class INetwork;
 class NN_DEFINITION
 {
 protected:
-	IProblem* m_pProblem= nullptr;
+	INetworkDefinition* m_pProblem= nullptr;
 
 	const char* m_name;
 	const char* m_comment;
@@ -415,8 +415,6 @@ public:
 	//need to explicitly destroy the object allocated from the CNTK wrapper DLL
 	void destroy();
 
-	INetwork* buildNetwork();
-
-	IProblem* get();
+	INetworkDefinition* get();
 };
 #endif

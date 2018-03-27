@@ -7,7 +7,7 @@ using namespace std;
 
 class OptimizerSettings;
 class InputData;
-class Problem;
+class NetworkDefinition;
 
 class Network:public INetwork
 {
@@ -19,7 +19,7 @@ protected:
 	CNTK::FunctionPtr m_lossFunctionPtr;
 	CNTK::TrainerPtr m_trainer;
 	CNTK::Variable m_targetOutput;
-	IProblem *m_pParent;
+	INetworkDefinition *m_pParent;
 public:
 	Network();
 	~Network();
@@ -35,7 +35,7 @@ public:
 	void save(string fileName);
 	static Network load(string fileName, CNTK::DeviceDescriptor &device);
 
-	void setParent(IProblem* pParent);
+	void setParent(INetworkDefinition* pParent);
 
 	INetwork* clone() const;
 

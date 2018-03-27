@@ -40,25 +40,14 @@ NN_DEFINITION::~NN_DEFINITION()
 
 void NN_DEFINITION::destroy()
 {
-	Logger::logMessage(MessageType::Info, "Called NN_DEFINITION::destroy()");
 	if (m_pProblem)
 	{
-		Logger::logMessage(MessageType::Info, "Called IProblem::destroy()");
 		m_pProblem->destroy();
-		Logger::logMessage(MessageType::Info, "Finished IProblem::destroy()");
 		m_pProblem = nullptr;
 	}
-	Logger::logMessage(MessageType::Info, "Finished NN_DEFINITION::destroy()");
-}
-
-INetwork* NN_DEFINITION::buildNetwork()
-{
-	INetwork* pNetwork= m_pProblem->createNetwork();
-	pNetwork->buildQNetwork();
-	return pNetwork;
 }
 
 
-IProblem* NN_DEFINITION::get() { return m_pProblem; }
+INetworkDefinition* NN_DEFINITION::get() { return m_pProblem; }
 
 #endif

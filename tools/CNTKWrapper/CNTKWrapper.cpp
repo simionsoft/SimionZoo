@@ -18,10 +18,10 @@
 
 #define EXPORT comment(linker, "/EXPORT:" __FUNCTION__ "=" __FUNCDNAME__)
 
-IProblem* CNTKWrapper::getProblemInstance(tinyxml2::XMLElement* pNode)
+INetworkDefinition* CNTKWrapper::getProblemInstance(tinyxml2::XMLElement* pNode)
 {
 #pragma EXPORT
-	return Problem::getInstance(pNode);
+	return NetworkDefinition::getInstance(pNode);
 }
 
 

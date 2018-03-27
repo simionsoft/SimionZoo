@@ -36,7 +36,7 @@ class OptimizerSettings;
 class INetwork;
 
 //Interface class
-class IProblem
+class INetworkDefinition
 {
 public:
 	virtual void destroy() = 0;
@@ -71,13 +71,13 @@ public:
 	virtual void predict(std::unordered_map<std::string, std::vector<double>&>& inputDataMap
 		, std::vector<double>& predictionData)= 0;
 
-	virtual void setParent(IProblem* pParent) = 0;
+	virtual void setParent(INetworkDefinition* pParent) = 0;
 };
 
 
 namespace CNTKWrapper
 {
-	DLL_API IProblem* getProblemInstance(tinyxml2::XMLElement* pNode);
+	DLL_API INetworkDefinition* getProblemInstance(tinyxml2::XMLElement* pNode);
 }
 
 #endif
