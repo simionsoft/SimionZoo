@@ -1,5 +1,3 @@
-#include "stdafx.h"
-
 #ifdef _WIN64
 
 #include "CNTKWrapperInternals.h"
@@ -7,7 +5,7 @@
 #include "Link.h"
 #include "Chain.h"
 #include "NetworkArchitecture.h"
-#include "Problem.h"
+#include "NetworkDefinition.h"
 #include "InputData.h"
 #include "OptimizerSetting.h"
 #include "Chain.h"

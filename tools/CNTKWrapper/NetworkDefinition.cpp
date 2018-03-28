@@ -1,8 +1,6 @@
-#include "stdafx.h"
-
 #ifdef _WIN64
 
-#include "Problem.h"
+#include "NetworkDefinition.h"
 #include "xmltags.h"
 #include "InputData.h"
 #include "NetworkArchitecture.h"
@@ -12,6 +10,8 @@
 #include "Network.h"
 #include "OptimizerSetting.h"
 #include "Exceptions.h"
+#include "Minibatch.h"
+#include "../../RLSimion/named-var-set.h"
 
 NetworkDefinition::NetworkDefinition(tinyxml2::XMLElement * pParentNode)
 {
@@ -222,5 +222,70 @@ INetwork * NetworkDefinition::createNetwork()
 	return result;
 }
 
+void NetworkDefinition::addInputStateVar(unsigned int stateVarId)
+{
+	m_inputStateVars.push_back(stateVarId);
+}
+
+size_t NetworkDefinition::getNumInputStateVars()
+{
+	return m_inputStateVars.size();
+}
+
+size_t NetworkDefinition::getInputStateVar(size_t i)
+{
+	return m_inputStateVars[i];
+}
+
+void NetworkDefinition::setOutputAction(Action* a, unsigned int actionVarId, unsigned int numOutputs)
+{
+	double minvalue, maxvalue, stepSize;
+	m_outputActionValues = vector<double>(numOutputs);
+	for (size_t i = 0; i < numOutputs; i++)
+	{
+		minvalue = a->getProperties(actionVarId).getMin();
+		maxvalue = a->getProperties(actionVarId).getMax();
+		stepSize = (maxvalue - minvalue)/((int)numOutputs-1);
+		m_outputActionValues[i] = minvalue + stepSize * i;
+	}
+
+	m_outputActionVar = actionVarId;
+}
+
+size_t NetworkDefinition::getClosestOutputIndex(double value)
+{
+	size_t nearestIndex = 0;
+
+	double dist;
+	double closestDist = abs(value - m_outputActionValues[0]);
+
+	for (size_t i = 1; i < m_outputActionValues.size(); i++)
+	{
+		dist = abs(value - m_outputActionValues[i]);
+		//there is no special treatment for circular variables 
+		if (dist < closestDist)
+		{
+			closestDist = dist;
+			nearestIndex = i;
+		}
+	}
+
+	return nearestIndex;
+}
+
+size_t NetworkDefinition::getOutputActionVar()
+{
+	return m_outputActionVar;
+}
+
+size_t NetworkDefinition::getNumOutputs()
+{
+	return m_outputActionValues.size();
+}
+
+IMinibatch* NetworkDefinition::createMinibatch(size_t size)
+{
+	return new Minibatch(size, this);
+}
 
 #endif // _WIN64

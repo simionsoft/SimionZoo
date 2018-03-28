@@ -18,9 +18,6 @@
     <Text Include="ReadMe.txt" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="stdafx.h">
-      <Filter>Headers</Filter>
-    </ClInclude>
     <ClInclude Include="targetver.h">
       <Filter>Headers</Filter>
     </ClInclude>
@@ -42,16 +39,10 @@
     <ClInclude Include="xmltags.h">
       <Filter>Headers</Filter>
     </ClInclude>
-    <ClInclude Include="Network.h">
-      <Filter>Headers</Filter>
-    </ClInclude>
     <ClInclude Include="InputData.h">
       <Filter>Headers</Filter>
     </ClInclude>
     <ClInclude Include="CNTKWrapper.h">
-      <Filter>Headers</Filter>
-    </ClInclude>
-    <ClInclude Include="Problem.h">
       <Filter>Headers</Filter>
     </ClInclude>
     <ClInclude Include="OptimizerSetting.h">
@@ -69,11 +60,20 @@
     <ClInclude Include="CNTKWrapperInternals.h">
       <Filter>Headers</Filter>
     </ClInclude>
+    <ClInclude Include="Minibatch.h">
+      <Filter>Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\RLSimion\named-var-set.h">
+      <Filter>Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="Network.h">
+      <Filter>Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="NetworkDefinition.h">
+      <Filter>Headers</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="stdafx.cpp">
-      <Filter>Source</Filter>
-    </ClCompile>
     <ClCompile Include="Chain.cpp">
       <Filter>Source</Filter>
     </ClCompile>
@@ -98,9 +98,6 @@
     <ClCompile Include="CNTKWrapper.cpp">
       <Filter>Source</Filter>
     </ClCompile>
-    <ClCompile Include="Problem.cpp">
-      <Filter>Source</Filter>
-    </ClCompile>
     <ClCompile Include="OptimizerSetting.cpp">
       <Filter>Source</Filter>
     </ClCompile>
@@ -108,6 +105,15 @@
       <Filter>Source</Filter>
     </ClCompile>
     <ClCompile Include="CNTKLibraryInline.cpp">
+      <Filter>Source</Filter>
+    </ClCompile>
+    <ClCompile Include="Minibatch.cpp">
+      <Filter>Source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\RLSimion\named-var-set.cpp">
+      <Filter>Source</Filter>
+    </ClCompile>
+    <ClCompile Include="NetworkDefinition.cpp">
       <Filter>Source</Filter>
     </ClCompile>
   </ItemGroup>

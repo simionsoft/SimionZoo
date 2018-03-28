@@ -1,4 +1,3 @@
-#include "stdafx.h"
 #include "CNTKLibrary.h"
 
 namespace CNTK

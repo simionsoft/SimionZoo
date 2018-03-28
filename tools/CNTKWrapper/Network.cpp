@@ -1,5 +1,3 @@
-#include "stdafx.h"
-
 #ifdef _WIN64
 
 
@@ -8,11 +6,10 @@
 #include "CNTKWrapperInternals.h"
 #include "OptimizerSetting.h"
 #include "InputData.h"
-#include "Problem.h"
+#include "NetworkDefinition.h"
 
 Network::Network()
 {
-	m_outputsFunctionPtr = vector<CNTK::FunctionPtr>();
 }
 
 
@@ -30,12 +27,25 @@ void Network::destroy()
 	delete this;
 }
 
+CNTK::NDShape Network::getInputShape()
+{
+	return { (size_t)m_pParent->getNumInputStateVars() };
+}
+
+CNTK::NDShape Network::getOutputShape()
+{
+	return m_outputsFunctionPtr.at(0)->Output().Shape();
+}
+
 void Network::buildQNetwork()
 {
 	const OptimizerSettings* optimizer = m_pParent->getOptimizerSettings();
-	auto shape = m_outputsFunctionPtr.at(0)->Output().Shape();
 
-	m_targetOutput = CNTK::InputVariable(shape, CNTK::DataType::Double, L"Target");
+	m_inputVariable = CNTK::InputVariable(getInputShape(), DataType::Double, L"Input");
+
+	m_outputsFunctionPtr = vector<CNTK::FunctionPtr>();
+
+	m_targetOutput = CNTK::InputVariable(getOutputShape(), CNTK::DataType::Double, L"Target");
 
 	//TODO: add support for different loss functions
 	m_lossFunctionPtr = CNTK::SquaredError(m_outputsFunctionPtr.at(0), m_targetOutput, L"Loss");
@@ -59,12 +69,61 @@ Network Network::load(string fileName, CNTK::DeviceDescriptor &device)
 	return result;
 }
 
-void Network::train(std::unordered_map<std::string, std::vector<double>&>& inputDataMap, std::vector<double>& targetOutputData)
+void Network::train(IMinibatch* pMinibatch)
+{
+	unordered_map<CNTK::Variable, CNTK::ValuePtr> arguments =
+		unordered_map<CNTK::Variable, CNTK::ValuePtr>();
+	//set inputs
+	arguments[m_inputVariable] = CNTK::Value::CreateBatch(getInputShape()
+		, pMinibatch->getInputVector(), CNTK::DeviceDescriptor::CPUDevice());
+	//set target outputs
+	arguments[m_targetOutput] = CNTK::Value::CreateBatch(getOutputShape()
+		, pMinibatch->getTargetOutputVector(), CNTK::DeviceDescriptor::CPUDevice());
+	//train the network using the minibatch
+	m_trainer->TrainMinibatch(arguments, DeviceDescriptor::CPUDevice());
+}
+
+void Network::get(State* s, vector<double>& outputVector)
+{
+	FunctionPtr outputPtr = getOutputsFunctionPtr().at(0);
+	ValuePtr outputValue;
+
+	if (outputVector.size() % outputPtr->Output().Shape().TotalSize())
+	{
+		throw runtime_error("predictionData does not have the right size.");
+	}
+
+	unordered_map<CNTK::Variable, CNTK::ValuePtr> outputs =
+		{ { outputPtr->Output(), outputValue } };
+
+	unordered_map<CNTK::Variable, CNTK::ValuePtr> inputs =
+		unordered_map<CNTK::Variable, CNTK::ValuePtr>();
+
+	vector<double> inputVector = vector<double>(m_pParent->getNumInputStateVars());
+	for (size_t i = 0; i < m_pParent->getNumInputStateVars(); i++)
+		inputVector[i] = s->get[m_pParent->getInputStateVar(i)];
+
+	inputs[m_inputVariable] = CNTK::Value::CreateBatch(getInputShape()
+		, inputVector, CNTK::DeviceDescriptor::CPUDevice());
+
+	outputPtr->Evaluate(inputs, outputs, CNTK::DeviceDescriptor::CPUDevice());
+
+	outputValue = outputs[outputPtr];
+
+	CNTK::NDShape outputShape = outputPtr->Output().Shape().AppendShape({ 1
+		, outputVector.size() / outputPtr->Output().Shape().TotalSize() });
+
+	CNTK::NDArrayViewPtr cpuArrayOutput = CNTK::MakeSharedObject<CNTK::NDArrayView>(outputShape
+		, outputVector.size(), false);
+	cpuArrayOutput->CopyFrom(*outputValue->Data());
+}
+
+void Network::train(unordered_map<string, vector<double>&>& inputDataMap, vector<double>& targetOutputData)
 {
 	NDShape outputShape = getOutputsFunctionPtr().at(0)->Output().Shape();
 	ValuePtr outputSequence = CNTK::Value::CreateBatch(outputShape, targetOutputData, CNTK::DeviceDescriptor::CPUDevice());
 
-	std::unordered_map<CNTK::Variable, CNTK::ValuePtr> arguments = std::unordered_map<CNTK::Variable, CNTK::ValuePtr>();
+	unordered_map<CNTK::Variable, CNTK::ValuePtr> arguments = unordered_map<CNTK::Variable, CNTK::ValuePtr>();
 	for each (auto item in m_inputs)
 	{
 		//only use inputs, which are actually needed/used in the model
@@ -79,16 +138,16 @@ void Network::train(std::unordered_map<std::string, std::vector<double>&>& input
 	m_trainer->TrainMinibatch(arguments, DeviceDescriptor::CPUDevice());
 }
 
-void Network::gradients(std::unordered_map<std::string, std::vector<double>&>& inputDataMap
-	, std::vector<double>& targetOutputData, std::unordered_map<CNTK::Variable
+void Network::gradients(unordered_map<string, vector<double>&>& inputDataMap
+	, vector<double>& targetOutputData, unordered_map<CNTK::Variable
 	, CNTK::ValuePtr>& gradients)
 {
 	FunctionPtr outputPtr = getOutputsFunctionPtr().at(0);
 	ValuePtr outputValue;
-	std::unordered_map<CNTK::Variable, CNTK::ValuePtr> outputs =
+	unordered_map<CNTK::Variable, CNTK::ValuePtr> outputs =
 		{ { outputPtr->Output(), outputValue } ,{ m_lossFunctionPtr , nullptr } };
-	std::unordered_map<CNTK::Variable, CNTK::ValuePtr> inputs =
-		std::unordered_map<CNTK::Variable, CNTK::ValuePtr>();
+	unordered_map<CNTK::Variable, CNTK::ValuePtr> inputs =
+		unordered_map<CNTK::Variable, CNTK::ValuePtr>();
 	for each (auto item in m_inputs)
 	{
 		//only use inputs, which are actually needed/used in the model
@@ -115,16 +174,16 @@ void Network::gradients(std::unordered_map<std::string, std::vector<double>&>& i
 	outputPtr->Backward(backpropState, { { m_lossFunctionPtr,rootGradientValue } }, gradients);
 }
 
-void Network::gradients(std::unordered_map<std::string, std::vector<double>&>& inputDataMap
-	, std::unordered_map<CNTK::Variable, CNTK::ValuePtr>& gradients)
+void Network::gradients(unordered_map<string, vector<double>&>& inputDataMap
+	, unordered_map<CNTK::Variable, CNTK::ValuePtr>& gradients)
 {
 	FunctionPtr outputPtr = getOutputsFunctionPtr().at(0);
 	ValuePtr outputValue;
 
-	std::unordered_map<CNTK::Variable, CNTK::ValuePtr> outputs =
+	unordered_map<CNTK::Variable, CNTK::ValuePtr> outputs =
 		{ { outputPtr->Output(), outputValue } };
-	std::unordered_map<CNTK::Variable, CNTK::ValuePtr> inputs =
-		std::unordered_map<CNTK::Variable, CNTK::ValuePtr>();
+	unordered_map<CNTK::Variable, CNTK::ValuePtr> inputs =
+		unordered_map<CNTK::Variable, CNTK::ValuePtr>();
 	for each (auto item in m_inputs)
 	{
 		//only use inputs, which are actually needed/used in the model
@@ -138,17 +197,17 @@ void Network::gradients(std::unordered_map<std::string, std::vector<double>&>& i
 	outputPtr->Gradients(inputs, gradients);
 }
 
-void Network::predict(std::unordered_map<std::string, std::vector<double>&>& inputDataMap
-	, std::vector<double>& predictionData)
+void Network::predict(unordered_map<string, vector<double>&>& inputDataMap
+	, vector<double>& predictionData)
 {
 	FunctionPtr outputPtr = getOutputsFunctionPtr().at(0);
 	ValuePtr outputValue;
 
-	std::unordered_map<CNTK::Variable, CNTK::ValuePtr> outputs =
+	unordered_map<CNTK::Variable, CNTK::ValuePtr> outputs =
 	{ { outputPtr->Output(), outputValue } };
 
-	std::unordered_map<CNTK::Variable, CNTK::ValuePtr> inputs =
-		std::unordered_map<CNTK::Variable, CNTK::ValuePtr>();
+	unordered_map<CNTK::Variable, CNTK::ValuePtr> inputs =
+		unordered_map<CNTK::Variable, CNTK::ValuePtr>();
 	for each (auto item in m_inputs)
 	{
 		//only use inputs, which are actually needed/used in the model
@@ -166,7 +225,7 @@ void Network::predict(std::unordered_map<std::string, std::vector<double>&>& inp
 
 	if (predictionData.size() % outputPtr->Output().Shape().TotalSize())
 	{
-		throw std::runtime_error("predictionData does not have the right size.");
+		throw runtime_error("predictionData does not have the right size.");
 	}
 
 	CNTK::NDShape outputShape = outputPtr->Output().Shape().AppendShape({ 1, predictionData.size() / outputPtr->Output().Shape().TotalSize() });

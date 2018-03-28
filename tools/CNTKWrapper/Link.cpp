@@ -1,5 +1,3 @@
-#include "stdafx.h"
-
 #ifdef _WIN64
 
 
@@ -11,7 +9,7 @@
 #include "Network.h"
 #include "Parameter.h"
 #include "ParameterValues.h"
-#include "Problem.h"
+#include "NetworkDefinition.h"
 #include "Exceptions.h"
 #include "CNTKWrapperInternals.h"
 

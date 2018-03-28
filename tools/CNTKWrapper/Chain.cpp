@@ -1,4 +1,3 @@
-#include "stdafx.h"
 #ifdef _WIN64
 
 #include "xmltags.h"

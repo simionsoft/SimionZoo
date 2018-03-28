@@ -29,11 +29,14 @@ namespace CNTK
 	class Variable;
 	class NDShape;
 }
+
+#include "../../RLSimion/named-var-set.h"
 class NetworkArchitecture;
 class InputData;
 class LinkConnection;
 class OptimizerSettings;
 class INetwork;
+class IMinibatch;
 
 //Interface class
 class INetworkDefinition
@@ -45,6 +48,16 @@ public:
 	virtual const std::vector<InputData*>& getInputs() const = 0;
 	virtual const LinkConnection* getOutput() const = 0;
 	virtual const OptimizerSettings* getOptimizerSettings() const = 0;
+
+	virtual void addInputStateVar(unsigned int stateVarId) = 0;
+	virtual size_t getNumInputStateVars() = 0; 
+	virtual size_t getInputStateVar(size_t) = 0;
+	virtual void setOutputAction(Action* a, unsigned int actionVarId, unsigned int numOutputs) = 0;
+	virtual size_t getClosestOutputIndex(double value)=  0;
+	virtual size_t getOutputActionVar() = 0;
+	virtual size_t getNumOutputs() = 0;
+
+	virtual IMinibatch* createMinibatch(size_t size) = 0;
 
 	virtual INetwork* createNetwork() = 0;
 };
@@ -66,6 +79,9 @@ public:
 
 	virtual INetwork* clone() const= 0;
 
+	virtual void train(IMinibatch* pMinibatch) = 0;
+	virtual void get(State* s, vector<double>& outputValues) = 0;
+
 	virtual void train(std::unordered_map<std::string, std::vector<double>&>& inputDataMap
 		, std::vector<double>& targetOutputData)= 0;
 	virtual void predict(std::unordered_map<std::string, std::vector<double>&>& inputDataMap
@@ -74,6 +90,16 @@ public:
 	virtual void setParent(INetworkDefinition* pParent) = 0;
 };
 
+class IMinibatch
+{
+public:
+	virtual void destroy() = 0;
+
+	virtual void clear() = 0;
+	virtual void addTuple(State* s, vector<double>& targetValues)= 0;
+	virtual vector<double>& getInputVector()= 0;
+	virtual vector<double>& getTargetOutputVector()= 0;
+};
 
 namespace CNTKWrapper
 {

@@ -1,6 +1,7 @@
 #pragma once
 #include "CNTKWrapper.h"
 #include "../../3rd-party/tinyxml2/tinyxml2.h"
+#include "../../RLSimion/named-var-set.h"
 #include <vector>
 
 class NetworkArchitecture;
@@ -8,12 +9,13 @@ class InputData;
 class Network;
 class LinkConnection;
 class OptimizerSettings;
-class Action;
 
 class NetworkDefinition: public INetworkDefinition
 {
 protected:
 	vector<unsigned int> m_inputStateVars;
+	unsigned int m_outputActionVar;
+	vector<double> m_outputActionValues;
 
 	vector<InputData*> m_inputs;
 	NetworkArchitecture* m_pNetworkArchitecture;
@@ -38,8 +40,14 @@ public:
 	static NetworkDefinition* loadFromString(std::string content);
 
 	void addInputStateVar(unsigned int stateVarId);
-	void setOutputAction(Action* a, unsigned int actionId, unsigned int numSteps);
-	unsigned int getClosestAction(double action);
+	size_t getNumInputStateVars();
+	size_t getInputStateVar(size_t i);
+	void setOutputAction(Action* a, unsigned int actionVarId, unsigned int numOutputs);
+	size_t getClosestOutputIndex(double value);
+	size_t getOutputActionVar();
+	size_t getNumOutputs();
+
+	virtual IMinibatch* createMinibatch(size_t size);
 
 	INetwork* createNetwork();
 };
