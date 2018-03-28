@@ -19,7 +19,7 @@ public:
 	NetworkArchitecture();
 	~NetworkArchitecture();
 
-	const vector<Chain*> getChains() { return m_chains; }
+	const vector<Chain*>& getChains() { return m_chains; }
 
 	void setParentProblem(NetworkDefinition* pParentProblem) { m_pParentProblem = pParentProblem; }
 	const NetworkDefinition* getParentProblem() const { return m_pParentProblem; }

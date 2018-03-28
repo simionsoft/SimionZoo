@@ -11,34 +11,31 @@ class NetworkDefinition;
 
 class Network:public INetwork
 {
-	CNTK::Variable m_inputVariable;
+	vector<InputData*> m_inputVariables;
 	CNTK::NDShape getInputShape();
 	CNTK::NDShape getOutputShape();
 protected:
-	vector<InputData*> m_inputs;
+
 	vector<CNTK::FunctionPtr> m_functionPtrs;
 	vector<CNTK::FunctionPtr> m_outputsFunctionPtr;
 	CNTK::FunctionPtr m_networkFunctionPtr;
 	CNTK::FunctionPtr m_lossFunctionPtr;
 	CNTK::TrainerPtr m_trainer;
 	CNTK::Variable m_targetOutput;
-	INetworkDefinition *m_pParent;
+	INetworkDefinition *m_pNetworkDefinition;
 public:
-	Network();
+	Network(INetworkDefinition* pNetworkDefinition);
 	~Network();
 
 	size_t getTotalSize();
 	void destroy();
 
 	vector<CNTK::FunctionPtr>& getFunctionPtrs() { return m_functionPtrs; }
-	vector<InputData*>& getInputs() { return m_inputs; }
+	vector<InputData*>& getInputs() { return m_inputVariables; }
 	vector<CNTK::FunctionPtr>& getOutputsFunctionPtr() { return m_outputsFunctionPtr; }
 
 	void buildQNetwork();
 	void save(string fileName);
-	static Network load(string fileName, CNTK::DeviceDescriptor &device);
-
-	void setParent(INetworkDefinition* pParent);
 
 	INetwork* clone() const;
 

@@ -11,6 +11,7 @@
 #include "OptimizerSetting.h"
 #include "Exceptions.h"
 #include "Minibatch.h"
+#include "CNTKWrapperInternals.h"
 #include "../../RLSimion/named-var-set.h"
 
 NetworkDefinition::NetworkDefinition(tinyxml2::XMLElement * pParentNode)
@@ -101,8 +102,8 @@ NetworkDefinition * NetworkDefinition::loadFromString(std::string content)
 
 INetwork * NetworkDefinition::createNetwork()
 {
-	Network* result = new Network();
-	result->setParent(this);
+	Network* result = new Network(this);
+
 	/*
 	basic idea of this algorithm: we traverse all chains to create the real model
 	to achieve this we follow this pseudo-code:
@@ -161,7 +162,7 @@ INetwork * NetworkDefinition::createNetwork()
 				pCurrentLink = progressMap.at(pChain);
 			}
 
-			//go down in this chain until it is not any more possible
+			//go down in this chain until we can't go any further
 			while (pCurrentLink != nullptr)
 			{
 				//get dependencies
@@ -188,8 +189,6 @@ INetwork * NetworkDefinition::createNetwork()
 				//create CNTK node
 				pCurrentLink->createCNTKFunctionPtr(dependencies);
 				result->getFunctionPtrs().push_back(pCurrentLink->getFunctionPtr());
-
-				//pCurrentLink->getFunctionPtr()->Save(L"C:\\Users\\Roland\\Desktop\\graph.dat");
 
 				//check if output has been reached already
 				if (!strcmp(m_pOutput->getTargetId().c_str(), pCurrentLink->getId().c_str()))

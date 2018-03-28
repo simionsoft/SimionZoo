@@ -71,7 +71,7 @@ public:
 	virtual size_t getTotalSize() = 0;
 
 	virtual vector<CNTK::FunctionPtr>& getFunctionPtrs() = 0;
-	virtual vector<InputData*>& getInputs()= 0;
+
 	virtual vector<CNTK::FunctionPtr>& getOutputsFunctionPtr()= 0;
 
 	virtual void buildQNetwork()= 0;
@@ -86,8 +86,6 @@ public:
 		, std::vector<double>& targetOutputData)= 0;
 	virtual void predict(std::unordered_map<std::string, std::vector<double>&>& inputDataMap
 		, std::vector<double>& predictionData)= 0;
-
-	virtual void setParent(INetworkDefinition* pParent) = 0;
 };
 
 class IMinibatch

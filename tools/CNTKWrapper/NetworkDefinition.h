@@ -12,6 +12,7 @@ class OptimizerSettings;
 
 class NetworkDefinition: public INetworkDefinition
 {
+
 protected:
 	vector<unsigned int> m_inputStateVars;
 	unsigned int m_outputActionVar;

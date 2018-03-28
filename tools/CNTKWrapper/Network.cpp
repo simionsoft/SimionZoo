@@ -8,8 +8,9 @@
 #include "InputData.h"
 #include "NetworkDefinition.h"
 
-Network::Network()
+Network::Network(INetworkDefinition* pNetworkDefinition)
 {
+	m_pNetworkDefinition = pNetworkDefinition;
 }
 
 
@@ -29,17 +30,19 @@ void Network::destroy()
 
 CNTK::NDShape Network::getInputShape()
 {
-	return { (size_t)m_pParent->getNumInputStateVars() };
+	return { (size_t)m_pNetworkDefinition->getNumInputStateVars() };
 }
 
 CNTK::NDShape Network::getOutputShape()
 {
-	return m_outputsFunctionPtr.at(0)->Output().Shape();
+	return { (size_t)m_pNetworkDefinition->getNumOutputs() };
+	//return m_outputsFunctionPtr.at(0)->Output().Shape();
 }
+
 
 void Network::buildQNetwork()
 {
-	const OptimizerSettings* optimizer = m_pParent->getOptimizerSettings();
+	const OptimizerSettings* optimizer = m_pNetworkDefinition->getOptimizerSettings();
 
 	m_inputVariable = CNTK::InputVariable(getInputShape(), DataType::Double, L"Input");
 
@@ -62,12 +65,6 @@ void Network::save(string fileName)
 	m_networkFunctionPtr->Save(CNTKWrapper::Internal::string2wstring(fileName));
 }
 
-Network Network::load(string fileName, CNTK::DeviceDescriptor &device)
-{
-	Network result = Network();
-	result.m_networkFunctionPtr = CNTK::Function::Load(CNTKWrapper::Internal::string2wstring(fileName), device);
-	return result;
-}
 
 void Network::train(IMinibatch* pMinibatch)
 {
@@ -99,9 +96,9 @@ void Network::get(State* s, vector<double>& outputVector)
 	unordered_map<CNTK::Variable, CNTK::ValuePtr> inputs =
 		unordered_map<CNTK::Variable, CNTK::ValuePtr>();
 
-	vector<double> inputVector = vector<double>(m_pParent->getNumInputStateVars());
-	for (size_t i = 0; i < m_pParent->getNumInputStateVars(); i++)
-		inputVector[i] = s->get[m_pParent->getInputStateVar(i)];
+	vector<double> inputVector = vector<double>(m_pNetworkDefinition->getNumInputStateVars());
+	for (size_t i = 0; i < m_pNetworkDefinition->getNumInputStateVars(); i++)
+		inputVector[i] = s->get((int)m_pNetworkDefinition->getInputStateVar((int) i));
 
 	inputs[m_inputVariable] = CNTK::Value::CreateBatch(getInputShape()
 		, inputVector, CNTK::DeviceDescriptor::CPUDevice());
@@ -114,24 +111,21 @@ void Network::get(State* s, vector<double>& outputVector)
 		, outputVector.size() / outputPtr->Output().Shape().TotalSize() });
 
 	CNTK::NDArrayViewPtr cpuArrayOutput = CNTK::MakeSharedObject<CNTK::NDArrayView>(outputShape
-		, outputVector.size(), false);
+		, outputVector, false);
 	cpuArrayOutput->CopyFrom(*outputValue->Data());
 }
 
 void Network::train(unordered_map<string, vector<double>&>& inputDataMap, vector<double>& targetOutputData)
 {
-	NDShape outputShape = getOutputsFunctionPtr().at(0)->Output().Shape();
-	ValuePtr outputSequence = CNTK::Value::CreateBatch(outputShape, targetOutputData, CNTK::DeviceDescriptor::CPUDevice());
+	ValuePtr outputSequence = CNTK::Value::CreateBatch(getOutputShape()
+		, targetOutputData, CNTK::DeviceDescriptor::CPUDevice());
 
-	unordered_map<CNTK::Variable, CNTK::ValuePtr> arguments = unordered_map<CNTK::Variable, CNTK::ValuePtr>();
-	for each (auto item in m_inputs)
-	{
-		//only use inputs, which are actually needed/used in the model
-		if (item->getIsUsed())
-			arguments[item->getInputVariable()] = 
-				CNTK::Value::CreateBatch(item->getInputVariable().Shape()
-				, inputDataMap.at(item->getId()), CNTK::DeviceDescriptor::CPUDevice());
-	}
+	unordered_map<CNTK::Variable, CNTK::ValuePtr> arguments = 
+		unordered_map<CNTK::Variable, CNTK::ValuePtr>();
+
+	vector<double> inputVector = vector<double>(m_pNetworkDefinition->getNumInputStateVars());
+	arguments[m_inputVariable] = CNTK::Value::CreateBatch(getInputShape()
+		, inputVector, CNTK::DeviceDescriptor::CPUDevice());
 
 	arguments[m_targetOutput] = outputSequence;
 
@@ -146,18 +140,13 @@ void Network::gradients(unordered_map<string, vector<double>&>& inputDataMap
 	ValuePtr outputValue;
 	unordered_map<CNTK::Variable, CNTK::ValuePtr> outputs =
 		{ { outputPtr->Output(), outputValue } ,{ m_lossFunctionPtr , nullptr } };
+
 	unordered_map<CNTK::Variable, CNTK::ValuePtr> inputs =
 		unordered_map<CNTK::Variable, CNTK::ValuePtr>();
-	for each (auto item in m_inputs)
-	{
-		//only use inputs, which are actually needed/used in the model
-		if (item->getIsUsed())
-		{
-			inputs[item->getInputVariable()] =
-				CNTK::Value::CreateBatch(item->getInputVariable().Shape()
-					, inputDataMap.at(item->getId()), CNTK::DeviceDescriptor::CPUDevice());
-		}
-	}
+
+	vector<double> inputVector = vector<double>(m_pNetworkDefinition->getNumInputStateVars());
+	inputs[m_inputVariable] = CNTK::Value::CreateBatch(getInputShape()
+		, inputVector, CNTK::DeviceDescriptor::CPUDevice());
 
 	auto backpropState = outputPtr->Forward(inputs, outputs, CNTK::DeviceDescriptor::CPUDevice()
 		, { m_lossFunctionPtr });
@@ -184,16 +173,11 @@ void Network::gradients(unordered_map<string, vector<double>&>& inputDataMap
 		{ { outputPtr->Output(), outputValue } };
 	unordered_map<CNTK::Variable, CNTK::ValuePtr> inputs =
 		unordered_map<CNTK::Variable, CNTK::ValuePtr>();
-	for each (auto item in m_inputs)
-	{
-		//only use inputs, which are actually needed/used in the model
-		if (item->getIsUsed())
-		{
-				inputs[item->getInputVariable()] = 
-					CNTK::Value::CreateBatch(item->getInputVariable().Shape()
-						, inputDataMap.at(item->getId()), CNTK::DeviceDescriptor::CPUDevice());
-		}
-	}
+
+	vector<double> inputVector = vector<double>(m_pNetworkDefinition->getNumInputStateVars());
+	inputs[m_inputVariable] = CNTK::Value::CreateBatch(getInputShape()
+		, inputVector, CNTK::DeviceDescriptor::CPUDevice());
+
 	outputPtr->Gradients(inputs, gradients);
 }
 
@@ -208,16 +192,10 @@ void Network::predict(unordered_map<string, vector<double>&>& inputDataMap
 
 	unordered_map<CNTK::Variable, CNTK::ValuePtr> inputs =
 		unordered_map<CNTK::Variable, CNTK::ValuePtr>();
-	for each (auto item in m_inputs)
-	{
-		//only use inputs, which are actually needed/used in the model
-		if (item->getIsUsed())
-		{
-			inputs[item->getInputVariable()] =
-				CNTK::Value::CreateBatch(item->getInputVariable().Shape()
-					, inputDataMap.at(item->getId()), CNTK::DeviceDescriptor::CPUDevice());
-		}
-	}
+
+	vector<double> inputVector = vector<double>(m_pNetworkDefinition->getNumInputStateVars());
+	inputs[m_inputVariable] = CNTK::Value::CreateBatch(getInputShape()
+		, inputVector, CNTK::DeviceDescriptor::CPUDevice());
 
 	outputPtr->Evaluate(inputs, outputs, CNTK::DeviceDescriptor::CPUDevice());
 
@@ -237,10 +215,9 @@ void Network::predict(unordered_map<string, vector<double>&>& inputDataMap
 #include <iostream>
 INetwork* Network::clone() const
 {
-	Network* result = new Network();
+	Network* result = new Network(m_pNetworkDefinition);
 	result->m_trainer = nullptr;
 	result->m_lossFunctionPtr = nullptr;
-	result->setParent(m_pParent);
 
 	result->m_networkFunctionPtr = m_networkFunctionPtr->Clone(CNTK::ParameterCloningMethod::Clone);
 
@@ -250,27 +227,10 @@ INetwork* Network::clone() const
 			result->m_outputsFunctionPtr.push_back(var);
 	}
 
-	for each (auto initem in m_inputs)
-	{
-		for each (auto item in result->m_networkFunctionPtr->Arguments())
-		{
-			if (CNTKWrapper::Internal::wstring2string(item.Name()) == initem->getId())
-			{
-				auto value = new InputData(CNTKWrapper::Internal::wstring2string(item.Name()), item);
-				value->setIsUsed(initem->getIsUsed());
-				//TODO: set shape
-				result->m_inputs.push_back(value);
-				break;
-			}
-		}
-	}
+	result->getInputVariable() = m_inputVariable;
 
 	return result;
 }
 
-void Network::setParent(INetworkDefinition* pProblem)
-{
-	m_pParent = pProblem;
-}
 
 #endif // _WIN64

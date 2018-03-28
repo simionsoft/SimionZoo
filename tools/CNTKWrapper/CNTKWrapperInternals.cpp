@@ -17,6 +17,8 @@ CNTK::FunctionPtr CNTKWrapper::InputLayer(const Link * pLink, vector<const Link*
 {
 	//determine the linked input data
 	string inputID = pLink->getParameterByName<InputDataParameter>("Input Data")->getValue();
+	
+	
 	auto inputList = pLink->getParentChain()->getParentNetworkArchitecture()->getParentProblem()->getInputs();
 
 	CNTK::FunctionPtr pInput;

@@ -14,7 +14,6 @@
 #include "../tools/OpenGLRenderer/input-handler.h"
 #include "../tools/WindowsUtils/FileUtils.h"
 
-
 RLSimionApp::RLSimionApp(ConfigNode* pConfigNode)
 {
 	pConfigNode = pConfigNode->getChild("RLSimion");

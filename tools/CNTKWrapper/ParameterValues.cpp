@@ -34,7 +34,7 @@ CIntTuple2D::CIntTuple2D(tinyxml2::XMLElement* pParentNode) : CIntTuple2D()
 
 	pNode = pParentNode->FirstChildElement(XML_TAG_Tuple_2);
 	if (pNode == nullptr)
-		throw ProblemParserElementNotFound(XML_TAG_Tuple_1);
+		throw ProblemParserElementNotFound(XML_TAG_Tuple_2);
 	m_x2 = stoi(pNode->GetText());
 }
 

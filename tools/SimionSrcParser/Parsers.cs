@@ -98,7 +98,7 @@ namespace SimionSrcParser
     }
     public class NeuralNetworkParameterParser : Parser
     {
-        public NeuralNetworkParameterParser() : base("NEURAL_NETWORK", false) { }
+        public NeuralNetworkParameterParser() : base("NN_DEFINITION", false) { }
         public override void processParameter(ParameterizedObject parent)
         {
             parent.addParameter(new NeuralNetworkProblemDescriptionParameter(parsedArguments[1], parsedArguments[2]));
