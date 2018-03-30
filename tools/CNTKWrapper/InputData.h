@@ -16,7 +16,7 @@ protected:
 	CNTK::Variable m_inputVariable; //TODO: Fix = nullptr
 	InputData(tinyxml2::XMLElement* pNode);
 	bool m_isUsed = false; 
-
+	bool m_isInitialized = false;
 public:
 	InputData(string id, CNTK::Variable pInputVariable);
 	~InputData();
@@ -28,6 +28,7 @@ public:
 	const string& getName() { return m_name; }
 	const CNTK::Variable getInputVariable() { return m_inputVariable; }
 	void createInputVariable();
+	bool isInitialized() { return m_isInitialized; }
 
 	bool getIsUsed() const { return m_isUsed; }
 	void setIsUsed(bool isUsed) { m_isUsed = isUsed; }

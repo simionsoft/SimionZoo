@@ -117,15 +117,15 @@ INetwork * NetworkDefinition::createNetwork()
 	*/
 
 	//create the inputs
-	for each (InputData* input in m_inputs)
-	{
-		//TODO: Fix
-		//if (input->getInputVariable() == nullptr)
-		{
-			input->createInputVariable();
-			result->getInputs().push_back(input);
-		}
-	}
+	//for each (InputData* input in m_inputs)
+	//{
+	//	if (!input->isInitialized())
+	//	{
+	//		input->createInputVariable();
+	//		result->getInputs().push_back(input);
+	//	}
+	//}
+
 
 	//output node
 	CNTK::FunctionPtr pOutputFunction = nullptr;
@@ -219,6 +219,14 @@ INetwork * NetworkDefinition::createNetwork()
 
 	result->buildQNetwork();
 	return result;
+}
+CNTK::FunctionPtr NetworkDefinition::addInputLayer(string inputId)
+{
+	CNTK::Variable inputVariable= CNTK::InputVariable({m_inputStateVars.size()}
+		, CNTK::DataType::Double
+		, CNTKWrapper::Internal::string2wstring(inputId));
+	m_inputVariables.push_back(inputVariable);
+	return inputVariable;
 }
 
 void NetworkDefinition::addInputStateVar(unsigned int stateVarId)

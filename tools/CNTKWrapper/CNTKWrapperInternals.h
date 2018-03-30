@@ -14,7 +14,7 @@ class OptimizerSettings;
 
 namespace CNTKWrapper
 {
-	CNTK::FunctionPtr InputLayer(const Link* pLink, vector<const Link*> dependencies, CNTK::DeviceDescriptor& device);
+	CNTK::FunctionPtr InputLayer(Link* pLink, vector<const Link*> dependencies, CNTK::DeviceDescriptor& device);
 	CNTK::FunctionPtr ActivationLayer(const Link* pLink, vector<const Link*> dependencies, CNTK::DeviceDescriptor& device);
 	CNTK::FunctionPtr Convolution1DLayer(const Link* pLink, vector<const Link*> dependencies, CNTK::DeviceDescriptor& device);
 	CNTK::FunctionPtr Convolution2DLayer(const Link* pLink, vector<const Link*> dependencies, CNTK::DeviceDescriptor& device);

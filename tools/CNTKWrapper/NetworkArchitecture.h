@@ -12,7 +12,7 @@ class NetworkArchitecture
 {
 protected:
 	vector<Chain*> m_chains;
-	NetworkDefinition* m_pParentProblem;
+	NetworkDefinition* m_pNetworkDefinition;
 	NetworkArchitecture(tinyxml2::XMLElement* pNode);
 	
 public:
@@ -21,8 +21,8 @@ public:
 
 	const vector<Chain*>& getChains() { return m_chains; }
 
-	void setParentProblem(NetworkDefinition* pParentProblem) { m_pParentProblem = pParentProblem; }
-	const NetworkDefinition* getParentProblem() const { return m_pParentProblem; }
+	void setParentProblem(NetworkDefinition* pParentProblem) { m_pNetworkDefinition = pParentProblem; }
+	NetworkDefinition* getParentProblem() { return m_pNetworkDefinition; }
 
 	static NetworkArchitecture* getInstance(tinyxml2::XMLElement* pNode);
 

@@ -13,24 +13,28 @@
 #include "Network.h"
 
 
-CNTK::FunctionPtr CNTKWrapper::InputLayer(const Link * pLink, vector<const Link*> dependencies, CNTK::DeviceDescriptor & device)
+CNTK::FunctionPtr CNTKWrapper::InputLayer(Link * pLink, vector<const Link*> dependencies, CNTK::DeviceDescriptor & device)
 {
+
 	//determine the linked input data
 	string inputID = pLink->getParameterByName<InputDataParameter>("Input Data")->getValue();
-	
-	
-	auto inputList = pLink->getParentChain()->getParentNetworkArchitecture()->getParentProblem()->getInputs();
+	//add this input to the NN definition
+	return pLink->getParentChain()->getParentNetworkArchitecture()->getParentProblem()->addInputLayer(inputID);
 
-	CNTK::FunctionPtr pInput;
-	for each (InputData* pItem in inputList)
-	{
-		if (!strcmp(pItem->getId().c_str(), inputID.c_str()))
-		{
-			pItem->setIsUsed(true);
-			return pItem->getInputVariable();
-		}
-	}
-	return nullptr;
+	//MAKE SURE THAT THE STATE/ACTION SPACES ARE DEFINED BEFORE CALLING THIS
+
+	//auto inputList = pLink->getParentChain()->getParentNetworkArchitecture()->getParentProblem()->getInputs();
+
+	//CNTK::FunctionPtr pInput;
+	//for each (InputData* pItem in inputList)
+	//{
+	//	if (!strcmp(pItem->getId().c_str(), inputID.c_str()))
+	//	{
+	//		pItem->setIsUsed(true);
+	//		return pItem->getInputVariable();
+	//	}
+	//}
+	//return nullptr;
 }
 
 CNTK::FunctionPtr CNTKWrapper::ActivationLayer(const Link * pLink, vector<const Link*> dependencies, CNTK::DeviceDescriptor & device)

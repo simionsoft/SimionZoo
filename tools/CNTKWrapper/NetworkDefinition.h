@@ -17,8 +17,11 @@ protected:
 	vector<unsigned int> m_inputStateVars;
 	unsigned int m_outputActionVar;
 	vector<double> m_outputActionValues;
+	vector<CNTK::Variable> m_inputVariables;
 
 	vector<InputData*> m_inputs;
+
+
 	NetworkArchitecture* m_pNetworkArchitecture;
 	LinkConnection* m_pOutput;
 	OptimizerSettings* m_pOptimizerSetting;
@@ -29,6 +32,8 @@ public:
 	NetworkDefinition(tinyxml2::XMLElement* pNode);
 
 	void destroy();
+
+	CNTK::FunctionPtr addInputLayer(string inputId);
 
 	NetworkArchitecture* getNetworkArchitecture() { return m_pNetworkArchitecture; }
 	const std::vector<InputData*>& getInputs() const { return m_inputs; }

@@ -11,7 +11,6 @@ class NetworkDefinition;
 
 class Network:public INetwork
 {
-	vector<InputData*> m_inputVariables;
 	CNTK::NDShape getInputShape();
 	CNTK::NDShape getOutputShape();
 protected:
@@ -31,7 +30,6 @@ public:
 	void destroy();
 
 	vector<CNTK::FunctionPtr>& getFunctionPtrs() { return m_functionPtrs; }
-	vector<InputData*>& getInputs() { return m_inputVariables; }
 	vector<CNTK::FunctionPtr>& getOutputsFunctionPtr() { return m_outputsFunctionPtr; }
 
 	void buildQNetwork();

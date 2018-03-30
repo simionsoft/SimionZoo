@@ -26,7 +26,7 @@ public:
 	const Link* getLinkById(const char* id) const;
 
 	void setParentNetworkArchitecture(NetworkArchitecture* pParentNetworkArchitecture) { m_pParentNetworkArchitecture = pParentNetworkArchitecture; }
-	const NetworkArchitecture* getParentNetworkArchitecture() const { return m_pParentNetworkArchitecture; }
+	NetworkArchitecture* getParentNetworkArchitecture() const { return m_pParentNetworkArchitecture; }
 
 	static Chain* getInstance(tinyxml2::XMLElement* pNode);
 };
