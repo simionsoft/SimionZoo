@@ -6,7 +6,6 @@
 #include "deferred-load.h"
 
 class INetwork;
-class SingleDimensionDiscreteActionVariableGrid;
 class DiscreteDeepPolicy;
 class ConfigNode;
 
@@ -23,10 +22,7 @@ protected:
 
 	CHILD_OBJECT_FACTORY<DiscreteDeepPolicy> m_policy;
 
-	SingleDimensionDiscreteActionVariableGrid* m_pGrid= nullptr;
 
-	size_t m_numberOfActions= 0;
-	size_t m_numberOfStateVars= 0;
 	std::vector<double> m_stateVector;
 	std::vector<double> m_actionValuePredictionVector;
 

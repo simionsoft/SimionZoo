@@ -38,38 +38,28 @@ DQN::DQN(ConfigNode* pConfigNode)
 	CNTKWrapperLoader::Load();
 	m_policy = CHILD_OBJECT_FACTORY<DiscreteDeepPolicy>(pConfigNode, "Policy", "The policy");
 	m_pNNDefinition = NN_DEFINITION(pConfigNode, "neural-network", "Neural Network Architecture");
-
-
-	m_numberOfStateVars = SimionApp::get()->pWorld->getDynamicModel()->getStateDescriptor().size();
-	if (m_numberOfStateVars == 0)
-		Logger::logMessage(MessageType::Error, "Invalid State-Map chosen (it will return 0 features at most, but at least 1 has to be returned)");
-
-	if (dynamic_cast<DiscreteActionFeatureMap*>(SimGod::getGlobalActionFeatureMap().get()) == nullptr)
-		Logger::logMessage(MessageType::Error, "The DiscreteEpsilonGreedyDeepPolicy requires a DiscreteActionFeatureMap as the action-feature-map.");
-	
-	m_pGrid = ((SingleDimensionDiscreteActionVariableGrid*)(((DiscreteActionFeatureMap*)SimGod::getGlobalActionFeatureMap().get())->returnGrid()[m_outputAction.get()]));
 }
 
 void DQN::deferredLoadStep()
 {
 	//heavy-weight loading and stuff that relies on the SimGod
+	for (size_t stateVarIndex = 0; stateVarIndex < m_inputState.size(); stateVarIndex++)
+		m_pNNDefinition.get()->addInputStateVar(stateVarIndex);
+	m_pNNDefinition.get()->setOutputAction(
+		SimionApp::get()->pWorld->getDynamicModel()->getActionDescriptor()
+		,m_outputAction.get(), m_numActionSteps.get());
 	m_pTargetQNetwork = m_pNNDefinition.get()->createNetwork();
 	m_pOnlineQNetwork = m_pTargetQNetwork->clone();
-
-	m_numberOfActions = m_pTargetQNetwork->getTotalSize();
 
 	//The size of the minibatch is the experience replay update size plus 1
 	//This is because we only perform updates with in replaying-experience mode
 	m_minibatchSize = SimionApp::get()->pSimGod->getExperienceReplayUpdateSize();
 
-	if (m_pGrid->getNumCenters() != m_numberOfActions)
-		Logger::logMessage(MessageType::Error, "Output of the network has not the same size as the discrete action grid has centers/discrete values");
+	m_stateVector = vector<double>(m_inputState.size(), 0.0);
+	m_actionValuePredictionVector = vector<double>(m_numActionSteps.get());
 
-	m_stateVector = vector<double>(m_numberOfStateVars, 0.0);
-	m_actionValuePredictionVector = vector<double>(m_numberOfActions);
-
-	m_minibatch_s = vector<double>(m_numberOfStateVars * m_minibatchSize, 0.0);
-	m_minibatch_Q_s = vector<double>(m_numberOfActions * m_minibatchSize, 0.0);
+	m_minibatch_s = vector<double>(m_inputState.size() * m_minibatchSize, 0.0);
+	m_minibatch_Q_s = vector<double>(m_numActionSteps.get() * m_minibatchSize, 0.0);
 
 	m_pMinibatchChosenActionTargetValues = new double[m_minibatchSize];
 	m_pMinibatchActionId = new size_t[m_minibatchSize];
@@ -89,8 +79,8 @@ double DQN::selectAction(const State * s, Action * a)
 
 	size_t resultingActionIndex = m_policy->selectAction(m_actionValuePredictionVector);
 
-	double actionValue = m_pGrid->getCenters()[resultingActionIndex];
-	a->set(m_outputAction.get(), actionValue);
+	a->set(m_outputAction.get()
+		, m_pNNDefinition.get()->getActionIndexOutput(resultingActionIndex));
 
 	return 1.0;
 }
@@ -107,11 +97,11 @@ double DQN::update(const State * s, const Action * a, const State * s_p, double 
 	size_t numInputVariables = s->getNumVars(); //TODO: FIX THIS
 
 	vector<double> lastState = vector<double>(numInputVariables);
-	vector<double> Q_s_p = vector<double>(m_numberOfActions);
+	vector<double> Q_s_p = vector<double>(m_numActionSteps.get());
 	unordered_map<string, vector<double>&> lastStateInputMap =
 	{ { "state-input", lastState } };
 	vector<double> state = vector<double>(numInputVariables);
-	vector<double> Q_s = vector<double>(m_numberOfActions);
+	vector<double> Q_s = vector<double>(m_numActionSteps.get());
 	unordered_map<string, vector<double>&> stateInputMap =
 	{ { "state-input", state } };
 
@@ -126,7 +116,7 @@ double DQN::update(const State * s, const Action * a, const State * s_p, double 
 		}
 		//store the index of the action taken
 		m_pMinibatchActionId[m_minibatchTuples] =
-			m_pGrid->getClosestCenter(a->get(m_outputAction.get()));
+			m_pNNDefinition.get()->getClosestOutputIndex(a->get(m_outputAction.get()));
 
 		//estimate Q(s_p; online-weights)
 		m_pOnlineQNetwork->predict(lastStateInputMap, Q_s_p);
@@ -152,15 +142,15 @@ double DQN::update(const State * s, const Action * a, const State * s_p, double 
 
 		//get the current value of Q(s) for every action
 		m_pOnlineQNetwork->predict(stateInputMap, Q_s);
-		for (size_t i = 0; i < m_numberOfActions; i++)
+		for (size_t i = 0; i < m_numActionSteps.get(); i++)
 		{
-			m_minibatch_Q_s[m_minibatchTuples * m_numberOfActions + i] =
+			m_minibatch_Q_s[m_minibatchTuples * m_numActionSteps.get() + i] =
 				Q_s[i];
 		}
 
 		//change only the target for the action in the tuple
 		m_minibatch_Q_s
-			[m_pMinibatchActionId[m_minibatchTuples] + m_minibatchTuples * m_numberOfActions] =
+			[m_pMinibatchActionId[m_minibatchTuples] + m_minibatchTuples * m_numActionSteps.get()] =
 			m_pMinibatchChosenActionTargetValues[m_minibatchTuples];
 
 		m_minibatchTuples++;
@@ -262,16 +252,16 @@ DDPG::DDPG(ConfigNode * pConfigNode)
 
 	m_pStateFeatureList = new FeatureList("state-input");
 
-	m_numberOfStateVars = SimGod::getGlobalStateFeatureMap()->getTotalNumFeatures();
-	if (m_numberOfStateVars == 0)
+	m_inputState.size() = SimGod::getGlobalStateFeatureMap()->getTotalNumFeatures();
+	if (m_inputState.size() == 0)
 		Logger::logMessage(MessageType::Error, "Invalid State-Map chosen (it will return 0 features at most, but at least 1 has to be returned)");
 
 	m_pMinibatchExperienceTuples = new ExperienceTuple*[m_experienceReplay->getUpdateBatchSize()];
 
-	m_stateVector = vector<double>(m_numberOfStateVars);
+	m_stateVector = vector<double>(m_inputState.size());
 	m_actionPredictionVector = vector<double>(1);
 
-	m_minibatch_s = vector<double>(m_numberOfStateVars * m_experienceReplay->getUpdateBatchSize(), 0.0);
+	m_minibatch_s = vector<double>(m_inputState.size() * m_experienceReplay->getUpdateBatchSize(), 0.0);
 	m_minibatchActionVector = vector<double>(1 * m_experienceReplay->getUpdateBatchSize(), 0.0);
 	m_minibatchQVector = vector<double>(1 * m_experienceReplay->getUpdateBatchSize(), 0.0);
 
@@ -332,7 +322,7 @@ void DDPG::updateActor()
 		//get Q(s_p) for entire minibatch
 		SimionApp::get()->pSimGod->getGlobalStateFeatureMap()->getFeatures(m_pMinibatchExperienceTuples[i]->s, m_pStateFeatureList);
 		for (int n = 0; n < m_pStateFeatureList->m_numFeatures; n++)
-			m_minibatch_s[m_pStateFeatureList->m_pFeatures[n].m_index + i * m_numberOfStateVars] = m_pStateFeatureList->m_pFeatures[n].m_factor;
+			m_minibatch_s[m_pStateFeatureList->m_pFeatures[n].m_index + i * m_inputState.size()] = m_pStateFeatureList->m_pFeatures[n].m_factor;
 
 		m_minibatchActionVector[i] = m_pMinibatchExperienceTuples[i]->a->get(m_outputAction.get());
 	}
@@ -410,7 +400,7 @@ void DDPG::updateCritic()
 	{
 		SimionApp::get()->pSimGod->getGlobalStateFeatureMap()->getFeatures(m_pMinibatchExperienceTuples[i]->s_p, m_pStateFeatureList);
 		for (int n = 0; n < m_pStateFeatureList->m_numFeatures; n++)
-			m_minibatch_s[m_pStateFeatureList->m_pFeatures[n].m_index + i * m_numberOfStateVars] = m_pStateFeatureList->m_pFeatures[n].m_factor;
+			m_minibatch_s[m_pStateFeatureList->m_pFeatures[n].m_index + i * m_inputState.size()] = m_pStateFeatureList->m_pFeatures[n].m_factor;
 	}
 
 	//calculate mu'(s_p)

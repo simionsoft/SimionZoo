@@ -119,17 +119,6 @@ INetwork * NetworkDefinition::createNetwork()
 
 	*/
 
-	//create the inputs
-	//for each (InputData* input in m_inputs)
-	//{
-	//	if (!input->isInitialized())
-	//	{
-	//		input->createInputVariable();
-	//		result->getInputs().push_back(input);
-	//	}
-	//}
-
-
 	//output node
 	CNTK::FunctionPtr pOutputFunction = nullptr;
 
@@ -260,6 +249,12 @@ void NetworkDefinition::setOutputAction(Action* a, unsigned int actionVarId, uns
 	}
 
 	m_outputActionVar = actionVarId;
+}
+
+double NetworkDefinition::getActionIndexOutput(size_t actionIndex)
+{
+	actionIndex = std::max((size_t)0, std::min(m_outputActionValues.size() - 1, actionIndex));
+	return m_outputActionValues[actionIndex];
 }
 
 size_t NetworkDefinition::getClosestOutputIndex(double value)

@@ -22,19 +22,6 @@ CNTK::FunctionPtr CNTKWrapper::InputLayer(Link * pLink, vector<const Link*> depe
 	return pLink->getParentChain()->getParentNetworkArchitecture()->getParentProblem()->addInputLayer(inputID);
 
 	//MAKE SURE THAT THE STATE/ACTION SPACES ARE DEFINED BEFORE CALLING THIS
-
-	//auto inputList = pLink->getParentChain()->getParentNetworkArchitecture()->getParentProblem()->getInputs();
-
-	//CNTK::FunctionPtr pInput;
-	//for each (InputData* pItem in inputList)
-	//{
-	//	if (!strcmp(pItem->getId().c_str(), inputID.c_str()))
-	//	{
-	//		pItem->setIsUsed(true);
-	//		return pItem->getInputVariable();
-	//	}
-	//}
-	//return nullptr;
 }
 
 CNTK::FunctionPtr CNTKWrapper::ActivationLayer(const Link * pLink, vector<const Link*> dependencies, CNTK::DeviceDescriptor & device)

@@ -54,6 +54,7 @@ public:
 	virtual size_t getInputStateVar(size_t) = 0;
 	virtual void setOutputAction(Action* a, unsigned int actionVarId, unsigned int numOutputs) = 0;
 	virtual size_t getClosestOutputIndex(double value)=  0;
+	virtual double getActionIndexOutput(size_t actionIndex) = 0;
 	virtual size_t getOutputActionVar() = 0;
 	virtual size_t getNumOutputs() = 0;
 

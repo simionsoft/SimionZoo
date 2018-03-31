@@ -47,6 +47,7 @@ public:
 	size_t getInputStateVar(size_t i);
 	void setOutputAction(Action* a, unsigned int actionVarId, unsigned int numOutputs);
 	size_t getClosestOutputIndex(double value);
+	double getActionIndexOutput(size_t actionIndex);
 	size_t getOutputActionVar();
 	size_t getNumOutputs();
 
