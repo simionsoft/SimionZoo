@@ -11,8 +11,6 @@ class NetworkDefinition;
 
 class Network:public INetwork
 {
-	CNTK::NDShape getInputShape();
-	CNTK::NDShape getOutputShape();
 protected:
 
 	vector<CNTK::FunctionPtr> m_functionPtrs;

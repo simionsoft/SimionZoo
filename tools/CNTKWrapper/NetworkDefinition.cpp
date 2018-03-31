@@ -25,10 +25,13 @@ NetworkDefinition::NetworkDefinition(tinyxml2::XMLElement * pParentNode)
 	m_pNetworkArchitecture->setParentProblem(this);
 
 	//load inputs
-	pNode = pParentNode->FirstChildElement(XML_TAG_Inputs);
-	if (pNode == nullptr)
-		throw ProblemParserElementNotFound(XML_TAG_Inputs);
-	loadChildren<InputData>(pNode, XML_TAG_InputData, m_inputs);
+	//NO NEED TO LOAD THEM ANY MORE. 
+	//DIMENSIONS WILL BE SET FROM THE CLIENT JUST BEFORE CREATING THE NETWORK
+
+	//pNode = pParentNode->FirstChildElement(XML_TAG_Inputs);
+	//if (pNode == nullptr)
+	//	throw ProblemParserElementNotFound(XML_TAG_Inputs);
+	//loadChildren<InputData>(pNode, XML_TAG_InputData, m_inputs);
 
 	//load output
 	pNode = pParentNode->FirstChildElement(XML_TAG_Output);

@@ -19,9 +19,6 @@ protected:
 	vector<double> m_outputActionValues;
 	vector<CNTK::Variable> m_inputVariables;
 
-	vector<InputData*> m_inputs;
-
-
 	NetworkArchitecture* m_pNetworkArchitecture;
 	LinkConnection* m_pOutput;
 	OptimizerSettings* m_pOptimizerSetting;
@@ -36,7 +33,7 @@ public:
 	CNTK::FunctionPtr addInputLayer(string inputId);
 
 	NetworkArchitecture* getNetworkArchitecture() { return m_pNetworkArchitecture; }
-	const std::vector<InputData*>& getInputs() const { return m_inputs; }
+	const std::vector<CNTK::Variable>& getInputs() const { return m_inputVariables; }
 	const LinkConnection* getOutput() const { return m_pOutput; }
 	const OptimizerSettings* getOptimizerSettings() const { return m_pOptimizerSetting; }
 

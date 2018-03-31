@@ -45,7 +45,7 @@ public:
 	virtual void destroy() = 0;
 
 	virtual NetworkArchitecture* getNetworkArchitecture() = 0;
-	virtual const std::vector<InputData*>& getInputs() const = 0;
+	virtual const std::vector<CNTK::Variable>& getInputs() const = 0;
 	virtual const LinkConnection* getOutput() const = 0;
 	virtual const OptimizerSettings* getOptimizerSettings() const = 0;
 
