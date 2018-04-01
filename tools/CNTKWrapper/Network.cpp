@@ -72,7 +72,7 @@ void Network::train(IMinibatch* pMinibatch)
 	m_trainer->TrainMinibatch(arguments, DeviceDescriptor::CPUDevice());
 }
 
-void Network::get(State* s, vector<double>& outputVector)
+void Network::get(const State* s, vector<double>& outputVector)
 {
 	FunctionPtr outputPtr = getOutputsFunctionPtr().at(0);
 	ValuePtr outputValue;

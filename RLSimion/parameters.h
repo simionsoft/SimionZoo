@@ -395,7 +395,7 @@ class INetwork;
 class NN_DEFINITION
 {
 protected:
-	INetworkDefinition* m_pProblem= nullptr;
+	INetworkDefinition* m_pDefinition= nullptr;
 
 	const char* m_name;
 	const char* m_comment;
@@ -406,15 +406,14 @@ public:
 	{
 		m_name = name;
 		m_comment = comment;
-		m_pProblem = CNTKWrapperLoader::getProblem(pConfigNode->FirstChildElement(m_name)->FirstChildElement("Problem"));
+		m_pDefinition = CNTKWrapperLoader::getProblem(pConfigNode->FirstChildElement(m_name)->FirstChildElement("Problem"));
 	}
 	NN_DEFINITION& operator=(NN_DEFINITION& copied);
+	INetworkDefinition* operator->() { return m_pDefinition; }
 
 	~NN_DEFINITION();
 
 	//need to explicitly destroy the object allocated from the CNTK wrapper DLL
 	void destroy();
-
-	INetworkDefinition* get();
 };
 #endif

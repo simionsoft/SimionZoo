@@ -221,7 +221,7 @@ CNTK::FunctionPtr NetworkDefinition::addInputLayer(string inputId)
 	return inputVariable;
 }
 
-void NetworkDefinition::addInputStateVar(unsigned int stateVarId)
+void NetworkDefinition::addInputStateVar(size_t stateVarId)
 {
 	m_inputStateVars.push_back(stateVarId);
 }
@@ -236,14 +236,12 @@ size_t NetworkDefinition::getInputStateVar(size_t i)
 	return m_inputStateVars[i];
 }
 
-void NetworkDefinition::setOutputAction(Action* a, unsigned int actionVarId, unsigned int numOutputs)
+void NetworkDefinition::setOutputAction(size_t actionVarId, size_t numOutputs, double minvalue, double maxvalue)
 {
-	double minvalue, maxvalue, stepSize;
+	double stepSize;
 	m_outputActionValues = vector<double>(numOutputs);
 	for (size_t i = 0; i < numOutputs; i++)
 	{
-		minvalue = a->getProperties(actionVarId).getMin();
-		maxvalue = a->getProperties(actionVarId).getMax();
 		stepSize = (maxvalue - minvalue)/((int)numOutputs-1);
 		m_outputActionValues[i] = minvalue + stepSize * i;
 	}

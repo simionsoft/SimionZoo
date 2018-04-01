@@ -42,10 +42,10 @@ public:
 	static NetworkDefinition* loadFromFile(std::string fileName);
 	static NetworkDefinition* loadFromString(std::string content);
 
-	void addInputStateVar(unsigned int stateVarId);
+	void addInputStateVar(size_t stateVarId);
 	size_t getNumInputStateVars();
 	size_t getInputStateVar(size_t i);
-	void setOutputAction(Action* a, unsigned int actionVarId, unsigned int numOutputs);
+	void setOutputAction(size_t actionVarId, size_t numOutputs, double minvalue, double maxvalue);
 	size_t getClosestOutputIndex(double value);
 	double getActionIndexOutput(size_t actionIndex);
 	size_t getOutputActionVar();

@@ -146,7 +146,7 @@ Link * Link::getNextLink() const
 {
 	//determine position and get the next element
 	vector<Link*> chainLinks = m_pParentChain->getChainLinks();
-	ptrdiff_t position = std::distance(chainLinks.begin(), std::find(chainLinks.begin(), chainLinks.end(), this));
+	size_t position = std::distance(chainLinks.begin(), std::find(chainLinks.begin(), chainLinks.end(), this));
 	if (position >= chainLinks.size() - 1)
 		return nullptr;
 	return chainLinks.at(position + 1);

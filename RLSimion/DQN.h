@@ -7,6 +7,7 @@
 
 class INetwork;
 class DiscreteDeepPolicy;
+class IMinibatch;
 class ConfigNode;
 
 class DQN : public Simion, DeferredLoad
@@ -16,24 +17,17 @@ protected:
 	INT_PARAM m_numActionSteps;
 	ACTION_VARIABLE m_outputAction;
 
+	vector<double> m_Q_s_p;
+	vector<double> m_Q_s;
+
 	NN_DEFINITION m_pNNDefinition;
 	INetwork* m_pTargetQNetwork= nullptr;
 	INetwork* m_pOnlineQNetwork= nullptr;
+	IMinibatch* m_pMinibatch = nullptr;
 
 	CHILD_OBJECT_FACTORY<DiscreteDeepPolicy> m_policy;
 
-
-	std::vector<double> m_stateVector;
-	std::vector<double> m_actionValuePredictionVector;
-
-	std::vector<double> m_minibatch_s;
-	std::vector<double> m_minibatch_Q_s;
-
-	size_t m_minibatchTuples = 0;
 	size_t m_minibatchSize = 0;
-	size_t* m_pMinibatchActionId= nullptr;
-
-	double* m_pMinibatchChosenActionTargetValues= nullptr;
 
 	virtual INetwork* getPredictionNetwork();
 	

@@ -49,10 +49,10 @@ public:
 	virtual const LinkConnection* getOutput() const = 0;
 	virtual const OptimizerSettings* getOptimizerSettings() const = 0;
 
-	virtual void addInputStateVar(unsigned int stateVarId) = 0;
+	virtual void addInputStateVar(size_t stateVarId) = 0;
 	virtual size_t getNumInputStateVars() = 0; 
 	virtual size_t getInputStateVar(size_t) = 0;
-	virtual void setOutputAction(Action* a, unsigned int actionVarId, unsigned int numOutputs) = 0;
+	virtual void setOutputAction(size_t actionVarId, size_t numOutputs, double minvalue, double maxvalue) = 0;
 	virtual size_t getClosestOutputIndex(double value)=  0;
 	virtual double getActionIndexOutput(size_t actionIndex) = 0;
 	virtual size_t getOutputActionVar() = 0;
@@ -81,7 +81,7 @@ public:
 	virtual INetwork* clone() const= 0;
 
 	virtual void train(IMinibatch* pMinibatch) = 0;
-	virtual void get(State* s, vector<double>& outputValues) = 0;
+	virtual void get(const State* s, vector<double>& outputValues) = 0;
 
 	virtual void train(std::unordered_map<std::string, std::vector<double>&>& inputDataMap
 		, std::vector<double>& targetOutputData)= 0;
@@ -95,7 +95,7 @@ public:
 	virtual void destroy() = 0;
 
 	virtual void clear() = 0;
-	virtual void addTuple(State* s, vector<double>& targetValues)= 0;
+	virtual void addTuple(const State* s, vector<double>& targetValues)= 0;
 	virtual vector<double>& getInputVector()= 0;
 	virtual vector<double>& getTargetOutputVector()= 0;
 };

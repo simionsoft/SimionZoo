@@ -19,7 +19,7 @@ void Minibatch::clear()
 	m_numTuples = 0;
 }
 
-void Minibatch::addTuple(State* s, vector<double>& targetValues)
+void Minibatch::addTuple(const State* s, vector<double>& targetValues)
 {
 	size_t stateVarId;
 	if (m_numTuples < m_size)

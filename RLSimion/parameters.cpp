@@ -22,9 +22,9 @@ ACTION_VARIABLE::ACTION_VARIABLE(ConfigNode* pConfigNode, const char* name, cons
 NN_DEFINITION&  NN_DEFINITION::operator=(NN_DEFINITION& copied)
 {
 	//we move pointers to the copy
-	m_pProblem = copied.m_pProblem;
+	m_pDefinition = copied.m_pDefinition;
 
-	copied.m_pProblem = nullptr;
+	copied.m_pDefinition = nullptr;
 
 	m_name = copied.m_name;
 	m_comment = copied.m_comment;
@@ -40,14 +40,11 @@ NN_DEFINITION::~NN_DEFINITION()
 
 void NN_DEFINITION::destroy()
 {
-	if (m_pProblem)
+	if (m_pDefinition)
 	{
-		m_pProblem->destroy();
-		m_pProblem = nullptr;
+		m_pDefinition->destroy();
+		m_pDefinition = nullptr;
 	}
 }
-
-
-INetworkDefinition* NN_DEFINITION::get() { return m_pProblem; }
 
 #endif

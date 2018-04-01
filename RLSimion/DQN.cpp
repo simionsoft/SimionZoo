@@ -17,15 +17,11 @@
 
 DQN::~DQN()
 {
-	if (m_pMinibatchChosenActionTargetValues)
-		delete[] m_pMinibatchChosenActionTargetValues;
-	if (m_pMinibatchActionId)
-		delete[] m_pMinibatchActionId;
-
 	//We need to manually call the NN_DEFINITION destructor
-	m_pNNDefinition.destroy();
+	m_pNNDefinition->destroy();
 	m_pTargetQNetwork->destroy();
 	m_pOnlineQNetwork->destroy();
+	m_pMinibatch->destroy();
 	CNTKWrapperLoader::UnLoad();
 }
 
@@ -42,45 +38,39 @@ DQN::DQN(ConfigNode* pConfigNode)
 
 void DQN::deferredLoadStep()
 {
-	//heavy-weight loading and stuff that relies on the SimGod
+	//we defer all the heavy-weight initializing stuff and anything that depends on the SimGod
+	m_Q_s_p = vector<double>(m_numActionSteps.get());
+	m_Q_s = vector<double>(m_numActionSteps.get());
+
+	Descriptor& actionDescr = SimionApp::get()->pWorld->getDynamicModel()->getActionDescriptor();
+	
+	//set the input-outputs
 	for (size_t stateVarIndex = 0; stateVarIndex < m_inputState.size(); stateVarIndex++)
-		m_pNNDefinition.get()->addInputStateVar(stateVarIndex);
-	m_pNNDefinition.get()->setOutputAction(
-		SimionApp::get()->pWorld->getDynamicModel()->getActionDescriptor()
-		,m_outputAction.get(), m_numActionSteps.get());
-	m_pTargetQNetwork = m_pNNDefinition.get()->createNetwork();
+		m_pNNDefinition->addInputStateVar(stateVarIndex);
+	m_pNNDefinition->setOutputAction(m_outputAction.get(), m_numActionSteps.get()
+		, actionDescr[m_outputAction.get()].getMin(), actionDescr[m_outputAction.get()].getMax());
+
+	//create the networks
+	m_pTargetQNetwork = m_pNNDefinition->createNetwork();
 	m_pOnlineQNetwork = m_pTargetQNetwork->clone();
 
+	//create the minibatch
 	//The size of the minibatch is the experience replay update size plus 1
 	//This is because we only perform updates with in replaying-experience mode
 	m_minibatchSize = SimionApp::get()->pSimGod->getExperienceReplayUpdateSize();
+	m_pMinibatch = m_pNNDefinition->createMinibatch(m_minibatchSize);
 
-	m_stateVector = vector<double>(m_inputState.size(), 0.0);
-	m_actionValuePredictionVector = vector<double>(m_numActionSteps.get());
 
-	m_minibatch_s = vector<double>(m_inputState.size() * m_minibatchSize, 0.0);
-	m_minibatch_Q_s = vector<double>(m_numActionSteps.get() * m_minibatchSize, 0.0);
-
-	m_pMinibatchChosenActionTargetValues = new double[m_minibatchSize];
-	m_pMinibatchActionId = new size_t[m_minibatchSize];
 }
 
 double DQN::selectAction(const State * s, Action * a)
 {
-	for (size_t i = 0; i < s->getNumVars(); i++)
-	{
-		m_stateVector[i] = s->get((int) i);
-	}
+	m_pOnlineQNetwork->get(s, m_Q_s);
 
-	unordered_map<string, vector<double>&> inputMap =
-		{ { "state-input", m_stateVector } };
-
-	m_pOnlineQNetwork->predict(inputMap, m_actionValuePredictionVector);
-
-	size_t resultingActionIndex = m_policy->selectAction(m_actionValuePredictionVector);
+	size_t selectedAction = m_policy->selectAction(m_Q_s);
 
 	a->set(m_outputAction.get()
-		, m_pNNDefinition.get()->getActionIndexOutput(resultingActionIndex));
+		, m_pNNDefinition->getActionIndexOutput(selectedAction));
 
 	return 1.0;
 }
@@ -92,77 +82,45 @@ INetwork* DQN::getPredictionNetwork()
 
 double DQN::update(const State * s, const Action * a, const State * s_p, double r, double behaviorProb)
 {
-	unordered_map<string, vector<double>&> minibatchInputMap =
-	{ { "state-input", m_minibatch_s } };
-	size_t numInputVariables = s->getNumVars(); //TODO: FIX THIS
-
-	vector<double> lastState = vector<double>(numInputVariables);
-	vector<double> Q_s_p = vector<double>(m_numActionSteps.get());
-	unordered_map<string, vector<double>&> lastStateInputMap =
-	{ { "state-input", lastState } };
-	vector<double> state = vector<double>(numInputVariables);
-	vector<double> Q_s = vector<double>(m_numActionSteps.get());
-	unordered_map<string, vector<double>&> stateInputMap =
-	{ { "state-input", state } };
-
-	if (SimionApp::get()->pSimGod->bReplayingExperience() && m_minibatchTuples<m_minibatchSize)
+	if (SimionApp::get()->pSimGod->bReplayingExperience())
 	{
 		double gamma = SimionApp::get()->pSimGod->getGamma();
 
-		//get Q(s_p) for the current tuple
-		for (size_t i = 0; i < numInputVariables; i++)
-		{
-			lastState[i] = s_p->get((int)i);
-		}
+		//get Q(s_p) for the current tuple (online-weights)
+		m_pOnlineQNetwork->get(s_p, m_Q_s_p);
+
+		//calculate argmaxQ(s_p; online-weights)
+		size_t argmaxQ = distance(m_Q_s_p.begin(), max_element(m_Q_s_p.begin(), m_Q_s_p.end()));
+
 		//store the index of the action taken
-		m_pMinibatchActionId[m_minibatchTuples] =
-			m_pNNDefinition.get()->getClosestOutputIndex(a->get(m_outputAction.get()));
-
-		//estimate Q(s_p; online-weights)
-		m_pOnlineQNetwork->predict(lastStateInputMap, Q_s_p);
-
-		//calculate and store the target for the current tuple
-		size_t argmaxQ = distance(Q_s_p.begin(), max_element(Q_s_p.begin(), Q_s_p.end()));
+		size_t selectedActionId =
+			m_pNNDefinition->getClosestOutputIndex(a->get(m_outputAction.get()));
 
 		//estimate Q(s_p, argMaxQ; target-weights or online-weights)
 		//THIS is the only real difference between DQN and Double-DQN
+		//We do the prediction step again only if using Double-DQN (the prediction network
+		//will be different to the online network)
 		if (getPredictionNetwork() != m_pOnlineQNetwork)
-			getPredictionNetwork()->predict(lastStateInputMap, Q_s_p);
+			getPredictionNetwork()->get(s_p, m_Q_s_p);
 
-		//calculate r + gamma*Q(s_p,a)
-		m_pMinibatchChosenActionTargetValues[m_minibatchTuples] =
-			r + gamma * Q_s_p[argmaxQ];
+		//calculate targetvalue= r + gamma*Q(s_p,a)
+		double targetValue = r + gamma * m_Q_s_p[argmaxQ];
 
-		//estimate Q(s,a)
-		for (size_t i = 0; i < s->getNumVars(); i++)
-		{
-			state[i] = s->get((int)i);
-			m_minibatch_s[m_minibatchTuples*s->getNumVars() + i] = s->get((int)i);
-		}
+		//get the current value of Q(s)
+		m_pOnlineQNetwork->get(s, m_Q_s);
 
-		//get the current value of Q(s) for every action
-		m_pOnlineQNetwork->predict(stateInputMap, Q_s);
-		for (size_t i = 0; i < m_numActionSteps.get(); i++)
-		{
-			m_minibatch_Q_s[m_minibatchTuples * m_numActionSteps.get() + i] =
-				Q_s[i];
-		}
+		//change the target value only for the selecte action, the rest remain the same
+		m_Q_s[selectedActionId] = targetValue;
 
-		//change only the target for the action in the tuple
-		m_minibatch_Q_s
-			[m_pMinibatchActionId[m_minibatchTuples] + m_minibatchTuples * m_numActionSteps.get()] =
-			m_pMinibatchChosenActionTargetValues[m_minibatchTuples];
-
-		m_minibatchTuples++;
+		m_pMinibatch->addTuple(s, m_Q_s);
 	}
 	//We only train the network in direct-experience updates to simplify mini-batching
-	else if (m_minibatchTuples == m_minibatchSize)
+	else
 	{
 		SimGod* pSimGod = SimionApp::get()->pSimGod.ptr();
 
 		//update the network finally
-		m_pTargetQNetwork->train(minibatchInputMap, m_minibatch_Q_s);
-		m_minibatchTuples = 0;
+		m_pTargetQNetwork->train(m_pMinibatch);
 
 		//update the prediction network
 		if (pSimGod->bUpdateFrozenWeightsNow())

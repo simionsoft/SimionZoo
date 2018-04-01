@@ -36,7 +36,7 @@ public:
 	INetwork* clone() const;
 
 	void train(IMinibatch* pMinibatch);
-	void get(State* s, vector<double>& outputValues);
+	void get(const State* s, vector<double>& outputValues);
 
 	void train(std::unordered_map<std::string, std::vector<double>&>& inputDataMap, std::vector<double>& targetOutputData);
 	void predict(std::unordered_map<std::string, std::vector<double>&>& inputDataMap, std::vector<double>& predictionData);
