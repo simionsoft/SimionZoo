@@ -11,6 +11,7 @@
 Network::Network(INetworkDefinition* pNetworkDefinition)
 {
 	m_pNetworkDefinition = pNetworkDefinition;
+	m_outputsFunctionPtr = vector<CNTK::FunctionPtr>();
 }
 
 
@@ -32,11 +33,8 @@ void Network::buildQNetwork()
 {
 	const OptimizerSettings* optimizer = m_pNetworkDefinition->getOptimizerSettings();
 
-	//m_inputVariable = CNTK::InputVariable(getInputShape(), DataType::Double, L"Input");
-
-	m_outputsFunctionPtr = vector<CNTK::FunctionPtr>();
-
-	m_targetOutput = CNTK::InputVariable(m_targetOutput.Shape(), CNTK::DataType::Double, L"Target");
+	m_targetOutput = CNTK::InputVariable({(size_t)m_pNetworkDefinition->getNumOutputs()}
+		, CNTK::DataType::Double, L"Target");
 
 	//TODO: add support for different loss functions
 	m_lossFunctionPtr = CNTK::SquaredError(m_outputsFunctionPtr.at(0), m_targetOutput, L"Loss");
@@ -96,6 +94,7 @@ void Network::get(const State* s, vector<double>& outputVector)
 		inputVector[i] = s->get((int)m_pNetworkDefinition->getInputStateVar((int) i));
 
 	//THIS WON'T WORK IF THERE IS MORE THAN 1 INPUT VARIABLE
+	//DIFFERENT INPUT VECTORS SHOULD BE USED
 	for (auto inputVariable = m_pNetworkDefinition->getInputs().begin()
 		; inputVariable != m_pNetworkDefinition->getInputs().end(); inputVariable++)
 	{
