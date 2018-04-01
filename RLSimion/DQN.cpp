@@ -115,7 +115,7 @@ double DQN::update(const State * s, const Action * a, const State * s_p, double 
 		m_pMinibatch->addTuple(s, m_Q_s);
 	}
 	//We only train the network in direct-experience updates to simplify mini-batching
-	else
+	else if (m_pMinibatch->isFull())
 	{
 		SimGod* pSimGod = SimionApp::get()->pSimGod.ptr();
 

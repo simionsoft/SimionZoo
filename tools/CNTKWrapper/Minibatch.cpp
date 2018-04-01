@@ -48,3 +48,8 @@ void Minibatch::destroy()
 {
 	delete this;
 }
+
+bool Minibatch::isFull()
+{
+	return m_numTuples == m_size;
+}

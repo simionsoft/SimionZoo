@@ -98,6 +98,7 @@ public:
 	virtual void addTuple(const State* s, vector<double>& targetValues)= 0;
 	virtual vector<double>& getInputVector()= 0;
 	virtual vector<double>& getTargetOutputVector()= 0;
+	virtual bool isFull() = 0;
 };
 
 namespace CNTKWrapper

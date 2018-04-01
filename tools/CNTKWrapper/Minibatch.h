@@ -22,5 +22,6 @@ public:
 	vector<double>& getInputVector();
 	vector<double>& getTargetOutputVector();
 	void destroy();
+	bool isFull();
 };
 

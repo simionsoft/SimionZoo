@@ -70,6 +70,9 @@ void Network::train(IMinibatch* pMinibatch)
 		, pMinibatch->getTargetOutputVector(), CNTK::DeviceDescriptor::CPUDevice());
 	//train the network using the minibatch
 	m_trainer->TrainMinibatch(arguments, DeviceDescriptor::CPUDevice());
+
+	//clear the minibatch
+	pMinibatch->clear();
 }
 
 void Network::get(const State* s, vector<double>& outputVector)
