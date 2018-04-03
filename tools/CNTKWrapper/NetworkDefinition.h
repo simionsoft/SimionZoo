@@ -12,12 +12,12 @@ class OptimizerSettings;
 
 class NetworkDefinition: public INetworkDefinition
 {
-
+	vector<wstring> m_inputLayerNames;
+	wstring m_outputLayerName;
 protected:
 	vector<unsigned int> m_inputStateVars;
 	unsigned int m_outputActionVar;
 	vector<double> m_outputActionValues;
-	vector<CNTK::Variable> m_inputVariables;
 
 	NetworkArchitecture* m_pNetworkArchitecture;
 	LinkConnection* m_pOutput;
@@ -30,12 +30,14 @@ public:
 
 	void destroy();
 
-	CNTK::FunctionPtr addInputLayer(string inputId);
-
 	NetworkArchitecture* getNetworkArchitecture() { return m_pNetworkArchitecture; }
-	const std::vector<CNTK::Variable>& getInputs() const { return m_inputVariables; }
 	const LinkConnection* getOutput() const { return m_pOutput; }
 	const OptimizerSettings* getOptimizerSettings() const { return m_pOptimizerSetting; }
+
+	void setInputLayerName(wstring name);
+	bool isInputLayer(wstring name);
+	void setOutputLayerName(wstring name);
+	wstring getOutputLayerName();
 
 	static NetworkDefinition* getInstance(tinyxml2::XMLElement* pNode);
 

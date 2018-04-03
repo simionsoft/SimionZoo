@@ -30,7 +30,7 @@ OptimizerSettings::OptimizerSettings(tinyxml2::XMLElement * pParentNode)
 	tinyxml2::XMLElement *pNode = pParentNode->FirstChildElement(XML_TAG_Parameters);
 	if (pNode == nullptr)
 		throw ProblemParserElementNotFound(XML_TAG_Parameters);
-	loadChildren<COptimizerParameter>(pNode, XML_TAG_OptimizerParameter, m_parameters);
+	loadChildren<OptimizerParameter>(pNode, XML_TAG_OptimizerParameter, m_parameters);
 }
 
 OptimizerSettings::OptimizerSettings()
@@ -47,7 +47,7 @@ OptimizerSettings * OptimizerSettings::getInstance(tinyxml2::XMLElement * pNode)
 	return new OptimizerSettings(pNode);
 }
 
-const COptimizerParameter * OptimizerSettings::getParameterByKey(std::string key) const
+const OptimizerParameter * OptimizerSettings::getParameterByKey(std::string key) const
 {
 	for each (auto pParameter in m_parameters)
 	{
@@ -60,7 +60,7 @@ const COptimizerParameter * OptimizerSettings::getParameterByKey(std::string key
 	return nullptr;
 }
 
-COptimizerParameter::COptimizerParameter(tinyxml2::XMLElement * pParentNode)
+OptimizerParameter::OptimizerParameter(tinyxml2::XMLElement * pParentNode)
 {
 	tinyxml2::XMLElement *pNode = pParentNode->FirstChildElement(XML_TAG_Value);
 	if (pNode == nullptr)
@@ -73,10 +73,10 @@ COptimizerParameter::COptimizerParameter(tinyxml2::XMLElement * pParentNode)
 	m_key = pNode->GetText();
 }
 
-COptimizerParameter * COptimizerParameter::getInstance(tinyxml2::XMLElement * pNode)
+OptimizerParameter * OptimizerParameter::getInstance(tinyxml2::XMLElement * pNode)
 {
 	if (!strcmp(pNode->Name(), XML_TAG_OptimizerParameter))
-		return new COptimizerParameter(pNode);
+		return new OptimizerParameter(pNode);
 	return nullptr;
 }
 

@@ -171,13 +171,13 @@ INetwork * NetworkDefinition::createNetwork()
 
 				//create CNTK node
 				pCurrentLink->createCNTKFunctionPtr(dependencies);
-				result->getFunctionPtrs().push_back(pCurrentLink->getFunctionPtr());
 
 				//check if output has been reached already
 				if (!strcmp(m_pOutput->getTargetId().c_str(), pCurrentLink->getId().c_str()))
 				{
 					pOutputFunction = pCurrentLink->getFunctionPtr()->Output();
-					result->getOutputsFunctionPtr().push_back(pOutputFunction);
+					result->setOutputLayer(pOutputFunction);
+					setOutputLayerName(pOutputFunction->Name());
 					break;
 				}
 
@@ -203,14 +203,7 @@ INetwork * NetworkDefinition::createNetwork()
 	result->buildQNetwork();
 	return result;
 }
-CNTK::FunctionPtr NetworkDefinition::addInputLayer(string inputId)
-{
-	CNTK::Variable inputVariable= CNTK::InputVariable({m_inputStateVars.size()}
-		, CNTK::DataType::Double
-		, CNTKWrapper::Internal::string2wstring(inputId));
-	m_inputVariables.push_back(inputVariable);
-	return inputVariable;
-}
+
 
 void NetworkDefinition::addInputStateVar(size_t stateVarId)
 {
@@ -280,6 +273,30 @@ size_t NetworkDefinition::getNumOutputs()
 IMinibatch* NetworkDefinition::createMinibatch(size_t size)
 {
 	return new Minibatch(size, this);
+}
+
+void NetworkDefinition::setInputLayerName(wstring name)
+{
+	m_inputLayerNames.push_back(name);
+}
+
+bool NetworkDefinition::isInputLayer(wstring name)
+{
+	for each (wstring inputLayerName in m_inputLayerNames)
+	{
+		if (inputLayerName == name)
+			return true;
+	}
+	return false;
+}
+
+void NetworkDefinition::setOutputLayerName(wstring name)
+{
+	m_outputLayerName = name;
+}
+wstring NetworkDefinition::getOutputLayerName()
+{
+	return m_outputLayerName;
 }
 
 #endif // _WIN64

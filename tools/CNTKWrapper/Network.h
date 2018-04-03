@@ -11,25 +11,30 @@ class NetworkDefinition;
 
 class Network:public INetwork
 {
-protected:
+	const wstring m_lossName = L"Loss";
+	const wstring m_targetName = L"Target";
+	const wstring m_networkName = L"Network";
 
-	vector<CNTK::FunctionPtr> m_functionPtrs;
-	vector<CNTK::FunctionPtr> m_outputsFunctionPtr;
+	void findInputsAndOutputs();
+protected:
+	vector<CNTK::Variable> m_inputs;
+
 	CNTK::FunctionPtr m_networkFunctionPtr;
+
+	CNTK::FunctionPtr m_QFunctionPtr;
 	CNTK::FunctionPtr m_lossFunctionPtr;
+	CNTK::Variable m_targetVariable;
+
 	CNTK::TrainerPtr m_trainer;
-	CNTK::Variable m_targetOutput;
-	INetworkDefinition *m_pNetworkDefinition;
+
+	NetworkDefinition *m_pNetworkDefinition;
 public:
-	Network(INetworkDefinition* pNetworkDefinition);
+	Network(NetworkDefinition* pNetworkDefinition);
 	~Network();
 
-	size_t getTotalSize();
 	void destroy();
 
-	vector<CNTK::FunctionPtr>& getFunctionPtrs() { return m_functionPtrs; }
-	vector<CNTK::FunctionPtr>& getOutputsFunctionPtr() { return m_outputsFunctionPtr; }
-
+	void setOutputLayer(CNTK::FunctionPtr outputLayer);
 	void buildQNetwork();
 	void save(string fileName);
 

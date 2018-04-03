@@ -15,13 +15,16 @@
 
 CNTK::FunctionPtr CNTKWrapper::InputLayer(Link * pLink, vector<const Link*> dependencies, CNTK::DeviceDescriptor & device)
 {
-
-	//determine the linked input data
-	string inputID = pLink->getParameterByName<InputDataParameter>("Input Data")->getValue();
-	//add this input to the NN definition
-	return pLink->getParentChain()->getParentNetworkArchitecture()->getParentProblem()->addInputLayer(inputID);
-
 	//MAKE SURE THAT THE STATE/ACTION SPACES ARE DEFINED BEFORE CALLING THIS
+	//determine the linked input data
+	wstring inputID = CNTKWrapper::Internal::string2wstring(
+		pLink->getParameterByName<InputDataParameter>("Input Data")->getValue());
+
+	INetworkDefinition* pNetworkDefinition =
+		pLink->getParentChain()->getParentNetworkArchitecture()->getParentProblem();
+	size_t numInputs = pNetworkDefinition->getNumInputStateVars();
+	pNetworkDefinition->setInputLayerName(inputID);
+	return CNTK::InputVariable({ numInputs }, CNTK::DataType::Double, inputID);
 }
 
 CNTK::FunctionPtr CNTKWrapper::ActivationLayer(const Link * pLink, vector<const Link*> dependencies, CNTK::DeviceDescriptor & device)
@@ -100,7 +103,10 @@ CNTK::FunctionPtr CNTKWrapper::DenseLayer(const Link * pLink, vector<const Link*
 	wstring name = CNTKWrapper::Internal::string2wstring(pLink->getName());
 	auto activationFunction = pLink->getParameterByName<ActivationFunctionParameter>("Activation")->getValue();
 
-	return CNTKWrapper::Internal::FullyConnectedDNNLayer(dependencies.at(0)->getFunctionPtr(), output_nodes, device, activationFunction, name);
+	CNTK::FunctionPtr layer= CNTKWrapper::Internal::FullyConnectedDNNLayer(
+		dependencies.at(0)->getFunctionPtr(), output_nodes, device, activationFunction, name);
+
+	return layer;
 }
 
 CNTK::FunctionPtr CNTKWrapper::DropoutLayer(const Link * pLink, vector<const Link*> dependencies, CNTK::DeviceDescriptor & device)
@@ -183,7 +189,7 @@ CNTK::FunctionPtr CNTKWrapper::LinearTransformationLayer(const Link * pLink, vec
 
 	auto timesParam = Constant::Scalar(DataType::Float, (float)scale, device);
 
-	auto timesFunction = ElementTimes(timesParam, dependencies.at(0)->getFunctionPtr());
+	auto timesFunction = ElementTimes(timesParam, dependencies.at(0)->getFunctionPtr(),L"Times");
 
 	auto plusParam = Constant::Constant(dependencies.at(0)->getFunctionPtr()->Output().Shape(), (float)offset, device);
 	
@@ -265,26 +271,26 @@ FunctionPtr CNTKWrapper::Internal::applyActivationFunction(FunctionPtr pInput, A
 	switch (activationFunction)
 	{
 	case ActivationFunction::elu:
-		return CNTK::ELU(pInput);
+		return CNTK::ELU(pInput,L"ELU");
 	case ActivationFunction::hard_sigmoid:
 		//TODO: is this the correct function?
-		return CNTK::Hardmax(pInput);
+		return CNTK::Hardmax(pInput,L"HardMax");
 	case ActivationFunction::relu:
-		return CNTK::ReLU(pInput);
+		return CNTK::ReLU(pInput,L"ReLu");
 	case ActivationFunction::selu:
-		return CNTK::SELU(pInput);
+		return CNTK::SELU(pInput, 1.0507009873554804934193349852946,1.6732632423543772848170429916717,L"SELU");
 	case ActivationFunction::sigmoid:
-		return CNTK::Sigmoid(pInput);
+		return CNTK::Sigmoid(pInput,L"Sigmoid");
 	case ActivationFunction::softmax:
-		return CNTK::Softmax(pInput);
+		return CNTK::Softmax(pInput,L"Softmax");
 		//TODO: solve this problem
 		//return std::bind<FunctionPtr(const Variable&, const std::wstring&)>(Softmax, std::placeholders::_1, L"");
 	case ActivationFunction::softplus:
-		return CNTK::Softplus(pInput);
+		return CNTK::Softplus(pInput,L"Softplus");
 	case ActivationFunction::softsign:
 		throw "not supported at the moment";
 	case ActivationFunction::tanh:
-		return CNTK::Tanh(pInput);
+		return CNTK::Tanh(pInput,L"Tanh");
 	case ActivationFunction::linear:
 		return pInput;
 	}
@@ -311,7 +317,10 @@ CNTK::FunctionPtr CNTKWrapper::Internal::FullyConnectedLinearLayer(CNTK::Variabl
 	assert(input.Shape().Rank() == 1);
 	size_t inputDim = input.Shape()[0];
 
-	auto timesParam = Parameter({ outputDim, inputDim }, DataType::Double, GlorotUniformInitializer(DefaultParamInitScale, SentinelValueForInferParamInitRank, SentinelValueForInferParamInitRank, 1), device, L"timesParam");
+	auto timesParam = Parameter({ outputDim, inputDim }
+	, DataType::Double, GlorotUniformInitializer(DefaultParamInitScale
+		, SentinelValueForInferParamInitRank, SentinelValueForInferParamInitRank, 1)
+		, device, L"timesParam");
 	auto timesFunction = Times(timesParam, input, L"times");
 
 	auto plusParam = Parameter({ outputDim }, 0.0, device, L"plusParam");
@@ -323,9 +332,11 @@ FunctionPtr CNTKWrapper::Internal::Convolution1D(Variable input, size_t kernelCo
 	assert(input.Shape().Rank() == 2);
 	size_t numInputChannels = input.Shape()[input.Shape().Rank() - 1];
 
-	auto convParams = Parameter({ kernel, numInputChannels, kernelCount }, DataType::Double, GlorotUniformInitializer(wScale, -1, 2), device);
+	auto convParams = Parameter({ kernel, numInputChannels, kernelCount }, DataType::Double
+		, GlorotUniformInitializer(wScale, -1, 2), device,L"ConvParams");
 	return applyActivationFunction(
-		Convolution(convParams, input, { stride, numInputChannels }, { true }, { true }, 0Ui64, string2wstring(outputName)),
+		Convolution(convParams, input, { stride, numInputChannels }, { true }, { true }
+			, 0Ui64, string2wstring(outputName)),
 		activationFunction
 	);
 }
@@ -361,6 +372,7 @@ FunctionPtr CNTKWrapper::Internal::FullyConnectedDNNLayer(Variable input, size_t
 
 FunctionPtr CNTKWrapper::Internal::FullyConnectedDNNLayer(Variable input, size_t outputDim, const DeviceDescriptor& device, ActivationFunction activationFunction, const std::wstring& outputName)
 {
-	return applyActivationFunction(FullyConnectedLinearLayer(input, outputDim, device, outputName), activationFunction);
+	return applyActivationFunction(FullyConnectedLinearLayer(input, outputDim, device, outputName)
+		, activationFunction);
 }
 #endif

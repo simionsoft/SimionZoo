@@ -22,7 +22,7 @@ void Minibatch::clear()
 void Minibatch::addTuple(const State* s, vector<double>& targetValues)
 {
 	size_t stateVarId;
-	if (m_numTuples < m_size)
+	if (m_numTuples >= m_size)
 		return;
 
 	for (size_t i = 0; i < m_pNetworkDefinition->getNumInputStateVars(); i++)
@@ -30,6 +30,11 @@ void Minibatch::addTuple(const State* s, vector<double>& targetValues)
 		stateVarId = m_pNetworkDefinition->getInputStateVar(i);
 		m_inputs[m_numTuples*m_pNetworkDefinition->getNumInputStateVars() + i] =
 			s->get((int) stateVarId);
+	}
+	for (size_t i = 0; i < targetValues.size(); i++)
+	{
+		m_targetOutputs[m_numTuples*m_pNetworkDefinition->getNumOutputs() + i] =
+			targetValues[i];
 	}
 	m_numTuples++;
 }

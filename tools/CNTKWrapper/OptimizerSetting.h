@@ -14,37 +14,37 @@ enum class OptimizerType
 	AdaDelta,
 };
 
-class COptimizerParameter;
+class OptimizerParameter;
 
 class OptimizerSettings
 {
 protected:
 	OptimizerSettings(tinyxml2::XMLElement *pNode);
 	OptimizerType m_optimizerType;
-	std::vector<COptimizerParameter*> m_parameters;
+	std::vector<OptimizerParameter*> m_parameters;
 public:
 	OptimizerSettings();
 	~OptimizerSettings();
 	static OptimizerSettings* getInstance(tinyxml2::XMLElement* pNode);
 
 	const OptimizerType& getOptimizerType() const { return m_optimizerType; }
-	const std::vector<COptimizerParameter*>& getParameteres() const { return m_parameters; }
+	const std::vector<OptimizerParameter*>& getParameters() const { return m_parameters; }
 
-	const COptimizerParameter* getParameterByKey(std::string key) const;
+	const OptimizerParameter* getParameterByKey(std::string key) const;
 };
 
-class COptimizerParameter
+class OptimizerParameter
 {
 protected:
 	std::string m_key;
 	double m_value;
 
-	COptimizerParameter(tinyxml2::XMLElement *pNode);
+	OptimizerParameter(tinyxml2::XMLElement *pNode);
 
 public:
-	COptimizerParameter();
-	~COptimizerParameter();
-	static COptimizerParameter* getInstance(tinyxml2::XMLElement* pNode);
+	OptimizerParameter();
+	~OptimizerParameter();
+	static OptimizerParameter* getInstance(tinyxml2::XMLElement* pNode);
 
 	const std::string& getKey() const { return m_key; }
 	const double& getValue() const { return m_value; }

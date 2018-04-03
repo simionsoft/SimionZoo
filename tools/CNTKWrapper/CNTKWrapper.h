@@ -45,9 +45,13 @@ public:
 	virtual void destroy() = 0;
 
 	virtual NetworkArchitecture* getNetworkArchitecture() = 0;
-	virtual const std::vector<CNTK::Variable>& getInputs() const = 0;
 	virtual const LinkConnection* getOutput() const = 0;
 	virtual const OptimizerSettings* getOptimizerSettings() const = 0;
+
+	virtual void setInputLayerName(wstring name)= 0;
+	virtual bool isInputLayer(wstring name)= 0;
+	virtual void setOutputLayerName(wstring name)= 0;
+	virtual wstring getOutputLayerName()= 0;
 
 	virtual void addInputStateVar(size_t stateVarId) = 0;
 	virtual size_t getNumInputStateVars() = 0; 
@@ -69,13 +73,8 @@ public:
 
 	virtual void destroy()= 0;
 
-	virtual size_t getTotalSize() = 0;
-
-	virtual vector<CNTK::FunctionPtr>& getFunctionPtrs() = 0;
-
-	virtual vector<CNTK::FunctionPtr>& getOutputsFunctionPtr()= 0;
-
 	virtual void buildQNetwork()= 0;
+
 	virtual void save(string fileName)= 0;
 
 	virtual INetwork* clone() const= 0;
