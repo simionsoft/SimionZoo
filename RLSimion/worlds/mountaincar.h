@@ -5,14 +5,18 @@ class SetPoint;
 #include "../reward.h"
 
 //Original implementation:
-//https://webdocs.cs.ualberta.ca/~sutton/MountainCar/MountainCar.html
+//http://incompleteideas.net/MountainCar/MountainCar.html
+//Equations for variables used in visualization from:
+//https://code.google.com/archive/p/rl-library/downloads
 
 //MOUNTAIN CAR
 class MountainCar: public DynamicModel
 {
 	int m_sVelocity, m_sPosition;
+	int m_sHeight, m_sAngle;
 	int m_aPedal;
-
+	double getHeightAtPos(double x);
+	double getAngleAtPos(double x);
 public:
 	MountainCar(ConfigNode* pParameters);
 	virtual ~MountainCar();

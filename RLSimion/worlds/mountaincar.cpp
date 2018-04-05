@@ -5,11 +5,15 @@
 #include "../app.h"
 #include "../noise.h"
 
+#define HILL_PEAK_FREQ 3.0
+
 MountainCar::MountainCar(ConfigNode* pConfigNode)
 {
 	METADATA("World", "Mountain-car");
 	m_sPosition = addStateVariable("position", "m", -1.2, 0.5);
 	m_sVelocity = addStateVariable("velocity", "m/s", -0.07, 0.07);
+	m_sHeight = addStateVariable("height", "m", 0, 10.0);
+	m_sAngle = addStateVariable("angle", "rad", -3.1415, 3.1415, true);
 
 	m_aPedal = addActionVariable("pedal", "m", -1.0, 1.0);
 
@@ -23,21 +27,35 @@ MountainCar::~MountainCar()
 
 }
 
+double MountainCar::getHeightAtPos(double x)
+{
+	return -sin(HILL_PEAK_FREQ * (x));
+}
+
+double MountainCar::getAngleAtPos(double x)
+{
+	double slope = cos(HILL_PEAK_FREQ * x);
+	return atan(slope);
+}
+
 void MountainCar::reset(State *s)
 {
-
+	double x;
 	if (SimionApp::get()->pExperiment->isEvaluationEpisode())
 	{
 		//fixed setting in evaluation episodes
-		s->set(m_sPosition, -0.5);
-		s->set(m_sVelocity, 0.0);
+		x = -0.5;
+		s->set(m_sPosition, x);
 	}
 	else
 	{
 		//random setting in training episodes
-		s->set(m_sPosition, getRandomValue()*0.2-0.6); //[-0.6, -0.4]
-		s->set(m_sVelocity, 0.0);
+		x = getRandomValue()*0.2 - 0.6;    //[-0.6, -0.4]
+		s->set(m_sPosition, x); 
 	}
+	s->set(m_sVelocity, 0.0);
+	s->set(m_sHeight, getHeightAtPos(x));
+	s->set(m_sAngle, getAngleAtPos(x));
 }
 
 
@@ -65,6 +83,8 @@ void MountainCar::executeAction(State *s, const Action *a, double dt)
 
 	s->set(m_sVelocity, velocity + pedal*0.001 - 0.0025 * cos(3 * position)); //saturate
 	s->set(m_sPosition, position + velocity);
+	s->set(m_sHeight, getHeightAtPos(s->get(m_sPosition)));
+	s->set(m_sAngle, getAngleAtPos(s->get(m_sPosition)));
 }
 
 
