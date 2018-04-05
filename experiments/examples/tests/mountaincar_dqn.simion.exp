@@ -31,28 +31,7 @@
 			<Buffer-Size>1000</Buffer-Size>
 			<Update-Batch-Size>10</Update-Batch-Size>
 		</Experience-Replay>
-		<State-Feature-Map>
-			<Type>
-		<State-Bag>
-			<State-Variables>
-				<State-Variables>position</State-Variables>
-			</State-Variables>
-			<State-Variables>
-				<State-Variables>velocity</State-Variables>
-			</State-Variables>
-		</State-Bag>
-		</Type>
-		</State-Feature-Map>
-		<Action-Feature-Map>
-			<Type>
-		<Discrete-Action-Grid>
-			<Grid-Dimension>
-				<Steps>3</Steps>
-				<Variable>pedal</Variable>
-			</Grid-Dimension>
-		</Discrete-Action-Grid>
-		</Type>
-		</Action-Feature-Map>
+
 		<Simion>
 			<Type>
 		<DQN>
@@ -66,14 +45,7 @@
 		  <Num-Action-Steps>3</Num-Action-Steps>
 		<neural-network>
 		  <Problem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
-		    <Inputs>
-		      <InputData ID="state-input" Name="State">
-			<Shape xsi:type="IntTuple1D"><x1>2</x1></Shape>
-		      </InputData>
-		      <InputData ID="action-input" Name="Action">
-			<Shape xsi:type="IntTuple1D"><x1>-1</x1></Shape>
-		      </InputData>
-		    </Inputs>
+
 		    <OptimizerSetting>
 		      <Optimizer xsi:type="OptimizerAdam">
 			<Parameters>

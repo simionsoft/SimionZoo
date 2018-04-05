@@ -56,6 +56,7 @@ void outputArguments(wstring header,FunctionPtr f)
 
 void outputParameters(wstring header, FunctionPtr f)
 {
+	return;
 	wcout << header << "\n";
 	for each (auto arg in f->Parameters())
 		wcout << arg.Name() << ": " << arg.AsString() << "\n";
@@ -80,13 +81,13 @@ void Network::buildQNetwork()
 	outputArguments(L"Found QFunctionPtr", foundPtr);
 }
 
-INetwork* Network::clone() const
+INetwork* Network::getFrozenCopy() const
 {
 	Network* result = new Network(m_pNetworkDefinition);
 
 	outputArguments(L"Original Network:",m_QFunctionPtr);
 
-	result->m_networkFunctionPtr = m_networkFunctionPtr->Clone(ParameterCloningMethod::Clone);
+	result->m_networkFunctionPtr = m_networkFunctionPtr->Clone(ParameterCloningMethod::Freeze);
 	for each (auto input in result->m_networkFunctionPtr->Arguments())
 	{
 		wstring name = input.Name();
@@ -103,11 +104,8 @@ INetwork* Network::clone() const
 	outputParameters(L"Original QNetwork", m_QFunctionPtr);
 	outputParameters(L"Cloned QNetwork- parameters:", result->m_QFunctionPtr);
 
-	result->m_lossFunctionPtr = m_networkFunctionPtr->FindByName(m_lossName)->Output();
-	const OptimizerSettings* optimizer = m_pNetworkDefinition->getOptimizerSettings();
-	result->m_trainer= CNTKWrapper::CreateOptimizer(optimizer, result->m_QFunctionPtr, result->m_lossFunctionPtr);
+	result->m_lossFunctionPtr = m_networkFunctionPtr->FindByName(m_lossName);
 
-	size_t a= result->m_trainer->ParameterLearners().size();
 	return result;
 }
 

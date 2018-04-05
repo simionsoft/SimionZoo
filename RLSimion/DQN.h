@@ -29,7 +29,7 @@ protected:
 
 	size_t m_minibatchSize = 0;
 
-	virtual INetwork* getPredictionNetwork();
+	virtual INetwork* getQNetworkForTargetActionSelection();
 	
 public:
 	~DQN();
@@ -49,7 +49,7 @@ class DoubleDQN : public DQN
 public:
 	DoubleDQN(ConfigNode* pParameters);
 	
-	virtual INetwork* getPredictionNetwork();
+	virtual INetwork* getQNetworkForTargetActionSelection();
 };
 /*
 class DDPG : public Simion
@@ -88,7 +88,7 @@ public:
 	~DDPG();
 	DDPG(ConfigNode* pParameters);
 
-	//selects an according to the learned policy's network
+	//selects an action according to the learned policy's network
 	virtual double selectAction(const State *s, Action *a);
 
 	//updates the critic network and the actor's policy network (both the target and the prediction network)

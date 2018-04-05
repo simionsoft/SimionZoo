@@ -51,16 +51,14 @@ void DQN::deferredLoadStep()
 		, actionDescr[m_outputAction.get()].getMin(), actionDescr[m_outputAction.get()].getMax());
 
 	//create the networks
-	m_pTargetQNetwork = m_pNNDefinition->createNetwork();
-	m_pOnlineQNetwork = m_pTargetQNetwork->clone();
+	m_pOnlineQNetwork = m_pNNDefinition->createNetwork();
+	m_pTargetQNetwork = m_pOnlineQNetwork->getFrozenCopy();
 
 	//create the minibatch
 	//The size of the minibatch is the experience replay update size plus 1
 	//This is because we only perform updates with in replaying-experience mode
 	m_minibatchSize = SimionApp::get()->pSimGod->getExperienceReplayUpdateSize();
 	m_pMinibatch = m_pNNDefinition->createMinibatch(m_minibatchSize);
-
-
 }
 
 double DQN::selectAction(const State * s, Action * a)
@@ -75,9 +73,9 @@ double DQN::selectAction(const State * s, Action * a)
 	return 1.0;
 }
 
-INetwork* DQN::getPredictionNetwork()
+INetwork* DQN::getQNetworkForTargetActionSelection()
 {
-	return m_pOnlineQNetwork;
+	return m_pTargetQNetwork;
 }
 
 double DQN::update(const State * s, const Action * a, const State * s_p, double r, double behaviorProb)
@@ -86,10 +84,10 @@ double DQN::update(const State * s, const Action * a, const State * s_p, double 
 	{
 		double gamma = SimionApp::get()->pSimGod->getGamma();
 
-		//get Q(s_p) for the current tuple (online-weights)
-		m_pOnlineQNetwork->get(s_p, m_Q_s_p);
+		//get Q(s_p) for the current tuple (target/online-weights)
+		getQNetworkForTargetActionSelection()->get(s_p, m_Q_s_p);
 
-		//calculate argmaxQ(s_p; online-weights)
+		//calculate argmaxQ(s_p)
 		size_t argmaxQ = distance(m_Q_s_p.begin(), max_element(m_Q_s_p.begin(), m_Q_s_p.end()));
 
 		//store the index of the action taken
@@ -100,8 +98,8 @@ double DQN::update(const State * s, const Action * a, const State * s_p, double 
 		//THIS is the only real difference between DQN and Double-DQN
 		//We do the prediction step again only if using Double-DQN (the prediction network
 		//will be different to the online network)
-		if (getPredictionNetwork() != m_pOnlineQNetwork)
-			getPredictionNetwork()->get(s_p, m_Q_s_p);
+		if (getQNetworkForTargetActionSelection() != m_pTargetQNetwork)
+			m_pTargetQNetwork->get(s_p, m_Q_s_p);
 
 		//calculate targetvalue= r + gamma*Q(s_p,a)
 		double targetValue = r + gamma * m_Q_s_p[argmaxQ];
@@ -120,14 +118,14 @@ double DQN::update(const State * s, const Action * a, const State * s_p, double 
 		SimGod* pSimGod = SimionApp::get()->pSimGod.ptr();
 
 		//update the network finally
-		m_pTargetQNetwork->train(m_pMinibatch);
+		m_pOnlineQNetwork->train(m_pMinibatch);
 
 		//update the prediction network
 		if (pSimGod->bUpdateFrozenWeightsNow())
 		{
-			if (m_pOnlineQNetwork)
-				m_pOnlineQNetwork->destroy();
-			m_pOnlineQNetwork = m_pTargetQNetwork->clone();
+			if (m_pTargetQNetwork)
+				m_pTargetQNetwork->destroy();
+			m_pTargetQNetwork = m_pOnlineQNetwork->getFrozenCopy();
 		}
 	}
 	return 1.0; //TODO: Estimate the TD-error??
@@ -137,9 +135,9 @@ double DQN::update(const State * s, const Action * a, const State * s_p, double 
 DoubleDQN::DoubleDQN(ConfigNode* pParameters): DQN (pParameters)
 {}
 
-INetwork* DoubleDQN::getPredictionNetwork()
+INetwork* DoubleDQN::getQNetworkForTargetActionSelection()
 {
-	return m_pTargetQNetwork;
+	return m_pOnlineQNetwork;
 }
 
 /*
@@ -223,8 +221,8 @@ DDPG::DDPG(ConfigNode * pConfigNode)
 	m_minibatchActionVector = vector<double>(1 * m_experienceReplay->getUpdateBatchSize(), 0.0);
 	m_minibatchQVector = vector<double>(1 * m_experienceReplay->getUpdateBatchSize(), 0.0);
 
-	m_pTargetQNetwork = m_predictionQNetwork.getNetwork()->clone();
-	m_pTargetPolicyNetwork = m_predictionPolicyNetwork.getNetwork()->clone();
+	m_pTargetQNetwork = m_predictionQNetwork.getNetwork()->getFrozenCopy();
+	m_pTargetPolicyNetwork = m_predictionPolicyNetwork.getNetwork()->getFrozenCopy();
 
 	buildModelsParametersTransitionGraph();
 }

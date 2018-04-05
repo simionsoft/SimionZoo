@@ -15,8 +15,8 @@ class NetworkDefinition: public INetworkDefinition
 	vector<wstring> m_inputLayerNames;
 	wstring m_outputLayerName;
 protected:
-	vector<unsigned int> m_inputStateVars;
-	unsigned int m_outputActionVar;
+	vector<size_t> m_inputStateVars;
+	size_t m_outputActionVar;
 	vector<double> m_outputActionValues;
 
 	NetworkArchitecture* m_pNetworkArchitecture;

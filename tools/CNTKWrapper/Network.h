@@ -38,7 +38,7 @@ public:
 	void buildQNetwork();
 	void save(string fileName);
 
-	INetwork* clone() const;
+	INetwork* getFrozenCopy() const;
 
 	void train(IMinibatch* pMinibatch);
 	void get(const State* s, vector<double>& outputValues);

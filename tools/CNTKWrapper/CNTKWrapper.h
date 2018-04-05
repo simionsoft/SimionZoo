@@ -77,7 +77,7 @@ public:
 
 	virtual void save(string fileName)= 0;
 
-	virtual INetwork* clone() const= 0;
+	virtual INetwork* getFrozenCopy() const= 0;
 
 	virtual void train(IMinibatch* pMinibatch) = 0;
 	virtual void get(const State* s, vector<double>& outputValues) = 0;

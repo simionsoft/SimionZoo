@@ -55,7 +55,7 @@ AsyncQLearning::AsyncQLearning(ConfigNode* pConfigNode)
 	m_pMinibatchActionId = new int[m_experienceReplay->getMaxUpdateBatchSize()];
 
 	CNTKWrapperLoader::Load();
-	m_pTargetQNetwork = m_predictionQNetwork.getNetwork()->clone();
+	m_pTargetQNetwork = m_predictionQNetwork.getNetwork()->getFrozenCopy();
 }
 
 AsyncQLearning::~AsyncQLearning()

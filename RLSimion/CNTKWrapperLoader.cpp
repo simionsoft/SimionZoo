@@ -24,7 +24,7 @@ void CNTKWrapperLoader::Load()
 		if (hCNTKWrapperDLL == 0)
 			Logger::logMessage(MessageType::Error, "Failed to load CNTKWrapper.dll");
 
-		Logger::logMessage(MessageType::Info, "CNTKWrapper.dll loaded");
+		Logger::logMessage(MessageType::Info, "Loading CNTK library");
 
 		SimionApp::get()->registerInputFile("..\\bin\\x64\\CNTKWrapper.dll", "..\\bin\\CNTKWrapper.dll");
 		SimionApp::get()->registerInputFile("..\\bin\\x64\\Cntk.Core-2.1.dll", "..\\bin\\Cntk.Core-2.1.dll");
