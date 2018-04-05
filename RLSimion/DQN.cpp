@@ -58,6 +58,8 @@ void DQN::deferredLoadStep()
 	//The size of the minibatch is the experience replay update size plus 1
 	//This is because we only perform updates with in replaying-experience mode
 	m_minibatchSize = SimionApp::get()->pSimGod->getExperienceReplayUpdateSize();
+	if (m_minibatchSize == 0)
+		Logger::logMessage(MessageType::Error, "Both DQN and Double-DQN require the use of the Experience Replay Buffer technique");
 	m_pMinibatch = m_pNNDefinition->createMinibatch(m_minibatchSize);
 }
 
@@ -90,16 +92,18 @@ double DQN::update(const State * s, const Action * a, const State * s_p, double 
 		//calculate argmaxQ(s_p)
 		size_t argmaxQ = distance(m_Q_s_p.begin(), max_element(m_Q_s_p.begin(), m_Q_s_p.end()));
 
-		//store the index of the action taken
-		size_t selectedActionId =
-			m_pNNDefinition->getClosestOutputIndex(a->get(m_outputAction.get()));
-
 		//estimate Q(s_p, argMaxQ; target-weights or online-weights)
 		//THIS is the only real difference between DQN and Double-DQN
 		//We do the prediction step again only if using Double-DQN (the prediction network
 		//will be different to the online network)
 		if (getQNetworkForTargetActionSelection() != m_pTargetQNetwork)
 			m_pTargetQNetwork->get(s_p, m_Q_s_p);
+
+		size_t argmaxQ2 = distance(m_Q_s_p.begin(), max_element(m_Q_s_p.begin(), m_Q_s_p.end()));
+		if (argmaxQ != argmaxQ2)
+		{
+			printf("Double-DQN is working");
+		}
 
 		//calculate targetvalue= r + gamma*Q(s_p,a)
 		double targetValue = r + gamma * m_Q_s_p[argmaxQ];
@@ -108,6 +112,9 @@ double DQN::update(const State * s, const Action * a, const State * s_p, double 
 		m_pOnlineQNetwork->get(s, m_Q_s);
 
 		//change the target value only for the selecte action, the rest remain the same
+		//store the index of the action taken
+		size_t selectedActionId =
+			m_pNNDefinition->getClosestOutputIndex(a->get(m_outputAction.get()));
 		m_Q_s[selectedActionId] = targetValue;
 
 		m_pMinibatch->addTuple(s, m_Q_s);

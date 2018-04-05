@@ -12,6 +12,11 @@ class ConfigNode;
 
 class DQN : public Simion, DeferredLoad
 {
+	/*
+	Deep Reinforcement Learning with Double Deep Q-Learning
+	Hado van Hasselt and Arthur Guez and David Silver
+	Proceedings of the Thirtieth AAAI Conference on Artificial Intelligence (AAAI-16)
+	*/
 protected:
 	MULTI_VALUE_VARIABLE<STATE_VARIABLE> m_inputState;
 	INT_PARAM m_numActionSteps;
