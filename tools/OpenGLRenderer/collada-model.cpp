@@ -443,7 +443,7 @@ Source* Geometry::getSource(string inputName, string requestedSemantic)
 	return nullptr;
 }
 
-ColladaModel::ColladaModel(tinyxml2::XMLElement* pNode): GraphicObject(pNode)
+ColladaModel::ColladaModel(tinyxml2::XMLElement* pNode): GraphicObject3D(pNode)
 {
 	tinyxml2::XMLElement* pChild;
 

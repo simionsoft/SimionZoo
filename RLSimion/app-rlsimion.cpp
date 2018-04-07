@@ -9,10 +9,12 @@
 #include "utils.h"
 #include "app.h"
 #include "stats.h"
+#include "../tools/OpenGLRenderer/basic-shapes-2d.h"
 #include "../tools/OpenGLRenderer/renderer.h"
 #include "../tools/OpenGLRenderer/text.h"
 #include "../tools/OpenGLRenderer/input-handler.h"
 #include "../tools/WindowsUtils/FileUtils.h"
+
 
 RLSimionApp::RLSimionApp(ConfigNode* pConfigNode)
 {

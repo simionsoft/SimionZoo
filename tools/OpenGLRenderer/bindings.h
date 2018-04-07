@@ -54,6 +54,11 @@ class BoundObject: public Bindable
 		else if (internalName == XML_TAG_PITCH) quat.setPitch(value);
 		else if (internalName == XML_TAG_ROLL) quat.setRoll(value);
 	}
+
+	void update(double& scalarParameter, double value)
+	{
+		scalarParameter = value;
+	}
 public:
 
 	string internalName;

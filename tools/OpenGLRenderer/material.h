@@ -15,12 +15,26 @@ public:
 	virtual void set()= 0;
 };
 
+class UnlitTextureMaterial : public Material
+{
+protected:
+	int m_textureId = -1;
+	int m_textureWrapModeS = 0x2901;// GL_REPEAT;
+	int m_textureWrapModeT = 0x2901;// GL_REPEAT;
+public:
+	UnlitTextureMaterial() {}
+	UnlitTextureMaterial(tinyxml2::XMLElement* pNode);
+	UnlitTextureMaterial(string texturePath);
+	void setTextureWrapMode(int mode);
+	virtual void set();
+};
+
 class SimpleTLMaterial : public Material
 {
 protected:
 	int m_textureId= -1;
-	int m_textureWrapModeS = GL_REPEAT;
-	int m_textureWrapModeT = GL_REPEAT;
+	int m_textureWrapModeS = 0x2901;// GL_REPEAT;
+	int m_textureWrapModeT = 0x2901;// GL_REPEAT;
 	Color m_ambient, m_diffuse, m_specular, m_emission;
 
 	double m_shininess;
@@ -58,6 +72,7 @@ class ColorMaterial : public Material
 	Color m_color = Color(1.0, 0.0, 0.0, 1.0);
 public:
 	ColorMaterial() {}
+	ColorMaterial(tinyxml2::XMLElement* pNode);
 	void set();
 	void setColor(Color color) { m_color = color; }
 };
@@ -68,6 +83,7 @@ class LineMaterial : public Material
 	int m_width= 1;
 public:
 	LineMaterial() {}
+	LineMaterial(tinyxml2::XMLElement* pNode);
 	void set();
 	void setColor(Color color) { m_color = color; }
 	void setWidth(int width) { m_width= width; }

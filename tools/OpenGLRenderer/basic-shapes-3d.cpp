@@ -1,11 +1,11 @@
 #include "stdafx.h"
-#include "basic-shapes.h"
+#include "basic-shapes-3d.h"
 #include "xml-load.h"
 #include "bindings.h"
 #include "material.h"
 #include "mesh.h"
 
-BasicShape::BasicShape(tinyxml2::XMLElement* pNode) : GraphicObject(pNode)
+BasicShape::BasicShape(tinyxml2::XMLElement* pNode) : GraphicObject3D(pNode)
 {
 	tinyxml2::XMLElement* pChild;
 	pChild= pNode->FirstChildElement(XML_TAG_MATERIAL);
@@ -13,7 +13,7 @@ BasicShape::BasicShape(tinyxml2::XMLElement* pNode) : GraphicObject(pNode)
 		m_pMaterialLoaded = Material::getInstance(pChild->FirstChildElement());
 }
 
-BasicShape::BasicShape(string name) : GraphicObject(name)
+BasicShape::BasicShape(string name) : GraphicObject3D(name)
 {
 
 }

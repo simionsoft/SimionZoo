@@ -4,7 +4,13 @@
 
 Transform3D::Transform3D()
 {
+	setIdentity();
+}
+
+void Transform3D::setIdentity()
+{
 	m_rotation.setIdentity();
+	m_translation = Vector3D(0.0, 0.0, 0.0);
 	m_scale = Vector3D(1.0, 1.0, 1.0);
 	m_matrix.setIdentity();
 }

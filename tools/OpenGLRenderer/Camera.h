@@ -1,10 +1,10 @@
 #pragma once
-#include "scene-actor.h"
+#include "scene-actor-3d.h"
 #include "../GeometryLib/frustum.h"
 
 namespace tinyxml2 { class XMLElement; }
 
-class Camera: public SceneActor
+class Camera: public SceneActor3D
 {
 protected:
 	Frustum m_frustum;

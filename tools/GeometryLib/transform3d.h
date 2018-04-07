@@ -13,9 +13,10 @@ protected:
 
 	void updateMatrix();
 public:
-
 	Transform3D();
 	virtual ~Transform3D() {}
+
+	void setIdentity();
 
 	Vector3D operator*(Vector3D& v);
 	Point3D operator*(Point3D& v);

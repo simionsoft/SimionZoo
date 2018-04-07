@@ -153,7 +153,7 @@ namespace XML
 
 		pChild = pNode->FirstChildElement(XML_TAG_ROTATION);
 		if (pChild)
-			transform.setRotation(atof(pNode->FirstChildElement(XML_TAG_ROTATION)->GetText()));
+			transform.setRotation(loadBindableValue(pNode, XML_TAG_ROTATION,transform.rotation()));
 
 		pChild = pNode->FirstChildElement(XML_TAG_SCALE);
 		if (pChild)
@@ -161,7 +161,7 @@ namespace XML
 
 		pChild = pNode->FirstChildElement(XML_TAG_DEPTH);
 		if (pChild)
-			transform.setDepth(atof(pNode->FirstChildElement(XML_TAG_DEPTH)->GetText()));
+			transform.setDepth(loadBindableValue(pNode, XML_TAG_DEPTH, transform.depth()));
 	}
 
 

@@ -3,12 +3,6 @@
   <ItemGroup>
     <ClCompile Include="renderer.cpp" />
     <ClCompile Include="stdafx.cpp" />
-    <ClCompile Include="basic-shapes.cpp">
-      <Filter>graphics</Filter>
-    </ClCompile>
-    <ClCompile Include="graphic-object.cpp">
-      <Filter>graphics</Filter>
-    </ClCompile>
     <ClCompile Include="collada-model.cpp">
       <Filter>graphics</Filter>
     </ClCompile>
@@ -39,7 +33,19 @@
     </ClCompile>
     <ClCompile Include="bindings.cpp" />
     <ClCompile Include="xml-load.cpp" />
-    <ClCompile Include="scene-actor.cpp">
+    <ClCompile Include="basic-shapes-2d.cpp">
+      <Filter>graphics</Filter>
+    </ClCompile>
+    <ClCompile Include="scene-actor-2d.cpp">
+      <Filter>graphics</Filter>
+    </ClCompile>
+    <ClCompile Include="scene-actor-3d.cpp">
+      <Filter>graphics</Filter>
+    </ClCompile>
+    <ClCompile Include="graphic-object-3d.cpp">
+      <Filter>graphics</Filter>
+    </ClCompile>
+    <ClCompile Include="basic-shapes-3d.cpp">
       <Filter>graphics</Filter>
     </ClCompile>
   </ItemGroup>
@@ -47,12 +53,6 @@
     <ClInclude Include="renderer.h" />
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="targetver.h" />
-    <ClInclude Include="basic-shapes.h">
-      <Filter>graphics</Filter>
-    </ClInclude>
-    <ClInclude Include="graphic-object.h">
-      <Filter>graphics</Filter>
-    </ClInclude>
     <ClInclude Include="collada-model.h">
       <Filter>graphics</Filter>
     </ClInclude>
@@ -83,7 +83,19 @@
       <Filter>graphics</Filter>
     </ClInclude>
     <ClInclude Include="xml-load.h" />
-    <ClInclude Include="scene-actor.h">
+    <ClInclude Include="basic-shapes-2d.h">
+      <Filter>graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="scene-actor-2d.h">
+      <Filter>graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="scene-actor-3d.h">
+      <Filter>graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="graphic-object-3d.h">
+      <Filter>graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="basic-shapes-3d.h">
       <Filter>graphics</Filter>
     </ClInclude>
   </ItemGroup>

@@ -1,7 +1,7 @@
 #pragma once
 
 #include <string>
-#include "scene-actor.h"
+#include "scene-actor-3d.h"
 #include "../GeometryLib/bounding-box.h"
 class Mesh;
 class Material;
@@ -10,7 +10,7 @@ class BoundingCylinder;
 using namespace std;
 #include <vector>
 
-class GraphicObject: public SceneActor
+class GraphicObject3D: public SceneActor3D
 {
 protected:
 	string m_name;
@@ -19,13 +19,13 @@ protected:
 
 	void updateBoundingBox();
 public:
-	GraphicObject(string name);
-	GraphicObject(tinyxml2::XMLElement* pNode);
-	virtual ~GraphicObject();
+	GraphicObject3D(string name);
+	GraphicObject3D(tinyxml2::XMLElement* pNode);
+	virtual ~GraphicObject3D();
 
 	string name() { return m_name; }
 
-	static GraphicObject* getInstance(tinyxml2::XMLElement* pNode);
+	static GraphicObject3D* getInstance(tinyxml2::XMLElement* pNode);
 
 	void addMesh(Mesh* pMesh) { m_meshes.push_back(pMesh); }
 

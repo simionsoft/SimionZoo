@@ -2,7 +2,7 @@
 #include <vector>
 #include "../WindowsUtils/Timer.h"
 
-class GraphicObject;
+class GraphicObject3D;
 class GraphicObject2D;
 class TextureManager;
 class Binding;
@@ -32,7 +32,7 @@ class Renderer
 
 	static Renderer* m_pInstance;
 
-	vector<GraphicObject*> m_3DgraphicObjects;
+	vector<GraphicObject3D*> m_3DgraphicObjects;
 	vector<GraphicObject2D*> m_2DgraphicObjects;
 
 	vector <Binding*> m_bindings;
@@ -68,14 +68,15 @@ public:
 
 	void init(int argc, char** argv, int sizeX, int sizeY);
 
-	void addGraphicObject(GraphicObject* pObj);
+	void addGraphicObject(GraphicObject3D* pObj);
 	void add2DGraphicObject(GraphicObject2D* pObj);
 
 	static Renderer* get();
 	TextureManager* getTextureManager();
 	Camera* getActiveCamera();
 
-	GraphicObject* getObjectByName(string name);
+	GraphicObject3D* get3DObjectByName(string name);
+	GraphicObject2D* get2DObjectByName(string name);
 
 	void showBoundingBoxes(bool bShow) { m_bShowBoundingBoxes = bShow; }
 	bool bShowBoundingBoxes() { return m_bShowBoundingBoxes; }

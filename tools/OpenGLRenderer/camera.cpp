@@ -6,7 +6,7 @@
 #include "../GeometryLib/matrix33.h"
 #include "../GeometryLib/transform3d.h"
 
-Camera::Camera(): SceneActor()
+Camera::Camera(): SceneActor3D()
 {
 }
 
@@ -59,14 +59,14 @@ void SimpleCamera::set()
 	m_frustum.fromCameraMatrix(perspective*matrix);
 }
 
+//This method sets an orthogonal view that maps the screen to coordinates [0.0,0.0] - [1.0,1.0]
 void Camera::set2DView()
 {
 	int sizeX, sizeY;
 	//set projection matrix
 	glMatrixMode(GL_PROJECTION);
 	glLoadIdentity();
-	Renderer::get()->getWindowsSize(sizeX, sizeY);
-	gluOrtho2D(0.0, sizeX, 0.0, sizeY);
+	gluOrtho2D(0.0, 1.0, 0.0, 1.0);
 
 	//set modelview matrix
 	glMatrixMode(GL_MODELVIEW);

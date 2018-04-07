@@ -1,0 +1,86 @@
+<Scene>
+  <Background-Color>
+    <R>0.0</R>
+    <G>0.0</G>
+    <B>0.0</B>
+  </Background-Color>
+  <Camera>
+    <Simple-Camera Name="Main-camera">
+      <Transform>
+        <Translation>
+          <X>0.0</X>
+          <Y>0.0</Y>
+          <Z>2.0</Z>
+        </Translation>
+      </Transform>
+    </Simple-Camera>
+  </Camera>
+  <Light>
+    <Directional-Light>
+      <Direction>
+        <X>0.577</X>
+        <Y>0.577</Y>
+        <Z>0.577</Z>
+      </Direction>
+      <Ambient>
+        <R>0.2</R>
+        <G>0.2</G>
+        <B>0.2</B>
+      </Ambient>
+      <Diffuse>
+        <R>1.0</R>
+        <G>1.0</G>
+        <B>1.0</B>
+      </Diffuse>
+      <Specular>
+        <R>0.0</R>
+        <G>0.0</G>
+        <B>0.0</B>
+      </Specular>
+    </Directional-Light>
+  </Light>
+  <Objects2D>
+    <Sprite Name="Background">
+      <Transform>
+        <Translation>
+          <X>0.0</X>
+          <Y>0.0</Y>
+        </Translation>
+        <Scale>
+          <X>1.0</X>
+          <Y>1.0</Y>
+        </Scale>
+        <Rotation>0.0</Rotation>
+        <Depth>0.0</Depth>
+      </Transform>
+      <Material>
+        <Unlit-Texture-Material>
+          <Texture>
+            <Path>mountain-car/background.png</Path>
+          </Texture>
+        </Unlit-Texture-Material>
+      </Material>
+    </Sprite>
+    <Sprite Name="Car">
+      <Transform>
+        <Translation>
+          <X Bind="x">0.0</X>
+          <Y Bind="height">0.0</Y>
+        </Translation>
+        <Scale>
+          <X>0.15</X>
+          <Y>0.15</Y>
+        </Scale>
+        <Rotation Bind="angle"/>
+        <Depth>0.5</Depth>
+      </Transform>
+      <Material>
+        <Unlit-Texture-Material>
+          <Texture>
+            <Path>mountain-car/car.tga</Path>
+          </Texture>
+        </Unlit-Texture-Material>
+      </Material>
+    </Sprite>
+  </Objects2D>
+</Scene>

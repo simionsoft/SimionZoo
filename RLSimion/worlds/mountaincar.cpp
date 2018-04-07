@@ -10,7 +10,7 @@
 MountainCar::MountainCar(ConfigNode* pConfigNode)
 {
 	METADATA("World", "Mountain-car");
-	m_sPosition = addStateVariable("position", "m", -1.2, 0.5);
+	m_sPosition = addStateVariable("position", "m", -1.2, 0.6);
 	m_sVelocity = addStateVariable("velocity", "m/s", -0.07, 0.07);
 	m_sHeight = addStateVariable("height", "m", 0, 10.0);
 	m_sAngle = addStateVariable("angle", "rad", -3.1415, 3.1415, true);

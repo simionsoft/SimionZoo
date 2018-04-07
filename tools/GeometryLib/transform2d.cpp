@@ -1,6 +1,12 @@
 #include "transform2d.h"
+#include "quaternion.h"
 
 Transform2D::Transform2D()
+{
+	setIdentity();
+}
+
+void Transform2D::setIdentity()
 {
 	m_translation = Vector2D(0.0, 0.0);
 	m_rotation = 0.0;
@@ -8,34 +14,37 @@ Transform2D::Transform2D()
 	m_depth = 0.0;
 }
 
+Vector2D Transform2D::operator*(Vector2D& v)
+{
+	updateMatrix();
+	//Vectors are not affected by translations, the homogeneous coordinate is 0
+	Vector3D vec3d= m_matrix * Vector3D(v.x(),v.y(),0.0);
+	return Vector2D(vec3d.x(), vec3d.y());
+}
+
+Point2D Transform2D::operator*(Point2D& p)
+{
+	updateMatrix();
+	//Points are affected by transalations, the homogeneous coordinate is 1
+	Point3D vec3d= m_matrix * Point3D(p.x(),p.y(),0.0);
+	return Point2D(vec3d.x(), vec3d.y());
+}
 
 double* Transform2D::getOpenGLMatrix()
 {
+	updateMatrix();
+	return m_matrix.asArray();
+}
 
-	double wx, wy, wz, xx, yy, yz, xy, xz, zz, x2, y2, z2;
+void Transform2D::updateMatrix()
+{
+	Quaternion quat;
+	Matrix44 rot, trans, scale;
 
-	x2 = 0.0;  y2 = 0.0;  z2 = m_rotation + m_rotation;
-	xx = 0.0;       xy = 0.0;       xz = 0.0;
-	yy = 0.0;       yz = 0.0;       zz = m_rotation * z2;
-	wx = 0.0;       wy = 0.0;       wz = z2;
-
-	m_matrix44[0] = (1.0 - (yy + zz))*m_scale.x();
-	m_matrix44[1] = (xy - wz)*m_scale.y();
-	m_matrix44[2] = (xz + wy);
-	m_matrix44[3] = 0.0;
-	m_matrix44[4] = (xy + wz)*m_scale.x();
-	m_matrix44[5] = (1.0 - (xx + zz))*m_scale.y();
-	m_matrix44[6] = (yz - wx);
-	m_matrix44[7] = 0.0;
-	m_matrix44[8] = (xz - wy)*m_scale.x();
-	m_matrix44[9] = (yz + wx)*m_scale.y();
-	m_matrix44[10] = (1.0 - (xx + yy));
-	m_matrix44[11] = 0.0;
-	m_matrix44[12] = m_translation.x();
-	m_matrix44[13] = m_translation.y();
-	m_matrix44[14] = 0.0;
-	m_matrix44[15] = 1.0;
-	return m_matrix44;
+	quat.fromOrientations(0.0, 0.0, m_rotation); //rotation on the XY plane
+	trans.setTranslation(Vector3D(m_translation.x(),m_translation.y(),m_depth));
+	scale.setScale(Vector3D(m_scale.x(),m_scale.y(),1.0)); //scale on the XY plane
+	m_matrix = scale * rot * trans;
 }
 
 

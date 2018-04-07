@@ -1,5 +1,5 @@
 #pragma once
-#include "graphic-object.h"
+#include "graphic-object-3d.h"
 #include "../GeometryLib/vector3d.h"
 #include <vector>
 #include <string>
@@ -85,7 +85,7 @@ public:
 	Source* getSource(string inputName, string requestedSemantic);
 };
 
-class ColladaModel: public GraphicObject
+class ColladaModel: public GraphicObject3D
 {
 	string m_path;
 

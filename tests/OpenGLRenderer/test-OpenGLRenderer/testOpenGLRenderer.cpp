@@ -7,9 +7,12 @@
 #include "../../../tools/OpenGLRenderer/renderer.h"
 #include "../../../tools/OpenGLRenderer/text.h"
 #include "../../../tools/OpenGLRenderer/camera.h"
-#include "../../../tools/OpenGLRenderer/graphic-object.h"
+#include "../../../tools/OpenGLRenderer/graphic-object-3d.h"
 #include "../../../tools/OpenGLRenderer/graphic-object-2d.h"
+#include "../../../tools/OpenGLRenderer/basic-shapes-2d.h"
 #include "../../../tools/OpenGLRenderer/input-handler.h"
+#include "../../../tools/OpenGLRenderer/material.h"
+
 #include "../../../tools/GeometryLib/quaternion.h"
 #include "../../../tools/GeometryLib/vector3d.h"
 #include "../../../tools/GeometryLib/transform3d.h"
@@ -23,7 +26,7 @@ int main(int argc, char** argv)
 	pRenderer = new Renderer();
 	pRenderer->init(argc, argv, 600, 400);
 	pRenderer->setDataFolder("../../../config/scenes/");
-	pRenderer->loadScene("test-scene.scene");
+	pRenderer->loadScene("mountain-car.scene");
 	pInputHandler = new FreeCameraInputHandler();
 
 	Timer timer;
@@ -31,15 +34,20 @@ int main(int argc, char** argv)
 
 	timer.start();
 
-	GraphicObject* pDynamicObject = pRenderer->getObjectByName("Robot");
+	GraphicObject3D* pDynamicObject = pRenderer->get3DObjectByName("Robot");
 
 	Meter2D* pMeter1 = new Meter2D("Num.Objects drawn", Vector2D(0.1, 0.2), Vector2D(0.4, 0.04));
-	pRenderer->add2DGraphicObject(pMeter1);
+	//pRenderer->add2DGraphicObject(pMeter1);
 	pMeter1->setValueRange(Range(0.0, 10.0));
 
 	Meter2D* pMeter2 = new Meter2D("test2", Vector2D(0.1, 0.25), Vector2D(0.4, 0.04));
-	pRenderer->add2DGraphicObject(pMeter2);
+	//pRenderer->add2DGraphicObject(pMeter2);
 	pMeter2->setValueRange(Range(-5.0, 5.0));
+
+	Material* pSpriteMaterial = new UnlitTextureMaterial("mountain-car/background.png");
+	//Sprite2D* sprite = new Sprite2D("test-sprite", Vector2D(0.5, 0.5), Vector2D(0.25, 0.25),0.0,pSpriteMaterial);
+	//pRenderer->add2DGraphicObject(sprite);
+
 	double t = 0.0;
 
 	Text2D* pFPSText = new Text2D(string("fps"), Vector2D(0.1, 0.9), 0);

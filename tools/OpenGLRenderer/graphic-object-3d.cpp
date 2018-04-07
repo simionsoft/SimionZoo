@@ -1,8 +1,8 @@
 #include "stdafx.h"
-#include "graphic-object.h"
+#include "graphic-object-3d.h"
 #include "material.h"
 #include "xml-load.h"
-#include "basic-shapes.h"
+#include "basic-shapes-3d.h"
 #include "collada-model.h"
 #include "mesh.h"
 #include "../GeometryLib/bounding-cylinder.h"
@@ -10,18 +10,18 @@
 
 
 
-GraphicObject::GraphicObject(string name)
+GraphicObject3D::GraphicObject3D(string name)
 {
 	m_name = name;
 }
 
-GraphicObject::GraphicObject(tinyxml2::XMLElement* pNode): SceneActor(pNode)
+GraphicObject3D::GraphicObject3D(tinyxml2::XMLElement* pNode): SceneActor3D(pNode)
 {
 	if (pNode->Attribute(XML_TAG_NAME_ATTR))
 		m_name= string(pNode->Attribute(XML_TAG_NAME_ATTR));
 }
 
-GraphicObject* GraphicObject::getInstance(tinyxml2::XMLElement* pNode)
+GraphicObject3D* GraphicObject3D::getInstance(tinyxml2::XMLElement* pNode)
 {
 	const char* name = pNode->Name();
 	if (!strcmp(pNode->Name(), XML_TAG_COLLADA_MODEL))
@@ -39,17 +39,17 @@ GraphicObject* GraphicObject::getInstance(tinyxml2::XMLElement* pNode)
 }
 
 
-GraphicObject::~GraphicObject()
+GraphicObject3D::~GraphicObject3D()
 {
 }
 
-BoundingBox3D GraphicObject::boundingBox()
+BoundingBox3D GraphicObject3D::boundingBox()
 {
 	return m_transform.transformMatrix()*m_bb;
 }
 
 
-void GraphicObject::draw()
+void GraphicObject3D::draw()
 {
 	setTransform();
 
@@ -60,14 +60,14 @@ void GraphicObject::draw()
 }
 
 
-void GraphicObject::updateBoundingBox()
+void GraphicObject3D::updateBoundingBox()
 {
 	m_bb.reset();
 	for (auto it = m_meshes.begin(); it != m_meshes.end(); ++it)
 		(*it)->updateBoundingBox(m_bb);
 }
 
-void GraphicObject::fitToBoundingBox(BoundingBox3D* newBB)
+void GraphicObject3D::fitToBoundingBox(BoundingBox3D* newBB)
 {
 	Vector3D newBBSize,bbSize;
 	Vector3D newBBCenter, bbCenter;
@@ -97,7 +97,7 @@ void GraphicObject::fitToBoundingBox(BoundingBox3D* newBB)
 	updateBoundingBox();
 }
 
-void GraphicObject::fitToBoundingCylinder(BoundingCylinder* newBC)
+void GraphicObject3D::fitToBoundingCylinder(BoundingCylinder* newBC)
 {
 	BoundingCylinder currentBC;
 	/*Point3D centroid;*/

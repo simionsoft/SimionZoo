@@ -175,15 +175,17 @@
     </ProjectReference>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="basic-shapes.cpp" />
+    <ClCompile Include="basic-shapes-2d.cpp" />
+    <ClCompile Include="basic-shapes-3d.cpp" />
     <ClCompile Include="light.cpp" />
     <ClCompile Include="mesh.cpp" />
     <ClCompile Include="bindings.cpp" />
     <ClCompile Include="graphic-object-2d.cpp" />
     <ClCompile Include="camera.cpp" />
     <ClCompile Include="collada-model.cpp" />
-    <ClCompile Include="scene-actor.cpp" />
-    <ClCompile Include="graphic-object.cpp" />
+    <ClCompile Include="scene-actor-2d.cpp" />
+    <ClCompile Include="scene-actor-3d.cpp" />
+    <ClCompile Include="graphic-object-3d.cpp" />
     <ClCompile Include="input-handler.cpp" />
     <ClCompile Include="material.cpp" />
     <ClCompile Include="renderer.cpp" />
@@ -199,13 +201,15 @@
     <ClCompile Include="xml-load.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="basic-shapes.h" />
+    <ClInclude Include="basic-shapes-2d.h" />
+    <ClInclude Include="basic-shapes-3d.h" />
     <ClInclude Include="bindings.h" />
     <ClInclude Include="graphic-object-2d.h" />
     <ClInclude Include="camera.h" />
     <ClInclude Include="collada-model.h" />
-    <ClInclude Include="scene-actor.h" />
-    <ClInclude Include="graphic-object.h" />
+    <ClInclude Include="scene-actor-2d.h" />
+    <ClInclude Include="scene-actor-3d.h" />
+    <ClInclude Include="graphic-object-3d.h" />
     <ClInclude Include="input-handler.h" />
     <ClInclude Include="light.h" />
     <ClInclude Include="material.h" />

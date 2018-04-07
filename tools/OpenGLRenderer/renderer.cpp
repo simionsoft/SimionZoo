@@ -1,8 +1,8 @@
 #include "stdafx.h"
 #include "renderer.h"
-#include "scene-actor.h"
+#include "scene-actor-3d.h"
 #include "texture-manager.h"
-#include "graphic-object.h"
+#include "graphic-object-3d.h"
 #include "graphic-object-2d.h"
 #include "camera.h"
 #include "light.h"
@@ -81,7 +81,7 @@ Renderer* Renderer::get()
 	return m_pInstance;
 }
 
-void Renderer::addGraphicObject(GraphicObject* pObj)
+void Renderer::addGraphicObject(GraphicObject3D* pObj)
 {
 	m_3DgraphicObjects.push_back(pObj);
 }
@@ -101,15 +101,26 @@ Camera* Renderer::getActiveCamera()
 	return m_pActiveCamera;
 }
 
-GraphicObject* Renderer::getObjectByName(string name)
+GraphicObject3D* Renderer::get3DObjectByName(string name)
 {
-	for (auto it = m_3DgraphicObjects.begin(); it != m_3DgraphicObjects.end(); ++it)
+	for each (GraphicObject3D* object in m_3DgraphicObjects)
 	{
-		if ((*it)->name() == name)
-		return (*it);
+		if (object->name() == name)
+		return object;
 	}
 	return nullptr;
 }
+
+GraphicObject2D* Renderer::get2DObjectByName(string name)
+{
+	for each (GraphicObject2D* object in m_2DgraphicObjects)
+	{
+		if (object->name() == name)
+			return object;
+	}
+	return nullptr;
+}
+
 
 void Renderer::loadScene(const char* file)
 {
@@ -124,6 +135,15 @@ void Renderer::loadScene(const char* file)
 }
 void Renderer::loadSceneObjects(tinyxml2::XMLElement* pNode)
 {
+	//scene attributes
+	Color backgroundColor;
+	tinyxml2::XMLElement* pBgrColor = pNode->FirstChildElement(XML_TAG_BACKGROUND_COLOR);
+	if (pBgrColor)
+	{
+		XML::load(pBgrColor, backgroundColor);
+		glClearColor(backgroundColor.r(), backgroundColor.g(), backgroundColor.b(),1.0);
+	}
+
 	//import scene files
 	string scenePath;
 	tinyxml2::XMLElement* pImportedScene = pNode->FirstChildElement(XML_TAG_IMPORT_SCENE);
@@ -131,12 +151,19 @@ void Renderer::loadSceneObjects(tinyxml2::XMLElement* pNode)
 	{
 		scenePath = pImportedScene->Attribute(XML_TAG_PATH);
 		loadScene(scenePath.c_str());
+
 		pImportedScene = pImportedScene->NextSiblingElement(XML_TAG_IMPORT_SCENE);
 	}
 
-		//graphic objects
-	loadChildren<GraphicObject>
-			(pNode->FirstChildElement(XML_TAG_OBJECTS), nullptr, m_3DgraphicObjects);
+	//3d graphic objects
+	tinyxml2::XMLElement* pObjects = pNode->FirstChildElement(XML_TAG_OBJECTS);
+	if (pObjects)
+		loadChildren<GraphicObject3D>(pObjects, nullptr, m_3DgraphicObjects);
+
+	//2d graphic objects
+	pObjects = pNode->FirstChildElement(XML_TAG_OBJECTS_2D);
+	if (pObjects)
+		loadChildren<GraphicObject2D>(pObjects, nullptr, m_2DgraphicObjects);
 
 	//cameras
 	loadChildren<Camera>(pNode, XML_TAG_CAMERA, m_cameras);
@@ -181,7 +208,11 @@ void Renderer::drawScene()
 {
 	//clean the backbuffer
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-	if (!m_pActiveCamera) return;
+	if (!m_pActiveCamera)
+	{
+		m_pActiveCamera = new SimpleCamera();
+		m_cameras.push_back(m_pActiveCamera);
+	}
 	//set 3d view
 	m_pActiveCamera->set();
 	//set lights
@@ -195,17 +226,17 @@ void Renderer::drawScene()
 	Frustum& frustum = m_pActiveCamera->getFrustum();
 	m_num3DObjectsDrawn = 0;
 
-	for (auto it = m_3DgraphicObjects.begin(); it != m_3DgraphicObjects.end(); ++it)
+	for each(auto object in m_3DgraphicObjects)
 	{
-		if (frustum.isVisible((*it)->boundingBox()))
+		if (frustum.isVisible(object->boundingBox()))
 		{
-			(*it)->draw();
+			object->draw();
 
 			if (m_bShowBoundingBoxes)
 			{
-				(*it)->setTransform();
-				drawBoundingBox3D((*it)->boundingBox());
-				(*it)->restoreTransform();
+				object->setTransform();
+				drawBoundingBox3D(object->boundingBox());
+				object->restoreTransform();
 			}
 			++m_num3DObjectsDrawn;
 		}
@@ -214,12 +245,16 @@ void Renderer::drawScene()
 	//set 2d view
 	if (m_pActiveCamera) m_pActiveCamera->set2DView();
 	//draw 2d objects
-	for (auto it = m_2DgraphicObjects.begin(); it != m_2DgraphicObjects.end(); ++it)
+	for each (auto object in m_2DgraphicObjects)
 	{
-		(*it)->draw();
+		object->setTransform();
+
+		object->draw();
 
 		if (m_bShowBoundingBoxes)
-			drawBoundingBox2D((*it)->boundingBox());
+			drawBoundingBox2D(object->boundingBox());
+
+		object->restoreTransform();
 	}
 }
 

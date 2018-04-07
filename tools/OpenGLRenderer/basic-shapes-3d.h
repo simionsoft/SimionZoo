@@ -1,10 +1,10 @@
 #pragma once
-#include "graphic-object.h"
+#include "graphic-object-3d.h"
 #include "../GeometryLib/vector2d.h"
 #include "../GeometryLib/vector3d.h"
 namespace tinyxml2 { class XMLElement; }
 
-class BasicShape : public GraphicObject
+class BasicShape : public GraphicObject3D
 {
 protected:
 	Material* m_pMaterialLoaded; //for later use when the mesh is created in the respective shape's constructor

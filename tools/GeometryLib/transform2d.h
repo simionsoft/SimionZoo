@@ -1,7 +1,7 @@
 #pragma once
 
 #include "vector2d.h"
-#include "quaternion.h"
+#include "matrix44.h"
 
 //2D objects are drawn on the z-plane
 //By default, the depth is set to z= 0, but different values can be used to allow overlays
@@ -9,16 +9,23 @@
 class Transform2D
 {
 protected:
-	double m_matrix44[16];
-protected:
+	Matrix44 m_matrix;
+
 	double m_depth;
 	Vector2D m_translation;
 	double m_rotation;
 	Vector2D m_scale;
 
+	void updateMatrix();
+
 public:
 	Transform2D();
 	virtual ~Transform2D() {}
+
+	void setIdentity();
+
+	Vector2D operator*(Vector2D& v);
+	Point2D operator*(Point2D& v);
 
 	Vector2D& translation() { return m_translation; }
 	double& rotation() { return m_rotation; }
