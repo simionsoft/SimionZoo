@@ -184,11 +184,13 @@ void SimionLogViewer::draw()
 	m_pTimeText->set(string("Sim. Time: ") + std::to_string(m_episodeSimTime) + string(" / ") 
 		+ std::to_string(m_episodeLength));
 	m_pEpisodeText->set(string("Episode: ") + std::to_string(m_episodeIndex));
+
 	for (int b = 0; b < m_pRenderer->getNumBindings(); ++b)
 	{
 		string varName = m_pRenderer->getBindingExternalName(b);
 		int variableIndex = m_pExperimentLog->getVariableIndex(varName);
 		value = m_pInterpolatedStep->getValue(variableIndex);
+
 		m_pRenderer->updateBinding(varName, value);
 	}
 

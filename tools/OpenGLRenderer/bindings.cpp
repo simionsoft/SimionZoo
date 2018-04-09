@@ -20,7 +20,7 @@ Binding::~Binding()
 void Binding::update(double value)
 {
 	for each (Bindable* object in boundObjects)
-		object->update(value + m_offset);
+		object->update((value + m_offset) *m_multiplier);
 }
 
 void Binding::addBoundObject(Bindable* pObj)

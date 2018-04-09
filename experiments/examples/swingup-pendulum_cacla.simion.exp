@@ -6,8 +6,8 @@
 		<Log-training-episodes>false</Log-training-episodes>
 	</Log>
 	<World>
-		<Num-Integration-Steps>1</Num-Integration-Steps>
-		<Delta-T>1</Delta-T>
+		<Num-Integration-Steps>4</Num-Integration-Steps>
+		<Delta-T>0.25</Delta-T>
 		<Dynamic-Model>
 			<Model>
 		<Swing-up-pendulum>
@@ -57,7 +57,7 @@
 			<Alpha>
 				<Schedule>
 		<Constant>
-			<Value>0.01</Value>
+			<Value>0.001</Value>
 		</Constant>
 		</Schedule>
 			</Alpha>
@@ -97,7 +97,7 @@
 			<Alpha>
 				<Schedule>
 		<Constant>
-			<Value>0.1</Value>
+			<Value>0.01</Value>
 		</Constant>
 		</Schedule>
 			</Alpha>

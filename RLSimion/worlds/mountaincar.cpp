@@ -12,7 +12,7 @@ MountainCar::MountainCar(ConfigNode* pConfigNode)
 	METADATA("World", "Mountain-car");
 	m_sPosition = addStateVariable("position", "m", -1.2, 0.6);
 	m_sVelocity = addStateVariable("velocity", "m/s", -0.07, 0.07);
-	m_sHeight = addStateVariable("height", "m", 0, 10.0);
+	m_sHeight = addStateVariable("height", "m", -1.0, 1.0);
 	m_sAngle = addStateVariable("angle", "rad", -3.1415, 3.1415, true);
 
 	m_aPedal = addActionVariable("pedal", "m", -1.0, 1.0);
@@ -29,7 +29,7 @@ MountainCar::~MountainCar()
 
 double MountainCar::getHeightAtPos(double x)
 {
-	return -sin(HILL_PEAK_FREQ * (x));
+	return sin(HILL_PEAK_FREQ * x);
 }
 
 double MountainCar::getAngleAtPos(double x)

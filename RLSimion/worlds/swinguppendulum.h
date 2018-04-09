@@ -13,7 +13,6 @@ class SetPoint;
 class SwingupPendulum : public DynamicModel
 {
 	int m_sAngularVelocity, m_sAngle;
-	int m_sNormalizedTimeInTargetPosition;
 	int m_aTorque;
 
 	//DOUBLE_PARAM 
@@ -29,6 +28,7 @@ public:
 
 class SwingupPendulumReward : public IRewardComponent
 {
+	double m_timeInGoal= 0.0;
 public:
 	SwingupPendulumReward() = default;
 	double getReward(const State *s, const Action *a, const State *s_p);

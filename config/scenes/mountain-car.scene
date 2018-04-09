@@ -64,22 +64,22 @@
     <Sprite Name="Car">
       <Transform>
         <Translation>
-          <X Bind="position" Offset="1.2">0.0</X>
-          <Y Bind="height">0.0</Y>
+          <X Bind="position" Offset="1.12" Multiplier="0.55555555">0.0</X>
+          <Y Bind="height" Offset= "0.95" Multiplier="0.45454545">0.0</Y>
         </Translation>
         <Scale>
           <X>0.15</X>
           <Y>0.15</Y>
         </Scale>
-        <Rotation Bind="angle"/>
-        <Depth>0.5</Depth>
+        <Rotation Bind="angle" Multiplier="-1.0"/>
+        <Depth>0.1</Depth>
       </Transform>
       <Material>
-        <Unlit-Texture-Material>
+        <Translucent-Material>
           <Texture>
             <Path>mountain-car/car.png</Path>
           </Texture>
-        </Unlit-Texture-Material>
+        </Translucent-Material>
       </Material>
     </Sprite>
   </Objects2D>

@@ -31,13 +31,13 @@ void Sprite2D::draw()
 		m_pMaterial->set();
 
 	glBegin(GL_QUADS);
-		glTexCoord2d(0.0, 0.0);
-		glVertex2d(0.0, 0.0);
-		glTexCoord2d(1.0, 0.0);
-		glVertex2d(1.0, 0.0);
-		glTexCoord2d(1.0, 1.0);
-		glVertex2d(1.0, 1.0);
 		glTexCoord2d(0.0, 1.0);
+		glVertex2d(0.0, 0.0);
+		glTexCoord2d(1.0, 1.0);
+		glVertex2d(1.0, 0.0);
+		glTexCoord2d(1.0, 0.0);
+		glVertex2d(1.0, 1.0);
+		glTexCoord2d(0.0, 0.0);
 		glVertex2d(0.0, 1.0);
 	glEnd();
 }
