@@ -64,7 +64,7 @@
     <Sprite Name="Car">
       <Transform>
         <Translation>
-          <X Bind="x">0.0</X>
+          <X Bind="position" Offset="1.2">0.0</X>
           <Y Bind="height">0.0</Y>
         </Translation>
         <Scale>
@@ -77,7 +77,7 @@
       <Material>
         <Unlit-Texture-Material>
           <Texture>
-            <Path>mountain-car/car.tga</Path>
+            <Path>mountain-car/car.png</Path>
           </Texture>
         </Unlit-Texture-Material>
       </Material>

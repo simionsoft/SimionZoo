@@ -13,14 +13,14 @@
 
 Binding::~Binding()
 {
-	for (auto it = boundObjects.begin(); it != boundObjects.end(); ++it)
-		delete (*it);
+	for each (Bindable* object in boundObjects)
+		delete object;
 }
 
 void Binding::update(double value)
 {
-	for (auto it = boundObjects.begin(); it != boundObjects.end(); ++it)
-		(*it)->update(value);
+	for each (Bindable* object in boundObjects)
+		object->update(value + m_offset);
 }
 
 void Binding::addBoundObject(Bindable* pObj)

@@ -57,6 +57,7 @@ namespace tinyxml2 { class XMLElement; }
 #define XML_TAG_COLOR "Color"
 
 #define XML_ATTR_BINDING "Bind"
+#define XML_ATTR_OFFSET "Offset"
 
 #define XML_TAG_CAMERA "Camera"
 #define XML_TAG_SIMPLE_CAMERA "Simple-Camera"
@@ -153,7 +154,12 @@ namespace XML
 				value = atof(pChild->GetText());
 			pBindingName = pChild->Attribute(XML_ATTR_BINDING);
 			if (pBindingName)
-				Renderer::get()->registerBinding<T>(pBindingName, obj, xmlTag);
+			{
+				double offset = 0.0;
+				if (pChild->Attribute(XML_ATTR_OFFSET))
+					offset = atof(pChild->Attribute(XML_ATTR_OFFSET));
+				Renderer::get()->registerBinding<T>(pBindingName, obj, xmlTag, offset);
+			}
 			return value;
 		}
 		return value;

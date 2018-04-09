@@ -267,10 +267,10 @@ void Renderer::reshapeWindow(int w,int h)
 
 Binding* Renderer::getBinding(string externalName)
 {
-	for (auto it = m_bindings.begin(); it != m_bindings.end(); ++it)
+	for each (Binding* binding in m_bindings)
 	{
-		if ((*it)->externalName == externalName)
-			return *it;
+		if (binding->externalName == externalName)
+			return binding;
 	}
 	return nullptr;
 }
@@ -285,7 +285,7 @@ string Renderer::getBindingExternalName(unsigned int i)
 {
 	if (i >= 0 && i < (int)m_bindings.size())
 		return m_bindings[i]->externalName;
-	return string("");
+	return string("N/A");
 }
 
 bool Renderer::updateBinding(unsigned int i, double value)

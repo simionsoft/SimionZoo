@@ -62,7 +62,6 @@ void SimpleCamera::set()
 //This method sets an orthogonal view that maps the screen to coordinates [0.0,0.0] - [1.0,1.0]
 void Camera::set2DView()
 {
-	int sizeX, sizeY;
 	//set projection matrix
 	glMatrixMode(GL_PROJECTION);
 	glLoadIdentity();

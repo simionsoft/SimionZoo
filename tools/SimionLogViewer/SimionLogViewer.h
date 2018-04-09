@@ -20,8 +20,8 @@ class SimionLogViewer: public IInputHandler
 	Step* 	m_pInterpolatedStep;
 	Episode* m_pCurrentEpisode;
 
-	ExperimentLog* m_pExperimentLog;
-	Renderer* m_pRenderer;
+	ExperimentLog* m_pExperimentLog= nullptr;
+	Renderer* m_pRenderer= nullptr;
 
 	Text2D * m_pTimeText;
 	Text2D * m_pEpisodeText;

@@ -83,13 +83,14 @@ public:
 
 	//this is called by Bindable objects at initialization time
 	template <typename T>
-	void registerBinding(string externalName, T& obj, string internalName)
+	void registerBinding(string externalName, T& obj, string internalName, double offset = 0.0)
 	{
 		Binding* pBinding = getBinding(externalName);
 		if (pBinding == nullptr)
 		{
 			//No binding registered yet for the external name (i.e, the state variable's name)
-			pBinding = new Binding(externalName, obj, internalName);
+			//For now, only the first bound object is allowed to set the offset
+			pBinding = new Binding(externalName, obj, internalName, offset);
 		}
 		else
 		{

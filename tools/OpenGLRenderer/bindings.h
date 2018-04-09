@@ -75,14 +75,16 @@ public:
 
 class Binding
 {
+	double m_offset= 0.0;
 	vector <Bindable*> boundObjects;
 public:
 	string externalName;
 
 	template <typename T>
-	Binding(std::string& _externalName, T& obj, std::string& _internalName)
+	Binding(std::string& _externalName, T& obj, std::string& _internalName, double offset= 0.0)
 		:externalName(_externalName)
 	{
+		m_offset = offset;
 		boundObjects.push_back(new BoundObject<T>(obj, _internalName));
 	}
 	~Binding();
