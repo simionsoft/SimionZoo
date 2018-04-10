@@ -4,7 +4,7 @@
       <Transform>
         <Translation>
           <X>0.0</X>
-          <Y>2.0</Y>
+          <Y>0.0</Y>
           <Z>5.0</Z>
         </Translation>
       </Transform>
@@ -35,7 +35,7 @@
     </Directional-Light>
   </Light>
   <Objects>
-    <Box Name="Cart">
+    <Box Name="Sphere">
       <Material>
         <Simple-TL-Material>
           <Diffuse>
@@ -51,9 +51,9 @@
             <A>1.0</A>
           </Ambient>
           <Specular>
-            <R>0.0</R>
-            <G>0.0</G>
-            <B>0.0</B>
+            <R>0.2</R>
+            <G>0.2</G>
+            <B>0.2</B>
             <A>1.0</A>
           </Specular>
           <Emission>
@@ -64,13 +64,12 @@
           </Emission>
           <Shininess>0.5</Shininess>
           <Texture>
-            <Path>box.png</Path>
+            <Path>concrete1.png</Path>
           </Texture>
         </Simple-TL-Material>
       </Material>
       <Transform>
-        <Translation><X Bind="x"/></Translation>
-        <Scale><Y>0.1</Y><Z>0.5</Z></Scale>
+        <Scale><X>0.2</X><Y>0.2</Y><Z>0.2</Z></Scale>
       </Transform>
     </Box>
     <Box Name="Pendulum">
@@ -89,10 +88,10 @@
             <A>1.0</A>
           </Ambient>
           <Specular>
-            <R>0.0</R>
-            <G>0.0</G>
-            <B>0.0</B>
-            <A>1.0</A>
+            <R>0.2</R>
+            <G>0.2</G>
+            <B>0.2</B>
+            <A>1.2</A>
           </Specular>
           <Emission>
             <R>0.0</R>
@@ -102,33 +101,13 @@
           </Emission>
           <Shininess>0.5</Shininess>
           <Texture>
-            <Path>box.png</Path>
-          </Texture>
-        </Simple-TL-Material>
-      </Material>
-      <Transform>
-        <Translation><X Bind="x"/><Y>0.1</Y></Translation>
-        <Scale><X>0.1</X><Y>1.0</Y><Z>0.1</Z></Scale>
-        <Rotation><Roll Bind="theta"/></Rotation>
-      </Transform>
-    </Box>
-    <Box Name="Floor">
-      <Material>
-        <Simple-TL-Material>
-          <Texture>
             <Path>concrete1.png</Path>
           </Texture>
         </Simple-TL-Material>
       </Material>
       <Transform>
-        <Scale>
-          <X>20</X>
-          <Y>0.1</Y>
-          <Z>20</Z>
-        </Scale>
-        <Translation>
-          <Y>-0.1</Y>
-        </Translation>
+        <Scale><X>0.1</X><Y>1.0</Y><Z>0.1</Z></Scale>
+        <Rotation><Roll Bind="angle" Offset="3.14"/></Rotation>
       </Transform>
     </Box>
   </Objects>

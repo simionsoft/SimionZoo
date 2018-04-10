@@ -20,6 +20,7 @@ public:
 	double getRangeWidth() const { return m_max - m_min; }
 	void setCircular(bool bCircular) { m_bCircular = bCircular; }
 	bool bIsCircular() const { return m_bCircular; }
+	const char* getUnits() const { return m_units; }
 };
 
 class NamedVarSet;

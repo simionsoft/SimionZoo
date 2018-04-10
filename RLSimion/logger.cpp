@@ -168,10 +168,17 @@ void Logger::writeStatDescriptorToBuffer(char* pOutBuffer)
 }
 void Logger::writeNamedVarSetDescriptorToBuffer(char* pOutBuffer, const char* id, const Descriptor* descriptor)
 {
+	string circular;
 	char buffer[BUFFER_SIZE];
 	for (unsigned int i = 0; i < descriptor->size(); i++)
 	{
-		sprintf_s(buffer, BUFFER_SIZE, "  <%s-variable>%s</%s-variable>\n", id, (*descriptor)[i].getName(), id);
+		if ((*descriptor)[i].bIsCircular())
+			circular = "true";
+		else
+			circular = "false";
+		sprintf_s(buffer, BUFFER_SIZE, "  <%s-variable Min=\"%.2f\" Max=\"%.2f\" Circular=\"%s\" Units=\"%s\">%s</%s-variable>\n"
+			, id, (*descriptor)[i].getMin(), (*descriptor)[i].getMax(), circular.c_str(), (*descriptor)[i].getUnits()
+			, (*descriptor)[i].getName(), id);
 		strcat_s(pOutBuffer, BUFFER_SIZE, buffer);
 	}
 }

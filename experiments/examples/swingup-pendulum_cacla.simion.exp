@@ -1,7 +1,7 @@
 <RLSimion FileVersion="1.0.0.0">
 <RLSimion>
 	<Log>
-		<Log-Freq>0.25</Log-Freq>
+		<Log-Freq>0.1</Log-Freq>
 		<Log-eval-episodes>true</Log-eval-episodes>
 		<Log-training-episodes>false</Log-training-episodes>
 	</Log>
