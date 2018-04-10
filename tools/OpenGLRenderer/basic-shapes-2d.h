@@ -3,9 +3,10 @@
 
 class Sprite2D : public GraphicObject2D
 {
+	Vector2D m_minCoord, m_maxCoord;
 	Material* m_pMaterial= nullptr;
 public:
-	Sprite2D(string name, Vector2D origin, Vector2D size, int depth = 0, Material* material= nullptr);
+	Sprite2D(string name, Vector2D origin, Vector2D size, double depth = 0, Material* material= nullptr);
 	Sprite2D(tinyxml2::XMLElement* pNode);
 	virtual ~Sprite2D();
 
@@ -20,7 +21,7 @@ class Meter2D : public GraphicObject2D
 	Text2D *m_pText;
 public:
 	//the constructor uses normalized coordinates [0,1]
-	Meter2D(string name, Vector2D origin, Vector2D size, int depth = 0);
+	Meter2D(string name, Vector2D origin, Vector2D size, double depth = 0.0);
 	Meter2D(tinyxml2::XMLElement* pNode);
 	virtual ~Meter2D();
 

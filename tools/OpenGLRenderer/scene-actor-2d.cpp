@@ -10,6 +10,14 @@ SceneActor2D::SceneActor2D(tinyxml2::XMLElement* pNode)
 		XML::load(pChild, m_transform);
 }
 
+SceneActor2D::SceneActor2D(Vector2D origin, Vector2D size, double rotation, double depth)
+{
+	m_transform.setTranslation(origin);
+	m_transform.setScale(size);
+	m_transform.setRotation(rotation);
+	m_transform.setDepth(depth);
+}
+
 SceneActor2D::~SceneActor2D()
 {
 }

@@ -10,12 +10,16 @@ class Text2D;
 class Episode;
 class Step;
 
+enum PlaybackMode {Quarter,Half,Normal,x2,x4};
+
 class SimionLogViewer: public IInputHandler
 {
 	double m_episodeLength;
 	int m_episodeIndex;
 	int m_numEpisodes;
 	double m_episodeSimTime = 0.0;
+
+	PlaybackMode m_playbackMode= PlaybackMode::Normal;
 
 	Step* 	m_pInterpolatedStep;
 	Episode* m_pCurrentEpisode;
@@ -25,6 +29,7 @@ class SimionLogViewer: public IInputHandler
 
 	Text2D * m_pTimeText;
 	Text2D * m_pEpisodeText;
+	Text2D * m_pPlaybackRateText;
 
 	bool m_bExitRequested = false;
 
@@ -44,7 +49,9 @@ class SimionLogViewer: public IInputHandler
 	void previousEpisode();
 	void playEpisode(int i);
 
-
+	void faster();
+	void slower();
+	double getPlaybackRate();
 
 	void interpolateStepData(double t, Episode* pInEpisode, Step* pOutInterpolatedData) const;
 public:

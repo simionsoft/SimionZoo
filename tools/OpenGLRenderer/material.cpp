@@ -147,7 +147,6 @@ void TranslucentMaterial::set()
 	//alpha blending: no depth writing, no face culling
 	glEnable(GL_BLEND);
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-	//	glDepthMask(GL_FALSE);
 	glDisable(GL_CULL_FACE);
 
 	Renderer::get()->getTextureManager()->set(m_textureId);

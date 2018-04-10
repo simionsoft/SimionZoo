@@ -5,7 +5,7 @@
 #include "renderer.h"
 #include "xml-load.h"
 
-Sprite2D::Sprite2D(string name, Vector2D origin, Vector2D size, int depth, Material* material)
+Sprite2D::Sprite2D(string name, Vector2D origin, Vector2D size, double depth, Material* material)
 	:GraphicObject2D(name, origin, size, depth)
 {
 	m_pMaterial = material;
@@ -17,6 +17,18 @@ Sprite2D::Sprite2D(tinyxml2::XMLElement* pNode)
 	tinyxml2::XMLElement* pChild = pNode->FirstChildElement(XML_TAG_MATERIAL);
 	if (pChild)
 		m_pMaterial = Material::getInstance(pChild->FirstChildElement());
+
+	if (pNode->Attribute(XML_ATTR_COORDINATES) 
+		&& !strcmp(pNode->Attribute(XML_ATTR_COORDINATES), XML_ATTR_VALUE_AROUND_ORIGIN))
+	{
+		m_minCoord = Vector2D(-0.5, -0.5);
+		m_maxCoord = Vector2D(0.5, 0.5);
+	}
+	else
+	{
+		m_minCoord = Vector2D(0.0, 0.0);
+		m_maxCoord = Vector2D(1.0, 1.0);
+	}
 }
 
 Sprite2D::~Sprite2D()
@@ -31,14 +43,14 @@ void Sprite2D::draw()
 		m_pMaterial->set();
 
 	glBegin(GL_QUADS);
-		glTexCoord2d(0.0, 1.0);
-		glVertex2d(0.0, 0.0);
-		glTexCoord2d(1.0, 1.0);
-		glVertex2d(1.0, 0.0);
-		glTexCoord2d(1.0, 0.0);
-		glVertex2d(1.0, 1.0);
-		glTexCoord2d(0.0, 0.0);
-		glVertex2d(0.0, 1.0);
+	glTexCoord2d(0.0, 1.0);
+	glVertex2d(m_minCoord.x(), m_minCoord.y());
+	glTexCoord2d(1.0, 1.0);
+	glVertex2d(m_maxCoord.x(), m_minCoord.y());
+	glTexCoord2d(1.0, 0.0);
+	glVertex2d(m_maxCoord.x(), m_maxCoord.y());
+	glTexCoord2d(0.0, 0.0);
+	glVertex2d(m_minCoord.x(), m_maxCoord.y());
 	glEnd();
 }
 
@@ -47,13 +59,12 @@ Meter2D::Meter2D(tinyxml2::XMLElement* pNode): GraphicObject2D(pNode)
 	m_pMaterial = Material::getInstance(pNode);
 }
 
-Meter2D::Meter2D(string name, Vector2D origin, Vector2D size, int depth) 
-	: GraphicObject2D(name,origin,size,depth)
+Meter2D::Meter2D(string name, Vector2D origin, Vector2D size, double depth) 
+	: GraphicObject2D(name,origin + Vector2D(0.1,0.1),size,depth)
 {
 	m_pMaterial = new ColorMaterial();
 
 	m_pText = new Text2D(name + "/text", origin, depth + 1); //over the progress bar
-	m_pText->addPixelOffset(Vector2D(2, 5));
 }
 
 Meter2D::~Meter2D()

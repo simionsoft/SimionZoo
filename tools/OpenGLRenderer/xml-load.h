@@ -59,6 +59,8 @@ namespace tinyxml2 { class XMLElement; }
 #define XML_ATTR_BINDING "Bind"
 #define XML_ATTR_OFFSET "Offset"
 #define XML_ATTR_MULTIPLIER "Multiplier"
+#define XML_ATTR_COORDINATES "Coordinates"
+#define XML_ATTR_VALUE_AROUND_ORIGIN "Around-Origin"
 
 #define XML_TAG_CAMERA "Camera"
 #define XML_TAG_SIMPLE_CAMERA "Simple-Camera"

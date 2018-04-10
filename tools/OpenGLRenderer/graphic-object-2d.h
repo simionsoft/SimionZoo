@@ -13,11 +13,10 @@ class GraphicObject2D: public SceneActor2D
 {
 protected:
 	string m_name;
-	Transform2D m_transform;
 	BoundingBox2D m_bb;
 public:
 	GraphicObject2D(string name);
-	GraphicObject2D(string name, Vector2D origin, Vector2D size, int depth = 0);
+	GraphicObject2D(string name, Vector2D origin, Vector2D size, double rotation, double depth = 0.0);
 	virtual ~GraphicObject2D();
 
 	GraphicObject2D(tinyxml2::XMLElement* pNode);

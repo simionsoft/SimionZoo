@@ -8,17 +8,15 @@ using namespace std;
 
 class Text2D: public GraphicObject2D
 {
-	int m_absPosX, m_absPosY;
 	Color m_color;
 	string m_text;
 public:
-	Text2D(string name,Vector2D origin, int depth);
+	Text2D(string name,Vector2D origin, double depth);
 	virtual ~Text2D();
 
 	void set(string text) { m_text = text; }
 
 	void setColor(Color color) { m_color = color; }
 	void draw();
-	void addPixelOffset(const Vector2D offset);
 };
 

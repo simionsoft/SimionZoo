@@ -1,7 +1,7 @@
 <RLSimion-x64 FileVersion="1.0.0.0">
 <RLSimion>
 	<Log>
-		<Log-Freq>0.25</Log-Freq>
+		<Log-Freq>0.0</Log-Freq>
 		<Log-eval-episodes>true</Log-eval-episodes>
 		<Log-training-episodes>false</Log-training-episodes>
 	</Log>
@@ -31,10 +31,10 @@
 			<Buffer-Size>1000</Buffer-Size>
 			<Update-Batch-Size>10</Update-Batch-Size>
 		</Experience-Replay>
-
+		
 		<Simion>
 			<Type>
-		<DQN>
+		<Double-DQN>
                   <Input-State>
                     <Input-State>position</Input-State>
                   </Input-State>
@@ -107,6 +107,7 @@
 		    </NetworkArchitecture>
 		  </Problem>
 		</neural-network>
+		<Output-Action>pedal</Output-Action>
 		<Policy>
 			<Policy>
 		<Discrete-Epsilon-Greedy-Deep-Policy>
@@ -127,7 +128,7 @@
 		</Discrete-Epsilon-Greedy-Deep-Policy>
 		</Policy>
 			</Policy>
-		</DQN>
+		</Double-DQN>
 		</Type>
 		</Simion>
 	</SimGod>

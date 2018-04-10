@@ -61,15 +61,15 @@
         </Unlit-Texture-Material>
       </Material>
     </Sprite>
-    <Sprite Name="Car">
+    <Sprite Name="Car" Coordinates="Around-Origin">
       <Transform>
         <Translation>
-          <X Bind="position" Offset="1.12" Multiplier="0.55555555">0.0</X>
-          <Y Bind="height" Offset= "0.95" Multiplier="0.45454545">0.0</Y>
+          <X Bind="position" Offset="1.3" Multiplier="0.5">0.0</X>
+          <Y Bind="height" Offset= "1.25" Multiplier="0.4">0.0</Y>
         </Translation>
         <Scale>
-          <X>0.15</X>
-          <Y>0.15</Y>
+          <X>0.125</X>
+          <Y>0.125</Y>
         </Scale>
         <Rotation Bind="angle" Multiplier="-1.0"/>
         <Depth>0.1</Depth>

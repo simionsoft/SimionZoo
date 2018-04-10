@@ -9,6 +9,7 @@ class SceneActor2D
 	Transform2D m_transform;
 public:
 	SceneActor2D() = default;
+	SceneActor2D(Vector2D origin, Vector2D size, double rotation, double depth);
 	virtual ~SceneActor2D();
 	SceneActor2D(tinyxml2::XMLElement* pNode);
 

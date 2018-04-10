@@ -28,11 +28,13 @@ void SimionLogViewer::init(int argc,char** argv)
 	m_pRenderer = new Renderer();
 	m_pRenderer->init(argc, argv, 600, 400);
 
-	m_pTimeText = new Text2D(string("Time"), Vector2D(0.1, 0.9), 0);
-	m_pEpisodeText = new Text2D(string("Episode"), Vector2D(0.1, 0.85), 0);
+	m_pTimeText = new Text2D(string("Time"), Vector2D(0.05, 0.9), 0.5);
+	m_pEpisodeText = new Text2D(string("Episode"), Vector2D(0.05, 0.85), 0.5);
+	m_pPlaybackRateText = new Text2D(string("Playback Rate"), Vector2D(0.8, 0.9), 0.5);
 
 	m_pRenderer->add2DGraphicObject(m_pTimeText);
 	m_pRenderer->add2DGraphicObject(m_pEpisodeText);
+	m_pRenderer->add2DGraphicObject(m_pPlaybackRateText);
 
 	//init the input handling stuff
 	glutSpecialFunc(_onSpecialKeyPressed);
@@ -82,6 +84,8 @@ void SimionLogViewer::onSpecialKeyPressed(int key, int x, int y)
 	{
 	case GLUT_KEY_LEFT: previousEpisode(); break;
 	case GLUT_KEY_RIGHT: nextEpisode(); break;
+	case GLUT_KEY_UP: faster(); break;
+	case GLUT_KEY_DOWN: slower(); break;
 	}
 }
 
@@ -112,6 +116,40 @@ void SimionLogViewer::playEpisode(int i)
 	m_pCurrentEpisode = m_pExperimentLog->getEpisode(i);
 	m_episodeLength = m_pCurrentEpisode->getSimTimeLength();
 	m_timer.start();
+}
+
+void SimionLogViewer::faster()
+{
+	switch (m_playbackMode)
+	{
+	case PlaybackMode::Quarter: m_playbackMode = PlaybackMode::Half; break;
+	case PlaybackMode::Half: m_playbackMode = PlaybackMode::Normal; break;
+	case PlaybackMode::Normal: m_playbackMode = PlaybackMode::x2; break;
+	case PlaybackMode::x2: m_playbackMode = PlaybackMode::x4; break;
+	}
+}
+
+double SimionLogViewer::getPlaybackRate()
+{
+	switch (m_playbackMode)
+	{
+	case PlaybackMode::Quarter: return 0.25;
+	case PlaybackMode::Half: return 0.5;
+	case PlaybackMode::Normal: return 1.0;
+	case PlaybackMode::x2: return 2.0;
+	case PlaybackMode::x4: return 4.0;
+	}
+}
+
+void SimionLogViewer::slower()
+{
+	switch (m_playbackMode)
+	{
+	case PlaybackMode::Half: m_playbackMode = PlaybackMode::Quarter; break;
+	case PlaybackMode::Normal: m_playbackMode = PlaybackMode::Half; break;
+	case PlaybackMode::x2: m_playbackMode = PlaybackMode::Normal; break;
+	case PlaybackMode::x4: m_playbackMode = PlaybackMode::x2; break;
+	}
 }
 
 bool SimionLogViewer::loadLogFile(string filename)
@@ -167,11 +205,23 @@ void SimionLogViewer::handleInput()
 	glutMainLoopEvent();
 }
 
+#include <sstream>
+#include <iomanip>
+
+template <typename T>
+std::string to_string_with_precision(const T a_value, const int n = 6)
+{
+	std::ostringstream out;
+	out << std::fixed << std::setprecision(n)  << a_value;
+	return out.str();
+}
+
 void SimionLogViewer::draw()
 {
 	if (m_pCurrentEpisode == nullptr) return;
 
-	double dt = m_timer.getElapsedTime(true);
+	double playbackRate = getPlaybackRate();
+	double dt = m_timer.getElapsedTime(true)*playbackRate;
 
 	//time
 	m_episodeSimTime += dt;
@@ -181,9 +231,10 @@ void SimionLogViewer::draw()
 	//update bindings
 	//and interpolate logged data between saved points
 	interpolateStepData(m_episodeSimTime, m_pCurrentEpisode, m_pInterpolatedStep);
-	m_pTimeText->set(string("Sim. Time: ") + std::to_string(m_episodeSimTime) + string(" / ") 
-		+ std::to_string(m_episodeLength));
+	m_pTimeText->set(string("Sim. Time: ") + to_string_with_precision(m_episodeSimTime, 2) + string(" / ") 
+		+ to_string_with_precision(m_episodeLength, 2));
 	m_pEpisodeText->set(string("Episode: ") + std::to_string(m_episodeIndex));
+	m_pPlaybackRateText->set(string("Rate: ") + to_string_with_precision(playbackRate, 2));
 
 	for (int b = 0; b < m_pRenderer->getNumBindings(); ++b)
 	{
