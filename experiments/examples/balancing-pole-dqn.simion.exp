@@ -1,7 +1,7 @@
 <RLSimion FileVersion="1.0.0.0">
 <RLSimion>
 	<Log>
-		<Log-Freq>0.25</Log-Freq>
+		<Log-Freq>0.1</Log-Freq>
 		<Log-eval-episodes>True</Log-eval-episodes>
 		<Log-training-episodes>False</Log-training-episodes>
 	</Log>
@@ -17,7 +17,7 @@
 	</World>
 	<Experiment>
 		<Random-Seed>1</Random-Seed>
-		<Num-Episodes>10000</Num-Episodes>
+		<Num-Episodes>1000</Num-Episodes>
 		<Eval-Freq>100</Eval-Freq>
 		<Progress-Update-Freq>0.5</Progress-Update-Freq>
 		<Episode-Length>100</Episode-Length>
@@ -29,34 +29,8 @@
 		<Use-Importance-Weights>false</Use-Importance-Weights>
 		<Experience-Replay>
 			<Buffer-Size>1000</Buffer-Size>
-			<Update-Batch-Size>10</Update-Batch-Size>
+			<Update-Batch-Size>20</Update-Batch-Size>
 		</Experience-Replay>
-		<State-Feature-Map>
-			<Type>
-		<RBF-State-Grid>
-			<RBF-Grid-Dimension>
-				<Num-Features>10</Num-Features>
-				<Variable>theta_dot</Variable>
-				<Distribution>linear</Distribution>
-			</RBF-Grid-Dimension>
-			<RBF-Grid-Dimension>
-				<Num-Features>10</Num-Features>
-				<Variable>x</Variable>
-				<Distribution>linear</Distribution>
-			</RBF-Grid-Dimension>
-			<RBF-Grid-Dimension>
-				<Num-Features>10</Num-Features>
-				<Variable>x_dot</Variable>
-				<Distribution>linear</Distribution>
-			</RBF-Grid-Dimension>
-			<RBF-Grid-Dimension>
-				<Num-Features>10</Num-Features>
-				<Variable>theta</Variable>
-				<Distribution>linear</Distribution>
-			</RBF-Grid-Dimension>
-		</RBF-State-Grid>
-		</Type>
-		</State-Feature-Map>
 		<Simion>
 			<Type>
 <DQN>
@@ -74,9 +48,9 @@
                   </Input-State>
 		  <Output-Action>force</Output-Action>
 		  <Num-Action-Steps>3</Num-Action-Steps>
+		  <Learning-Rate>0.00001</Learning-Rate>
 		<neural-network>
 		  <Problem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
-
 		    <OptimizerSetting>
 		      <Optimizer xsi:type="OptimizerAdam">
 			<Parameters>
