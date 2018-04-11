@@ -16,9 +16,6 @@ namespace tinyxml2 { class XMLElement; }
 
 #include "../../RLSimion/named-var-set.h"
 class NetworkArchitecture;
-class InputData;
-class LinkConnection;
-class OptimizerSettings;
 class INetwork;
 class IMinibatch;
 
@@ -27,15 +24,6 @@ class INetworkDefinition
 {
 public:
 	virtual void destroy() = 0;
-
-	virtual NetworkArchitecture* getNetworkArchitecture() = 0;
-	virtual const LinkConnection* getOutput() const = 0;
-	virtual const OptimizerSettings* getOptimizerSettings() const = 0;
-
-	virtual void setInputLayerName(wstring name)= 0;
-	virtual bool isInputLayer(wstring name)= 0;
-	virtual void setOutputLayerName(wstring name)= 0;
-	virtual wstring getOutputLayerName()= 0;
 
 	virtual void addInputStateVar(size_t stateVarId) = 0;
 	virtual size_t getNumInputStateVars() = 0; 
@@ -58,7 +46,7 @@ public:
 
 	virtual void destroy()= 0;
 
-	virtual void buildQNetwork(double learningRate)= 0;
+	virtual void buildNetwork(double learningRate)= 0;
 
 	virtual void save(string fileName)= 0;
 
@@ -66,11 +54,6 @@ public:
 
 	virtual void train(IMinibatch* pMinibatch) = 0;
 	virtual void get(const State* s, vector<double>& outputValues) = 0;
-
-	virtual void train(std::unordered_map<std::string, std::vector<double>&>& inputDataMap
-		, std::vector<double>& targetOutputData)= 0;
-	virtual void predict(std::unordered_map<std::string, std::vector<double>&>& inputDataMap
-		, std::vector<double>& predictionData)= 0;
 };
 
 class IMinibatch

@@ -1,7 +1,7 @@
 #pragma once
 #include <string>
 #include "../../3rd-party/tinyxml2/tinyxml2.h"
-#include "CNTKWrapper.h"
+#include "CNTKLibrary.h"
 
 using namespace std;
 enum class ActivationFunction

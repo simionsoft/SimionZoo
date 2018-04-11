@@ -145,7 +145,7 @@ void Link::createCNTKFunctionPtr(vector<const Link*> dependencies)
 Link * Link::getNextLink() const
 {
 	//determine position and get the next element
-	vector<Link*> chainLinks = m_pParentChain->getChainLinks();
+	vector<Link*> chainLinks = m_pParentChain->getLinks();
 	size_t position = std::distance(chainLinks.begin(), std::find(chainLinks.begin(), chainLinks.end(), this));
 	if (position >= chainLinks.size() - 1)
 		return nullptr;
@@ -155,7 +155,7 @@ Link * Link::getNextLink() const
 Link * Link::getPreviousLink() const
 {
 	//determine position and get the previous element
-	vector<Link*> chainLinks = m_pParentChain->getChainLinks();
+	vector<Link*> chainLinks = m_pParentChain->getLinks();
 	ptrdiff_t position = std::distance(chainLinks.begin(), std::find(chainLinks.begin(), chainLinks.end(), this));
 	if (position <= 0)
 		return nullptr;

@@ -19,8 +19,7 @@ public:
 	Chain();
 	~Chain();
 
-	const std::vector<Link*> getChainLinks() const { return m_chainLinks; }
-	void setChainLinks(vector<Link*> pChainLinks) { m_chainLinks = pChainLinks; }
+	const std::vector<Link*>& getLinks() const { return m_chainLinks; }
 	const string& getName() const { return m_name; }
 
 	const Link* getLinkById(const char* id) const;

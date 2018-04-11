@@ -22,7 +22,7 @@ public:
 	const vector<Chain*>& getChains() { return m_chains; }
 
 	void setParentProblem(NetworkDefinition* pParentProblem) { m_pNetworkDefinition = pParentProblem; }
-	NetworkDefinition* getParentProblem() { return m_pNetworkDefinition; }
+	NetworkDefinition* getNetworkDefinition() { return m_pNetworkDefinition; }
 
 	static NetworkArchitecture* getInstance(tinyxml2::XMLElement* pNode);
 

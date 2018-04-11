@@ -35,7 +35,7 @@ public:
 	void destroy();
 
 	void setOutputLayer(CNTK::FunctionPtr outputLayer);
-	void buildQNetwork(double learningRate);
+	void buildNetwork(double learningRate);
 
 	void save(string fileName);
 

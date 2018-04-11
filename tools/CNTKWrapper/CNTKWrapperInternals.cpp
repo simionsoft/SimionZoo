@@ -20,8 +20,8 @@ CNTK::FunctionPtr CNTKWrapper::InputLayer(Link * pLink, vector<const Link*> depe
 	wstring inputID = CNTKWrapper::Internal::string2wstring(
 		pLink->getParameterByName<InputDataParameter>("Input Data")->getValue());
 
-	INetworkDefinition* pNetworkDefinition =
-		pLink->getParentChain()->getParentNetworkArchitecture()->getParentProblem();
+	NetworkDefinition* pNetworkDefinition = 
+		(pLink->getParentChain()->getParentNetworkArchitecture()->getNetworkDefinition());
 	size_t numInputs = pNetworkDefinition->getNumInputStateVars();
 	pNetworkDefinition->setInputLayerName(inputID);
 	return CNTK::InputVariable({ numInputs }, CNTK::DataType::Double, inputID);

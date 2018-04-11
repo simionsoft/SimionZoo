@@ -137,7 +137,7 @@ INetwork * NetworkDefinition::createNetwork(double learningRate)
 			if (progressMap.find(pChain) == progressMap.end())
 			{
 				//start at the beginning
-				pCurrentLink = pChain->getChainLinks().at(0);
+				pCurrentLink = pChain->getLinks().at(0);
 			}
 			else
 			{
@@ -173,7 +173,7 @@ INetwork * NetworkDefinition::createNetwork(double learningRate)
 				pCurrentLink->createCNTKFunctionPtr(dependencies);
 
 				//check if output has been reached already
-				if (!strcmp(m_pOutput->getTargetId().c_str(), pCurrentLink->getId().c_str()))
+				if (m_pOutput->getTargetId() == pCurrentLink->getId())
 				{
 					pOutputFunction = pCurrentLink->getFunctionPtr()->Output();
 					result->setOutputLayer(pOutputFunction);
@@ -200,7 +200,7 @@ INetwork * NetworkDefinition::createNetwork(double learningRate)
 		}
 	}
 
-	result->buildQNetwork(learningRate);
+	result->buildNetwork(learningRate);
 	return result;
 }
 

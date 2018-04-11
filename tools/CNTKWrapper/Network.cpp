@@ -42,7 +42,7 @@ void outputParameters(wstring header, FunctionPtr f)
 	wcout << "\n";
 }
 
-void Network::buildQNetwork(double learningRate)
+void Network::buildNetwork(double learningRate)
 {
 	findInputsAndOutputs();
 
@@ -109,7 +109,7 @@ void Network::findInputsAndOutputs()
 void Network::save(string fileName)
 {
 	if (m_networkFunctionPtr == nullptr)
-		throw std::runtime_error("Network has not been built yet. Call buildQNetwork() before calling save().");
+		throw std::runtime_error("Network has not been built yet. Call buildNetwork() before calling save().");
 	m_networkFunctionPtr->Save(CNTKWrapper::Internal::string2wstring(fileName));
 }
 
