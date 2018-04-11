@@ -108,7 +108,22 @@ bool ExperimentLog::load(string descriptorFile, string& outSceneFile)
 					|| !strcmp(pChild->Name(), "Action-variable")
 					|| !strcmp(pChild->Name(), "Reward-variable")
 					|| !strcmp(pChild->Name(), "Stat-variable"))
-					m_variableNames.push_back(string(pChild->GetText()));
+				{
+					double maximum = std::numeric_limits<double>::max();
+					double minimum = std::numeric_limits<double>::min();
+					const char* name = pChild->GetText();
+					const char* units = "N/A";
+					bool circular = false;
+					if (pChild->Attribute("Units"))
+						units = (const char*) pChild->Attribute("Units");
+					if (pChild->Attribute("Max"))
+						maximum = atof(pChild->Attribute("Max"));
+					if (pChild->Attribute("Min"))
+						minimum = atof(pChild->Attribute("Min"));
+					if (pChild->Attribute("Circular") && !strcmp(pChild->Attribute("Circular"), "true"))
+						circular = true;
+					m_descriptor.addVariable(name, units, minimum, maximum, circular);
+				}
 
 				pChild = pChild->NextSiblingElement();
 			}
@@ -144,8 +159,8 @@ ExperimentLog::~ExperimentLog()
 
 int ExperimentLog::getVariableIndex(string variableName) const
 {
-	for (int i = 0; i < m_variableNames.size(); ++i)
-		if (m_variableNames[i] == variableName)
+	for (int i = 0; i < m_descriptor.size(); ++i)
+		if (string(m_descriptor[i].getName()) == variableName)
 			return i;
 	return -1;
 }

@@ -60,11 +60,12 @@ Meter2D::Meter2D(tinyxml2::XMLElement* pNode): GraphicObject2D(pNode)
 }
 
 Meter2D::Meter2D(string name, Vector2D origin, Vector2D size, double depth) 
-	: GraphicObject2D(name,origin + Vector2D(0.1,0.1),size,depth)
+	: GraphicObject2D(name,origin,size,depth)
 {
 	m_pMaterial = new ColorMaterial();
 
-	m_pText = new Text2D(name + "/text", origin, depth + 1); //over the progress bar
+	//text on the progress bar, shifted a bit to the top-right toward the viewer
+	m_pText = new Text2D(name + "/text", Vector2D( 0.05, 0.15), 0.1);
 }
 
 Meter2D::~Meter2D()
@@ -98,7 +99,9 @@ void Meter2D::draw()
 		glVertex2d(0.0, 1.0);
 	glEnd();
 
+	m_pText->setTransform();
 	m_pText->draw();
+	m_pText->restoreTransform();
 }
 
 void Meter2D::setValue(double value)

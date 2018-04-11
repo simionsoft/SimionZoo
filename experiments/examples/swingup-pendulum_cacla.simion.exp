@@ -20,7 +20,7 @@
 		<Num-Episodes>500</Num-Episodes>
 		<Eval-Freq>10</Eval-Freq>
 		<Progress-Update-Freq>1.0</Progress-Update-Freq>
-		<Episode-Length>5000</Episode-Length>
+		<Episode-Length>60</Episode-Length>
 	</Experiment>
 	<SimGod>
 		<Target-Function-Update-Freq>100</Target-Function-Update-Freq>

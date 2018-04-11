@@ -35,7 +35,7 @@
     </Directional-Light>
   </Light>
   <Objects>
-    <Box Name="Sphere">
+    <Box Name="Sphere" Coordinates="Around-Origin">
       <Material>
         <Simple-TL-Material>
           <Diffuse>
@@ -107,7 +107,7 @@
       </Material>
       <Transform>
         <Scale><X>0.1</X><Y>1.0</Y><Z>0.1</Z></Scale>
-        <Rotation><Roll Bind="angle" Offset="3.14"/></Rotation>
+        <Rotation><Roll Bind="angle" Offset="0"/></Rotation>
       </Transform>
     </Box>
   </Objects>

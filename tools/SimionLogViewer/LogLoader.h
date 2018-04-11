@@ -1,5 +1,5 @@
 #pragma once
-
+#include "../../RLSimion/named-var-set.h"
 #include <vector>
 #include <string>
 using namespace std;
@@ -99,8 +99,8 @@ class ExperimentLog
 {
 	ExperimentHeader m_header;
 	Episode *m_pEpisodes = 0;
-	vector<string> m_variableNames;
 
+	Descriptor m_descriptor;
 public:
 	//xml tags
 	const char* xmlTagBinaryDataFile = "BinaryDataFile";
@@ -115,4 +115,6 @@ public:
 	int getVariableIndex(string variableName) const;
 
 	bool load(string descriptorFile, string& outSceneFile);
+
+	Descriptor& getDescriptor() { return m_descriptor; }
 };

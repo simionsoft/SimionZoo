@@ -127,15 +127,15 @@ void RLSimionApp::initRenderer(string sceneFile)
 	//stats
 	Meter2D* pStatText;
 	IStats* pStat;
-	Vector2D origin = Vector2D(0.05, 0.8);
-	Vector2D size = Vector2D(0.35, 0.05);
+	Vector2D origin = Vector2D(0.05, 0.85);
+	Vector2D size = Vector2D(0.3, 0.03);
 	for (unsigned int i = 0; i < pLogger->getNumStats(); ++i)
 	{
 		pStat = pLogger->getStats(i);
 		pStatText = new Meter2D(string(pStat->getSubkey()), origin, size);
 		m_pStatsText.push_back(pStatText);
 		m_pRenderer->add2DGraphicObject(pStatText);
-		origin -= Vector2D(0.0, 0.06);
+		origin -= Vector2D(0.0, 0.04);
 	}
 
 	m_pInputHandler = new FreeCameraInputHandler();

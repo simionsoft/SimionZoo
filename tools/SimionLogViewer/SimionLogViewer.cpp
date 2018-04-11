@@ -139,6 +139,7 @@ double SimionLogViewer::getPlaybackRate()
 	case PlaybackMode::x2: return 2.0;
 	case PlaybackMode::x4: return 4.0;
 	}
+	return 1.0;
 }
 
 void SimionLogViewer::slower()
@@ -190,10 +191,23 @@ void SimionLogViewer::interpolateStepData(double t, Episode* pInEpisode, Step* p
 
 	u = std::max(0.0, std::min(1.0, u));
 
+	Descriptor& descriptor = m_pExperimentLog->getDescriptor();
+
 	for (int i = 0; i < pInEpisode->getStep(0)->getNumValues(); ++i)
 	{
 		v0 = pInEpisode->getStep(step)->getValue(i);
 		v1 = pInEpisode->getStep(step + 1)->getValue(i);
+		//if the variable is circular and the two values lay on opposite sides of the range, make them closer
+		if (descriptor[i].bIsCircular() && abs(v0 - v1) > descriptor[i].getRangeWidth()*0.8)
+		{
+			if (v0 < v1)
+				v1 -= descriptor[i].getRangeWidth();
+			else
+				v1 += descriptor[i].getRangeWidth();
+
+			if (abs(v0 - v1) > 0.5)
+				printf("jump");
+		}
 		interpolatedValue = (1 - u)*v0 + (u)*v1;
 		pOutInterpolatedData->setValue(i, interpolatedValue);
 	}
