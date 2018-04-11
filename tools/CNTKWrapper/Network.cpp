@@ -12,27 +12,6 @@
 Network::Network(NetworkDefinition* pNetworkDefinition)
 {
 	m_pNetworkDefinition = pNetworkDefinition;
-
-	////sanity check
-	//wstring layerName = L"ActivationFunction";
-	//FunctionPtr a = InputVariable({ 2 }, DataType::Double, "a");
-	//FunctionPtr b = InputVariable({ 2 }, DataType::Double, "b");
-	//FunctionPtr sum = Plus(a, b, L"plus");
-	//FunctionPtr c = InputVariable({ 2 }, DataType::Double, "c");
-	//FunctionPtr activationFunction = CNTK::ReLU(c, layerName);
-	//wstring name1 = activationFunction->Name();
-
-
-	//FunctionPtr times = Combine({ sum, activationFunction }, L"combine");
-
-	//wstring asString1 = activationFunction->AsString();
-	//wstring uid1 = activationFunction->Uid();
-
-	//FunctionPtr clone = times->Clone();
-	//FunctionPtr clonedActivationFunction = clone->FindByName(layerName);
-	//wstring asString2 = clonedActivationFunction->AsString();
-	//wstring name2 = clonedActivationFunction->Name();
-	//wstring uid2 = clonedActivationFunction->Uid();
 }
 
 
@@ -63,7 +42,7 @@ void outputParameters(wstring header, FunctionPtr f)
 	wcout << "\n";
 }
 
-void Network::buildQNetwork()
+void Network::buildQNetwork(double learningRate)
 {
 	findInputsAndOutputs();
 
@@ -74,7 +53,7 @@ void Network::buildQNetwork()
 
 	//trainer
 	const OptimizerSettings* optimizer = m_pNetworkDefinition->getOptimizerSettings();
-	m_trainer = CNTKWrapper::CreateOptimizer(optimizer, m_QFunctionPtr, m_lossFunctionPtr);
+	m_trainer = CNTKWrapper::CreateOptimizer(optimizer, m_QFunctionPtr, m_lossFunctionPtr, learningRate);
 
 	outputArguments(L"QFunctionPtr",m_QFunctionPtr);
 	FunctionPtr foundPtr = m_networkFunctionPtr->FindByName(m_pNetworkDefinition->getOutputLayerName())->Output();

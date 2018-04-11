@@ -17,7 +17,7 @@
 	</World>
 	<Experiment>
 		<Random-Seed>1</Random-Seed>
-		<Num-Episodes>1000</Num-Episodes>
+		<Num-Episodes>10000</Num-Episodes>
 		<Eval-Freq>100</Eval-Freq>
 		<Progress-Update-Freq>0.5</Progress-Update-Freq>
 		<Episode-Length>100</Episode-Length>
@@ -28,7 +28,7 @@
 		<Freeze-Target-Function>true</Freeze-Target-Function>
 		<Use-Importance-Weights>false</Use-Importance-Weights>
 		<Experience-Replay>
-			<Buffer-Size>1000</Buffer-Size>
+			<Buffer-Size>5000</Buffer-Size>
 			<Update-Batch-Size>20</Update-Batch-Size>
 		</Experience-Replay>
 		<Simion>

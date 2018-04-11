@@ -21,6 +21,7 @@ protected:
 	MULTI_VALUE_VARIABLE<STATE_VARIABLE> m_inputState;
 	INT_PARAM m_numActionSteps;
 	ACTION_VARIABLE m_outputAction;
+	DOUBLE_PARAM m_learningRate;
 
 	vector<double> m_Q_s_p;
 	vector<double> m_Q_s;

@@ -10,25 +10,9 @@
 #endif
 
 #include <vector>
-#include <unordered_map>
-#include <memory>
 
 using namespace std;
 namespace tinyxml2 { class XMLElement; }
-namespace CNTK
-{ 
-	class Function;
-	typedef std::shared_ptr<Function> FunctionPtr;
-
-	class Trainer;
-	typedef std::shared_ptr<Trainer> TrainerPtr;
-
-	class Value;
-	typedef std::shared_ptr<Value> ValuePtr;
-
-	class Variable;
-	class NDShape;
-}
 
 #include "../../RLSimion/named-var-set.h"
 class NetworkArchitecture;
@@ -64,7 +48,8 @@ public:
 
 	virtual IMinibatch* createMinibatch(size_t size) = 0;
 
-	virtual INetwork* createNetwork() = 0;
+	//for convenience we override the learning rate set in the network definition's parameters
+	virtual INetwork* createNetwork(double learningRate) = 0;
 };
 
 class INetwork
@@ -73,7 +58,7 @@ public:
 
 	virtual void destroy()= 0;
 
-	virtual void buildQNetwork()= 0;
+	virtual void buildQNetwork(double learningRate)= 0;
 
 	virtual void save(string fileName)= 0;
 

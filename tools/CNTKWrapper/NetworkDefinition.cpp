@@ -94,7 +94,7 @@ NetworkDefinition * NetworkDefinition::loadFromString(std::string content)
 	return nullptr;
 }
 
-INetwork * NetworkDefinition::createNetwork()
+INetwork * NetworkDefinition::createNetwork(double learningRate)
 {
 	Network* result = new Network(this);
 
@@ -200,7 +200,7 @@ INetwork * NetworkDefinition::createNetwork()
 		}
 	}
 
-	result->buildQNetwork();
+	result->buildQNetwork(learningRate);
 	return result;
 }
 

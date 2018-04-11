@@ -27,7 +27,7 @@ namespace CNTKWrapper
 
 	CNTK::FunctionPtr BatchNormalizationLayer(const Link * pLink, vector<const Link*> dependencies, CNTK::DeviceDescriptor & device);
 	CNTK::FunctionPtr LinearTransformationLayer(const Link * pLink, vector<const Link*> dependencies, CNTK::DeviceDescriptor & device);
-	CNTK::TrainerPtr CreateOptimizer(const OptimizerSettings * pOptimizerSetting, CNTK::FunctionPtr& output, CNTK::FunctionPtr& lossFunction);
+	CNTK::TrainerPtr CreateOptimizer(const OptimizerSettings * pOptimizerSetting, CNTK::FunctionPtr& output, CNTK::FunctionPtr& lossFunction, double learningRate);
 
 	namespace Internal
 	{

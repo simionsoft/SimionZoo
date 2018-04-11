@@ -35,7 +35,8 @@ public:
 	void destroy();
 
 	void setOutputLayer(CNTK::FunctionPtr outputLayer);
-	void buildQNetwork();
+	void buildQNetwork(double learningRate);
+
 	void save(string fileName);
 
 	INetwork* getFrozenCopy() const;

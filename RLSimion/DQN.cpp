@@ -30,6 +30,7 @@ DQN::DQN(ConfigNode* pConfigNode)
 	m_inputState = MULTI_VALUE_VARIABLE<STATE_VARIABLE>(pConfigNode, "Input-State", "Set of variables used as input of the QNetwork");
 	m_numActionSteps = INT_PARAM(pConfigNode, "Num-Action-Steps", "Number of discrete values used for the output action", 2);
 	m_outputAction = ACTION_VARIABLE(pConfigNode, "Output-Action", "The output action variable");
+	m_learningRate = DOUBLE_PARAM(pConfigNode, "Learning-Rate", "The learning rate at which the agent learns", 0.00001);
 
 	CNTKWrapperLoader::Load();
 	m_policy = CHILD_OBJECT_FACTORY<DiscreteDeepPolicy>(pConfigNode, "Policy", "The policy");
@@ -51,7 +52,7 @@ void DQN::deferredLoadStep()
 		, actionDescr[m_outputAction.get()].getMin(), actionDescr[m_outputAction.get()].getMax());
 
 	//create the networks
-	m_pOnlineQNetwork = m_pNNDefinition->createNetwork();
+	m_pOnlineQNetwork = m_pNNDefinition->createNetwork(m_learningRate.get());
 	m_pTargetQNetwork = m_pOnlineQNetwork->getFrozenCopy();
 
 	//create the minibatch
@@ -98,12 +99,6 @@ double DQN::update(const State * s, const Action * a, const State * s_p, double 
 		//will be different to the online network)
 		if (getQNetworkForTargetActionSelection() != m_pTargetQNetwork)
 			m_pTargetQNetwork->get(s_p, m_Q_s_p);
-
-		size_t argmaxQ2 = distance(m_Q_s_p.begin(), max_element(m_Q_s_p.begin(), m_Q_s_p.end()));
-		if (argmaxQ != argmaxQ2)
-		{
-			printf("Double-DQN is working");
-		}
 
 		//calculate targetvalue= r + gamma*Q(s_p,a)
 		double targetValue = r + gamma * m_Q_s_p[argmaxQ];

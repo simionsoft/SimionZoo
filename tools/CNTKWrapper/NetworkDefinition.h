@@ -55,6 +55,6 @@ public:
 
 	virtual IMinibatch* createMinibatch(size_t size);
 
-	INetwork* createNetwork();
+	INetwork* createNetwork(double learningRate);
 };
 
