@@ -60,12 +60,12 @@ Meter2D::Meter2D(tinyxml2::XMLElement* pNode): GraphicObject2D(pNode)
 }
 
 Meter2D::Meter2D(string name, Vector2D origin, Vector2D size, double depth) 
-	: GraphicObject2D(name,origin,size,depth)
+	: GraphicObject2D(name, origin, size, 0.0, depth) //no rotation allowed
 {
 	m_pMaterial = new ColorMaterial();
 
 	//text on the progress bar, shifted a bit to the top-right toward the viewer
-	m_pText = new Text2D(name + "/text", Vector2D( 0.05, 0.15), 0.1);
+	m_pText = new Text2D(name + "/text", Vector2D( 0.025, 0.25), 0.1);
 }
 
 Meter2D::~Meter2D()

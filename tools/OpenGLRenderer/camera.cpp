@@ -3,7 +3,6 @@
 #include "xml-load.h"
 #include "renderer.h"
 #include "../GeometryLib/vector3d.h"
-#include "../GeometryLib/matrix33.h"
 #include "../GeometryLib/transform3d.h"
 
 Camera::Camera(): SceneActor3D()

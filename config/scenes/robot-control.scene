@@ -1,7 +1,7 @@
 <Scene>
   <Import-Scene Path="robot-control-common.scene"/>
   <Objects>
-    <Collada-Model Name="Venom" Path="r2d2/r2d2.dae">
+    <Collada-Model Name="Robot" Path="r2d2/r2d2.dae">
       <Transform>
         <Translation>
           <X Bind="robot1-x"/>

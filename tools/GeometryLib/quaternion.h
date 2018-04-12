@@ -1,8 +1,5 @@
 #pragma once
 
-class Matrix33;
-
-
 class Quaternion
 {
 protected:
@@ -21,6 +18,7 @@ public:
 	void fromOrientations(double yaw, double pitch, double roll);
 	void fromOrientations();
 
+	void normalize();
 
 	static double xFromOrientations (double yaw, double pitch, double roll);
 	static double yFromOrientations (double yaw, double pitch, double roll);
@@ -47,15 +45,16 @@ public:
 
 	void setIdentity() { m_x = 0.0; m_y = 0.0; m_z = 0.0; m_w = 1.0; }
 
-	void asMatrix33(Matrix33& matrix) const;
 	Quaternion inverse();
 
 	Quaternion operator+(const Quaternion quat);
 	Quaternion operator-(const Quaternion quat);
 	Quaternion operator*(const Quaternion quat);
+	Quaternion operator*(const double x);
 	void operator+=(const Quaternion quat);
 	void operator-=(const Quaternion quat);
 	void operator*=(const Quaternion quat);
+	void operator*=(const double x);
 };
 
 

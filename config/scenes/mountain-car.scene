@@ -1,8 +1,8 @@
 <Scene>
   <Background-Color>
-    <R>0.0</R>
-    <G>0.0</G>
-    <B>0.0</B>
+    <R>1.0</R>
+    <G>1.0</G>
+    <B>1.0</B>
   </Background-Color>
   <Camera>
     <Simple-Camera Name="Main-camera">
@@ -65,14 +65,14 @@
       <Transform>
         <Translation>
           <X Bind="position" Offset="0.65" Multiplier="0.5">0.0</X>
-          <Y Bind="height" Offset= "1.25" Multiplier="0.4">0.0</Y>
+          <Y Bind="height" Offset= "0.5" Multiplier="0.4">0.0</Y>
         </Translation>
         <Scale>
           <X>0.125</X>
           <Y>0.125</Y>
         </Scale>
         <Rotation Bind="angle" Multiplier="-1.0"/>
-        <Depth>0.1</Depth>
+        <Depth>0.05</Depth>
       </Transform>
       <Material>
         <Translucent-Material>

@@ -152,7 +152,6 @@
     <ClCompile Include="bounding-box.cpp" />
     <ClCompile Include="bounding-cylinder.cpp" />
     <ClCompile Include="frustum.cpp" />
-    <ClCompile Include="matrix33.cpp" />
     <ClCompile Include="matrix44.cpp" />
     <ClCompile Include="plane.cpp" />
     <ClCompile Include="quaternion.cpp" />
@@ -165,7 +164,6 @@
     <ClInclude Include="bounding-box.h" />
     <ClInclude Include="bounding-cylinder.h" />
     <ClInclude Include="frustum.h" />
-    <ClInclude Include="matrix33.h" />
     <ClInclude Include="matrix44.h" />
     <ClInclude Include="plane.h" />
     <ClInclude Include="quaternion.h" />

@@ -1,5 +1,4 @@
 #include "quaternion.h"
-#include "matrix33.h"
 #include <math.h>
 
 void Quaternion::fromOrientations()
@@ -143,6 +142,7 @@ void Quaternion::fromOrientations(double yaw, double pitch, double roll)
 	m_y = sinYaw * cosRoll * cosPitch + cosYaw * sinRoll * sinPitch;
 	m_z = cosYaw * sinRoll * cosPitch - sinYaw * cosRoll * sinPitch;
 	m_w = cosYaw * cosRoll * cosPitch - sinYaw * sinRoll * sinPitch;
+	normalize();
 }
 
 Quaternion::Quaternion(double yaw, double pitch, double roll)
@@ -158,25 +158,7 @@ Quaternion Quaternion::inverse()
 	return Quaternion(m_x, m_y, m_z, -m_w);
 }
 
-void Quaternion::asMatrix33(Matrix33& matrix) const
-{
-	double wx, wy, wz, xx, yy, yz, xy, xz, zz, x2, y2, z2;
 
-	x2 = m_x + m_x;  y2 = m_y + m_y;  z2 = m_z + m_z;
-	xx = m_x * x2;       xy = m_x * y2;       xz = m_x * z2;
-	yy = m_y * y2;       yz = m_y * z2;       zz = m_z * z2;
-	wx = m_w * x2;       wy = m_w * y2;       wz = m_w * z2;
-
-	matrix.x().setX( 1.0 - (yy + zz));
-	matrix.x().setY( xy - wz);
-	matrix.x().setZ( xz + wy);
-	matrix.y().setX( xy + wz);
-	matrix.y().setY( 1.0 - (xx + zz));
-	matrix.y().setZ( yz - wx);
-	matrix.z().setX( xz - wy);
-	matrix.z().setY( yz + wx);
-	matrix.z().setZ( 1.0 - (xx + yy));
-}
 
 Quaternion Quaternion::operator+(const Quaternion quat)
 {
@@ -185,6 +167,7 @@ Quaternion Quaternion::operator+(const Quaternion quat)
 
 	Quaternion result = Quaternion(m_x + quat.m_x,
 		m_y + quat.m_y, m_z + quat.m_z, m_w + quat.m_w);
+	result.normalize();
 	return result;
 }
 
@@ -195,6 +178,7 @@ Quaternion Quaternion::operator-(const Quaternion quat)
 
 	Quaternion result = Quaternion(m_x - quat.m_x,
 		m_y - quat.m_y, m_z - quat.m_z, m_w - quat.m_w);
+	result.normalize();
 	return result;
 }
 
@@ -208,6 +192,7 @@ Quaternion Quaternion::operator*(const Quaternion quat)
 	result.m_y = m_w * quat.m_y + m_y * quat.m_w + m_z * quat.m_x - m_x * quat.m_z;
 	result.m_z = m_w * quat.m_z + m_z * quat.m_w + m_x * quat.m_y - m_y * quat.m_x;
 	result.m_w = m_w * quat.m_w - m_x * quat.m_x - m_y * quat.m_y - m_z * quat.m_z;
+	result.normalize();
 	return result;
 }
 void Quaternion::operator+=(const Quaternion quat)
@@ -219,6 +204,7 @@ void Quaternion::operator+=(const Quaternion quat)
 	m_y += quat.m_y;
 	m_z += quat.m_z;
 	m_w += quat.m_w;
+	normalize();
 }
 void Quaternion::operator-=(const Quaternion quat)
 {
@@ -229,6 +215,7 @@ void Quaternion::operator-=(const Quaternion quat)
 	m_y -= quat.m_y;
 	m_z -= quat.m_z;
 	m_w -= quat.m_w;
+	normalize();
 }
 
 void Quaternion::operator*= (const Quaternion quat)
@@ -238,5 +225,38 @@ void Quaternion::operator*= (const Quaternion quat)
 
 	Quaternion result;
 	result = (*this)*quat;
+	result.normalize();
 	(*this) = result;
+}
+
+Quaternion Quaternion::operator*(const double x)
+{
+	Quaternion result;
+	result.m_x *= x;
+	result.m_y *= x;
+	result.m_z *= x;
+	result.m_w *= x;
+	return result;
+}
+
+void Quaternion::operator*=(const double x)
+{
+	m_x *= x;
+	m_y *= x;
+	m_z *= x;
+	m_w *= x;
+}
+
+void Quaternion::normalize()
+{
+	double	dist, square;
+
+	square = m_x * m_x + m_y * m_y
+		+ m_z * m_z + m_w * m_w;
+
+	if (square > 0.0)
+	{
+		dist = 1.0 / sqrt(square);
+		*this*=dist;
+	}
 }

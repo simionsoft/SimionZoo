@@ -31,9 +31,6 @@
     <ClCompile Include="frustum.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="matrix33.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="matrix44.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -64,9 +61,6 @@
       <Filter>Source Files</Filter>
     </ClInclude>
     <ClInclude Include="frustum.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="matrix33.h">
       <Filter>Source Files</Filter>
     </ClInclude>
     <ClInclude Include="matrix44.h">

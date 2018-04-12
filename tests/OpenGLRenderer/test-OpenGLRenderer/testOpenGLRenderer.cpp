@@ -26,7 +26,7 @@ int main(int argc, char** argv)
 	pRenderer = new Renderer();
 	pRenderer->init(argc, argv, 600, 400);
 	pRenderer->setDataFolder("../../../config/scenes/");
-	pRenderer->loadScene("mountain-car.scene");
+	pRenderer->loadScene("robot-control.scene");
 	pInputHandler = new FreeCameraInputHandler();
 
 	Timer timer;
@@ -37,11 +37,11 @@ int main(int argc, char** argv)
 	GraphicObject3D* pDynamicObject = pRenderer->get3DObjectByName("Robot");
 
 	Meter2D* pMeter1 = new Meter2D("Num.Objects drawn", Vector2D(0.1, 0.2), Vector2D(0.4, 0.04));
-	//pRenderer->add2DGraphicObject(pMeter1);
+	pRenderer->add2DGraphicObject(pMeter1);
 	pMeter1->setValueRange(Range(0.0, 10.0));
 
 	Meter2D* pMeter2 = new Meter2D("test2", Vector2D(0.1, 0.25), Vector2D(0.4, 0.04));
-	//pRenderer->add2DGraphicObject(pMeter2);
+	pRenderer->add2DGraphicObject(pMeter2);
 	pMeter2->setValueRange(Range(-5.0, 5.0));
 
 	Material* pSpriteMaterial = new UnlitTextureMaterial("mountain-car/background.png");
@@ -60,7 +60,11 @@ int main(int argc, char** argv)
 		string fpsText = string("FPS: ") + std::to_string(pRenderer->getFPS());
 		pFPSText->set(string(fpsText));
 
-		//if (pDynamicObject) pDynamicObject->addRotation(Quaternion(0.1*dt, 0.0, 0.0));
+		if (pDynamicObject)
+		{
+			pDynamicObject->addRotation(Quaternion(0.0, 0.3*dt, 0.0));
+			pDynamicObject->addWorldOffset(Vector3D(0.5*dt, 0.0, 0.0));
+		}
 		t += dt;
 		if (pMeter1) pMeter1->setValue(pRenderer->getNum3DObjectsDrawn());
 		if (pMeter2) pMeter2->setValue(fmod(t, 5.0));

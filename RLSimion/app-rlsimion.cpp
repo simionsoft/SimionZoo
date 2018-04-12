@@ -121,7 +121,7 @@ void RLSimionApp::initRenderer(string sceneFile)
 	m_pRenderer->loadScene(sceneFile.c_str());
 
 	//text
-	m_pProgressText = new Text2D(string("Progress"), Vector2D(0.05, 0.95), 0);
+	m_pProgressText = new Text2D(string("Progress"), Vector2D(0.05, 0.95), 0.25);
 	m_pRenderer->add2DGraphicObject(m_pProgressText);
 
 	//stats
@@ -132,7 +132,7 @@ void RLSimionApp::initRenderer(string sceneFile)
 	for (unsigned int i = 0; i < pLogger->getNumStats(); ++i)
 	{
 		pStat = pLogger->getStats(i);
-		pStatText = new Meter2D(string(pStat->getSubkey()), origin, size);
+		pStatText = new Meter2D(string(pStat->getSubkey()), origin, size, 0.25);
 		m_pStatsText.push_back(pStatText);
 		m_pRenderer->add2DGraphicObject(pStatText);
 		origin -= Vector2D(0.0, 0.04);
