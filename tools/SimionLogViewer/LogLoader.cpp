@@ -2,8 +2,6 @@
 #include "LogLoader.h"
 #include "../WindowsUtils/FileUtils.h"
 
-//vector<string> ExperimentLog::m_variableNames;
-
 Step::Step(int numVariables)
 {
 	m_numValues = numVariables;
