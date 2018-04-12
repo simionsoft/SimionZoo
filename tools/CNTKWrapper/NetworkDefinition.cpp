@@ -177,7 +177,7 @@ INetwork * NetworkDefinition::createNetwork(double learningRate)
 				{
 					pOutputFunction = pCurrentLink->getFunctionPtr()->Output();
 					result->setOutputLayer(pOutputFunction);
-					setOutputLayerName(pOutputFunction->Name());
+					setOutputLayer(pOutputFunction->Name());
 					break;
 				}
 
@@ -210,17 +210,28 @@ void NetworkDefinition::addInputStateVar(size_t stateVarId)
 	m_inputStateVars.push_back(stateVarId);
 }
 
-size_t NetworkDefinition::getNumInputStateVars()
+const vector<size_t>& NetworkDefinition::getInputStateVarIds()
 {
-	return m_inputStateVars.size();
+	return m_inputStateVars;
 }
 
-size_t NetworkDefinition::getInputStateVar(size_t i)
+void NetworkDefinition::addInputActionVar(size_t stateVarId)
 {
-	return m_inputStateVars[i];
+	m_inputActionVars.push_back(stateVarId);
 }
 
-void NetworkDefinition::setOutputAction(size_t actionVarId, size_t numOutputs, double minvalue, double maxvalue)
+const vector<size_t>& NetworkDefinition::getInputActionVarIds()
+{
+	return m_inputActionVars;
+}
+
+size_t NetworkDefinition::getInputSize()
+{
+	return m_inputStateVars.size() + m_inputActionVars.size();
+}
+
+
+void NetworkDefinition::setOutputActionVector(size_t actionVarId, size_t numOutputs, double minvalue, double maxvalue)
 {
 	double stepSize;
 	m_outputActionValues = vector<double>(numOutputs);
@@ -265,7 +276,7 @@ size_t NetworkDefinition::getOutputActionVar()
 	return m_outputActionVar;
 }
 
-size_t NetworkDefinition::getNumOutputs()
+size_t NetworkDefinition::getOutputSize()
 {
 	return m_outputActionValues.size();
 }
@@ -275,26 +286,32 @@ IMinibatch* NetworkDefinition::createMinibatch(size_t size)
 	return new Minibatch(size, this);
 }
 
-void NetworkDefinition::setInputLayerName(wstring name)
+void NetworkDefinition::setStateInputLayer(wstring name)
 {
-	m_inputLayerNames.push_back(name);
+	m_stateInputLayer= name;
 }
 
-bool NetworkDefinition::isInputLayer(wstring name)
+void NetworkDefinition::setActionInputLayer(wstring name)
 {
-	for each (wstring inputLayerName in m_inputLayerNames)
-	{
-		if (inputLayerName == name)
-			return true;
-	}
-	return false;
+	m_actionInputLayer = name;
 }
 
-void NetworkDefinition::setOutputLayerName(wstring name)
+wstring NetworkDefinition::getStateInputLayer()
+{
+	return m_stateInputLayer;
+}
+
+wstring NetworkDefinition::getActionInputLayer()
+{
+	return m_actionInputLayer;
+}
+
+
+void NetworkDefinition::setOutputLayer(wstring name)
 {
 	m_outputLayerName = name;
 }
-wstring NetworkDefinition::getOutputLayerName()
+wstring NetworkDefinition::getOutputLayer()
 {
 	return m_outputLayerName;
 }

@@ -17,7 +17,10 @@ class Network:public INetwork
 
 	void findInputsAndOutputs();
 protected:
-	vector<CNTK::Variable> m_inputs;
+	bool m_bInputStateUsed = false;
+	CNTK::Variable m_inputState;
+	bool m_bInputActionUsed = false;
+	CNTK::Variable m_inputAction;
 
 	CNTK::FunctionPtr m_networkFunctionPtr;
 
@@ -42,11 +45,12 @@ public:
 	INetwork* getFrozenCopy() const;
 
 	void train(IMinibatch* pMinibatch);
-	void get(const State* s, vector<double>& outputValues);
-
+	void get(const State* s, const Action* a, vector<double>& outputValues);
+	/*
 	void train(std::unordered_map<std::string, std::vector<double>&>& inputDataMap, std::vector<double>& targetOutputData);
 	void predict(std::unordered_map<std::string, std::vector<double>&>& inputDataMap, std::vector<double>& predictionData);
 	
 	void gradients(std::unordered_map<std::string, std::vector<double>&>& inputDataMap, std::unordered_map<CNTK::Variable, CNTK::ValuePtr>& gradients);
 	void gradients(std::unordered_map<std::string, std::vector<double>&>& inputDataMap, std::vector<double>& targetOutputData, std::unordered_map<CNTK::Variable, CNTK::ValuePtr>& gradients);
+	*/
 };

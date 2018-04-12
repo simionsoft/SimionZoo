@@ -29,8 +29,8 @@ enum class LinkType
 class Link
 {
 protected:
-	string m_name;
-	string m_id;
+	wstring m_name;
+	wstring m_id;
 	vector<IParameter*> m_parameters;
 	LinkType m_linkType;
 	CNTK::FunctionPtr m_functionPtr = nullptr;
@@ -45,8 +45,8 @@ public:
 	LinkType getLinkType() const { return m_linkType; }
 	const vector<IParameter*> getParameters() const { return m_parameters; }
 
-	const string& getId() const { return m_id; }
-	const string& getName() const { return m_name; }
+	const wstring& getId() const { return m_id; }
+	const wstring& getName() const { return m_name; }
 
 	const CNTK::FunctionPtr& getFunctionPtr() const { return m_functionPtr; }
 	void setFunctionPtr(const CNTK::FunctionPtr& value) { m_functionPtr = value; }

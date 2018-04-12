@@ -37,16 +37,16 @@ namespace CNTKWrapper
 
 		FunctionPtr applyActivationFunction(FunctionPtr pInput, ActivationFunction activationFunction);
 
-		FunctionPtr FullyConnectedLinearLayer(Variable input, size_t outputDim, const DeviceDescriptor& device, const std::wstring& outputName = L"");
+		FunctionPtr FullyConnectedLinearLayer(Variable input, size_t outputDim, const DeviceDescriptor& device, const wstring& outputName = L"");
 
-		FunctionPtr Convolution1D(Variable input, size_t kernelCount, size_t kernel, size_t stride, ActivationFunction activationFunction, double wScale, const DeviceDescriptor& device, const string& outputName = "");
+		FunctionPtr Convolution1D(Variable input, size_t kernelCount, size_t kernel, size_t stride, ActivationFunction activationFunction, double wScale, const DeviceDescriptor& device, const wstring& outputName = L"");
 
-		FunctionPtr Convolution2D(Variable input, size_t kernelCount, size_t kernelWidth, size_t kernelHeight, size_t strideWidth, size_t strideHeight, ActivationFunction activationFunction, double wScale, const DeviceDescriptor& device, const string& outputName = "");
+		FunctionPtr Convolution2D(Variable input, size_t kernelCount, size_t kernelWidth, size_t kernelHeight, size_t strideWidth, size_t strideHeight, ActivationFunction activationFunction, double wScale, const DeviceDescriptor& device, const wstring& outputName = L"");
 
-		FunctionPtr Convolution3D(Variable input, size_t kernelCount, size_t kernelWidth, size_t kernelHeight, size_t kernelDepth, size_t strideWidth, size_t strideHeight, size_t strideDepth, ActivationFunction activationFunction, double wScale, const DeviceDescriptor& device, const string& outputName = "");
+		FunctionPtr Convolution3D(Variable input, size_t kernelCount, size_t kernelWidth, size_t kernelHeight, size_t kernelDepth, size_t strideWidth, size_t strideHeight, size_t strideDepth, ActivationFunction activationFunction, double wScale, const DeviceDescriptor& device, const wstring& outputName = L"");
 
-		FunctionPtr FullyConnectedDNNLayer(Variable input, size_t outputDim, const DeviceDescriptor& device, const std::function<FunctionPtr(const FunctionPtr&)>& nonLinearity, const std::wstring& outputName = L"");
+		FunctionPtr FullyConnectedDNNLayer(Variable input, size_t outputDim, const DeviceDescriptor& device, const std::function<FunctionPtr(const FunctionPtr&)>& nonLinearity, const wstring& outputName = L"");
 
-		FunctionPtr FullyConnectedDNNLayer(Variable input, size_t outputDim, const DeviceDescriptor& device, ActivationFunction activationFunction, const std::wstring& outputName = L"");
+		FunctionPtr FullyConnectedDNNLayer(Variable input, size_t outputDim, const DeviceDescriptor& device, ActivationFunction activationFunction, const wstring& outputName = L"");
 	}
 }

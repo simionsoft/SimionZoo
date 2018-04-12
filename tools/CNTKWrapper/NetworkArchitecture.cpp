@@ -44,7 +44,7 @@ NetworkArchitecture* NetworkArchitecture::getInstance(tinyxml2::XMLElement* pNod
 	return nullptr;
 }
 
-const Link* NetworkArchitecture::getLinkById(const char* id) const
+const Link* NetworkArchitecture::getLinkById(const wstring& id) const
 {
 	const Link* result = NULL;
 	for each (auto cItem in m_chains)

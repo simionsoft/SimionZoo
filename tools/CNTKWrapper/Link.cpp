@@ -54,12 +54,12 @@ Link::Link(tinyxml2::XMLElement* pParentNode)
 		throw ProblemParserElementValueNotValid(XML_ATTRIBUTE_Type);
 
 	//read name
-	m_name = pParentNode->Attribute(XML_ATTRIBUTE_Name);
+	m_name = CNTKWrapper::Internal::string2wstring(pParentNode->Attribute(XML_ATTRIBUTE_Name));
 	if (m_name.empty())
-		m_name = "Link";
+		m_name = L"Link";
 
 	//read id
-	m_id = pParentNode->Attribute(XML_ATTRIBUTE_Id);
+	m_id = CNTKWrapper::Internal::string2wstring(pParentNode->Attribute(XML_ATTRIBUTE_Id));
 	if (m_id.empty())
 		throw ProblemParserElementValueNotValid(XML_ATTRIBUTE_Id);
 
@@ -79,7 +79,7 @@ std::vector<const Link*> Link::getDependencies() const
 	{
 		auto dependenciesList = getParameterByName<LinkConnectionListParameter>("Links");
 		for each (LinkConnection* var in dependenciesList->getValue())
-			result.push_back(m_pParentChain->getParentNetworkArchitecture()->getLinkById(var->getTargetId().c_str()));
+			result.push_back(m_pParentChain->getParentNetworkArchitecture()->getLinkById(var->getTargetId()));
 	}
 	else
 	{

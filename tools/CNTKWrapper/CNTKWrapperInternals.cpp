@@ -20,10 +20,21 @@ CNTK::FunctionPtr CNTKWrapper::InputLayer(Link * pLink, vector<const Link*> depe
 	wstring inputID = CNTKWrapper::Internal::string2wstring(
 		pLink->getParameterByName<InputDataParameter>("Input Data")->getValue());
 
-	NetworkDefinition* pNetworkDefinition = 
+	NetworkDefinition* pNetworkDefinition =
 		(pLink->getParentChain()->getParentNetworkArchitecture()->getNetworkDefinition());
-	size_t numInputs = pNetworkDefinition->getNumInputStateVars();
-	pNetworkDefinition->setInputLayerName(inputID);
+	size_t numInputs;
+	if (inputID == L"state-input")
+	{
+		numInputs = pNetworkDefinition->getInputStateVarIds().size();
+		pNetworkDefinition->setStateInputLayer(inputID);
+	}
+	else
+	{
+		numInputs = pNetworkDefinition->getInputActionVarIds().size();
+		pNetworkDefinition->setActionInputLayer(inputID);
+	}
+
+	
 	return CNTK::InputVariable({ numInputs }, CNTK::DataType::Double, inputID);
 }
 
@@ -38,7 +49,7 @@ CNTK::FunctionPtr CNTKWrapper::Convolution1DLayer(const Link * pLink, vector<con
 
 	FunctionPtr input = dependencies.at(0)->getFunctionPtr();
 
-	string name = pLink->getName();
+	wstring name = pLink->getName();
 
 	size_t filters = pLink->getParameterByName<IntParameter>("Filters")->getValue();
 	CIntTuple1D kernelShape = pLink->getParameterByName<IntTuple1DParameter>("Kernel Size")->getValue();
@@ -57,7 +68,7 @@ CNTK::FunctionPtr CNTKWrapper::Convolution2DLayer(const Link * pLink, vector<con
 
 	FunctionPtr input = dependencies.at(0)->getFunctionPtr();
 
-	string name = pLink->getName();
+	wstring name = pLink->getName();
 
 	size_t filters = pLink->getParameterByName<IntParameter>("Filters")->getValue();
 	CIntTuple2D kernelShape = pLink->getParameterByName<IntTuple2DParameter>("Kernel Size")->getValue();
@@ -78,7 +89,7 @@ CNTK::FunctionPtr CNTKWrapper::Convolution3DLayer(const Link * pLink, vector<con
 
 	FunctionPtr input = dependencies.at(0)->getFunctionPtr();
 
-	string name = pLink->getName();
+	wstring name = pLink->getName();
 
 	size_t filters = pLink->getParameterByName<IntParameter>("Filters")->getValue();
 	CIntTuple3D kernelShape = pLink->getParameterByName<IntTuple3DParameter>("Kernel Size")->getValue();
@@ -100,7 +111,7 @@ CNTK::FunctionPtr CNTKWrapper::DenseLayer(const Link * pLink, vector<const Link*
 {
 
 	int output_nodes = pLink->getParameterByName<IntParameter>("Units")->getValue();
-	wstring name = CNTKWrapper::Internal::string2wstring(pLink->getName());
+	wstring name = pLink->getName();
 	auto activationFunction = pLink->getParameterByName<ActivationFunctionParameter>("Activation")->getValue();
 
 	CNTK::FunctionPtr layer= CNTKWrapper::Internal::FullyConnectedDNNLayer(
@@ -118,7 +129,7 @@ CNTK::FunctionPtr CNTKWrapper::DropoutLayer(const Link * pLink, vector<const Lin
 CNTK::FunctionPtr CNTKWrapper::FlattenLayer(const Link * pLink, vector<const Link*> dependencies, CNTK::DeviceDescriptor & device)
 {
 
-	wstring name = Internal::string2wstring(pLink->getName());
+	wstring name = pLink->getName();
 	NDShape inputShape = dependencies.at(0)->getFunctionPtr()->Output().Shape();
 
 	return Reshape(dependencies.at(0)->getFunctionPtr(), { inputShape.TotalSize() }, name);
@@ -127,7 +138,7 @@ CNTK::FunctionPtr CNTKWrapper::FlattenLayer(const Link * pLink, vector<const Lin
 CNTK::FunctionPtr CNTKWrapper::ReshapeLayer(const Link * pLink, vector<const Link*> dependencies, CNTK::DeviceDescriptor & device)
 {
 
-	wstring name = Internal::string2wstring(pLink->getName());
+	wstring name = pLink->getName();
 	CIntTuple4D shapeTuple = pLink->getParameterByName<IntTuple4DParameter>("4D Shape")->getValue();
 	NDShape shape = {};
 	if (shapeTuple.getX1() != 0)
@@ -163,7 +174,7 @@ CNTK::FunctionPtr CNTKWrapper::MergeLayer(const Link * pLink, vector<const Link*
 CNTK::FunctionPtr CNTKWrapper::BatchNormalizationLayer(const Link * pLink, vector<const Link*> dependencies, CNTK::DeviceDescriptor & device)
 {
 
-	wstring name = CNTKWrapper::Internal::string2wstring(pLink->getName());
+	wstring name = pLink->getName();
 
 	auto biasParams = Parameter({ NDShape::InferredDimension }, (float)0.0, device);
 
@@ -183,7 +194,7 @@ CNTK::FunctionPtr CNTKWrapper::BatchNormalizationLayer(const Link * pLink, vecto
 
 CNTK::FunctionPtr CNTKWrapper::LinearTransformationLayer(const Link * pLink, vector<const Link*> dependencies, CNTK::DeviceDescriptor & device)
 {
-	wstring name = Internal::string2wstring(pLink->getName());
+	wstring name = pLink->getName();
 	double offset = pLink->getParameterByName<DoubleParameter>("Offset")->getValue();
 	double scale = pLink->getParameterByName<DoubleParameter>("Scale")->getValue();
 
@@ -311,7 +322,7 @@ string CNTKWrapper::Internal::wstring2string(const std::wstring& value)
 	return wide;
 }
 
-CNTK::FunctionPtr CNTKWrapper::Internal::FullyConnectedLinearLayer(CNTK::Variable input, size_t outputDim, const DeviceDescriptor& device, const std::wstring& outputName)
+CNTK::FunctionPtr CNTKWrapper::Internal::FullyConnectedLinearLayer(CNTK::Variable input, size_t outputDim, const DeviceDescriptor& device, const wstring& outputName)
 {
 	assert(input.Shape().Rank() == 1);
 	size_t inputDim = input.Shape()[0];
@@ -326,7 +337,8 @@ CNTK::FunctionPtr CNTKWrapper::Internal::FullyConnectedLinearLayer(CNTK::Variabl
 	return Plus(plusParam, timesFunction, outputName);
 }
 
-FunctionPtr CNTKWrapper::Internal::Convolution1D(Variable input, size_t kernelCount, size_t kernel, size_t stride, ActivationFunction activationFunction, double wScale, const DeviceDescriptor& device, const string& outputName)
+FunctionPtr CNTKWrapper::Internal::Convolution1D(Variable input, size_t kernelCount, size_t kernel, size_t stride, ActivationFunction activationFunction, double wScale
+	, const DeviceDescriptor& device, const wstring& outputName)
 {
 	assert(input.Shape().Rank() == 2);
 	size_t numInputChannels = input.Shape()[input.Shape().Rank() - 1];
@@ -335,41 +347,45 @@ FunctionPtr CNTKWrapper::Internal::Convolution1D(Variable input, size_t kernelCo
 		, GlorotUniformInitializer(wScale, -1, 2), device,L"ConvParams");
 	return applyActivationFunction(
 		Convolution(convParams, input, { stride, numInputChannels }, { true }, { true }
-			, 0Ui64, string2wstring(outputName)),
+			, 0Ui64, outputName),
 		activationFunction
 	);
 }
 
-FunctionPtr CNTKWrapper::Internal::Convolution2D(Variable input, size_t kernelCount, size_t kernelWidth, size_t kernelHeight, size_t strideWidth, size_t strideHeight, ActivationFunction activationFunction, double wScale, const DeviceDescriptor& device, const string& outputName)
+FunctionPtr CNTKWrapper::Internal::Convolution2D(Variable input, size_t kernelCount, size_t kernelWidth, size_t kernelHeight, size_t strideWidth, size_t strideHeight, ActivationFunction activationFunction
+	, double wScale, const DeviceDescriptor& device, const wstring& outputName)
 {
 	assert(input.Shape().Rank() == 3);
 	size_t numInputChannels = input.Shape()[input.Shape().Rank() - 1];
 
 	auto convParams = Parameter({ kernelWidth, kernelHeight, numInputChannels, kernelCount }, DataType::Double, GlorotUniformInitializer(wScale, -1, 2), device);
 	return applyActivationFunction(
-		Convolution(convParams, input, { strideWidth, strideHeight, numInputChannels }, { true }, { true }, 0Ui64, string2wstring(outputName)),
+		Convolution(convParams, input, { strideWidth, strideHeight, numInputChannels }, { true }, { true }, 0Ui64, outputName),
 		activationFunction
 	);
 }
 
-FunctionPtr CNTKWrapper::Internal::Convolution3D(Variable input, size_t kernelCount, size_t kernelWidth, size_t kernelHeight, size_t kernelDepth, size_t strideWidth, size_t strideHeight, size_t strideDepth, ActivationFunction activationFunction, double wScale, const DeviceDescriptor& device, const string& outputName)
+FunctionPtr CNTKWrapper::Internal::Convolution3D(Variable input, size_t kernelCount, size_t kernelWidth, size_t kernelHeight, size_t kernelDepth, size_t strideWidth, size_t strideHeight, size_t strideDepth, ActivationFunction activationFunction
+	, double wScale, const DeviceDescriptor& device, const wstring& outputName)
 {
 	assert(input.Shape().Rank() == 4);
 	size_t numInputChannels = input.Shape()[input.Shape().Rank() - 1];
 
 	auto convParams = Parameter({ kernelWidth, kernelHeight, kernelDepth, numInputChannels, kernelCount }, DataType::Double, GlorotUniformInitializer(wScale, -1, 2), device);
 	return applyActivationFunction(
-		Convolution(convParams, input, { strideWidth, strideHeight, strideDepth, numInputChannels }, { true }, { true }, 0Ui64, string2wstring(outputName)),
+		Convolution(convParams, input, { strideWidth, strideHeight, strideDepth, numInputChannels }, { true }, { true }, 0Ui64, outputName),
 		activationFunction
 	);
 }
 
-FunctionPtr CNTKWrapper::Internal::FullyConnectedDNNLayer(Variable input, size_t outputDim, const DeviceDescriptor& device, const std::function<FunctionPtr(const FunctionPtr&)>& nonLinearity, const std::wstring& outputName)
+FunctionPtr CNTKWrapper::Internal::FullyConnectedDNNLayer(Variable input, size_t outputDim, const DeviceDescriptor& device
+	, const std::function<FunctionPtr(const FunctionPtr&)>& nonLinearity, const wstring& outputName)
 {
 	return nonLinearity(FullyConnectedLinearLayer(input, outputDim, device, outputName));
 }
 
-FunctionPtr CNTKWrapper::Internal::FullyConnectedDNNLayer(Variable input, size_t outputDim, const DeviceDescriptor& device, ActivationFunction activationFunction, const std::wstring& outputName)
+FunctionPtr CNTKWrapper::Internal::FullyConnectedDNNLayer(Variable input, size_t outputDim, const DeviceDescriptor& device, ActivationFunction activationFunction
+	, const wstring& outputName)
 {
 	return applyActivationFunction(FullyConnectedLinearLayer(input, outputDim, device, outputName)
 		, activationFunction);

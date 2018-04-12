@@ -26,6 +26,6 @@ public:
 
 	static NetworkArchitecture* getInstance(tinyxml2::XMLElement* pNode);
 
-	const Link* getLinkById(const char* id) const;
+	const Link* getLinkById(const wstring& id) const;
 };
 

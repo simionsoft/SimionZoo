@@ -10,6 +10,7 @@
 #include "Parameter.h"
 #include "ParameterValues.h"
 #include "Exceptions.h"
+#include "CNTKWrapperInternals.h"
 
 CIntTuple1D::CIntTuple1D(tinyxml2::XMLElement* pParentNode) : CIntTuple1D()
 {
@@ -152,7 +153,7 @@ CInputDataValue::CInputDataValue(tinyxml2::XMLElement* pParentNode) : CInputData
 
 LinkConnection::LinkConnection(tinyxml2::XMLElement* pNode) : LinkConnection()
 {
-	m_targetID = pNode->Attribute(XML_ATTRIBUTE_TargetId);
+	m_targetID = CNTKWrapper::Internal::string2wstring(pNode->Attribute(XML_ATTRIBUTE_TargetId));
 	if (m_targetID.empty())
 		throw ProblemParserElementValueNotValid(XML_ATTRIBUTE_TargetId);
 }

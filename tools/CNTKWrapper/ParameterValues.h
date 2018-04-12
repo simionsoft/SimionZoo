@@ -159,12 +159,12 @@ public:
 class LinkConnection
 {
 protected:
-	string m_targetID;
+	wstring m_targetID;
 	LinkConnection(tinyxml2::XMLElement* pNode);
 public:
 	LinkConnection();
 	~LinkConnection();
-	const string& getTargetId() const { return m_targetID; }
+	const wstring& getTargetId() const { return m_targetID; }
 
 	static LinkConnection* getInstance(tinyxml2::XMLElement* pNode);
 };

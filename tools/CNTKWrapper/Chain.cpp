@@ -9,6 +9,7 @@
 #include "Parameter.h"
 #include "ParameterValues.h"
 #include "Exceptions.h"
+#include "CNTKWrapperInternals.h"
 
 Chain::Chain()
 {
@@ -23,9 +24,9 @@ Chain::~Chain()
 Chain::Chain(tinyxml2::XMLElement* pParentNode) : Chain()
 {
 	//read name
-	m_name = pParentNode->Attribute(XML_ATTRIBUTE_Name);
+	m_name = CNTKWrapper::Internal::string2wstring((pParentNode->Attribute(XML_ATTRIBUTE_Name)));
 	if (m_name.empty())
-		m_name = "Chain";
+		m_name = L"Chain";
 
 	//read links
 	tinyxml2::XMLElement *pNode = pParentNode->FirstChildElement(XML_TAG_ChainLinks);
@@ -39,17 +40,15 @@ Chain::Chain(tinyxml2::XMLElement* pParentNode) : Chain()
 	}
 }
 
-const Link* Chain::getLinkById(const char * id) const
+const Link* Chain::getLinkById(const wstring id) const
 {
 	for each (auto item in m_chainLinks)
 	{
-		if (!strcmp(item->getId().c_str(), id))
-		{
+		if (item->getId()==id)
 			return item;
-		}
 	}
 
-	return NULL;
+	return nullptr;
 }
 
 #endif

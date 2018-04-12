@@ -19,20 +19,23 @@ class NetworkArchitecture;
 class INetwork;
 class IMinibatch;
 
-//Interface class
+//Network definition
 class INetworkDefinition
 {
 public:
 	virtual void destroy() = 0;
 
-	virtual void addInputStateVar(size_t stateVarId) = 0;
-	virtual size_t getNumInputStateVars() = 0; 
-	virtual size_t getInputStateVar(size_t) = 0;
-	virtual void setOutputAction(size_t actionVarId, size_t numOutputs, double minvalue, double maxvalue) = 0;
+	virtual void addInputStateVar(size_t stateVarId)= 0;
+	virtual const vector<size_t>& getInputStateVarIds()= 0;
+
+	virtual void addInputActionVar(size_t stateVarId)= 0;
+	virtual const vector<size_t>& getInputActionVarIds()= 0;
+
+	virtual size_t getInputSize() = 0;
+
+	virtual void setOutputActionVector(size_t actionVarId, size_t numOutputs, double minvalue, double maxvalue) = 0;
 	virtual size_t getClosestOutputIndex(double value)=  0;
 	virtual double getActionIndexOutput(size_t actionIndex) = 0;
-	virtual size_t getOutputActionVar() = 0;
-	virtual size_t getNumOutputs() = 0;
 
 	virtual IMinibatch* createMinibatch(size_t size) = 0;
 
@@ -53,7 +56,7 @@ public:
 	virtual INetwork* getFrozenCopy() const= 0;
 
 	virtual void train(IMinibatch* pMinibatch) = 0;
-	virtual void get(const State* s, vector<double>& outputValues) = 0;
+	virtual void get(const State* s, const Action* a, vector<double>& outputValues) = 0;
 };
 
 class IMinibatch
@@ -62,9 +65,10 @@ public:
 	virtual void destroy() = 0;
 
 	virtual void clear() = 0;
-	virtual void addTuple(const State* s, vector<double>& targetValues)= 0;
-	virtual vector<double>& getInputVector()= 0;
-	virtual vector<double>& getTargetOutputVector()= 0;
+	virtual void addTuple(const State* s, const Action* a, vector<double>& targetValues) = 0;
+	virtual vector<double>& getInputState() = 0;
+	virtual vector<double>& getInputAction() = 0;
+	virtual vector<double>& getOutput() = 0;
 	virtual bool isFull() = 0;
 };
 
