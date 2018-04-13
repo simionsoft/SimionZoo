@@ -44,6 +44,7 @@ double Quaternion::yaw() const
 {
 	if (bUseOrientations()) return m_yaw;
 
+	// yaw (y-axis rotation)
 	double t3 = +2.0 * (w() * y() + x() * z());
 	double t4 = +1.0 - 2.0 * (z()*z() + y() * y());
 	return atan2(t3, t4);
@@ -52,7 +53,7 @@ double Quaternion::pitch() const
 {
 	if (bUseOrientations()) return m_pitch;
 
-	// pitch (y-axis rotation)
+	// pitch (x-axis rotation)
 	double t0 = +2.0 * (w() * x() + z() * y());
 	double t1 = +1.0 - 2.0 * (x() * x() + z()*z());
 	return atan2(t0, t1);
@@ -61,7 +62,7 @@ double Quaternion::roll() const
 {
 	if (bUseOrientations()) return m_roll;
 
-	// roll (x-axis rotation)
+	// roll (z-axis rotation)
 	double t2 = +2.0 * (w() * z() - y() * x());
 	t2 = t2 > 1.0 ? 1.0 : t2;
 	t2 = t2 < -1.0 ? -1.0 : t2;

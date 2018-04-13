@@ -16,6 +16,7 @@ Camera::~Camera()
 Matrix44 Camera::getModelviewMatrix() const
 {
 	Matrix44 mat, rot, trans;
+
 	rot.setRotation(m_transform.rotation().inverse());
 	trans.setTranslation(m_transform.translation().inverse());
 	mat = rot*trans;

@@ -31,6 +31,9 @@ public:
 
 	void setX(double x) { _values[0] = x; }
 	void setY(double y) { _values[1] = y; }
+
+	double length() const;
+	double squareLength() const;
 };
 
 class Point2D : public Vector2D

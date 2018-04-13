@@ -51,6 +51,16 @@ Vector2D& Vector2D::operator/=(double scalar)
 	return (*this);
 }
 
+double Vector2D::length() const
+{
+	return sqrt(_values[0]*_values[0] + _values[1]*_values[1]);
+}
+
+double Vector2D::squareLength() const
+{
+	return _values[0] *_values[0]+ _values[1]* _values[1];
+}
+
 double Range::clamp(double value)
 {
 	return std::min(std::max(value, Range::min()), Range::max());
@@ -65,3 +75,4 @@ double Range::normPosInRange(double value)
 
 	return (value - Range::min()) / (Range::max() - Range::min());
 }
+

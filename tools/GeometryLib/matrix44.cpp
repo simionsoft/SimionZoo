@@ -157,6 +157,23 @@ Vector3D Matrix44::operator*(Vector3D& v) const
 	result.setZ(get(0, 2)*v.x() + get(1, 2)*v.y() + get(2, 2)*v.z());
 	return result;
 }
+
+Point2D Matrix44::operator*(Point2D& v) const
+{
+	Point2D result;
+	result.setX(get(0, 0)*v.x() + get(1, 0)*v.y() + get(3, 0));
+	result.setY(get(0, 1)*v.x() + get(1, 1)*v.y() + get(3, 1));
+	return result;
+}
+
+Vector2D Matrix44::operator*(Vector2D& v) const
+{
+	Vector2D result;
+	result.setX(get(0, 0)*v.x() + get(1, 0)*v.y() );
+	result.setY(get(0, 1)*v.x() + get(1, 1)*v.y() );
+	return result;
+}
+
 double* Matrix44::asArray()
 {
 	return _values;

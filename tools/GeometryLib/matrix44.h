@@ -19,8 +19,12 @@ public:
 
 	Matrix44 operator*(Matrix44& mat) const;
 	BoundingBox3D operator*( const BoundingBox3D& box) const;
+
 	Point3D operator*(Point3D& p) const;
 	Vector3D operator*(Vector3D& v) const;
+
+	Point2D operator* (Point2D& p) const;
+	Vector2D operator* (Vector2D& v) const;
 
 	double* asArray();
 
