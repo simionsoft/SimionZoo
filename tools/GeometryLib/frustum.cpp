@@ -14,7 +14,7 @@ Frustum::~Frustum()
 
 void Frustum::fromCameraMatrix(Matrix44& cameraMatrix)
 {
-	//FROM: http://ruh.li/CameraViewFrustum.html
+	//FROM: http://gamedevs.org/uploads/fast-extraction-viewing-frustum-planes-from-world-view-projection-matrix.pdf
 
 	// left
 	planes[LEFT_PLANE].setNormal(cameraMatrix.get(0, 3) + cameraMatrix.get(0, 0)

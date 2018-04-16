@@ -46,20 +46,22 @@ void SimpleCamera::set()
 {
 	//set projection matrix
 	glMatrixMode(GL_PROJECTION);
-	Matrix44 perspective;
+	Matrix44 perspectiveMatrix;
 	//the near plane has width 1 and the height is adjusted according to the aspect ratio
 	int screenHeight, screenWidth;
 	Renderer::get()->getWindowsSize(screenWidth, screenHeight);
 	double aspectRatio = (double)screenWidth / (double)screenHeight;
-	perspective.setPerspective(0.5, 0.5/aspectRatio, nearPlane, farPlane);
-	glLoadMatrixd(perspective.asArray());
+	perspectiveMatrix.setPerspective(0.5, 0.5/aspectRatio, nearPlane, farPlane);
+	glLoadMatrixd(perspectiveMatrix.asArray());
 
 	//set modelview matrix
 	glMatrixMode(GL_MODELVIEW);
-	Matrix44 matrix = getModelviewMatrix();
-	glLoadMatrixd(matrix.asArray());
+	Matrix44 modelviewMatrix = getModelviewMatrix();
+	glLoadMatrixd(modelviewMatrix.asArray());
 
-	m_frustum.fromCameraMatrix(matrix*perspective);
+	//The order of the matrix multiplication seems to be wrong in the source paper:
+	//http://gamedevs.org/uploads/fast-extraction-viewing-frustum-planes-from-world-view-projection-matrix.pdf
+	m_frustum.fromCameraMatrix(perspectiveMatrix*modelviewMatrix);
 }
 
 //This method sets an orthogonal view that maps the screen to coordinates [0.0,0.0] - [1.0,1.0]

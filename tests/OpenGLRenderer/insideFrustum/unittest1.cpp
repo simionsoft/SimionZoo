@@ -93,6 +93,15 @@ namespace insideFrustum
 			box = BoundingBox3D(Vector3D(-5.0, 0.0, -3.0), Vector3D(-2.0, 3.0, 6.0));
 			Assert::IsFalse(frustum.isVisible(box));
 
+			//transform + box
+			Matrix44 translation, rot, transform;
+			translation.setTranslation(Vector3D(5.0, 1.0, -1.0));
+			rot.setRotation(Quaternion(1.0, 0.3, 0.7));
+			transform = translation * rot;
+			box= BoundingBox3D(Vector3D(0.0, 0.0, -1.5), Vector3D(0.3, 1.0, -2.0));
+			Assert::IsTrue(frustum.isVisible(transform*box));
+
+
 			//test points
 			point = Point3D(5.0, 0.0, 0.0);
 			Assert::IsTrue(frustum.isVisible(point));
@@ -108,6 +117,11 @@ namespace insideFrustum
 			Assert::IsFalse(frustum.isVisible(point));
 			point = Point3D(-5.0, 0.0, 0.0);
 			Assert::IsFalse(frustum.isVisible(point));
+
+			//camera*modelview transform + box
+			cameraMatrix = projection * view * transform;
+			frustum.fromCameraMatrix(cameraMatrix);
+			Assert::IsTrue(frustum.isVisible(box));
 		}
 		TEST_METHOD(Geometry_PointInsideFrustum)
 		{

@@ -92,10 +92,10 @@ double Vector3D::dot(const Vector3D& vec) const
 
 void Vector3D::normalize()
 {
-	double length = this->length();
+	double l = length();
 	double invLength;
-	if (length == 0.0) return;
-	invLength = 1.0 / length;
+	if (l == 0.0) return;
+	invLength = 1.0 / l;
 	m_x = m_x*invLength;
 	m_y = m_y*invLength;
 	m_z = m_z*invLength;
