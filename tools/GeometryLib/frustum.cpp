@@ -1,6 +1,7 @@
 #include "Frustum.h"
 #include "matrix44.h"
 #include "bounding-box.h"
+#include "vector3d.h"
 
 Frustum::Frustum()
 {
@@ -91,6 +92,40 @@ bool Frustum::isVisible(BoundingBox3D& box) const
 
 	return true;
 }
+
+//http://www.iquilezles.org/www/articles/frustumcorrect/frustumcorrect.htm
+//bool Frustum::isVisible(BoundingBox3D& box) const
+//{
+//	// check box outside/inside of frustum
+//	
+//	for (int i = 0; i<6; i++)
+//	{
+//		Vector3D &normal = planes[i].getNormal();
+//		double dist = planes[i].getDistance();
+//		int out = 0;
+//		out += (normal.dot(Vector3D(box.min().x(), box.min().y(), box.min().z())) + dist < 0.0) ? 1 : 0;
+//		out += (normal.dot(Vector3D(box.max().x(), box.min().y(), box.min().z())) + dist < 0.0) ? 1 : 0;
+//		out += (normal.dot(Vector3D(box.min().x(), box.max().y(), box.min().z())) + dist < 0.0) ? 1 : 0;
+//		out += (normal.dot(Vector3D(box.max().x(), box.max().y(), box.min().z())) + dist < 0.0) ? 1 : 0;
+//		out += (normal.dot(Vector3D(box.min().x(), box.min().y(), box.max().z())) + dist < 0.0) ? 1 : 0;
+//		out += (normal.dot(Vector3D(box.max().x(), box.min().y(), box.max().z())) + dist < 0.0) ? 1 : 0;
+//		out += (normal.dot(Vector3D(box.min().x(), box.max().y(), box.max().z())) + dist < 0.0) ? 1 : 0;
+//		out += (normal.dot(Vector3D(box.max().x(), box.max().y(), box.max().z())) + dist < 0.0) ? 1 : 0;
+//		if (out == 8)
+//			return false;
+//	}
+//
+//	//// check frustum outside/inside box
+//	//int out;
+//	//out = 0; for (int i = 0; i<8; i++) out += ((fru.mPoints[i].x > box.mMaxX) ? 1 : 0); if (out == 8) return false;
+//	//out = 0; for (int i = 0; i<8; i++) out += ((fru.mPoints[i].x < box.mMinX) ? 1 : 0); if (out == 8) return false;
+//	//out = 0; for (int i = 0; i<8; i++) out += ((fru.mPoints[i].y > box.mMaxY) ? 1 : 0); if (out == 8) return false;
+//	//out = 0; for (int i = 0; i<8; i++) out += ((fru.mPoints[i].y < box.mMinY) ? 1 : 0); if (out == 8) return false;
+//	//out = 0; for (int i = 0; i<8; i++) out += ((fru.mPoints[i].z > box.mMaxZ) ? 1 : 0); if (out == 8) return false;
+//	//out = 0; for (int i = 0; i<8; i++) out += ((fru.mPoints[i].z < box.mMinZ) ? 1 : 0); if (out == 8) return false;
+//
+//	//return true;
+//}
 
 bool Frustum::isVisible(Point3D& point) const
 {

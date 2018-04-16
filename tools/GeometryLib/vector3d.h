@@ -42,4 +42,5 @@ class Point3D : public Vector3D
 public:
 	Point3D() :Vector3D() {}
 	Point3D(double x,double y, double z): Vector3D(x,y,z){}
+	Point3D(Vector3D& v) : Point3D(v.x(), v.y(), v.z()) {}
 };

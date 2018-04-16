@@ -228,7 +228,7 @@ void Renderer::drawScene()
 
 	for each(auto object in m_3DgraphicObjects)
 	{
-		//if (frustum.isVisible(object->boundingBox()))
+		if (frustum.isVisible(object->boundingBox()))
 		{
 			object->draw();
 

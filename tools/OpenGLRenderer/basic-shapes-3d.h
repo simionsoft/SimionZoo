@@ -24,8 +24,8 @@ public:
 
 class Box : public BasicShape
 {
-	Vector3D m_min = Vector3D(-0.5,0.0,-0.5);
-	Vector3D m_max = Vector3D(0.5,1.0, 0.5);
+	Point3D m_min = Point3D(-0.5,0.0,-0.5);
+	Point3D m_max = Point3D(0.5,1.0, 0.5);
 	Vector2D m_minTexCoord = Vector2D(0.0,0.0);
 	Vector2D m_maxTexCoord = Vector2D(1.0,1.0);
 

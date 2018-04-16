@@ -190,7 +190,7 @@ Box::Box(tinyxml2::XMLElement* pNode) : BasicShape(pNode)
 	pMesh->setPrimitiveType(GL_QUADS);
 	addMesh(pMesh);
 
-	m_bb = BoundingBox3D(m_transform.scale()*m_min, m_transform.scale()*m_max);
+	m_bb = BoundingBox3D(Point3D(m_transform.scale()*m_min), Point3D(m_transform.scale()*m_max));
 }
 
 Cilinder::Cilinder(tinyxml2::XMLElement* pNode) : BasicShape(pNode)
