@@ -44,7 +44,7 @@ void Transform2D::updateMatrix()
 	quat.fromOrientations(0.0, 0.0, m_rotation); //rotation on the XY plane
 	trans.setTranslation(Vector3D(m_translation.x(),m_translation.y(),m_depth));
 	scale.setScale(Vector3D(m_scale.x(),m_scale.y(),1.0)); //scale on the XY plane
-	m_matrix = scale * rot * trans;
+	m_matrix = trans * rot * scale;
 }
 
 

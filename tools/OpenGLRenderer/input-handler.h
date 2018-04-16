@@ -25,6 +25,7 @@ class FreeCameraInputHandler: public IInputHandler
 	bool m_bLeftArrowPressed = false;
 	bool m_bRightArrowPressed = false;
 	bool m_bShftPressed = false;
+	bool m_bLeftCtrlPressed = false;
 	bool m_bSpacePressed = false;
 	bool m_real_time_execution_disabled = false;
 
@@ -50,7 +51,6 @@ class FreeCameraInputHandler: public IInputHandler
 	bool bMoveDown() const { return m_bShftPressed && (m_bSPressed || m_bDownArrowPressed); }
 	bool bMoveLeft() const { return m_bShftPressed && (m_bAPressed || m_bLeftArrowPressed); }
 	bool bMoveRight() const { return m_bShftPressed && (m_bDPressed || m_bRightArrowPressed); }
-
 public:
 	FreeCameraInputHandler();
 	virtual ~FreeCameraInputHandler();

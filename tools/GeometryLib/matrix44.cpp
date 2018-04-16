@@ -18,31 +18,40 @@ void Matrix44::setIdentity()
 	set(3, 0, 0.0); set(3, 1, 0.0); set(3, 2, 0.0); set(3, 3, 1.0);
 }
 
+//http://www.euclideanspace.com/maths/geometry/rotations/conversions/quaternionToMatrix/index.htm
 void Matrix44::setRotation(Quaternion& quat)
 {
-	double wx, wy, wz, xx, yy, yz, xy, xz, zz, x2, y2, z2;
+	double sqw = quat.w()*quat.w();
+	double sqx = quat.x()*quat.x();
+	double sqy = quat.y()*quat.y();
+	double sqz = quat.z()*quat.z();
 
-	x2 = quat.x() + quat.x();  y2 = quat.y() + quat.y();  z2 = quat.z() + quat.z();
-	xx = quat.x() * x2;       xy = quat.x() * y2;       xz = quat.x() * z2;
-	yy = quat.y() * y2;       yz = quat.y() * z2;       zz = quat.z() * z2;
-	wx = quat.w() * x2;       wy = quat.w() * y2;       wz = quat.w() * z2;
-	
-	set(0, 0, 1.0 - (yy + zz));
-	set(0, 1, xy - wz);
-	set(0, 2, xz + wy);
-	set(0, 3, 0.0);
-	set(1, 0, xy + wz);
-	set(1, 1, 1.0 - (xx + zz));
-	set(1, 2, yz - wx);
-	set(1, 3, 0.0);
-	set(2, 0, xz - wy);
-	set(2, 1, yz + wx);
-	set(2, 2, 1.0 - (xx + yy));
-	set(2, 3, 0.0);
+	// invs (inverse square length) is only required if quaternion is not already normalised
+	double invs = 1 / (sqx + sqy + sqz + sqw);
+	set(0, 0, (sqx - sqy - sqz + sqw)*invs); // since sqw + sqx + sqy + sqz =1/invs*invs
+	set(1, 1, (-sqx + sqy - sqz + sqw)*invs);
+	set(2, 2, (-sqx - sqy + sqz + sqw)*invs);
 	set(3, 0, 0.0);
 	set(3, 1, 0.0);
 	set(3, 2, 0.0);
+	set(0, 3, 0.0);
+	set(1, 3, 0.0);
+	set(2, 3, 0.0);
 	set(3, 3, 1.0);
+
+	double tmp1 = quat.x()*quat.y();
+	double tmp2 = quat.z()*quat.w();
+	set(0, 1, 2.0 * (tmp1 + tmp2)*invs);
+	set(1, 0, 2.0 * (tmp1 - tmp2)*invs);
+
+	tmp1 = quat.x()*quat.z();
+	tmp2 = quat.y()*quat.w();
+	set(0, 2, 2.0 * (tmp1 - tmp2)*invs);
+	set(2, 0, 2.0 * (tmp1 + tmp2)*invs);
+	tmp1 = quat.y()*quat.z();
+	tmp2 = quat.x()*quat.w();
+	set(1, 2, 2.0 * (tmp1 + tmp2)*invs);
+	set(2, 1, 2.0 * (tmp1 - tmp2)*invs);
 }
 
 void Matrix44::setTranslation(Vector3D& translation)

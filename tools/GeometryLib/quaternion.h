@@ -20,6 +20,9 @@ public:
 
 	void normalize();
 
+	double length() const;
+	double squareLength() const;
+
 	static double xFromOrientations (double yaw, double pitch, double roll);
 	static double yFromOrientations (double yaw, double pitch, double roll);
 	static double zFromOrientations (double yaw, double pitch, double roll);

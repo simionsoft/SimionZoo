@@ -59,3 +59,13 @@ void SceneActor3D::addRotation(Quaternion& quat)
 {
 	m_transform.setRotation(m_transform.rotation() * quat);
 }
+
+void SceneActor3D::setRotation(Quaternion& quat)
+{
+	m_transform.setRotation(quat);
+}
+
+Quaternion SceneActor3D::getRotation() const
+{
+	return m_transform.rotation();
+}

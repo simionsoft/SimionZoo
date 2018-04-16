@@ -16,7 +16,6 @@ Camera::~Camera()
 Matrix44 Camera::getModelviewMatrix() const
 {
 	Matrix44 mat, rot, trans;
-
 	rot.setRotation(m_transform.rotation().inverse());
 	trans.setTranslation(m_transform.translation().inverse());
 	mat = rot*trans;
@@ -48,7 +47,11 @@ void SimpleCamera::set()
 	//set projection matrix
 	glMatrixMode(GL_PROJECTION);
 	Matrix44 perspective;
-	perspective.setPerspective(1.0, 1.0, nearPlane, farPlane);
+	//the near plane has width 1 and the height is adjusted according to the aspect ratio
+	int screenHeight, screenWidth;
+	Renderer::get()->getWindowsSize(screenWidth, screenHeight);
+	double aspectRatio = (double)screenWidth / (double)screenHeight;
+	perspective.setPerspective(0.5, 0.5/aspectRatio, nearPlane, farPlane);
 	glLoadMatrixd(perspective.asArray());
 
 	//set modelview matrix
@@ -56,7 +59,7 @@ void SimpleCamera::set()
 	Matrix44 matrix = getModelviewMatrix();
 	glLoadMatrixd(matrix.asArray());
 
-	m_frustum.fromCameraMatrix(perspective*matrix);
+	m_frustum.fromCameraMatrix(matrix*perspective);
 }
 
 //This method sets an orthogonal view that maps the screen to coordinates [0.0,0.0] - [1.0,1.0]

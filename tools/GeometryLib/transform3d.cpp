@@ -30,7 +30,7 @@ void Transform3D::updateMatrix()
 	rot.setRotation(m_rotation);
 	trans.setTranslation(m_translation);
 	scale.setScale(m_scale);
-	m_matrix = scale*rot*trans;
+	m_matrix = trans*rot*scale;
 }
 
 Vector3D Transform3D::operator*(Vector3D& v)

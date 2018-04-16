@@ -3,13 +3,14 @@
     <Simple-Camera Name="Main-camera">
       <Transform>
         <Translation>
-          <X>-10.0</X>
-          <Y>10.0</Y>
-          <Z>0.0</Z>
+          <X>0.0</X>
+          <Y>20.0</Y>
+          <Z>20.0</Z>
         </Translation>
         <Rotation>
-          <Yaw>1.52</Yaw>
-          <Pitch>1.0</Pitch>
+          <Yaw>0.0</Yaw>
+          <Pitch>-1.0</Pitch>
+          <Roll>0.0</Roll>
         </Rotation>
       </Transform>
     </Simple-Camera>

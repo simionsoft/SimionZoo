@@ -13,7 +13,7 @@ namespace insideFrustum
 	{
 	public:
 
-		TEST_METHOD(BoundingBoxInsideFrustum)
+		TEST_METHOD(Geometry_BoundingBoxInsideFrustum)
 		{
 			Frustum frustum;
 			Matrix44 projection;
@@ -29,7 +29,7 @@ namespace insideFrustum
 			box = BoundingBox3D(Vector3D(-10.0, 0.0, 0.0), Vector3D(-9.0, 1.0, 1.0));
 			Assert::IsFalse(frustum.isVisible(box));
 		}
-		TEST_METHOD(BoundingBoxInsideFrustum2)
+		TEST_METHOD(Geometry_BoundingBoxInsideFrustum2)
 		{
 			Frustum frustum;
 			Matrix44 projection, view, cameraMatrix;
@@ -49,7 +49,7 @@ namespace insideFrustum
 			box = BoundingBox3D(Vector3D(10.0, 0.0, -1.5), Vector3D(11.0, 1.0, -2.0));
 			Assert::IsTrue(frustum.isVisible(box));
 		}
-		TEST_METHOD(BoundingBoxInsideFrustum3)
+		TEST_METHOD(Geometry_BoundingBoxInsideFrustum3)
 		{
 			Frustum frustum;
 			Matrix44 projection, view, cameraMatrix;
@@ -69,27 +69,47 @@ namespace insideFrustum
 			box = BoundingBox3D(Vector3D(0.0, 0.0, -1.5), Vector3D(1.0, 1.0, -2.0));
 			Assert::IsFalse(frustum.isVisible(box));
 		}
-		TEST_METHOD(BoundingBoxInsideFrustum4)
+		TEST_METHOD(Geometry_BoundingBoxInsideFrustum4)
 		{
 			Frustum frustum;
 			Matrix44 projection, view, cameraMatrix;
 
 			//initialize the frustum
 			projection.setPerspective(1.0, 0.75, 1.0, 10.0);
-			view.setRotation(Quaternion(-1.57,0,0));
+			view.setRotation(Quaternion(-1.57,0,0).inverse());
 			cameraMatrix = projection*view;
 			frustum.fromCameraMatrix(cameraMatrix);
 
-			//start testing bounding boxes
+			//test bounding boxes
 			BoundingBox3D box;
-			box = BoundingBox3D(Vector3D(10.0, 0.0, 0.0), Vector3D(11.0, 1.0, 1.0));
-			Assert::IsTrue(frustum.isVisible(box));
-			box = BoundingBox3D(Vector3D(1.0, 0.0, 0.0), Vector3D(2.0, 1.0, 2.0));
-			Assert::IsTrue(frustum.isVisible(box));
-			box = BoundingBox3D(Vector3D(11.0, 0.0, -1.5), Vector3D(13.0, 1.0, -2.0));
+			Point3D point;
+			Point3D rotatedPoint = cameraMatrix * Point3D(0,0,0);
+			box = BoundingBox3D(Vector3D(12.0, 0.0, 0.0), Vector3D(13.0, 1.0, 1.0));
 			Assert::IsFalse(frustum.isVisible(box));
+			box = BoundingBox3D(Vector3D(5.0, 0.0, 0.0), Vector3D(6.0, 1.0, 2.0));
+			Assert::IsTrue(frustum.isVisible(box));
+			box = BoundingBox3D(Vector3D(0.0, 0.0, -1.5), Vector3D(0.3, 1.0, -2.0));
+			Assert::IsFalse(frustum.isVisible(box));
+			box = BoundingBox3D(Vector3D(-5.0, 0.0, -3.0), Vector3D(-2.0, 3.0, 6.0));
+			Assert::IsFalse(frustum.isVisible(box));
+
+			//test points
+			point = Point3D(5.0, 0.0, 0.0);
+			Assert::IsTrue(frustum.isVisible(point));
+			point = Point3D(2.0, 0.0, 0.5);
+			Assert::IsTrue(frustum.isVisible(point));
+			point = Point3D(10.0, 3.0, 0.0);
+			Assert::IsTrue(frustum.isVisible(point));
+			point = Point3D(15.0, 0.0, 0.0);
+			Assert::IsFalse(frustum.isVisible(point));
+			point = Point3D(5.0, 10.0, 0.0);
+			Assert::IsFalse(frustum.isVisible(point));
+			point = Point3D(5.0, 0.0, -10.0);
+			Assert::IsFalse(frustum.isVisible(point));
+			point = Point3D(-5.0, 0.0, 0.0);
+			Assert::IsFalse(frustum.isVisible(point));
 		}
-		TEST_METHOD(PointInsideFrustum)
+		TEST_METHOD(Geometry_PointInsideFrustum)
 		{
 			Frustum frustum;
 			Matrix44 cameraMatrix;
@@ -109,7 +129,7 @@ namespace insideFrustum
 			point = Point3D(-2.0, 0.0, -1.5);
 			Assert::IsFalse(frustum.isVisible(point));
 		}
-		TEST_METHOD(PointInsideFrustum2)
+		TEST_METHOD(Geometry_PointInsideFrustum2)
 		{
 			Frustum frustum;
 			Matrix44 perspective,view,cameraMatrix;

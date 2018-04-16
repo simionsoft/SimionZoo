@@ -98,6 +98,7 @@ void FreeCameraInputHandler::onSpecialKeyPressed(int key, int x, int y)
 	case GLUT_KEY_DOWN: m_bDownArrowPressed = true; break;
 	case GLUT_KEY_LEFT: m_bLeftArrowPressed = true; break;
 	case GLUT_KEY_RIGHT: m_bRightArrowPressed = true; break;
+	case GLUT_KEY_CTRL_L: m_bLeftCtrlPressed = true; break;
 	}
 }
 
@@ -109,6 +110,7 @@ void FreeCameraInputHandler::onSpecialKeyReleased(int key, int x, int y)
 	case GLUT_KEY_DOWN: m_bDownArrowPressed = false; break;
 	case GLUT_KEY_LEFT: m_bLeftArrowPressed = false; break;
 	case GLUT_KEY_RIGHT: m_bRightArrowPressed = false; break;
+	case GLUT_KEY_CTRL_L: m_bLeftCtrlPressed = false; break;
 	}
 }
 
@@ -123,28 +125,29 @@ void FreeCameraInputHandler::handleInput()
 
 	Matrix44 tras = pCamera->getTransformMatrix();
 	Vector3D res = tras*Vector3D(0, 0, -1);
+	Quaternion quat;
 
 	double yaw = pCamera->getTransform().rotation().yaw();
 	if (bMoveForward())
-	{
-		//pCamera->addLocalOffset(Vector3D(0.0, 0.0, -MOVE_SPEED*dt ));
-		pCamera->addWorldOffset(Vector3D(dt*MOVE_SPEED*sin(yaw), 0.0, -dt*MOVE_SPEED*cos(yaw)));
-	}
+		pCamera->addWorldOffset(Vector3D(-dt*MOVE_SPEED*sin(yaw), 0.0, -dt*MOVE_SPEED*cos(yaw)));
 	if (bMoveBackward())
-	{
-		//pCamera->addLocalOffset(Vector3D(0.0, 0.0, MOVE_SPEED*dt));
-		pCamera->addWorldOffset(Vector3D(-dt*MOVE_SPEED*sin(yaw), 0.0, dt*MOVE_SPEED*cos(yaw)));
-	}
+		pCamera->addWorldOffset(Vector3D(dt*MOVE_SPEED*sin(yaw), 0.0, dt*MOVE_SPEED*cos(yaw)));
 	if (bYawRight())
 	{
-		pCamera->addRotation(Quaternion(-ROTATION_SPEED*dt, 0.0, 0.0));
+		quat = pCamera->getRotation();
+		pCamera->setRotation(Quaternion(quat.yaw() + ROTATION_SPEED * dt, quat.pitch(), 0.0));
 	}
 	if (bYawLeft())
 	{
-		pCamera->addRotation(Quaternion(ROTATION_SPEED*dt, 0.0, 0.0));
+		quat = pCamera->getRotation();
+		pCamera->setRotation(Quaternion(quat.yaw() - ROTATION_SPEED * dt, quat.pitch(), 0.0));
 	}
-	if (bMoveUp()) pCamera->addLocalOffset(Vector3D(0.0, dt*MOVE_SPEED, 0.0));
-	if (bMoveDown()) pCamera->addLocalOffset(Vector3D(0.0, -dt*MOVE_SPEED, 0.0));
-	if (bMoveLeft()) pCamera->addLocalOffset(Vector3D(-dt*MOVE_SPEED, 0.0, 0.0));
-	if (bMoveRight()) pCamera->addLocalOffset(Vector3D(dt*MOVE_SPEED, 0.0, 0.0));
+	if (bMoveUp())
+		pCamera->addLocalOffset(Vector3D(0.0, dt*MOVE_SPEED, 0.0));
+	if (bMoveDown())
+		pCamera->addLocalOffset(Vector3D(0.0, -dt*MOVE_SPEED, 0.0));
+	if (bMoveLeft())
+		pCamera->addLocalOffset(Vector3D(dt*MOVE_SPEED, 0.0, 0.0));
+	if (bMoveRight())
+		pCamera->addLocalOffset(Vector3D(-dt*MOVE_SPEED, 0.0, 0.0));
 }

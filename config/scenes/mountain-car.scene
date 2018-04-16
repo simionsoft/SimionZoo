@@ -71,7 +71,7 @@
           <X>0.125</X>
           <Y>0.125</Y>
         </Scale>
-        <Rotation Bind="angle" Multiplier="-1.0"/>
+        <Rotation Bind="angle"/>
         <Depth>0.05</Depth>
       </Transform>
       <Material>

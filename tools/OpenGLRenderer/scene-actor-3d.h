@@ -21,5 +21,7 @@ public:
 	void addWorldOffset(Vector3D& offset);
 
 	void addRotation(Quaternion& quat);
+	void setRotation(Quaternion& quat);
+	Quaternion getRotation() const;
 };
 

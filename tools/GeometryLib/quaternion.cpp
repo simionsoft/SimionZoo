@@ -1,4 +1,5 @@
 #include "quaternion.h"
+#define _USE_MATH_DEFINES
 #include <math.h>
 
 void Quaternion::fromOrientations()
@@ -37,36 +38,54 @@ void Quaternion::setYaw(const double yaw) { m_yaw = yaw; m_bOrientationsSet = tr
 void Quaternion::setPitch(const double pitch) { m_pitch = pitch; m_bOrientationsSet = true;}
 void Quaternion::setRoll(const double roll) { m_roll = roll; m_bOrientationsSet = true;}
 
-//http://answers.unity3d.com/questions/416169/finding-pitchrollyaw-from-quaternions.html
-//I flipped axis y and z, but only checked yaw()
-//https://en.wikipedia.org/wiki/Conversion_between_quaternions_and_Euler_angles
+//http://www.euclideanspace.com/maths/geometry/rotations/conversions/quaternionToEuler/index.htm
 double Quaternion::yaw() const
 {
 	if (bUseOrientations()) return m_yaw;
 
 	// yaw (y-axis rotation)
-	double t3 = +2.0 * (w() * y() + x() * z());
-	double t4 = +1.0 - 2.0 * (z()*z() + y() * y());
-	return atan2(t3, t4);
+	double test = x()*y() + z()*w();
+	if (test > 0.499) // singularity at north pole
+		return 2 * atan2(x(), w());
+	
+	if (test < -0.499) // singularity at south pole
+		return -2 * atan2(x(), w());
+
+	double sqx = x()*x();
+	double sqy = y()*y();
+	double sqz = z()*z();
+	return atan2(2 * y()*w() - 2 * x()*z(), 1 - 2 * sqy - 2 * sqz);
 }
 double Quaternion::pitch() const
 {
 	if (bUseOrientations()) return m_pitch;
 
 	// pitch (x-axis rotation)
-	double t0 = +2.0 * (w() * x() + z() * y());
-	double t1 = +1.0 - 2.0 * (x() * x() + z()*z());
-	return atan2(t0, t1);
+	double test = x()*y() + z()*w();
+	if (test > 0.499) // singularity at north pole
+		return 0.0;
+
+	if (test < -0.499) // singularity at south pole
+		return 0.0;
+
+	double sqx = x()*x();
+	double sqy = y()*y();
+	double sqz = z()*z();
+	return atan2(2 * x()*w() - 2 * y()*z(), 1 - 2 * sqx - 2 * sqz);
 }
 double Quaternion::roll() const
 {
 	if (bUseOrientations()) return m_roll;
 
 	// roll (z-axis rotation)
-	double t2 = +2.0 * (w() * z() - y() * x());
-	t2 = t2 > 1.0 ? 1.0 : t2;
-	t2 = t2 < -1.0 ? -1.0 : t2;
-	return asin(t2);
+	double test = x()*y() + z()*w();
+	if (test > 0.499) // singularity at north pole
+		return M_PI * 0.5;
+
+	if (test < -0.499) // singularity at south pole
+		return -M_PI * 0.5;
+
+	return asin(2 * test);
 }
 
 
@@ -81,7 +100,7 @@ double Quaternion::xFromOrientations(double yaw, double pitch, double roll)
 	double sinPitch = sin(halfPitch);
 	double cosRoll = cos(halfRoll);
 	double sinRoll = sin(halfRoll);
-	return sinYaw * sinRoll * cosPitch + cosYaw * cosRoll * sinPitch;
+	return sinYaw * sinPitch * cosRoll + cosYaw * cosPitch * sinRoll;
 }
 
 double Quaternion::yFromOrientations(double yaw, double pitch, double roll)
@@ -95,7 +114,7 @@ double Quaternion::yFromOrientations(double yaw, double pitch, double roll)
 	double sinPitch = sin(halfPitch);
 	double cosRoll = cos(halfRoll);
 	double sinRoll = sin(halfRoll);
-	return sinYaw * cosRoll * cosPitch + cosYaw * sinRoll * sinPitch;
+	return sinYaw * cosPitch * cosRoll + cosYaw * sinPitch * sinRoll;
 }
 
 double Quaternion::zFromOrientations(double yaw, double pitch, double roll)
@@ -109,7 +128,7 @@ double Quaternion::zFromOrientations(double yaw, double pitch, double roll)
 	double sinPitch = sin(halfPitch);
 	double cosRoll = cos(halfRoll);
 	double sinRoll = sin(halfRoll);
-	return cosYaw * sinRoll * cosPitch - sinYaw * cosRoll * sinPitch;
+	return cosYaw * sinPitch * cosRoll - sinYaw * cosPitch * sinRoll;
 }
 
 double Quaternion::wFromOrientations(double yaw, double pitch, double roll)
@@ -123,26 +142,45 @@ double Quaternion::wFromOrientations(double yaw, double pitch, double roll)
 	double sinPitch = sin(halfPitch);
 	double cosRoll = cos(halfRoll);
 	double sinRoll = sin(halfRoll);
-	return cosYaw * cosRoll * cosPitch - sinYaw * sinRoll * sinPitch;
+	return cosYaw * cosPitch * cosRoll - sinYaw * sinPitch * sinRoll;
 }
 
+//http://www.euclideanspace.com/maths/geometry/rotations/conversions/eulerToQuaternion/index.htm
 void Quaternion::fromOrientations(double yaw, double pitch, double roll)
 {
-	//https://en.wikipedia.org/wiki/Conversion_between_quaternions_and_Euler_angles
-	//Had to swap pitch and roll
-	double halfYaw = yaw * 0.5;
-	double halfPitch = pitch * 0.5;
-	double halfRoll = roll * 0.5;
-	double cosYaw = cos(halfYaw);
-	double sinYaw = sin(halfYaw);
-	double cosPitch = cos(halfPitch);
-	double sinPitch = sin(halfPitch);
-	double cosRoll = cos(halfRoll);
-	double sinRoll = sin(halfRoll);
-	m_x = sinYaw * sinRoll * cosPitch + cosYaw * cosRoll * sinPitch;
-	m_y = sinYaw * cosRoll * cosPitch + cosYaw * sinRoll * sinPitch;
-	m_z = cosYaw * sinRoll * cosPitch - sinYaw * cosRoll * sinPitch;
-	m_w = cosYaw * cosRoll * cosPitch - sinYaw * sinRoll * sinPitch;
+	//angles as in: http://www.euclideanspace.com/maths/standards/index.htm
+	double halfHeading = yaw * 0.5;
+	double halfBank = pitch * 0.5;
+	double halfAttitude = roll * 0.5;
+	
+	double c1 = cos(halfHeading);
+    double s1 = sin(halfHeading);
+    double c2 = cos(halfAttitude);
+    double s2 = sin(halfAttitude);
+    double c3 = cos(halfBank);
+    double s3 = sin(halfBank);
+    double c1c2 = c1*c2;
+    double s1s2 = s1*s2;
+    m_w =c1c2*c3 - s1s2*s3;
+  	m_x =c1c2*s3 + s1s2*c3;
+	m_y =s1*c2*c3 + c1*s2*s3;
+	m_z =c1*s2*c3 - s1*c2*s3;
+
+	//double halfHeading = yaw * 0.5;
+	//double halfBank = roll * 0.5;
+	//double halfAttitude = pitch * 0.5;
+	//double cosYaw = cos(halfHeading);
+	//double sinYaw = sin(halfHeading);
+	//double cosPitch = cos(halfBank);
+	//double sinPitch = sin(halfBank);
+	//double cosRoll = cos(halfAttitude);
+	//double sinRoll = sin(halfAttitude);
+
+	//m_w = cosYaw * cosPitch * cosRoll - sinYaw * sinPitch * sinRoll;
+	//m_x = cosYaw * cosPitch * sinRoll + sinYaw * sinPitch * cosRoll;
+	//m_y = sinYaw * cosPitch * cosRoll + cosYaw * sinPitch * sinRoll;
+	//m_z = cosYaw * sinPitch * cosRoll - sinYaw * cosPitch * sinRoll;
+
 	normalize();
 }
 
@@ -248,12 +286,21 @@ void Quaternion::operator*=(const double x)
 	m_w *= x;
 }
 
+double Quaternion::squareLength() const
+{
+	return m_x * m_x + m_y * m_y + m_z * m_z + m_w * m_w;
+}
+
+double Quaternion::length() const
+{
+	return sqrt(squareLength());
+}
+
 void Quaternion::normalize()
 {
 	double	dist, square;
 
-	square = m_x * m_x + m_y * m_y
-		+ m_z * m_z + m_w * m_w;
+	square = squareLength();
 
 	if (square > 0.0)
 	{
