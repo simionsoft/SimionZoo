@@ -198,11 +198,11 @@ CNTK::FunctionPtr CNTKWrapper::LinearTransformationLayer(const Link * pLink, vec
 	double offset = pLink->getParameterByName<DoubleParameter>("Offset")->getValue();
 	double scale = pLink->getParameterByName<DoubleParameter>("Scale")->getValue();
 
-	auto timesParam = Constant::Scalar(DataType::Float, (float)scale, device);
+	auto timesParam = Constant::Scalar(DataType::Double, scale, device);
 
 	auto timesFunction = ElementTimes(timesParam, dependencies.at(0)->getFunctionPtr(),L"Times");
 
-	auto plusParam = Constant::Constant(dependencies.at(0)->getFunctionPtr()->Output().Shape(), (float)offset, device);
+	auto plusParam = Constant::Constant(dependencies.at(0)->getFunctionPtr()->Output().Shape(), offset, device);
 	
 	return Plus(plusParam, timesFunction, name);
 

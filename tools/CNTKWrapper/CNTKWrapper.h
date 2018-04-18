@@ -61,7 +61,7 @@ public:
 
 	virtual void train(IMinibatch* pMinibatch) = 0;
 	virtual void get(const State* s, const Action* a, vector<double>& outputValues) = 0;
-	virtual double get(const State* s, const Action* a) = 0;
+	virtual void get(const State* s, Action* a) = 0;
 };
 
 class IMinibatch

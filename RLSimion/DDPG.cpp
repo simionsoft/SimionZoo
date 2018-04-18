@@ -46,9 +46,12 @@ void DDPG::deferredLoadStep()
 		m_CriticNetworkDefinition->addInputStateVar(stateVarIndex);
 		m_ActorNetworkDefinition->addInputStateVar(stateVarIndex);
 	}
+	m_stateValues = vector<double>(m_inputState.size());
 
 	//Set the action-input: for now, only the one used as output of the policy
 	m_CriticNetworkDefinition->addInputActionVar(m_outputAction.get());
+	m_actionValues = vector<double>(1);
+	m_gradientWrtAction = vector<double>(1);
 
 	//Set both networks as single-output
 	m_CriticNetworkDefinition->setScalarOutput();
@@ -69,9 +72,10 @@ void DDPG::deferredLoadStep()
 
 double DDPG::selectAction(const State * s, Action * a)
 {
-	double policyOutput= m_pActorOnlineNetwork->get(s, a);
-	policyOutput += m_policyNoise->getSample();
-	a->set(m_outputAction.get(), policyOutput);
+	m_pActorOnlineNetwork->get(s, a);
+	double policyOutput = a->get(m_outputAction.get());
+	double noise= m_policyNoise->getSample();
+	a->set(m_outputAction.get(), policyOutput + noise);
 
 	return 1.0;
 }
@@ -89,23 +93,14 @@ void DDPG::updateActor(const State* s, const Action* a, const State* s_p, double
 	if (SimionApp::get()->pSimGod->bReplayingExperience())
 	{
 		double gamma = SimionApp::get()->pSimGod->getGamma();
+
+		m_pActorTargetNetwork->get(s, (Action*) a);
+		m_pCriticTargetNetwork->gradient(s, a, m_gradientWrtAction);
 	}
 	else if (m_pActorMinibatch->isFull())
 	{
 
 	}
-	//CNTK::FunctionPtr modelPolicyOutputPtr = m_predictionPolicyNetwork.getNetwork()->getOutputsFunctionPtr()[0];
-	//CNTK::FunctionPtr modelQOutputPtr = m_predictionQNetwork.getNetwork()->getOutputsFunctionPtr()[0];
-
-	//for (int i = 0; i < m_experienceReplay->getUpdateBatchSize(); i++)
-	//{
-	////get Q(s_p) for entire minibatch
-	//	SimionApp::get()->pSimGod->getGlobalStateFeatureMap()->getFeatures(m_pMinibatchExperienceTuples[i]->s, m_pStateFeatureList);
-	//	for (int n = 0; n < m_pStateFeatureList->m_numFeatures; n++)
-	//	m_minibatch_s[m_pStateFeatureList->m_pFeatures[n].m_index + i * m_inputState.size()] = m_pStateFeatureList->m_pFeatures[n].m_factor;
-
-	//	m_minibatchActionVector[i] = m_pMinibatchExperienceTuples[i]->a->get(m_outputAction.get());
-	//}
 
 	//CNTK::ValuePtr stateInputValue = CNTK::Value::CreateBatch(m_predictionQNetwork.getNetwork()->getInputs()[0]->getInputVariable().Shape(), m_minibatch_s, CNTK::DeviceDescriptor::CPUDevice());
 
@@ -159,17 +154,17 @@ void DDPG::updateActor(const State* s, const Action* a, const State* s_p, double
 	m_pActorTargetNetwork->performWeightTransition(m_pActorOnlineNetwork);
 
 
-//we have to perform something like this
+	//we have to perform something like this
 
-//self.q_gradient_input = tf.placeholder("float",[None,self.action_dim])
-//self.parameters_gradients = tf.gradients(self.action_output,self.net,-self.q_gradient_input)
-//self.optimizer = tf.train.AdamOptimizer(LEARNING_RATE).apply_gradients(zip(self.parameters_gradients,self.net))
+	//self.q_gradient_input = tf.placeholder("float",[None,self.action_dim])
+	//self.parameters_gradients = tf.gradients(self.action_output,self.net,-self.q_gradient_input)
+	//self.optimizer = tf.train.AdamOptimizer(LEARNING_RATE).apply_gradients(zip(self.parameters_gradients,self.net))
 
-//maybe this helps
-//https://stackoverflow.com/questions/41814858/how-to-access-gradients-and-modify-weights-parameters-directly-during-training
+	//maybe this helps
+	//https://stackoverflow.com/questions/41814858/how-to-access-gradients-and-modify-weights-parameters-directly-during-training
 
-//python: Learner.update(gradient_values, training_sample_count)
-//C++:    model->getTrainer()->ParameterLearners()[0]->Update();
+	//python: Learner.update(gradient_values, training_sample_count)
+	//C++:    model->getTrainer()->ParameterLearners()[0]->Update();
 
 }
 

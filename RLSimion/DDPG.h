@@ -25,6 +25,9 @@ protected:
 	INetwork* m_pActorTargetNetwork= nullptr;
 	IMinibatch* m_pActorMinibatch= nullptr;
 
+	vector<double> m_stateValues;
+	vector<double> m_actionValues;
+	vector<double> m_gradientWrtAction;
 
 	CHILD_OBJECT_FACTORY<Noise> m_policyNoise;
 	DOUBLE_PARAM m_tau;

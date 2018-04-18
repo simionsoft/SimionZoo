@@ -213,11 +213,15 @@ void Network::setOutputLayer(CNTK::FunctionPtr outputLayer)
 	m_FunctionPtr = outputLayer;
 }
 
-double Network::get(const State* s, const Action* a)
+void Network::get(const State* s, Action* a)
 {
-	vector<double> output = vector<double>(1);
+	const vector<size_t>& actionVars = m_pNetworkDefinition->getInputActionVarIds();
+	vector<double> output = vector<double>(actionVars.size());
+
 	get(s, a, output);
-	return output[0];
+
+	for (size_t i = 0; i < actionVars.size(); i++)
+		a->set((int)actionVars[i], output[i]);
 }
 
 void Network::get(const State* s, const Action* a, vector<double>& outputVector)
@@ -254,7 +258,7 @@ void Network::get(const State* s, const Action* a, vector<double>& outputVector)
 		const vector<size_t>& actionVars = m_pNetworkDefinition->getInputActionVarIds();
 		inputAction = vector<double>(actionVars.size());
 		for (size_t i = 0; i < actionVars.size(); i++)
-			inputAction[i] = s->get((int)actionVars[i]);
+			inputAction[i] = a->get((int)actionVars[i]);
 		inputs[m_inputAction] = CNTK::Value::CreateBatch(m_inputAction.Shape()
 			, inputAction, CNTK::DeviceDescriptor::CPUDevice());
 	}
