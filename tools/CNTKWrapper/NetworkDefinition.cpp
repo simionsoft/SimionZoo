@@ -234,6 +234,9 @@ size_t NetworkDefinition::getInputSize()
 void NetworkDefinition::setOutputActionVector(size_t actionVarId, size_t numOutputs, double minvalue, double maxvalue)
 {
 	double stepSize;
+
+	m_bScalarOutput = false;
+
 	m_outputActionValues = vector<double>(numOutputs);
 	for (size_t i = 0; i < numOutputs; i++)
 	{
@@ -246,12 +249,18 @@ void NetworkDefinition::setOutputActionVector(size_t actionVarId, size_t numOutp
 
 double NetworkDefinition::getActionIndexOutput(size_t actionIndex)
 {
+	if (m_bScalarOutput)
+		throw std::exception("Cannot use getActionIndexOutput() with single-output networks");
+
 	actionIndex = std::max((size_t)0, std::min(m_outputActionValues.size() - 1, actionIndex));
 	return m_outputActionValues[actionIndex];
 }
 
 size_t NetworkDefinition::getClosestOutputIndex(double value)
 {
+	if (m_bScalarOutput)
+		throw std::exception("Cannot use getActionIndexOutput() with single-output networks");
+
 	size_t nearestIndex = 0;
 
 	double dist;
@@ -278,7 +287,15 @@ size_t NetworkDefinition::getOutputActionVar()
 
 size_t NetworkDefinition::getOutputSize()
 {
+	if (m_bScalarOutput)
+		return 1;
+
 	return m_outputActionValues.size();
+}
+
+void NetworkDefinition::setScalarOutput()
+{
+	m_bScalarOutput = true;
 }
 
 IMinibatch* NetworkDefinition::createMinibatch(size_t size)

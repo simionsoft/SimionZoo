@@ -20,6 +20,17 @@ void Minibatch::clear()
 	m_numTuples = 0;
 }
 
+//Added for convenience to avoid vectors when not needed
+void Minibatch::addTuple(const State* s, const Action* a, double targetValue)
+{
+	if (m_pNetworkDefinition->getOutputSize() != 1)
+		throw std::exception("Cannot use a scalar target value with multiple-output networks");
+
+	vector<double> targetValues = vector<double>(1);
+	targetValues[0] = targetValue;
+	addTuple(s, a, targetValues);
+}
+
 void Minibatch::addTuple(const State* s, const Action* a, vector<double>& targetValues)
 {
 	if (m_numTuples >= m_size)

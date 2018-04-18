@@ -328,9 +328,9 @@ CNTK::FunctionPtr CNTKWrapper::Internal::FullyConnectedLinearLayer(CNTK::Variabl
 	size_t inputDim = input.Shape()[0];
 
 	auto timesParam = Parameter({ outputDim, inputDim }
-	, DataType::Double, GlorotUniformInitializer(DefaultParamInitScale
-		, SentinelValueForInferParamInitRank, SentinelValueForInferParamInitRank, 1)
-		, device, L"timesParam");
+								, DataType::Double, GlorotUniformInitializer(DefaultParamInitScale
+								, SentinelValueForInferParamInitRank, SentinelValueForInferParamInitRank, 1)
+								, device, L"timesParam");
 	auto timesFunction = Times(timesParam, input, L"times");
 
 	auto plusParam = Parameter({ outputDim }, 0.0, device, L"plusParam");

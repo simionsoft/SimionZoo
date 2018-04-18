@@ -37,5 +37,5 @@ public:
 	void saveFile(const char* pFilename);
 	void saveFile(FILE* pFile);
 
-	void getFrozenCopy(ConfigFile* pParameterFile);
+	void clone(ConfigFile* pParameterFile);
 };

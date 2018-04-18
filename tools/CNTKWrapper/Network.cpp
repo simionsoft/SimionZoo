@@ -35,7 +35,6 @@ void outputArguments(wstring header,FunctionPtr f)
 
 void outputParameters(wstring header, FunctionPtr f)
 {
-	return;
 	wcout << header << "\n";
 	for each (auto arg in f->Parameters())
 		wcout << arg.Name() << ": " << arg.AsString() << "\n";
@@ -48,25 +47,30 @@ void Network::buildNetwork(double learningRate)
 
 	m_targetVariable = CNTK::InputVariable({(size_t)m_pNetworkDefinition->getOutputSize()}
 		, CNTK::DataType::Double, m_targetName);
-	m_lossFunctionPtr = CNTK::SquaredError(m_QFunctionPtr, m_targetVariable, m_lossName);
-	m_networkFunctionPtr = CNTK::Combine({ m_lossFunctionPtr, m_QFunctionPtr }, m_networkName);
+	m_lossFunctionPtr = CNTK::SquaredError(m_FunctionPtr, m_targetVariable, m_lossName);
+	m_networkFunctionPtr = CNTK::Combine({ m_lossFunctionPtr, m_FunctionPtr }, m_networkName);
 
 	//trainer
 	const OptimizerSettings* optimizer = m_pNetworkDefinition->getOptimizerSettings();
-	m_trainer = CNTKWrapper::CreateOptimizer(optimizer, m_QFunctionPtr, m_lossFunctionPtr, learningRate);
+	m_trainer = CNTKWrapper::CreateOptimizer(optimizer, m_FunctionPtr, m_lossFunctionPtr, learningRate);
 
-	outputArguments(L"QFunctionPtr",m_QFunctionPtr);
 	FunctionPtr foundPtr = m_networkFunctionPtr->FindByName(m_pNetworkDefinition->getOutputLayer())->Output();
-	outputArguments(L"Found QFunctionPtr", foundPtr);
 }
 
-INetwork* Network::getFrozenCopy() const
+INetwork* Network::clone(bool bFreezeWeights) const
 {
 	Network* result = new Network(m_pNetworkDefinition);
 
-	outputArguments(L"Original Network:",m_QFunctionPtr);
+	outputArguments(L"Original Network:",m_FunctionPtr);
 
-	result->m_networkFunctionPtr = m_networkFunctionPtr->Clone(ParameterCloningMethod::Freeze);
+	ParameterCloningMethod cloneMethod;
+	if (bFreezeWeights)
+		cloneMethod = ParameterCloningMethod::Freeze;
+	else
+		cloneMethod = ParameterCloningMethod::Clone;
+
+	result->m_networkFunctionPtr = m_networkFunctionPtr->Clone(cloneMethod);
+
 	for each (auto input in result->m_networkFunctionPtr->Arguments())
 	{
 		wstring name = input.Name();
@@ -84,24 +88,72 @@ INetwork* Network::getFrozenCopy() const
 			result->m_targetVariable = input;
 	}
 
-	result->m_QFunctionPtr = result->m_networkFunctionPtr->FindByName(
+	result->m_FunctionPtr = result->m_networkFunctionPtr->FindByName(
 		m_pNetworkDefinition->getOutputLayer())->Output();
 
-	outputArguments(L"Cloned Network", result->m_QFunctionPtr);
-	outputParameters(L"Original QNetwork", m_QFunctionPtr);
-	outputParameters(L"Cloned QNetwork- parameters:", result->m_QFunctionPtr);
+	outputParameters(L"Original QNetwork", m_FunctionPtr);
+	outputParameters(L"Cloned QNetwork- parameters:", result->m_FunctionPtr);
 
 	result->m_lossFunctionPtr = m_networkFunctionPtr->FindByName(m_lossName);
 
 	return result;
 }
 
+void Network::initWeightTransition(double u, INetwork* pTargetNetworkInterface)
+{
+	Network* pTargetNetwork = dynamic_cast<Network*>(pTargetNetworkInterface);
+	if (!pTargetNetwork)
+		throw std::exception("Incorrect target in CNTKWrapper::Network::initWeightTransition");
+	
+	size_t numOnlineParams = m_FunctionPtr->Parameters().size();
+	size_t numTargetParams = pTargetNetwork->m_FunctionPtr->Parameters().size();
+	if (numOnlineParams!=numTargetParams)
+		throw std::exception("Missmatched number of parameters in CNTKWrapper::Network::initWeightTransition");
+
+	auto scale = CNTK::Constant::Scalar(CNTK::DataType::Float, u, CNTK::DeviceDescriptor::CPUDevice());
+	auto anitScale = CNTK::Constant::Scalar(CNTK::DataType::Float, 1.0f - u, CNTK::DeviceDescriptor::CPUDevice());
+
+	for (int i = 0; i < m_FunctionPtr->Parameters().size(); i++)
+	{
+		auto targetParam = pTargetNetwork->m_FunctionPtr->Parameters()[i];
+		auto predictionParam = m_FunctionPtr->Parameters()[i];
+
+		auto weightTransition = CNTK::Plus(CNTK::ElementTimes(scale, predictionParam), CNTK::ElementTimes(anitScale, targetParam));
+		m_weightTransitions[targetParam] = weightTransition;
+	}
+}
+
+void Network::performWeightTransition(INetwork* pTargetNetworkInterface)
+{
+	Network* pTargetNetwork = dynamic_cast<Network*>(pTargetNetworkInterface);
+	if (!pTargetNetwork)
+		throw std::exception("Incorrect target in CNTKWrapper::Network::performWeightTransition");
+
+	size_t numOnlineParams = m_FunctionPtr->Parameters().size();
+	size_t numTargetParams = pTargetNetwork->m_FunctionPtr->Parameters().size();
+	if (numOnlineParams != numTargetParams)
+		throw std::exception("Missmatched number of parameters in CNTKWrapper::Network::performWeightTransition");
+
+	for (int i = 0; i < m_FunctionPtr->Parameters().size(); i++)
+	{
+		auto targetParam = pTargetNetwork->m_FunctionPtr->Parameters()[i];
+		auto weightTransition = m_weightTransitions[targetParam];
+
+		CNTK::ValuePtr weightTransitionOutputValue;
+		unordered_map<CNTK::Variable, CNTK::ValuePtr> outputs = { { weightTransition->Output(), weightTransitionOutputValue } };
+		weightTransition->Evaluate({}, outputs, CNTK::DeviceDescriptor::CPUDevice());
+		weightTransitionOutputValue = outputs[weightTransition->Output()];
+
+		targetParam.SetValue(weightTransitionOutputValue->Data());
+	}
+}
+
 void Network::findInputsAndOutputs()
 {
-	if (m_QFunctionPtr == nullptr)
+	if (m_FunctionPtr == nullptr)
 		throw runtime_error("Output layer not set in the network");
 	//look for the input layer among the arguments
-	for each(auto inputVariable in m_QFunctionPtr->Arguments())
+	for each(auto inputVariable in m_FunctionPtr->Arguments())
 	{
 		wstring name = inputVariable.Name();
 		wstring asstring = inputVariable.AsString();
@@ -158,21 +210,28 @@ void Network::setOutputLayer(CNTK::FunctionPtr outputLayer)
 {
 	wstring name = outputLayer->Name();
 	size_t size = outputLayer->Output().Shape().TotalSize();
-	m_QFunctionPtr = outputLayer;
+	m_FunctionPtr = outputLayer;
+}
+
+double Network::get(const State* s, const Action* a)
+{
+	vector<double> output = vector<double>(1);
+	get(s, a, output);
+	return output[0];
 }
 
 void Network::get(const State* s, const Action* a, vector<double>& outputVector)
 {
 	ValuePtr outputValue;
 	size_t s1 = outputVector.size();
-	size_t s2 = m_QFunctionPtr->Output().Shape().TotalSize();
-	if (outputVector.size() % m_QFunctionPtr->Output().Shape().TotalSize())
+	size_t s2 = m_FunctionPtr->Output().Shape().TotalSize();
+	if (outputVector.size() % m_FunctionPtr->Output().Shape().TotalSize())
 	{
 		throw runtime_error("predictionData does not have the right size.");
 	}
 
 	unordered_map<CNTK::Variable, CNTK::ValuePtr> outputs =
-		{ { m_QFunctionPtr->Output(), outputValue } };
+		{ { m_FunctionPtr->Output(), outputValue } };
 
 	unordered_map<CNTK::Variable, CNTK::ValuePtr> inputs =
 		unordered_map<CNTK::Variable, CNTK::ValuePtr>();
@@ -200,12 +259,12 @@ void Network::get(const State* s, const Action* a, vector<double>& outputVector)
 			, inputAction, CNTK::DeviceDescriptor::CPUDevice());
 	}
 
-	m_QFunctionPtr->Evaluate(inputs, outputs, CNTK::DeviceDescriptor::CPUDevice());
+	m_FunctionPtr->Evaluate(inputs, outputs, CNTK::DeviceDescriptor::CPUDevice());
 
-	outputValue = outputs[m_QFunctionPtr];
+	outputValue = outputs[m_FunctionPtr];
 
-	CNTK::NDShape outputShape = m_QFunctionPtr->Output().Shape().AppendShape({ 1
-		, outputVector.size() / m_QFunctionPtr->Output().Shape().TotalSize() });
+	CNTK::NDShape outputShape = m_FunctionPtr->Output().Shape().AppendShape({ 1
+		, outputVector.size() / m_FunctionPtr->Output().Shape().TotalSize() });
 
 	CNTK::NDArrayViewPtr cpuArrayOutput = CNTK::MakeSharedObject<CNTK::NDArrayView>(outputShape
 		, outputVector, false);
@@ -238,7 +297,7 @@ void Network::gradients(unordered_map<string, vector<double>&>& inputDataMap
 	, vector<double>& targetOutputData, unordered_map<CNTK::Variable
 	, CNTK::ValuePtr>& gradients)
 {
-	FunctionPtr outputPtr = m_QFunctionPtr;
+	FunctionPtr outputPtr = m_FunctionPtr;
 	ValuePtr outputValue;
 	unordered_map<CNTK::Variable, CNTK::ValuePtr> outputs =
 		{ { outputPtr->Output(), outputValue } ,{ m_lossFunctionPtr , nullptr } };
@@ -266,7 +325,7 @@ void Network::gradients(unordered_map<string, vector<double>&>& inputDataMap
 void Network::gradients(unordered_map<string, vector<double>&>& inputDataMap
 	, unordered_map<CNTK::Variable, CNTK::ValuePtr>& gradients)
 {
-	FunctionPtr outputPtr = m_QFunctionPtr;
+	FunctionPtr outputPtr = m_FunctionPtr;
 	ValuePtr outputValue;
 
 	unordered_map<CNTK::Variable, CNTK::ValuePtr> outputs =
@@ -288,7 +347,7 @@ void Network::gradients(unordered_map<string, vector<double>&>& inputDataMap
 void Network::predict(unordered_map<string, vector<double>&>& inputDataMap
 	, vector<double>& predictionData)
 {
-	FunctionPtr outputPtr = m_QFunctionPtr;
+	FunctionPtr outputPtr = m_FunctionPtr;
 	ValuePtr outputValue;
 
 	unordered_map<CNTK::Variable, CNTK::ValuePtr> outputs =

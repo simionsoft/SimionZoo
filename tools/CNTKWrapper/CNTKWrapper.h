@@ -31,8 +31,9 @@ public:
 	virtual void addInputActionVar(size_t stateVarId)= 0;
 	virtual const vector<size_t>& getInputActionVarIds()= 0;
 
-	virtual size_t getInputSize() = 0;
-
+	//Sets the output size to 1
+	virtual void setScalarOutput() = 0;
+	//These can only be used if setScalarOutput() is not called
 	virtual void setOutputActionVector(size_t actionVarId, size_t numOutputs, double minvalue, double maxvalue) = 0;
 	virtual size_t getClosestOutputIndex(double value)=  0;
 	virtual double getActionIndexOutput(size_t actionIndex) = 0;
@@ -53,10 +54,14 @@ public:
 
 	virtual void save(string fileName)= 0;
 
-	virtual INetwork* getFrozenCopy() const= 0;
+	virtual INetwork* clone(bool bFreezeWeights= true) const= 0;
+
+	virtual void initWeightTransition(double u, INetwork* pTargetNetwork) = 0;
+	virtual void performWeightTransition(INetwork* pTargetNetwork) = 0;
 
 	virtual void train(IMinibatch* pMinibatch) = 0;
 	virtual void get(const State* s, const Action* a, vector<double>& outputValues) = 0;
+	virtual double get(const State* s, const Action* a) = 0;
 };
 
 class IMinibatch
@@ -66,6 +71,7 @@ public:
 
 	virtual void clear() = 0;
 	virtual void addTuple(const State* s, const Action* a, vector<double>& targetValues) = 0;
+	virtual void addTuple(const State* s, const Action* a, double targetValue) = 0;
 	virtual vector<double>& getInputState() = 0;
 	virtual vector<double>& getInputAction() = 0;
 	virtual vector<double>& getOutput() = 0;

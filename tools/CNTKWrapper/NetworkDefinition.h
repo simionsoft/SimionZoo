@@ -19,6 +19,7 @@ protected:
 	vector<size_t> m_inputStateVars;
 	vector<size_t> m_inputActionVars;
 
+	bool m_bScalarOutput = true;
 	size_t m_outputActionVar;
 	vector<double> m_outputActionValues;
 
@@ -63,6 +64,7 @@ public:
 	double getActionIndexOutput(size_t actionIndex);
 	size_t getOutputActionVar();
 	size_t getOutputSize();
+	void setScalarOutput();
 
 	virtual IMinibatch* createMinibatch(size_t size);
 

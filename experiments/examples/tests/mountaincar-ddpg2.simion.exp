@@ -27,23 +27,15 @@
 		<Gamma>0.9</Gamma>
 		<Freeze-Target-Function>false</Freeze-Target-Function>
 		<Use-Importance-Weights>false</Use-Importance-Weights>
-		<State-Feature-Map>
-			<Type>
-		<State-Bag>
-			<State-Variables>
-				<State-Variables>position</State-Variables>
-			</State-Variables>
-			<State-Variables>
-				<State-Variables>velocity</State-Variables>
-			</State-Variables>
-		</State-Bag>
-		</Type>
-		</State-Feature-Map>
+                <Experience-Replay>
+	          <Buffer-Size>5000</Buffer-Size>
+	          <Update-Batch-Size>50</Update-Batch-Size>
+                </Experience-Replay>
 		<Simion>
 			<Type>
 		<DDPG>
-			<tau>0.001</tau>
-			<q-neural-network><Problem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+			<Tau>0.001</Tau>
+			<Critic-Network><Problem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
   <Inputs>
     <InputData ID="state-input" Name="State">
       <Shape xsi:type="IntTuple1D">
@@ -192,8 +184,8 @@
       </Chain>
     </Chains>
   </NetworkArchitecture>
-</Problem></q-neural-network>
-			<policy-neural-network><Problem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+</Problem></Actor-Network>
+			<Actor-Network><Problem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
   <Inputs>
     <InputData ID="state-input" Name="State">
       <Shape xsi:type="IntTuple1D">
@@ -282,13 +274,9 @@
       </Chain>
     </Chains>
   </NetworkArchitecture>
-</Problem></policy-neural-network>
+</Problem></Actor-Network>
 			<Output-Action>pedal</Output-Action>
-			<experience-replay>
-				<Buffer-Size>100000</Buffer-Size>
-				<Update-Batch-Size>64</Update-Batch-Size>
-			</experience-replay>
-			<noise>
+			<Exploration-Noise>
 				<Noise>
 		<Ornstein-Uhlenbeck>
 			<Mu>0</Mu>
@@ -303,7 +291,7 @@
 			</Scale>
 		</Ornstein-Uhlenbeck>
 		</Noise>
-			</noise>
+			</Exploration-Noise>
 		</DDPG>
 		</Type>
 		</Simion>

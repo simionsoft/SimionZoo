@@ -172,7 +172,7 @@ void ConfigNode::saveFile(FILE* pFile)
 	SaveFile(pFile, false);
 }
 
-void ConfigNode::getFrozenCopy(ConfigFile* parameterFile)
+void ConfigNode::clone(ConfigFile* parameterFile)
 {
 	this->DeleteChildren();
 

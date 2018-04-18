@@ -24,13 +24,15 @@ protected:
 
 	CNTK::FunctionPtr m_networkFunctionPtr;
 
-	CNTK::FunctionPtr m_QFunctionPtr;
+	CNTK::FunctionPtr m_FunctionPtr;
 	CNTK::FunctionPtr m_lossFunctionPtr;
 	CNTK::Variable m_targetVariable;
 
 	CNTK::TrainerPtr m_trainer;
 
 	NetworkDefinition *m_pNetworkDefinition;
+
+	unordered_map<CNTK::Parameter, CNTK::FunctionPtr> m_weightTransitions;
 public:
 	Network(NetworkDefinition* pNetworkDefinition);
 	~Network();
@@ -42,10 +44,14 @@ public:
 
 	void save(string fileName);
 
-	INetwork* getFrozenCopy() const;
+	INetwork* clone(bool bFreezeWeights= true) const;
+
+	void initWeightTransition(double u, INetwork* pTargetNetwork);
+	void performWeightTransition(INetwork* pTargetNetwork);
 
 	void train(IMinibatch* pMinibatch);
 	void get(const State* s, const Action* a, vector<double>& outputValues);
+	double get(const State* s, const Action* a);
 	/*
 	void train(std::unordered_map<std::string, std::vector<double>&>& inputDataMap, std::vector<double>& targetOutputData);
 	void predict(std::unordered_map<std::string, std::vector<double>&>& inputDataMap, std::vector<double>& predictionData);

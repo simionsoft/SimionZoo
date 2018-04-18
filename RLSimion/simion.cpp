@@ -5,6 +5,7 @@
 #include "actor-critic.h"
 #include "q-learners.h"
 #include "DQN.h"
+#include "DDPG.h"
 #include "async-deep-simion.h"
 
 std::shared_ptr<Simion> Simion::getInstance(ConfigNode* pConfigNode)
@@ -22,8 +23,8 @@ std::shared_ptr<Simion> Simion::getInstance(ConfigNode* pConfigNode)
 #ifdef _WIN64
 		,{"DQN", CHOICE_ELEMENT_NEW<DQN>}
 		,{"Double-DQN", CHOICE_ELEMENT_NEW<DoubleDQN>}
-/*		,{ "DDPG", CHOICE_ELEMENT_NEW<DDPG> }
-		,{ "Async-QL-earning", CHOICE_ELEMENT_NEW<AsyncQLearning > }*/
+		,{ "DDPG", CHOICE_ELEMENT_NEW<DDPG> }
+		/*,{ "Async-QL-earning", CHOICE_ELEMENT_NEW<AsyncQLearning > }*/
 #endif
 	});
 }

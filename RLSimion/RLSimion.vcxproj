@@ -250,6 +250,7 @@
     <ClCompile Include="critic-tdc-lambda.cpp" />
     <ClCompile Include="critic-true-online-td-lambda.cpp" />
     <ClCompile Include="critic.cpp" />
+    <ClCompile Include="DDPG.cpp" />
     <ClCompile Include="deep-vfa-policy.cpp" />
     <ClCompile Include="deferred-load.cpp" />
     <ClCompile Include="DQN.cpp" />
@@ -318,6 +319,7 @@
     <ClInclude Include="controller-adaptive.h" />
     <ClInclude Include="controller.h" />
     <ClInclude Include="critic.h" />
+    <ClInclude Include="DDPG.h" />
     <ClInclude Include="deep-vfa-policy.h" />
     <ClInclude Include="deferred-load.h" />
     <ClInclude Include="DQN.h" />
