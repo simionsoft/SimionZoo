@@ -49,7 +49,7 @@ void DQN::deferredLoadStep()
 	//set the input-outputs
 	for (size_t stateVarIndex = 0; stateVarIndex < m_inputState.size(); stateVarIndex++)
 		m_pNNDefinition->addInputStateVar(stateVarIndex);
-	m_pNNDefinition->setOutputActionVector(m_outputAction.get(), m_numActionSteps.get()
+	m_pNNDefinition->setDiscretizedActionVectorOutput(m_outputAction.get(), m_numActionSteps.get()
 		, actionDescr[m_outputAction.get()].getMin(), actionDescr[m_outputAction.get()].getMax());
 
 	//create the networks

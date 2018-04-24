@@ -12,7 +12,7 @@ class DDPG : public Simion, DeferredLoad
 {
 protected:
 	MULTI_VALUE_VARIABLE<STATE_VARIABLE> m_inputState;
-	ACTION_VARIABLE m_outputAction;
+	MULTI_VALUE_VARIABLE<ACTION_VARIABLE> m_outputAction;
 	DOUBLE_PARAM m_learningRate;
 
 	NN_DEFINITION m_CriticNetworkDefinition;

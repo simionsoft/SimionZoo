@@ -31,14 +31,14 @@ public:
 	virtual void addInputActionVar(size_t stateVarId)= 0;
 	virtual const vector<size_t>& getInputActionVarIds()= 0;
 
-	//Sets the output size to 1
 	virtual void setScalarOutput() = 0;
-	//These can only be used if setScalarOutput() is not called
-	virtual void setOutputActionVector(size_t actionVarId, size_t numOutputs, double minvalue, double maxvalue) = 0;
+	virtual void setVectorOutput(size_t dimension) = 0;
+	virtual void setDiscretizedActionVectorOutput(size_t actionVarId, size_t numOutputs, double minvalue, double maxvalue) = 0;
+	//These can only be used after calling setDiscretizedActionVectorOutput()
 	virtual size_t getClosestOutputIndex(double value)=  0;
 	virtual double getActionIndexOutput(size_t actionIndex) = 0;
 
-	virtual IMinibatch* createMinibatch(size_t size) = 0;
+	virtual IMinibatch* createMinibatch(size_t size, size_t outputSize= 0) = 0;
 
 	//for convenience we override the learning rate set in the network definition's parameters
 	virtual INetwork* createNetwork(double learningRate) = 0;
@@ -61,7 +61,7 @@ public:
 
 	virtual void train(IMinibatch* pMinibatch) = 0;
 	virtual void get(const State* s, const Action* a, vector<double>& outputValues) = 0;
-	virtual void get(const State* s, Action* a) = 0;
+	virtual double get(const State* s, const Action* a) = 0;
 };
 
 class IMinibatch

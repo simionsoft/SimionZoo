@@ -213,15 +213,14 @@ void Network::setOutputLayer(CNTK::FunctionPtr outputLayer)
 	m_FunctionPtr = outputLayer;
 }
 
-void Network::get(const State* s, Action* a)
+double Network::get(const State* s, const Action* a)
 {
-	const vector<size_t>& actionVars = m_pNetworkDefinition->getInputActionVarIds();
-	vector<double> output = vector<double>(actionVars.size());
+	if (m_pNetworkDefinition->getOutputType() != OutputType::Scalar)
+		throw std::exception("Cannot use get(s,a) with vectorial-output networks");
 
+	vector<double> output = vector<double>(1);
 	get(s, a, output);
-
-	for (size_t i = 0; i < actionVars.size(); i++)
-		a->set((int)actionVars[i], output[i]);
+	return output[0];
 }
 
 void Network::get(const State* s, const Action* a, vector<double>& outputVector)

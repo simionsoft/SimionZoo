@@ -231,11 +231,12 @@ size_t NetworkDefinition::getInputSize()
 }
 
 
-void NetworkDefinition::setOutputActionVector(size_t actionVarId, size_t numOutputs, double minvalue, double maxvalue)
+void NetworkDefinition::setDiscretizedActionVectorOutput(size_t actionVarId, size_t numOutputs, double minvalue, double maxvalue)
 {
 	double stepSize;
 
-	m_bScalarOutput = false;
+	m_outputType = DiscretizedActionVector;
+	m_outputSize = numOutputs;
 
 	m_outputActionValues = vector<double>(numOutputs);
 	for (size_t i = 0; i < numOutputs; i++)
@@ -243,14 +244,12 @@ void NetworkDefinition::setOutputActionVector(size_t actionVarId, size_t numOutp
 		stepSize = (maxvalue - minvalue)/((int)numOutputs-1);
 		m_outputActionValues[i] = minvalue + stepSize * i;
 	}
-
-	m_outputActionVar = actionVarId;
 }
 
 double NetworkDefinition::getActionIndexOutput(size_t actionIndex)
 {
-	if (m_bScalarOutput)
-		throw std::exception("Cannot use getActionIndexOutput() with single-output networks");
+	if (m_outputType != DiscretizedActionVector)
+		throw std::exception("Can only use getActionIndexOutput() with discretized action vector outputs");
 
 	actionIndex = std::max((size_t)0, std::min(m_outputActionValues.size() - 1, actionIndex));
 	return m_outputActionValues[actionIndex];
@@ -258,8 +257,8 @@ double NetworkDefinition::getActionIndexOutput(size_t actionIndex)
 
 size_t NetworkDefinition::getClosestOutputIndex(double value)
 {
-	if (m_bScalarOutput)
-		throw std::exception("Cannot use getActionIndexOutput() with single-output networks");
+	if (m_outputType != DiscretizedActionVector)
+		throw std::exception("Can only use getClosestOutputIndex() with discretized action vector outputs");
 
 	size_t nearestIndex = 0;
 
@@ -280,27 +279,26 @@ size_t NetworkDefinition::getClosestOutputIndex(double value)
 	return nearestIndex;
 }
 
-size_t NetworkDefinition::getOutputActionVar()
-{
-	return m_outputActionVar;
-}
-
 size_t NetworkDefinition::getOutputSize()
 {
-	if (m_bScalarOutput)
-		return 1;
-
-	return m_outputActionValues.size();
+	return m_outputSize;
 }
 
 void NetworkDefinition::setScalarOutput()
 {
-	m_bScalarOutput = true;
+	m_outputType = Scalar;
+	m_outputSize = 1;
 }
 
-IMinibatch* NetworkDefinition::createMinibatch(size_t size)
+void NetworkDefinition::setVectorOutput(size_t dimension)
 {
-	return new Minibatch(size, this);
+	m_outputType = Vector;
+	m_outputSize = dimension;
+}
+
+IMinibatch* NetworkDefinition::createMinibatch(size_t sampleSize, size_t outputSize)
+{
+	return new Minibatch(sampleSize, this, outputSize);
 }
 
 void NetworkDefinition::setStateInputLayer(wstring name)

@@ -34,6 +34,16 @@
 		<Simion>
 			<Type>
 		<DDPG>
+	                <Input-State>
+	                  <Input-State>position</Input-State>
+	                </Input-State>
+	                <Input-State>
+	                  <Input-State>velocity</Input-State>
+	                </Input-State>
+			<Output-Action>
+			  <Output-Action>pedal</Output-Action>
+			</Output-Action>
+			<Learning-Rate>0.0000001</Learning-Rate>
 			<Tau>0.001</Tau>
 			<Critic-Network><Problem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
   <Inputs>

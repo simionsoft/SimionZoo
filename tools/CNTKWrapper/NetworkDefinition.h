@@ -10,6 +10,8 @@ class Network;
 class LinkConnection;
 class OptimizerSettings;
 
+enum OutputType {Unset, Scalar, Vector, DiscretizedActionVector};
+
 class NetworkDefinition: public INetworkDefinition
 {
 	wstring m_stateInputLayer;
@@ -19,8 +21,10 @@ protected:
 	vector<size_t> m_inputStateVars;
 	vector<size_t> m_inputActionVars;
 
-	bool m_bScalarOutput = true;
-	size_t m_outputActionVar;
+	OutputType m_outputType = Unset;
+	size_t m_outputSize;
+
+	//used only if m_outputType= DiscretizedActionVector
 	vector<double> m_outputActionValues;
 
 	NetworkArchitecture* m_pNetworkArchitecture;
@@ -59,14 +63,15 @@ public:
 
 	size_t getInputSize();
 
-	void setOutputActionVector(size_t actionVarId, size_t numOutputs, double minvalue, double maxvalue);
+	void setDiscretizedActionVectorOutput(size_t actionVarId, size_t numOutputs, double minvalue, double maxvalue);
 	size_t getClosestOutputIndex(double value);
 	double getActionIndexOutput(size_t actionIndex);
-	size_t getOutputActionVar();
 	size_t getOutputSize();
+	OutputType getOutputType() { return m_outputType; }
 	void setScalarOutput();
+	void setVectorOutput(size_t dimension);
 
-	virtual IMinibatch* createMinibatch(size_t size);
+	virtual IMinibatch* createMinibatch(size_t numSamples, size_t outputSize);
 
 	INetwork* createNetwork(double learningRate);
 };

@@ -13,9 +13,11 @@ class Minibatch: public IMinibatch
 	size_t m_size = 0;
 	vector<double> m_inputState;
 	vector<double> m_inputAction;
+
+	size_t m_outputSize = 0;
 	vector<double> m_output;
 public:
-	Minibatch(size_t size, NetworkDefinition* pNetworkDefinition);
+	Minibatch(size_t size, NetworkDefinition* pNetworkDefinition, size_t outputSize= 0);
 	virtual ~Minibatch();
 
 	void clear();

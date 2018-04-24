@@ -51,7 +51,7 @@ public:
 
 	void train(IMinibatch* pMinibatch);
 	void get(const State* s, const Action* a, vector<double>& outputValues);
-	void get(const State* s, Action* a);
+	double get(const State* s, const Action* a);
 	/*
 	void train(std::unordered_map<std::string, std::vector<double>&>& inputDataMap, std::vector<double>& targetOutputData);
 	void predict(std::unordered_map<std::string, std::vector<double>&>& inputDataMap, std::vector<double>& predictionData);
