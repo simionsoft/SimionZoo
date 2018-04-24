@@ -46,8 +46,8 @@ public:
 
 	INetwork* clone(bool bFreezeWeights= true) const;
 
-	void initWeightTransition(double u, INetwork* pTargetNetwork);
-	void performWeightTransition(INetwork* pTargetNetwork);
+	void initSoftUpdate(double u, INetwork* pTargetNetwork);
+	void softUpdate(INetwork* pTargetNetwork);
 
 	void train(IMinibatch* pMinibatch);
 	void get(const State* s, const Action* a, vector<double>& outputValues);

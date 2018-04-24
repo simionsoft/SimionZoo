@@ -99,16 +99,16 @@ INetwork* Network::clone(bool bFreezeWeights) const
 	return result;
 }
 
-void Network::initWeightTransition(double u, INetwork* pTargetNetworkInterface)
+void Network::initSoftUpdate(double u, INetwork* pTargetNetworkInterface)
 {
 	Network* pTargetNetwork = dynamic_cast<Network*>(pTargetNetworkInterface);
 	if (!pTargetNetwork)
-		throw std::exception("Incorrect target in CNTKWrapper::Network::initWeightTransition");
+		throw std::exception("Incorrect target in CNTKWrapper::Network::initSoftUpdate");
 	
 	size_t numOnlineParams = m_FunctionPtr->Parameters().size();
 	size_t numTargetParams = pTargetNetwork->m_FunctionPtr->Parameters().size();
 	if (numOnlineParams!=numTargetParams)
-		throw std::exception("Missmatched number of parameters in CNTKWrapper::Network::initWeightTransition");
+		throw std::exception("Missmatched number of parameters in CNTKWrapper::Network::initSoftUpdate");
 
 	auto scale = CNTK::Constant::Scalar(CNTK::DataType::Float, u, CNTK::DeviceDescriptor::CPUDevice());
 	auto anitScale = CNTK::Constant::Scalar(CNTK::DataType::Float, 1.0f - u, CNTK::DeviceDescriptor::CPUDevice());
@@ -123,16 +123,16 @@ void Network::initWeightTransition(double u, INetwork* pTargetNetworkInterface)
 	}
 }
 
-void Network::performWeightTransition(INetwork* pTargetNetworkInterface)
+void Network::softUpdate(INetwork* pTargetNetworkInterface)
 {
 	Network* pTargetNetwork = dynamic_cast<Network*>(pTargetNetworkInterface);
 	if (!pTargetNetwork)
-		throw std::exception("Incorrect target in CNTKWrapper::Network::performWeightTransition");
+		throw std::exception("Incorrect target in CNTKWrapper::Network::softUpdate");
 
 	size_t numOnlineParams = m_FunctionPtr->Parameters().size();
 	size_t numTargetParams = pTargetNetwork->m_FunctionPtr->Parameters().size();
 	if (numOnlineParams != numTargetParams)
-		throw std::exception("Missmatched number of parameters in CNTKWrapper::Network::performWeightTransition");
+		throw std::exception("Missmatched number of parameters in CNTKWrapper::Network::softUpdate");
 
 	for (int i = 0; i < m_FunctionPtr->Parameters().size(); i++)
 	{
@@ -237,8 +237,7 @@ void Network::get(const State* s, const Action* a, vector<double>& outputVector)
 	unordered_map<CNTK::Variable, CNTK::ValuePtr> outputs =
 		{ { m_FunctionPtr->Output(), outputValue } };
 
-	unordered_map<CNTK::Variable, CNTK::ValuePtr> inputs =
-		unordered_map<CNTK::Variable, CNTK::ValuePtr>();
+	unordered_map<CNTK::Variable, CNTK::ValuePtr> inputs = {};
 
 	vector<double> inputState;
 	

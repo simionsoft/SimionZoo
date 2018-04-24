@@ -60,13 +60,13 @@ void DDPG::deferredLoadStep()
 	//Critic initialization
 	m_pCriticOnlineNetwork = m_CriticNetworkDefinition->createNetwork(m_learningRate.get());
 	m_pCriticTargetNetwork = m_pCriticOnlineNetwork->clone(false);
-	m_pCriticTargetNetwork->initWeightTransition(m_tau.get(), m_pCriticOnlineNetwork);
+	m_pCriticTargetNetwork->initSoftUpdate(m_tau.get(), m_pCriticOnlineNetwork);
 	m_pCriticMinibatch = m_CriticNetworkDefinition->createMinibatch(minibatchSize);
 
 	//Actor initialization
 	m_pActorOnlineNetwork = m_ActorNetworkDefinition->createNetwork(m_learningRate.get());
 	m_pActorTargetNetwork = m_pActorOnlineNetwork->clone(false);
-	m_pActorTargetNetwork->initWeightTransition(m_tau.get(), m_pActorOnlineNetwork);
+	m_pActorTargetNetwork->initSoftUpdate(m_tau.get(), m_pActorOnlineNetwork);
 	m_pActorMinibatch = m_ActorNetworkDefinition->createMinibatch(minibatchSize);
 }
 
@@ -151,7 +151,7 @@ void DDPG::updateActor(const State* s, const Action* a, const State* s_p, double
 	//gradients[parameter] = parameterGradients[parameter]->Data();
 
 	//m_predictionPolicyNetwork.getNetwork()->getTrainer()->ParameterLearners()[0]->Update(gradients, m_experienceReplay->getUpdateBatchSize());
-	m_pActorTargetNetwork->performWeightTransition(m_pActorOnlineNetwork);
+	m_pActorTargetNetwork->softUpdate(m_pActorOnlineNetwork);
 
 
 	//we have to perform something like this
@@ -195,6 +195,6 @@ void DDPG::updateCritic(const State* s, const Action* a, const State* s_p, doubl
 		m_pCriticOnlineNetwork->train(m_pCriticMinibatch);
 
 		//move the target weights toward the online weights
-		m_pCriticTargetNetwork->performWeightTransition(m_pCriticOnlineNetwork);
+		m_pCriticTargetNetwork->softUpdate(m_pCriticOnlineNetwork);
 	}
 }

@@ -56,8 +56,8 @@ public:
 
 	virtual INetwork* clone(bool bFreezeWeights= true) const= 0;
 
-	virtual void initWeightTransition(double u, INetwork* pTargetNetwork) = 0;
-	virtual void performWeightTransition(INetwork* pTargetNetwork) = 0;
+	virtual void initSoftUpdate(double u, INetwork* pTargetNetwork) = 0;
+	virtual void softUpdate(INetwork* pTargetNetwork) = 0;
 
 	virtual void train(IMinibatch* pMinibatch) = 0;
 	virtual void get(const State* s, const Action* a, vector<double>& outputValues) = 0;
