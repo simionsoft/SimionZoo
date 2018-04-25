@@ -5,7 +5,7 @@
         <Translation>
           <X>0.0</X>
           <Y>2.0</Y>
-          <Z>5.0</Z>
+          <Z>10.0</Z>
         </Translation>
       </Transform>
     </Simple-Camera>

@@ -71,7 +71,7 @@ void TileCodingFeatureMap<dimensionGridType>::getFeatureStateAction(unsigned int
 	feature = feature % (m_totalNumFeatures / m_numTilings);
 
 	//now we have to unpack the feature step by step by going through each dimension
-	for (int i = m_grid.size() - 1; i >= 0; i--)
+	for (size_t i = m_grid.size() - 1; i >= 0; i--)
 	{
 		unsigned int prodLength = 1;
 		for (int j = 0; j < i; j++)

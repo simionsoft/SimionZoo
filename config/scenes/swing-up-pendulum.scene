@@ -107,7 +107,7 @@
       </Material>
       <Transform>
         <Scale><X>0.1</X><Y>1.0</Y><Z>0.1</Z></Scale>
-        <Rotation><Roll Bind="angle" Offset="0"/></Rotation>
+        <Rotation><Pitch Bind="angle" Offset="0"/></Rotation>
       </Transform>
     </Box>
   </Objects>

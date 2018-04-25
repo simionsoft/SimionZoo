@@ -36,7 +36,7 @@ double LinearVFA::get(const FeatureList *pFeatures,bool bUseFrozenWeights)
 	else
 		pWeights = m_pFrozenWeights;
 
-	for (unsigned int i = 0; i<pFeatures->m_numFeatures; i++)
+	for (size_t i = 0; i<pFeatures->m_numFeatures; i++)
 	{
 		if (m_minIndex <= pFeatures->m_pFeatures[i].m_index && m_maxIndex > pFeatures->m_pFeatures[i].m_index)
 		{

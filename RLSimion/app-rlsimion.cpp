@@ -92,7 +92,7 @@ void RLSimionApp::run()
 			pApp->pSimGod->postUpdate();
 
 			if (!m_bRemoteExecution)
-				updateScene(s_p);
+				updateScene(s, a);
 
 			//s= s'
 			s->copy(s_p);
@@ -125,25 +125,47 @@ void RLSimionApp::initRenderer(string sceneFile)
 	m_pRenderer->add2DGraphicObject(m_pProgressText);
 
 	//stats
-	Meter2D* pStatText;
+	Meter2D* pMeter2D;
 	IStats* pStat;
 	Vector2D origin = Vector2D(0.05, 0.85);
 	Vector2D size = Vector2D(0.3, 0.03);
+	Vector2D offset = Vector2D(0.0, 0.04);
+	double uiDepth = 0.25;
 	for (unsigned int i = 0; i < pLogger->getNumStats(); ++i)
 	{
 		pStat = pLogger->getStats(i);
-		pStatText = new Meter2D(string(pStat->getSubkey()), origin, size, 0.25);
-		m_pStatsText.push_back(pStatText);
-		m_pRenderer->add2DGraphicObject(pStatText);
-		origin -= Vector2D(0.0, 0.04);
+		pMeter2D = new Meter2D(string(pStat->getSubkey()), origin, size, uiDepth);
+		m_pStatsUIMeters.push_back(pMeter2D);
+		m_pRenderer->add2DGraphicObject(pMeter2D);
+		origin -= offset;
 	}
-
+	
+	//state variables
+	Descriptor& stateDescriptor = pWorld->getDynamicModel()->getStateDescriptor();
+	for (unsigned int i = 0; i < stateDescriptor.size(); i++)
+	{
+		pMeter2D = new Meter2D(stateDescriptor[i].getName(), origin, size, uiDepth);
+		pMeter2D->setValueRange(Range(stateDescriptor[i].getMin(), stateDescriptor[i].getMax()));
+		m_pStateUIMeters.push_back(pMeter2D);
+		m_pRenderer->add2DGraphicObject(pMeter2D);
+		origin -= offset;
+	}
+	//action variables
+	Descriptor& actionDescriptor = pWorld->getDynamicModel()->getActionDescriptor();
+	for (unsigned int i = 0; i < actionDescriptor.size(); i++)
+	{
+		pMeter2D = new Meter2D(actionDescriptor[i].getName(), origin, size, uiDepth);
+		pMeter2D->setValueRange(Range(actionDescriptor[i].getMin(), actionDescriptor[i].getMax()));
+		m_pActionUIMeters.push_back(pMeter2D);
+		m_pRenderer->add2DGraphicObject(pMeter2D);
+		origin -= offset;
+	}
 	m_pInputHandler = new FreeCameraInputHandler();
 	
 	m_timer.start();
 }
 
-void RLSimionApp::updateScene(State* s)
+void RLSimionApp::updateScene(State* s, Action* a)
 {
 	//check the renderer has been initialized
 	if (!m_pRenderer) return;
@@ -152,17 +174,25 @@ void RLSimionApp::updateScene(State* s)
 	m_pProgressText->set(string("Episode: ") + std::to_string(pExperiment->getEpisodeIndex())
 		+ string(" Step: ") + std::to_string(pExperiment->getStep()));
 
+	//2D METERS
 	//update stats
-	IStats* pStat;
 	unsigned int statIndex = 0;
-	for (auto it= m_pStatsText.begin(); it!=m_pStatsText.end(); ++it)
+	for each (Meter2D* pMeter2D in m_pStatsUIMeters)
 	{
-		pStat = pLogger->getStats(statIndex);
-		(*it)->setValue(pStat->get());
-		(*it)->setValueRange(Range(pStat->getStatsInfo()->getMin(), pStat->getStatsInfo()->getMax()));
+		IStats* pStat = pLogger->getStats(statIndex);
+		pMeter2D->setValue(pStat->get());
+		pMeter2D->setValueRange(Range(pStat->getStatsInfo()->getMin(), pStat->getStatsInfo()->getMax()));
 		++statIndex;
 	}
+	//update state
+	for (int i= 0; i < s->getNumVars(); i++)
+		m_pStateUIMeters[i]->setValue(s->get(i));
 
+	//update action
+	for (int i = 0; i < a->getNumVars(); i++)
+		m_pActionUIMeters[i]->setValue(a->get(i));
+
+	//2D/3D BOUND PROPERTIES: translation, rotation, ...
 	//update bindings
 	double value;
 	string varName;

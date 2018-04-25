@@ -17,9 +17,11 @@ class RLSimionApp : public SimionApp
 	Renderer *m_pRenderer = 0;
 	IInputHandler *m_pInputHandler = 0;
 	void initRenderer(string sceneFile);
-	void updateScene(State* s);
+	void updateScene(State* s, Action* a);
 	Text2D* m_pProgressText= 0;
-	vector<Meter2D*> m_pStatsText;
+	vector<Meter2D*> m_pStatsUIMeters;
+	vector<Meter2D*> m_pStateUIMeters;
+	vector<Meter2D*> m_pActionUIMeters;
 public:
 
 	RLSimionApp(ConfigNode* pParameters);

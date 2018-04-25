@@ -217,7 +217,7 @@ StochasticGaussianPolicy::StochasticGaussianPolicy(ConfigNode* pConfigNode)
 	m_pMeanVFA = CHILD_OBJECT<LinearStateVFA>(pConfigNode, "Mean-VFA", "The parameterized VFA that approximates the function");
 	m_pSigmaVFA = CHILD_OBJECT<LinearStateVFA>(pConfigNode, "Sigma-VFA", "The parameterized VFA that approximates variance(s)");
 	//m_pSigmaVFA->saturateOutput(0.0, 1.0);
-	m_pSigmaVFA->setIndexOffset(m_pMeanVFA->getNumWeights());
+	m_pSigmaVFA->setIndexOffset((unsigned int) m_pMeanVFA->getNumWeights());
 	m_pMeanFeatures = new FeatureList("Sto-Policy/mean-features");
 	m_pSigmaFeatures = new FeatureList("Sto-Policy/sigma-features");
 
