@@ -223,7 +223,9 @@
     <ClCompile Include="app-main.cpp">
       <Filter>app</Filter>
     </ClCompile>
-    <ClCompile Include="DDPG.cpp" />
+    <ClCompile Include="DDPG.cpp">
+      <Filter>learning</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="resource1.h" />
@@ -425,7 +427,9 @@
     <ClInclude Include="async-deep-simion.h">
       <Filter>learning</Filter>
     </ClInclude>
-    <ClInclude Include="DDPG.h" />
+    <ClInclude Include="DDPG.h">
+      <Filter>learning</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Text Include="ReadMe.txt" />
