@@ -27,6 +27,8 @@ public:
 	vector<double>& getInputAction();
 	vector<double>& getOutput();
 	void destroy();
-	bool isFull();
+	bool isFull() const;
+	size_t size() const;
+	size_t outputSize() const;
 };
 

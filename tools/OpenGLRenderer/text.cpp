@@ -16,7 +16,9 @@ Text2D::~Text2D()
 
 void Text2D::draw()
 {
-	glBindTexture(GL_TEXTURE_2D, 0);
+	glDisable(GL_TEXTURE_2D);
+	glDisable(GL_LIGHTING);
+	glDisable(GL_BLEND);
 	//set color
 	glColor3fv(m_color.rgba());
 	

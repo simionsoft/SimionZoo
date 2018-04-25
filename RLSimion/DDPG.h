@@ -8,9 +8,18 @@ class Noise;
 class INetwork;
 class IMinibatch;
 
+//This class implements Deep Deterministic Policy Gradient (DDPG)
+//Original paper: https://arxiv.org/abs/1509.02971
+
+//TensorFlow implementations:
+//https://github.com/floodsung/DDPG
+//https://gym.openai.com/evaluations/eval_GH4gO123SvukqlMmqhIyeQ/
+//https://github.com/agakshat/tensorflow-ddpg
+//Keras implementation:
+//https://yanpanlau.github.io/2016/10/11/Torcs-Keras.html
+
 class DDPG : public Simion, DeferredLoad
 {
-protected:
 	MULTI_VALUE_VARIABLE<STATE_VARIABLE> m_inputState;
 	MULTI_VALUE_VARIABLE<ACTION_VARIABLE> m_outputAction;
 	DOUBLE_PARAM m_learningRate;
@@ -25,13 +34,15 @@ protected:
 	INetwork* m_pActorTargetNetwork= nullptr;
 	IMinibatch* m_pActorMinibatch= nullptr;
 
-	vector<double> m_stateValues;
 	vector<double> m_actionValues;
 	vector<double> m_gradientWrtAction;
 
 	CHILD_OBJECT_FACTORY<Noise> m_policyNoise;
 	DOUBLE_PARAM m_tau;
 
+	//used to hold the actor's output
+	Action* m_pActorOutput;
+	
 	//update policy network
 	void updateActor(const State* s, const Action* a, const State* s_p, double r);
 

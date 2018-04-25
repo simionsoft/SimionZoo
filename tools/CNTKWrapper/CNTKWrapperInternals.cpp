@@ -21,7 +21,10 @@ CNTK::FunctionPtr CNTKWrapper::InputLayer(Link * pLink, vector<const Link*> depe
 		pLink->getParameterByName<InputDataParameter>("Input Data")->getValue());
 
 	NetworkDefinition* pNetworkDefinition =
-		(pLink->getParentChain()->getParentNetworkArchitecture()->getNetworkDefinition());
+		(pLink->getParentChain()->getNetworkArchitecture()->getNetworkDefinition());
+
+	bool inputNeedsGradient = pNetworkDefinition->inputsNeedGradient();
+
 	size_t numInputs;
 	if (inputID == L"state-input")
 	{
@@ -35,7 +38,7 @@ CNTK::FunctionPtr CNTKWrapper::InputLayer(Link * pLink, vector<const Link*> depe
 	}
 
 	
-	return CNTK::InputVariable({ numInputs }, CNTK::DataType::Double, inputID);
+	return CNTK::InputVariable({ numInputs }, CNTK::DataType::Double, inputNeedsGradient, inputID);
 }
 
 CNTK::FunctionPtr CNTKWrapper::ActivationLayer(const Link * pLink, vector<const Link*> dependencies, CNTK::DeviceDescriptor & device)

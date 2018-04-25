@@ -41,7 +41,7 @@ public:
 	virtual IMinibatch* createMinibatch(size_t size, size_t outputSize= 0) = 0;
 
 	//for convenience we override the learning rate set in the network definition's parameters
-	virtual INetwork* createNetwork(double learningRate) = 0;
+	virtual INetwork* createNetwork(double learningRate, bool inputsNeedGradient = false) = 0;
 };
 
 class INetwork
@@ -60,8 +60,11 @@ public:
 	virtual void softUpdate(INetwork* pTargetNetwork) = 0;
 
 	virtual void train(IMinibatch* pMinibatch) = 0;
-	virtual void get(const State* s, const Action* a, vector<double>& outputValues) = 0;
-	virtual double get(const State* s, const Action* a) = 0;
+	virtual void evaluate(const State* s, const Action* a, vector<double>& outputValues) = 0;
+	virtual double evaluate(const State* s, const Action* a) = 0;
+
+	virtual void gradientWrtAction(const State* s, const Action* a, vector<double>& outputValues) = 0;
+	virtual void applyGradient(IMinibatch* pMinibatch) = 0;
 };
 
 class IMinibatch
@@ -75,7 +78,9 @@ public:
 	virtual vector<double>& getInputState() = 0;
 	virtual vector<double>& getInputAction() = 0;
 	virtual vector<double>& getOutput() = 0;
-	virtual bool isFull() = 0;
+	virtual bool isFull() const = 0;
+	virtual size_t size() const = 0;
+	virtual size_t outputSize() const = 0;
 };
 
 namespace CNTKWrapper

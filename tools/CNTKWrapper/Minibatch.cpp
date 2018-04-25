@@ -85,7 +85,17 @@ void Minibatch::destroy()
 	delete this;
 }
 
-bool Minibatch::isFull()
+bool Minibatch::isFull() const
 {
 	return m_numTuples == m_size;
+}
+
+size_t Minibatch::size() const
+{
+	return m_size;
+}
+
+size_t Minibatch::outputSize() const
+{
+	return m_outputSize;
 }

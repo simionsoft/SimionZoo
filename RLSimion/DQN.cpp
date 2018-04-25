@@ -67,7 +67,7 @@ void DQN::deferredLoadStep()
 
 double DQN::selectAction(const State * s, Action * a)
 {
-	m_pOnlineQNetwork->get(s, a, m_Q_s);
+	m_pOnlineQNetwork->evaluate(s, a, m_Q_s);
 
 	size_t selectedAction = m_policy->selectAction(m_Q_s);
 
@@ -89,7 +89,7 @@ double DQN::update(const State * s, const Action * a, const State * s_p, double 
 		double gamma = SimionApp::get()->pSimGod->getGamma();
 
 		//get Q(s_p) for the current tuple (target/online-weights)
-		getQNetworkForTargetActionSelection()->get(s_p, a, m_Q_s_p);
+		getQNetworkForTargetActionSelection()->evaluate(s_p, a, m_Q_s_p);
 
 		//calculate argmaxQ(s_p)
 		size_t argmaxQ = distance(m_Q_s_p.begin(), max_element(m_Q_s_p.begin(), m_Q_s_p.end()));
@@ -99,13 +99,13 @@ double DQN::update(const State * s, const Action * a, const State * s_p, double 
 		//We do the prediction step again only if using Double-DQN (the prediction network
 		//will be different to the online network)
 		if (getQNetworkForTargetActionSelection() != m_pTargetQNetwork)
-			m_pTargetQNetwork->get(s_p, a, m_Q_s_p);
+			m_pTargetQNetwork->evaluate(s_p, a, m_Q_s_p);
 
 		//calculate targetvalue= r + gamma*Q(s_p,a)
 		double targetValue = r + gamma * m_Q_s_p[argmaxQ];
 
 		//get the current value of Q(s)
-		m_pOnlineQNetwork->get(s, a, m_Q_s);
+		m_pOnlineQNetwork->evaluate(s, a, m_Q_s);
 
 		//change the target value only for the selecte action, the rest remain the same
 		//store the index of the action taken

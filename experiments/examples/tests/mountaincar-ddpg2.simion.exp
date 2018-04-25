@@ -285,7 +285,6 @@
     </Chains>
   </NetworkArchitecture>
 </Problem></Actor-Network>
-			<Output-Action>pedal</Output-Action>
 			<Exploration-Noise>
 				<Noise>
 		<Ornstein-Uhlenbeck>

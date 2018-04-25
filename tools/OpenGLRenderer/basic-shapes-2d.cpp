@@ -80,6 +80,9 @@ void Meter2D::draw()
 {
 	double normValue = m_valueRange.normPosInRange(m_value);
 
+	glDisable(GL_TEXTURE_2D);
+	glDisable(GL_LIGHTING);
+	glDisable(GL_BLEND);
 	glColor3f(0.0, 0.0, 0.0);
 	glBegin(GL_LINE_STRIP);
 		glVertex2d(0.0, 0.0);

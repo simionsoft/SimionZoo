@@ -94,8 +94,9 @@ NetworkDefinition * NetworkDefinition::loadFromString(std::string content)
 	return nullptr;
 }
 
-INetwork * NetworkDefinition::createNetwork(double learningRate)
+INetwork * NetworkDefinition::createNetwork(double learningRate, bool inputsNeedGradient)
 {
+	m_bInputsNeedGradient = inputsNeedGradient;
 	Network* result = new Network(this);
 
 	/*

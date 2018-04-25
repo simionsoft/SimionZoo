@@ -14,6 +14,8 @@ enum OutputType {Unset, Scalar, Vector, DiscretizedActionVector};
 
 class NetworkDefinition: public INetworkDefinition
 {
+	bool m_bInputsNeedGradient = false;
+
 	wstring m_stateInputLayer;
 	wstring m_actionInputLayer;
 	wstring m_outputLayerName;
@@ -49,6 +51,7 @@ public:
 
 	void setOutputLayer(wstring name);
 	wstring getOutputLayer();
+	bool inputsNeedGradient() { return m_bInputsNeedGradient; }
 
 	static NetworkDefinition* getInstance(tinyxml2::XMLElement* pNode);
 
@@ -73,6 +76,6 @@ public:
 
 	virtual IMinibatch* createMinibatch(size_t numSamples, size_t outputSize);
 
-	INetwork* createNetwork(double learningRate);
+	INetwork* createNetwork(double learningRate, bool inputsNeedGradient);
 };
 

@@ -33,6 +33,9 @@ protected:
 	NetworkDefinition *m_pNetworkDefinition;
 
 	unordered_map<CNTK::Parameter, CNTK::FunctionPtr> m_weightTransitions;
+
+	void stateToVector(const State* s, vector<double>& stateVector);
+	void actionToVector(const Action* a, vector<double>& actionVector);
 public:
 	Network(NetworkDefinition* pNetworkDefinition);
 	~Network();
@@ -50,13 +53,9 @@ public:
 	void softUpdate(INetwork* pTargetNetwork);
 
 	void train(IMinibatch* pMinibatch);
-	void get(const State* s, const Action* a, vector<double>& outputValues);
-	double get(const State* s, const Action* a);
-	/*
-	void train(std::unordered_map<std::string, std::vector<double>&>& inputDataMap, std::vector<double>& targetOutputData);
-	void predict(std::unordered_map<std::string, std::vector<double>&>& inputDataMap, std::vector<double>& predictionData);
-	
-	void gradients(std::unordered_map<std::string, std::vector<double>&>& inputDataMap, std::unordered_map<CNTK::Variable, CNTK::ValuePtr>& gradients);
-	void gradients(std::unordered_map<std::string, std::vector<double>&>& inputDataMap, std::vector<double>& targetOutputData, std::unordered_map<CNTK::Variable, CNTK::ValuePtr>& gradients);
-	*/
+	void evaluate(const State* s, const Action* a, vector<double>& outputValues);
+	double evaluate(const State* s, const Action* a);
+
+	void gradientWrtAction(const State* s, const Action* a, vector<double>& outputValues);
+	void applyGradient(IMinibatch* pMinibatch);
 };

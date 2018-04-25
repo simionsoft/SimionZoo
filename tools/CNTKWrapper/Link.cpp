@@ -79,7 +79,7 @@ std::vector<const Link*> Link::getDependencies() const
 	{
 		auto dependenciesList = getParameterByName<LinkConnectionListParameter>("Links");
 		for each (LinkConnection* var in dependenciesList->getValue())
-			result.push_back(m_pParentChain->getParentNetworkArchitecture()->getLinkById(var->getTargetId()));
+			result.push_back(m_pParentChain->getNetworkArchitecture()->getLinkById(var->getTargetId()));
 	}
 	else
 	{

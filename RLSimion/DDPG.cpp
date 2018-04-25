@@ -16,6 +16,8 @@ DDPG::~DDPG()
 	m_pActorMinibatch->destroy();
 
 	CNTKWrapperLoader::UnLoad();
+
+	delete m_pActorOutput;
 }
 
 
@@ -40,13 +42,14 @@ void DDPG::deferredLoadStep()
 	if (minibatchSize == 0)
 		Logger::logMessage(MessageType::Error, "DDPG requires the use of the Experience Replay Buffer technique");
 
+	m_pActorOutput = SimionApp::get()->pWorld->getDynamicModel()->getActionInstance();
+
 	//Set the state-input
 	for (size_t stateVarIndex = 0; stateVarIndex < m_inputState.size(); stateVarIndex++)
 	{
 		m_CriticNetworkDefinition->addInputStateVar(m_inputState[stateVarIndex]->get());
 		m_ActorNetworkDefinition->addInputStateVar(m_inputState[stateVarIndex]->get());
 	}
-	m_stateValues = vector<double>(m_inputState.size());
 
 	//Set the action-input: for now, only the one used as output of the policy
 	for (size_t actionVarIndex = 0; actionVarIndex < m_outputAction.size(); actionVarIndex++)
@@ -56,12 +59,13 @@ void DDPG::deferredLoadStep()
 	m_actionValues = vector<double>(m_outputAction.size());
 	m_gradientWrtAction = vector<double>(m_outputAction.size());
 
-	//Set both networks as single-output
+	//Set critic networks as single-output
 	m_CriticNetworkDefinition->setScalarOutput();
+	//Set actor network as vectorial output with the dimension=numActions
 	m_ActorNetworkDefinition->setVectorOutput(m_outputAction.size());
 
 	//Critic initialization
-	m_pCriticOnlineNetwork = m_CriticNetworkDefinition->createNetwork(m_learningRate.get());
+	m_pCriticOnlineNetwork = m_CriticNetworkDefinition->createNetwork(m_learningRate.get(), true); //true because we are going to need gradient calculations for this network
 	m_pCriticTargetNetwork = m_pCriticOnlineNetwork->clone(false);
 	m_pCriticTargetNetwork->initSoftUpdate(m_tau.get(), m_pCriticOnlineNetwork);
 	m_pCriticMinibatch = m_CriticNetworkDefinition->createMinibatch(minibatchSize);
@@ -71,18 +75,20 @@ void DDPG::deferredLoadStep()
 	m_pActorTargetNetwork = m_pActorOnlineNetwork->clone(false);
 	m_pActorTargetNetwork->initSoftUpdate(m_tau.get(), m_pActorOnlineNetwork);
 	
-	//1 entry for each action in the minibatch to save the gradient wrt a
+	//The size of the target in the minibatch has to match the number of actions to save the gradient wrt an action
 	m_pActorMinibatch = m_ActorNetworkDefinition->createMinibatch(minibatchSize, m_outputAction.size());
 }
 
 double DDPG::selectAction(const State * s, Action * a)
 {
-	m_pActorOnlineNetwork->get(s, a);
+	double policyOutput;
+	m_pActorOnlineNetwork->evaluate(s, a, m_actionValues);
 	for (size_t i = 0; i < m_outputAction.size(); i++)
 	{
-		double policyOutput = a->get(m_outputAction[i]->get());
-		double noise = m_policyNoise->getSample();
-		a->set(m_outputAction[i]->get(), policyOutput + noise);
+		policyOutput = m_actionValues[i];
+		if (!SimionApp::get()->pExperiment->isEvaluationEpisode())
+			policyOutput+= m_policyNoise->getSample();
+		a->set(m_outputAction[i]->get(), policyOutput);
 	}
 	return 1.0;
 }
@@ -101,78 +107,28 @@ void DDPG::updateActor(const State* s, const Action* a, const State* s_p, double
 	{
 		double gamma = SimionApp::get()->pSimGod->getGamma();
 
-		m_pActorTargetNetwork->get(s, a, m_actionValues);
-		//m_pCriticTargetNetwork->gradient(s, a, m_gradientWrtAction);
+		//get pi(s)
+		m_pActorTargetNetwork->evaluate(s, a, m_actionValues);
+
+		//a' = pi(s)
+		for (size_t i = 0; i < m_outputAction.size(); i++)
+			m_pActorOutput->set(m_outputAction[i]->get(), m_actionValues[i]);
+
+		//gradient = critic->gradient(s, pi(s))
+		m_pCriticTargetNetwork->gradientWrtAction(s, m_pActorOutput, m_gradientWrtAction);
+
+		//gradient = -gradient
+		for (size_t i = 0; i < m_outputAction.size(); i++)
+			m_gradientWrtAction[i] *= -1.0;
+
+		m_pActorMinibatch->addTuple(s, m_pActorOutput, m_gradientWrtAction);
 	}
 	else if (m_pActorMinibatch->isFull())
 	{
+		m_pActorOnlineNetwork->applyGradient(m_pActorMinibatch);
 
+		m_pActorTargetNetwork->softUpdate(m_pActorOnlineNetwork);
 	}
-
-	//CNTK::ValuePtr stateInputValue = CNTK::Value::CreateBatch(m_predictionQNetwork.getNetwork()->getInputs()[0]->getInputVariable().Shape(), m_minibatch_s, CNTK::DeviceDescriptor::CPUDevice());
-
-	////get gradient of Q
-	//CNTK::ValuePtr chosenActionValuePtr;
-	//unordered_map<CNTK::Variable, CNTK::ValuePtr> getChoosenActionInputMap =
-	//{
-	//	{ m_predictionPolicyNetwork.getNetwork()->getInputs()[0]->getInputVariable()
-	//	, stateInputValue }
-	//};
-
-	//unordered_map<CNTK::Variable, CNTK::ValuePtr> chosenActionOutputMap = { { modelPolicyOutputPtr, chosenActionValuePtr } };
-	//m_predictionPolicyNetwork.getNetwork()->getNetworkFunctionPtr()->Evaluate(getChoosenActionInputMap, chosenActionOutputMap, CNTK::DeviceDescriptor::CPUDevice());
-	//chosenActionValuePtr = chosenActionOutputMap[modelPolicyOutputPtr];
-
-	//unordered_map<CNTK::Variable, CNTK::ValuePtr> qGradientActionArgument = { { m_predictionQNetwork.getNetwork()->getInputs()[0]->getInputVariable(), stateInputValue } ,
-	//{ m_predictionQNetwork.getNetwork()->getInputs()[1]->getInputVariable(), chosenActionValuePtr } };
-	//unordered_map<CNTK::Variable, CNTK::ValuePtr> qGradientOutputMap =
-	//{ { m_predictionQNetwork.getNetwork()->getInputs()[1]->getInputVariable(), nullptr } };
-	//modelQOutputPtr->Gradients(qGradientActionArgument, qGradientOutputMap, CNTK::DeviceDescriptor::CPUDevice());
-
-	////get the gradient of mu/the policy
-	////forward propagation of values
-	////therefore, fill up the input variables
-	//unordered_map<CNTK::Variable, CNTK::ValuePtr> policyInputMap;
-	//policyInputMap[m_predictionPolicyNetwork.getNetwork()->getInputs()[0]->getInputVariable()] = stateInputValue;
-
-	//unordered_map<CNTK::Variable, CNTK::ValuePtr> policyOutputMap;
-	//policyOutputMap[m_predictionPolicyNetwork.getNetwork()->getOutputsFunctionPtr()[0]->Output()] = nullptr;
-
-	////perform now the forward propagation
-	//auto backPropState = modelPolicyOutputPtr->Forward(policyInputMap, policyOutputMap, CNTK::DeviceDescriptor::CPUDevice(), { modelPolicyOutputPtr });
-	//CNTK::ValuePtr policyOutputValue = policyOutputMap[m_predictionPolicyNetwork.getNetwork()->getOutputsFunctionPtr()[0]->Output()];
-
-	//CNTK::ValuePtr rootGradientValue = qGradientOutputMap[m_predictionQNetwork.getNetwork()->getInputs()[1]->getInputVariable()];
-
-	//unordered_map<CNTK::Variable, CNTK::ValuePtr> parameterGradients;
-	//for (const auto& parameter : modelPolicyOutputPtr->Parameters())
-	////This is not working: set the gradients to the Q gradient to multipy them with the current value
-	////therefore, use nullptr
-	//parameterGradients[parameter] = CNTK::ValuePtr();
-	////calculate grad_q * grad_policy for each parameter's weight
-	//modelPolicyOutputPtr->Backward(backPropState, { { modelPolicyOutputPtr, rootGradientValue } }, parameterGradients);
-
-	////update the parameters of the policy now
-	//unordered_map<CNTK::Parameter, CNTK::NDArrayViewPtr> gradients;
-	//for (const auto& parameter : modelPolicyOutputPtr->Parameters())
-	//gradients[parameter] = parameterGradients[parameter]->Data();
-
-	//m_predictionPolicyNetwork.getNetwork()->getTrainer()->ParameterLearners()[0]->Update(gradients, m_experienceReplay->getUpdateBatchSize());
-	m_pActorTargetNetwork->softUpdate(m_pActorOnlineNetwork);
-
-
-	//we have to perform something like this
-
-	//self.q_gradient_input = tf.placeholder("float",[None,self.action_dim])
-	//self.parameters_gradients = tf.gradients(self.action_output,self.net,-self.q_gradient_input)
-	//self.optimizer = tf.train.AdamOptimizer(LEARNING_RATE).apply_gradients(zip(self.parameters_gradients,self.net))
-
-	//maybe this helps
-	//https://stackoverflow.com/questions/41814858/how-to-access-gradients-and-modify-weights-parameters-directly-during-training
-
-	//python: Learner.update(gradient_values, training_sample_count)
-	//C++:    model->getTrainer()->ParameterLearners()[0]->Update();
-
 }
 
 void DDPG::updateCritic(const State* s, const Action* a, const State* s_p, double r)
@@ -181,11 +137,15 @@ void DDPG::updateCritic(const State* s, const Action* a, const State* s_p, doubl
 	{
 		double gamma = SimionApp::get()->pSimGod->getGamma();
 
-		//calculate mu'(s_p)
-		double policyOutput= m_pActorTargetNetwork->get(s_p, a);
+		//calculate pi(s_p)
+		m_pActorTargetNetwork->evaluate(s_p, a, m_actionValues);
+
+		//a' = pi(s_p)
+		for (size_t i = 0; i < m_outputAction.size(); i++)
+			m_pActorOutput->set(m_outputAction[i]->get(), m_actionValues[i]);
 		
 		//calculate Q'(mu'(s_p))
-		double s_p_value = m_pCriticTargetNetwork->get(s_p, a);
+		double s_p_value = m_pCriticTargetNetwork->evaluate(s_p, m_pActorOutput);
 
 		//calculate targetvalue= r + gamma*Q(s_p,a)
 		double targetValue = r + gamma * s_p_value;
