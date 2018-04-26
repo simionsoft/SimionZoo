@@ -10,9 +10,8 @@ public:
 	{
 		_values[0] = r; _values[1] = g; _values[2] = b; _values[3] = a;
 	}
-	Color(double r, double g, double b, double a)
-		:Color((float)r, (float)g, (float)b, (float)a) {}
-	Color() :Color(1.0, 1.0, 1.0, 1.0) {}
+	Color() :Color(1.0f, 1.0f, 1.0f, 1.0f) {}
+	Color(float r, float g, float b) : Color(r, g, b, 1.f) {}
 	float r() const { return _values[0]; }
 	float g() const { return _values[1]; }
 	float b() const { return _values[2]; }

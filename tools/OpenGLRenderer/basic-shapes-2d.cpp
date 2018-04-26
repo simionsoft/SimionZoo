@@ -9,6 +9,8 @@ Sprite2D::Sprite2D(string name, Vector2D origin, Vector2D size, double depth, Ma
 	:GraphicObject2D(name, origin, size, depth)
 {
 	m_pMaterial = material;
+	m_minCoord = Point2D(0.0, 0.0);
+	m_maxCoord = Point2D(1.0, 1.0);
 }
 
 Sprite2D::Sprite2D(tinyxml2::XMLElement* pNode)

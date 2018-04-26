@@ -29,6 +29,22 @@ public:
 	virtual void set();
 };
 
+class UnlitLiveTextureMaterial : public Material
+{
+protected:
+	unsigned int m_textureId = -1;
+	float* m_pTexelBuffer = nullptr;
+	unsigned int m_sizeX= 0, m_sizeY= 0;
+	unsigned int m_numTexels = 0;
+	unsigned int m_numChannels = 4;
+public:
+	UnlitLiveTextureMaterial(unsigned int sizeX, unsigned int sizeY);
+	virtual ~UnlitLiveTextureMaterial();
+	void updateTexture(double* pBuffer);
+	virtual void set();
+	
+};
+
 class SimpleTLMaterial : public Material
 {
 protected:
@@ -71,6 +87,7 @@ class ColorMaterial : public Material
 {
 	Color m_color = Color(1.0, 0.0, 0.0, 1.0);
 public:
+	ColorMaterial(Color color) : m_color(color) {}
 	ColorMaterial() {}
 	ColorMaterial(tinyxml2::XMLElement* pNode);
 	void set();

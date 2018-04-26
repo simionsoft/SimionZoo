@@ -52,6 +52,9 @@
     <ClCompile Include="ogl-utils.cpp">
       <Filter>graphics</Filter>
     </ClCompile>
+    <ClCompile Include="material-live-texture.cpp">
+      <Filter>graphics</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="renderer.h" />

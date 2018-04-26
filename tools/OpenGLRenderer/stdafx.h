@@ -8,15 +8,13 @@
 #include "targetver.h"
 
 
-#undef min
-#undef max
-
 #include <stdio.h>
 #include <tchar.h>
 #include <windows.h>
 #include <math.h>
 #include <string>
-
+#undef min
+#undef max
 ////OPENGL includes
 //#include <GL/gl.h>
 //#include <GL/glu.h>

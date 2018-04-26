@@ -18,6 +18,9 @@
 #include "../../../tools/GeometryLib/transform3d.h"
 #include "../../../tools/GeometryLib/vector2d.h"
 
+#define LIVE_TEX_SIZE_X 64
+#define LIVE_TEX_SIZE_Y 64
+
 int main(int argc, char** argv)
 {
 	Renderer* pRenderer = 0;
@@ -26,7 +29,7 @@ int main(int argc, char** argv)
 	pRenderer = new Renderer();
 	pRenderer->init(argc, argv, 600, 400);
 	pRenderer->setDataFolder("../../../config/scenes/");
-	pRenderer->loadScene("robot-control.scene");
+	//pRenderer->loadScene("robot-control.scene");
 	pInputHandler = new FreeCameraInputHandler();
 
 	Timer timer;
@@ -44,9 +47,15 @@ int main(int argc, char** argv)
 	pRenderer->add2DGraphicObject(pMeter2);
 	pMeter2->setValueRange(Range(-5.0, 5.0));
 
-	Material* pSpriteMaterial = new UnlitTextureMaterial("mountain-car/background.png");
-	//Sprite2D* sprite = new Sprite2D("test-sprite", Vector2D(0.5, 0.5), Vector2D(0.25, 0.25),0.0,pSpriteMaterial);
-	//pRenderer->add2DGraphicObject(sprite);
+	//Material* pSpriteMaterial = new UnlitTextureMaterial("mountain-car/background.png");
+	//ColorMaterial* pSpriteMaterial = new ColorMaterial(Color(1.0, 0.0, 0.0, 1.0));
+	double* pLiveTextureValues = nullptr;
+	UnlitLiveTextureMaterial* pLiveMaterial = new UnlitLiveTextureMaterial(LIVE_TEX_SIZE_X, LIVE_TEX_SIZE_Y);
+	pLiveTextureValues = new double[LIVE_TEX_SIZE_X*LIVE_TEX_SIZE_Y];
+	Sprite2D* sprite = new Sprite2D("test-sprite", Vector2D(0.5, 0.5), Vector2D(0.25, 0.25), 0.0, pLiveMaterial);
+	pRenderer->add2DGraphicObject(sprite);
+
+
 
 	double t = 0.0;
 
@@ -68,7 +77,24 @@ int main(int argc, char** argv)
 		t += dt;
 		if (pMeter1) pMeter1->setValue(pRenderer->getNum3DObjectsDrawn());
 		if (pMeter2) pMeter2->setValue(fmod(t, 5.0));
-		//queued events?
+		
+		//update live texture
+		if (pLiveTextureValues)
+		{
+			for (unsigned int y = 0; y < LIVE_TEX_SIZE_Y; y++)
+			{
+				for (unsigned int x = 0; x < LIVE_TEX_SIZE_X; x++)
+				{
+					double normX = -1.0 + 2.0* ((double)x) / ((double)LIVE_TEX_SIZE_X);
+					double normY = -1.0 + 2.0* ((double)y) / ((double)LIVE_TEX_SIZE_Y);
+					normX = normX * fmod(t, 2.0);
+					normY = normY * fmod(t, 3.0);
+					pLiveTextureValues[y*LIVE_TEX_SIZE_X + x] = sqrt(abs(1 - pow((double)normX,2.0) - pow((double)normY,2.0)));//sin(t*0.01)*(normX*normY);
+				}
+			}
+		}
+		pLiveMaterial->updateTexture(pLiveTextureValues);
+
 		
 		pInputHandler->handleInput();
 

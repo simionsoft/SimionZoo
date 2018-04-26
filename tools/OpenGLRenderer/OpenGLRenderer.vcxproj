@@ -178,6 +178,7 @@
     <ClCompile Include="basic-shapes-2d.cpp" />
     <ClCompile Include="basic-shapes-3d.cpp" />
     <ClCompile Include="light.cpp" />
+    <ClCompile Include="material-live-texture.cpp" />
     <ClCompile Include="mesh.cpp" />
     <ClCompile Include="bindings.cpp" />
     <ClCompile Include="graphic-object-2d.cpp" />
