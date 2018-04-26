@@ -4,6 +4,7 @@
 #include "logger.h"
 #include "app.h"
 #include "SimGod.h"
+#include "experiment.h"
 #include <assert.h>
 #include <algorithm>
 
@@ -26,7 +27,7 @@ void LinearVFA::setCanUseDeferredUpdates(bool bCanUseDeferredUpdates)
 double LinearVFA::get(const FeatureList *pFeatures,bool bUseFrozenWeights)
 {
 	double value = 0.0;
-	unsigned int localIndex;
+	size_t localIndex;
 
 	IMemBuffer *pWeights;
 	int updateFreq = SimionApp::get()->pSimGod->getTargetFunctionUpdateFreq();

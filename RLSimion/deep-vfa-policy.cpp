@@ -9,6 +9,7 @@
 #include "features.h"
 #include "single-dimension-discrete-grid.h"
 #include "experience-replay.h"
+#include "experiment.h"
 #include <algorithm>
 
 std::shared_ptr<DiscreteDeepPolicy> DiscreteDeepPolicy::getInstance(ConfigNode* pConfigNode)

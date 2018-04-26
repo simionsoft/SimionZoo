@@ -2,6 +2,7 @@
 #include "config.h"
 #include "parameters-numeric.h"
 #include "app-rlsimion.h"
+#include "worlds\world.h"
 #define _USE_MATH_DEFINES
 #include <math.h>
 #include <algorithm>

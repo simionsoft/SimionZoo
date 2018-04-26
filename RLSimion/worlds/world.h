@@ -1,9 +1,10 @@
 #pragma once
 
 class NamedVarSet;
-typedef NamedVarSet State;
-typedef NamedVarSet Action;
-typedef NamedVarSet Reward;
+class NamedVarSet;
+using State = NamedVarSet;
+using Action = NamedVarSet;
+using Reward = NamedVarSet;
 
 class DynamicModel;
 class ConfigNode;

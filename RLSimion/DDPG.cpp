@@ -2,6 +2,10 @@
 #include "../tools/CNTKWrapper/CNTKWrapper.h"
 #include "app-rlsimion.h"
 #include "noise.h"
+#include "simgod.h"
+#include "logger.h"
+#include "experiment.h"
+#include "worlds\world.h"
 
 DDPG::~DDPG()
 {

@@ -7,6 +7,7 @@
 #include "../tools/WindowsUtils/FileUtils.h"
 #include "app.h"
 #include "utils.h"
+#include "experiment.h"
 #include <algorithm>
 
 FILE *Logger::m_logFile = 0;

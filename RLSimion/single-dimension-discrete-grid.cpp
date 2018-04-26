@@ -4,6 +4,7 @@
 #include "worlds/world.h"
 #include "named-var-set.h"
 #include "app.h"
+#include "logger.h"
 #include <assert.h>
 
 SingleDimensionDiscreteGrid::SingleDimensionDiscreteGrid()

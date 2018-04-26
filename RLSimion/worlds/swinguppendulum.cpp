@@ -1,4 +1,6 @@
 #include "swinguppendulum.h"
+#include "../simgod.h"
+#include "../experiment.h"
 #include "../named-var-set.h"
 #include "../config.h"
 #include "../reward.h"

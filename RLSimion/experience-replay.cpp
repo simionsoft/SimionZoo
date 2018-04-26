@@ -4,6 +4,7 @@
 #include "logger.h"
 #include "named-var-set.h"
 #include "simgod.h"
+#include "worlds\world.h"
 #include <algorithm>
 
 ExperienceTuple::ExperienceTuple()

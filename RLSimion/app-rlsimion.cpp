@@ -183,23 +183,8 @@ void RLSimionApp::updateScene(State* s, Action* a)
 	m_pProgressText->set(string("Episode: ") + std::to_string(pExperiment->getEpisodeIndex())
 		+ string(" Step: ") + std::to_string(pExperiment->getStep()));
 
-	//2D METERS
-	//update stats
-	unsigned int statIndex = 0;
-	for each (Meter2D* pMeter2D in m_pStatsUIMeters)
-	{
-		IStats* pStat = pLogger->getStats(statIndex);
-		pMeter2D->setValue(pStat->get());
-		pMeter2D->setValueRange(Range(pStat->getStatsInfo()->getMin(), pStat->getStatsInfo()->getMax()));
-		++statIndex;
-	}
-	//update state
-	for (int i= 0; i < s->getNumVars(); i++)
-		m_pStateUIMeters[i]->setValue(s->get(i));
 
-	//update action
-	for (int i = 0; i < a->getNumVars(); i++)
-		m_pActionUIMeters[i]->setValue(a->get(i));
+	update2DMeters(s, a);
 
 	//2D/3D BOUND PROPERTIES: translation, rotation, ...
 	//update bindings
@@ -211,7 +196,7 @@ void RLSimionApp::updateScene(State* s, Action* a)
 		value = s->get(varName.c_str());
 		m_pRenderer->updateBinding(varName, value);
 	}
-	//drawViewPorts
+	//render the image
 	m_pInputHandler->handleInput();
 	m_pRenderer->draw();
 
@@ -226,4 +211,25 @@ void RLSimionApp::updateScene(State* s, Action* a)
 			m_timer.start();
 		}
 	}
+}
+
+void RLSimionApp::update2DMeters(State* s, Action* a)
+{
+	//2D METERS
+	//update stats
+	unsigned int statIndex = 0;
+	for each (Meter2D* pMeter2D in m_pStatsUIMeters)
+	{
+		IStats* pStat = pLogger->getStats(statIndex);
+		pMeter2D->setValue(pStat->get());
+		pMeter2D->setValueRange(Range(pStat->getStatsInfo()->getMin(), pStat->getStatsInfo()->getMax()));
+		++statIndex;
+	}
+	//update state
+	for (int i = 0; i < s->getNumVars(); i++)
+		m_pStateUIMeters[i]->setValue(s->get(i));
+
+	//update action
+	for (int i = 0; i < a->getNumVars(); i++)
+		m_pActionUIMeters[i]->setValue(a->get(i));
 }

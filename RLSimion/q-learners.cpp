@@ -10,6 +10,7 @@
 #include "featuremap.h"
 #include <algorithm>
 #include <assert.h>
+#include "simgod.h"
 
 ///////////////////////////////////////
 //Q-function-based POLICIES
@@ -99,7 +100,7 @@ double QSoftMaxPolicy::selectAction(LinearStateActionVFA* pQFunction, const Stat
 		actionProbability = m_pProbabilities[i];
 		i++;
 	}
-	pQFunction->getActionFeatureMap()->getFeatureAction(i-1, a);
+	pQFunction->getActionFeatureMap()->getFeatureAction((unsigned int) (i-1), a);
 	return actionProbability;
 	assert(i < numActionWeights);
 }

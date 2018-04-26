@@ -19,6 +19,7 @@
 #include "../app.h"
 #include "../SimGod.h"
 #include "../logger.h"
+#include "../experiment.h"
 
 CHILD_OBJECT_FACTORY<DynamicModel> World::m_pDynamicModel;
 

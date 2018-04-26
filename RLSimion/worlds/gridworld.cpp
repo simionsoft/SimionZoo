@@ -3,6 +3,7 @@
 #include "../config.h"
 #include "../reward.h"
 #include "../app.h"
+#include "../experiment.h"
 
 ContinuousGridWorld::ContinuousGridWorld(ConfigNode* pConfigNode)
 {

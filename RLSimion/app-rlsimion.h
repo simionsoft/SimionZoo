@@ -8,6 +8,9 @@ class Renderer;
 class IInputHandler;
 class Text2D;
 class Meter2D;
+class NamedVarSet;
+using State = NamedVarSet;
+using Action = NamedVarSet;
 using namespace std;
 
 class RLSimionApp : public SimionApp
@@ -22,6 +25,8 @@ class RLSimionApp : public SimionApp
 	vector<Meter2D*> m_pStatsUIMeters;
 	vector<Meter2D*> m_pStateUIMeters;
 	vector<Meter2D*> m_pActionUIMeters;
+
+	void update2DMeters(State* s, Action* a);
 public:
 
 	RLSimionApp(ConfigNode* pParameters);

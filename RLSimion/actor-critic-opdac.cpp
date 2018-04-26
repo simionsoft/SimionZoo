@@ -10,6 +10,8 @@
 #include "parameters-numeric.h"
 #include "policy.h"
 #include "app.h"
+#include "logger.h"
+#include "simgod.h"
 
 //Implementation according to
 //http://proceedings.mlr.press/v32/silver14.pdf

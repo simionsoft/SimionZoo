@@ -7,6 +7,7 @@
 #include "parameters-numeric.h"
 #include "config.h"
 #include "app.h"
+#include "simgod.h"
 
 TrueOnlineTDLambdaCritic::TrueOnlineTDLambdaCritic(ConfigNode* pConfigNode): VLearnerCritic(pConfigNode)
 {

@@ -2,12 +2,12 @@
 
 class ConfigNode;
 class ConfigFile;
+class Logger;
+class World;
+class Experiment;
+class SimGod;
 
 #include <vector>
-#include "worlds/world.h"
-#include "logger.h"
-#include "experiment.h"
-#include "SimGod.h"
 #include "parameters.h"
 #include "mem-manager.h"
 

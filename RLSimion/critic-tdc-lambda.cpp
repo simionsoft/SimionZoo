@@ -7,6 +7,7 @@
 #include "config.h"
 #include "parameters-numeric.h"
 #include "app.h"
+#include "simgod.h"
 
 TDCLambdaCritic::TDCLambdaCritic(ConfigNode* pConfigNode): VLearnerCritic(pConfigNode)
 {

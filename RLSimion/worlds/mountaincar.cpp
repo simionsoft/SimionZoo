@@ -4,6 +4,7 @@
 #include "../reward.h"
 #include "../app.h"
 #include "../noise.h"
+#include "../experiment.h"
 
 #define HILL_PEAK_FREQ 3.0
 

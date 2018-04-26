@@ -2,6 +2,7 @@
 
 #include "DQN.h"
 #include "SimGod.h"
+#include "logger.h"
 #include "worlds\world.h"
 #include "app.h"
 #include "featuremap.h"

@@ -5,10 +5,11 @@
 #include "../reward.h"
 #include "../app.h"
 #include "../app-rlsimion.h"
+#include "../logger.h"
+#include "../experiment.h"
 #include "../../tools/WindowsUtils/Process.h"
 #include <string>
 #include <stdio.h>
-#include "../app.h"
 #include <algorithm>
 
 #define FAST_FAILURE_REWARD -100.0 //reward given in case a simulation error arises

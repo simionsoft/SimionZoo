@@ -5,6 +5,7 @@
 #include "app.h"
 #include "app-rlsimion.h"
 #include "simgod.h"
+#include "logger.h"
 
 #define MIN_PROBABILITY 0.00001
 

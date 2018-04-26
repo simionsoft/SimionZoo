@@ -4,7 +4,7 @@
 #include "../reward.h"
 #include "../app.h"
 #include "../noise.h"
-
+#include "../experiment.h"
 
 BalancingPole::BalancingPole(ConfigNode* pConfigNode)
 {

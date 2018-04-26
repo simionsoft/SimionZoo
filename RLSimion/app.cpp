@@ -63,7 +63,7 @@ void SimionApp::printRequirements()
 	const char *pFileName, *pFileRename;
 	printf("<Files>\n");
 
-	for (int i = 0; i < getNumInputFiles(); i++)
+	for (unsigned int i = 0; i < getNumInputFiles(); i++)
 	{
 		pFileName = getInputFile(i);
 		pFileRename = getInputFileRename(i);
@@ -73,7 +73,7 @@ void SimionApp::printRequirements()
 			printf("  <Input Rename=\"%s\">%s</Input>\n", pFileRename, pFileName);
 	}
 
-	for (int i = 0; i < getNumOutputFiles(); i++)
+	for (unsigned int i = 0; i < getNumOutputFiles(); i++)
 	{
 		pFileName = getOutputFile(i);
 		printf("  <Output>%s</Output>\n", pFileName);

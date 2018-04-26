@@ -10,6 +10,8 @@
 #include "parameters-numeric.h"
 #include "policy.h"
 #include "app.h"
+#include "simgod.h"
+#include "logger.h"
 #include <iostream>
 #include "CNTKWrapperLoader.h"
 

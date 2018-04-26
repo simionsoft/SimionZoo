@@ -10,6 +10,8 @@
 #include "vfa.h"
 #include "featuremap.h"
 #include "simgod.h"
+#include "worlds\world.h"
+#include "logger.h"
 #include <algorithm>
 
 Actor::Actor(ConfigNode* pConfigNode): DeferredLoad(10)
