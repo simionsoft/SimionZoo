@@ -2,6 +2,7 @@
 #include "../WindowsUtils/timer.h"
 #include "../OpenGLRenderer/input-handler.h"
 #include <string>
+#include <vector>
 using namespace std;
 
 class Renderer;
@@ -9,6 +10,7 @@ class ExperimentLog;
 class Text2D;
 class Episode;
 class Step;
+class Meter2D;
 
 enum PlaybackMode {Quarter,Half,Normal,x2,x4};
 
@@ -30,6 +32,7 @@ class SimionLogViewer: public IInputHandler
 	Text2D * m_pTimeText;
 	Text2D * m_pEpisodeText;
 	Text2D * m_pPlaybackRateText;
+	vector <Meter2D*> m_variableMeters;
 
 	bool m_bExitRequested = false;
 

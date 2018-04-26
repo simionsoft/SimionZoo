@@ -4,6 +4,7 @@
 #include "../OpenGLRenderer/Renderer.h"
 #include "../OpenGLRenderer/input-handler.h"
 #include "../OpenGLRenderer/text.h"
+#include "../OpenGLRenderer/basic-shapes-2d.h"
 #include <algorithm>
 
 
@@ -169,6 +170,22 @@ bool SimionLogViewer::loadLogFile(string filename)
 	}
 	else return false;
 
+	//add meter2D objects to show variable values
+	Descriptor& logDescriptor = m_pExperimentLog->getDescriptor();
+	Meter2D* pMeter;
+	Vector2D origin = Vector2D(0.05, 0.8);
+	Vector2D size = Vector2D(0.3, 0.03);
+	Vector2D offset = Vector2D(0.0, 0.04);
+	double depth = 0.25;
+	for (int i = 0; i < logDescriptor.size(); i++)
+	{
+		pMeter = new Meter2D(logDescriptor[i].getName(), origin, size, depth);
+		pMeter->setValueRange(Range(logDescriptor[i].getMin(), logDescriptor[i].getMax()));
+		m_pRenderer->add2DGraphicObject(pMeter);
+		m_variableMeters.push_back(pMeter);
+		origin -= offset;
+	}
+
 	m_timer.start();
 	playEpisode(0);
 	return true;
@@ -232,7 +249,7 @@ std::string to_string_with_precision(const T a_value, const int n = 6)
 
 void SimionLogViewer::draw()
 {
-	if (m_pCurrentEpisode == nullptr) return;
+	if (m_pCurrentEpisode == nullptr || m_episodeLength==0.0) return;
 
 	double playbackRate = getPlaybackRate();
 	double dt = m_timer.getElapsedTime(true)*playbackRate;
@@ -242,14 +259,21 @@ void SimionLogViewer::draw()
 	while (m_episodeSimTime > m_episodeLength) m_episodeSimTime -= m_episodeLength;
 	double value;
 
-	//update bindings
-	//and interpolate logged data between saved points
-	interpolateStepData(m_episodeSimTime, m_pCurrentEpisode, m_pInterpolatedStep);
-	m_pTimeText->set(string("Sim. Time: ") + to_string_with_precision(m_episodeSimTime, 2) + string(" / ") 
+	//update texts on screen
+	m_pTimeText->set(string("Sim. Time: ") + to_string_with_precision(m_episodeSimTime, 2) + string(" / ")
 		+ to_string_with_precision(m_episodeLength, 2));
 	m_pEpisodeText->set(string("Episode: ") + std::to_string(m_episodeIndex));
 	m_pPlaybackRateText->set(string("Rate: ") + to_string_with_precision(playbackRate, 2));
 
+	//interpolate logged data between saved points
+	interpolateStepData(m_episodeSimTime, m_pCurrentEpisode, m_pInterpolatedStep);
+
+	//update variable meters
+	Descriptor& logDescriptor = m_pExperimentLog->getDescriptor();
+	for (int i = 0; i < logDescriptor.size(); i++)
+		m_variableMeters[i]->setValue(m_pInterpolatedStep->getValue(i));
+
+	//update bindings
 	for (int b = 0; b < m_pRenderer->getNumBindings(); ++b)
 	{
 		string varName = m_pRenderer->getBindingExternalName(b);

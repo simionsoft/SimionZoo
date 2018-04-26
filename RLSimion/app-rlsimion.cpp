@@ -130,11 +130,11 @@ void RLSimionApp::initRenderer(string sceneFile)
 	Vector2D origin = Vector2D(0.05, 0.85);
 	Vector2D size = Vector2D(0.3, 0.03);
 	Vector2D offset = Vector2D(0.0, 0.04);
-	double uiDepth = 0.25;
+	double depth = 0.25;
 	for (unsigned int i = 0; i < pLogger->getNumStats(); ++i)
 	{
 		pStat = pLogger->getStats(i);
-		pMeter2D = new Meter2D(string(pStat->getSubkey()), origin, size, uiDepth);
+		pMeter2D = new Meter2D(string(pStat->getSubkey()), origin, size, depth);
 		m_pStatsUIMeters.push_back(pMeter2D);
 		m_pRenderer->add2DGraphicObject(pMeter2D);
 		origin -= offset;
@@ -144,7 +144,7 @@ void RLSimionApp::initRenderer(string sceneFile)
 	Descriptor& stateDescriptor = pWorld->getDynamicModel()->getStateDescriptor();
 	for (unsigned int i = 0; i < stateDescriptor.size(); i++)
 	{
-		pMeter2D = new Meter2D(stateDescriptor[i].getName(), origin, size, uiDepth);
+		pMeter2D = new Meter2D(stateDescriptor[i].getName(), origin, size, depth);
 		pMeter2D->setValueRange(Range(stateDescriptor[i].getMin(), stateDescriptor[i].getMax()));
 		m_pStateUIMeters.push_back(pMeter2D);
 		m_pRenderer->add2DGraphicObject(pMeter2D);
@@ -154,7 +154,7 @@ void RLSimionApp::initRenderer(string sceneFile)
 	Descriptor& actionDescriptor = pWorld->getDynamicModel()->getActionDescriptor();
 	for (unsigned int i = 0; i < actionDescriptor.size(); i++)
 	{
-		pMeter2D = new Meter2D(actionDescriptor[i].getName(), origin, size, uiDepth);
+		pMeter2D = new Meter2D(actionDescriptor[i].getName(), origin, size, depth);
 		pMeter2D->setValueRange(Range(actionDescriptor[i].getMin(), actionDescriptor[i].getMax()));
 		m_pActionUIMeters.push_back(pMeter2D);
 		m_pRenderer->add2DGraphicObject(pMeter2D);
