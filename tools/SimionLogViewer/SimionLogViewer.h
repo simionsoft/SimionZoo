@@ -11,6 +11,7 @@ class Text2D;
 class Episode;
 class Step;
 class Meter2D;
+class ViewPort;
 
 enum PlaybackMode {Quarter,Half,Normal,x2,x4};
 
@@ -33,6 +34,7 @@ class SimionLogViewer: public IInputHandler
 	Text2D * m_pEpisodeText;
 	Text2D * m_pPlaybackRateText;
 	vector <Meter2D*> m_variableMeters;
+	ViewPort * m_pMetersViewport;
 
 	bool m_bExitRequested = false;
 

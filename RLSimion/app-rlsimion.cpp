@@ -117,6 +117,11 @@ void RLSimionApp::initRenderer(string sceneFile)
 
 	m_pRenderer = new Renderer();
 	m_pRenderer->init(1, &argv, 800, 600);
+
+	//resize the main viewport
+	double mainViewPortMinX = 0.0, mainViewPortMinY = 0.3, mainViewPortMaxX = 0.7, mainViewPortMaxY = 1.0;
+	ViewPort* pMainViewPort= m_pRenderer->getDefaultViewPort();
+	pMainViewPort->resize(mainViewPortMinX, mainViewPortMinY, mainViewPortMaxX, mainViewPortMaxY);
 	m_pRenderer->setDataFolder(sceneDir);
 	m_pRenderer->loadScene(sceneFile.c_str());
 
@@ -124,19 +129,23 @@ void RLSimionApp::initRenderer(string sceneFile)
 	m_pProgressText = new Text2D(string("Progress"), Vector2D(0.05, 0.95), 0.25);
 	m_pRenderer->add2DGraphicObject(m_pProgressText);
 
+	//create a second viewport for stats, state variables and action variables
+	double metersViewPortMinX = mainViewPortMaxX, metersViewPortMinY = mainViewPortMinY, metersViewPortMaxX = 1.0, metersViewPortMaxY = 1.0;
+	ViewPort* pMetersViewPort = m_pRenderer->addViewPort(metersViewPortMinX, metersViewPortMinY, metersViewPortMaxX, metersViewPortMaxY);
+
 	//stats
 	Meter2D* pMeter2D;
 	IStats* pStat;
-	Vector2D origin = Vector2D(0.05, 0.85);
-	Vector2D size = Vector2D(0.3, 0.03);
-	Vector2D offset = Vector2D(0.0, 0.04);
+	Vector2D origin = Vector2D(0.025, 0.9);
+	Vector2D size = Vector2D(0.95, 0.04);
+	Vector2D offset = Vector2D(0.0, 0.05);
 	double depth = 0.25;
 	for (unsigned int i = 0; i < pLogger->getNumStats(); ++i)
 	{
 		pStat = pLogger->getStats(i);
 		pMeter2D = new Meter2D(string(pStat->getSubkey()), origin, size, depth);
 		m_pStatsUIMeters.push_back(pMeter2D);
-		m_pRenderer->add2DGraphicObject(pMeter2D);
+		m_pRenderer->add2DGraphicObject(pMeter2D, pMetersViewPort);
 		origin -= offset;
 	}
 	
@@ -147,7 +156,7 @@ void RLSimionApp::initRenderer(string sceneFile)
 		pMeter2D = new Meter2D(stateDescriptor[i].getName(), origin, size, depth);
 		pMeter2D->setValueRange(Range(stateDescriptor[i].getMin(), stateDescriptor[i].getMax()));
 		m_pStateUIMeters.push_back(pMeter2D);
-		m_pRenderer->add2DGraphicObject(pMeter2D);
+		m_pRenderer->add2DGraphicObject(pMeter2D, pMetersViewPort);
 		origin -= offset;
 	}
 	//action variables
@@ -157,7 +166,7 @@ void RLSimionApp::initRenderer(string sceneFile)
 		pMeter2D = new Meter2D(actionDescriptor[i].getName(), origin, size, depth);
 		pMeter2D->setValueRange(Range(actionDescriptor[i].getMin(), actionDescriptor[i].getMax()));
 		m_pActionUIMeters.push_back(pMeter2D);
-		m_pRenderer->add2DGraphicObject(pMeter2D);
+		m_pRenderer->add2DGraphicObject(pMeter2D, pMetersViewPort);
 		origin -= offset;
 	}
 	m_pInputHandler = new FreeCameraInputHandler();
@@ -202,9 +211,9 @@ void RLSimionApp::updateScene(State* s, Action* a)
 		value = s->get(varName.c_str());
 		m_pRenderer->updateBinding(varName, value);
 	}
-	//drawScene
+	//drawViewPorts
 	m_pInputHandler->handleInput();
-	m_pRenderer->redraw();
+	m_pRenderer->draw();
 
 	//real time execution?
 	if (!((FreeCameraInputHandler*)m_pInputHandler)->getRealTimeExecutionDisabled())

@@ -2,13 +2,23 @@
 #include "SimionLogViewer.h"
 #include "LogLoader.h"
 #include "../OpenGLRenderer/Renderer.h"
+#include "../OpenGLRenderer/viewport.h"
 #include "../OpenGLRenderer/input-handler.h"
 #include "../OpenGLRenderer/text.h"
 #include "../OpenGLRenderer/basic-shapes-2d.h"
 #include <algorithm>
 
 
+#include <sstream>
+#include <iomanip>
 
+template <typename T>
+std::string to_string_with_precision(const T a_value, const int n = 6)
+{
+	std::ostringstream out;
+	out << std::fixed << std::setprecision(n) << a_value;
+	return out.str();
+}
 
 SimionLogViewer::SimionLogViewer()
 {
@@ -29,9 +39,13 @@ void SimionLogViewer::init(int argc,char** argv)
 	m_pRenderer = new Renderer();
 	m_pRenderer->init(argc, argv, 600, 400);
 
+	//resize the main viewport to (0,0) - (0.7,1)
+	ViewPort* pMainViewport = m_pRenderer->getDefaultViewPort();
+	pMainViewport->resize(0.0, 0.0, 0.7, 1.0);
+
 	m_pTimeText = new Text2D(string("Time"), Vector2D(0.05, 0.9), 0.5);
 	m_pEpisodeText = new Text2D(string("Episode"), Vector2D(0.05, 0.85), 0.5);
-	m_pPlaybackRateText = new Text2D(string("Playback Rate"), Vector2D(0.8, 0.9), 0.5);
+	m_pPlaybackRateText = new Text2D(string("Playback Rate"), Vector2D(0.7, 0.9), 0.5);
 
 	m_pRenderer->add2DGraphicObject(m_pTimeText);
 	m_pRenderer->add2DGraphicObject(m_pEpisodeText);
@@ -170,18 +184,20 @@ bool SimionLogViewer::loadLogFile(string filename)
 	}
 	else return false;
 
+	ViewPort* pMetersViewPort = m_pRenderer->addViewPort(0.7, 0.0, 1.0, 1.0);
+
 	//add meter2D objects to show variable values
 	Descriptor& logDescriptor = m_pExperimentLog->getDescriptor();
 	Meter2D* pMeter;
-	Vector2D origin = Vector2D(0.05, 0.8);
-	Vector2D size = Vector2D(0.3, 0.03);
-	Vector2D offset = Vector2D(0.0, 0.04);
+	Vector2D origin = Vector2D(0.025, 0.95);
+	Vector2D size = Vector2D(0.95, 0.04);
+	Vector2D offset = Vector2D(0.0, 0.05);
 	double depth = 0.25;
 	for (int i = 0; i < logDescriptor.size(); i++)
 	{
 		pMeter = new Meter2D(logDescriptor[i].getName(), origin, size, depth);
 		pMeter->setValueRange(Range(logDescriptor[i].getMin(), logDescriptor[i].getMax()));
-		m_pRenderer->add2DGraphicObject(pMeter);
+		m_pRenderer->add2DGraphicObject(pMeter, pMetersViewPort);
 		m_variableMeters.push_back(pMeter);
 		origin -= offset;
 	}
@@ -236,17 +252,6 @@ void SimionLogViewer::handleInput()
 	glutMainLoopEvent();
 }
 
-#include <sstream>
-#include <iomanip>
-
-template <typename T>
-std::string to_string_with_precision(const T a_value, const int n = 6)
-{
-	std::ostringstream out;
-	out << std::fixed << std::setprecision(n)  << a_value;
-	return out.str();
-}
-
 void SimionLogViewer::draw()
 {
 	if (m_pCurrentEpisode == nullptr || m_episodeLength==0.0) return;
@@ -284,5 +289,5 @@ void SimionLogViewer::draw()
 	}
 
 	//draw the scene
-	m_pRenderer->redraw();
+	m_pRenderer->draw();
 }

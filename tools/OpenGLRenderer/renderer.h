@@ -1,6 +1,7 @@
 #pragma once
 #include <vector>
 #include "../WindowsUtils/Timer.h"
+#include "viewport.h"
 
 class GraphicObject3D;
 class GraphicObject2D;
@@ -40,16 +41,14 @@ class Renderer
 	int m_windowWidth= 1024, m_windowHeight= 768;
 
 	void reshapeWindow(int w, int h);
-	void drawScene();
-	static void _drawScene();
+	void drawViewPorts();
+	static void _drawViewPorts();
 	static void _reshapeWindow(int width, int height);
 	void loadSceneObjects(tinyxml2::XMLElement* pNode);
 	Binding* getBinding(string externalName);
 
-	void drawBoundingBox3D(BoundingBox3D& box) const;
-	void drawBoundingBox2D(BoundingBox2D& box) const;
-
-	bool m_bShowBoundingBoxes= false;
+	ViewPort* m_pDefaultViewPort = nullptr;
+	vector<ViewPort*> m_viewPorts;
 public:
 	Renderer();
 	virtual ~Renderer();
@@ -64,23 +63,39 @@ public:
 
 	void loadScene(const char* file);
 
-	void redraw();
+	void draw();
 
 	void init(int argc, char** argv, int sizeX, int sizeY);
 
-	void addGraphicObject(GraphicObject3D* pObj);
-	void add2DGraphicObject(GraphicObject2D* pObj);
-
+	//Access to the renderer instance
 	static Renderer* get();
-	TextureManager* getTextureManager();
-	Camera* getActiveCamera();
 
+	TextureManager* getTextureManager();
+
+	//View ports
+	ViewPort* getDefaultViewPort() { return m_pDefaultViewPort; }
+	void addViewPort(ViewPort* pViewPort) { m_viewPorts.push_back(pViewPort); }
+	ViewPort* addViewPort(double minNormX, double minNormY, double maxNormX, double maxNormY); //normalized screen coordinates in [0,0] - [1,1]
+
+	//Graphic objects
+	void addGraphicObject(GraphicObject3D* pObj, ViewPort* pViewPort = nullptr);
+	void add2DGraphicObject(GraphicObject2D* pObj, ViewPort* pViewPort = nullptr);
+
+	//Lights
+	void addLight(Light* pLight, ViewPort* pViewPort = nullptr);
+	
+	//Cameras
+	Camera* getActiveCamera();
+	void addCamera(Camera* pCamera, ViewPort* pViewPort = nullptr);
+
+	//Search
 	GraphicObject3D* get3DObjectByName(string name);
 	GraphicObject2D* get2DObjectByName(string name);
 
-	void showBoundingBoxes(bool bShow) { m_bShowBoundingBoxes = bShow; }
-	bool bShowBoundingBoxes() { return m_bShowBoundingBoxes; }
+	//Bounding boxes
+	void drawBoundingBoxes(bool enable, ViewPort* pViewPort = nullptr);
 
+	//Bindings
 	//this is called by Bindable objects at initialization time
 	template <typename T>
 	void registerBinding(string externalName, T& obj, string internalName, double offset = 0.0, double multiplier = 1.0)

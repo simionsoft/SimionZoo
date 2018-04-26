@@ -183,6 +183,7 @@
     <ClCompile Include="graphic-object-2d.cpp" />
     <ClCompile Include="camera.cpp" />
     <ClCompile Include="collada-model.cpp" />
+    <ClCompile Include="ogl-utils.cpp" />
     <ClCompile Include="scene-actor-2d.cpp" />
     <ClCompile Include="scene-actor-3d.cpp" />
     <ClCompile Include="graphic-object-3d.cpp" />
@@ -198,6 +199,7 @@
     <ClCompile Include="color.cpp" />
     <ClCompile Include="text.cpp" />
     <ClCompile Include="texture-manager.cpp" />
+    <ClCompile Include="viewport.cpp" />
     <ClCompile Include="xml-load.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -207,6 +209,7 @@
     <ClInclude Include="graphic-object-2d.h" />
     <ClInclude Include="camera.h" />
     <ClInclude Include="collada-model.h" />
+    <ClInclude Include="ogl-utils.h" />
     <ClInclude Include="scene-actor-2d.h" />
     <ClInclude Include="scene-actor-3d.h" />
     <ClInclude Include="graphic-object-3d.h" />
@@ -220,6 +223,7 @@
     <ClInclude Include="color.h" />
     <ClInclude Include="text.h" />
     <ClInclude Include="texture-manager.h" />
+    <ClInclude Include="viewport.h" />
     <ClInclude Include="xml-load.h" />
   </ItemGroup>
   <ItemGroup>

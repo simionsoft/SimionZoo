@@ -74,7 +74,7 @@ int main(int argc, char** argv)
 
 		//RENDER////////////////////
 		////////////////////////////
-		pRenderer->redraw();
+		pRenderer->draw();
 
 
 		dt = timer.getElapsedTime(true);

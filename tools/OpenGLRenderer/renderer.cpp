@@ -22,15 +22,17 @@ Renderer::Renderer()
 	m_pActiveCamera = 0;
 }
 
+
 Renderer::~Renderer()
 {
-	//delete 3d objects
-	for (auto it = m_3DgraphicObjects.begin(); it != m_3DgraphicObjects.end(); ++it) delete *it;
-	//delete 2d objects
-	for (auto it = m_2DgraphicObjects.begin(); it != m_2DgraphicObjects.end(); ++it) delete *it;
-	for (auto it = m_cameras.begin(); it != m_cameras.end(); ++it) delete *it;
-	for (auto it = m_lights.begin(); it != m_lights.end(); ++it) delete *it;
-	if (m_pTextureManager) delete m_pTextureManager;
+	//delete here all the objects handled by the renderer. Viewports have references to them, but they don't own them
+	for each (auto obj in m_3DgraphicObjects) delete obj;
+	for each (auto obj in m_2DgraphicObjects) delete obj;
+	for each (auto camera in m_cameras) delete camera;
+	for each (auto light in m_lights) delete light;
+	for each (auto viewport in m_viewPorts) delete viewport;
+	delete m_pTextureManager;
+	m_pInstance = nullptr;
 }
 
 void Renderer::setDataFolder(string dataFolder)
@@ -44,9 +46,9 @@ string Renderer::getDataFolder()
 }
 
 
-void Renderer::_drawScene()
+void Renderer::_drawViewPorts()
 {
-	Renderer::get()->drawScene();
+	Renderer::get()->drawViewPorts();
 }
 
 void Renderer::_reshapeWindow(int width, int height)
@@ -62,12 +64,18 @@ void Renderer::init(int argc, char** argv, int screenWidth, int screenHeight)
 	glutInitWindowSize(screenWidth, screenHeight);
 	glutCreateWindow(argv[0]);
 
-	//callback functions
-	glutDisplayFunc(_drawScene);
-	glutReshapeFunc(_reshapeWindow);
-
+	//set the size of the window before creating the viewport
 	m_windowWidth = screenWidth;
 	m_windowHeight = screenHeight;
+
+	//create the default viewport that covers the whole screen (normalized coordinates are used)
+	//this default viewport can be resized (by the user) if more viewports are to be used
+	m_pDefaultViewPort = new ViewPort(0, 0, 1.0, 1.0);
+	m_viewPorts.push_back(m_pDefaultViewPort);
+
+	//callback functions
+	glutDisplayFunc(_drawViewPorts);
+	glutReshapeFunc(_reshapeWindow);
 
 	glEnable(GL_DEPTH_TEST);
 
@@ -81,14 +89,75 @@ Renderer* Renderer::get()
 	return m_pInstance;
 }
 
-void Renderer::addGraphicObject(GraphicObject3D* pObj)
+void Renderer::addGraphicObject(GraphicObject3D* pObj, ViewPort* pViewPort)
 {
-	m_3DgraphicObjects.push_back(pObj);
+	if (pViewPort)
+	{
+		//if a viewport is given, we add the object to it
+		pViewPort->addGraphicObject3D(pObj);
+		//since we are using viewports, the object might have been added to another viewport previously, so we only
+		//add it to the global list in case it's not there yet
+		if (std::find(m_3DgraphicObjects.begin(), m_3DgraphicObjects.end(), pObj) == m_3DgraphicObjects.end())
+			m_3DgraphicObjects.push_back(pObj);
+	}
+	else
+	{
+		//if no viewport is given, we just assume the default viewport is being used. No need to check if it's already there
+		m_pDefaultViewPort->addGraphicObject3D(pObj);
+		m_3DgraphicObjects.push_back(pObj);
+	}
 }
 
-void Renderer::add2DGraphicObject(GraphicObject2D* pObj)
+void Renderer::add2DGraphicObject(GraphicObject2D* pObj, ViewPort* pViewPort)
 {
-	m_2DgraphicObjects.push_back(pObj);
+	if (pViewPort)
+	{
+		pViewPort->addGraphicObject2D(pObj);
+		if (std::find(m_2DgraphicObjects.begin(), m_2DgraphicObjects.end(), pObj) == m_2DgraphicObjects.end())
+			m_2DgraphicObjects.push_back(pObj);
+	}
+	else
+	{
+		m_pDefaultViewPort->addGraphicObject2D(pObj);
+		m_2DgraphicObjects.push_back(pObj);
+	}
+}
+
+void Renderer::addLight(Light* pLight, ViewPort* pViewPort)
+{
+	if (pViewPort)
+	{
+		pViewPort->addLight(pLight);
+		if (std::find(m_lights.begin(),m_lights.end(),pLight) == m_lights.end())
+			m_lights.push_back(pLight);
+	}
+	else
+	{
+		m_pDefaultViewPort->addLight(pLight);
+		m_lights.push_back(pLight);
+	}
+}
+
+void Renderer::addCamera(Camera* pCamera, ViewPort* pViewPort)
+{
+	if (pViewPort)
+	{
+		pViewPort->setActiveCamera(pCamera);
+		if (std::find(m_cameras.begin(), m_cameras.end(), pCamera) == m_cameras.end())
+			m_cameras.push_back(pCamera);
+	}
+	else
+	{
+		m_pDefaultViewPort->setActiveCamera(pCamera);
+		m_cameras.push_back(pCamera);
+	}
+}
+
+ViewPort* Renderer::addViewPort(double minNormX, double minNormY, double maxNormX, double maxNormY)
+{
+	ViewPort* pViewPort = new ViewPort(minNormX, minNormY, maxNormX, maxNormY);
+	m_viewPorts.push_back(pViewPort);
+	return pViewPort;
 }
 
 TextureManager* Renderer::getTextureManager()
@@ -159,11 +228,16 @@ void Renderer::loadSceneObjects(tinyxml2::XMLElement* pNode)
 	tinyxml2::XMLElement* pObjects = pNode->FirstChildElement(XML_TAG_OBJECTS);
 	if (pObjects)
 		loadChildren<GraphicObject3D>(pObjects, nullptr, m_3DgraphicObjects);
+	//we need to add loaded objects to the default viewport
+	for each (GraphicObject3D* obj in m_3DgraphicObjects)
+		m_pDefaultViewPort->addGraphicObject3D(obj);
 
 	//2d graphic objects
 	pObjects = pNode->FirstChildElement(XML_TAG_OBJECTS_2D);
 	if (pObjects)
 		loadChildren<GraphicObject2D>(pObjects, nullptr, m_2DgraphicObjects);
+	for each (GraphicObject2D* obj in m_2DgraphicObjects)
+		m_pDefaultViewPort->addGraphicObject2D(obj);
 
 	//cameras
 	loadChildren<Camera>(pNode, XML_TAG_CAMERA, m_cameras);
@@ -172,19 +246,22 @@ void Renderer::loadSceneObjects(tinyxml2::XMLElement* pNode)
 	else
 	{
 		m_pActiveCamera = new SimpleCamera();
-		m_cameras.push_back(m_pActiveCamera);
-		printf("Warning: No camera defined. Default camera created\n");
+		printf("Warning: No camera defined in the scene file. Default camera created\n");
 	}
+	m_pDefaultViewPort->setActiveCamera(m_pActiveCamera);
+
 	//lights
 	loadChildren<Light>(pNode, XML_TAG_LIGHT, m_lights);
 	if (m_lights.size() == 0)
 	{
-		printf("Warning: No light defined. Default directional light created\n");
-		m_lights.push_back(new DirectionalLight());
+		Light* pLight= new DirectionalLight();
+		m_lights.push_back(pLight);
+		printf("Warning: No light defined in the scene file. Default directional light created\n");
 	}
+	m_pDefaultViewPort->addLights(m_lights);
 }
 
-void Renderer::redraw()
+void Renderer::draw()
 {
 	glutPostRedisplay();
 	glutSwapBuffers();
@@ -204,57 +281,22 @@ void Renderer::updateFPS()
 	}
 }
 
-void Renderer::drawScene()
+void Renderer::drawViewPorts()
 {
-	//clean the backbuffer
-	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-	if (!m_pActiveCamera)
+	//if no camera has been defined, create a basic one
+	if (m_pActiveCamera == nullptr)
 	{
 		m_pActiveCamera = new SimpleCamera();
 		m_cameras.push_back(m_pActiveCamera);
 	}
-	//set 3d view
-	m_pActiveCamera->set();
-	//set lights
-	Light::enable(true);
 
-	for (auto it = m_lights.begin(); it != m_lights.end(); ++it)
-	{
-		(*it)->set();
-	}
-	//draw 3d objects in the scene
-	Frustum& frustum = m_pActiveCamera->getFrustum();
+	//clean the backbuffer
+	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
 	m_num3DObjectsDrawn = 0;
-
-	for each(auto object in m_3DgraphicObjects)
+	for each (ViewPort* pViewPort in m_viewPorts)
 	{
-		if (frustum.isVisible(object->boundingBox()))
-		{
-			object->draw();
-
-			if (m_bShowBoundingBoxes)
-			{
-				object->setTransform();
-				drawBoundingBox3D(object->boundingBox());
-				object->restoreTransform();
-			}
-			++m_num3DObjectsDrawn;
-		}
-	}
-	Light::enable(false);
-	//set 2d view
-	if (m_pActiveCamera) m_pActiveCamera->set2DView();
-	//draw 2d objects
-	for each (auto object in m_2DgraphicObjects)
-	{
-		object->setTransform();
-
-		object->draw();
-
-		if (m_bShowBoundingBoxes)
-			drawBoundingBox2D(object->boundingBox());
-
-		object->restoreTransform();
+		m_num3DObjectsDrawn+= pViewPort->draw();
 	}
 }
 
@@ -262,7 +304,7 @@ void Renderer::reshapeWindow(int w,int h)
 {
 	m_windowWidth = w;
 	m_windowHeight = h;
-	glViewport(0, 0, (GLsizei)w, (GLsizei)h);
+	//glViewport(0, 0, (GLsizei)w, (GLsizei)h); //this is now set by each viewport
 }
 
 Binding* Renderer::getBinding(string externalName)
@@ -313,46 +355,12 @@ bool Renderer::updateBinding(string bindingExternalName, double value)
 	return false;
 }
 
-
-void Renderer::drawBoundingBox3D(BoundingBox3D& box) const
+void Renderer::drawBoundingBoxes(bool enable, ViewPort* pViewPort)
 {
-	glBegin(GL_LINES);
-	//FRONT
-	glVertex3d(box.min().x(), box.min().y(), box.max().z());
-	glVertex3d(box.max().x(), box.min().y(), box.max().z());
-	glVertex3d(box.max().x(), box.min().y(), box.max().z());
-	glVertex3d(box.max().x(), box.max().y(), box.max().z());
-	glVertex3d(box.max().x(), box.max().y(), box.max().z());
-	glVertex3d(box.min().x(), box.max().y(), box.max().z());
-	glVertex3d(box.min().x(), box.max().y(), box.max().z());
-	glVertex3d(box.min().x(), box.min().y(), box.max().z());
-	//BACK
-	glVertex3d(box.min().x(), box.min().y(), box.min().z());
-	glVertex3d(box.max().x(), box.min().y(), box.min().z());
-	glVertex3d(box.max().x(), box.min().y(), box.min().z());
-	glVertex3d(box.max().x(), box.max().y(), box.min().z());
-	glVertex3d(box.max().x(), box.max().y(), box.min().z());
-	glVertex3d(box.min().x(), box.max().y(), box.min().z());
-	glVertex3d(box.min().x(), box.max().y(), box.min().z());
-	glVertex3d(box.min().x(), box.min().y(), box.min().z());
-	//4 lines between front face and back face
-	glVertex3d(box.min().x(), box.min().y(), box.min().z());
-	glVertex3d(box.min().x(), box.min().y(), box.max().z());
-	glVertex3d(box.max().x(), box.min().y(), box.min().z());
-	glVertex3d(box.max().x(), box.min().y(), box.max().z());
-	glVertex3d(box.max().x(), box.max().y(), box.min().z());
-	glVertex3d(box.max().x(), box.max().y(), box.max().z());
-	glVertex3d(box.min().x(), box.max().y(), box.min().z());
-	glVertex3d(box.min().x(), box.max().y(), box.max().z());
-	glEnd();
-}
-
-void Renderer::drawBoundingBox2D(BoundingBox2D& box) const
-{
-	glBegin(GL_LINES);
-	glVertex2d(box.min().x(), box.min().y()); glVertex2d(box.max().x(), box.min().y());
-	glVertex2d(box.max().x(), box.min().y()); glVertex2d(box.max().x(), box.max().y());
-	glVertex2d(box.max().x(), box.max().y()); glVertex2d(box.min().x(), box.max().y());
-	glVertex2d(box.min().x(), box.max().y()); glVertex2d(box.min().x(), box.min().y());
-	glEnd();
+	//if no viewport is given, we just update all the viewports
+	if (pViewPort)
+		pViewPort->drawBoundingBoxes(enable);
+	else
+		for each (ViewPort* pViewPort in m_viewPorts)
+			pViewPort->drawBoundingBoxes(enable);
 }
