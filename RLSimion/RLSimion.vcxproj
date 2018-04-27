@@ -323,7 +323,7 @@
     <ClInclude Include="deep-vfa-policy.h" />
     <ClInclude Include="deferred-load.h" />
     <ClInclude Include="DQN.h" />
-    <ClInclude Include="drawable-function.h" />
+    <ClInclude Include="state-action-function.h" />
     <ClInclude Include="etraces.h" />
     <ClInclude Include="experience-replay.h" />
     <ClInclude Include="experiment.h" />

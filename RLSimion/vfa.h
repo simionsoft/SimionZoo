@@ -11,7 +11,7 @@ class ConfigFile;
 
 #include "parameters.h"
 #include "deferred-load.h"
-#include "drawable-function.h"
+#include "state-action-function.h"
 class IMemBuffer;
 
 //LinearVFA////////////////////////////////////////////////////////////////////
@@ -20,7 +20,7 @@ class IMemBuffer;
 class LinearVFA
 {
 protected:
-	//this is used to simplify the implementation of the DrawableFunction interface
+	//this is used to simplify the implementation of the StateActionFunction interface
 	vector<double> m_output = vector<double>(1);
 
 	FeatureList* m_pPendingUpdates= nullptr;
@@ -55,7 +55,7 @@ public:
 
 };
 
-class LinearStateVFA: public LinearVFA, public DrawableFunction, public DeferredLoad
+class LinearStateVFA: public LinearVFA, public StateActionFunction, public DeferredLoad
 {
 protected:
 	std::shared_ptr<StateFeatureMap> m_pStateFeatureMap;
@@ -79,7 +79,7 @@ public:
 
 	std::shared_ptr<StateFeatureMap> getStateFeatureMap(){ return m_pStateFeatureMap; }
 
-	//DrawableFunction interface
+	//StateActionFunction interface
 	unsigned int getNumOutputs();
 	vector<double>& evaluate(const State* s, const Action* a);
 	const vector<string>& getInputStateVariables();
@@ -87,7 +87,7 @@ public:
 };
 
 
-class LinearStateActionVFA : public LinearVFA, public DrawableFunction, public DeferredLoad
+class LinearStateActionVFA : public LinearVFA, public StateActionFunction, public DeferredLoad
 {
 protected:
 	std::shared_ptr<StateFeatureMap> m_pStateFeatureMap;
@@ -133,7 +133,7 @@ public:
 
 	void deferredLoadStep();
 
-	//DrawableFunction interface
+	//StateActionFunction interface
 	unsigned int getNumOutputs();
 	vector<double>& evaluate(const State* s, const Action* a);
 	const vector<string>& getInputStateVariables();

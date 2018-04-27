@@ -250,7 +250,7 @@ void LinearStateVFA::getFeatures(const State* s, FeatureList* outFeatures)
 	assert (s);
 	assert (outFeatures);
 	m_pStateFeatureMap->getFeatures(s,outFeatures);
-	outFeatures->offsetIndices(m_minIndex);
+	outFeatures->offsetIndices((int) m_minIndex);
 }
 
 void LinearStateVFA::getFeatureState(unsigned int feature, State* s)
@@ -365,9 +365,9 @@ void LinearStateActionVFA::getFeatures(const State* s, const Action* a, FeatureL
 
 		m_pActionFeatureMap->getFeatures(a, m_pAux2);
 
-		outFeatures->spawn(m_pAux2, m_numStateWeights);
+		outFeatures->spawn(m_pAux2, (unsigned int) m_numStateWeights);
 
-		outFeatures->offsetIndices(m_minIndex);
+		outFeatures->offsetIndices((int) m_minIndex);
 	}
 	else if (s)
 	{
@@ -385,7 +385,7 @@ void LinearStateActionVFA::getFeatureStateAction(unsigned int feature, State* s,
 		if (s)
 			m_pStateFeatureMap->getFeatureState(feature % m_numStateWeights, s);
 		if (a)
-			m_pActionFeatureMap->getFeatureAction(feature / m_numStateWeights, a);
+			m_pActionFeatureMap->getFeatureAction(feature / (unsigned int) m_numStateWeights, a);
 	}
 }
 
@@ -426,7 +426,7 @@ void LinearStateActionVFA::argMax(const State *s, Action* a)
 			numTies = 1;
 		}
 
-		m_pAux->offsetIndices(m_numStateWeights);
+		m_pAux->offsetIndices((int) m_numStateWeights);
 	}
 
 	//any ties?
@@ -452,7 +452,7 @@ double LinearStateActionVFA::max(const State* s, bool bUseFrozenWeights)
 		if (value>maxValue)
 			maxValue = value;
 
-		m_pAux->offsetIndices(m_numStateWeights);
+		m_pAux->offsetIndices((int) m_numStateWeights);
 	}
 
 	return maxValue;
@@ -470,7 +470,7 @@ void LinearStateActionVFA::getActionValues(const State* s,double *outActionValue
 	{
 		outActionValues[i] = get(m_pAux, true); //frozen weights
 
-		m_pAux->offsetIndices(m_numStateWeights);
+		m_pAux->offsetIndices((int) m_numStateWeights);
 	}
 }
 

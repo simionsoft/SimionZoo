@@ -15,7 +15,7 @@ using namespace std;
 namespace tinyxml2 { class XMLElement; }
 
 #include "../../RLSimion/named-var-set.h"
-#include "../../RLSimion/drawable-function.h"
+#include "../../RLSimion/state-action-function.h"
 class NetworkArchitecture;
 class INetwork;
 class IMinibatch;
@@ -45,7 +45,7 @@ public:
 	virtual INetwork* createNetwork(double learningRate, bool inputsNeedGradient = false) = 0;
 };
 
-class INetwork : public DrawableFunction
+class INetwork : public StateActionFunction
 {
 public:
 	virtual void destroy()= 0;
@@ -64,7 +64,7 @@ public:
 	virtual void gradientWrtAction(const State* s, const Action* a, vector<double>& outputValues) = 0;
 	virtual void applyGradient(IMinibatch* pMinibatch) = 0;
 
-	//DrawableFunction interface
+	//StateActionFunction interface
 	virtual unsigned int getNumOutputs() = 0;
 	virtual vector<double>& evaluate(const State* s, const Action* a) = 0;
 	virtual const vector<string>& getInputStateVariables() = 0;

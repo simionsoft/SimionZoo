@@ -6,8 +6,12 @@ class Logger;
 class World;
 class Experiment;
 class SimGod;
+class StateActionFunction;
 
 #include <vector>
+#include <unordered_map>
+using namespace std;
+
 #include "parameters.h"
 #include "mem-manager.h"
 
@@ -24,6 +28,8 @@ protected:
 	std::vector<const char*> m_inputFiles;
 	std::vector<const char*> m_inputFilesRenamed; // names to be given in the remote machines to input files
 	std::vector<const char*> m_outputFiles;
+
+	unordered_map<string, StateActionFunction*> m_pStateActionFunctions = {};
 public:
 
 	SimionApp();
@@ -37,6 +43,9 @@ public:
 	CHILD_OBJECT<Experiment> pExperiment;
 	CHILD_OBJECT<SimGod> pSimGod;
 
+	//Drawable functions can be added in initialization and drawn if "-local" argument is set
+	void registerStateActionFunction(string name, StateActionFunction* pFunction);
+	const unordered_map<string, StateActionFunction*> getStateActionFunctions() const { return m_pStateActionFunctions; }
 
 	//Input/Output file registering member functions
 	//Subclasses should call these methods to let know what input/output files will be required at run-time

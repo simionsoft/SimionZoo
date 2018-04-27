@@ -6,7 +6,7 @@ class NamedVarSet;
 using State = NamedVarSet;
 using Action = NamedVarSet;
 
-class DrawableFunction
+class StateActionFunction
 {
 public:
 

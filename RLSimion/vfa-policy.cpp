@@ -138,6 +138,9 @@ DeterministicPolicyGaussianNoise::DeterministicPolicyGaussianNoise(ConfigNode* p
 {
 	m_pDeterministicVFA = CHILD_OBJECT<LinearStateVFA>(pConfigNode, "Deterministic-Policy-VFA"
 		, "The parameterized VFA that approximates the function");
+
+	SimionApp::get()->registerStateActionFunction(string("pi(") + m_outputAction.getName() + string(")"), m_pDeterministicVFA.ptr());
+
 	m_pExpNoise = CHILD_OBJECT_FACTORY<Noise>(pConfigNode, "Exploration-Noise"
 		, "Parameters of the noise used as exploration");
 
@@ -217,7 +220,10 @@ StochasticGaussianPolicy::StochasticGaussianPolicy(ConfigNode* pConfigNode)
 	: StochasticPolicy(pConfigNode)
 {
 	m_pMeanVFA = CHILD_OBJECT<LinearStateVFA>(pConfigNode, "Mean-VFA", "The parameterized VFA that approximates the function");
+	SimionApp::get()->registerStateActionFunction(string("pi(") + m_outputAction.getName() + string(")-Mean"), m_pMeanVFA.ptr());
+
 	m_pSigmaVFA = CHILD_OBJECT<LinearStateVFA>(pConfigNode, "Sigma-VFA", "The parameterized VFA that approximates variance(s)");
+	SimionApp::get()->registerStateActionFunction(string("pi(") + m_outputAction.getName() + string(")-Var"), m_pSigmaVFA.ptr());
 	//m_pSigmaVFA->saturateOutput(0.0, 1.0);
 	m_pSigmaVFA->setIndexOffset((unsigned int) m_pMeanVFA->getNumWeights());
 	m_pMeanFeatures = new FeatureList("Sto-Policy/mean-features");
@@ -225,9 +231,6 @@ StochasticGaussianPolicy::StochasticGaussianPolicy(ConfigNode* pConfigNode)
 
 	m_lastNoise = 0.0;
 	SimionApp::get()->pLogger->addVarToStats<double>("Stoch.Policy", "Noise", m_lastNoise);
-	//will be used as temp. buffers in the add method
-	//m_pMeanAddList = new FeatureList("meanAddList");
-	//m_pSigmaAddList = new FeatureList("sigmaAddList");
 }
 
 StochasticGaussianPolicy::~StochasticGaussianPolicy()

@@ -58,7 +58,7 @@ public:
 	void gradientWrtAction(const State* s, const Action* a, vector<double>& outputValues);
 	void applyGradient(IMinibatch* pMinibatch);
 
-	//DrawableFunction interface
+	//StateActionFunction interface
 	unsigned int getNumOutputs();
 	vector<double>& evaluate(const State* s, const Action* a);
 	const vector<string>& getInputStateVariables();

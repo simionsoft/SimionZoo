@@ -430,7 +430,7 @@
     <ClInclude Include="DDPG.h">
       <Filter>learning</Filter>
     </ClInclude>
-    <ClInclude Include="drawable-function.h">
+    <ClInclude Include="state-action-function.h">
       <Filter>learning</Filter>
     </ClInclude>
   </ItemGroup>

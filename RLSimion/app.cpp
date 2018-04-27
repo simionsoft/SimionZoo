@@ -6,6 +6,7 @@
 #include "SimGod.h"
 #include "config.h"
 #include "utils.h"
+#include "state-action-function.h"
 #include "../tools/WindowsUtils/FileUtils.h"
 
 SimionApp* SimionApp::m_pAppInstance = 0;
@@ -116,7 +117,10 @@ string SimionApp::getOutputDirectory()
 }
 
 
-
+void SimionApp::registerStateActionFunction(string name, StateActionFunction* pFunction)
+{
+	m_pStateActionFunctions[name] = pFunction;
+}
 
 void SimionApp::registerInputFile(const char* filepath, const char* rename)
 {

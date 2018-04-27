@@ -112,6 +112,7 @@ QLearningCritic::QLearningCritic(ConfigNode* pConfigNode)
 {
 	m_pQFunction = CHILD_OBJECT<LinearStateActionVFA>(pConfigNode, "Q-Function", "The parameterization of the Q-Function");
 	m_pQFunction->setCanUseDeferredUpdates(true);
+	SimionApp::get()->registerStateActionFunction("Q(s,a)", m_pQFunction.ptr());
 	
 	m_eTraces = CHILD_OBJECT<ETraces>(pConfigNode, "E-Traces", "E-Traces", true);
 	m_eTraces->setName("Q-Learning/traces");
