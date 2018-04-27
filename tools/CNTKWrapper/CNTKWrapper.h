@@ -66,7 +66,7 @@ public:
 
 	//DrawableFunction interface
 	virtual unsigned int getNumOutputs() = 0;
-	virtual const vector<double>& evaluate(const State* s, const Action* a) = 0;
+	virtual vector<double>& evaluate(const State* s, const Action* a) = 0;
 	virtual const vector<string>& getInputStateVariables() = 0;
 	virtual const vector<string>& getInputActionVariables() = 0;
 };
@@ -77,7 +77,7 @@ public:
 	virtual void destroy() = 0;
 
 	virtual void clear() = 0;
-	virtual void addTuple(const State* s, const Action* a, vector<double>& targetValues) = 0;
+	virtual void addTuple(const State* s, const Action* a, const vector<double>& targetValues) = 0;
 	virtual void addTuple(const State* s, const Action* a, double targetValue) = 0;
 	virtual vector<double>& getInputState() = 0;
 	virtual vector<double>& getInputAction() = 0;

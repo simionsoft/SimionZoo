@@ -21,7 +21,7 @@ public:
 	virtual ~Minibatch();
 
 	void clear();
-	void addTuple(const State* s, const Action* a, vector<double>& targetValues);
+	void addTuple(const State* s, const Action* a, const vector<double>& targetValues);
 	void addTuple(const State* s, const Action* a, double targetValue);
 	vector<double>& getInputState();
 	vector<double>& getInputAction();

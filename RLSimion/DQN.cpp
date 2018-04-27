@@ -42,14 +42,12 @@ DQN::DQN(ConfigNode* pConfigNode)
 void DQN::deferredLoadStep()
 {
 	//we defer all the heavy-weight initializing stuff and anything that depends on the SimGod
-	m_Q_s_p = vector<double>(m_numActionSteps.get());
-	m_Q_s = vector<double>(m_numActionSteps.get());
 
 	Descriptor& actionDescr = SimionApp::get()->pWorld->getDynamicModel()->getActionDescriptor();
 	
 	//set the input-outputs
-	for (size_t stateVarIndex = 0; stateVarIndex < m_inputState.size(); stateVarIndex++)
-		m_pNNDefinition->addInputStateVar(stateVarIndex);
+	for (size_t i = 0; i < m_inputState.size(); ++i)
+		m_pNNDefinition->addInputStateVar(m_inputState[i]->getName(), m_inputState[i]->get());
 	m_pNNDefinition->setDiscretizedActionVectorOutput(m_outputAction.get(), m_numActionSteps.get()
 		, actionDescr[m_outputAction.get()].getMin(), actionDescr[m_outputAction.get()].getMax());
 
@@ -68,7 +66,7 @@ void DQN::deferredLoadStep()
 
 double DQN::selectAction(const State * s, Action * a)
 {
-	m_pOnlineQNetwork->evaluate(s, a, m_Q_s);
+	vector<double>& m_Q_s = m_pOnlineQNetwork->evaluate(s, a);
 
 	size_t selectedAction = m_policy->selectAction(m_Q_s);
 
@@ -90,7 +88,7 @@ double DQN::update(const State * s, const Action * a, const State * s_p, double 
 		double gamma = SimionApp::get()->pSimGod->getGamma();
 
 		//get Q(s_p) for the current tuple (target/online-weights)
-		getQNetworkForTargetActionSelection()->evaluate(s_p, a, m_Q_s_p);
+		vector<double> & m_Q_s_p = getQNetworkForTargetActionSelection()->evaluate(s_p, a);
 
 		//calculate argmaxQ(s_p)
 		size_t argmaxQ = distance(m_Q_s_p.begin(), max_element(m_Q_s_p.begin(), m_Q_s_p.end()));
@@ -100,13 +98,13 @@ double DQN::update(const State * s, const Action * a, const State * s_p, double 
 		//We do the prediction step again only if using Double-DQN (the prediction network
 		//will be different to the online network)
 		if (getQNetworkForTargetActionSelection() != m_pTargetQNetwork)
-			m_pTargetQNetwork->evaluate(s_p, a, m_Q_s_p);
+			m_Q_s_p= m_pTargetQNetwork->evaluate(s_p, a);
 
 		//calculate targetvalue= r + gamma*Q(s_p,a)
 		double targetValue = r + gamma * m_Q_s_p[argmaxQ];
 
 		//get the current value of Q(s)
-		m_pOnlineQNetwork->evaluate(s, a, m_Q_s);
+		vector<double> & m_Q_s = m_pOnlineQNetwork->evaluate(s, a);
 
 		//change the target value only for the selecte action, the rest remain the same
 		//store the index of the action taken

@@ -51,16 +51,15 @@ void DDPG::deferredLoadStep()
 	//Set the state-input
 	for (size_t stateVarIndex = 0; stateVarIndex < m_inputState.size(); stateVarIndex++)
 	{
-		m_CriticNetworkDefinition->addInputStateVar(m_inputState[stateVarIndex]->get());
-		m_ActorNetworkDefinition->addInputStateVar(m_inputState[stateVarIndex]->get());
+		m_CriticNetworkDefinition->addInputStateVar(m_inputState[stateVarIndex]->getName(), m_inputState[stateVarIndex]->get());
+		m_ActorNetworkDefinition->addInputStateVar(m_inputState[stateVarIndex]->getName(), m_inputState[stateVarIndex]->get());
 	}
 
 	//Set the action-input: for now, only the one used as output of the policy
 	for (size_t actionVarIndex = 0; actionVarIndex < m_outputAction.size(); actionVarIndex++)
 	{
-		m_CriticNetworkDefinition->addInputActionVar(m_outputAction[actionVarIndex]->get());
+		m_CriticNetworkDefinition->addInputActionVar(m_outputAction[actionVarIndex]->getName(), m_outputAction[actionVarIndex]->get());
 	}
-	m_actionValues = vector<double>(m_outputAction.size());
 	m_gradientWrtAction = vector<double>(m_outputAction.size());
 
 	//Set critic networks as single-output
@@ -86,10 +85,10 @@ void DDPG::deferredLoadStep()
 double DDPG::selectAction(const State * s, Action * a)
 {
 	double policyOutput;
-	m_pActorOnlineNetwork->evaluate(s, a, m_actionValues);
+	vector<double>& actionValues = m_pActorOnlineNetwork->evaluate(s, a);
 	for (size_t i = 0; i < m_outputAction.size(); i++)
 	{
-		policyOutput = m_actionValues[i];
+		policyOutput = actionValues[i];
 		if (!SimionApp::get()->pExperiment->isEvaluationEpisode())
 			policyOutput+= m_policyNoise->getSample();
 		a->set(m_outputAction[i]->get(), policyOutput);
@@ -112,11 +111,11 @@ void DDPG::updateActor(const State* s, const Action* a, const State* s_p, double
 		double gamma = SimionApp::get()->pSimGod->getGamma();
 
 		//get pi(s)
-		m_pActorTargetNetwork->evaluate(s, a, m_actionValues);
+		vector<double>& actionValues = m_pActorTargetNetwork->evaluate(s, a);
 
 		//a' = pi(s)
 		for (size_t i = 0; i < m_outputAction.size(); i++)
-			m_pActorOutput->set(m_outputAction[i]->get(), m_actionValues[i]);
+			m_pActorOutput->set(m_outputAction[i]->get(), actionValues[i]);
 
 		//gradient = critic->gradient(s, pi(s))
 		m_pCriticTargetNetwork->gradientWrtAction(s, m_pActorOutput, m_gradientWrtAction);
@@ -142,14 +141,14 @@ void DDPG::updateCritic(const State* s, const Action* a, const State* s_p, doubl
 		double gamma = SimionApp::get()->pSimGod->getGamma();
 
 		//calculate pi(s_p)
-		m_pActorTargetNetwork->evaluate(s_p, a, m_actionValues);
+		vector<double>& actionValues = m_pActorTargetNetwork->evaluate(s_p, a);
 
 		//a' = pi(s_p)
 		for (size_t i = 0; i < m_outputAction.size(); i++)
-			m_pActorOutput->set(m_outputAction[i]->get(), m_actionValues[i]);
+			m_pActorOutput->set(m_outputAction[i]->get(), actionValues[i]);
 		
 		//calculate Q'(mu'(s_p))
-		double s_p_value = m_pCriticTargetNetwork->evaluate(s_p, m_pActorOutput);
+		double s_p_value = m_pCriticTargetNetwork->evaluate(s_p, m_pActorOutput)[0]; //we assume only the critic will have only one output
 
 		//calculate targetvalue= r + gamma*Q(s_p,a)
 		double targetValue = r + gamma * s_p_value;

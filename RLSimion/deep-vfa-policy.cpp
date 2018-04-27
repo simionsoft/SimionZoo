@@ -35,7 +35,7 @@ DiscreteSoftmaxDeepPolicy::DiscreteSoftmaxDeepPolicy(ConfigNode * pConfigNode) :
 	m_temperature = CHILD_OBJECT_FACTORY<NumericValue>(pConfigNode, "temperature", "Tempreature");
 }
 
-int DiscreteEpsilonGreedyDeepPolicy::selectAction(std::vector<double>& values)
+int DiscreteEpsilonGreedyDeepPolicy::selectAction(const std::vector<double>& values)
 {
 	double randomValue = getRandomValue();
 
@@ -57,19 +57,21 @@ int DiscreteEpsilonGreedyDeepPolicy::selectAction(std::vector<double>& values)
 	return (int) resultingActionIndex;
 }
 
-int DiscreteSoftmaxDeepPolicy::selectAction(std::vector<double>& values)
+int DiscreteSoftmaxDeepPolicy::selectAction(const std::vector<double>& values)
 {
+	//this is not cool, but we can safely overwrite the output values of the function
+	std::vector<double>& newValues = (std::vector<double>&) values;
 	double sum = 0;
-	for (int i = 0; i < values.size(); i++)
+	for (int i = 0; i < newValues.size(); i++)
 	{
-		values[i] = std::exp(m_temperature->get() * values[i]);
-		sum += values[i];
+		newValues[i] = std::exp(m_temperature->get() * newValues[i]);
+		sum += newValues[i];
 	}
-	for (int i = 0; i < values.size(); i++)
+	for (int i = 0; i < newValues.size(); i++)
 	{
-		values[i] /= sum;
+		newValues[i] /= sum;
 	}
-	return chooseRandomInteger(values);
+	return chooseRandomInteger(newValues);
 }
 
 #endif

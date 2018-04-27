@@ -209,7 +209,7 @@ void Network::actionToVector(const Action* a, vector<double>& actionVector)
 		actionVector[i] = a->get((int)actionVars[i]);
 }
 
-const vector<double>& Network::evaluate(const State* s, const Action* a)
+vector<double>& Network::evaluate(const State* s, const Action* a)
 {
 	ValuePtr outputValue;
 

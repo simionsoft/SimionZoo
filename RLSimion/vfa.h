@@ -81,7 +81,7 @@ public:
 
 	//DrawableFunction interface
 	unsigned int getNumOutputs();
-	const vector<double>& evaluate(const State* s, const Action* a);
+	vector<double>& evaluate(const State* s, const Action* a);
 	const vector<string>& getInputStateVariables();
 	const vector<string>& getInputActionVariables();
 };
@@ -135,7 +135,7 @@ public:
 
 	//DrawableFunction interface
 	unsigned int getNumOutputs();
-	const vector<double>& evaluate(const State* s, const Action* a);
+	vector<double>& evaluate(const State* s, const Action* a);
 	const vector<string>& getInputStateVariables();
 	const vector<string>& getInputActionVariables();
 };

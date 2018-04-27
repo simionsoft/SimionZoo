@@ -23,9 +23,6 @@ protected:
 	ACTION_VARIABLE m_outputAction;
 	DOUBLE_PARAM m_learningRate;
 
-	vector<double> m_Q_s_p;
-	vector<double> m_Q_s;
-
 	NN_DEFINITION m_pNNDefinition;
 	INetwork* m_pTargetQNetwork= nullptr;
 	INetwork* m_pOnlineQNetwork= nullptr;

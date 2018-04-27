@@ -38,7 +38,7 @@ void Minibatch::addTuple(const State* s, const Action* a, double targetValue)
 	addTuple(s, a, targetValues);
 }
 
-void Minibatch::addTuple(const State* s, const Action* a, vector<double>& targetValues)
+void Minibatch::addTuple(const State* s, const Action* a, const vector<double>& targetValues)
 {
 	if (m_numTuples >= m_size)
 		return;

@@ -271,7 +271,7 @@ unsigned int LinearStateVFA::getNumOutputs()
 	return 1;
 }
 
-const vector<double>& LinearStateVFA::evaluate(const State* s, const Action* a)
+vector<double>& LinearStateVFA::evaluate(const State* s, const Action* a)
 {
 	m_output[0] = get(s);
 	return m_output;
@@ -480,7 +480,7 @@ unsigned int LinearStateActionVFA::getNumOutputs()
 	return 1;
 }
 
-const vector<double>& LinearStateActionVFA::evaluate(const State* s, const Action* a)
+vector<double>& LinearStateActionVFA::evaluate(const State* s, const Action* a)
 {
 	m_output[0] = get(s, a);
 	return m_output;

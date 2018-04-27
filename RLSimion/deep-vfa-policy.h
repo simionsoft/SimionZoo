@@ -12,7 +12,7 @@ public:
 
 	DiscreteDeepPolicy(ConfigNode* pConfigNode);
 
-	virtual int selectAction(std::vector<double>& values) = 0;
+	virtual int selectAction(const std::vector<double>& values) = 0;
 };
 
 class DiscreteEpsilonGreedyDeepPolicy : public DiscreteDeepPolicy
@@ -22,7 +22,7 @@ protected:
 public:
 	DiscreteEpsilonGreedyDeepPolicy(ConfigNode* pConfigNode);
 
-	virtual int selectAction(std::vector<double>& values);
+	virtual int selectAction(const std::vector<double>& values);
 };
 
 class DiscreteSoftmaxDeepPolicy : public DiscreteDeepPolicy
@@ -32,6 +32,6 @@ protected:
 public:
 	DiscreteSoftmaxDeepPolicy(ConfigNode* pConfigNode);
 
-	virtual int selectAction(std::vector<double>& values);
+	virtual int selectAction(const std::vector<double>& values);
 };
 #endif
