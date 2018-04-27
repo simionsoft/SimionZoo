@@ -11,6 +11,7 @@ class NetworkDefinition;
 
 class Network:public INetwork
 {
+	vector<double> m_output;
 	const wstring m_lossName = L"Loss";
 	const wstring m_targetName = L"Target";
 	const wstring m_networkName = L"Network";
@@ -53,9 +54,13 @@ public:
 	void softUpdate(INetwork* pTargetNetwork);
 
 	void train(IMinibatch* pMinibatch);
-	void evaluate(const State* s, const Action* a, vector<double>& outputValues);
-	double evaluate(const State* s, const Action* a);
 
 	void gradientWrtAction(const State* s, const Action* a, vector<double>& outputValues);
 	void applyGradient(IMinibatch* pMinibatch);
+
+	//DrawableFunction interface
+	unsigned int getNumOutputs();
+	const vector<double>& evaluate(const State* s, const Action* a);
+	const vector<string>& getInputStateVariables();
+	const vector<string>& getInputActionVariables();
 };

@@ -430,6 +430,9 @@
     <ClInclude Include="DDPG.h">
       <Filter>learning</Filter>
     </ClInclude>
+    <ClInclude Include="drawable-function.h">
+      <Filter>learning</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Text Include="ReadMe.txt" />

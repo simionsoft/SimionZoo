@@ -206,29 +206,42 @@ INetwork * NetworkDefinition::createNetwork(double learningRate, bool inputsNeed
 }
 
 
-void NetworkDefinition::addInputStateVar(size_t stateVarId)
+void NetworkDefinition::addInputStateVar(string name, size_t id)
 {
-	m_inputStateVars.push_back(stateVarId);
+	m_inputStateVariables.push_back(name);
+	m_inputStateVarIds.push_back(id);
 }
 
 const vector<size_t>& NetworkDefinition::getInputStateVarIds()
 {
-	return m_inputStateVars;
+	return m_inputStateVarIds;
 }
 
-void NetworkDefinition::addInputActionVar(size_t stateVarId)
+const vector<string>& NetworkDefinition::getInputStateVariables()
 {
-	m_inputActionVars.push_back(stateVarId);
+	return m_inputStateVariables;
+}
+
+void NetworkDefinition::addInputActionVar(string name, size_t id)
+{
+	m_inputActionVariables.push_back(name);
+	m_inputActionVarIds.push_back(id);
 }
 
 const vector<size_t>& NetworkDefinition::getInputActionVarIds()
 {
-	return m_inputActionVars;
+	return m_inputActionVarIds;
 }
+
+const vector<string>& NetworkDefinition::getInputActionVariables()
+{
+	return m_inputActionVariables;
+}
+
 
 size_t NetworkDefinition::getInputSize()
 {
-	return m_inputStateVars.size() + m_inputActionVars.size();
+	return m_inputStateVarIds.size() + m_inputActionVarIds.size();
 }
 
 

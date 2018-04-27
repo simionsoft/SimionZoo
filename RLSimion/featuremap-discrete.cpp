@@ -64,6 +64,11 @@ DiscreteStateFeatureMap::DiscreteStateFeatureMap(ConfigNode* pConfigNode)
 
 	m_grid = MULTI_VALUE<SingleDimensionDiscreteStateVariableGrid>(pConfigNode, "Grid-Dimension", "Parameters of the state-dimension's grid");
 
+	for (unsigned int i = 0; i< m_grid.size(); i++)
+	{
+		m_inputStateVariables.push_back(m_grid[i]->getVariableName());
+	}
+
 	//pre-calculate number of features
 	m_totalNumFeatures = 1;
 
@@ -79,6 +84,11 @@ DiscreteActionFeatureMap::DiscreteActionFeatureMap(ConfigNode* pConfigNode)
 	m_pVarFeatures = new FeatureList("LinearGrid/var");
 
 	m_grid = MULTI_VALUE<SingleDimensionDiscreteActionVariableGrid>(pConfigNode, "Grid-Dimension", "Parameters of the action-dimension's grid");
+
+	for (unsigned int i = 0; i< m_grid.size(); i++)
+	{
+		m_inputActionVariables.push_back(m_grid[i]->getVariableName());
+	}
 
 	//pre-calculate number of features
 	m_totalNumFeatures = 1;

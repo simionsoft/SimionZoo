@@ -20,8 +20,10 @@ class NetworkDefinition: public INetworkDefinition
 	wstring m_actionInputLayer;
 	wstring m_outputLayerName;
 protected:
-	vector<size_t> m_inputStateVars;
-	vector<size_t> m_inputActionVars;
+	vector<size_t> m_inputStateVarIds;
+	vector<size_t> m_inputActionVarIds;
+	vector<string> m_inputStateVariables;
+	vector<string> m_inputActionVariables;
 
 	OutputType m_outputType = Unset;
 	size_t m_outputSize;
@@ -58,11 +60,13 @@ public:
 	static NetworkDefinition* loadFromFile(std::string fileName);
 	static NetworkDefinition* loadFromString(std::string content);
 
-	void addInputStateVar(size_t stateVarId);
+	void addInputStateVar(string name, size_t id);
 	const vector<size_t>& getInputStateVarIds();
+	const vector<string>& getInputStateVariables();
 
-	void addInputActionVar(size_t stateVarId);
+	void addInputActionVar(string name, size_t id);
 	const vector<size_t>& getInputActionVarIds();
+	const vector<string>& getInputActionVariables();
 
 	size_t getInputSize();
 

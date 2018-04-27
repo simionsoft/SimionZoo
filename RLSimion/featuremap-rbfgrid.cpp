@@ -69,7 +69,10 @@ GaussianRBFStateGridFeatureMap::GaussianRBFStateGridFeatureMap(ConfigNode* pConf
 	m_totalNumFeatures = 1;
 
 	for (unsigned int i = 0; i < m_grid.size(); i++)
+	{
+		m_inputStateVariables.push_back(m_grid[i]->getVariableName());
 		m_totalNumFeatures *= m_grid[i]->getNumCenters();
+	}
 
 	m_maxNumActiveFeatures = 1;
 	for (unsigned int i = 0; i < m_grid.size(); i++)
@@ -83,11 +86,19 @@ GaussianRBFActionGridFeatureMap::GaussianRBFActionGridFeatureMap(ConfigNode* pCo
 
 	m_grid = MULTI_VALUE<ActionVariableGridRBF>(pConfigNode, "RBF-Grid-Dimension", "Parameters of the action-dimension's grid");
 
+	for (unsigned int i = 0; i< m_grid.size(); i++)
+	{
+		m_inputActionVariables.push_back(m_grid[i]->getVariableName());
+	}
+
 	//pre-calculate number of features
 	m_totalNumFeatures = 1;
 
 	for (unsigned int i = 0; i < m_grid.size(); i++)
+	{
+		m_inputActionVariables.push_back(m_grid[i]->getVariableName());
 		m_totalNumFeatures *= m_grid[i]->getNumCenters();
+	}
 
 	m_maxNumActiveFeatures = 1;
 	for (unsigned int i = 0; i < m_grid.size(); i++)

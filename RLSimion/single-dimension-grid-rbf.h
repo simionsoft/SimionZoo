@@ -1,11 +1,13 @@
 #pragma once
 class NamedVarSet;
-typedef NamedVarSet State;
-typedef NamedVarSet Action;
+using State = NamedVarSet;
+using Action = NamedVarSet;
 class FeatureList;
 class ConfigNode;
 #include "parameters.h"
 #include "named-var-set.h"
+#include <string>
+using namespace std;
 
 #define ACTIVATION_THRESHOLD 0.0001
 
@@ -36,6 +38,8 @@ public:
 	virtual double getVarValue(const State* s, const Action* a) = 0;
 	virtual NamedVarProperties& getVarProperties(const State* s, const Action* a) = 0;
 	virtual void setFeatureStateAction(unsigned int feature, State* s, Action* a) = 0;
+
+	virtual const string getVariableName() = 0;
 };
 
 class StateVariableGridRBF : public SingleDimensionGridRBF
@@ -48,6 +52,7 @@ public:
 	double getVarValue(const State* s, const Action* a);
 	NamedVarProperties& getVarProperties(const State* s, const Action* a);
 	void setFeatureStateAction(unsigned int feature, State* s, Action* a);
+	const string getVariableName() { return m_hVariable.getName(); }
 };
 
 class ActionVariableGridRBF : public SingleDimensionGridRBF
@@ -60,4 +65,5 @@ public:
 	double getVarValue(const State* s, const Action* a);
 	NamedVarProperties& getVarProperties(const State* s, const Action* a);
 	void setFeatureStateAction(unsigned int feature, State* s, Action* a);
+	const string getVariableName() { return m_hVariable.getName(); }
 };

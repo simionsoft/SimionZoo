@@ -15,6 +15,7 @@ using namespace std;
 namespace tinyxml2 { class XMLElement; }
 
 #include "../../RLSimion/named-var-set.h"
+#include "../../RLSimion/drawable-function.h"
 class NetworkArchitecture;
 class INetwork;
 class IMinibatch;
@@ -25,10 +26,10 @@ class INetworkDefinition
 public:
 	virtual void destroy() = 0;
 
-	virtual void addInputStateVar(size_t stateVarId)= 0;
+	virtual void addInputStateVar(string name, size_t id)= 0;
 	virtual const vector<size_t>& getInputStateVarIds()= 0;
 
-	virtual void addInputActionVar(size_t stateVarId)= 0;
+	virtual void addInputActionVar(string name, size_t id)= 0;
 	virtual const vector<size_t>& getInputActionVarIds()= 0;
 
 	virtual void setScalarOutput() = 0;
@@ -44,10 +45,9 @@ public:
 	virtual INetwork* createNetwork(double learningRate, bool inputsNeedGradient = false) = 0;
 };
 
-class INetwork
+class INetwork : public DrawableFunction
 {
 public:
-
 	virtual void destroy()= 0;
 
 	virtual void buildNetwork(double learningRate)= 0;
@@ -60,11 +60,15 @@ public:
 	virtual void softUpdate(INetwork* pTargetNetwork) = 0;
 
 	virtual void train(IMinibatch* pMinibatch) = 0;
-	virtual void evaluate(const State* s, const Action* a, vector<double>& outputValues) = 0;
-	virtual double evaluate(const State* s, const Action* a) = 0;
 
 	virtual void gradientWrtAction(const State* s, const Action* a, vector<double>& outputValues) = 0;
 	virtual void applyGradient(IMinibatch* pMinibatch) = 0;
+
+	//DrawableFunction interface
+	virtual unsigned int getNumOutputs() = 0;
+	virtual const vector<double>& evaluate(const State* s, const Action* a) = 0;
+	virtual const vector<string>& getInputStateVariables() = 0;
+	virtual const vector<string>& getInputActionVariables() = 0;
 };
 
 class IMinibatch

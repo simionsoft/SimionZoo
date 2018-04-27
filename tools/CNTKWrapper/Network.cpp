@@ -38,6 +38,8 @@ void Network::buildNetwork(double learningRate)
 	m_trainer = CNTKWrapper::CreateOptimizer(optimizer, m_FunctionPtr, m_lossFunctionPtr, learningRate);
 
 	FunctionPtr foundPtr = m_networkFunctionPtr->FindByName(m_pNetworkDefinition->getOutputLayer())->Output();
+
+	m_output = vector<double>(m_pNetworkDefinition->getOutputSize());
 }
 
 INetwork* Network::clone(bool bFreezeWeights) const
@@ -73,6 +75,8 @@ INetwork* Network::clone(bool bFreezeWeights) const
 		m_pNetworkDefinition->getOutputLayer())->Output();
 
 	result->m_lossFunctionPtr = m_networkFunctionPtr->FindByName(m_lossName);
+
+	result->m_output = vector<double>(m_pNetworkDefinition->getOutputSize());
 
 	return result;
 }
@@ -133,8 +137,6 @@ void Network::findInputsAndOutputs()
 	//look for the input layer among the arguments
 	for each(auto inputVariable in m_FunctionPtr->Arguments())
 	{
-		wstring name = inputVariable.Name();
-		wstring asstring = inputVariable.AsString();
 		//This avoids the "Target" layer to be added to the list
 		if (m_pNetworkDefinition->getStateInputLayer() == inputVariable.Name())
 		{
@@ -207,24 +209,13 @@ void Network::actionToVector(const Action* a, vector<double>& actionVector)
 		actionVector[i] = a->get((int)actionVars[i]);
 }
 
-double Network::evaluate(const State* s, const Action* a)
-{
-	if (m_pNetworkDefinition->getOutputType() != OutputType::Scalar)
-		throw std::exception("Cannot use get(s,a) with vectorial-output networks");
-
-	vector<double> output = vector<double>(1);
-	evaluate(s, a, output);
-	return output[0];
-}
-
-void Network::evaluate(const State* s, const Action* a, vector<double>& outputVector)
+const vector<double>& Network::evaluate(const State* s, const Action* a)
 {
 	ValuePtr outputValue;
-	size_t s1 = outputVector.size();
-	size_t s2 = m_FunctionPtr->Output().Shape().TotalSize();
-	if (outputVector.size() % m_FunctionPtr->Output().Shape().TotalSize())
+
+	if (m_output.size() % m_FunctionPtr->Output().Shape().TotalSize())
 	{
-		throw runtime_error("predictionData does not have the right size.");
+		throw runtime_error("output vector does not have the right size.");
 	}
 
 	unordered_map<CNTK::Variable, CNTK::ValuePtr> outputs =
@@ -252,11 +243,13 @@ void Network::evaluate(const State* s, const Action* a, vector<double>& outputVe
 	outputValue = outputs[m_FunctionPtr];
 
 	CNTK::NDShape outputShape = m_FunctionPtr->Output().Shape().AppendShape({ 1
-		, outputVector.size() / m_FunctionPtr->Output().Shape().TotalSize() });
+		, m_output.size() / m_FunctionPtr->Output().Shape().TotalSize() });
 
 	CNTK::NDArrayViewPtr cpuArrayOutput = CNTK::MakeSharedObject<CNTK::NDArrayView>(outputShape
-		, outputVector, false);
+		, m_output, false);
 	cpuArrayOutput->CopyFrom(*outputValue->Data());
+
+	return m_output;
 }
 
 void Network::gradientWrtAction(const State* s, const Action* a, vector<double>& outputGradient)
@@ -334,5 +327,20 @@ void Network::applyGradient(IMinibatch* pMinibatch)
 
 		learner->Update(gradientsData, pMinibatch->size(), false);
 	}
+}
+
+unsigned int Network::getNumOutputs()
+{
+	return (unsigned int) m_pNetworkDefinition->getOutputSize();
+}
+
+const vector<string>& Network::getInputStateVariables()
+{
+	return m_pNetworkDefinition->getInputStateVariables();
+}
+
+const vector<string>& Network::getInputActionVariables()
+{
+	return m_pNetworkDefinition->getInputActionVariables();
 }
 #endif // _WIN64

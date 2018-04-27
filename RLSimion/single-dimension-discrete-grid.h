@@ -1,11 +1,13 @@
 #pragma once
 class NamedVarSet;
-typedef NamedVarSet State;
-typedef NamedVarSet Action;
+using State = NamedVarSet;
+using Action = NamedVarSet;
 class FeatureList;
 class ConfigNode;
 #include "parameters.h"
 #include "named-var-set.h"
+#include <string>
+using namespace std;
 
 class SingleDimensionDiscreteGrid
 {
@@ -33,6 +35,7 @@ public:
 
 	void getFeatures(const State* s, const Action* a, FeatureList* outDimFeatures);
 
+	virtual const string getVariableName() = 0;
 	virtual double getVarValue(const State* s, const Action* a) = 0;
 	virtual NamedVarProperties& getVarProperties(const State* s, const Action* a) = 0;
 	virtual void setFeatureStateAction(unsigned int feature, State* s, Action* a) = 0;
@@ -54,6 +57,7 @@ public:
 	NamedVarProperties& getVarProperties(const State* s, const Action* a);
 	void setFeatureStateAction(unsigned int feature, State* s, Action* a);
 	void setOffset(double offset);
+	const string getVariableName() { return m_hVariable.getName(); }
 };
 
 class SingleDimensionDiscreteActionVariableGrid : public SingleDimensionDiscreteGrid
@@ -67,4 +71,5 @@ public:
 	NamedVarProperties& getVarProperties(const State* s, const Action* a);
 	void setFeatureStateAction(unsigned int feature, State* s, Action* a);
 	void setOffset(double offset);
+	const string getVariableName() { return m_hVariable.getName(); }
 };

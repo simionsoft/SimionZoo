@@ -11,6 +11,7 @@ class ConfigFile;
 
 #include "parameters.h"
 #include "deferred-load.h"
+#include "drawable-function.h"
 class IMemBuffer;
 
 //LinearVFA////////////////////////////////////////////////////////////////////
@@ -19,6 +20,9 @@ class IMemBuffer;
 class LinearVFA
 {
 protected:
+	//this is used to simplify the implementation of the DrawableFunction interface
+	vector<double> m_output = vector<double>(1);
+
 	FeatureList* m_pPendingUpdates= nullptr;
 	IMemBuffer* m_pFrozenWeights = nullptr;
 	IMemBuffer* m_pWeights= nullptr;
@@ -51,7 +55,7 @@ public:
 
 };
 
-class LinearStateVFA: public LinearVFA, public DeferredLoad
+class LinearStateVFA: public LinearVFA, public DrawableFunction, public DeferredLoad
 {
 protected:
 	std::shared_ptr<StateFeatureMap> m_pStateFeatureMap;
@@ -67,7 +71,6 @@ public:
 	virtual ~LinearStateVFA();
 	using LinearVFA::get;
 	double get(const State *s);
-	//double get(unsigned int featureIndex) const;
 
 	void getFeatures(const State* s,FeatureList* outFeatures);
 	void getFeatureState(unsigned int feature, State* s);
@@ -75,10 +78,16 @@ public:
 	void save(const char* pFilename) const;
 
 	std::shared_ptr<StateFeatureMap> getStateFeatureMap(){ return m_pStateFeatureMap; }
+
+	//DrawableFunction interface
+	unsigned int getNumOutputs();
+	const vector<double>& evaluate(const State* s, const Action* a);
+	const vector<string>& getInputStateVariables();
+	const vector<string>& getInputActionVariables();
 };
 
 
-class LinearStateActionVFA : public LinearVFA, public DeferredLoad
+class LinearStateActionVFA : public LinearVFA, public DrawableFunction, public DeferredLoad
 {
 protected:
 	std::shared_ptr<StateFeatureMap> m_pStateFeatureMap;
@@ -108,7 +117,6 @@ public:
 	virtual ~LinearStateActionVFA();
 	using LinearVFA::get;
 	double get(const State *s, const Action *a);
-	//double get(unsigned int sFeatureIndex,unsigned int aFeatureIndex) const;
 
 	void argMax(const State *s, Action* a);
 	double max(const State *s, bool bUseFrozenWeights= true);
@@ -124,4 +132,10 @@ public:
 	void getFeatureStateAction(unsigned int feature,State* s, Action* a);
 
 	void deferredLoadStep();
+
+	//DrawableFunction interface
+	unsigned int getNumOutputs();
+	const vector<double>& evaluate(const State* s, const Action* a);
+	const vector<string>& getInputStateVariables();
+	const vector<string>& getInputActionVariables();
 };

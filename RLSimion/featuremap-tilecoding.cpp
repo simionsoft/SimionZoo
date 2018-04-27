@@ -100,6 +100,7 @@ TileCodingStateFeatureMap::TileCodingStateFeatureMap(ConfigNode* pConfigNode)
 
 	for (unsigned int i = 0; i < m_grid.size(); i++)
 	{
+		m_inputStateVariables.push_back(m_grid[i]->getVariableName());
 		m_totalNumFeatures *= m_grid[i]->getNumCenters();
 	}
 }
@@ -119,6 +120,7 @@ TileCodingActionFeatureMap::TileCodingActionFeatureMap(ConfigNode* pConfigNode)
 
 	for (unsigned int i = 0; i < m_grid.size(); i++)
 	{
+		m_inputActionVariables.push_back(m_grid[i]->getVariableName());
 		m_totalNumFeatures *= m_grid[i]->getNumCenters();
 	}
 }

@@ -11,12 +11,16 @@ class ConfigNode;
 #include "single-dimension-grid.h"
 #include "single-dimension-discrete-grid.h"
 #include <vector>
+#include <string>
 
 //StateFeatureMap//////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////
 class StateFeatureMap
 {
 	ConfigNode* m_pParameters;
+protected:
+	vector<string> m_inputStateVariables;
+	vector<string> m_inputActionVariables; //not used, but simplifies working with references
 public:
 	StateFeatureMap(ConfigNode* pParameters);
 	virtual ~StateFeatureMap() {};
@@ -30,11 +34,16 @@ public:
 	static std::shared_ptr<StateFeatureMap> getInstance(ConfigNode* pParameters);
 
 	ConfigNode* getParameters() { return m_pParameters; }
+	const vector<string>& getInputStateVariables() { return m_inputStateVariables; }
+	const vector<string>& getInputActionVariables() { return m_inputActionVariables; }
 };
 
 class ActionFeatureMap
 {
 	ConfigNode* m_pParameters;
+protected:
+	vector<string> m_inputStateVariables; //not used, but simplifies working with references
+	vector<string> m_inputActionVariables;
 public:
 	ActionFeatureMap(ConfigNode* pParameters);
 	virtual ~ActionFeatureMap() {};
@@ -48,6 +57,8 @@ public:
 	static std::shared_ptr<ActionFeatureMap> getInstance(ConfigNode* pParameters);
 
 	ConfigNode* getParameters() { return m_pParameters; }
+	const vector<string>& getInputStateVariables() { return m_inputStateVariables; }
+	const vector<string>& getInputActionVariables() { return m_inputActionVariables; }
 };
 
 

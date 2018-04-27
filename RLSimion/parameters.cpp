@@ -3,6 +3,7 @@
 
 STATE_VARIABLE::STATE_VARIABLE(ConfigNode* pConfigNode, const char* name, const char* comment)
 {
+	m_variableName = pConfigNode->getConstString(name);
 	m_hVariable = World::getDynamicModel()->getStateDescriptor().getVarIndex(pConfigNode->getConstString(name));
 	m_name = name;
 	m_comment = comment;
@@ -10,6 +11,7 @@ STATE_VARIABLE::STATE_VARIABLE(ConfigNode* pConfigNode, const char* name, const 
 
 ACTION_VARIABLE::ACTION_VARIABLE(ConfigNode* pConfigNode, const char* name, const char* comment)
 {
+	m_variableName = pConfigNode->getConstString(name);
 	m_hVariable = World::getDynamicModel()->getActionDescriptor().getVarIndex(pConfigNode->getConstString(name));
 	m_name = name;
 	m_comment = comment;

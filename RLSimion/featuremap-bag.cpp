@@ -8,11 +8,21 @@
 BagStateFeatureMap::BagStateFeatureMap(ConfigNode* pParameters) : StateFeatureMap(pParameters)
 {
 	m_stateVariables = MULTI_VALUE_VARIABLE<STATE_VARIABLE>(pParameters, "State-Variables", "The state variables");
+
+	for (unsigned int i = 0; i< m_stateVariables.size(); i++)
+	{
+		m_inputStateVariables.push_back(m_stateVariables[i]->getName());
+	}
 }
 
 BagActionFeatureMap::BagActionFeatureMap(ConfigNode* pParameters) : ActionFeatureMap(pParameters)
 {
 	m_actionVariables = MULTI_VALUE_VARIABLE<ACTION_VARIABLE>(pParameters, "Action-Variables", "The action variables");
+
+	for (unsigned int i = 0; i< m_actionVariables.size(); i++)
+	{
+		m_inputActionVariables.push_back(m_actionVariables[i]->getName());
+	}
 }
 
 void BagStateFeatureMap::getFeatures(const State* s, FeatureList* outFeatures)

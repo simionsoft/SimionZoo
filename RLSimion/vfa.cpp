@@ -266,6 +266,25 @@ double LinearStateVFA::get(const State *s)
 	return LinearVFA::get(m_pAux);
 }
 
+unsigned int LinearStateVFA::getNumOutputs()
+{
+	return 1;
+}
+
+const vector<double>& LinearStateVFA::evaluate(const State* s, const Action* a)
+{
+	m_output[0] = get(s);
+	return m_output;
+}
+const vector<string>& LinearStateVFA::getInputStateVariables()
+{
+	return m_pStateFeatureMap->getInputStateVariables();
+}
+const vector<string>& LinearStateVFA::getInputActionVariables()
+{
+	return m_pStateFeatureMap->getInputActionVariables();
+}
+
 
 
 
@@ -379,10 +398,7 @@ double LinearStateActionVFA::get(const State *s, const Action* a)
 	return LinearVFA::get(m_pAux);
 }
 
-//double LinearStateActionVFA::get(unsigned int sFeatureIndex, unsigned int aFeatureIndex) const
-//{
-//	return (*m_pWeights)[sFeatureIndex*m_pActionFeatureMap->getTotalNumFeatures() + aFeatureIndex];
-//}
+
 
 void LinearStateActionVFA::argMax(const State *s, Action* a)
 {
@@ -456,4 +472,26 @@ void LinearStateActionVFA::getActionValues(const State* s,double *outActionValue
 
 		m_pAux->offsetIndices(m_numStateWeights);
 	}
+}
+
+
+unsigned int LinearStateActionVFA::getNumOutputs()
+{
+	return 1;
+}
+
+const vector<double>& LinearStateActionVFA::evaluate(const State* s, const Action* a)
+{
+	m_output[0] = get(s, a);
+	return m_output;
+}
+
+const vector<string>& LinearStateActionVFA::getInputStateVariables()
+{
+	return m_pStateFeatureMap->getInputStateVariables();
+}
+
+const vector<string>& LinearStateActionVFA::getInputActionVariables()
+{
+	return m_pStateFeatureMap->getInputActionVariables();
 }

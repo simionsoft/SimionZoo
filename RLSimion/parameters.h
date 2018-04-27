@@ -139,12 +139,14 @@ protected:
 	const char* m_name = 0;
 	const char* m_comment = 0;
 	int m_hVariable = -1;
+	const char* m_variableName = 0;
 public:
 	STATE_VARIABLE() = default;
 
 	STATE_VARIABLE(ConfigNode* pConfigNode, const char* name, const char* comment);
 	int get() { return m_hVariable; }
 	void set(int hVar) { m_hVariable = hVar; }
+	const char* getName() { return m_variableName; }
 };
 
 class ACTION_VARIABLE
@@ -152,12 +154,14 @@ class ACTION_VARIABLE
 	const char* m_name;
 	const char* m_comment;
 	int m_hVariable = -1;
+	const char* m_variableName = 0;
 public:
 	ACTION_VARIABLE() = default;
 
 	ACTION_VARIABLE(ConfigNode* pConfigNode, const char* name, const char* comment);
 	int get() { return m_hVariable; }
 	void set(unsigned int index) { m_hVariable = index; }
+	const char* getName() { return m_variableName; }
 };
 
 template<typename DataType>
