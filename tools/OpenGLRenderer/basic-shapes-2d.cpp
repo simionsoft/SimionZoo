@@ -6,7 +6,7 @@
 #include "xml-load.h"
 
 Sprite2D::Sprite2D(string name, Vector2D origin, Vector2D size, double depth, Material* material)
-	:GraphicObject2D(name, origin, size, depth)
+	:GraphicObject2D(name, origin, size, 0.0, depth)
 {
 	m_pMaterial = material;
 	m_minCoord = Point2D(0.0, 0.0);

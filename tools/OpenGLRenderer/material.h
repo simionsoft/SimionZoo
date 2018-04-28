@@ -2,6 +2,7 @@
 #include "color.h"
 namespace tinyxml2 { class XMLElement; }
 #include <string>
+#include <vector>
 using namespace std;
 
 class Material
@@ -40,7 +41,7 @@ protected:
 public:
 	UnlitLiveTextureMaterial(unsigned int sizeX, unsigned int sizeY);
 	virtual ~UnlitLiveTextureMaterial();
-	void updateTexture(double* pBuffer);
+	void updateTexture(const vector<double>& pBuffer);
 	virtual void set();
 	
 };

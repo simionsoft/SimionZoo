@@ -2,6 +2,7 @@
 
 #include <vector>
 using namespace std;
+
 class NamedVarSet;
 using State = NamedVarSet;
 using Action = NamedVarSet;

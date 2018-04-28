@@ -48,11 +48,13 @@
     <ClCompile Include="basic-shapes-3d.cpp">
       <Filter>graphics</Filter>
     </ClCompile>
-    <ClCompile Include="viewport.cpp" />
     <ClCompile Include="ogl-utils.cpp">
       <Filter>graphics</Filter>
     </ClCompile>
     <ClCompile Include="material-live-texture.cpp">
+      <Filter>graphics</Filter>
+    </ClCompile>
+    <ClCompile Include="viewport.cpp">
       <Filter>graphics</Filter>
     </ClCompile>
   </ItemGroup>
@@ -105,8 +107,10 @@
     <ClInclude Include="basic-shapes-3d.h">
       <Filter>graphics</Filter>
     </ClInclude>
-    <ClInclude Include="viewport.h" />
     <ClInclude Include="ogl-utils.h">
+      <Filter>graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="viewport.h">
       <Filter>graphics</Filter>
     </ClInclude>
   </ItemGroup>

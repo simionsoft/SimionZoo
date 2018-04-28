@@ -261,7 +261,7 @@ double StochasticGaussianPolicy::selectAction(const State *s, Action *a)
 
 	//clip the output between the min and max value of the action space
 	unsigned int actionIndex = m_outputAction.get();
-	output = clip(output, a->getProperties()[actionIndex].getMin(), a->getProperties()[actionIndex].getMax());
+	output = clip(output, a->getProperties(actionIndex).getMin(), a->getProperties(actionIndex).getMax());
 
 	//disctingtion between continuous and discrete action variables
 	if (m_discreteActionSpace)

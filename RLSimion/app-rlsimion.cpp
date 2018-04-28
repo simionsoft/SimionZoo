@@ -9,10 +9,13 @@
 #include "utils.h"
 #include "app.h"
 #include "stats.h"
+#include "function-sampler.h"
+#include "state-action-function.h"
 #include "../tools/OpenGLRenderer/basic-shapes-2d.h"
 #include "../tools/OpenGLRenderer/renderer.h"
 #include "../tools/OpenGLRenderer/text.h"
 #include "../tools/OpenGLRenderer/input-handler.h"
+#include "../tools/OpenGLRenderer/material.h"
 #include "../tools/WindowsUtils/FileUtils.h"
 
 
@@ -47,49 +50,50 @@ RLSimionApp::~RLSimionApp()
 void RLSimionApp::run()
 {
 	Logger::logMessage(MessageType::Info, "Simulation starting");
-	SimionApp* pApp = SimionApp::get();
 
 	//create state and action vectors
-	State *s = pApp->pWorld->getDynamicModel()->getStateDescriptor().getInstance();
-	State *s_p = pApp->pWorld->getDynamicModel()->getStateDescriptor().getInstance();
-	Action *a = pApp->pWorld->getDynamicModel()->getActionDescriptor().getInstance();
+	State *s = pWorld->getDynamicModel()->getStateDescriptor().getInstance();
+	State *s_p = pWorld->getDynamicModel()->getStateDescriptor().getInstance();
+	Action *a = pWorld->getDynamicModel()->getActionDescriptor().getInstance();
 
 	double r;
 	double probability;
-	pApp->pLogger->addVarToStats<double>("reward", "r", r);
+	pLogger->addVarToStats<double>("reward", "r", r);
 
+	//load the scene and initialize visual objects
 	if (!m_bRemoteExecution)
 	{
-		string sceneFile = pApp->pWorld->getDynamicModel()->getWorldSceneFile();
-		initRenderer(sceneFile);
+		//load the scene
+		string sceneFile = pWorld->getDynamicModel()->getWorldSceneFile();
+		initRenderer(sceneFile, s, a);
 	}
 
 	//load stuff we don't want to be loaded in the constructors for faster construction
-	pApp->pSimGod->deferredLoad();
+	pSimGod->deferredLoad();
 	Logger::logMessage(MessageType::Info, "Deferred load step finished. Simulation starts");
 
 	//episodes
-	for (pApp->pExperiment->nextEpisode(); pApp->pExperiment->isValidEpisode(); pApp->pExperiment->nextEpisode())
+	for (pExperiment->nextEpisode(); pExperiment->isValidEpisode(); pExperiment->nextEpisode())
 	{
-		pApp->pWorld->reset(s);
+		pWorld->reset(s);
 
 		//steps per episode
-		for (pApp->pExperiment->nextStep(); pApp->pExperiment->isValidStep(); pApp->pExperiment->nextStep())
+		for (pExperiment->nextStep(); pExperiment->isValidStep(); pExperiment->nextStep())
 		{
 			//a= pi(s)
-			probability= pApp->pSimGod->selectAction(s, a);
+			probability= pSimGod->selectAction(s, a);
 
 			//s_p= f(s,a); r= R(s');
-			r = pApp->pWorld->executeAction(s, a, s_p);
+			r = pWorld->executeAction(s, a, s_p);
 
 			//update god's policy and value estimation
-			pApp->pSimGod->update(s, a, s_p, r, probability);
+			pSimGod->update(s, a, s_p, r, probability);
 
 			//log tuple <s,a,s',r> and stats
-			pApp->pExperiment->timestep(s, a, s_p, pApp->pWorld->getRewardVector());
+			pExperiment->timestep(s, a, s_p, pWorld->getRewardVector());
 			//we need the complete reward vector for logging
 
-			pApp->pSimGod->postUpdate();
+			pSimGod->postUpdate();
 
 			if (!m_bRemoteExecution)
 				updateScene(s, a);
@@ -105,7 +109,7 @@ void RLSimionApp::run()
 	delete a;
 }
 
-void RLSimionApp::initRenderer(string sceneFile)
+void RLSimionApp::initRenderer(string sceneFile, State* s, Action* a)
 {
 	char arguments[] = "RLSimion";
 	char* argv = arguments;
@@ -169,6 +173,47 @@ void RLSimionApp::initRenderer(string sceneFile)
 		m_pRenderer->add2DGraphicObject(pMeter2D, pMetersViewPort);
 		origin -= offset;
 	}
+
+	//create function samplers
+	size_t numFunctions = m_pStateActionFunctions.size();
+	if (numFunctions)
+	{
+		double functionViewPortMinX = 0.0, functionViewPortMinY = mainViewPortMinX
+			, functionViewPortMaxX = 1.0, functionViewPortMaxY = mainViewPortMinY;
+		double viewSizeInX = std::min(0.25, 1.0 / numFunctions);
+		double totalSizeInX = viewSizeInX * numFunctions;
+		double xOffset = 0.0075, yOffset = 0.02;
+		Vector2D functionViewOrigin = Vector2D((1 - totalSizeInX) *0.5 + xOffset, yOffset);
+		Vector2D functionViewSize = Vector2D(viewSizeInX - 2*xOffset, 1.0 - 2*yOffset);
+		Vector2D legendOffset = Vector2D(0.01, 0.02);
+		ViewPort* functionViewPort = new ViewPort(functionViewPortMinX, functionViewPortMinY, functionViewPortMaxX
+			, functionViewPortMaxY);
+		m_pRenderer->addViewPort(functionViewPort);
+		for (auto functionIt : m_pStateActionFunctions)
+		{
+			if (functionIt.second->getInputActionVariables().size() + functionIt.second->getInputStateVariables().size() > 1)
+			{
+				//create the sampler: it will transform the state-action function to a 2D texture
+				FunctionSampler* pSampler = new FunctionSampler3D(functionIt.second, m_numSamplesPerDim
+					, s->getDescriptor(), a->getDescriptor());
+				//create the live material. We can update its associated texture
+				UnlitLiveTextureMaterial* pLiveMaterial = new UnlitLiveTextureMaterial(m_numSamplesPerDim, m_numSamplesPerDim);
+				m_pFunctionViews[pLiveMaterial] = pSampler;
+
+				//create the sprite with the live texture attached to it
+				Sprite2D* pFunctionViewer = new Sprite2D(functionIt.first + string("-view"), functionViewOrigin, functionViewSize, 0.25, pLiveMaterial);
+				m_pRenderer->add2DGraphicObject(pFunctionViewer, functionViewPort);
+				Text2D* pFunctionLegend = new Text2D(functionIt.first + string("-legend"), functionViewOrigin + legendOffset, 0.3);
+				pFunctionLegend->set(functionIt.first);
+				pFunctionLegend->setColor(Color(1.f, 1.f, 1.f)); //white texts over red-blue function views
+				m_pRenderer->add2DGraphicObject(pFunctionLegend, functionViewPort);
+
+				//shift the origin x coordinate to the right
+				functionViewOrigin.setX(functionViewOrigin.x() + functionViewSize.x() + 2*xOffset);
+			}
+		}
+	}
+
 	m_pInputHandler = new FreeCameraInputHandler();
 	
 	m_timer.start();
@@ -183,7 +228,6 @@ void RLSimionApp::updateScene(State* s, Action* a)
 	m_pProgressText->set(string("Episode: ") + std::to_string(pExperiment->getEpisodeIndex())
 		+ string(" Step: ") + std::to_string(pExperiment->getStep()));
 
-
 	update2DMeters(s, a);
 
 	//2D/3D BOUND PROPERTIES: translation, rotation, ...
@@ -195,6 +239,16 @@ void RLSimionApp::updateScene(State* s, Action* a)
 		varName = m_pRenderer->getBindingExternalName(b);
 		value = s->get(varName.c_str());
 		m_pRenderer->updateBinding(varName, value);
+	}
+
+	//Update the function views each m_functionViewUpdateStepFreq steps
+	if (pExperiment->getStep() % m_functionViewUpdateStepFreq == 0)
+	{
+		for each(auto functionIt in m_pFunctionViews)
+		{
+			const vector<double>& sampledValues = functionIt.second->sample();
+			functionIt.first->updateTexture(sampledValues);
+		}
 	}
 	//render the image
 	m_pInputHandler->handleInput();

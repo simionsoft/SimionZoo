@@ -18,9 +18,9 @@ void NamedVarProperties::setName(const char* name)
 
 int Descriptor::getVarIndex(const char* name)
 {
-	for (unsigned int i = 0; i<m_pProperties.size(); i++)
+	for (unsigned int i = 0; i<m_descriptor.size(); i++)
 	{
-		if (strcmp(m_pProperties[i]->getName(), name) == 0)
+		if (strcmp(m_descriptor[i]->getName(), name) == 0)
 			return i;
 	}
 	return -1; //error return value
@@ -28,8 +28,8 @@ int Descriptor::getVarIndex(const char* name)
 
 int Descriptor::addVariable(const char* name, const char* units, double min, double max, bool bCircular)
 {
-	int index = (int) m_pProperties.size();
-	m_pProperties.push_back(new NamedVarProperties(name, units, min, max, bCircular));
+	int index = (int) m_descriptor.size();
+	m_descriptor.push_back(new NamedVarProperties(name, units, min, max, bCircular));
 	return index;
 }
 
@@ -40,10 +40,10 @@ NamedVarSet* Descriptor::getInstance()
 	return pNew;
 }
 
-NamedVarSet::NamedVarSet(Descriptor& descriptor): m_pProperties(descriptor)
+NamedVarSet::NamedVarSet(Descriptor& descriptor): m_descriptor(descriptor)
 {
 
-	//m_pProperties= new NamedVarProperties[numVars];
+	//m_descriptor= new NamedVarProperties[numVars];
 	m_pValues= new double[descriptor.size()];
 	for (unsigned int i = 0; i < descriptor.size(); i++) m_pValues[i] = 0.0;
 	m_numVars= (int)descriptor.size();
@@ -56,7 +56,7 @@ NamedVarSet::~NamedVarSet()
 
 double NamedVarSet::get(const char* varName) const
 {
-	int varIndex = m_pProperties.getVarIndex(varName);
+	int varIndex = m_descriptor.getVarIndex(varName);
 	if (varIndex >= 0)
 		return m_pValues[varIndex];
 
@@ -65,18 +65,18 @@ double NamedVarSet::get(const char* varName) const
 
 int NamedVarSet::getVarIndex(const char* varName) const
 {
-	return m_pProperties.getVarIndex(varName);
+	return m_descriptor.getVarIndex(varName);
 }
 
 NamedVarProperties& NamedVarSet::getProperties(const char* varName) const
 {
-	int varIndex = m_pProperties.getVarIndex(varName);
-	return m_pProperties[varIndex];
+	int varIndex = m_descriptor.getVarIndex(varName);
+	return m_descriptor[varIndex];
 }
 
 void NamedVarSet::set(const char* varName, double value)
 {
-	int i = m_pProperties.getVarIndex(varName);
+	int i = m_descriptor.getVarIndex(varName);
 	if (i >= 0)
 	{
 		set(i, value);
@@ -111,17 +111,17 @@ void NamedVarSet::set(int i, double value)
 {
 	if (i >= 0 && i < m_numVars)
 	{
-		if (!m_pProperties[i].bIsCircular())
+		if (!m_descriptor[i].bIsCircular())
 		{
-			m_pValues[i] = std::min(m_pProperties[i].getMax()
-				, std::max(m_pProperties[i].getMin(), value));
+			m_pValues[i] = std::min(m_descriptor[i].getMax()
+				, std::max(m_descriptor[i].getMin(), value));
 		}
 		else
 		{
-			if (value > m_pProperties[i].getMax())
-				value -= m_pProperties[i].getRangeWidth();
-			else if (value < m_pProperties[i].getMin())
-				value += m_pProperties[i].getRangeWidth();
+			if (value > m_descriptor[i].getMax())
+				value -= m_descriptor[i].getRangeWidth();
+			else if (value < m_descriptor[i].getMin())
+				value += m_descriptor[i].getRangeWidth();
 			m_pValues[i] = value;
 		}
 	}

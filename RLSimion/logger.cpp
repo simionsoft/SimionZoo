@@ -138,7 +138,7 @@ void Logger::writeLogFileXMLDescriptor(const char* filename)
 		writeEpisodeTypesToBuffer(buffer);
 		writeNamedVarSetDescriptorToBuffer(buffer, "State", SimionApp::get()->pWorld->getDynamicModel()->getStateDescriptorPtr()); //state
 		writeNamedVarSetDescriptorToBuffer(buffer, "Action", SimionApp::get()->pWorld->getDynamicModel()->getActionDescriptorPtr()); //action
-		writeNamedVarSetDescriptorToBuffer(buffer, "Reward", SimionApp::get()->pWorld->getRewardVector()->getPropertiesPtr());
+		writeNamedVarSetDescriptorToBuffer(buffer, "Reward", SimionApp::get()->pWorld->getRewardVector()->getDescriptorPtr());
 		writeStatDescriptorToBuffer(buffer);
 		strcat_s(buffer, BUFFER_SIZE, "</ExperimentLogDescriptor>");
 		fwrite(buffer, 1, strlen(buffer), logXMLDescriptorFile);
@@ -373,7 +373,7 @@ void Logger::addVarSetToStats(const char* key, NamedVarSet* varset)
 {
 	for (int i = 0; i < varset->getNumVars(); i++)
 	{
-		m_stats.push_back(new Stats<double>(key, varset->getProperties()[i].getName(), varset->getRef(i)));
+		m_stats.push_back(new Stats<double>(key, varset->getProperties(i).getName(), varset->getRef(i)));
 	}
 }
 

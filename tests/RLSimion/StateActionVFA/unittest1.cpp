@@ -3,6 +3,9 @@
 #include "../../../RLSimion/vfa.h"
 #include "../../../RLSimion/app-rlsimion.h"
 #include "../../../RLSimion/features.h"
+#include "../../../RLSimion/simgod.h"
+#include "../../../RLSimion/worlds/world.h"
+#include "../../../RLSimion/named-var-set.h"
 #include <iostream>
 
 using namespace Microsoft::VisualStudio::CppUnitTestFramework;

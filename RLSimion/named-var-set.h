@@ -27,19 +27,19 @@ class NamedVarSet;
 
 class Descriptor
 {
-	std::vector<NamedVarProperties*> m_pProperties;
+	std::vector<NamedVarProperties*> m_descriptor;
 public:
 	NamedVarSet* getInstance();
-	size_t size() const { return m_pProperties.size(); }
-	NamedVarProperties& operator[](int idx) { return *m_pProperties[idx]; }
-	const NamedVarProperties& operator[](int idx) const { return *m_pProperties[idx]; }
+	size_t size() const { return m_descriptor.size(); }
+	NamedVarProperties& operator[](int idx) { return *m_descriptor[idx]; }
+	const NamedVarProperties& operator[](int idx) const { return *m_descriptor[idx]; }
 	int addVariable(const char* name, const char* units, double min, double max, bool bCircular= false);
 	int getVarIndex (const char* name);
 };
 
 class NamedVarSet
 {
-	Descriptor &m_pProperties;
+	Descriptor &m_descriptor;
 	double *m_pValues;
 	int m_numVars;
 
@@ -67,10 +67,10 @@ public:
 	double getSumValue() const;
 
 	void copy(const NamedVarSet* nvs);
-	NamedVarProperties& getProperties(int i) const { return m_pProperties[i]; }
+	NamedVarProperties& getProperties(int i) const { return m_descriptor[i]; }
 	NamedVarProperties& getProperties(const char* varName) const;
-	Descriptor& getProperties() { return m_pProperties; }
-	Descriptor* getPropertiesPtr() { return &m_pProperties; }
+	Descriptor& getDescriptor() { return m_descriptor; }
+	Descriptor* getDescriptorPtr() { return &m_descriptor; }
 
 public:
 	void addOffset(double offset);

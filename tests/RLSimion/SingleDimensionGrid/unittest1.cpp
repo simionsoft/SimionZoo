@@ -5,6 +5,7 @@
 #include "../../../RLSimion/named-var-set.h"
 #include "../../../RLSimion/app-rlsimion.h"
 #include "../../../RLSimion/features.h"
+#include "../../../RLSimion/worlds/world.h"
 
 using namespace Microsoft::VisualStudio::CppUnitTestFramework;
 #include <Windows.h>

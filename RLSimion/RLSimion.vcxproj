@@ -280,6 +280,7 @@
     <ClCompile Include="single-dimension-discrete-grid.cpp" />
     <ClCompile Include="single-dimension-grid-rbf.cpp" />
     <ClCompile Include="single-dimension-grid.cpp" />
+    <ClCompile Include="function-sampler.cpp" />
     <ClCompile Include="stats.cpp" />
     <ClCompile Include="utils.cpp" />
     <ClCompile Include="vfa-policy.cpp" />
@@ -323,6 +324,7 @@
     <ClInclude Include="deep-vfa-policy.h" />
     <ClInclude Include="deferred-load.h" />
     <ClInclude Include="DQN.h" />
+    <ClInclude Include="function-sampler.h" />
     <ClInclude Include="state-action-function.h" />
     <ClInclude Include="etraces.h" />
     <ClInclude Include="experience-replay.h" />

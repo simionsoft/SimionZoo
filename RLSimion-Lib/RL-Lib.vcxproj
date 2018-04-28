@@ -238,6 +238,7 @@
     <ClInclude Include="..\RLSimion\controller-adaptive.h" />
     <ClInclude Include="..\RLSimion\controller.h" />
     <ClInclude Include="..\RLSimion\critic.h" />
+    <ClInclude Include="..\RLSimion\DDPG.h" />
     <ClInclude Include="..\RLSimion\deep-vfa-policy.h" />
     <ClInclude Include="..\RLSimion\deferred-load.h" />
     <ClInclude Include="..\RLSimion\DQN.h" />
@@ -265,6 +266,7 @@
     <ClInclude Include="..\RLSimion\single-dimension-discrete-grid.h" />
     <ClInclude Include="..\RLSimion\single-dimension-grid-rbf.h" />
     <ClInclude Include="..\RLSimion\single-dimension-grid.h" />
+    <ClInclude Include="..\RLSimion\state-action-function-sampler.h" />
     <ClInclude Include="..\RLSimion\stats.h" />
     <ClInclude Include="..\RLSimion\utils.h" />
     <ClInclude Include="..\RLSimion\vfa-critic.h" />
@@ -349,6 +351,7 @@
     <ClCompile Include="..\RLSimion\critic-tdc-lambda.cpp" />
     <ClCompile Include="..\RLSimion\critic-true-online-td-lambda.cpp" />
     <ClCompile Include="..\RLSimion\critic.cpp" />
+    <ClCompile Include="..\RLSimion\DDPG.cpp" />
     <ClCompile Include="..\RLSimion\deep-vfa-policy.cpp" />
     <ClCompile Include="..\RLSimion\deferred-load.cpp" />
     <ClCompile Include="..\RLSimion\DQN.cpp" />
@@ -377,6 +380,7 @@
     <ClCompile Include="..\RLSimion\single-dimension-discrete-grid.cpp" />
     <ClCompile Include="..\RLSimion\single-dimension-grid-rbf.cpp" />
     <ClCompile Include="..\RLSimion\single-dimension-grid.cpp" />
+    <ClCompile Include="..\RLSimion\state-action-function-sampler.cpp" />
     <ClCompile Include="..\RLSimion\stats.cpp" />
     <ClCompile Include="..\RLSimion\utils.cpp" />
     <ClCompile Include="..\RLSimion\vfa-policy.cpp" />

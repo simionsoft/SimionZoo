@@ -197,6 +197,12 @@
     <ClInclude Include="..\RLSimion\worlds\Box.h">
       <Filter>world\BulletPhysics</Filter>
     </ClInclude>
+    <ClInclude Include="..\RLSimion\DDPG.h">
+      <Filter>learning</Filter>
+    </ClInclude>
+    <ClInclude Include="..\RLSimion\state-action-function-sampler.h">
+      <Filter>learning</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="app">
@@ -434,6 +440,12 @@
     </ClCompile>
     <ClCompile Include="..\RLSimion\worlds\Box.cpp">
       <Filter>world\BulletPhysics</Filter>
+    </ClCompile>
+    <ClCompile Include="..\RLSimion\DDPG.cpp">
+      <Filter>learning</Filter>
+    </ClCompile>
+    <ClCompile Include="..\RLSimion\state-action-function-sampler.cpp">
+      <Filter>learning</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>
