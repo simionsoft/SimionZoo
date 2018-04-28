@@ -60,6 +60,10 @@ void RLSimionApp::run()
 	double probability;
 	pLogger->addVarToStats<double>("reward", "r", r);
 
+	//load stuff we don't want to be loaded in the constructors for faster construction
+	pSimGod->deferredLoad();
+	Logger::logMessage(MessageType::Info, "Deferred load step finished");
+
 	//load the scene and initialize visual objects
 	if (!m_bRemoteExecution)
 	{
@@ -67,10 +71,7 @@ void RLSimionApp::run()
 		string sceneFile = pWorld->getDynamicModel()->getWorldSceneFile();
 		initRenderer(sceneFile, s, a);
 	}
-
-	//load stuff we don't want to be loaded in the constructors for faster construction
-	pSimGod->deferredLoad();
-	Logger::logMessage(MessageType::Info, "Deferred load step finished. Simulation starts");
+	Logger::logMessage(MessageType::Info, "Simulation begins");
 
 	//episodes
 	for (pExperiment->nextEpisode(); pExperiment->isValidEpisode(); pExperiment->nextEpisode())

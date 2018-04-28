@@ -69,12 +69,14 @@ void DDPG::deferredLoadStep()
 
 	//Critic initialization
 	m_pCriticOnlineNetwork = m_CriticNetworkDefinition->createNetwork(m_learningRate.get(), true); //true because we are going to need gradient calculations for this network
+	SimionApp::get()->registerStateActionFunction("Q(s,a)", m_pCriticOnlineNetwork);
 	m_pCriticTargetNetwork = m_pCriticOnlineNetwork->clone(false);
 	m_pCriticTargetNetwork->initSoftUpdate(m_tau.get(), m_pCriticOnlineNetwork);
 	m_pCriticMinibatch = m_CriticNetworkDefinition->createMinibatch(minibatchSize);
 
 	//Actor initialization
 	m_pActorOnlineNetwork = m_ActorNetworkDefinition->createNetwork(m_learningRate.get());
+	SimionApp::get()->registerStateActionFunction("pi(s)", m_pActorOnlineNetwork);
 	m_pActorTargetNetwork = m_pActorOnlineNetwork->clone(false);
 	m_pActorTargetNetwork->initSoftUpdate(m_tau.get(), m_pActorOnlineNetwork);
 	

@@ -53,6 +53,7 @@ void DQN::deferredLoadStep()
 
 	//create the networks
 	m_pOnlineQNetwork = m_pNNDefinition->createNetwork(m_learningRate.get());
+	SimionApp::get()->registerStateActionFunction("Q(s,a)", m_pOnlineQNetwork);
 	m_pTargetQNetwork = m_pOnlineQNetwork->clone();
 
 	//create the minibatch
