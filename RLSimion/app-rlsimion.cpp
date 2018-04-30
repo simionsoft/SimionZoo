@@ -94,6 +94,7 @@ void RLSimionApp::run()
 			pExperiment->timestep(s, a, s_p, pWorld->getRewardVector());
 			//we need the complete reward vector for logging
 
+			//do experience replay if enabled
 			pSimGod->postUpdate();
 
 			if (!m_bRemoteExecution)
@@ -190,12 +191,14 @@ void RLSimionApp::initRenderer(string sceneFile, State* s, Action* a)
 		ViewPort* functionViewPort = new ViewPort(functionViewPortMinX, functionViewPortMinY, functionViewPortMaxX
 			, functionViewPortMaxY);
 		m_pRenderer->addViewPort(functionViewPort);
+		size_t numInputs;
 		for (auto functionIt : m_pStateActionFunctions)
 		{
-			if (functionIt.second->getInputActionVariables().size() + functionIt.second->getInputStateVariables().size() > 1)
+			numInputs = functionIt.second->getInputActionVariables().size() + functionIt.second->getInputStateVariables().size();
+			if ( numInputs > 1)
 			{
 				//create the sampler: it will transform the state-action function to a 2D texture
-				FunctionSampler* pSampler = new FunctionSampler3D(functionIt.second, m_numSamplesPerDim
+				FunctionSampler* pSampler = new FunctionSampler3D(functionIt.first, functionIt.second, m_numSamplesPerDim
 					, s->getDescriptor(), a->getDescriptor());
 				//create the live material. We can update its associated texture
 				UnlitLiveTextureMaterial* pLiveMaterial = new UnlitLiveTextureMaterial(m_numSamplesPerDim, m_numSamplesPerDim);

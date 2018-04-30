@@ -80,6 +80,9 @@ Logger::Logger(ConfigNode* pConfigNode)
 
 	m_logFreq = DOUBLE_PARAM(pConfigNode, "Log-Freq", "Log frequency. Simulation time in seconds.", 0.25);
 
+	BOOL_PARAM m_bLogFunctions = BOOL_PARAM(pConfigNode, "Log-functions", "Log functions learned?", true);
+	INT_PARAM m_numFunctionsLogged = INT_PARAM(pConfigNode, "Num-functions-logged", "How many times per experiment save logged functions", 10);
+
 	m_pEpisodeTimer = new Timer();
 	m_pExperimentTimer = new Timer();
 	m_lastLogSimulationT = 0.0;
@@ -87,6 +90,7 @@ Logger::Logger(ConfigNode* pConfigNode)
 
 #define LOG_DESCRIPTOR_EXTENSION ".log"
 #define LOG_BINARY_EXTENSION ".log.bin"
+#define FUNCTION_LOG_BINARY_EXTENSION ".functions.bin"
 
 void Logger::setOutputFilenames()
 {
@@ -100,6 +104,15 @@ void Logger::setOutputFilenames()
 
 	//open the log file
 	openLogFile(m_outputLogBinary.c_str());
+
+	if (m_bLogFunctions.get())
+	{
+		m_outputFunctionLogBinary = inputConfigFile + FUNCTION_LOG_BINARY_EXTENSION;
+		SimionApp::get()->registerOutputFile(m_outputFunctionLogBinary.c_str());
+
+		//open the function log file
+		openFunctionLogFile(m_outputFunctionLogBinary.c_str());
+	}
 }
 
 
@@ -114,6 +127,7 @@ Logger::~Logger()
 		delete *it;
 
 	closeLogFile();
+	closeFunctionLogFile();
 }
 
 
@@ -191,9 +205,12 @@ void Logger::firstEpisode()
 
 	//generate the xml descriptor of the log file
 	writeLogFileXMLDescriptor(m_outputLogDescriptor.c_str());
-
 	//write the log file header
 	writeExperimentHeader();
+
+	if (m_bLogFunctions.get())
+		//generate the function log descriptor
+		writeFunctionLogFileXMLDescriptor(m_outputFunctionLogDescriptor.c_str());
 }
 
 void Logger::lastEpisode()

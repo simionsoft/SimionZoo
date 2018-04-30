@@ -12,6 +12,7 @@ typedef NamedVarSet Reward;
 class ConfigNode;
 class Descriptor;
 class Timer;
+class FunctionSampler;
 
 enum MessageType {Progress,Evaluation,Info,Warning, Error};
 enum MessageOutputMode {Console,NamedPipe};
@@ -21,6 +22,18 @@ class Logger
 	static const int MAX_FILENAME_LENGTH = 1024;
 	static const int BUFFER_SIZE = 10000;
 
+	//functions file: drawable downsampled 2d or 1d versions of the functions learned by the agents
+	string m_outputFunctionLogBinary;
+	static FILE *m_functionLogFile;
+
+	BOOL_PARAM m_bLogFunctions;
+	INT_PARAM m_numFunctionsLogged;
+
+	void openFunctionLogFile(const char* filename);
+	void closeFunctionLogFile();
+	void logFunctionSample(FunctionSampler* pFunctionSampler);
+
+
 	//log file
 	string m_outputLogDescriptor;
 	string m_outputLogBinary;
@@ -28,21 +41,18 @@ class Logger
 
 	BOOL_PARAM m_bLogEvaluationEpisodes;
 	BOOL_PARAM m_bLogTrainingEpisodes;
-
 	DOUBLE_PARAM m_logFreq; //in seconds: time between file logs
 
 	Timer *m_pEpisodeTimer;
 	Timer *m_pExperimentTimer;
 
 	double m_episodeRewardSum;
-
 	double m_lastLogSimulationT;
 
 	void openLogFile(const char* fullLogFilename);
 	void closeLogFile();
 
 	static void writeLogBuffer(const char* pBuffer, int numBytes);
-
 	void writeLogFileXMLDescriptor(const char* filename);
 
 	void writeNamedVarSetDescriptorToBuffer(char* buffer, const char* id, const Descriptor* pNamedVarSet);

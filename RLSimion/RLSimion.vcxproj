@@ -263,6 +263,7 @@
     <ClCompile Include="featuremap-tilecoding.cpp" />
     <ClCompile Include="featuremap.cpp" />
     <ClCompile Include="features.cpp" />
+    <ClCompile Include="logger-functions.cpp" />
     <ClCompile Include="logger.cpp" />
     <ClCompile Include="mem-block.cpp" />
     <ClCompile Include="mem-buffer.cpp" />

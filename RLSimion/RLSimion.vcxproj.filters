@@ -229,6 +229,9 @@
     <ClCompile Include="function-sampler.cpp">
       <Filter>app</Filter>
     </ClCompile>
+    <ClCompile Include="logger-functions.cpp">
+      <Filter>learning</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="resource1.h" />

@@ -45,14 +45,27 @@ FunctionSampler::FunctionSampler(StateActionFunction* pFunction, size_t samplesP
 		m_pAction->set(i, m_pAction->getProperties(i).getMin() + m_pAction->getProperties(i).getRangeWidth()*0.5);
 }
 
+string FunctionSampler::getFunctionId() const
+{
+	return m_functionId;
+}
+size_t FunctionSampler3D::getNumSamplesX()
+{
+	return m_samplesPerDimension;
+}
+size_t FunctionSampler3D::getNumSamplesY()
+{
+	return m_samplesPerDimension;
+}
+
 size_t FunctionSampler::getNumOutputs() const
 {
 	return m_numOutputs;
 }
 
-FunctionSampler3D::FunctionSampler3D(StateActionFunction* pFunction, size_t samplesPerDimension
+FunctionSampler3D::FunctionSampler3D(string functionId, StateActionFunction* pFunction, size_t samplesPerDimension
 	, Descriptor& stateDescriptor, Descriptor& actionDescriptor)
-	:FunctionSampler(pFunction, samplesPerDimension, 2, stateDescriptor, actionDescriptor)
+	:FunctionSampler(functionId, pFunction, samplesPerDimension, 2, stateDescriptor, actionDescriptor)
 {
 	if (m_sampledVariableNames.size() != 2)
 		throw exception("FunctionSampler3D requires a function with at least two inputs");
@@ -93,9 +106,9 @@ const vector<double>& FunctionSampler3D::sample(unsigned int outputIndex)
 	return m_sampledValues;
 }
 
-FunctionSampler2D::FunctionSampler2D(StateActionFunction* pFunction, size_t samplesPerDimension
+FunctionSampler2D::FunctionSampler2D(string functionId, StateActionFunction* pFunction, size_t samplesPerDimension
 	, Descriptor& stateDescriptor, Descriptor& actionDescriptor)
-	:FunctionSampler(pFunction, samplesPerDimension, 2, stateDescriptor, actionDescriptor)
+	:FunctionSampler(functionId, pFunction, samplesPerDimension, 2, stateDescriptor, actionDescriptor)
 {
 	if (m_sampledVariableNames.size() != 1)
 		throw exception("FunctionSampler1D requires a function with at least one input");
@@ -134,4 +147,13 @@ const vector<double>& FunctionSampler2D::sample(unsigned int outputIndex)
 		}
 	}
 	return m_sampledValues;
+}
+
+size_t FunctionSampler2D::getNumSamplesX()
+{
+	return m_samplesPerDimension;
+}
+size_t FunctionSampler2D::getNumSamplesY()
+{
+	return 0;
 }
