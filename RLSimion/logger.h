@@ -34,8 +34,6 @@ class Logger
 
 	void logFunctions();
 
-private:
-
 	//Log file
 	string m_outputLogDescriptor;
 	string m_outputLogBinary;
@@ -81,6 +79,9 @@ public:
 
 	//returns whether a specific type of episode is going to be logged
 	bool isEpisodeTypeLogged(bool evaluation);
+
+	//returns whether we are logging functions
+	bool areFunctionsLogged() { return m_bLogFunctions.get(); }
 
 	//METHODS CALLED FROM ANY CLASS
 	template <typename T>

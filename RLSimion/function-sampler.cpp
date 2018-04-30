@@ -49,7 +49,9 @@ FunctionSampler::FunctionSampler(string functionId, StateActionFunction* pFuncti
 
 string FunctionSampler::getFunctionId() const
 {
-	return m_functionId;
+	if (m_numInputs==1)
+		return m_functionId + "(" + m_sampledVariableNames[0] + ")";
+	return m_functionId + "(" + m_sampledVariableNames[0] + "," + m_sampledVariableNames[1] + ")";
 }
 size_t FunctionSampler3D::getNumSamplesX()
 {

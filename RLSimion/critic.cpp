@@ -20,7 +20,7 @@ std::shared_ptr<ICritic> ICritic::getInstance(ConfigNode* pConfigNode)
 VLearnerCritic::VLearnerCritic(ConfigNode* pConfigNode)
 {
 	m_pVFunction = CHILD_OBJECT<LinearStateVFA>(pConfigNode, "V-Function", "The V-function to be learned");
-	SimionApp::get()->registerStateActionFunction("V(s)", m_pVFunction.ptr());
+	SimionApp::get()->registerStateActionFunction("V", m_pVFunction.ptr());
 	m_pVFunction->setCanUseDeferredUpdates(true);
 }
 

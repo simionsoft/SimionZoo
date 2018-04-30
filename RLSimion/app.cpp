@@ -231,6 +231,10 @@ void SimionApp::run()
 		string sceneFile = pWorld->getDynamicModel()->getWorldSceneFile();
 		initRenderer(sceneFile, s, a);
 	}
+	else
+		if (pLogger->areFunctionsLogged())
+			initFunctionSamplers(s, a);
+
 	Logger::logMessage(MessageType::Info, "Simulation begins");
 
 	//episodes
@@ -369,7 +373,7 @@ void SimionApp::initRenderer(string sceneFile, State* s, Action* a)
 				Sprite2D* pFunctionViewer = new Sprite2D(functionIt.first + string("-view"), functionViewOrigin, functionViewSize, 0.25, pLiveMaterial);
 				m_pRenderer->add2DGraphicObject(pFunctionViewer, functionViewPort);
 				Text2D* pFunctionLegend = new Text2D(functionIt.first + string("-legend"), functionViewOrigin + legendOffset, 0.3);
-				pFunctionLegend->set(functionIt.first);
+				pFunctionLegend->set(pSampler->getFunctionId());
 				pFunctionLegend->setColor(Color(1.f, 1.f, 1.f)); //white texts over red-blue function views
 				m_pRenderer->add2DGraphicObject(pFunctionLegend, functionViewPort);
 
@@ -382,6 +386,22 @@ void SimionApp::initRenderer(string sceneFile, State* s, Action* a)
 	m_pInputHandler = new FreeCameraInputHandler();
 
 	m_timer.start();
+}
+
+void SimionApp::initFunctionSamplers(State* s, Action* a)
+{
+	size_t numInputs;
+	for (auto functionIt : m_pStateActionFunctions)
+	{
+		numInputs = functionIt.second->getInputActionVariables().size() + functionIt.second->getInputStateVariables().size();
+		if (numInputs > 1)
+		{
+			//create the sampler: it will transform the state-action function to a 2D texture
+			FunctionSampler* pSampler = new FunctionSampler3D(functionIt.first, functionIt.second, m_numSamplesPerDim
+				, s->getDescriptor(), a->getDescriptor());
+			m_pFunctionSamplers.push_back(pSampler);
+		}
+	}
 }
 
 void SimionApp::updateScene(State* s, Action* a)

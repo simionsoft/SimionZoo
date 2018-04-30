@@ -109,7 +109,7 @@
       <Transform>
         <Translation><X Bind="x"/><Y>0.1</Y></Translation>
         <Scale><X>0.1</X><Y>1.0</Y><Z>0.1</Z></Scale>
-        <Rotation><Roll Bind="theta"/></Rotation>
+        <Rotation><Pitch Bind="theta"/></Rotation>
       </Transform>
     </Box>
     <Box Name="Floor">

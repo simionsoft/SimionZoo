@@ -62,7 +62,6 @@ bool ConfigNode::getConstBoolean(const char* paramName, bool defaultValue)
 		if (!strcmp(text, "false") || !strcmp(text,"False"))
 			return false;
 	}
-	//else throw std::exception((std::string("Illegal access to boolean parameter") + std::string(paramName)).c_str());
 
 	char msg[128];
 	sprintf_s(msg, 128, "Parameter %s/%s not found. Using default value %d", getName(), paramName, defaultValue);

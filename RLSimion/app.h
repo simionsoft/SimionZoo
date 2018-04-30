@@ -113,6 +113,7 @@ private:
 	void update2DMeters(State* s, Action* a);
 
 	void initRenderer(string sceneFile, State* s, Action* a);
+	void initFunctionSamplers(State* s, Action* a);
 	void updateScene(State* s, Action* a);
 
 public:
