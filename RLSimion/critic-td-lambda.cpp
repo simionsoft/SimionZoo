@@ -6,7 +6,7 @@
 #include "etraces.h"
 #include "config.h"
 #include "parameters-numeric.h"
-#include "app-rlsimion.h"
+#include "app.h"
 #include "simgod.h"
 
 TDLambdaCritic::TDLambdaCritic(ConfigNode* pConfigNode)

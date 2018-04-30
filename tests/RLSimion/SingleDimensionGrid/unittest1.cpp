@@ -3,7 +3,7 @@
 #include "../../../RLSimion/single-dimension-grid.h"
 #include "../../../RLSimion/single-dimension-grid-rbf.h"
 #include "../../../RLSimion/named-var-set.h"
-#include "../../../RLSimion/app-rlsimion.h"
+#include "../../../RLSimion/app.h"
 #include "../../../RLSimion/features.h"
 #include "../../../RLSimion/worlds/world.h"
 
@@ -21,7 +21,7 @@ namespace SingleDimensionGridTest
 			GetCurrentDirectory(512,(LPWSTR)buffer);
 			ConfigFile configFile;
 			ConfigNode* pConfigNode = configFile.loadFile("..\\tests\\q-learning-test.simion.exp");
-			RLSimionApp *pApp = new RLSimionApp(pConfigNode);
+			SimionApp *pApp = new SimionApp(pConfigNode);
 			int hVar= pApp->pWorld->getDynamicModel()->addStateVariable("test-angle", "rad", -3.1415, 3.1415);
 			int hVar2= pApp->pWorld->getDynamicModel()->addStateVariable("test-angle2", "rad", -3.1415, 3.1415);
 			Descriptor& descr= pApp->pWorld->getDynamicModel()->getStateDescriptor();

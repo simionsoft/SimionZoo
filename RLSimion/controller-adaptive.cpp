@@ -1,7 +1,7 @@
 #include "controller-adaptive.h"
 #include "vfa.h"
 #include "policy.h"
-#include "app-rlsimion.h"
+#include "app.h"
 #include "worlds/world.h"
 
 //Extended version of the Vidal controller

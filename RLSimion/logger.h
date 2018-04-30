@@ -22,19 +22,21 @@ class Logger
 	static const int MAX_FILENAME_LENGTH = 1024;
 	static const int BUFFER_SIZE = 10000;
 
-	//functions file: drawable downsampled 2d or 1d versions of the functions learned by the agents
+	//Functions log file: drawable downsampled 2d or 1d versions of the functions learned by the agents
 	string m_outputFunctionLogBinary;
-	static FILE *m_functionLogFile;
+	FILE *m_functionLogFile;
 
 	BOOL_PARAM m_bLogFunctions;
-	INT_PARAM m_numFunctionsLogged;
+	INT_PARAM m_numFunctionLogPoints;
 
 	void openFunctionLogFile(const char* filename);
 	void closeFunctionLogFile();
-	void logFunctionSample(FunctionSampler* pFunctionSampler);
 
+	void logFunctions();
 
-	//log file
+private:
+
+	//Log file
 	string m_outputLogDescriptor;
 	string m_outputLogBinary;
 	static FILE *m_logFile;
@@ -52,6 +54,7 @@ class Logger
 	void openLogFile(const char* fullLogFilename);
 	void closeLogFile();
 
+private:
 	static void writeLogBuffer(const char* pBuffer, int numBytes);
 	void writeLogFileXMLDescriptor(const char* filename);
 

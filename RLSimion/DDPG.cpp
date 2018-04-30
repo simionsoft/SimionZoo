@@ -1,6 +1,6 @@
 #include "DDPG.h"
 #include "../tools/CNTKWrapper/CNTKWrapper.h"
-#include "app-rlsimion.h"
+#include "app.h"
 #include "noise.h"
 #include "simgod.h"
 #include "logger.h"

@@ -4,7 +4,7 @@
 #include "../../../RLSimion/single-dimension-grid.h"
 #include "../../../RLSimion/featuremap.h"
 #include "../../../RLSimion/named-var-set.h"
-#include "../../../RLSimion/app-rlsimion.h"
+#include "../../../RLSimion/app.h"
 #include "../../../RLSimion/features.h"
 #include <iostream>
 
@@ -57,7 +57,7 @@ namespace TileCodingTest
 			GetCurrentDirectory(512, (LPWSTR)buffer);
 			ConfigFile configFile;
 			ConfigNode* pConfigNode = configFile.loadFile("..\\tests\\pull-box-1.simion.exp");
-			RLSimionApp *pApp = new RLSimionApp(pConfigNode);
+			SimionApp *pApp = new SimionApp(pConfigNode);
 
 			State* s = pApp->pWorld->getDynamicModel()->getStateInstance();
 			Action* a = pApp->pWorld->getDynamicModel()->getActionInstance();

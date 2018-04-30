@@ -3,7 +3,6 @@
 #include "actor.h"
 #include "critic.h"
 #include "app.h"
-#include "app-rlsimion.h"
 #include "simgod.h"
 #include "logger.h"
 

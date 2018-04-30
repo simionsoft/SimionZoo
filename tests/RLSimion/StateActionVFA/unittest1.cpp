@@ -1,7 +1,7 @@
 #include "stdafx.h"
 #include "CppUnitTest.h"
 #include "../../../RLSimion/vfa.h"
-#include "../../../RLSimion/app-rlsimion.h"
+#include "../../../RLSimion/app.h"
 #include "../../../RLSimion/features.h"
 #include "../../../RLSimion/simgod.h"
 #include "../../../RLSimion/worlds/world.h"
@@ -22,7 +22,7 @@ namespace StateActionVFA
 			//it is easier to load a config file and then manipulate the classes loaded
 			ConfigFile configFile;			
 			ConfigNode* pConfigNode = configFile.loadFile("..\\tests\\q-learning-test.simion.exp");
-			RLSimionApp *pApp = new RLSimionApp(pConfigNode);	
+			SimionApp *pApp = new SimionApp(pConfigNode);	
 
 			LinearStateActionVFA *pVFA= new LinearStateActionVFA(
 				pApp->pSimGod->getGlobalStateFeatureMap()
@@ -75,7 +75,7 @@ namespace StateActionVFA
 
 			pConfigNode= configFile.loadFile("..\\tests\\q-learning-test.simion.exp");
 
-			RLSimionApp *pApp = new RLSimionApp(pConfigNode);
+			SimionApp *pApp = new SimionApp(pConfigNode);
 
 			LinearStateActionVFA *pVFA = new LinearStateActionVFA(
 				pApp->pSimGod->getGlobalStateFeatureMap()
@@ -123,7 +123,7 @@ namespace StateActionVFA
 			//it is easier to load a config file and then manipulate the classes loaded
 			ConfigFile configFile;
 			ConfigNode* pConfigNode = configFile.loadFile("..\\tests\\robot-control-test.simion.exp");
-			RLSimionApp *pApp = new RLSimionApp(pConfigNode);
+			SimionApp *pApp = new SimionApp(pConfigNode);
 
 			LinearStateActionVFA *pVFA = new LinearStateActionVFA(
 				pApp->pSimGod->getGlobalStateFeatureMap()

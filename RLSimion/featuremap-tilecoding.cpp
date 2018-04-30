@@ -4,7 +4,7 @@
 #include "features.h"
 #include "config.h"
 #include "single-dimension-grid.h"
-#include "app-rlsimion.h"
+#include "app.h"
 
 template <typename dimensionGridType>
 TileCodingFeatureMap<dimensionGridType>::TileCodingFeatureMap(ConfigNode* pParameters)

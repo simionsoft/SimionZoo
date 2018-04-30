@@ -6,7 +6,7 @@
 #include "worlds/world.h"
 #include "features.h"
 #include "policy.h"
-#include "app-rlsimion.h"
+#include "app.h"
 #include "SimGod.h"
 #include "featuremap.h"
 #include <iostream>

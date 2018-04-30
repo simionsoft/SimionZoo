@@ -239,7 +239,6 @@
     <ClCompile Include="actor-critic.cpp" />
     <ClCompile Include="actor-regular.cpp" />
     <ClCompile Include="actor.cpp" />
-    <ClCompile Include="app-rlsimion.cpp" />
     <ClCompile Include="app.cpp" />
     <ClCompile Include="async-deep-simion.cpp" />
     <ClCompile Include="CNTKWrapperLoader.cpp" />
@@ -288,7 +287,6 @@
     <ClCompile Include="vfa.cpp" />
     <ClCompile Include="worlds\aux-rewards.cpp" />
     <ClCompile Include="worlds\balancingpole.cpp" />
-    <ClCompile Include="worlds\Box.cpp" />
     <ClCompile Include="worlds\BulletBody.cpp" />
     <ClCompile Include="worlds\BulletPhysics.cpp" />
     <ClCompile Include="worlds\FAST.cpp" />
@@ -313,7 +311,6 @@
   <ItemGroup>
     <ClInclude Include="actor-critic.h" />
     <ClInclude Include="actor.h" />
-    <ClInclude Include="app-rlsimion.h" />
     <ClInclude Include="app.h" />
     <ClInclude Include="async-deep-simion.h" />
     <ClInclude Include="CNTKWrapperLoader.h" />

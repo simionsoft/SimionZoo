@@ -4,9 +4,6 @@
     <ClCompile Include="app.cpp">
       <Filter>app</Filter>
     </ClCompile>
-    <ClCompile Include="app-rlsimion.cpp">
-      <Filter>app</Filter>
-    </ClCompile>
     <ClCompile Include="parameters.cpp">
       <Filter>parameters</Filter>
     </ClCompile>
@@ -67,9 +64,6 @@
     <ClCompile Include="DQN.cpp">
       <Filter>learning</Filter>
     </ClCompile>
-    <ClCompile Include="logger.cpp">
-      <Filter>learning</Filter>
-    </ClCompile>
     <ClCompile Include="etraces.cpp">
       <Filter>learning</Filter>
     </ClCompile>
@@ -119,9 +113,6 @@
       <Filter>learning</Filter>
     </ClCompile>
     <ClCompile Include="single-dimension-grid-rbf.cpp">
-      <Filter>learning</Filter>
-    </ClCompile>
-    <ClCompile Include="stats.cpp">
       <Filter>learning</Filter>
     </ClCompile>
     <ClCompile Include="single-dimension-discrete-grid.cpp">
@@ -214,9 +205,6 @@
     <ClCompile Include="worlds\Rope.cpp">
       <Filter>world\BulletPhysics</Filter>
     </ClCompile>
-    <ClCompile Include="worlds\Box.cpp">
-      <Filter>world\BulletPhysics</Filter>
-    </ClCompile>
     <ClCompile Include="async-deep-simion.cpp">
       <Filter>learning</Filter>
     </ClCompile>
@@ -227,18 +215,21 @@
       <Filter>learning</Filter>
     </ClCompile>
     <ClCompile Include="function-sampler.cpp">
-      <Filter>app</Filter>
+      <Filter>logging</Filter>
+    </ClCompile>
+    <ClCompile Include="logger.cpp">
+      <Filter>logging</Filter>
     </ClCompile>
     <ClCompile Include="logger-functions.cpp">
-      <Filter>learning</Filter>
+      <Filter>logging</Filter>
+    </ClCompile>
+    <ClCompile Include="stats.cpp">
+      <Filter>logging</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="resource1.h" />
     <ClInclude Include="app.h">
-      <Filter>app</Filter>
-    </ClInclude>
-    <ClInclude Include="app-rlsimion.h">
       <Filter>app</Filter>
     </ClInclude>
     <ClInclude Include="parameters.h">
@@ -280,9 +271,6 @@
     <ClInclude Include="features.h">
       <Filter>learning</Filter>
     </ClInclude>
-    <ClInclude Include="logger.h">
-      <Filter>learning</Filter>
-    </ClInclude>
     <ClInclude Include="etraces.h">
       <Filter>learning</Filter>
     </ClInclude>
@@ -320,9 +308,6 @@
       <Filter>learning</Filter>
     </ClInclude>
     <ClInclude Include="single-dimension-grid-rbf.h">
-      <Filter>learning</Filter>
-    </ClInclude>
-    <ClInclude Include="stats.h">
       <Filter>learning</Filter>
     </ClInclude>
     <ClInclude Include="single-dimension-discrete-grid.h">
@@ -440,7 +425,13 @@
       <Filter>learning</Filter>
     </ClInclude>
     <ClInclude Include="function-sampler.h">
-      <Filter>app</Filter>
+      <Filter>logging</Filter>
+    </ClInclude>
+    <ClInclude Include="logger.h">
+      <Filter>logging</Filter>
+    </ClInclude>
+    <ClInclude Include="stats.h">
+      <Filter>logging</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -470,6 +461,9 @@
     </Filter>
     <Filter Include="world\BulletPhysics">
       <UniqueIdentifier>{6f3f12ff-209c-45dd-9c9f-43f8ae29d242}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="logging">
+      <UniqueIdentifier>{076c7ada-b33f-4cb5-bc29-6e0f1d66ee2c}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
 </Project>

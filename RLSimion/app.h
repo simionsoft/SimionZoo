@@ -1,5 +1,21 @@
 #pragma once
 
+#include <vector>
+#include <unordered_map>
+using namespace std;
+
+#include "parameters.h"
+#include "mem-manager.h"
+
+#include "../tools/WindowsUtils/Timer.h"
+#define MAX_PATH_SIZE 1024
+
+class Renderer;
+class IInputHandler;
+class Text2D;
+class Meter2D;
+class FunctionSampler;
+class UnlitLiveTextureMaterial;
 class ConfigNode;
 class ConfigFile;
 class Logger;
@@ -7,13 +23,10 @@ class World;
 class Experiment;
 class SimGod;
 class StateActionFunction;
+class NamedVarSet;
+using State = NamedVarSet;
+using Action = NamedVarSet;
 
-#include <vector>
-#include <unordered_map>
-using namespace std;
-
-#include "parameters.h"
-#include "mem-manager.h"
 
 class SimionApp
 {
@@ -30,10 +43,22 @@ protected:
 	std::vector<const char*> m_outputFiles;
 
 	unordered_map<string, StateActionFunction*> m_pStateActionFunctions = {};
+
+
+	//is this app being run remotely?
+	//by default, we assume it is in Release mode
+	//can be overriden using setExecutedRemotely()
+#ifdef _DEBUG
+	bool m_bRemoteExecution = false;
+#else
+	bool m_bRemoteExecution = true;
+#endif
 public:
 
-	SimionApp();
+	SimionApp(ConfigNode* pParameters);
 	virtual ~SimionApp();
+
+	void run();
 
 	static SimionApp* get();
 
@@ -66,16 +91,30 @@ public:
 	static const char* getArgValue(int argc, char** argv, char* argName);
 	static bool flagPassed(int argc, char** argv, char* flagName);
 
-	//is this app being run remotely?
-	//by default, we assume it is in Release mode
-	//can be overriden using setExecutedRemotely()
-#ifdef _DEBUG
-	bool m_bRemoteExecution = false;
-#else
-	bool m_bRemoteExecution = true;
-#endif
 	void setExecutedRemotely(bool remote);
 	bool isExecutedRemotely();
 
-	virtual void run()= 0;
+
+private:
+	//Rendering
+	Timer m_timer;
+	Renderer *m_pRenderer = 0;
+	IInputHandler *m_pInputHandler = 0;
+
+	Text2D* m_pProgressText = 0;
+	vector<Meter2D*> m_pStatsUIMeters;
+	vector<Meter2D*> m_pStateUIMeters;
+	vector<Meter2D*> m_pActionUIMeters;
+
+	const int m_numSamplesPerDim = 16;
+	const unsigned int m_functionViewUpdateStepFreq = 100;
+	unordered_map<UnlitLiveTextureMaterial*, FunctionSampler*> m_pFunctionViews;
+	vector<FunctionSampler*> m_pFunctionSamplers;
+	void update2DMeters(State* s, Action* a);
+
+	void initRenderer(string sceneFile, State* s, Action* a);
+	void updateScene(State* s, Action* a);
+
+public:
+	vector<FunctionSampler*> getFunctionSamplers() { return m_pFunctionSamplers; }
 };

@@ -416,9 +416,6 @@
     <ClCompile Include="..\..\src\BulletCollision\BroadphaseCollision\btAxisSweep3.cpp">
       <Filter>src\BulletCollision\BroadphaseCollision</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\src\BulletCollision\BroadphaseCollision\btBroadphaseProxy.cpp">
-      <Filter>src\BulletCollision\BroadphaseCollision</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\src\BulletCollision\BroadphaseCollision\btCollisionAlgorithm.cpp">
       <Filter>src\BulletCollision\BroadphaseCollision</Filter>
     </ClCompile>

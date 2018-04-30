@@ -231,7 +231,6 @@
   <ItemGroup>
     <ClInclude Include="..\RLSimion\actor-critic.h" />
     <ClInclude Include="..\RLSimion\actor.h" />
-    <ClInclude Include="..\RLSimion\app-rlsimion.h" />
     <ClInclude Include="..\RLSimion\app.h" />
     <ClInclude Include="..\RLSimion\CNTKWrapperLoader.h" />
     <ClInclude Include="..\RLSimion\config.h" />
@@ -247,6 +246,7 @@
     <ClInclude Include="..\RLSimion\experiment.h" />
     <ClInclude Include="..\RLSimion\featuremap.h" />
     <ClInclude Include="..\RLSimion\features.h" />
+    <ClInclude Include="..\RLSimion\function-sampler.h" />
     <ClInclude Include="..\RLSimion\logger.h" />
     <ClInclude Include="..\RLSimion\mem-block.h" />
     <ClInclude Include="..\RLSimion\mem-buffer.h" />
@@ -266,7 +266,6 @@
     <ClInclude Include="..\RLSimion\single-dimension-discrete-grid.h" />
     <ClInclude Include="..\RLSimion\single-dimension-grid-rbf.h" />
     <ClInclude Include="..\RLSimion\single-dimension-grid.h" />
-    <ClInclude Include="..\RLSimion\state-action-function-sampler.h" />
     <ClInclude Include="..\RLSimion\stats.h" />
     <ClInclude Include="..\RLSimion\utils.h" />
     <ClInclude Include="..\RLSimion\vfa-critic.h" />
@@ -341,7 +340,6 @@
     <ClCompile Include="..\RLSimion\actor-critic.cpp" />
     <ClCompile Include="..\RLSimion\actor-regular.cpp" />
     <ClCompile Include="..\RLSimion\actor.cpp" />
-    <ClCompile Include="..\RLSimion\app-rlsimion.cpp" />
     <ClCompile Include="..\RLSimion\app.cpp" />
     <ClCompile Include="..\RLSimion\CNTKWrapperLoader.cpp" />
     <ClCompile Include="..\RLSimion\config.cpp" />
@@ -364,6 +362,8 @@
     <ClCompile Include="..\RLSimion\featuremap-tilecoding.cpp" />
     <ClCompile Include="..\RLSimion\featuremap.cpp" />
     <ClCompile Include="..\RLSimion\features.cpp" />
+    <ClCompile Include="..\RLSimion\function-sampler.cpp" />
+    <ClCompile Include="..\RLSimion\logger-functions.cpp" />
     <ClCompile Include="..\RLSimion\logger.cpp" />
     <ClCompile Include="..\RLSimion\mem-block.cpp" />
     <ClCompile Include="..\RLSimion\mem-buffer.cpp" />
@@ -380,14 +380,12 @@
     <ClCompile Include="..\RLSimion\single-dimension-discrete-grid.cpp" />
     <ClCompile Include="..\RLSimion\single-dimension-grid-rbf.cpp" />
     <ClCompile Include="..\RLSimion\single-dimension-grid.cpp" />
-    <ClCompile Include="..\RLSimion\state-action-function-sampler.cpp" />
     <ClCompile Include="..\RLSimion\stats.cpp" />
     <ClCompile Include="..\RLSimion\utils.cpp" />
     <ClCompile Include="..\RLSimion\vfa-policy.cpp" />
     <ClCompile Include="..\RLSimion\vfa.cpp" />
     <ClCompile Include="..\RLSimion\worlds\aux-rewards.cpp" />
     <ClCompile Include="..\RLSimion\worlds\balancingpole.cpp" />
-    <ClCompile Include="..\RLSimion\worlds\Box.cpp" />
     <ClCompile Include="..\RLSimion\worlds\BulletBody.cpp" />
     <ClCompile Include="..\RLSimion\worlds\BulletPhysics.cpp" />
     <ClCompile Include="..\RLSimion\worlds\FAST.cpp" />

@@ -2,7 +2,7 @@
 #include "function-sampler.h"
 #include "named-var-set.h"
 
-FunctionSampler::FunctionSampler(StateActionFunction* pFunction, size_t samplesPerDimension, size_t numDimensions
+FunctionSampler::FunctionSampler(string functionId, StateActionFunction* pFunction, size_t samplesPerDimension, size_t numDimensions
 	, Descriptor& stateDescriptor, Descriptor& actionDescriptor)
 	:m_pFunction(pFunction), m_samplesPerDimension(samplesPerDimension)
 
@@ -12,8 +12,10 @@ FunctionSampler::FunctionSampler(StateActionFunction* pFunction, size_t samplesP
 
 	m_numOutputs = pFunction->getNumOutputs();
 
-	m_numSamples = pow(m_samplesPerDimension,numDimensions);
+	m_numSamples = (size_t) pow(m_samplesPerDimension,numDimensions);
 	m_sampledValues = vector<double>(m_numSamples);
+
+	m_functionId = functionId;
 
 	//Initialize sampling info
 	//For now, we just take the first two inputs to sample values

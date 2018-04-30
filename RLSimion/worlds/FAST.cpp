@@ -4,7 +4,6 @@
 #include "world.h"
 #include "../reward.h"
 #include "../app.h"
-#include "../app-rlsimion.h"
 #include "../logger.h"
 #include "../experiment.h"
 #include "../../tools/WindowsUtils/Process.h"

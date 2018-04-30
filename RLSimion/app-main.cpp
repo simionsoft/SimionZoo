@@ -2,7 +2,6 @@
 //
 
 #include "app.h"
-#include "app-rlsimion.h"
 #include "logger.h"
 #include "config.h"
 
@@ -33,7 +32,7 @@ int main(int argc, char* argv[])
 			Logger::enableLogMessages(false);
 
 		if (!strcmp("RLSimion", pParameters->getName()) || !strcmp("RLSimion-x64", pParameters->getName()) || !strcmp("RLSimion-x64-CNTK", pParameters->getName()))
-			pApp = new RLSimionApp(pParameters);
+			pApp = new SimionApp(pParameters);
 				
 		if (pApp)
 		{

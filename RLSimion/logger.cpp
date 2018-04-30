@@ -80,8 +80,8 @@ Logger::Logger(ConfigNode* pConfigNode)
 
 	m_logFreq = DOUBLE_PARAM(pConfigNode, "Log-Freq", "Log frequency. Simulation time in seconds.", 0.25);
 
-	BOOL_PARAM m_bLogFunctions = BOOL_PARAM(pConfigNode, "Log-functions", "Log functions learned?", true);
-	INT_PARAM m_numFunctionsLogged = INT_PARAM(pConfigNode, "Num-functions-logged", "How many times per experiment save logged functions", 10);
+	m_bLogFunctions = BOOL_PARAM(pConfigNode, "Log-functions", "Log functions learned?", true);
+	m_numFunctionLogPoints = INT_PARAM(pConfigNode, "Num-functions-logged", "How many times per experiment save logged functions", 10);
 
 	m_pEpisodeTimer = new Timer();
 	m_pExperimentTimer = new Timer();
@@ -207,10 +207,6 @@ void Logger::firstEpisode()
 	writeLogFileXMLDescriptor(m_outputLogDescriptor.c_str());
 	//write the log file header
 	writeExperimentHeader();
-
-	if (m_bLogFunctions.get())
-		//generate the function log descriptor
-		writeFunctionLogFileXMLDescriptor(m_outputFunctionLogDescriptor.c_str());
 }
 
 void Logger::lastEpisode()
@@ -232,8 +228,22 @@ void Logger::firstStep()
 	//reset stats
 	for (auto it = m_stats.begin(); it != m_stats.end(); it++) (*it)->reset();
 
+	//write the episode header in the log file
 	if (isEpisodeTypeLogged(bEvalEpisode))
 		writeEpisodeHeader();
+
+	//log all the functions if need to
+	if (m_bLogFunctions.get())
+	{
+		size_t functionLogFreq = 1; 
+		if (m_numFunctionLogPoints.get() > 0)
+			functionLogFreq = SimionApp::get()->pExperiment->getTotalNumEpisodes() / m_numFunctionLogPoints.get();
+		
+		//we log if the current episode is the last of [functionLogFreq] episodes
+		size_t a = SimionApp::get()->pExperiment->getEpisodeIndex() % functionLogFreq;
+		if (SimionApp::get()->pExperiment->getEpisodeIndex() % functionLogFreq == functionLogFreq-1)
+			logFunctions();
+	}
 }
 
 void Logger::lastStep()

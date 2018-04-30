@@ -5,9 +5,6 @@
     <ClInclude Include="..\RLSimion\app.h">
       <Filter>app</Filter>
     </ClInclude>
-    <ClInclude Include="..\RLSimion\app-rlsimion.h">
-      <Filter>app</Filter>
-    </ClInclude>
     <ClInclude Include="..\RLSimion\actor.h">
       <Filter>learning</Filter>
     </ClInclude>
@@ -200,8 +197,8 @@
     <ClInclude Include="..\RLSimion\DDPG.h">
       <Filter>learning</Filter>
     </ClInclude>
-    <ClInclude Include="..\RLSimion\state-action-function-sampler.h">
-      <Filter>learning</Filter>
+    <ClInclude Include="..\RLSimion\function-sampler.h">
+      <Filter>graphics</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -223,12 +220,12 @@
     <Filter Include="world\BulletPhysics">
       <UniqueIdentifier>{362b2896-1db5-4f4a-bf93-02a716f6cc6a}</UniqueIdentifier>
     </Filter>
+    <Filter Include="graphics">
+      <UniqueIdentifier>{0725c52a-30e6-4c43-b68c-c5e5f0c5795c}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\RLSimion\app.cpp">
-      <Filter>app</Filter>
-    </ClCompile>
-    <ClCompile Include="..\RLSimion\app-rlsimion.cpp">
       <Filter>app</Filter>
     </ClCompile>
     <ClCompile Include="..\RLSimion\actor.cpp">
@@ -438,14 +435,14 @@
     <ClCompile Include="..\RLSimion\worlds\Rope.cpp">
       <Filter>world\BulletPhysics</Filter>
     </ClCompile>
-    <ClCompile Include="..\RLSimion\worlds\Box.cpp">
-      <Filter>world\BulletPhysics</Filter>
-    </ClCompile>
     <ClCompile Include="..\RLSimion\DDPG.cpp">
       <Filter>learning</Filter>
     </ClCompile>
-    <ClCompile Include="..\RLSimion\state-action-function-sampler.cpp">
-      <Filter>learning</Filter>
+    <ClCompile Include="..\RLSimion\function-sampler.cpp">
+      <Filter>graphics</Filter>
+    </ClCompile>
+    <ClCompile Include="..\RLSimion\logger-functions.cpp">
+      <Filter>app</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

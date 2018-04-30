@@ -348,8 +348,6 @@
   <ItemGroup>
     <ClCompile Include="..\..\src\BulletCollision\BroadphaseCollision\btAxisSweep3.cpp">
     </ClCompile>
-    <ClCompile Include="..\..\src\BulletCollision\BroadphaseCollision\btBroadphaseProxy.cpp">
-    </ClCompile>
     <ClCompile Include="..\..\src\BulletCollision\BroadphaseCollision\btCollisionAlgorithm.cpp">
     </ClCompile>
     <ClCompile Include="..\..\src\BulletCollision\BroadphaseCollision\btDbvt.cpp">
