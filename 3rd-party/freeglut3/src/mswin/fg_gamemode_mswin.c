@@ -109,7 +109,7 @@ GLboolean fghChangeDisplayMode(GLboolean haveToTest, DEVMODE *devModeRequested)
         /* what magic happens behind my back, its lib for devels after all ;) */
 
         /* append display mode to error to make things more informative */
-        sprintf(displayMode,"%s Problem with requested mode: %lux%lu:%lu@%lu", fggmstr, devModeRequested->dmPelsWidth, devModeRequested->dmPelsHeight, devModeRequested->dmBitsPerPel, devModeRequested->dmDisplayFrequency);
+        sprintf_s(displayMode, 300,"%s Problem with requested mode: %lux%lu:%lu@%lu", fggmstr, devModeRequested->dmPelsWidth, devModeRequested->dmPelsHeight, devModeRequested->dmBitsPerPel, devModeRequested->dmDisplayFrequency);
         fgWarning(displayMode);
     }
     

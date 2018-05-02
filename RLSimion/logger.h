@@ -32,7 +32,7 @@ class Logger
 	void openFunctionLogFile(const char* filename);
 	void closeFunctionLogFile();
 
-	void logFunctions();
+	void writeFunctionLogSample();
 
 	//Log file
 	string m_outputLogDescriptor;

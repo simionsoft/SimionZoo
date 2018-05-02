@@ -175,6 +175,7 @@
     </ProjectReference>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="arranger.cpp" />
     <ClCompile Include="basic-shapes-2d.cpp" />
     <ClCompile Include="basic-shapes-3d.cpp" />
     <ClCompile Include="light.cpp" />
@@ -204,6 +205,7 @@
     <ClCompile Include="xml-load.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="arranger.h" />
     <ClInclude Include="basic-shapes-2d.h" />
     <ClInclude Include="basic-shapes-3d.h" />
     <ClInclude Include="bindings.h" />

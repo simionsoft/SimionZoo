@@ -12,7 +12,7 @@ UnlitLiveTextureMaterial::UnlitLiveTextureMaterial(unsigned int sizeX, unsigned 
 	m_pTexelBuffer = new float[m_numTexels * m_numChannels];
 
 	//initialize it as blue
-	for (int i = 0; i < m_numTexels; ++i)
+	for (size_t i = 0; i < m_numTexels; ++i)
 	{
 		m_pTexelBuffer[i*m_numChannels + 0] = 0.f;
 		m_pTexelBuffer[i*m_numChannels + 1] = 0.f;
@@ -36,7 +36,7 @@ void UnlitLiveTextureMaterial::updateTexture(const vector<double>& pBuffer)
 
 	//calculate min and max
 	double value;
-	double minValue = std::numeric_limits<double>::max(), maxValue= std::numeric_limits<double>::min();
+	double minValue = std::numeric_limits<double>::max(), maxValue= std::numeric_limits<double>::lowest();
 	for (unsigned int i = 0; i < m_numTexels; i++)
 	{
 		value = pBuffer[i];
@@ -48,10 +48,13 @@ void UnlitLiveTextureMaterial::updateTexture(const vector<double>& pBuffer)
 	Color minValueColor = Color(0.0, 0.0, 1.0);
 	Color texelColor;
 	double normValue;
-	double valueRange = std::max(0.01, maxValue - minValue);
+	double valueRange = maxValue - minValue;
 	for (unsigned int i = 0; i < m_numTexels; i++)
 	{
-		normValue = (pBuffer[i] - minValue) / valueRange;
+		if (valueRange!=0.0)
+			normValue = (pBuffer[i] - minValue) / valueRange;
+		else normValue = 0.0;
+
 		texelColor = minValueColor.lerp(maxValueColor,normValue);
 		m_pTexelBuffer[i*m_numChannels + 0] = texelColor.r();
 		m_pTexelBuffer[i*m_numChannels + 1] = texelColor.g();

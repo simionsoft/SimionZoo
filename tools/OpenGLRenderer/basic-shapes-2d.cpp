@@ -58,22 +58,17 @@ void Sprite2D::draw()
 
 Meter2D::Meter2D(tinyxml2::XMLElement* pNode): GraphicObject2D(pNode)
 {
-	m_pMaterial = Material::getInstance(pNode);
 }
 
 Meter2D::Meter2D(string name, Vector2D origin, Vector2D size, double depth) 
 	: GraphicObject2D(name, origin, size, 0.0, depth) //no rotation allowed
 {
-	m_pMaterial = new ColorMaterial();
-
 	//text on the progress bar, shifted a bit to the top-right toward the viewer
 	m_pText = new Text2D(name + "/text", Vector2D( 0.025, 0.25), 0.1);
 }
 
 Meter2D::~Meter2D()
 {
-	if (m_pMaterial != nullptr)
-		delete m_pMaterial;
 	delete m_pText;
 }
 
@@ -94,13 +89,13 @@ void Meter2D::draw()
 		glVertex2d(0.0, 0.0);
 	glEnd();
 
-	if (m_pMaterial)
-		m_pMaterial->set();
-
 	glBegin(GL_QUADS);
+		glColor3fv(m_startColor.rgba());
 		glVertex2d(0.0, 0.0);
+		glColor3fv(m_valueColor.rgba());
 		glVertex2d(normValue, 0.0);
 		glVertex2d(normValue, 1.0);
+		glColor3fv(m_startColor.rgba());
 		glVertex2d(0.0, 1.0);
 	glEnd();
 
@@ -116,8 +111,8 @@ void Meter2D::setValue(double value)
 	double normValue = m_valueRange.normPosInRange(m_value);
 
 	//udpate the color
-	((ColorMaterial*)m_pMaterial)->setColor(Color(1.0, 0.0, 0.0, 1.0).lerp(Color(0.0, 1.0, 0.0, 1.0)
-		, normValue));
+	m_valueColor = m_startColor.lerp(m_endColor, normValue); // Color(1.0, 0.0, 0.0, 1.0).lerp(Color(0.0, 1.0, 0.0, 1.0), normValue);
+
 	//update the text
 	char buffer[1024];
 	sprintf_s(buffer, 1024, "%s: %.4f", m_name.c_str(), value);

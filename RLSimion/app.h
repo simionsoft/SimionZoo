@@ -110,10 +110,12 @@ private:
 	const unsigned int m_functionViewUpdateStepFreq = 100;
 	unordered_map<UnlitLiveTextureMaterial*, FunctionSampler*> m_pFunctionViews;
 	vector<FunctionSampler*> m_pFunctionSamplers;
+	void initFunctionSamplers(State* s, Action* a);
+
 	void update2DMeters(State* s, Action* a);
 
 	void initRenderer(string sceneFile, State* s, Action* a);
-	void initFunctionSamplers(State* s, Action* a);
+
 	void updateScene(State* s, Action* a);
 
 public:

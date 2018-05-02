@@ -281,3 +281,4 @@ $RECYCLE.BIN/
 !bin/msvcr120.dll
 !bin/msvcp140.dll
 !bin/vcruntime140.dll
+*.functions

@@ -6,6 +6,8 @@
 #include "../OpenGLRenderer/input-handler.h"
 #include "../OpenGLRenderer/text.h"
 #include "../OpenGLRenderer/basic-shapes-2d.h"
+#include "../OpenGLRenderer/material.h"
+#include "../OpenGLRenderer/arranger.h"
 #include <algorithm>
 
 
@@ -184,9 +186,18 @@ bool SimionLogViewer::loadLogFile(string filename)
 	}
 	else return false;
 
-	ViewPort* pMetersViewPort = m_pRenderer->addViewPort(0.7, 0.0, 1.0, 1.0);
+	Vector2D mainViewPortOrigin = Vector2D(0.0, 0.3);
+	Vector2D mainViewPortEnd = Vector2D(0.7, 1.0);
+	Vector2D metersViewPortOrigin = Vector2D(mainViewPortEnd.x(), mainViewPortOrigin.x());
+	Vector2D metersViewPortEnd = Vector2D(1.0, 1.0);
+	Vector2D functionsViewPortOrigin = Vector2D(0.0, 0.0);
+	Vector2D functionsViewPortEnd = Vector2D(1.0, mainViewPortOrigin.y());
+
+	//resize main viewport
+	m_pRenderer->getDefaultViewPort()->resize(mainViewPortOrigin.x(), mainViewPortOrigin.y(), mainViewPortEnd.x(), mainViewPortEnd.y());
 
 	//add meter2D objects to show variable values
+	ViewPort* pMetersViewPort = m_pRenderer->addViewPort(metersViewPortOrigin.x(), metersViewPortOrigin.y(), metersViewPortEnd.x(), metersViewPortEnd.y());
 	Descriptor& logDescriptor = m_pExperimentLog->getDescriptor();
 	Meter2D* pMeter;
 	Vector2D origin = Vector2D(0.025, 0.95);
@@ -201,6 +212,42 @@ bool SimionLogViewer::loadLogFile(string filename)
 		m_variableMeters.push_back(pMeter);
 		origin -= offset;
 	}
+
+	//add function viewers
+	ViewPort* pFunctionsViewPort = m_pRenderer->addViewPort(functionsViewPortOrigin.x(), functionsViewPortOrigin.y(), functionsViewPortEnd.x(), functionsViewPortEnd.y());
+	vector<GraphicObject2D*> objects;
+	for each (Function* pFunction in m_pExperimentLog->getFunctionLog().getFunctions())
+	{
+		//create the live material. We can update its associated texture
+		UnlitLiveTextureMaterial* pLiveMaterial = new UnlitLiveTextureMaterial((unsigned int)pFunction->numSamplesX()
+			, (unsigned int) pFunction->numSamplesX());
+		m_functionViews[pLiveMaterial] = pFunction;
+
+		//create the sprite with the live texture attached to it
+		Sprite2D* pFunctionViewer = new Sprite2D(pFunction->name(), Vector2D(0.0, 0.0), Vector2D(0.0, 0.0), 0.25, pLiveMaterial);
+		m_pRenderer->add2DGraphicObject(pFunctionViewer, pFunctionsViewPort);
+		objects.push_back(pFunctionViewer);
+	}
+	Arranger objectArranger;
+	objectArranger.arrangeObjects2D(objects, Vector2D(0.0, 0.0), Vector2D(1.0, 1.0), Vector2D(0.15, 0.25)
+		, Vector2D(0.25, 1.0), Vector2D(0.0075, 0.02));
+
+	//set legend to each function viewer
+	int objIndex = 0;
+	Vector2D legendOffset;
+	for each (GraphicObject2D* pObj in objects)
+	{
+		if (objIndex % 2 == 0)
+			legendOffset = Vector2D(0.01, 0.02);
+		else
+			legendOffset = Vector2D(0.01, pObj->getTransform().scale().y() - 0.1);
+		Text2D* pFunctionLegend = new Text2D(pObj->name() + string("-legend"), pObj->getTransform().translation() + legendOffset, 0.3);
+		pFunctionLegend->set(pObj->name());
+		m_pRenderer->add2DGraphicObject(pFunctionLegend, pFunctionsViewPort);
+
+		objIndex++;
+	}
+
 
 	m_timer.start();
 	playEpisode(0);
@@ -286,6 +333,18 @@ void SimionLogViewer::draw()
 		value = m_pInterpolatedStep->getValue(variableIndex);
 
 		m_pRenderer->updateBinding(varName, value);
+	}
+
+	//update function viewers
+	for each (auto function in m_functionViews)
+	{
+		bool needUpdate;
+		const vector<double>& data= function.second->getInterpolatedData(m_episodeIndex, 0, needUpdate);
+		if (needUpdate)
+		{
+			//no update needed if the function return nullptr
+			function.first->updateTexture(data);
+		}		
 	}
 
 	//draw the scene

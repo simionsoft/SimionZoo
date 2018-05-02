@@ -90,7 +90,7 @@ Logger::Logger(ConfigNode* pConfigNode)
 
 #define LOG_DESCRIPTOR_EXTENSION ".log"
 #define LOG_BINARY_EXTENSION ".log.bin"
-#define FUNCTION_LOG_BINARY_EXTENSION ".functions.bin"
+#define FUNCTION_LOG_BINARY_EXTENSION ".log.functions"
 
 void Logger::setOutputFilenames()
 {
@@ -109,9 +109,6 @@ void Logger::setOutputFilenames()
 	{
 		m_outputFunctionLogBinary = inputConfigFile + FUNCTION_LOG_BINARY_EXTENSION;
 		SimionApp::get()->registerOutputFile(m_outputFunctionLogBinary.c_str());
-
-		//open the function log file
-		openFunctionLogFile(m_outputFunctionLogBinary.c_str());
 	}
 }
 
@@ -146,9 +143,15 @@ void Logger::writeLogFileXMLDescriptor(const char* filename)
 	fopen_s(&logXMLDescriptorFile, filename, "w");
 	if (logXMLDescriptorFile)
 	{
-		sprintf_s(buffer, BUFFER_SIZE, "<ExperimentLogDescriptor BinaryDataFile=\"%s\" SceneFile=\"%s\">\n"
-			, getFilename(m_outputLogBinary).c_str()
-			, (SimionApp::get()->pWorld->getDynamicModel()->getName() + string(".scene")).c_str());
+		if (m_bLogFunctions.get())
+			sprintf_s(buffer, BUFFER_SIZE, "<ExperimentLogDescriptor BinaryDataFile=\"%s\" FunctionsDataFile=\"%s\" SceneFile=\"%s\">\n"
+				, getFilename(m_outputLogBinary).c_str()
+				, getFilename(m_outputFunctionLogBinary).c_str()
+				, (SimionApp::get()->pWorld->getDynamicModel()->getName() + string(".scene")).c_str());
+		else
+			sprintf_s(buffer, BUFFER_SIZE, "<ExperimentLogDescriptor BinaryDataFile=\"%s\" SceneFile=\"%s\">\n"
+				, getFilename(m_outputLogBinary).c_str()
+				, (SimionApp::get()->pWorld->getDynamicModel()->getName() + string(".scene")).c_str());
 		writeEpisodeTypesToBuffer(buffer);
 		writeNamedVarSetDescriptorToBuffer(buffer, "State", SimionApp::get()->pWorld->getDynamicModel()->getStateDescriptorPtr()); //state
 		writeNamedVarSetDescriptorToBuffer(buffer, "Action", SimionApp::get()->pWorld->getDynamicModel()->getActionDescriptorPtr()); //action
@@ -207,6 +210,9 @@ void Logger::firstEpisode()
 	writeLogFileXMLDescriptor(m_outputLogDescriptor.c_str());
 	//write the log file header
 	writeExperimentHeader();
+
+	//write the function log header
+	openFunctionLogFile(m_outputFunctionLogBinary.c_str());
 }
 
 void Logger::lastEpisode()
@@ -235,14 +241,17 @@ void Logger::firstStep()
 	//log all the functions if need to
 	if (m_bLogFunctions.get())
 	{
-		size_t functionLogFreq = 1; 
+		size_t functionLogFreq = 1;
 		if (m_numFunctionLogPoints.get() > 0)
-			functionLogFreq = SimionApp::get()->pExperiment->getTotalNumEpisodes() / m_numFunctionLogPoints.get();
-		
-		//we log if the current episode is the last of [functionLogFreq] episodes
-		size_t a = SimionApp::get()->pExperiment->getEpisodeIndex() % functionLogFreq;
-		if (SimionApp::get()->pExperiment->getEpisodeIndex() % functionLogFreq == functionLogFreq-1)
-			logFunctions();
+		{
+			if (m_numFunctionLogPoints.get() < SimionApp::get()->pExperiment->getTotalNumEpisodes())
+				functionLogFreq = SimionApp::get()->pExperiment->getTotalNumEpisodes() / m_numFunctionLogPoints.get();
+			else
+				functionLogFreq = 1;
+		}
+
+		if ((SimionApp::get()->pExperiment->getEpisodeIndex()-1) % functionLogFreq == 0)
+			writeFunctionLogSample();
 	}
 }
 

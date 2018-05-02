@@ -25,7 +25,7 @@ void Text2D::draw()
 	//according to documentation, passed coordinates are transformed by the modelview matrix
 	glRasterPos3d(0.0, 0.0, 0);
 
-	void * font = GLUT_BITMAP_9_BY_15;
+	void * font = GLUT_BITMAP_HELVETICA_10;
 
 	glutBitmapString(font, (const unsigned char*)m_text.c_str());
 

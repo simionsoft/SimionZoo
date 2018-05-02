@@ -1,6 +1,7 @@
 #include "stdafx.h"
 #include "LogLoader.h"
 #include "../WindowsUtils/FileUtils.h"
+#include <algorithm>
 
 Step::Step(int numVariables)
 {
@@ -91,6 +92,7 @@ bool ExperimentLog::load(string descriptorFile, string& outSceneFile)
 	tinyxml2::XMLDocument doc;
 	tinyxml2::XMLElement *pRoot, *pChild;
 	string binaryFile;
+	string functionLogFile;
 	doc.LoadFile(descriptorFile.c_str());
 	if (doc.Error() == tinyxml2::XML_SUCCESS)
 	{
@@ -98,6 +100,8 @@ bool ExperimentLog::load(string descriptorFile, string& outSceneFile)
 		if (pRoot)
 		{
 			binaryFile = pRoot->Attribute(xmlTagBinaryDataFile);
+			if (pRoot->Attribute(xmlTagFunctionLogFile))
+				functionLogFile = pRoot->Attribute(xmlTagFunctionLogFile);
 			outSceneFile = pRoot->Attribute(xmlTagSceneFile);
 			pChild = pRoot->FirstChildElement();
 			while (pChild)
@@ -129,6 +133,7 @@ bool ExperimentLog::load(string descriptorFile, string& outSceneFile)
 		else return false;
 	}
 	else return false;
+
 	//Load the binary file from the same directory
 	FILE* pFile;
 
@@ -145,8 +150,14 @@ bool ExperimentLog::load(string descriptorFile, string& outSceneFile)
 				m_pEpisodes[i].load(pFile);
 			}
 		}
+		fclose(pFile);
 	}
 	else return false;
+
+	//Load the function log file from the same directory
+	if (!functionLogFile.empty())
+		m_functionLog.load((logDirectory + functionLogFile).c_str());
+
 	return true;
 }
 
@@ -161,4 +172,126 @@ int ExperimentLog::getVariableIndex(string variableName) const
 		if (string(m_descriptor[i].getName()) == variableName)
 			return i;
 	return -1;
+}
+
+#define FUNCTION_SAMPLE_HEADER 6543
+#define FUNCTION_DECLARATION_HEADER 5432
+#define FUNCTION_LOG_FILE_HEADER 4321
+#define FUNCTION_LOG_FILE_VERSION 1
+
+FunctionSample::FunctionSample(size_t episode, size_t step, size_t experimentStep, size_t numSamples)
+{
+	m_episode = episode;
+	m_step = step;
+	m_experimentStep = experimentStep;
+	m_values = vector<double>(numSamples);
+}
+
+Function::Function(string name, size_t numSamplesX, size_t numSamplesY, size_t numSamplesZ)
+{
+	m_name = name;
+	m_numSamplesX = numSamplesX;
+	m_numSamplesY = numSamplesY;
+	m_numSamplesZ = numSamplesZ;
+
+	m_interpolatedValues = vector<double>(numSamples());
+}
+
+const vector<double>& Function::getInterpolatedData(size_t episode, size_t step, bool &dataChanged)
+{
+	int previous = 0, next;
+	episode++; //saved episodes start from 1
+	if (episode != m_lastInterpolatedEpisode)
+	{
+		while (previous<m_samples.size()-2 && m_samples[previous+1]->episode() < episode)
+			++previous;
+
+		next = previous + 1;
+		//if (m_samples[prevSample]->episode() > episode)
+		//	prevSample = std::max(0, prevSample - 1);
+
+		double u = ((double)(episode - m_samples[previous]->episode())) / (double)(m_samples[next]->episode() - m_samples[previous]->episode());
+		double inv_u = 1. - u;
+
+		for (size_t i = 0; i < numSamples(); i++)
+			m_interpolatedValues[i] = m_samples[previous]->value(i)*inv_u + m_samples[next]->value(i)*u;
+
+		m_lastInterpolatedEpisode = (int)episode;
+		dataChanged = true;
+	}
+	else dataChanged = false;
+	return m_interpolatedValues;
+}
+
+void FunctionLog::load(const char* functionLogFile)
+{
+	FunctionLogHeader logHeader;
+	FunctionDeclarationHeader funDeclHeader;
+	FunctionSampleHeader sampleHeader;
+	FILE* pFile;
+	
+	fopen_s(&pFile, functionLogFile, "rb");
+	if (pFile)
+	{
+		//read function log header
+		fread_s(&logHeader, sizeof(FunctionLogHeader), sizeof(FunctionLogHeader), 1, pFile);
+		if (logHeader.magicNumber != FUNCTION_LOG_FILE_HEADER)
+			throw exception("Incorrect magic number trying to read function log file");
+		if (logHeader.fileVersion != FUNCTION_LOG_FILE_VERSION)
+			throw exception("Missmatched function log file version read");
+
+		//read function declarations
+		for (size_t f = 0; f < (size_t) logHeader.numFunctions; ++f)
+		{
+			fread_s(&funDeclHeader, sizeof(FunctionDeclarationHeader), sizeof(FunctionDeclarationHeader), 1, pFile);
+			if (funDeclHeader.magicNumber != FUNCTION_DECLARATION_HEADER)
+				throw exception("Incorrect magic number trying to read function log file");
+			Function* pFunction = new Function(funDeclHeader.name, funDeclHeader.numSamplesX, funDeclHeader.numSamplesY, funDeclHeader.numSamplesZ);
+			m_functions.push_back(pFunction);
+		}
+
+		//read saved samples
+		while (!feof(pFile))
+		{
+			if (fread_s(&sampleHeader, sizeof(FunctionSampleHeader), sizeof(FunctionSampleHeader), 1, pFile)==1)
+			{
+				if (sampleHeader.magicNumber != FUNCTION_SAMPLE_HEADER)
+					throw exception("Incorrect magic number trying to read function log file");
+				if ((size_t)sampleHeader.id >= m_functions.size() || sampleHeader.id < 0)
+					throw exception("Wrong function Id trying to read function log file");
+				size_t numSamples = m_functions[sampleHeader.id]->numSamples();
+
+				FunctionSample* pSample = new FunctionSample(sampleHeader.episode, sampleHeader.step, sampleHeader.experimentStep, numSamples);
+
+				if (fread_s(pSample->values().data(), numSamples * sizeof(double), sizeof(double), numSamples, pFile) == numSamples)
+					m_functions[sampleHeader.id]->addSample(pSample);
+				else
+					break; //file wasn't fully saved. Silent error, this is expected to happen sometimes
+			}
+			else
+				break;
+		}
+
+		fclose(pFile);
+	}
+}
+
+FunctionLog::~FunctionLog()
+{
+	for each (Function* pFunction in m_functions)
+	{
+		delete pFunction;
+	}
+}
+
+Function::~Function()
+{
+	for each (FunctionSample* pSample in m_samples)
+	{
+		delete pSample;
+	}
+}
+
+FunctionSample::~FunctionSample()
+{
 }

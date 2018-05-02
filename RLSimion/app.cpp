@@ -13,6 +13,7 @@
 #include "../tools/OpenGLRenderer/text.h"
 #include "../tools/OpenGLRenderer/input-handler.h"
 #include "../tools/OpenGLRenderer/material.h"
+#include "../tools/OpenGLRenderer/arranger.h"
 #include "../tools/WindowsUtils/FileUtils.h"
 
 SimionApp* SimionApp::m_pAppInstance = 0;
@@ -341,45 +342,43 @@ void SimionApp::initRenderer(string sceneFile, State* s, Action* a)
 	}
 
 	//create function samplers
-	size_t numFunctions = m_pStateActionFunctions.size();
-	if (numFunctions)
+	if (m_pStateActionFunctions.size())
 	{
-		double functionViewPortMinX = 0.0, functionViewPortMinY = mainViewPortMinX
-			, functionViewPortMaxX = 1.0, functionViewPortMaxY = mainViewPortMinY;
-		double viewSizeInX = std::min(0.25, 1.0 / numFunctions);
-		double totalSizeInX = viewSizeInX * numFunctions;
-		double xOffset = 0.0075, yOffset = 0.02;
-		Vector2D functionViewOrigin = Vector2D((1 - totalSizeInX) *0.5 + xOffset, yOffset);
-		Vector2D functionViewSize = Vector2D(viewSizeInX - 2 * xOffset, 1.0 - 2 * yOffset);
-		Vector2D legendOffset = Vector2D(0.01, 0.02);
-		ViewPort* functionViewPort = new ViewPort(functionViewPortMinX, functionViewPortMinY, functionViewPortMaxX
-			, functionViewPortMaxY);
+		initFunctionSamplers(s, a);
+
+		ViewPort* functionViewPort = new ViewPort(0.0, 0.0, 1.0, mainViewPortMinY);
 		m_pRenderer->addViewPort(functionViewPort);
-		size_t numInputs;
-		for (auto functionIt : m_pStateActionFunctions)
+		vector<GraphicObject2D*> objects;
+		for each (FunctionSampler* pSampler in m_pFunctionSamplers)
 		{
-			numInputs = functionIt.second->getInputActionVariables().size() + functionIt.second->getInputStateVariables().size();
-			if (numInputs > 1)
-			{
-				//create the sampler: it will transform the state-action function to a 2D texture
-				FunctionSampler* pSampler = new FunctionSampler3D(functionIt.first, functionIt.second, m_numSamplesPerDim
-					, s->getDescriptor(), a->getDescriptor());
-				m_pFunctionSamplers.push_back(pSampler);
-				//create the live material. We can update its associated texture
-				UnlitLiveTextureMaterial* pLiveMaterial = new UnlitLiveTextureMaterial(m_numSamplesPerDim, m_numSamplesPerDim);
-				m_pFunctionViews[pLiveMaterial] = pSampler;
+			//create the live material. We can update its associated texture
+			UnlitLiveTextureMaterial* pLiveMaterial = new UnlitLiveTextureMaterial(m_numSamplesPerDim, m_numSamplesPerDim);
+			m_pFunctionViews[pLiveMaterial] = pSampler;
 
-				//create the sprite with the live texture attached to it
-				Sprite2D* pFunctionViewer = new Sprite2D(functionIt.first + string("-view"), functionViewOrigin, functionViewSize, 0.25, pLiveMaterial);
-				m_pRenderer->add2DGraphicObject(pFunctionViewer, functionViewPort);
-				Text2D* pFunctionLegend = new Text2D(functionIt.first + string("-legend"), functionViewOrigin + legendOffset, 0.3);
-				pFunctionLegend->set(pSampler->getFunctionId());
-				pFunctionLegend->setColor(Color(1.f, 1.f, 1.f)); //white texts over red-blue function views
-				m_pRenderer->add2DGraphicObject(pFunctionLegend, functionViewPort);
+			//create the sprite with the live texture attached to it
+			Sprite2D* pFunctionViewer = new Sprite2D(pSampler->getFunctionId(), Vector2D(0.0, 0.0), Vector2D(0.0,0.0), 0.25, pLiveMaterial);
+			m_pRenderer->add2DGraphicObject(pFunctionViewer, functionViewPort);
+			objects.push_back(pFunctionViewer);
+		}
 
-				//shift the origin x coordinate to the right
-				functionViewOrigin.setX(functionViewOrigin.x() + functionViewSize.x() + 2 * xOffset);
-			}
+		Arranger objectArranger;
+		objectArranger.arrangeObjects2D(objects, Vector2D(0.0,0.0), Vector2D(1.0,1.0), Vector2D(0.15,0.25)
+			, Vector2D(0.25, 1.0), Vector2D(0.0075, 0.02));
+
+		//set legend to each function viewer
+		int objIndex = 0;
+		Vector2D legendOffset;
+		for each (GraphicObject2D* pObj in objects)
+		{
+			if (objIndex % 2 == 0)
+				legendOffset = Vector2D(0.01, 0.02);
+			else
+				legendOffset = Vector2D(0.01, pObj->getTransform().scale().y() - 0.1);
+			Text2D* pFunctionLegend = new Text2D(pObj->name() + string("-legend"), pObj->getTransform().translation() + legendOffset, 0.3);
+			pFunctionLegend->set(pObj->name());
+			m_pRenderer->add2DGraphicObject(pFunctionLegend, functionViewPort);
+
+			objIndex++;
 		}
 	}
 
@@ -390,16 +389,32 @@ void SimionApp::initRenderer(string sceneFile, State* s, Action* a)
 
 void SimionApp::initFunctionSamplers(State* s, Action* a)
 {
+	vector<pair<VariableSource, string>> m_sampledVariables;
 	size_t numInputs;
 	for (auto functionIt : m_pStateActionFunctions)
 	{
 		numInputs = functionIt.second->getInputActionVariables().size() + functionIt.second->getInputStateVariables().size();
 		if (numInputs > 1)
 		{
-			//create the sampler: it will transform the state-action function to a 2D texture
-			FunctionSampler* pSampler = new FunctionSampler3D(functionIt.first, functionIt.second, m_numSamplesPerDim
-				, s->getDescriptor(), a->getDescriptor());
-			m_pFunctionSamplers.push_back(pSampler);
+			//store all sampled variables to group them in pairs
+			m_sampledVariables.clear();
+			for each(string varName in functionIt.second->getInputStateVariables())
+				m_sampledVariables.push_back(make_pair(VariableSource::StateSource, varName));
+			for each(string varName in functionIt.second->getInputActionVariables())
+				m_sampledVariables.push_back(make_pair(VariableSource::ActionSource, varName));
+
+			//make all possible input variable combinations and one function sampler for each
+			for (int i = 0; i < numInputs - 1; ++i)
+			{
+				for (int j = i + 1; j < numInputs; j++)
+				{
+					//create the sampler: it will transform the state-action function to a 2D texture
+					FunctionSampler* pSampler = new FunctionSampler3D(functionIt.first, functionIt.second, m_numSamplesPerDim
+						, s->getDescriptor(), a->getDescriptor(), m_sampledVariables[i].first, m_sampledVariables[i].second
+						, m_sampledVariables[j].first, m_sampledVariables[j].second);
+					m_pFunctionSamplers.push_back(pSampler);
+				}
+			}
 		}
 	}
 }
@@ -427,7 +442,7 @@ void SimionApp::updateScene(State* s, Action* a)
 	}
 
 	//Update the function views each m_functionViewUpdateStepFreq steps
-	if (pExperiment->getExperimentStep() % m_functionViewUpdateStepFreq == 0)
+	if ((pExperiment->getExperimentStep()-1) % m_functionViewUpdateStepFreq == 0)
 	{
 		for each(auto functionIt in m_pFunctionViews)
 		{

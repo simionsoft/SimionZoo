@@ -5,27 +5,66 @@
 #include <unordered_map>
 using namespace std;
 
-#define FUNCTION_SAMPLE_HEADER 3
-#define FUNCTION_SAMPLER_FILE_VERSION 1
+#define FUNCTION_SAMPLE_HEADER 6543
+#define FUNCTION_DECLARATION_HEADER 5432
+#define FUNCTION_LOG_FILE_HEADER 4321
+#define FUNCTION_LOG_FILE_VERSION 1
+
 #define MAX_FUNCTION_ID_LENGTH 128
+
+//using __int64 to assure C# data-type compatibility
+
+struct FunctionLogHeader
+{
+	__int64 magicNumber = FUNCTION_LOG_FILE_HEADER;
+	__int64 fileVersion = FUNCTION_LOG_FILE_VERSION;
+	__int64 numFunctions = 0;
+};
+
+struct FunctionDeclarationHeader
+{
+	__int64 magicNumber = FUNCTION_DECLARATION_HEADER;
+	__int64 id;
+	char name[MAX_FUNCTION_ID_LENGTH];
+	__int64 numSamplesX;
+	__int64 numSamplesY;
+	__int64 numSamplesZ;
+};
 
 struct FunctionSampleHeader
 {
-	//we replicate this info in each header to simplify the programming
-	unsigned int fileVersion = FUNCTION_SAMPLER_FILE_VERSION;
-	unsigned int magicNumber = FUNCTION_SAMPLE_HEADER;
-	unsigned int m_episode;
-	unsigned int m_step;
-	unsigned int m_experimentStep;
-	unsigned int m_id;
-	char m_name[MAX_FUNCTION_ID_LENGTH];
-	unsigned int m_numSamplesX;
-	unsigned int m_numSamplesY;
+	__int64 magicNumber = FUNCTION_SAMPLE_HEADER;
+	__int64 episode;
+	__int64 step;
+	__int64 experimentStep;
+	__int64 id;
 };
 
 void Logger::openFunctionLogFile(const char* filename)
 {
-	fopen_s(&m_functionLogFile, m_outputFunctionLogBinary.c_str(), "w");
+	fopen_s(&m_functionLogFile, m_outputFunctionLogBinary.c_str(), "wb");
+	if (m_functionLogFile)
+	{
+		//write function log header
+		FunctionLogHeader functionLogHeader;
+		functionLogHeader.numFunctions = SimionApp::get()->getFunctionSamplers().size();
+		fwrite(&functionLogHeader, sizeof(FunctionLogHeader), 1, m_functionLogFile);
+
+		//write function declarations
+		unsigned int functionId = 0;
+		FunctionDeclarationHeader functionDeclarationHeader;
+		for each (FunctionSampler* sampler in SimionApp::get()->getFunctionSamplers())
+		{
+			functionDeclarationHeader.id = functionId;
+			sprintf_s(functionDeclarationHeader.name, MAX_FUNCTION_ID_LENGTH, "%s", sampler->getFunctionId().c_str());
+			functionDeclarationHeader.numSamplesX = (unsigned int)sampler->getNumSamplesX();
+			functionDeclarationHeader.numSamplesY = (unsigned int)sampler->getNumSamplesY();
+			functionDeclarationHeader.numSamplesZ = 1; //for now, not using it
+
+			fwrite(&functionDeclarationHeader, sizeof(FunctionDeclarationHeader), 1, m_functionLogFile);
+			functionId++;
+		}
+	}
 }
 
 void Logger::closeFunctionLogFile()
@@ -34,7 +73,7 @@ void Logger::closeFunctionLogFile()
 }
 
 
-void Logger::logFunctions()
+void Logger::writeFunctionLogSample()
 {
 	unsigned int functionId = 0;
 	for each (FunctionSampler* sampler in SimionApp::get()->getFunctionSamplers())
@@ -42,20 +81,17 @@ void Logger::logFunctions()
 		//Write the header
 		FunctionSampleHeader header;
 		Experiment* pExperiment = SimionApp::get()->pExperiment.ptr();
-		header.m_episode = pExperiment->getEpisodeInEvaluationIndex();
-		header.m_step = pExperiment->getStep();
-		header.m_experimentStep = pExperiment->getExperimentStep();
-		header.m_id = functionId;
-		sprintf_s(header.m_name, MAX_FUNCTION_ID_LENGTH, "%s", sampler->getFunctionId().c_str());
-		header.m_numSamplesX = (unsigned int)sampler->getNumSamplesX();
-		header.m_numSamplesY = (unsigned int)sampler->getNumSamplesY();
+		header.episode = pExperiment->getEvaluationIndex();
+		header.step = pExperiment->getStep();
+		header.experimentStep = pExperiment->getExperimentStep();
+		header.id = functionId;
 
-		fwrite(&header, sizeof(FunctionSampleHeader), 1, m_functionLogFile);
+		size_t numElemWritten = fwrite(&header, sizeof(FunctionSampleHeader), 1, m_functionLogFile);
 
 		//Write the values sampled
-		const vector<double> valuesSampled = sampler->sample();
+		const vector<double>& valuesSampled = sampler->sample();
 
-		fwrite(valuesSampled.data(), valuesSampled.size(), sizeof(double), m_functionLogFile);
+		fwrite(valuesSampled.data(), sizeof(double), valuesSampled.size(), m_functionLogFile);
 
 		functionId++;
 	}

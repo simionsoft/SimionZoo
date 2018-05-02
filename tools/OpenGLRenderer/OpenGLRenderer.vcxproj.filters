@@ -15,7 +15,6 @@
     <ClCompile Include="graphic-object-2d.cpp">
       <Filter>graphics</Filter>
     </ClCompile>
-    <ClCompile Include="input-handler.cpp" />
     <ClCompile Include="mesh.cpp">
       <Filter>graphics</Filter>
     </ClCompile>
@@ -31,8 +30,6 @@
     <ClCompile Include="texture-manager.cpp">
       <Filter>graphics</Filter>
     </ClCompile>
-    <ClCompile Include="bindings.cpp" />
-    <ClCompile Include="xml-load.cpp" />
     <ClCompile Include="basic-shapes-2d.cpp">
       <Filter>graphics</Filter>
     </ClCompile>
@@ -57,6 +54,16 @@
     <ClCompile Include="viewport.cpp">
       <Filter>graphics</Filter>
     </ClCompile>
+    <ClCompile Include="input-handler.cpp">
+      <Filter>aux</Filter>
+    </ClCompile>
+    <ClCompile Include="bindings.cpp">
+      <Filter>aux</Filter>
+    </ClCompile>
+    <ClCompile Include="xml-load.cpp">
+      <Filter>aux</Filter>
+    </ClCompile>
+    <ClCompile Include="arranger.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="renderer.h" />
@@ -74,8 +81,6 @@
     <ClInclude Include="graphic-object-2d.h">
       <Filter>graphics</Filter>
     </ClInclude>
-    <ClInclude Include="input-handler.h" />
-    <ClInclude Include="bindings.h" />
     <ClInclude Include="mesh.h">
       <Filter>graphics</Filter>
     </ClInclude>
@@ -91,7 +96,6 @@
     <ClInclude Include="texture-manager.h">
       <Filter>graphics</Filter>
     </ClInclude>
-    <ClInclude Include="xml-load.h" />
     <ClInclude Include="basic-shapes-2d.h">
       <Filter>graphics</Filter>
     </ClInclude>
@@ -113,6 +117,16 @@
     <ClInclude Include="viewport.h">
       <Filter>graphics</Filter>
     </ClInclude>
+    <ClInclude Include="input-handler.h">
+      <Filter>aux</Filter>
+    </ClInclude>
+    <ClInclude Include="bindings.h">
+      <Filter>aux</Filter>
+    </ClInclude>
+    <ClInclude Include="xml-load.h">
+      <Filter>aux</Filter>
+    </ClInclude>
+    <ClInclude Include="arranger.h" />
   </ItemGroup>
   <ItemGroup>
     <Text Include="ReadMe.txt" />
@@ -120,6 +134,9 @@
   <ItemGroup>
     <Filter Include="graphics">
       <UniqueIdentifier>{59f3d4e5-c225-49b2-9c12-9a0ea1d5288e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="aux">
+      <UniqueIdentifier>{991225ed-fe25-4319-9eb8-bdc91def731f}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
 </Project>

@@ -3,6 +3,7 @@
 #include "../OpenGLRenderer/input-handler.h"
 #include <string>
 #include <vector>
+#include <unordered_map>
 using namespace std;
 
 class Renderer;
@@ -12,6 +13,8 @@ class Episode;
 class Step;
 class Meter2D;
 class ViewPort;
+class Function;
+class UnlitLiveTextureMaterial;
 
 enum PlaybackMode {Quarter,Half,Normal,x2,x4};
 
@@ -35,6 +38,8 @@ class SimionLogViewer: public IInputHandler
 	Text2D * m_pPlaybackRateText;
 	vector <Meter2D*> m_variableMeters;
 	ViewPort * m_pMetersViewport;
+
+	unordered_map<UnlitLiveTextureMaterial*, Function*> m_functionViews;
 
 	bool m_bExitRequested = false;
 
