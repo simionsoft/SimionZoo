@@ -66,8 +66,10 @@ int ViewPort::draw()
 	//draw 3d objects in the scene
 	Frustum& frustum = m_pActiveCamera->getFrustum();
 
+#ifdef _DEBUG
 	if (m_3DgraphicObjects.size()>0)
 		drawAxes();
+#endif
 
 	for each(auto object in m_3DgraphicObjects)
 	{
