@@ -363,7 +363,7 @@ void SimionApp::initRenderer(string sceneFile, State* s, Action* a)
 
 		Arranger objectArranger;
 		objectArranger.arrangeObjects2D(objects, Vector2D(0.0,0.0), Vector2D(1.0,1.0), Vector2D(0.15,0.25)
-			, Vector2D(0.25, 1.0), Vector2D(0.0075, 0.02));
+			, Vector2D(0.20, 1.0), Vector2D(0.0075, 0.02));
 
 		//set legend to each function viewer
 		int objIndex = 0;
