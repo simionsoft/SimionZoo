@@ -50,13 +50,13 @@ void Minibatch::addTuple(const State* s, const Action* a, const vector<double>& 
 	const vector<size_t>& stateVars= m_pNetworkDefinition->getInputStateVarIds();
 	size_t stateInputSize = stateVars.size();
 	for (size_t i= 0; i<stateInputSize; i++)
-		m_inputState[m_numTuples*stateInputSize + i] = s->get((int) stateVars[i]);
+		m_inputState[m_numTuples*stateInputSize + i] = s->getNormalized((int) stateVars[i]);
 
 	//copy action input
 	const vector<size_t>& actionVars = m_pNetworkDefinition->getInputActionVarIds();
 	size_t actionInputSize = actionVars.size();
 	for (size_t i = 0; i<actionInputSize; i++)
-		m_inputAction[m_numTuples*actionInputSize + i] = a->get((int) actionVars[i]);
+		m_inputAction[m_numTuples*actionInputSize + i] = a->getNormalized((int) actionVars[i]);
 
 	//copy target values
 	for (size_t i = 0; i < targetValues.size(); i++)
