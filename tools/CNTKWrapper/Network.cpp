@@ -198,7 +198,7 @@ void Network::stateToVector(const State* s, vector<double>& stateVector)
 	const vector<size_t>& stateVars = m_pNetworkDefinition->getInputStateVarIds();
 	stateVector = vector<double>(stateVars.size());
 	for (size_t i = 0; i< stateVars.size(); i++)
-		stateVector[i] = s->get((int)stateVars[i]);
+		stateVector[i] = s->getNormalized((int)stateVars[i]);
 }
 
 void Network::actionToVector(const Action* a, vector<double>& actionVector)
@@ -206,7 +206,7 @@ void Network::actionToVector(const Action* a, vector<double>& actionVector)
 	const vector<size_t>& actionVars = m_pNetworkDefinition->getInputActionVarIds();
 	actionVector = vector<double>(actionVars.size());
 	for (size_t i = 0; i < actionVars.size(); i++)
-		actionVector[i] = a->get((int)actionVars[i]);
+		actionVector[i] = a->getNormalized((int)actionVars[i]);
 }
 
 vector<double>& Network::evaluate(const State* s, const Action* a)
@@ -214,9 +214,7 @@ vector<double>& Network::evaluate(const State* s, const Action* a)
 	ValuePtr outputValue;
 
 	if (m_output.size() % m_FunctionPtr->Output().Shape().TotalSize())
-	{
 		throw runtime_error("output vector does not have the right size.");
-	}
 
 	unordered_map<CNTK::Variable, CNTK::ValuePtr> outputs =
 		{ { m_FunctionPtr->Output(), outputValue } };

@@ -43,6 +43,8 @@ class NamedVarSet
 	double *m_pValues;
 	int m_numVars;
 
+	double normalize(int i, double value) const;
+	double denormalize(int i, double value) const;
 public:
 	NamedVarSet(Descriptor& descriptor);
 	virtual ~NamedVarSet();
@@ -51,17 +53,24 @@ public:
 
 	int getVarIndex(const char* name) const;
 
-public:
-
-	double get(const char* varName) const;
-	void set(const char* varName, double value);
-
 	double* getValueVector(){return m_pValues;}
 
+	//these two methods return the absolute value
 	double get(int i) const;
+	double get(const char* varName) const;
+	//these two methods return the value normalized in its value range
+	double getNormalized(int i) const;
+	double getNormalized(const char* varName) const;
+
 	double* getValuePtr(int i);
 	double& getRef(int i);
+
+	//these two methods accept absolute values
+	void set(const char* varName, double value);
 	void set(int i, double value);
+	//these two methods accept normalized values that are de-normalized before storing them
+	void setNormalized(const char* varName, double value);
+	void setNormalized(int i, double value);
 
 	//returns the sum of all the values, i.e. used to scalarise a reward vector
 	double getSumValue() const;

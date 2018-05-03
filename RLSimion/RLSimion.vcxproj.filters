@@ -226,6 +226,9 @@
     <ClCompile Include="stats.cpp">
       <Filter>logging</Filter>
     </ClCompile>
+    <ClCompile Include="worlds\double-pendulum.cpp">
+      <Filter>world</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="resource1.h" />
@@ -432,6 +435,9 @@
     </ClInclude>
     <ClInclude Include="stats.h">
       <Filter>logging</Filter>
+    </ClInclude>
+    <ClInclude Include="worlds\double-pendulum.h">
+      <Filter>world</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

@@ -6,8 +6,8 @@
 		<Log-training-episodes>false</Log-training-episodes>
 	</Log>
 	<World>
-		<Num-Integration-Steps>1</Num-Integration-Steps>
-		<Delta-T>0.01</Delta-T>
+		<Num-Integration-Steps>4</Num-Integration-Steps>
+		<Delta-T>0.25</Delta-T>
 		<Dynamic-Model>
 			<Model>
 		<Mountain-car>

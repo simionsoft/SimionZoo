@@ -62,28 +62,17 @@ void MountainCar::reset(State *s)
 
 void MountainCar::executeAction(State *s, const Action *a, double dt)
 {
-	//this simulation model ignores dt!!
-
 	double position = s->get(m_sPosition);
 	double velocity = s->get(m_sVelocity);
 	double pedal = a->get(m_aPedal);
 
-	/*
-	mcar_velocity += (a-1)*0.001 + cos(3*mcar_position)*(-0.0025);
-	if (mcar_velocity > mcar_max_velocity) mcar_velocity = mcar_max_velocity;
-	if (mcar_velocity < -mcar_max_velocity) mcar_velocity = -mcar_max_velocity;
-	mcar_position += mcar_velocity;
-	if (mcar_position > mcar_max_position) mcar_position = mcar_max_position;
-	if (mcar_position < mcar_min_position) mcar_position = mcar_min_position;
-	if (mcar_position==mcar_min_position && mcar_velocity<0) mcar_velocity = 0;}
-	*/
 	if (position <= s->getProperties(m_sPosition).getMin() && velocity < 0)
 	{
 		velocity = 0;
 	}
 
-	s->set(m_sVelocity, velocity + pedal*0.001 - 0.0025 * cos(3 * position)); //saturate
-	s->set(m_sPosition, position + velocity);
+	s->set(m_sVelocity, velocity + pedal*0.001 - 0.0025 * cos(3 * position));	//velocity update ignores dt
+	s->set(m_sPosition, position + velocity * dt);								//position update does not
 	s->set(m_sHeight, getHeightAtPos(s->get(m_sPosition)));
 	s->set(m_sAngle, getAngleAtPos(s->get(m_sPosition)));
 }
@@ -97,7 +86,7 @@ double MountainCarReward::getReward(const State* s, const Action* a, const State
 	if (position == s_p->getProperties("position").getMax())
 	{
 		SimionApp::get()->pExperiment->setTerminalState();
-		return 100.0;
+		return 1.0;
 	}
 
 	//reached the minimum position to the left?
@@ -108,11 +97,11 @@ double MountainCarReward::getReward(const State* s, const Action* a, const State
 		//(see https://hal.inria.fr/hal-00764281/document)
 
 		//SimionApp::get()->pExperiment->setTerminalState();
-		return -1.0;// -100.0;
+		return -1.0;
 	}
 	return -1.0;
 }
 
 double MountainCarReward::getMin() { return -1.0; }
 
-double MountainCarReward::getMax() { return 100.0; }
+double MountainCarReward::getMax() { return 1.0; }

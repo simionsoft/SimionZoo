@@ -289,6 +289,7 @@
     <ClCompile Include="worlds\balancingpole.cpp" />
     <ClCompile Include="worlds\BulletBody.cpp" />
     <ClCompile Include="worlds\BulletPhysics.cpp" />
+    <ClCompile Include="worlds\double-pendulum.cpp" />
     <ClCompile Include="worlds\FAST.cpp" />
     <ClCompile Include="worlds\gridworld.cpp" />
     <ClCompile Include="worlds\magneticlevitation.cpp" />
@@ -360,6 +361,7 @@
     <ClInclude Include="worlds\BulletBody.h" />
     <ClInclude Include="worlds\BulletCreationInterface.h" />
     <ClInclude Include="worlds\BulletPhysics.h" />
+    <ClInclude Include="worlds\double-pendulum.h" />
     <ClInclude Include="worlds\FAST.h" />
     <ClInclude Include="worlds\gridworld.h" />
     <ClInclude Include="worlds\magneticlevitation.h" />
