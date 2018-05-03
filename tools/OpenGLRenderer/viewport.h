@@ -21,6 +21,7 @@ class ViewPort
 	vector<GraphicObject3D*> m_3DgraphicObjects;
 	vector<GraphicObject2D*> m_2DgraphicObjects;
 
+	void drawAxes();
 	bool m_bDrawBoundingBoxes = false;
 public:
 

@@ -131,7 +131,7 @@ namespace BasicGeometryChecks
 			Quaternion quatYaw = Quaternion(1.57, 0.0, 0.0);
 			Quaternion quatPitch = Quaternion(0.0, 1.57, 0.0);
 			Quaternion quatRoll = Quaternion(0.0, 0.0, 1.57);
-			Quaternion quatYawPitch = Quaternion(0.7853, 1.57, 0.0);
+			Quaternion quatYawPitch = Quaternion(1.57, 1.57, 0.0);
 			
 			Matrix44 matYaw, matPitch, matRoll, matYawPitch;
 			matYaw.setRotation(quatYaw);
@@ -162,19 +162,18 @@ namespace BasicGeometryChecks
 			if (error > 0.1)
 				Assert::Fail(L"Multiplication of yaw and pitch rotation matrices doesn't work as expected");
 
-			/*Point3D normPoint = point;
-			normPoint.normalize();
-			expectedResult = Point3D(1.0, 0.0, 1.0);
-			rotatedPoint = matYawPitch * normPoint;
-			error = (rotatedPoint - expectedResult).length();
-			if (error > 0.1)
-				Assert::Fail(L"Yaw-pitch matrix multiplication doesn't work as expected");
 
-			matYawPitch.setRotation(quatYaw * quatPitch);
-			rotatedPoint = matYawPitch * point;
-			error = (rotatedPoint - expectedResult).length();
-			if (error > 0.1)
-				Assert::Fail(L"Multiplication of yaw and pitch quaternions doesn't work as expected");*/
+			//expectedResult = Point3D(1.0, 1.0, 1.0);
+			//rotatedPoint = matYawPitch * point;
+			//error = (rotatedPoint - expectedResult).length();
+			//if (error > 0.1)
+			//	Assert::Fail(L"Yaw-pitch matrix multiplication doesn't work as expected");
+
+			//matYawPitch.setRotation(quatYaw * quatPitch);
+			//rotatedPoint = matYawPitch * point;
+			//error = (rotatedPoint - expectedResult).length();
+			//if (error > 0.1)
+			//	Assert::Fail(L"Multiplication of yaw and pitch quaternions doesn't work as expected");
 		}
 		TEST_METHOD(Geometry_QuaternionTimesVector3D)
 		{
@@ -222,6 +221,23 @@ namespace BasicGeometryChecks
 			//error = (rotatedPoint - expectedResult).length();
 			//if (error > 0.1)
 			//	Assert::Fail(L"Multiplication of yaw and pitch quaternions doesn't work as expected");
+		}
+		TEST_METHOD(Rotation2Dvs3D)
+		{
+			Point3D point3D = Point3D(1.0, 1.0, 1.0);
+			Quaternion rollQuat = Quaternion(0.0, 0.0, 1.57);
+			Matrix44 rotMatrix;
+			rotMatrix.setRotation(rollQuat);
+			Point3D rotatedPoint3D = rotMatrix * point3D;
+
+			Point2D point2D = Point2D(1.0, 1.0);
+			Point2D rotatedPoint2D = rotMatrix * point2D;
+
+			double error = sqrt(pow(rotatedPoint3D.x() - rotatedPoint2D.x(), 2.0) + pow(rotatedPoint3D.y() - rotatedPoint2D.y(), 2.0));
+			Assert::AreEqual(0.0, error, 0.1, L"Missmatch between 2D and 3D roll rotations");
+
+			point3D = Point3D(0.0, 1.0, 0.0);
+			rotatedPoint3D = rotMatrix * point3D;
 		}
 	};
 }

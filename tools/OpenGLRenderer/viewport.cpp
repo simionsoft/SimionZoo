@@ -28,6 +28,24 @@ ViewPort::~ViewPort()
 {
 }
 
+void ViewPort::drawAxes()
+{
+	glDisable(GL_LIGHTING);
+	glDisable(GL_TEXTURE_2D);
+	glBegin(GL_LINES);
+	glColor3f(1.f, 0.f, 0.f);
+	glVertex3f(0.0, 0.0, 0.0);
+	glVertex3f(1.f, 0.0, 0.f);
+	glColor3f(0.f, 1.f, 0.f);
+	glVertex3f(0.0, 0.0, 0.0);
+	glVertex3f(0.f, 1.0, 0.f);
+	glColor3f(0.f, 0.f, 1.f);
+	glVertex3f(0.0, 0.0, 0.0);
+	glVertex3f(0.f, 0.0, 1.f);
+	glEnd();
+	glEnable(GL_LIGHTING);
+}
+
 int ViewPort::draw()
 {
 	int numObjectsDrawn = 0;
@@ -47,6 +65,9 @@ int ViewPort::draw()
 	}
 	//draw 3d objects in the scene
 	Frustum& frustum = m_pActiveCamera->getFrustum();
+
+	if (m_3DgraphicObjects.size()>0)
+		drawAxes();
 
 	for each(auto object in m_3DgraphicObjects)
 	{

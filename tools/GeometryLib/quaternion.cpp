@@ -166,22 +166,9 @@ void Quaternion::fromOrientations(double yaw, double pitch, double roll)
 	m_y =s1*c2*c3 + c1*s2*s3;
 	m_z =c1*s2*c3 - s1*c2*s3;
 
-	//double halfHeading = yaw * 0.5;
-	//double halfBank = roll * 0.5;
-	//double halfAttitude = pitch * 0.5;
-	//double cosYaw = cos(halfHeading);
-	//double sinYaw = sin(halfHeading);
-	//double cosPitch = cos(halfBank);
-	//double sinPitch = sin(halfBank);
-	//double cosRoll = cos(halfAttitude);
-	//double sinRoll = sin(halfAttitude);
-
-	//m_w = cosYaw * cosPitch * cosRoll - sinYaw * sinPitch * sinRoll;
-	//m_x = cosYaw * cosPitch * sinRoll + sinYaw * sinPitch * cosRoll;
-	//m_y = sinYaw * cosPitch * cosRoll + cosYaw * sinPitch * sinRoll;
-	//m_z = cosYaw * sinPitch * cosRoll - sinYaw * cosPitch * sinRoll;
-
 	normalize();
+
+	m_bOrientationsSet = false;
 }
 
 Quaternion::Quaternion(double yaw, double pitch, double roll)
@@ -270,6 +257,9 @@ void Quaternion::operator*= (const Quaternion quat)
 
 Quaternion Quaternion::operator*(const double x)
 {
+	if (bUseOrientations())
+		fromOrientations();
+
 	Quaternion result;
 	result.m_x *= x;
 	result.m_y *= x;
@@ -280,18 +270,21 @@ Quaternion Quaternion::operator*(const double x)
 
 void Quaternion::operator*=(const double x)
 {
+	if (bUseOrientations())
+		fromOrientations();
+
 	m_x *= x;
 	m_y *= x;
 	m_z *= x;
 	m_w *= x;
 }
 
-double Quaternion::squareLength() const
+double Quaternion::squareLength()
 {
 	return m_x * m_x + m_y * m_y + m_z * m_z + m_w * m_w;
 }
 
-double Quaternion::length() const
+double Quaternion::length()
 {
 	return sqrt(squareLength());
 }
@@ -305,6 +298,10 @@ void Quaternion::normalize()
 	if (square > 0.0)
 	{
 		dist = 1.0 / sqrt(square);
-		*this*=dist;
+		//don't call to Quaternion::operator*= as it would make the recursivity infinite
+		m_x *= dist;
+		m_y *= dist;
+		m_z *= dist;
+		m_w *= dist;
 	}
 }

@@ -29,7 +29,7 @@ int main(int argc, char** argv)
 	pRenderer = new Renderer();
 	pRenderer->init(argc, argv, 600, 400);
 	pRenderer->setDataFolder("../../../config/scenes/");
-	//pRenderer->loadScene("robot-control.scene");
+	pRenderer->loadScene("robot-control.scene");
 	pInputHandler = new FreeCameraInputHandler();
 
 	Timer timer;
@@ -37,7 +37,7 @@ int main(int argc, char** argv)
 
 	timer.start();
 
-	GraphicObject3D* pDynamicObject = pRenderer->get3DObjectByName("Robot");
+	GraphicObject3D* pDynamicObject = pRenderer->get3DObjectByName("Target");
 
 	Meter2D* pMeter1 = new Meter2D("Num.Objects drawn", Vector2D(0.1, 0.2), Vector2D(0.4, 0.04));
 	pRenderer->add2DGraphicObject(pMeter1);
@@ -47,8 +47,6 @@ int main(int argc, char** argv)
 	pRenderer->add2DGraphicObject(pMeter2);
 	pMeter2->setValueRange(Range(-5.0, 5.0));
 
-	//Material* pSpriteMaterial = new UnlitTextureMaterial("mountain-car/background.png");
-	//ColorMaterial* pSpriteMaterial = new ColorMaterial(Color(1.0, 0.0, 0.0, 1.0));
 	vector<double> pLiveTextureValues = vector<double>(LIVE_TEX_SIZE_X*LIVE_TEX_SIZE_Y);
 	UnlitLiveTextureMaterial* pLiveMaterial = new UnlitLiveTextureMaterial(LIVE_TEX_SIZE_X, LIVE_TEX_SIZE_Y);
 	Sprite2D* sprite = new Sprite2D("test-sprite", Vector2D(0.5, 0.5), Vector2D(0.25, 0.25), 0.0, pLiveMaterial);
@@ -69,7 +67,7 @@ int main(int argc, char** argv)
 
 		if (pDynamicObject)
 		{
-			pDynamicObject->addRotation(Quaternion(0.0, 0.3*dt, 0.0));
+			pDynamicObject->addRotation(Quaternion(0.0, 0.0, dt));
 			pDynamicObject->addWorldOffset(Vector3D(0.5*dt, 0.0, 0.0));
 		}
 		t += dt;

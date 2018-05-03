@@ -21,6 +21,9 @@ void Matrix44::setIdentity()
 //http://www.euclideanspace.com/maths/geometry/rotations/conversions/quaternionToMatrix/index.htm
 void Matrix44::setRotation(Quaternion& quat)
 {
+	if (quat.bUseOrientations())
+		quat.fromOrientations();
+
 	double sqw = quat.w()*quat.w();
 	double sqx = quat.x()*quat.x();
 	double sqy = quat.y()*quat.y();

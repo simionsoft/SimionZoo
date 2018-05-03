@@ -5,7 +5,9 @@
 #include "../../../RLSimion/featuremap.h"
 #include "../../../RLSimion/named-var-set.h"
 #include "../../../RLSimion/app.h"
+#include "../../../RLSimion/simgod.h"
 #include "../../../RLSimion/features.h"
+#include "../../../RLSimion/worlds/world.h"
 #include <iostream>
 
 using namespace Microsoft::VisualStudio::CppUnitTestFramework;

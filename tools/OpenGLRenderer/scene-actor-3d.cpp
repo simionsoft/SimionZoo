@@ -36,10 +36,12 @@ void SceneActor3D::restoreTransform()
 Matrix44 SceneActor3D::getTransformMatrix() const
 {
 	Matrix44 mat, rot, scale,trans;
+
 	rot.setRotation(m_transform.rotation());
 	trans.setTranslation(m_transform.translation());
 	scale.setScale(m_transform.scale());
 	mat = trans*rot*scale;
+
 	return mat;
 }
 

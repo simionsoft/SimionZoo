@@ -78,7 +78,7 @@ void DDPG::deferredLoadStep()
 	m_pActorOnlineNetwork = m_ActorNetworkDefinition->createNetwork(m_learningRate.get());
 	SimionApp::get()->registerStateActionFunction("Policy", m_pActorOnlineNetwork);
 	m_pActorTargetNetwork = m_pActorOnlineNetwork->clone(false);
-	m_pActorTargetNetwork->initSoftUpdate(m_tau.get(), m_pActorOnlineNetwork);
+	//m_pActorTargetNetwork->initSoftUpdate(m_tau.get(), m_pActorOnlineNetwork);
 	
 	//The size of the target in the minibatch has to match the number of actions to save the gradient wrt an action
 	m_pActorMinibatch = m_ActorNetworkDefinition->createMinibatch(minibatchSize, m_outputAction.size());
@@ -132,7 +132,13 @@ void DDPG::updateActor(const State* s, const Action* a, const State* s_p, double
 	{
 		m_pActorOnlineNetwork->applyGradient(m_pActorMinibatch);
 
-		m_pActorTargetNetwork->softUpdate(m_pActorOnlineNetwork);
+		if (SimionApp::get()->pExperiment->getExperimentStep() % 10)
+		{
+			m_pActorTargetNetwork->destroy();
+			m_pActorTargetNetwork = m_pActorOnlineNetwork->clone();
+		}
+
+		//m_pActorTargetNetwork->softUpdate(m_pActorOnlineNetwork);
 	}
 }
 
@@ -167,6 +173,12 @@ void DDPG::updateCritic(const State* s, const Action* a, const State* s_p, doubl
 		m_pCriticOnlineNetwork->train(m_pCriticMinibatch);
 
 		//move the target weights toward the online weights
-		m_pCriticTargetNetwork->softUpdate(m_pCriticOnlineNetwork);
+		//m_pCriticTargetNetwork->softUpdate(m_pCriticOnlineNetwork);
+
+		if (SimionApp::get()->pExperiment->getExperimentStep() % 10)
+		{
+			m_pCriticTargetNetwork->destroy();
+			m_pCriticTargetNetwork = m_pCriticOnlineNetwork->clone();
+		}
 	}
 }

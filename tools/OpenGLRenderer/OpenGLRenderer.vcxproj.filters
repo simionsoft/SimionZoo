@@ -63,7 +63,9 @@
     <ClCompile Include="xml-load.cpp">
       <Filter>aux</Filter>
     </ClCompile>
-    <ClCompile Include="arranger.cpp" />
+    <ClCompile Include="arranger.cpp">
+      <Filter>aux</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="renderer.h" />
@@ -126,7 +128,9 @@
     <ClInclude Include="xml-load.h">
       <Filter>aux</Filter>
     </ClInclude>
-    <ClInclude Include="arranger.h" />
+    <ClInclude Include="arranger.h">
+      <Filter>aux</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Text Include="ReadMe.txt" />
