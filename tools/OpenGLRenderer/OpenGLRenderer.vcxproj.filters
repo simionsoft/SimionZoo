@@ -131,6 +131,7 @@
     <ClInclude Include="arranger.h">
       <Filter>aux</Filter>
     </ClInclude>
+    <ClInclude Include="resource.h" />
   </ItemGroup>
   <ItemGroup>
     <Text Include="ReadMe.txt" />

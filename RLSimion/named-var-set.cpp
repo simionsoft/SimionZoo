@@ -124,8 +124,8 @@ void NamedVarSet::set(int i, double value)
 			m_pValues[i] = value;
 		}
 	}
-	throw std::exception("Incorrect variable index in NamedVarSet::set()");
-
+	else
+		throw std::exception("Incorrect variable index in NamedVarSet::set()");
 }
 
 double NamedVarSet::getNormalized(const char* varName) const

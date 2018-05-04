@@ -213,6 +213,7 @@
     <ClInclude Include="camera.h" />
     <ClInclude Include="collada-model.h" />
     <ClInclude Include="ogl-utils.h" />
+    <ClInclude Include="resource.h" />
     <ClInclude Include="scene-actor-2d.h" />
     <ClInclude Include="scene-actor-3d.h" />
     <ClInclude Include="graphic-object-3d.h" />
