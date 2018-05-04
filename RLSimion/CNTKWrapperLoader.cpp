@@ -15,6 +15,10 @@ void CNTKWrapperLoader::Load()
 {
 	if (hCNTKWrapperDLL == 0)
 	{
+		//Set the number of CPU threads to maximum
+		SimionApp::get()->setNumCPUCores(0);
+
+		//Load the wrapper library
 #ifdef _DEBUG
 		hCNTKWrapperDLL = LoadLibrary(".\\..\\Debug\\x64\\CNTKWrapper.dll");
 #else
@@ -26,6 +30,7 @@ void CNTKWrapperLoader::Load()
 
 		Logger::logMessage(MessageType::Info, "Loading CNTK library");
 
+		//register dependencies
 		SimionApp::get()->registerInputFile("..\\bin\\x64\\CNTKWrapper.dll", "..\\bin\\CNTKWrapper.dll");
 		SimionApp::get()->registerInputFile("..\\bin\\x64\\Cntk.Core-2.1.dll", "..\\bin\\Cntk.Core-2.1.dll");
 		SimionApp::get()->registerInputFile("..\\bin\\x64\\Cntk.Math-2.1.dll", "..\\bin\\Cntk.Math-2.1.dll");
@@ -33,7 +38,7 @@ void CNTKWrapperLoader::Load()
 		SimionApp::get()->registerInputFile("..\\bin\\x64\\libiomp5md.dll", "..\\bin\\libiomp5md.dll");
 		SimionApp::get()->registerInputFile("..\\bin\\x64\\mkl_cntk_p.dll", "..\\bin\\mkl_cntk_p.dll");
 #endif
-
+		//get the address of the interface function
 		getProblem = (getProblemInstanceDLL)GetProcAddress(hCNTKWrapperDLL, "CNTKWrapper::getProblemInstance");
 		if (getProblem==0)
 			Logger::logMessage(MessageType::Error, "Failed to get a pointer to CNTKWrapper:getProblemInstance()");

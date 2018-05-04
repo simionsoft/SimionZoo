@@ -111,6 +111,16 @@ void SimionApp::printRequirements()
 		printf("  <Output>%s</Output>\n", pFileName);
 	}
 	printf("</Files>\n");
+	//other requirements
+	printf("<Requires>\n");
+	if (m_numCPUCores>0)
+		printf("  <NumCPUCores>%d</NumCPUCores>\n", m_numCPUCores);
+	else
+		printf("  <NumCPUCores>*</NumCPUCores>\n", m_numCPUCores); //if the number of cores required is zero, we are using all of them
+	printf("</Requires>\n");
+	printf("<Supports>\n");
+	printf("  <CUDA>%d</CUDA>\n", m_bSupportsCUDA);
+	printf("</Supports>\n");
 }
 
 SimionApp* SimionApp::get()
