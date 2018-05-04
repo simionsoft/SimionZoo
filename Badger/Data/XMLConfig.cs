@@ -78,8 +78,11 @@ namespace Badger.Simion
         //Attribute special values
         public const string newWindowValue = "New";
 
+        public const string appVersionNodeTag = "APP-VERSION";
         public const string exeNodeTag = "EXE";
         public const string preNodeTag = "PRE";
+        public const string requiresNodeTag = "REQUIRES";
+        public const string supportsNodeTag = "SUPPORTS";
         public const string includeNodeTag = "INCLUDE";
         public const string renameAttr = "Rename";
 

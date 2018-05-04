@@ -116,7 +116,7 @@ void SimionApp::printRequirements()
 	if (m_numCPUCores>0)
 		printf("  <NumCPUCores>%d</NumCPUCores>\n", m_numCPUCores);
 	else
-		printf("  <NumCPUCores>*</NumCPUCores>\n", m_numCPUCores); //if the number of cores required is zero, we are using all of them
+		printf("  <NumCPUCores>*</NumCPUCores>\n"); //if the number of cores required is zero, we are using all of them
 	printf("</Requires>\n");
 	printf("<Supports>\n");
 	printf("  <CUDA>%d</CUDA>\n", m_bSupportsCUDA);

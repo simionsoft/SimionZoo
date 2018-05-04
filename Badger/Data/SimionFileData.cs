@@ -222,18 +222,11 @@ namespace Badger.Simion
                 foreach (ExperimentViewModel experimentViewModel in experiments)
                 {
                     batchFileWriter.WriteLine("\t<" + XMLConfig.experimentNodeTag + " "
-                        + XMLConfig.nameAttribute + "=\"" + experimentViewModel.name + "\" "
-                        + XMLConfig.ExeFileNameAttr + "=\"" + experimentViewModel.getExeFilename() + "\">");
+                        + XMLConfig.nameAttribute + "=\"" + experimentViewModel.name + "\">");
 
-                    foreach (var prerequisite in experimentViewModel.getPrerrequisites())
+                    foreach (AppVersion appVersion in experimentViewModel.AppVersions)
                     {
-                        batchFileWriter.Write("\t\t<" + XMLConfig.PrerequisiteTag + " "
-                            + XMLConfig.valueAttribute + "=\"" + prerequisite + "\"");
-                        //add the rename attribute
-                        if (experimentViewModel.renameRules.ContainsKey(prerequisite))
-                            batchFileWriter.Write(" " + XMLConfig.renameAttr
-                                + "=\"" + experimentViewModel.renameRules[prerequisite] + "\"");
-                        batchFileWriter.WriteLine("/>");
+                        batchFileWriter.WriteLine(appVersion.ToString());
                     }
 
                     // Save the fork hierarchy and values. This helps to generate reports easier

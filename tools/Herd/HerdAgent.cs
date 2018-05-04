@@ -16,6 +16,8 @@ using System.Security.Authentication;
 
 namespace Herd
 {
+
+
     public class HerdAgentInfo
     {
         public const string NoneProperty = "N/A";
@@ -138,7 +140,28 @@ namespace Herd
 
     public class HerdAgent : CJobDispatcher
     {
+        [DllImport("kernel32.dll")]
+        private static extern void GetNativeSystemInfo(ref SYSTEM_INFO lpSystemInfo);
 
+        private const int PROCESSOR_ARCHITECTURE_AMD64 = 9;
+        private const int PROCESSOR_ARCHITECTURE_IA64 = 6;
+        private const int PROCESSOR_ARCHITECTURE_INTEL = 0;
+
+        [StructLayout(LayoutKind.Sequential)]
+        private struct SYSTEM_INFO
+        {
+            public short wProcessorArchitecture;
+            public short wReserved;
+            public int dwPageSize;
+            public IntPtr lpMinimumApplicationAddress;
+            public IntPtr lpMaximumApplicationAddress;
+            public IntPtr dwActiveProcessorMask;
+            public int dwNumberOfProcessors;
+            public int dwProcessorType;
+            public int dwAllocationGranularity;
+            public short wProcessorLevel;
+            public short wProcessorRevision;
+        }
         public const string FirewallExceptionNameTCP = "HerdAgentFirewallExceptionTCP";
         public const string FirewallExceptionNameUDP = "HerdAgentFirewallExceptionUDP";
         private object m_quitExecutionLock = new object();
@@ -454,6 +477,25 @@ namespace Herd
         int NumCPUCores = 0;
         string CPUArchitecture = HerdAgentInfo.NoneProperty;
         double TotalMemory = 0.0;
+
+        private const string m_win64Id = "Win-64";
+        private const string m_win32Id = "Win-32";
+
+        private string getArchitectureId()
+        {
+            SYSTEM_INFO si = new SYSTEM_INFO();
+            GetNativeSystemInfo(ref si);
+            switch (si.wProcessorArchitecture)
+            {
+                case PROCESSOR_ARCHITECTURE_AMD64:
+                case PROCESSOR_ARCHITECTURE_IA64:
+                    return m_win64Id;
+
+                case PROCESSOR_ARCHITECTURE_INTEL:
+                default:
+                    return m_win32Id;
+            }
+        }
         /// <summary>
         /// This method should be called once on initialization to set static properties: CUDA support
         /// , number of cores, ... No point checking them every time we get a ping from the client
@@ -469,7 +511,8 @@ namespace Herd
             //Processor Id
             CPUId = GetProcessorId();
             // CPU architecture
-            CPUArchitecture = Environment.GetEnvironmentVariable("PROCESSOR_ARCHITECTURE", EnvironmentVariableTarget.Machine);
+           // CPUArchitecture = Environment.GetEnvironmentVariable("PROCESSOR_ARCHITECTURE", EnvironmentVariableTarget.Machine);
+            CPUArchitecture = getArchitectureId();
             // Total installed memory
             TotalMemory = GetGlobalMemoryStatusEx();
             //CUDA support

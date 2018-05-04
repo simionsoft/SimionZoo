@@ -6,5 +6,5 @@
   
   <INCLUDE>..\config\definitions.xml</INCLUDE>
 
-  <BRANCH Name="RLSimion" Class="RLSimionApp"/>
+  <BRANCH Name="RLSimion" Class="SimionApp"/>
 </APP>
