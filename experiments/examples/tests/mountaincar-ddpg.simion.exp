@@ -18,9 +18,9 @@
 	<Experiment>
 		<Random-Seed>1</Random-Seed>
 		<Num-Episodes>1000</Num-Episodes>
-		<Eval-Freq>10</Eval-Freq>
+		<Eval-Freq>50</Eval-Freq>
 		<Progress-Update-Freq>1.0</Progress-Update-Freq>
-		<Episode-Length>1000.0</Episode-Length>
+		<Episode-Length>100.0</Episode-Length>
 	</Experiment>
 	<SimGod>
 		<Target-Function-Update-Freq>100</Target-Function-Update-Freq>
@@ -43,7 +43,7 @@
 			<Output-Action>
 			  <Output-Action>pedal</Output-Action>
 			</Output-Action>
-			<Learning-Rate>0.0000001</Learning-Rate>
+			<Learning-Rate>0.0001</Learning-Rate>
 			<Tau>0.001</Tau>
 			<Critic-Network>
 			  <Problem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
@@ -216,7 +216,7 @@
 			  <Noise>
 				<Ornstein-Uhlenbeck>
 					<Mu>0</Mu>
-					<Sigma>0.2</Sigma>
+					<Sigma>1.0</Sigma>
 					<Theta>0.15</Theta>
 					<Scale>
 						<Schedule>

@@ -20,6 +20,8 @@
 INetworkDefinition* CNTKWrapper::getProblemInstance(tinyxml2::XMLElement* pNode)
 {
 #pragma EXPORT
+	size_t maxNumCPUThreads = std::thread::hardware_concurrency();
+	CNTK::SetMaxNumCPUThreads(maxNumCPUThreads);
 	return NetworkDefinition::getInstance(pNode);
 }
 
