@@ -65,18 +65,22 @@ namespace Badger.ViewModels
             }
 
             m_herdAgent = herdAgent;
-            m_logFunction = logFunction;
-            m_shepherd = new Shepherd();
-            m_shepherd.setLogMessageHandler(logFunction);
-            m_cancelToken = cancelToken;
-            m_evaluationPlot = evaluationPlot;
-            m_experimentSeriesId = new Dictionary<string, int>();
+
+            //In testing, no log function is given. In that case, no need to create a shepherd or any of the following
+            if (logFunction != null && cancelToken != null)
+            {
+                m_logFunction = logFunction;
+                m_shepherd = new Shepherd();
+                m_shepherd.setLogMessageHandler(logFunction);
+                m_cancelToken = cancelToken;
+                m_evaluationPlot = evaluationPlot;
+                m_experimentSeriesId = new Dictionary<string, int>();
+            }
         }
 
         private HerdJob AsHerdJob()
         {
-            HerdJob job = new HerdJob();
-            job.name = m_name;
+            HerdJob job = new HerdJob(m_name);
 
             // tasks, inputs and outputs
             foreach (MonitoredExperimentalUnitViewModel experiment in MonitoredExperimentalUnits)
@@ -90,43 +94,44 @@ namespace Badger.ViewModels
                 //know that they must be renamed
                 string relPathExperimentFile = SimionFileData.experimentRelativeDir
                      + "\\" + Utility.RemoveDirectories(experiment.FilePath, 2);
-                task.name = experiment.Name;
-                task.exe = experiment.ExeFile;
-                task.arguments = relPathExperimentFile + " -pipe=" + experiment.PipeName;
-                task.pipe = experiment.PipeName;
-                task.authenticationToken = m_herdAgent.AuthenticationCode; //TODO: Add Settings?
+                task.Name = experiment.Name;
+                task.Exe = experiment.SelectedVersion.ExeFile;
+                task.Arguments = relPathExperimentFile + " -pipe=" + experiment.PipeName;
+                task.Pipe = experiment.PipeName;
+                task.AuthenticationToken = m_herdAgent.AuthenticationCode; //TODO: Add Settings?
 
-                job.tasks.Add(task);
-                // add EXE files
+                job.AddTask(task);
 
-                if (!job.inputFiles.Contains(task.exe))
-                    job.inputFiles.Add(task.exe);
+                //////App Version requirements
+                //Exe file
+                job.AddInputFile(task.Exe);
 
-                //add rename rules
-                job.renameRules = experiment.RenameRules;
+                //Rename rules
+                job.AddRenameRules(experiment.SelectedVersion.Requirements.RenameRules);
 
-                //add prerrequisites
-                foreach (string pre in experiment.Prerequisites)
-                    if (!job.inputFiles.Contains(pre))
-                        job.inputFiles.Add(pre);
+                //Input files
+                job.AddInputFiles(experiment.SelectedVersion.Requirements.InputFiles);
+                job.AddInputFile(experiment.FilePath);
+                //No output files come from the app version requirements in principle
 
-                //add experiment file to inputs
-                if (!job.inputFiles.Contains(experiment.FilePath))
-                    job.inputFiles.Add(experiment.FilePath);
+                //////Run-time requirements
+                //Input files
+                job.AddInputFiles(experiment.RunTimeReqs.InputFiles);
+                job.AddOutputFiles(experiment.RunTimeReqs.OutputFiles);
 
-                Utility.GetInputsAndOutputs(experiment.ExeFile, experiment.FilePath, ref job);
 
-                //add rename rules for experiments outside RLSimion's folder structure
-                //the experiment file itself
-                if (experiment.FilePath != relPathExperimentFile && !job.renameRules.Keys.Contains(experiment.FilePath))
-                    job.renameRules.Add(experiment.FilePath, relPathExperimentFile);
-                //the output files
-                foreach (string outputFile in job.outputFiles)
+                /////Fix relative paths outside RLSimion's folder structure
+                //we add rename rules:
+                //  -for the experiment file itself
+                if (experiment.FilePath != relPathExperimentFile && !job.RenameRules.Keys.Contains(experiment.FilePath))
+                    job.RenameRules.Add(experiment.FilePath, relPathExperimentFile);
+                //  -for the output files
+                foreach (string outputFile in job.OutputFiles)
                 {
                     string renamedFile = SimionFileData.experimentRelativeDir + "\\"
                         + Utility.RemoveDirectories(outputFile, 2);
-                    if (outputFile != renamedFile && !job.renameRules.Keys.Contains(outputFile))
-                        job.renameRules.Add(outputFile, renamedFile);
+                    if (outputFile != renamedFile && !job.RenameRules.Keys.Contains(outputFile))
+                        job.RenameRules.Add(outputFile, renamedFile);
                 }
             }
 

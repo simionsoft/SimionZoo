@@ -12,57 +12,100 @@ namespace Herd
 {
     public class HerdTask
     {
-        public string exe;
-        public string arguments;
-        public string pipe;
-        public string authenticationToken;
-        public string name;
+        public string Exe;
+        public string Arguments;
+        public string Pipe;
+        public string AuthenticationToken;
+        public string Name;
         public HerdTask()
         {
-            name = "";
-            exe = "";
-            arguments = "";
-            pipe = "";
-            authenticationToken = "";
+            Name = "";
+            Exe = "";
+            Arguments = "";
+            Pipe = "";
+            AuthenticationToken = "";
         }
         public override string ToString()
         {
-            string ret = "Task = " + name + "\n" + "Exe= " + exe + "\n" + "Arguments= " + arguments + "\n";
-            ret += "Pipe= " + pipe + "\n" + "Auth.Token= " + authenticationToken + "\n";
+            string ret = "Task = " + Name + "\n" + "Exe= " + Exe + "\n" + "Arguments= " + Arguments + "\n";
+            ret += "Pipe= " + Pipe + "\n" + "Auth.Token= " + AuthenticationToken + "\n";
             return ret;
         }
     }
     public class HerdJob
     {
-        public string name = "";
-        public List<HerdTask> tasks = new List<HerdTask>();
-        public List<string> inputFiles = new List<string>();
-        public List<string> outputFiles = new List<string>();
-        public Dictionary<string, string> renameRules;
+        //name
+        string m_name = "";
+        public string Name { get { return m_name; } set { m_name = value; } }
 
-        public HerdJob() { }
+        //tasks
+        List<HerdTask> m_tasks = new List<HerdTask>();
+        public void AddTask(HerdTask task)
+        {
+            m_tasks.Add(task);
+        }
+        public List<HerdTask> Tasks { get { return m_tasks; } }
+
+        //input files
+        List<string> m_inputFiles = new List<string>();
+        public void AddInputFiles(List<string> source) { foreach (string file in source) AddInputFile(file); }
+        public bool AddInputFile(string file)
+        {
+            if (!m_inputFiles.Contains(file))
+            {
+                m_inputFiles.Add(file);
+                return true;
+            }
+            else return false;
+        }
+        public List<string> InputFiles { get { return m_inputFiles; } }
+
+        //output files
+        List<string> m_outputFiles = new List<string>();
+        public void AddOutputFiles(List<string> source) { foreach (string file in source) AddOutputFile(file); }
+        public bool AddOutputFile(string file)
+        {
+            if (!m_outputFiles.Contains(file))
+            {
+                m_outputFiles.Add(file);
+                return true;
+            }
+            else return false;
+        }
+        public List<string> OutputFiles { get { return m_outputFiles; } }
+
+        //rename rules
+        Dictionary<string, string> m_renameRules = new Dictionary<string, string>();
+        public Dictionary<string, string> RenameRules { get { return m_renameRules; } }
+        public void AddRenameRule(string original, string renamed) { m_renameRules[original] = renamed; }
+        public void AddRenameRules(Dictionary<string, string> source) { foreach (string key in source.Keys) m_renameRules[key] = source[key]; }
+
+
+
+        //constructor
+        public HerdJob(string name) { m_name = name; }
 
         public override string ToString()
         {
-            string ret = "Job: " + name;
-            foreach (HerdTask task in tasks)
+            string ret = "Job: " + m_name;
+            foreach (HerdTask task in m_tasks)
                 ret += "||" + task.ToString();
             return ret;
         }
 
-        public string renamedFilename(string filename)
+        public string RenamedFilename(string filename)
         {
-            if (renameRules != null && renameRules.ContainsKey(filename))
-                return renameRules[filename];
+            if (m_renameRules != null && m_renameRules.ContainsKey(filename))
+                return m_renameRules[filename];
             return filename;
         }
-        public string originalFilename(string filename)
+        public string OriginalFilename(string filename)
         {
-            if (renameRules != null)
+            if (m_renameRules != null)
             {
-                foreach (string originalName in renameRules.Keys)
+                foreach (string originalName in m_renameRules.Keys)
                 {
-                    if (renameRules[originalName] == filename)
+                    if (m_renameRules[originalName] == filename)
                         return originalName;
                 }
             }
@@ -107,7 +150,7 @@ namespace Herd
 
         protected Logger.LogFunction m_logMessageHandler;
 
-        protected virtual string getTmpDir()
+        protected virtual string TmpDir()
         {
             return Path.GetDirectoryName(System.Reflection.Assembly.GetEntryAssembly().Location) + "\\temp"; ;
         }
@@ -123,7 +166,7 @@ namespace Herd
         }
         public CJobDispatcher()
         {
-            m_job = new HerdJob();
+            m_job = new HerdJob("Job");
             m_xmlStream = new XMLStream();
             m_nextFileSize = 0;
             m_logMessageHandler = null;
@@ -181,20 +224,20 @@ namespace Herd
 
         protected void SendInputFiles(bool sendContent, CancellationToken cancelToken)
         {
-            foreach (string file in m_job.inputFiles)
+            foreach (string file in m_job.InputFiles)
             {
-                SendFile(file, FileType.INPUT, sendContent, false, cancelToken, m_job.renamedFilename(file));
+                SendFile(file, FileType.INPUT, sendContent, false, cancelToken, m_job.RenamedFilename(file));
             }
         }
         protected void SendOutputFiles(bool sendContent, CancellationToken cancelToken)
         {
             List<string> unknownFiles = new List<string>();
-            foreach (string file in m_job.outputFiles)
+            foreach (string file in m_job.OutputFiles)
             {
                 //some output files may not be ther if a task failed
                 //we still want to try sending the rest of files
                 if (!sendContent || File.Exists(getCachedFilename(file)))
-                    SendFile(file, FileType.OUTPUT, sendContent, true, cancelToken, m_job.renamedFilename(file));
+                    SendFile(file, FileType.OUTPUT, sendContent, true, cancelToken, m_job.RenamedFilename(file));
                 else
                 {
                     unknownFiles.Add(file);
@@ -202,19 +245,19 @@ namespace Herd
                 }
             }
             foreach (string file in unknownFiles)
-                m_job.outputFiles.Remove(file);
+                m_job.OutputFiles.Remove(file);
         }
         protected void SendTasks(CancellationToken cancelToken)
         {
-            foreach (HerdTask task in m_job.tasks)
+            foreach (HerdTask task in m_job.Tasks)
                 SendTask(task, cancelToken);
         }
         protected void SendTask(HerdTask task, CancellationToken cancelToken)
         {
-            string taskXML = "<Task Name=\"" + task.name + "\"";
-            taskXML += " Exe=\"" + task.exe + "\"";
-            taskXML += " Arguments=\"" + task.arguments + "\"";
-            taskXML += " Pipe=\"" + task.pipe + "\"";
+            string taskXML = "<Task Name=\"" + task.Name + "\"";
+            taskXML += " Exe=\"" + task.Exe + "\"";
+            taskXML += " Arguments=\"" + task.Arguments + "\"";
+            taskXML += " Pipe=\"" + task.Pipe + "\"";
             //taskXML += " AuthenticationToken=\"" + task.authenticationToken + "\"";
             taskXML += "/>";
             byte[] bytes = Encoding.ASCII.GetBytes(taskXML);
@@ -228,19 +271,19 @@ namespace Herd
             Match match;
             //This expression was tested and worked fine with and without the authentication token
             match = await ReadUntilMatchAsync(TaskHeaderRegEx, cancelToken);
-            task.name = match.Groups[1].Value;
-            task.exe = match.Groups[2].Value;
-            task.arguments = match.Groups[3].Value;
-            task.pipe = match.Groups[4].Value;
+            task.Name = match.Groups[1].Value;
+            task.Exe = match.Groups[2].Value;
+            task.Arguments = match.Groups[3].Value;
+            task.Pipe = match.Groups[4].Value;
             if (match.Groups.Count>5)
-                task.authenticationToken = match.Groups[6].Value;
-            m_job.tasks.Add(task);
+                task.AuthenticationToken = match.Groups[6].Value;
+            m_job.Tasks.Add(task);
             return true;
         }
 
         protected void SendJobHeader(CancellationToken cancelToken)
         {
-            string header = "<Job Name=\"" + m_job.name + "\">";
+            string header = "<Job Name=\"" + m_job.Name + "\">";
             byte[] headerbytes = Encoding.ASCII.GetBytes(header);
             writeAsync(headerbytes, 0, headerbytes.Length, cancelToken);
         }
@@ -365,7 +408,7 @@ namespace Herd
             Match match;
             match = await ReadUntilMatchAsync(JobHeaderRegEx, cancelToken);
 
-            m_job.name = match.Groups[1].Value;
+            m_job.Name = match.Groups[1].Value;
 
             return 1;
 
@@ -408,10 +451,10 @@ namespace Herd
                 return false;
             }
 
-            if (type == FileType.INPUT) m_job.inputFiles.Add(match.Groups[2].Value);
-            else m_job.outputFiles.Add(match.Groups[2].Value);
+            if (type == FileType.INPUT) m_job.InputFiles.Add(match.Groups[2].Value);
+            else m_job.OutputFiles.Add(match.Groups[2].Value);
 
-            m_nextFileName = m_job.originalFilename(match.Groups[2].Value);
+            m_nextFileName = m_job.OriginalFilename(match.Groups[2].Value);
 
             if (receiveContent) m_nextFileSize = Int32.Parse(match.Groups[3].Value);
             else m_nextFileSize = 0;
@@ -447,7 +490,7 @@ namespace Herd
         }
         protected string getCachedFilename(string originalFilename)
         {
-            string outputFilename = getTmpDir().TrimEnd('/', '\\') + "\\" + originalFilename.TrimStart('.', '/', '\\');
+            string outputFilename = TmpDir().TrimEnd('/', '\\') + "\\" + originalFilename.TrimStart('.', '/', '\\');
             return outputFilename;
         }
         protected async Task<bool> ReceiveFileData(bool inCachedDir, CancellationToken cancelToken)

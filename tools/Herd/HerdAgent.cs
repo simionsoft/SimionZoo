@@ -13,6 +13,7 @@ using System.Xml.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Security.Authentication;
+using System.Globalization;
 
 namespace Herd
 {
@@ -20,8 +21,6 @@ namespace Herd
 
     public class HerdAgentInfo
     {
-        public const string NoneProperty = "N/A";
-
         private IPEndPoint m_ipAddress;
         public IPEndPoint ipAddress { get { return m_ipAddress; } set { m_ipAddress = value; } }
 
@@ -42,28 +41,44 @@ namespace Herd
             m_properties = new Dictionary<string, string>();
         }
 
-        public void addProperty(string name, string value)
+        /// <summary>
+        /// Constructor used for testing purposes
+        /// </summary>
+        public HerdAgentInfo(string processorId, int numCPUCores, string architecture, string CUDAVersion, string herdAgentVersion)
+        {
+            m_ipAddress = new IPEndPoint(0, 0);
+            m_properties = new Dictionary<string, string>
+            {
+                [PropNames.ProcessorId] = processorId,
+                [PropNames.NumCPUCores] = numCPUCores.ToString(),
+                [PropNames.Architecture] = architecture,
+                [PropNames.CUDA] = CUDAVersion,
+                [PropNames.HerdAgentVersion] = herdAgentVersion
+            };
+        }
+
+        public void AddProperty(string name, string value)
         {
             m_properties.Add(name, value);
         }
 
-        public string getProperty(string name)
+        public string Property(string name)
         {
             if (m_properties.ContainsKey(name))
                 return m_properties[name];
 
-            return NoneProperty;
+            return PropValues.None;
         }
 
 
         public void Parse(XElement xmlDescription)
         {
-            if (xmlDescription.Name.ToString() == "HerdAgent")
+            if (xmlDescription.Name.ToString() == XmlTags.HerdAgentDescription)
             {
                 m_properties.Clear();
 
                 foreach (XElement child in xmlDescription.Elements())
-                    addProperty(child.Name.ToString(), child.Value);
+                    AddProperty(child.Name.ToString(), child.Value);
             }
         }
 
@@ -78,29 +93,29 @@ namespace Herd
         }
 
 
-        public string State { get { return getProperty(HerdAgent.m_stateXMLTag); } set { } }
+        public string State { get { return Property(PropNames.State); } set { } }
 
-        public string Version { get { return getProperty(HerdAgent.m_versionXMLTag); } set { } }
+        public string Version { get { return Property(PropNames.HerdAgentVersion); } set { } }
 
-        public string ProcessorId { get { return getProperty(HerdAgent.m_processorIdTag); } }
+        public string ProcessorId { get { return Property(PropNames.ProcessorId); } }
 
         public int NumProcessors
         {
             get
             {
-                string prop = getProperty(HerdAgent.m_numProcessorsXMLTag);
-                return (!prop.Equals(NoneProperty)) ? int.Parse(prop) : 0;
+                string prop = Property(PropNames.NumCPUCores);
+                return (!prop.Equals(PropValues.None)) ? int.Parse(prop) : 0;
             }
         }
 
-        public string ProcessorArchitecture { get { return getProperty(HerdAgent.ProcessorArchitectureTag); } }
+        public string ProcessorArchitecture { get { return Property(PropNames.Architecture); } }
 
         public double ProcessorLoad
         {
             get
             {
-                string prop = getProperty(HerdAgent.ProcessorLoadTag);
-                return (!prop.Equals(NoneProperty)) ? double.Parse(prop) : 0.0;
+                string prop = Property(PropNames.ProcessorLoad);
+                return (!prop.Equals(PropValues.None)) ? double.Parse(prop) : 0.0;
             }
         }
 
@@ -108,16 +123,16 @@ namespace Herd
         {
             get
             {
-                string prop = getProperty(HerdAgent.TotalMemoryTag);
-                return (!prop.Equals(NoneProperty)) ? double.Parse(prop) : 0.0;
+                string prop = Property(PropNames.TotalMemory);
+                return (!prop.Equals(PropValues.None)) ? double.Parse(prop) : 0.0;
             }
         }
 
-        public string CudaInfo { get { return getProperty(HerdAgent.CudaInfoTag); } }
+        public string CUDA { get { return Property(PropNames.CUDA); } }
 
         public bool IsAvailable
         {
-            get { if (getProperty(HerdAgent.m_stateXMLTag) == "available") return true; return false; }
+            get { if (Property(PropNames.State) == PropValues.StateAvailable) return true; return false; }
             set { }
         }
     }
@@ -181,16 +196,6 @@ namespace Herd
 
         private string m_dirPath = "";
 
-        public const string m_herdDescriptionXMLTag = "HerdAgent";
-        public const string m_versionXMLTag = "HerdAgentVersion";
-        public const string m_processorIdTag = "ProccesorId";
-        public const string m_numProcessorsXMLTag = "NumberOfProcessors";
-        public const string m_stateXMLTag = "State";
-        public const string TotalMemoryTag = "Memory";
-        public const string ProcessorArchitectureTag = "ProcessorArchitecture";
-        public const string ProcessorLoadTag = "ProcessorLoad";
-        public const string CudaInfoTag = "CudaInfo";
-
         private CancellationTokenSource m_cancelTokenSource;
 
         private PerformanceCounter m_cpuCounter;
@@ -201,6 +206,9 @@ namespace Herd
         /// <param name="cancelTokenSource"></param>
         public HerdAgent(CancellationTokenSource cancelTokenSource, Logger.LogFunction logMessageHandler= null)
         {
+            //Set invariant culture to use english notation
+            Thread.CurrentThread.CurrentCulture = System.Globalization.CultureInfo.InvariantCulture;
+
             setLogMessageHandler(logMessageHandler);
             m_cancelTokenSource = cancelTokenSource;
             m_state = AgentState.Available;
@@ -216,17 +224,17 @@ namespace Herd
             InitStaticProperties();
         }
 
-        protected override string getTmpDir()
+        protected override string TmpDir()
         {
             if (m_credentials == null)
-                return base.getTmpDir();
+                return base.TmpDir();
             else
                 return m_credentials.GetTempDir();
         }
 
-        public string getDirPath() { return m_dirPath; }
+        public string DirPath { get { return m_dirPath; } }
 
-        public void cleanCacheDir()
+        public void CleanCacheDir()
         {
             Directory.Delete(m_dirPath, true);
             Directory.CreateDirectory(m_dirPath);
@@ -242,9 +250,9 @@ namespace Herd
         {
             bool bFooterPeeked = false;
             string xmlTag = "";
-            m_job.tasks.Clear();
-            m_job.inputFiles.Clear();
-            m_job.outputFiles.Clear();
+            m_job.Tasks.Clear();
+            m_job.InputFiles.Clear();
+            m_job.OutputFiles.Clear();
 
             int ret = await ReceiveJobHeader(cancelToken);
             bool bret;
@@ -275,7 +283,7 @@ namespace Herd
         }
 
 
-        public static Task waitForExitAsync(Process process, CancellationToken cancellationToken)
+        public static Task WaitForExitAsync(Process process, CancellationToken cancellationToken)
         {
             var tcs = new TaskCompletionSource<object>();
             process.EnableRaisingEvents = true;
@@ -286,13 +294,13 @@ namespace Herd
         }
 
 
-        public async Task<int> runTaskAsync(HerdTask task, CancellationToken cancelToken)
+        public async Task<int> RunTaskAsync(HerdTask task, CancellationToken cancelToken)
         {
             int returnCode = m_noErrorCode;
             NamedPipeServerStream pipeServer = null;
             Process myProcess = new Process();
-            if (task.pipe != "")
-                pipeServer = new NamedPipeServerStream(task.pipe);
+            if (task.Pipe != "")
+                pipeServer = new NamedPipeServerStream(task.Pipe);
             XMLStream xmlStream = new XMLStream();
 
             try
@@ -302,23 +310,23 @@ namespace Herd
 
                 if (m_credentials != null)
                 {
-                    if (!m_credentials.AuthenticationCode.Equals(task.authenticationToken))
+                    if (!m_credentials.AuthenticationCode.Equals(task.AuthenticationToken))
                     {
-                        logMessage("Authentication tokens did NOT match. Won't execute command: " + getCachedFilename(task.exe) + " " + task.arguments);
+                        logMessage("Authentication tokens did NOT match. Won't execute command: " + getCachedFilename(task.Exe) + " " + task.Arguments);
 
                         await xmlStream.writeMessageAsync(m_tcpClient.GetStream(),
-                       "<" + task.pipe + "><End>Authentication Error</End></" + task.pipe + ">", cancelToken);
+                       "<" + task.Pipe + "><End>Authentication Error</End></" + task.Pipe + ">", cancelToken);
 
                         returnCode = -1;
                         throw new AuthenticationException("AuthenticationToken of the task does not match local token.");
                     }
 
-                    myProcess = WinApi.StartUnelevatedProcess(getCachedFilename(task.exe), task.arguments, Path.GetDirectoryName((getCachedFilename(task.exe))));
+                    myProcess = WinApi.StartUnelevatedProcess(getCachedFilename(task.Exe), task.Arguments, Path.GetDirectoryName((getCachedFilename(task.Exe))));
                     // myProcess = WinApi.StartUnelevatedProcess(@"C:\Users\Roland\Source\Repos\RLSimion\Debug\HerdAgentServiceSettings.exe", task.arguments, Path.GetDirectoryName(@"C:\Users\Roland\Source\Repos\RLSimion\Debug\HerdAgentServiceSettings.exe"));
                 }
 
-                myProcess.StartInfo.FileName = getCachedFilename(task.exe);
-                myProcess.StartInfo.Arguments = task.arguments;
+                myProcess.StartInfo.FileName = getCachedFilename(task.Exe);
+                myProcess.StartInfo.Arguments = task.Arguments;
                 myProcess.StartInfo.WorkingDirectory = Path.GetDirectoryName(myProcess.StartInfo.FileName);
 
                 if (m_credentials == null)
@@ -340,7 +348,7 @@ namespace Herd
                     {
                         //check if the herd agent sent us a quit message
                         //in case it did, the function will cancel the cancellation token
-                        checkCancellationRequests();
+                        CheckCancellationRequests();
 
                         //check if we have been asked to cancel
                         cancelToken.ThrowIfCancellationRequested();
@@ -350,29 +358,29 @@ namespace Herd
                         while (xmlItem != "")
                         {
                             await xmlStream.writeMessageAsync(m_tcpClient.GetStream(),
-                                "<" + task.pipe + ">" + xmlItem + "</" + task.pipe + ">", cancelToken);
+                                "<" + task.Pipe + ">" + xmlItem + "</" + task.Pipe + ">", cancelToken);
 
                             xmlItem = xmlStream.processNextXMLItem();
                         }
                     }
                 }
 
-                logMessage("Named pipe has been closed for task " + task.name);
-                await waitForExitAsync(myProcess, cancelToken);
+                logMessage("Named pipe has been closed for task " + task.Name);
+                await WaitForExitAsync(myProcess, cancelToken);
 
                 int exitCode = myProcess.ExitCode;
-                logMessage("Process exited in task " + task.name + ". Return code=" + exitCode);
+                logMessage("Process exited in task " + task.Name + ". Return code=" + exitCode);
                 //myProcess.WaitForExit();
 
                 if (exitCode < 0)
                 {
                     await xmlStream.writeMessageAsync(m_tcpClient.GetStream(),
-                        "<" + task.pipe + "><End>Error</End></" + task.pipe + ">", cancelToken);
+                        "<" + task.Pipe + "><End>Error</End></" + task.Pipe + ">", cancelToken);
                     returnCode = m_jobInternalErrorCode;
                 }
                 else
                     await xmlStream.writeMessageAsync(m_tcpClient.GetStream(),
-                        "<" + task.pipe + "><End>Ok</End></" + task.pipe + ">", cancelToken);
+                        "<" + task.Pipe + "><End>Ok</End></" + task.Pipe + ">", cancelToken);
                 logMessage("Exit code: " + myProcess.ExitCode);
             }
             catch (OperationCanceledException)
@@ -393,7 +401,7 @@ namespace Herd
             }
             finally
             {
-                logMessage("Task " + task.name + " finished");
+                logMessage("Task " + task.Name + " finished");
                 //removeSpawnedProcessFromList(myProcess);
                 if (pipeServer != null) pipeServer.Close();
             }
@@ -402,14 +410,14 @@ namespace Herd
         }
 
 
-        public async Task<int> runJobAsync(CancellationToken cancelToken)
+        public async Task<int> RunJobAsync(CancellationToken cancelToken)
         {
             int returnCode = m_noErrorCode;
             try
             {
                 List<Task<int>> taskList = new List<Task<int>>();
-                foreach (HerdTask task in m_job.tasks)
-                    taskList.Add(runTaskAsync(task, cancelToken));
+                foreach (HerdTask task in m_job.Tasks)
+                    taskList.Add(RunTaskAsync(task, cancelToken));
                 int[] exitCodes = await Task.WhenAll(taskList);
 
                 if (exitCodes.Any((code) => code == m_remotelyCancelledErrorCode))
@@ -438,27 +446,24 @@ namespace Herd
         }
 
 
-        public AgentState getState() { return m_state; }
+        public AgentState State { get { return m_state; } set { m_state = value; } }
 
 
-        public string getStateString()
+        public string StateString()
         {
-            if (m_state == AgentState.Available) return "available";
-            if (m_state == AgentState.Busy) return "busy";
-            if (m_state == AgentState.Cancelling) return "cancelling";
-            return "error";
+            if (m_state == AgentState.Available) return PropValues.StateAvailable;
+            if (m_state == AgentState.Busy) return PropValues.StateBusy;
+            if (m_state == AgentState.Cancelling) return PropValues.StateCancelling;
+            return PropValues.None;
         }
 
 
-        public void setState(AgentState s) { m_state = s; }
-
-
-        public float GetCurrentCpuUsage()
-        {
+         public float CurrentCpuUsage()
+         {
             return m_cpuCounter.NextValue();
-        }
+         }
 
-        public string GetProcessorId()
+        static public string ProcessorId()
         {
             var mbs = new ManagementObjectSearcher("Select ProcessorId From Win32_processor");
             ManagementObjectCollection mbsList = mbs.Get();
@@ -472,16 +477,15 @@ namespace Herd
             return id;
         }
 
-        string HerdAgentVersion = HerdAgentInfo.NoneProperty;
-        string CPUId = HerdAgentInfo.NoneProperty;
+        string HerdAgentVersion = PropValues.None;
+        string CPUId = PropValues.None;
         int NumCPUCores = 0;
-        string CPUArchitecture = HerdAgentInfo.NoneProperty;
+        string CPUArchitecture = PropValues.None;
         double TotalMemory = 0.0;
 
-        private const string m_win64Id = "Win-64";
-        private const string m_win32Id = "Win-32";
 
-        private string getArchitectureId()
+
+        static public string ArchitectureId()
         {
             SYSTEM_INFO si = new SYSTEM_INFO();
             GetNativeSystemInfo(ref si);
@@ -489,11 +493,11 @@ namespace Herd
             {
                 case PROCESSOR_ARCHITECTURE_AMD64:
                 case PROCESSOR_ARCHITECTURE_IA64:
-                    return m_win64Id;
+                    return PropValues.Win64;
 
                 case PROCESSOR_ARCHITECTURE_INTEL:
                 default:
-                    return m_win32Id;
+                    return PropValues.Win32;
             }
         }
         /// <summary>
@@ -509,26 +513,25 @@ namespace Herd
             //Number of CPU cores
             NumCPUCores = Environment.ProcessorCount;
             //Processor Id
-            CPUId = GetProcessorId();
+            CPUId = ProcessorId();
             // CPU architecture
            // CPUArchitecture = Environment.GetEnvironmentVariable("PROCESSOR_ARCHITECTURE", EnvironmentVariableTarget.Machine);
-            CPUArchitecture = getArchitectureId();
+            CPUArchitecture = ArchitectureId();
             // Total installed memory
             TotalMemory = GetGlobalMemoryStatusEx();
             //CUDA support
-            CheckCUDASupport();
+            CUDAVersion= CUDASupport();
 
-            logMessage(GetAgentDescription());
+            logMessage(AgentDescription());
         }
 
         string CUDAVersion = "";
-        bool IsCUDASupported = false;
 
         /// <summary>
         ///     Get information about CUDA installation.
         /// </summary>
         /// <returns>The CUDA version installed or -1 if none was found</returns>
-        private void CheckCUDASupport()
+        static public string CUDASupport()
         {
             string dllName = @"nvcuda.dll";
             string dir = Environment.SystemDirectory;
@@ -544,21 +547,18 @@ namespace Herd
                     //This is a quick and dirty hack to get the CUDA version without loading the DLL
                     //It seems that nVidia sets the ProductName with the cuda version inside. I hope they
                     //keep doint it
-                    CUDAVersion = myFileVersionInfo.ProductName;
-                    CUDAVersion = new string(CUDAVersion.Where(c => char.IsDigit(c) || char.IsPunctuation(c)).ToArray());
-                    IsCUDASupported = true;
+                    string version = myFileVersionInfo.ProductName;
+                    return new string(version.Where(c => char.IsDigit(c) || char.IsPunctuation(c)).ToArray());
                 }
                 else
                 {
-                    IsCUDASupported = false;
-                    CUDAVersion = HerdAgentInfo.NoneProperty;
+                    return PropValues.None;
                 }
             }
             catch (Exception ex)
             {
                 Console.Write(ex.StackTrace);
-                IsCUDASupported = false;
-                CUDAVersion = HerdAgentInfo.NoneProperty;
+                return PropValues.None;
             }
         }
 
@@ -590,35 +590,33 @@ namespace Herd
             return statEx.ullTotalPhys;
         }
 
-        public string GetAgentDescription()
+        public string AgentDescription()
         {
-            string description = "<" + m_herdDescriptionXMLTag + ">"
+            string description = "<" + XmlTags.HerdAgentDescription + ">"
                 // HerdAgent version
-                + "<" + m_versionXMLTag + ">"
+                + "<" + PropNames.HerdAgentVersion + ">"
                 + HerdAgentVersion
-                + "</" + m_versionXMLTag + ">"
+                + "</" + PropNames.HerdAgentVersion + ">"
                 // CPU amount of cores
-                + "<" + m_processorIdTag + ">" + CPUId + "</" + m_processorIdTag + ">"
+                + "<" + PropNames.ProcessorId + ">" + CPUId + "</" + PropNames.ProcessorId + ">"
                 // CPU amount of cores
-                + "<" + m_numProcessorsXMLTag + ">" + NumCPUCores + "</" + m_numProcessorsXMLTag + ">"
+                + "<" + PropNames.NumCPUCores + ">" + NumCPUCores + "</" + PropNames.NumCPUCores + ">"
                 // CPU architecture
-                + "<" + ProcessorArchitectureTag + ">"
-                + CPUArchitecture
-                + "</" + ProcessorArchitectureTag + ">"
+                + "<" + PropNames.Architecture + ">" + CPUArchitecture + "</" + PropNames.Architecture + ">"
                 // Current processor load
-                + "<" + ProcessorLoadTag + ">" + GetCurrentCpuUsage() + "</" + ProcessorLoadTag + ">"
+                + "<" + PropNames.ProcessorLoad + ">" + CurrentCpuUsage().ToString(CultureInfo.InvariantCulture) + "</" + PropNames.ProcessorLoad + ">"
                 // Total installed memory
-                + "<" + TotalMemoryTag + ">" + TotalMemory + "</" + TotalMemoryTag + ">"
+                + "<" + PropNames.TotalMemory + ">" + TotalMemory + "</" + PropNames.TotalMemory + ">"
                 // CUDA support information
-                + "<" + CudaInfoTag + ">" + CUDAVersion + "</" + CudaInfoTag + ">"
+                + "<" + PropNames.CUDA + ">" + CUDAVersion + "</" + PropNames.CUDA + ">"
                 // HerdAgent state
-                + "<" + m_stateXMLTag + ">" + getStateString() + "</" + m_stateXMLTag + ">"
-                + "</" + m_herdDescriptionXMLTag + ">";
+                + "<" + PropNames.State + ">" + StateString() + "</" + PropNames.State + ">"
+                + "</" + XmlTags.HerdAgentDescription + ">";
             return description;
         }
 
 
-        public void acceptJobQuery(IAsyncResult ar)
+        public void AcceptJobQuery(IAsyncResult ar)
         {
             m_tcpClient = m_listener.EndAcceptTcpClient(ar);
             m_xmlStream.resizeBuffer(m_tcpClient.ReceiveBufferSize);
@@ -626,7 +624,7 @@ namespace Herd
         }
 
 
-        public void checkCancellationRequests()
+        public void CheckCancellationRequests()
         {
             try
             {
@@ -673,13 +671,13 @@ namespace Herd
 
         public async void CommunicationCallback(IAsyncResult ar)
         {
-            if (getState() != AgentState.Busy)
+            if (State != AgentState.Busy)
             {
-                acceptJobQuery(ar);
+                AcceptJobQuery(ar);
 
                 try
                 {
-                    setState(AgentState.Busy);
+                    State = AgentState.Busy;
 
                     int ret = await readAsync(m_cancelTokenSource.Token);
                     string xmlItem = m_xmlStream.processNextXMLItem();
@@ -693,7 +691,7 @@ namespace Herd
                         {
                             //not yet implemented in the herd client, just in case...
                             logMessage("Cleaning cache directory");
-                            cleanCacheDir();
+                            CleanCacheDir();
                         }
                         else if (xmlItemContent == CJobDispatcher.m_acquireMessage)
                         {
@@ -706,7 +704,7 @@ namespace Herd
                                 logMessage("Job received");
                                 logMessage(m_job.ToString());
                                 logMessage("Running job");
-                                returnCode = await runJobAsync(m_cancelTokenSource.Token);
+                                returnCode = await RunJobAsync(m_cancelTokenSource.Token);
 
                                 if (returnCode == m_noErrorCode || returnCode == m_jobInternalErrorCode)
                                 {
@@ -740,7 +738,7 @@ namespace Herd
                     waitAsyncWriteOpsToFinish();
                     logMessage("Closing the TCP connection");
                     m_tcpClient.Close();
-                    setState(AgentState.Available);
+                    State = AgentState.Available;
 
                     //try to recover
                     //start listening again
@@ -767,7 +765,7 @@ namespace Herd
                     //if (getState() == AgentState.AVAILABLE)
                     {
                         //logMessage("Agent discovered by " + ip + ". Current state=" + getStateString());
-                        string agentDescription = GetAgentDescription();
+                        string agentDescription = AgentDescription();
                         byte[] data = Encoding.ASCII.GetBytes(agentDescription);
                         getUdpClient().Send(data, data.Length, ip);
                     }
@@ -785,7 +783,7 @@ namespace Herd
         }
 
 
-        public void startListening()
+        public void StartListening()
         {
             //UPD broadcast client
             m_discoveryClient = new UdpClient(CJobDispatcher.m_discoveryPortHerd);
@@ -801,13 +799,12 @@ namespace Herd
             m_listener.Start();
             HerdAgentTcpState tcpState = new HerdAgentTcpState();
             tcpState.ip = shepherd;
-            //tcpState.herdAgent = this;
 
             m_listener.BeginAcceptTcpClient(CommunicationCallback, tcpState);
         }
 
 
-        public void stopListening()
+        public void StopListening()
         {
             m_discoveryClient.Close();
             m_listener.Stop();

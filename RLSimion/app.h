@@ -30,6 +30,8 @@ using Action = NamedVarSet;
 
 class SimionApp
 {
+
+private:
 	static SimionApp* m_pAppInstance;
 
 	ConfigFile* m_pConfigDoc;
@@ -55,7 +57,7 @@ class SimionApp
 
 	//requirements/support
 	unsigned int m_numCPUCores = 1;
-	bool m_bSupportsCUDA = false;
+	bool m_canUseCUDA = false;
 public:
 
 	SimionApp(ConfigNode* pParameters);
@@ -98,7 +100,6 @@ public:
 	bool isExecutedRemotely();
 
 	void setNumCPUCores(unsigned int numCPUCores) { m_numCPUCores = numCPUCores; }
-	void setCUDASupport(bool enable) { m_bSupportsCUDA = enable; }
 private:
 	//Rendering
 	Timer m_timer;

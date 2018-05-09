@@ -43,6 +43,7 @@
   <ItemGroup>
     <Compile Include="Credentials.cs" />
     <Compile Include="HerdAgent.cs" />
+    <Compile Include="HerdProperties.cs" />
     <Compile Include="Logger.cs" />
     <Compile Include="NetTransfer.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

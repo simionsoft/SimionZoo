@@ -37,7 +37,7 @@ namespace Badger.ViewModels
             if (configNode != null)
                 configNode = configNode[name];
             //we allow an undefined class ("", most likely) and we just ignore children
-            childrenInit(parentExperiment, parentExperiment.getClassDefinition(m_className,true)
+            childrenInit(parentExperiment, parentExperiment.GetClassDefinition(m_className,true)
                 , m_xPath, configNode);
         }
 

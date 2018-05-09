@@ -57,7 +57,7 @@ namespace Badger.ViewModels
                 bIsUsed = true;
 
             if (initChildren)
-                childrenInit(parentExperiment, parentExperiment.getClassDefinition(m_className), m_xPath, configNode);
+                childrenInit(parentExperiment, parentExperiment.GetClassDefinition(m_className), m_xPath, configNode);
         }
 
         public override bool validate()

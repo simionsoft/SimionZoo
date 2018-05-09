@@ -201,36 +201,6 @@ namespace Herd
             }
         }
 
-
-        public int getAvailableHerdAgentListAndCores(ref Dictionary<IPEndPoint, int> outHerdAgentList)
-        {
-            int numCoresTotal = 0;
-            lock (m_listLock)
-            {
-                outHerdAgentList.Clear();
-
-                foreach (var agent in m_herdAgentList)
-                {
-                    string state = agent.Value.getProperty("State");
-                    string numCoresString = agent.Value.getProperty("NumberOfProcessors");
-                    if (state == "available" && numCoresString != "n/a")
-                    {
-                        try
-                        {
-                            var numCores = Int32.Parse(numCoresString);
-                            numCoresTotal += numCores - 1;
-                            outHerdAgentList.Add(agent.Key, numCores - 1);
-                        }
-                        catch (Exception)
-                        {
-                            //we ignore possible errors parsing the string
-                        }
-                    }
-                }
-                return numCoresTotal;
-            }
-        }
-
         public void SendJobQuery(HerdJob job, CancellationToken cancelToken)
         {
             m_job = job;
@@ -245,9 +215,9 @@ namespace Herd
         {
             bool bFooterPeeked = false;
             string xmlTag = "";
-            m_job.tasks.Clear();
-            m_job.inputFiles.Clear();
-            m_job.outputFiles.Clear();
+            m_job.Tasks.Clear();
+            m_job.InputFiles.Clear();
+            m_job.OutputFiles.Clear();
 
             int ret = await ReceiveJobHeader(cancelToken);
             bool bret;

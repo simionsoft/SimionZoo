@@ -1,8 +1,8 @@
-﻿
-using Caliburn.Micro;
+﻿using Caliburn.Micro;
 using Herd;
 using System.Collections.Generic;
 using System.Linq;
+using Badger.Data;
 
 namespace Badger.ViewModels
 {
@@ -10,9 +10,12 @@ namespace Badger.ViewModels
     {
         private LoggedExperimentalUnitViewModel m_loggedExperimentalUnit;
 
-        public string PipeName => m_loggedExperimentalUnit.Name;
-        public string Name => m_loggedExperimentalUnit.Name;
-        public string FilePath => m_loggedExperimentalUnit.ExperimentFileName;
+        string m_pipeName;
+        public string PipeName => m_pipeName;
+        string m_name;
+        public string Name => m_name;
+        string m_filePath;
+        public string FilePath => m_filePath;
 
         string m_taskName;
         public string TaskName
@@ -21,10 +24,11 @@ namespace Badger.ViewModels
             set { m_taskName = value; NotifyOfPropertyChange(() => TaskName); }
         }
 
-        public string ExeFile { get; set; }
+        List<AppVersion> m_appVersions;
+        public List<AppVersion> AppVersions { get { return m_appVersions; } }
 
-        public List<string> Prerequisites { get; set; }
-        public Dictionary<string, string> RenameRules;
+        AppVersion m_selectedVersion;
+        public AppVersion SelectedVersion{ get { return m_selectedVersion; } set { OnVersionSelection(value);  m_selectedVersion = value; } }
 
         public List<string> Forks { get; set; }
 
@@ -134,7 +138,7 @@ namespace Badger.ViewModels
 
         public void ShowLog()
         {
-            Data.CaliburnUtility.ShowWarningDialog(StatusInfo, "Experiment log");
+            CaliburnUtility.ShowWarningDialog(StatusInfo, "Experiment log");
         }
 
         public void AddStatusInfoLine(string line)
@@ -148,16 +152,48 @@ namespace Badger.ViewModels
             m_logFunction?.Invoke(message);
         }
 
-
-        public MonitoredExperimentalUnitViewModel(LoggedExperimentalUnitViewModel expUnit, string exeFile,
-           List<string> prerequisites, Dictionary<string, string> renameRules, PlotViewModel plot)
+        /// <summary>
+        /// Dumb constructor used only for testing purposes
+        /// </summary>
+        /// <param name="name">Name given to the experimental unit</param>
+        /// <param name="appVersions">Versions of the app being executed</param>
+        /// <param name="runTimeRequirements">Run-time requirements</param>
+        public MonitoredExperimentalUnitViewModel(string name, List<AppVersion> appVersions, RunTimeRequirements runTimeRequirements)
         {
+            m_appVersions = appVersions;
+            m_runTimeRequirements = runTimeRequirements;
+            m_pipeName = name;
+            m_name = name;
+            m_filePath = name;
+        }
+
+        /// <summary>
+        /// Main constructor
+        /// </summary>
+        /// <param name="expUnit"></param>
+        /// <param name="plot"></param>
+        /// <param name="appVersions"></param>
+        public MonitoredExperimentalUnitViewModel(LoggedExperimentalUnitViewModel expUnit, PlotViewModel plot, List<AppVersion> appVersions)
+        {
+            m_appVersions = appVersions;
             m_loggedExperimentalUnit = expUnit;
-            ExeFile = exeFile;
-            Prerequisites = prerequisites;
-            RenameRules = renameRules;
+            m_pipeName = m_loggedExperimentalUnit.Name;
+            m_name = m_loggedExperimentalUnit.Name;
+            m_filePath = m_loggedExperimentalUnit.ExperimentFileName;
+
             Forks = expUnit.forkValues.Select(k => k.Key + ": " + k.Value).ToList();
             m_plotEvaluationMonitor = plot;
+        }
+
+        //run-time app requirements
+        RunTimeRequirements m_runTimeRequirements = null;
+        public RunTimeRequirements RunTimeReqs { get { return m_runTimeRequirements; } }
+
+        private void OnVersionSelection(AppVersion selectedVersion)
+        {
+            //Added for testing purposes: this avoids using real experiments
+            if (m_runTimeRequirements==null)
+                m_runTimeRequirements = Utility.GetRunTimeRequirements(selectedVersion.ExeFile, FilePath);
         }
 
         //evaluation plot stuff

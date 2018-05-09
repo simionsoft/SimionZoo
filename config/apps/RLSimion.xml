@@ -1,26 +1,23 @@
-<?xml version="1.0" encoding="utf-8"?>
-<APP Name="RLSimion" FileVersion="1">
-  <APP-VERSION Name="x64">
-    <EXE>..\bin\RLSimion-x64.exe</EXE>
-    <PRE Rename="..\bin\msvcp140.dll">..\bin\x64\msvcp140.dll</PRE>
-    <PRE Rename="..\bin\vcruntime140.dll">..\bin\x64\vcruntime140.dll</PRE>
-    <REQUIRES>
-      <ProcessorArchitecture>Win-64</ProcessorArchitecture>
-    </REQUIRES>
-    <SUPPORTS>
-      <CUDA/>
-    </SUPPORTS>
-  </APP-VERSION>
-  <APP-VERSION Name="x32">
-    <EXE>..\bin\RLSimion.exe</EXE>
-    <PRE>..\bin\msvcp140.dll</PRE>
-    <PRE>..\bin\vcruntime140.dll</PRE>
-    <REQUIRES>
-      <ProcessorArchitecture>Win-32</ProcessorArchitecture>
-    </REQUIRES>
-  </APP-VERSION>
+﻿<?xml version="1.0" encoding="utf-8"?>
+<App Name="RLSimion" FileVersion="1">
+  <Version Name="x64">
+    <Exe>..\bin\RLSimion-x64.exe</Exe>
+    <Requirements>
+      <Input-File Rename="..\bin\msvcp140.dll">..\bin\x64\msvcp140.dll</Input-File>
+      <Input-File Rename="..\bin\vcruntime140.dll">..\bin\x64\vcruntime140.dll</Input-File>
+      <Architecture>Win-64</Architecture>
+    <//Requirements>
+  </Version>
+  <Version Name="x32">
+    <Exe>..\bin\RLSimion.exe</Exe>
+    <Requirements>
+      <Input-File>..\bin\msvcp140.dll</Input-File>
+      <Input-File>..\bin\vcruntime140.dll</Input-File>
+      <Architecture>Win-32</Architecture>
+    <//Requirements>
+  </Version>
   
-  <INCLUDE>..\config\definitions.xml</INCLUDE>
+  <Include>..\config\definitions.xml</Include>
 
   <BRANCH Name="RLSimion" Class="SimionApp"/>
-</APP>
+</App>

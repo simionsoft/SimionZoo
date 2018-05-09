@@ -112,9 +112,9 @@
                 <TabControl.ItemTemplate>
                     <DataTemplate>
                         <StackPanel Orientation="Horizontal" >
-                            <TextBox Text="{Binding Path=name,Mode=TwoWay}" BorderBrush="Transparent"
+                            <TextBox Text="{Binding Path=Name,Mode=TwoWay}" BorderBrush="Transparent"
                                    VerticalAlignment="Center"/>
-                            <Label Content="{Binding Path=numForkCombinations}" VerticalAlignment="Center"/>
+                            <Label Content="{Binding Path=NumForkCombinations}" VerticalAlignment="Center"/>
                             <Button Style="{StaticResource BadgerButtonStyle}" Width="18" Height="18">
                                 <i:Interaction.Triggers>
                                     <i:EventTrigger EventName="Click">

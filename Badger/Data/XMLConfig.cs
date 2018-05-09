@@ -9,7 +9,7 @@ namespace Badger.Simion
         public const string BatchConfigVersion = "1.0.0.0";
 
         public const string experimentExtension = "simion.exp";
-        //public const string experimentalUnitExtension = "simion.unit.exp";
+        //public const string experimentalUnitExtension = "simion.exp.unit";
         public const string experimentBatchExtension = "simion.batch";
         public const string badgerProjectExtension = "badger.proj";
 
@@ -23,7 +23,7 @@ namespace Badger.Simion
         public const string experimentNodeTag = "EXPERIMENT"; //a experiment which can have forks within
         public const string experimentalUnitNodeTag = "EXPERIMENTAL-UNIT"; //an experiment within a batch without any forks
         public const string experimentBatchNodeTag = "EXPERIMENT-BATCH";
-        public const string appNodeTag = "APP";
+        public const string appNodeTag = "App";
         public const string statisticsFileTag = "STATISTICS";
 
         //Class-level tags: BRANCH, CHOICE, CHOICE-ELEMENT, DOUBLE-VALUE, INTEGER-VALUE, STRING-VALUE
@@ -77,14 +77,6 @@ namespace Badger.Simion
         public const string ExeFileNameAttr = "ExeFile";
         //Attribute special values
         public const string newWindowValue = "New";
-
-        public const string appVersionNodeTag = "APP-VERSION";
-        public const string exeNodeTag = "EXE";
-        public const string preNodeTag = "PRE";
-        public const string requiresNodeTag = "REQUIRES";
-        public const string supportsNodeTag = "SUPPORTS";
-        public const string includeNodeTag = "INCLUDE";
-        public const string renameAttr = "Rename";
 
         //the name of the configuration class used in the C++ source code
         public const string srcConfigClassName = "ConfigNode";

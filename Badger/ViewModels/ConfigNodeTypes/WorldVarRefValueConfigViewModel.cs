@@ -45,7 +45,7 @@ namespace Badger.ViewModels
             {
                 //Either we have loaded the config but the list is of values has not yet been loaded
                 //or no config file has been loaded. In Either case, we register for a deferred load step
-                m_parentExperiment.registerDeferredLoadStep(updateValues);
+                m_parentExperiment.RegisterDeferredLoadStep(updateValues);
             }
 
             m_parentExperiment.registerWorldVarRef(updateValues);

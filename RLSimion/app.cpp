@@ -16,6 +16,13 @@
 #include "../tools/OpenGLRenderer/arranger.h"
 #include "../tools/WindowsUtils/FileUtils.h"
 
+//Properties and xml tags
+#define APP_REQUIREMENTS_XML_TAG "Requirements"
+#define NUM_CPU_CORES_XML_TAG "NumCPUCores"
+#define INPUT_FILE_XML_TAG "Input-File"
+#define OUTPUT_FILE_XML_TAG "Output-File"
+#define RENAME_XML_ATTR "Rename"
+
 SimionApp* SimionApp::m_pAppInstance = 0;
 
 SimionApp::SimionApp(ConfigNode* pConfigNode)
@@ -93,34 +100,28 @@ bool SimionApp::flagPassed(int argc, char** argv, char* flagName)
 void SimionApp::printRequirements()
 {
 	const char *pFileName, *pFileRename;
-	printf("<Files>\n");
+	printf("<%s>\n", APP_REQUIREMENTS_XML_TAG);
 
 	for (unsigned int i = 0; i < getNumInputFiles(); i++)
 	{
 		pFileName = getInputFile(i);
 		pFileRename = getInputFileRename(i);
 		if (pFileRename==0)
-			printf("  <Input>%s</Input>\n", pFileName);
+			printf("  <%s>%s</%s>\n", INPUT_FILE_XML_TAG, pFileName, INPUT_FILE_XML_TAG);
 		else
-			printf("  <Input Rename=\"%s\">%s</Input>\n", pFileRename, pFileName);
+			printf("  <%s %s=\"%s\">%s</%s>\n", INPUT_FILE_XML_TAG, RENAME_XML_ATTR, pFileRename, pFileName, INPUT_FILE_XML_TAG);
 	}
 
 	for (unsigned int i = 0; i < getNumOutputFiles(); i++)
 	{
 		pFileName = getOutputFile(i);
-		printf("  <Output>%s</Output>\n", pFileName);
+		printf("  <%s>%s</%s>\n", OUTPUT_FILE_XML_TAG, pFileName, OUTPUT_FILE_XML_TAG);
 	}
-	printf("</Files>\n");
-	//other requirements
-	printf("<Requires>\n");
-	if (m_numCPUCores>0)
-		printf("  <NumCPUCores>%d</NumCPUCores>\n", m_numCPUCores);
-	else
-		printf("  <NumCPUCores>*</NumCPUCores>\n"); //if the number of cores required is zero, we are using all of them
-	printf("</Requires>\n");
-	printf("<Supports>\n");
-	printf("  <CUDA>%d</CUDA>\n", m_bSupportsCUDA);
-	printf("</Supports>\n");
+
+	//other requirements: #CPU cores and CUDA support
+	printf("  <%s>%d</%s>\n", NUM_CPU_CORES_XML_TAG, m_numCPUCores, NUM_CPU_CORES_XML_TAG);
+
+	printf("</%s>\n", APP_REQUIREMENTS_XML_TAG);
 }
 
 SimionApp* SimionApp::get()

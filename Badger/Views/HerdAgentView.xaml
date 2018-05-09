@@ -141,7 +141,7 @@
 
                     <Separator Grid.Row="0" Grid.Column="3" Grid.RowSpan="2" Style="{StaticResource {x:Static ToolBar.SeparatorStyleKey}}" Margin="4" />
 
-                    <TextBlock Grid.Row="0" Grid.Column="4" Text="{Binding Path=CudaInfo}" Foreground="{Binding Path=CudaInfoColor}"  Padding="5,1"/>
+                    <TextBlock Grid.Row="0" Grid.Column="4" Text="{Binding Path=CUDA}" Foreground="{Binding Path=CUDAColor}"  Padding="5,1"/>
                     <Label Grid.Row="1" Grid.Column="4" Content="CUDA" Padding="5,1"  Foreground="#FF616161" />
                 </Grid>
                 <Grid>

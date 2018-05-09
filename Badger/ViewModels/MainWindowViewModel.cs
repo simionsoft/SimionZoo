@@ -41,7 +41,7 @@ namespace Badger.ViewModels
 
         static private bool appNameExists(string name)
         {
-            return m_experimentViewModels.Any(app => app.name == name);
+            return m_experimentViewModels.Any(app => app.Name == name);
         }
 
         static public string getValidAppName(string originalName)

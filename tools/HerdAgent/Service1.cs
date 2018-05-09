@@ -128,7 +128,7 @@ namespace Herd
             m_herdAgent = new HerdAgent(new CancellationTokenSource(),logToFile);
             logToFile("Herd agent started");
 
-            m_herdAgent.startListening();
+            m_herdAgent.StartListening();
         }
 
         protected override void OnStop()
@@ -138,7 +138,7 @@ namespace Herd
         public void DoStop()
         {
             logToFile("Herd Agent stopped");
-            m_herdAgent.stopListening();
+            m_herdAgent.StopListening();
         }
     }
 }

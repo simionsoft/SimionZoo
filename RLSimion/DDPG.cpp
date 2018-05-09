@@ -1,4 +1,7 @@
 #include "DDPG.h"
+
+#ifdef _WIN64
+
 #include "../tools/CNTKWrapper/CNTKWrapper.h"
 #include "app.h"
 #include "noise.h"
@@ -182,3 +185,6 @@ void DDPG::updateCritic(const State* s, const Action* a, const State* s_p, doubl
 		}
 	}
 }
+
+
+#endif

@@ -44,6 +44,24 @@ namespace Badger.ViewModels
 
         public List<string> VariablesInLog { get; set; }
 
+
+        /// <summary>
+        /// Fake constructor for testing purposes
+        /// </summary>
+        /// <param name="filename"></param>
+        public LoggedExperimentalUnitViewModel(string filename)
+        {
+            ExperimentFileName = filename;
+            Name = Utility.GetFilename(filename);
+        }
+
+        /// <summary>
+        /// Main constructor
+        /// </summary>
+        /// <param name="configNode"></param>
+        /// <param name="baseDirectory"></param>
+        /// <param name="updateFunction"></param>
+
         public LoggedExperimentalUnitViewModel(XmlNode configNode, string baseDirectory
             , SimionFileData.LoadUpdateFunction updateFunction = null)
         {

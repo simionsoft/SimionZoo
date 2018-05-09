@@ -81,7 +81,7 @@ namespace Badger.ViewModels
                         while (!found && index < len)
                         {
                             // We need to have this condition until every agent is in v1.0.0.6 or superior
-                            if (agent.ProcessorId != null && agent.ProcessorId != HerdAgentInfo.NoneProperty)
+                            if (agent.ProcessorId != null && agent.ProcessorId != Herd.PropValues.None)
                             {
                                 if (agent.ProcessorId.Equals(m_herdAgentList[index].ProcessorId))
                                 {
@@ -143,8 +143,6 @@ namespace Badger.ViewModels
         {
             m_shepherd.sendBroadcastHerdAgentQuery();
         }
-
-
 
         public ShepherdViewModel()
         {

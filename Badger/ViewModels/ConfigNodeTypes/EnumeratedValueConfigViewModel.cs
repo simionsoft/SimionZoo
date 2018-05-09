@@ -29,7 +29,7 @@ namespace Badger.ViewModels
             commonInit(parentExperiment, parent, definitionNode, parentXPath);
 
             m_class = definitionNode.Attributes[XMLConfig.classAttribute].Value;
-            enumeratedNames = m_parentExperiment.getEnumeratedType(m_class);
+            enumeratedNames = m_parentExperiment.GetEnumeratedType(m_class);
 
             if (configNode == null || configNode[name] == null)
             {
@@ -59,7 +59,7 @@ namespace Badger.ViewModels
 
         public override bool validate()
         {
-            List<string> enumeration = m_parentExperiment.getEnumeratedType(m_class);
+            List<string> enumeration = m_parentExperiment.GetEnumeratedType(m_class);
             return enumeration.Exists(id => (id==content));
         }
     }

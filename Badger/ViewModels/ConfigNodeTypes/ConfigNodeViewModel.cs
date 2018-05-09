@@ -272,7 +272,7 @@ namespace Badger.ViewModels
             NestedConfigNode parent = (NestedConfigNode)linkedNode.m_parent;
 
             ConfigNodeViewModel unlinkedNode = getInstance(m_parentExperiment, parent,
-                linkedNode.nodeDefinition, m_parentExperiment.appName);
+                linkedNode.nodeDefinition, m_parentExperiment.AppName);
             // Keep the content of the former ogirin node
             if (!(linkedNode.Origin is ForkedNodeViewModel))
             {

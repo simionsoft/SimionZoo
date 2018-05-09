@@ -2,10 +2,6 @@
 using System.Collections.Generic;
 using System.Xml;
 using Badger.Simion;
-using Badger.ViewModels.Reports;
-using Caliburn.Micro;
-using System.IO;
-using System.ComponentModel;
 
 namespace Badger.ViewModels
 {
@@ -13,9 +9,8 @@ namespace Badger.ViewModels
     {
         public string Name { get; set; } = "";
 
-        public string ExeFile { get; set; }
-
-        public List<LoggedPrerequisiteViewModel> Prerequisites { get; set; } = new List<LoggedPrerequisiteViewModel>();
+        List<AppVersion> m_appVersions = new List<AppVersion>();
+        public List<AppVersion> AppVersions { get { return m_appVersions; } }
 
         public List<LoggedForkViewModel> Forks { get; set; } = new List<LoggedForkViewModel>();
 
@@ -44,9 +39,6 @@ namespace Badger.ViewModels
             {
                 if (attrs.GetNamedItem(XMLConfig.nameAttribute) != null)
                     Name = attrs[XMLConfig.nameAttribute].Value;
-
-                if (attrs.GetNamedItem(XMLConfig.ExeFileNameAttr) != null)
-                    ExeFile = attrs[XMLConfig.ExeFileNameAttr].Value;
             }
 
             foreach (XmlNode child in configNode.ChildNodes)
@@ -58,10 +50,11 @@ namespace Badger.ViewModels
                         Forks.Add(newFork);
                         break;
 
-                    case XMLConfig.PrerequisiteTag:
-                        LoggedPrerequisiteViewModel newPrerequisite = new LoggedPrerequisiteViewModel(child);
-                        Prerequisites.Add(newPrerequisite);
-                        break;
+                    //case XmlTags.Version:
+                    //    //No need to load this information once the experiment has been run
+                    //    //AppVersion appVersion = new AppVersion(child);
+                    //    //m_appVersions.Add(appVersion);
+                    //    break;
 
                     case XMLConfig.experimentalUnitNodeTag:
                         LoggedExperimentalUnitViewModel newExpUnit = new LoggedExperimentalUnitViewModel(child, baseDirectory, updateFunction);

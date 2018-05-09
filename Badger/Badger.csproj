@@ -166,6 +166,7 @@
     <Compile Include="Data\NeuralNetwork\Problem.cs" />
     <Compile Include="Data\NeuralNetwork\Tuple.cs" />
     <Compile Include="Data\PlotType.cs" />
+    <Compile Include="Data\Requirements.cs" />
     <Compile Include="Data\SimionFileData.cs" />
     <Compile Include="Data\SimionLogDescriptor.cs" />
     <Compile Include="Data\SimionLogFile.cs" />
@@ -227,7 +228,6 @@
     <Compile Include="ViewModels\Reports\LogQueryViewModel.cs" />
     <Compile Include="Data\TrackGroup.cs" />
     <Compile Include="ViewModels\Reports\PlotPropertiesViewModel.cs" />
-    <Compile Include="ViewModels\Reports\LoggedPrerequisiteViewModel.cs" />
     <Compile Include="ViewModels\Reports\SelectableTreeItem.cs" />
     <Compile Include="ViewModels\Reports\PlotLineSeriesPropertiesViewModel.cs" />
     <Compile Include="ViewModels\Reports\PlotViewModel.cs" />

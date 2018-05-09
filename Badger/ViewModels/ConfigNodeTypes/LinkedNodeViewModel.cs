@@ -112,7 +112,7 @@ namespace Badger.ViewModels
 
             name = nodeDefinition.Attributes[XMLConfig.nameAttribute].Value;
             LinkedNode = getInstance(parentExperiment, parentNode, classDefinition,
-                parentExperiment.appName, configNode);
+                parentExperiment.AppName, configNode);
         }
 
         //constructor used in clone()

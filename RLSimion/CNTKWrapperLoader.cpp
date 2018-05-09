@@ -15,7 +15,7 @@ void CNTKWrapperLoader::Load()
 {
 	if (hCNTKWrapperDLL == 0)
 	{
-		//Set the number of CPU threads to maximum
+		//Set the number of CPU threads to "all"
 		SimionApp::get()->setNumCPUCores(0);
 
 		//Load the wrapper library

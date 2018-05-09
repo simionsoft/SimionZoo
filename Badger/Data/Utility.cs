@@ -1,7 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using System.Xml.Linq;
 using Herd;
 using System.Diagnostics;
 using System.Runtime.CompilerServices;
@@ -9,6 +8,7 @@ using System.Threading;
 using System.IO;
 using System;
 using System.Security.Cryptography;
+using System.Xml;
 
 namespace Badger.Data
 {
@@ -32,7 +32,7 @@ namespace Badger.Data
 
         //this function is called from several tasks and needs to be synchronized
         [MethodImpl(MethodImplOptions.Synchronized)]
-        public static void GetInputsAndOutputs(string exe, string args, ref HerdJob job)
+        public static RunTimeRequirements GetRunTimeRequirements(string exe, string args)
         {
             object o = new object();
             Monitor.Enter(o);
@@ -54,53 +54,37 @@ namespace Badger.Data
             {
                 processOutput += process.StandardOutput.ReadLine();
             }
-            int startPos = processOutput.IndexOf("<Files>");
-            int endPos = processOutput.IndexOf("</Files>");
+
+            //Parse the output
+            RunTimeRequirements runTimeRequirements = null;
+            int startPos = processOutput.IndexOf("<" + XmlTags.Requirements + ">");
+            int endPos = processOutput.IndexOf("</" + XmlTags.Requirements + ">");
             if (startPos >= 0 && endPos > 0)
             {
-                string xml = processOutput.Substring(startPos, endPos - startPos + ("</Files>").Length);
+                string xml = processOutput.Substring(startPos, endPos - startPos + ("</" + XmlTags.Requirements + ">").Length);
 
-                XDocument doc = XDocument.Parse(xml);
-                XElement[] inputFiles = doc.Descendants()
-                                        .Where(e => e.Name == "Input")
-                                        .ToArray();
-                XElement[] outputFiles = doc.Descendants()
-                                            .Where(e => e.Name == "Output")
-                                            .ToArray();
-                //parse input files
-                foreach (XElement e in inputFiles)
-                {
-                    if (!job.inputFiles.Contains(e.Value))
-                        job.inputFiles.Add(e.Value);
-                    //must the input file be renamed in remote machines??
-                    foreach (XAttribute attr in e.Attributes())
-                    {
-                        if (attr.Name == "Rename")
-                            job.renameRules.Add(e.Value, attr.Value);
-                    }
-                }
-                //parse output files
-                foreach (XElement e in outputFiles)
-                {
-                    if (!job.outputFiles.Contains(e.Value))
-                        job.outputFiles.Add(e.Value);
-                }
+                XmlDocument doc = new XmlDocument();
+                doc.LoadXml(xml);
+
+                runTimeRequirements = new RunTimeRequirements(doc);
+
             }
             Monitor.Exit(o);
+            return runTimeRequirements;
         }
 
-        private static string GetPath(XElement element)
-        {
-            var nodes = new List<string>();
-            var node = element;
-            while (node != null)
-            {
-                nodes.Add(node.Name.ToString());
-                node = node.Parent;
-            }
+        //private static string GetPath(XElement element)
+        //{
+        //    var nodes = new List<string>();
+        //    var node = element;
+        //    while (node != null)
+        //    {
+        //        nodes.Add(node.Name.ToString());
+        //        node = node.Parent;
+        //    }
 
-            return string.Join("\\", Enumerable.Reverse(nodes));
-        }
+        //    return string.Join("\\", Enumerable.Reverse(nodes));
+        //}
 
 
         public static string GetRelativePathTo(string absPath, string relTo)

@@ -278,31 +278,23 @@ namespace Badger.ViewModels
 
         bool InitializeExperimentBatchForExecution()
         {
-            Dictionary<string, string> renameRules = new Dictionary<string, string>();
-
             foreach (var experiment in LoggedExperiments)
             {
-                if (!ExistsRequiredFile(experiment.ExeFile))
-                    return false;
-
-                List<string> prerequisites = new List<string>();
-
-                foreach (var prerequisite in experiment.Prerequisites)
+                foreach (AppVersion version in experiment.AppVersions)
                 {
-                    if (!ExistsRequiredFile(prerequisite.Value))
+                    if (!ExistsRequiredFile(version.ExeFile))
                         return false;
 
-                    prerequisites.Add(prerequisite.Value);
-                    if (prerequisite.Rename != null)
-                        renameRules[prerequisite.Value] = prerequisite.Rename;
+                    foreach (string pre in version.Requirements.InputFiles)
+                        if (!ExistsRequiredFile(pre))
+                            return false;
                 }
 
                 m_pendingExperiments.Clear();
                 foreach (var unit in experiment.ExperimentalUnits)
                 {
                     MonitoredExperimentalUnitViewModel monitoredExperiment =
-                        new MonitoredExperimentalUnitViewModel(unit, experiment.ExeFile
-                        , prerequisites, renameRules, Plot);
+                        new MonitoredExperimentalUnitViewModel(unit, Plot, experiment.AppVersions);
                     m_pendingExperiments.Add(monitoredExperiment);
                 }
             }
@@ -387,7 +379,11 @@ namespace Badger.ViewModels
                 = new List<Task<MonitoredJobViewModel>>();
 
             // Assign experiments to free agents
-            AssignExperiments(ref freeHerdAgents, ref assignedJobs);
+            AssignExperiments(ref m_pendingExperiments, ref freeHerdAgents, ref assignedJobs, m_cancelTokenSource.Token, Plot, LogFunction);
+
+            //update the history of monitored jobs
+            foreach (MonitoredJobViewModel job in assignedJobs) AllMonitoredJobs.Insert(0, job);
+
             try
             {
                 while ((assignedJobs.Count > 0 || monitoredJobTasks.Count > 0
@@ -424,7 +420,10 @@ namespace Badger.ViewModels
                         freeHerdAgents.Add(finishedTaskResult.HerdAgent);
 
                     // Assign experiments to free agents
-                    AssignExperiments(ref freeHerdAgents, ref assignedJobs);
+                    AssignExperiments(ref m_pendingExperiments, ref freeHerdAgents, ref assignedJobs, m_cancelTokenSource.Token, Plot, LogFunction);
+                    
+            //update the history of monitored jobs
+                    foreach (MonitoredJobViewModel job in assignedJobs) AllMonitoredJobs.Insert(0, job);
                 }
             }
             catch (Exception ex)
@@ -454,40 +453,85 @@ namespace Badger.ViewModels
         }
 
         //integer value incremented to generate job ids
-        int jobId = 0;
+        static int jobId = 0;
+
         /// <summary>
         ///     Assigns experiments to availables herd agents.
         /// </summary>
         /// <param name="freeHerdAgents"></param>
         /// 
-        void AssignExperiments(ref List<HerdAgentViewModel> freeHerdAgents
-            , ref List<MonitoredJobViewModel> assignedJobs)
+        public static void AssignExperiments(ref List<MonitoredExperimentalUnitViewModel> pendingExperiments
+            , ref List<HerdAgentViewModel> freeHerdAgents, ref List<MonitoredJobViewModel> assignedJobs
+            , CancellationToken cancelToken, PlotViewModel plot = null, Logger.LogFunction logFunction = null)
         {
             //Clear the list: these are jobs which have to be sent
             assignedJobs.Clear();
-
-            while (m_pendingExperiments.Count > 0 && freeHerdAgents.Count > 0)
+            //Create a list of agents that are given work. We need to remove them from the "free" list out of the loop
+            List<HerdAgentViewModel> usedHerdAgents = new List<HerdAgentViewModel>();
+            
+            foreach (HerdAgentViewModel agent in freeHerdAgents)
             {
-                HerdAgentViewModel herdAgent = freeHerdAgents[0];
-                freeHerdAgents.RemoveAt(0);
-
-                int numProcessors = Math.Max(1, herdAgent.NumProcessors - 1); // Let's free one processor
-
                 List<MonitoredExperimentalUnitViewModel> experiments = new List<MonitoredExperimentalUnitViewModel>();
-                int len = Math.Min(numProcessors, m_pendingExperiments.Count);
+                int numFreeCores = agent.NumProcessors;
+                bool bAgentUsed = false;
+                MonitoredExperimentalUnitViewModel experiment;
+                bool bFailedToFindMatch = false;
 
-                for (int i = 0; i < len; i++)
+                while (numFreeCores>0 && !bFailedToFindMatch)
                 {
-                    experiments.Add(m_pendingExperiments[0]);
-                    m_pendingExperiments.RemoveAt(0);
+                    experiment = FirstFittingExperiment(pendingExperiments, numFreeCores, bAgentUsed, agent);
+                    if (experiment != null)
+                    {
+                        //run-time requirements are calculated when a version is selected
+                        experiment.SelectedVersion = HerdAgentViewModel.BestMatch(experiment.AppVersions, agent);
+
+                        //remove the experiment from the list and add it to running experiments
+                        experiments.Add(experiment);
+                        pendingExperiments.Remove(experiment);
+
+                        //update the number of free cpu cores
+                        if (experiment.RunTimeReqs.NumCPUCores > 0)
+                            numFreeCores -= experiment.RunTimeReqs.NumCPUCores;
+                        else numFreeCores = 0;
+
+                        bAgentUsed = true;
+                    }
+                    else bFailedToFindMatch = true;
                 }
 
-                MonitoredJobViewModel newJob = new MonitoredJobViewModel("Job #" + jobId, experiments,
-                    herdAgent, Plot, m_cancelTokenSource.Token, LogFunction);
-                assignedJobs.Add(newJob);
-                AllMonitoredJobs.Insert(0, newJob);
-                ++jobId;
+                if (bAgentUsed)
+                {
+                    MonitoredJobViewModel newJob = new MonitoredJobViewModel("Job #" + jobId, experiments,
+                        agent, plot, cancelToken, logFunction);
+                    assignedJobs.Add(newJob);
+                    usedHerdAgents.Add(agent);
+                    
+
+                    ++jobId;
+                }
+
+                if (pendingExperiments.Count == 0) break;
             }
+            //now we can remove used agents from the list
+            foreach(HerdAgentViewModel agent in usedHerdAgents) freeHerdAgents.Remove(agent);
+        }
+
+        static MonitoredExperimentalUnitViewModel FirstFittingExperiment(List<MonitoredExperimentalUnitViewModel> pendingExperiments, int numFreeCores, bool bAgentUsed, HerdAgentViewModel agent)
+        {
+            foreach (MonitoredExperimentalUnitViewModel experiment in pendingExperiments)
+            {
+                AppVersion bestMatchingVersion = HerdAgentViewModel.BestMatch(experiment.AppVersions, agent);
+                if (bestMatchingVersion != null)
+                {
+                    //If NumCPUCores = "all", then the experiment only fits the agent in case it hasn't been given any other experimental unit
+                    if ((experiment.RunTimeReqs.NumCPUCores == 0 && !bAgentUsed)
+                        //If NumCPUCores != "all", then experiment only fits the agent if the number of cpu cores used is less than those available
+                        || (experiment.RunTimeReqs.NumCPUCores > 0 && experiment.RunTimeReqs.NumCPUCores <= numFreeCores))
+                        return experiment;
+                }
+            }
+            return null;
         }
     }
+
 }

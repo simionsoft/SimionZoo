@@ -7,46 +7,34 @@ using Badger.Data;
 using System.Linq;
 using System;
 using System.Diagnostics;
+using Herd;
 
 namespace Badger.ViewModels
 {
     public class AppVersion
     {
-        string m_name = "N/A";
-        string m_exeFile;
-        List<string> m_prerrequisites = new List<string>();
-        Dictionary<string, string> m_renameRules = new Dictionary<string, string>();
-        Dictionary<string, string> m_requiredProperties = new Dictionary<string, string>();
-        List<string> m_supportedProperties = new List<string>();
+        string m_name = PropValues.None;
+        string m_exeFile = PropValues.None;
 
-        /// <summary>
-        /// Returns the list of files needed to execute this app version remotely: DLL,or  any other file
-        /// </summary>
-        /// <returns></returns>
-        public List<string> Prerrequisites { get { return m_prerrequisites; } }
-        /// <summary>
-        /// Returns the set of properties and the values REQUIRED by this app to work
-        /// </summary>
-        /// <returns></returns>
-        public Dictionary<string, string> RequiredProperties { get { return m_requiredProperties; } }
-        /// <summary>
-        /// Returns the set of properties SUPPORTED by this app
-        /// </summary>
-        /// <returns></returns>
-        public List<string> SupportedProperties { get { return m_supportedProperties; } }
-        /// <summary>
-        /// Rename rules: files that must be stored in the remote machine in a different relative location
-        /// 
-        /// Example: 64 bit runtime C++ libraries have the same name that 32-bit versions have.
-        ///         In the local machine, 64 bit libraries are in /bin/64, 32 libraries are in /bin, but both
-        ///         must be in the same directory as the .exe using them, so the 64 dll-s must be saved in /bin in
-        ///         the remote machine.
-        /// </summary>
-        public Dictionary<string, string> RenameRules { get { return m_renameRules; } }
+        private AppVersionRequirements m_requirements;
+        public AppVersionRequirements Requirements { get { return m_requirements; } }
+
+        public string ExeFile { get { return m_exeFile; } }
 
         public override string ToString()
         {
-            return base.ToString();
+            string xml = "<" + XmlTags.Version + " " + XMLConfig.nameAttribute + "=\"" + m_name + "\">\n";
+            xml += "<" + XmlTags.Exe + ">" + m_exeFile + "</" + XmlTags.Exe + ">\n";
+            xml += m_requirements.ToString();
+            xml += "</" +  XmlTags.Version + ">";
+            return xml;
+        }
+
+        public AppVersion(string name, string exeFile, AppVersionRequirements requirements)
+        {
+            m_name = name;
+            m_exeFile = exeFile;
+            m_requirements = requirements;
         }
 
         public AppVersion(XmlNode node)
@@ -56,29 +44,29 @@ namespace Badger.ViewModels
 
             foreach (XmlElement child in node.ChildNodes)
             {
-                //Only EXE, PRE, INCLUDE and BRANCH children nodes
-                if (child.Name == XMLConfig.exeNodeTag)
+                //Only Exe, Prerrequisite, and Architecture children nodes
+                if (child.Name == XmlTags.Exe)
                     m_exeFile = child.InnerText;
-                else if (child.Name == XMLConfig.preNodeTag)
+                else if (child.Name == XmlTags.Requirements)
                 {
-                    m_prerrequisites.Add(child.InnerText);
-                    if (child.Attributes.GetNamedItem(XMLConfig.renameAttr) != null)
-                    {
-                        //add the new rename rule
-                        m_renameRules[child.InnerText] = child.Attributes[XMLConfig.renameAttr].Value;
-                    }
-                }
-                else if (child.Name == XMLConfig.requiresNodeTag)
-                {
-                    foreach (XmlElement required in child.ChildNodes)
-                        m_requiredProperties.Add(required.Name, required.InnerText);
-                }
-                else if (child.Name == XMLConfig.supportsNodeTag)
-                {
-                    foreach (XmlElement supported in child.ChildNodes)
-                        m_supportedProperties.Add(supported.Name);
+                    m_requirements = new AppVersionRequirements(child);
                 }
             }
+            
+        }
+        /// <summary>
+        /// Returns the best match (assuming versions are ordered by preference) to the local machine's architecture
+        /// </summary>
+        /// <param name="versions"></param>
+        public static AppVersion BestMatch(List<AppVersion> versions)
+        {
+            string localCUDASupport = HerdAgent.CUDASupport();
+            foreach (AppVersion version in versions)
+            {
+                if (HerdAgent.ArchitectureId() == version.Requirements.Architecture)
+                    return version;
+            }
+            return versions[versions.Count - 1]; //we just try the last configuration
         }
     }
     /// <summary>
@@ -105,9 +93,9 @@ namespace Badger.ViewModels
 
         private List<deferredLoadStep> m_deferredLoadSteps = new List<deferredLoadStep>();
 
-        public void registerDeferredLoadStep(deferredLoadStep func) { m_deferredLoadSteps.Add(func); }
+        public void RegisterDeferredLoadStep(deferredLoadStep func) { m_deferredLoadSteps.Add(func); }
 
-        public void doDeferredLoadSteps()
+        public void DoDeferredLoadSteps()
         {
             foreach (deferredLoadStep deferredStep in m_deferredLoadSteps)
                 deferredStep();
@@ -118,7 +106,7 @@ namespace Badger.ViewModels
 
         private Dictionary<string, List<string>> m_enumDefinitions = new Dictionary<string, List<string>>();
 
-        public XmlNode getClassDefinition(string className, bool bCanBeNull = false)
+        public XmlNode GetClassDefinition(string className, bool bCanBeNull = false)
         {
             if (!m_classDefinitions.ContainsKey(className))
             {
@@ -129,7 +117,7 @@ namespace Badger.ViewModels
             return m_classDefinitions[className];
         }
 
-        public void addEnumeratedType(XmlNode definition)
+        public void AddEnumeratedType(XmlNode definition)
         {
             List<string> enumeratedValues = new List<string>();
 
@@ -139,7 +127,7 @@ namespace Badger.ViewModels
             m_enumDefinitions.Add(definition.Attributes[XMLConfig.nameAttribute].Value, enumeratedValues);
         }
 
-        public List<string> getEnumeratedType(string enumName)
+        public List<string> GetEnumeratedType(string enumName)
         {
             if (!m_enumDefinitions.ContainsKey(enumName))
             {
@@ -152,24 +140,24 @@ namespace Badger.ViewModels
         //  the app node's name: RLSimion, ...
         private string m_appName;
 
-        public string appName { get { return m_appName; } set { m_appName = value; NotifyOfPropertyChange(() => appName); } }
+        public string AppName { get { return m_appName; } set { m_appName = value; NotifyOfPropertyChange(() => AppName); } }
 
         //experiment's name
         private string m_name;
 
-        public string name
+        public string Name
         {
             get { return m_name; }
-            set { m_name = MainWindowViewModel.getValidAppName(value); NotifyOfPropertyChange(() => name); }
+            set { m_name = MainWindowViewModel.getValidAppName(value); NotifyOfPropertyChange(() => Name); }
         }
 
         //file name (not null if it has been saved)
         private string m_fileName;
 
-        public string fileName
+        public string FileName
         {
             get { return m_fileName; }
-            set { m_fileName = value; NotifyOfPropertyChange(() => fileName); }
+            set { m_fileName = value; NotifyOfPropertyChange(() => FileName); }
         }
 
         private string m_version;
@@ -266,7 +254,7 @@ namespace Badger.ViewModels
                     //APP node
                     m_appName = rootChild.Attributes[XMLConfig.nameAttribute].Value;
 
-                    name = experimentName;
+                    Name = experimentName;
 
                     if (rootChild.Attributes.GetNamedItem(XMLConfig.versionAttribute) != null)
                         m_version = rootChild.Attributes[XMLConfig.versionAttribute].Value;
@@ -279,10 +267,10 @@ namespace Badger.ViewModels
 
                     foreach (XmlNode child in rootChild.ChildNodes)
                     {
-                        if (child.Name == XMLConfig.appVersionNodeTag)
+                        if (child.Name == XmlTags.Version)
                             m_appVersions.Add(new AppVersion(child));
-                        else if (child.Name == XMLConfig.includeNodeTag)
-                            loadIncludedDefinitionFile(child.InnerText);
+                        else if (child.Name == XmlTags.Include)
+                            LoadIncludedDefinitionFile(child.InnerText);
                         else
                         {
                             // here we expect definitions before any children that uses them
@@ -294,7 +282,7 @@ namespace Badger.ViewModels
 
             LinkNodes();
             //deferred load step: enumerated types
-            doDeferredLoadSteps();
+            DoDeferredLoadSteps();
         }
 
         /// <summary>
@@ -326,7 +314,7 @@ namespace Badger.ViewModels
             Initialize(appDefinitionFileName, configRootNode, experimentName);
         }
 
-        private void loadIncludedDefinitionFile(string appDefinitionFile)
+        private void LoadIncludedDefinitionFile(string appDefinitionFile)
         {
             XmlDocument definitionFile = new XmlDocument();
             definitionFile.Load(appDefinitionFile);
@@ -343,7 +331,7 @@ namespace Badger.ViewModels
                             m_classDefinitions.Add(name, definition);
                         }
                         else if (definition.Name == XMLConfig.enumDefinitionNodeTag)
-                            addEnumeratedType(definition);
+                            AddEnumeratedType(definition);
                     }
                 }
             }
@@ -369,12 +357,13 @@ namespace Badger.ViewModels
                 Directory.CreateDirectory(SimionFileData.tempRelativeDir);
 
             save(filename, SaveMode.AsExperimentalUnit);
+            string exeFile = AppVersion.BestMatch(m_appVersions).ExeFile;
 
             Process proc = new Process()
             {
                 StartInfo = new ProcessStartInfo
                 {
-                    FileName = m_exeFile,
+                    FileName = exeFile,// m_exeFile,
                     Arguments = filename + " -local",
                     UseShellExecute = false,
                     RedirectStandardOutput = false,
@@ -406,7 +395,7 @@ namespace Badger.ViewModels
             if (mode == SaveMode.AsExperiment || mode == SaveMode.AsExperimentalUnit)
             {
                 //We are saving the config file as an experiment, experiment unit, or a badger file
-                writer.WriteLine(leftSpace + "<" + appName + " " + XMLConfig.versionAttribute
+                writer.WriteLine(leftSpace + "<" + AppName + " " + XMLConfig.versionAttribute
                 + "=\"" + XMLConfig.experimentConfigVersion + "\">");
             }
 
@@ -416,17 +405,17 @@ namespace Badger.ViewModels
 
             // Footer for experiments and experiment units
             if (mode == SaveMode.AsExperiment || mode == SaveMode.AsExperimentalUnit)
-                writer.WriteLine(leftSpace + "</" + appName + ">");
+                writer.WriteLine(leftSpace + "</" + AppName + ">");
         }
 
-        public string numForkCombinations
+        public string NumForkCombinations
         {
             get { return "(" + getNumForkCombinations() + ")"; }
         }
 
         public void updateNumForkCombinations()
         {
-            NotifyOfPropertyChange(() => numForkCombinations);
+            NotifyOfPropertyChange(() => NumForkCombinations);
         }
 
         public int getNumForkCombinations()
@@ -440,7 +429,7 @@ namespace Badger.ViewModels
 
         public string setForkCombination(int combination)
         {
-            string combinationName = name;
+            string combinationName = Name;
             int combinationId = combination;
             foreach (ConfigNodeViewModel child in children)
             {

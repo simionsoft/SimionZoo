@@ -1,5 +1,5 @@
 ﻿using System;
-using System.Globalization;
+using System.Collections.Generic;
 using System.Net;
 using Caliburn.Micro;
 using Herd;
@@ -143,26 +143,36 @@ namespace Badger.ViewModels
             }
         }
 
-        public string CudaInfo
+        public string CUDA
         {
             get
             {
-                if (!m_herdAgentInfo.CudaInfo.Equals(HerdAgentInfo.NoneProperty))
-                    return m_herdAgentInfo.CudaInfo;
+                if (!m_herdAgentInfo.CUDA.Equals(PropValues.None))
+                    return m_herdAgentInfo.CUDA;
 
                 return "Not supported";
             }
         }
 
-        public string CudaInfoColor
+        public string CUDAColor
         {
             get
             {
-                if (!m_herdAgentInfo.CudaInfo.Equals(HerdAgentInfo.NoneProperty))
+                if (!m_herdAgentInfo.CUDA.Equals(PropValues.None))
                     return "Black";
 
                 return "Tomato";
             }
+        }
+
+        static public AppVersion BestMatch(List<AppVersion> appVersions, HerdAgentViewModel agent)
+        {
+            foreach(AppVersion version in appVersions)
+            {
+                if (version.Requirements.Architecture == agent.ProcessorArchitecture)
+                    return version;
+            }
+            return null;
         }
     }
 }

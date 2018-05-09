@@ -175,7 +175,7 @@ namespace Badger.Simion
             {
                 if (!experiment.validate())
                 {
-                    CaliburnUtility.ShowWarningDialog("The configuration couldn't be validated in " + experiment.name
+                    CaliburnUtility.ShowWarningDialog("The configuration couldn't be validated in " + experiment.Name
                         + ". Please check it", "VALIDATION ERROR");
                     return -1;
                 }
@@ -222,7 +222,7 @@ namespace Badger.Simion
                 foreach (ExperimentViewModel experimentViewModel in experiments)
                 {
                     batchFileWriter.WriteLine("\t<" + XMLConfig.experimentNodeTag + " "
-                        + XMLConfig.nameAttribute + "=\"" + experimentViewModel.name + "\">");
+                        + XMLConfig.nameAttribute + "=\"" + experimentViewModel.Name + "\">");
 
                     foreach (AppVersion appVersion in experimentViewModel.AppVersions)
                     {
@@ -314,7 +314,7 @@ namespace Badger.Simion
             {
                 if (!experiment.validate())
                 {
-                    CaliburnUtility.ShowWarningDialog("The configuration couldn't be validated in " + experiment.name
+                    CaliburnUtility.ShowWarningDialog("The configuration couldn't be validated in " + experiment.Name
                         + ". Please check it", "VALIDATION ERROR");
                     return;
                 }
@@ -333,7 +333,7 @@ namespace Badger.Simion
                     foreach (ExperimentViewModel experiment in experiments)
                     {
                         writer.WriteLine(leftSpace + "<" + XMLConfig.experimentNodeTag
-                            + " Name=\"" + experiment.name + "\">");
+                            + " Name=\"" + experiment.Name + "\">");
                         experiment.saveToStream(writer, SaveMode.AsExperiment, leftSpace + "  ");
                         writer.WriteLine(leftSpace + "</" + XMLConfig.experimentNodeTag + ">");
                     }
@@ -369,7 +369,7 @@ namespace Badger.Simion
         {
             if (!experiment.validate())
             {
-                CaliburnUtility.ShowWarningDialog("The configuration couldn't be validated in " + experiment.name
+                CaliburnUtility.ShowWarningDialog("The configuration couldn't be validated in " + experiment.Name
                     + ". Please check it", "VALIDATION ERROR");
                 return;
             }
