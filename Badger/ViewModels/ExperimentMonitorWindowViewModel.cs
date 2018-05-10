@@ -469,6 +469,10 @@ namespace Badger.ViewModels
             //Create a list of agents that are given work. We need to remove them from the "free" list out of the loop
             List<HerdAgentViewModel> usedHerdAgents = new List<HerdAgentViewModel>();
             
+
+            //We iterate on the free agents to decide what jobs to give each of them until:
+            //  -either there are no more pending experiments
+            //  -all agents have been given work
             foreach (HerdAgentViewModel agent in freeHerdAgents)
             {
                 List<MonitoredExperimentalUnitViewModel> experiments = new List<MonitoredExperimentalUnitViewModel>();

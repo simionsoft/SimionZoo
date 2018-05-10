@@ -69,7 +69,8 @@ void Logger::openFunctionLogFile(const char* filename)
 
 void Logger::closeFunctionLogFile()
 {
-	fclose(m_functionLogFile);
+	if (m_functionLogFile)
+		fclose(m_functionLogFile);
 }
 
 

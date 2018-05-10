@@ -24,7 +24,7 @@ class Logger
 
 	//Functions log file: drawable downsampled 2d or 1d versions of the functions learned by the agents
 	string m_outputFunctionLogBinary;
-	FILE *m_functionLogFile;
+	FILE *m_functionLogFile = nullptr;
 
 	BOOL_PARAM m_bLogFunctions;
 	INT_PARAM m_numFunctionLogPoints;
@@ -43,8 +43,8 @@ class Logger
 	BOOL_PARAM m_bLogTrainingEpisodes;
 	DOUBLE_PARAM m_logFreq; //in seconds: time between file logs
 
-	Timer *m_pEpisodeTimer;
-	Timer *m_pExperimentTimer;
+	Timer *m_pEpisodeTimer = nullptr;
+	Timer *m_pExperimentTimer = nullptr;
 
 	double m_episodeRewardSum;
 	double m_lastLogSimulationT;
