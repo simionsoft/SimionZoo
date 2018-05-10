@@ -50,12 +50,7 @@ namespace Badger.ViewModels
         List<HerdAgentViewModel> getFreeHerdAgentList()
         {
             if (m_shepherd.HerdAgentList.Count == 0)
-            {
-                CaliburnUtility.ShowWarningDialog(
-                    "No Herd agents were detected, so experiments cannot be sent. " +
-                    "Consider starting the local agent: \"net start HerdAgent\"", "No agents detected");
                 return null;
-            }
 
             List<HerdAgentViewModel> freeHerdAgents = new List<HerdAgentViewModel>();
 
@@ -79,6 +74,12 @@ namespace Badger.ViewModels
         {
             jobId = 0; //initialize the job ids
             List<HerdAgentViewModel> freeHerdAgents= getFreeHerdAgentList();
+            if (freeHerdAgents == null)
+            {
+                CaliburnUtility.ShowWarningDialog("No Herd agents were detected. You can manually start the local agent in the console: \"net start HerdAgent\"", "No agents detected");
+                return;
+            }
+
             IsRunning = true;
             ExperimentTimer.Start();
             Task.Run(() => RunExperimentsAsync(freeHerdAgents));
@@ -244,7 +245,6 @@ namespace Badger.ViewModels
             set
             {
                 m_numFinishedExperimentalUnits = value;
-                UpdateGlobalProgress();
                 NotifyOfPropertyChange(() => NumFinishedExperimentalUnits);
             }
         }
@@ -283,11 +283,17 @@ namespace Badger.ViewModels
                 foreach (AppVersion version in experiment.AppVersions)
                 {
                     if (!ExistsRequiredFile(version.ExeFile))
+                    {
+                        CaliburnUtility.ShowWarningDialog("Cannot find required file: " + version.ExeFile + ". Check the app definition file in /config/apps", "ERROR");
                         return false;
+                    }
 
                     foreach (string pre in version.Requirements.InputFiles)
                         if (!ExistsRequiredFile(pre))
+                        {
+                            CaliburnUtility.ShowWarningDialog("Cannot find required file: " + pre + ". Check the app definition file in /config/apps", "ERROR");
                             return false;
+                        }
                 }
 
                 m_pendingExperiments.Clear();
@@ -325,14 +331,22 @@ namespace Badger.ViewModels
         ///     Calculate the global progress of experiments in queue.
         /// </summary>
         /// <returns>The progress as a percentage.</returns>
-        public void UpdateGlobalProgress()
+        object m_globalProgressUpdateObj = new object();
+        public double CalculateGlobalProgress()
         {
-            if (NumExperimentalUnits == 0)
-                GlobalProgress= 0.0;
-            double sum = NumFinishedExperimentalUnits;
-            foreach (MonitoredJobViewModel exp in AllMonitoredJobs)
-                sum += exp.MonitoredExperimentalUnits.Count * exp.NormalizedProgress;
-            GlobalProgress= sum / NumExperimentalUnits;
+            lock (m_globalProgressUpdateObj)
+            {
+                double progress = 0.0;
+                if (NumExperimentalUnits > 0)
+                {
+                    double sum = 0.0;
+                    foreach (MonitoredJobViewModel exp in AllMonitoredJobs)
+                        sum += exp.MonitoredExperimentalUnits.Count * exp.NormalizedProgress;
+                    progress = sum / NumExperimentalUnits;
+                }
+                return progress;
+            }
+            
         }
 
 
@@ -344,11 +358,15 @@ namespace Badger.ViewModels
         private void ProgressUpdateTimedEvent(object source, ElapsedEventArgs e)
         {
             // Recalculate global progress each time
-            UpdateGlobalProgress();
+            GlobalProgress= CalculateGlobalProgress();
             // Then update the estimated time to end
-            m_timeRemaining = (int)(ExperimentTimer.Elapsed.TotalSeconds
-                * ((1 - m_globalProgress) / m_globalProgress));
-            EstimatedEndTime = TimeSpan.FromSeconds(m_timeRemaining).ToString(@"hh\:mm\:ss");
+            if (m_globalProgress < 1.0)
+            {
+                m_timeRemaining = (int)(ExperimentTimer.Elapsed.TotalSeconds
+                  * ((1 - m_globalProgress) / m_globalProgress));
+                EstimatedEndTime = TimeSpan.FromSeconds(m_timeRemaining).ToString(@"hh\:mm\:ss");
+            }
+            else EstimatedEndTime = "Finished";
         }
 
         BindableCollection<MonitoredJobViewModel> m_allMonitoredJobs
@@ -486,9 +504,6 @@ namespace Badger.ViewModels
                     experiment = FirstFittingExperiment(pendingExperiments, numFreeCores, bAgentUsed, agent);
                     if (experiment != null)
                     {
-                        //run-time requirements are calculated when a version is selected
-                        experiment.SelectedVersion = HerdAgentViewModel.BestMatch(experiment.AppVersions, agent);
-
                         //remove the experiment from the list and add it to running experiments
                         experiments.Add(experiment);
                         pendingExperiments.Remove(experiment);
@@ -527,6 +542,9 @@ namespace Badger.ViewModels
                 AppVersion bestMatchingVersion = HerdAgentViewModel.BestMatch(experiment.AppVersions, agent);
                 if (bestMatchingVersion != null)
                 {
+                    //run-time requirements are calculated when a version is selected
+                    experiment.SelectedVersion = HerdAgentViewModel.BestMatch(experiment.AppVersions, agent);
+
                     //If NumCPUCores = "all", then the experiment only fits the agent in case it hasn't been given any other experimental unit
                     if ((experiment.RunTimeReqs.NumCPUCores == 0 && !bAgentUsed)
                         //If NumCPUCores != "all", then experiment only fits the agent if the number of cpu cores used is less than those available

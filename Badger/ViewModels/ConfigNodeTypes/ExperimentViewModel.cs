@@ -44,7 +44,7 @@ namespace Badger.ViewModels
 
             foreach (XmlElement child in node.ChildNodes)
             {
-                //Only Exe, Prerrequisite, and Architecture children nodes
+                //Only Exe and AppVersionRequirements (i/o files and architecture)
                 if (child.Name == XmlTags.Exe)
                     m_exeFile = child.InnerText;
                 else if (child.Name == XmlTags.Requirements)
@@ -60,13 +60,12 @@ namespace Badger.ViewModels
         /// <param name="versions"></param>
         public static AppVersion BestMatch(List<AppVersion> versions)
         {
-            string localCUDASupport = HerdAgent.CUDASupport();
             foreach (AppVersion version in versions)
             {
                 if (HerdAgent.ArchitectureId() == version.Requirements.Architecture)
                     return version;
             }
-            return versions[versions.Count - 1]; //we just try the last configuration
+            return null;
         }
     }
     /// <summary>
@@ -357,20 +356,24 @@ namespace Badger.ViewModels
                 Directory.CreateDirectory(SimionFileData.tempRelativeDir);
 
             save(filename, SaveMode.AsExperimentalUnit);
-            string exeFile = AppVersion.BestMatch(m_appVersions).ExeFile;
+            AppVersion bestMatch = AppVersion.BestMatch(m_appVersions);
 
-            Process proc = new Process()
+            if (bestMatch != null)
             {
-                StartInfo = new ProcessStartInfo
+                Process proc = new Process()
                 {
-                    FileName = exeFile,// m_exeFile,
-                    Arguments = filename + " -local",
-                    UseShellExecute = false,
-                    RedirectStandardOutput = false,
-                    CreateNoWindow = true
-                }
-            };
-            proc.Start();
+                    StartInfo = new ProcessStartInfo
+                    {
+                        FileName = bestMatch.ExeFile,
+                        Arguments = filename + " -local",
+                        UseShellExecute = false,
+                        RedirectStandardOutput = false,
+                        CreateNoWindow = true
+                    }
+                };
+                proc.Start();
+            }
+            else CaliburnUtility.ShowWarningDialog("The local machine doesn't mach the requirements of any of the app versions", "ERROR");
         }
 
         //this method saves an experiment. Depending on the mode:

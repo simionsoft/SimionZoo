@@ -66,26 +66,12 @@ namespace Badger.Data
                 XmlDocument doc = new XmlDocument();
                 doc.LoadXml(xml);
 
-                runTimeRequirements = new RunTimeRequirements(doc);
+                runTimeRequirements = new RunTimeRequirements(doc.FirstChild);
 
             }
             Monitor.Exit(o);
             return runTimeRequirements;
         }
-
-        //private static string GetPath(XElement element)
-        //{
-        //    var nodes = new List<string>();
-        //    var node = element;
-        //    while (node != null)
-        //    {
-        //        nodes.Add(node.Name.ToString());
-        //        node = node.Parent;
-        //    }
-
-        //    return string.Join("\\", Enumerable.Reverse(nodes));
-        //}
-
 
         public static string GetRelativePathTo(string absPath, string relTo)
         {

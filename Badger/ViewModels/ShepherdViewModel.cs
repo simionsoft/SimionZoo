@@ -80,26 +80,12 @@ namespace Badger.ViewModels
 
                         while (!found && index < len)
                         {
-                            // We need to have this condition until every agent is in v1.0.0.6 or superior
-                            if (agent.ProcessorId != null && agent.ProcessorId != Herd.PropValues.None)
+                            if (agent.ProcessorId.Equals(m_herdAgentList[index].ProcessorId))
                             {
-                                if (agent.ProcessorId.Equals(m_herdAgentList[index].ProcessorId))
-                                {
-                                    m_herdAgentList[index].IpAddress = agent.ipAddress; // The we can change IP at runtime
-                                    m_herdAgentList[index].ProcessorLoad = agent.ProcessorLoad.ToString("0.") + "%";
-                                    m_herdAgentList[index].State = agent.State;
-                                    found = true;
-                                }
-                            }
-                            else
-                            {
-                                if (Equals(agent.ipAddress, m_herdAgentList[index].IpAddress))
-                                {
-                                    // Properties that can change at runtime
-                                    m_herdAgentList[index].ProcessorLoad = agent.ProcessorLoad.ToString("0.") + "%";
-                                    m_herdAgentList[index].State = agent.State;
-                                    found = true;
-                                }
+                                m_herdAgentList[index].IpAddress = agent.ipAddress; // The we can change IP at runtime
+                                m_herdAgentList[index].ProcessorLoad = agent.ProcessorLoad.ToString("0.") + "%";
+                                m_herdAgentList[index].State = agent.State;
+                                found = true;
                             }
 
                             index++;

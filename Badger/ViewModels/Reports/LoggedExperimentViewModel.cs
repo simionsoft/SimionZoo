@@ -50,11 +50,11 @@ namespace Badger.ViewModels
                         Forks.Add(newFork);
                         break;
 
-                    //case XmlTags.Version:
-                    //    //No need to load this information once the experiment has been run
-                    //    //AppVersion appVersion = new AppVersion(child);
-                    //    //m_appVersions.Add(appVersion);
-                    //    break;
+                    case Herd.XmlTags.Version:
+
+                        AppVersion appVersion = new AppVersion(child);
+                        m_appVersions.Add(appVersion);
+                        break;
 
                     case XMLConfig.experimentalUnitNodeTag:
                         LoggedExperimentalUnitViewModel newExpUnit = new LoggedExperimentalUnitViewModel(child, baseDirectory, updateFunction);

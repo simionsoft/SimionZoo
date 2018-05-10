@@ -9,17 +9,17 @@ namespace Badger.ViewModels
     public class HerdAgentViewModel : PropertyChangedBase
     {
         private HerdAgentInfo m_herdAgentInfo;
-
+        bool m_bLocalAgent = false;
 
         public HerdAgentViewModel(HerdAgentInfo info)
         {
             m_herdAgentInfo = info;
             ProcessorLoad = m_herdAgentInfo.ProcessorLoad.ToString("0.") + "%";
-            State = m_herdAgentInfo.State;
             IpAddress = m_herdAgentInfo.ipAddress;
 
             //deselect local agent by default
-            IsSelected = !IsLocalIpAddress(IpAddressString);
+            m_bLocalAgent = IsLocalIpAddress(IpAddressString);
+            IsSelected = !m_bLocalAgent;
         }
 
         public static bool IsLocalIpAddress(string host)
@@ -86,7 +86,7 @@ namespace Badger.ViewModels
 
         public string ProcessorId { get { return m_herdAgentInfo.ProcessorId; } }
 
-        public int NumProcessors { get { return m_herdAgentInfo.NumProcessors; } }
+        public int NumProcessors { get { if (!m_bLocalAgent) return m_herdAgentInfo.NumProcessors; else return m_herdAgentInfo.NumProcessors - 1; } }
 
         public string ProcessorArchitecture { get { return m_herdAgentInfo.ProcessorArchitecture; } }
 
@@ -131,14 +131,12 @@ namespace Badger.ViewModels
 
         public string Version { get { return m_herdAgentInfo.Version; } }
 
-        private string m_state;
-
         public string State
         {
-            get { return m_state; }
+            get { return m_herdAgentInfo.State; }
             set
             {
-                m_state = value;
+                m_herdAgentInfo.State = value;
                 NotifyOfPropertyChange(() => State);
             }
         }

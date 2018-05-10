@@ -62,17 +62,17 @@ namespace Badger.Data
                 //parse input files
                 if (child.Name == XmlTags.Input)
                 {
-                    AddInputFile(child.Value);
+                    AddInputFile(child.InnerText);
                     //must the input file be renamed in remote machines??
-                    if (child.GetAttribute(XmlTags.RenameAttr) != null)
-                        AddRenameRule(child.Value, child.Attributes[XmlTags.RenameAttr].Value);
+                    if (child.HasAttribute(XmlTags.RenameAttr))
+                        AddRenameRule(child.InnerText, child.GetAttribute(XmlTags.RenameAttr));
                 }
                 else if (child.Name == XmlTags.Output)
                 {
-                    AddOutputFile(child.Value);
+                    AddOutputFile(child.InnerText);
                     //must the input file be renamed in remote machines??
-                    if (child.GetAttribute(XmlTags.RenameAttr) != null)
-                        AddRenameRule(child.Value, child.Attributes[XmlTags.RenameAttr].Value);
+                    if (child.HasAttribute(XmlTags.RenameAttr))
+                        AddRenameRule(child.InnerText, child.GetAttribute(XmlTags.RenameAttr));
                 }
             }
         }
@@ -110,8 +110,8 @@ namespace Badger.Data
             {
                 if (child.Name == PropNames.Architecture)
                 {
-                    //parse "NumCPUCores" property
-                    Architecture = child[PropNames.Architecture].InnerText;
+                    //parse "Architecture" property
+                    Architecture = child.InnerText;
                 }
             }
         }
@@ -147,7 +147,7 @@ namespace Badger.Data
                 if (child.Name == PropNames.NumCPUCores)
                 {
                     //parse "NumCPUCores" property
-                    NumCPUCores = int.Parse(child[PropNames.NumCPUCores].InnerText);
+                    NumCPUCores = int.Parse(child.InnerText);
                 }
             }
         }

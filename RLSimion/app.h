@@ -57,7 +57,7 @@ private:
 
 	//requirements/support
 	unsigned int m_numCPUCores = 1;
-	bool m_canUseCUDA = false;
+
 public:
 
 	SimionApp(ConfigNode* pParameters);
