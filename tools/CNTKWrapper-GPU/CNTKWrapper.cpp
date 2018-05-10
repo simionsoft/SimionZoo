@@ -1,7 +1,7 @@
 
 #ifdef _WIN64
 
-#include "../CNTKWrapper/CNTKWrapper.h"
+#include "CNTKWrapper.h"
 #include "Parameter.h"
 #include "Link.h"
 #include "ParameterValues.h"

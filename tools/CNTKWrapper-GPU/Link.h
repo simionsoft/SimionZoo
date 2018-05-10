@@ -2,7 +2,7 @@
 #include <string>
 #include <vector>
 #include <memory>
-#include "../CNTKWrapper/CNTKWrapper.h"
+#include "CNTKWrapper.h"
 #include "../../3rd-party/tinyxml2/tinyxml2.h"
 
 using namespace std;

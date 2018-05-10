@@ -1,6 +1,6 @@
 #pragma once
 #include <vector>
-#include "../CNTKWrapper/CNTKWrapper.h"
+#include "CNTKWrapper.h"
 #include "CNTKLibrary.h"
 
 using namespace std;

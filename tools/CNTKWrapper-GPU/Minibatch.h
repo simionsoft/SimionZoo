@@ -1,6 +1,6 @@
 #pragma once
 
-#include "../CNTKWrapper/CNTKWrapper.h"
+#include "CNTKWrapper.h"
 #include "../../RLSimion/named-var-set.h"
 #include <vector>
 using namespace std;

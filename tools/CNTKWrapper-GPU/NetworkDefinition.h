@@ -1,5 +1,5 @@
 #pragma once
-#include "../CNTKWrapper/CNTKWrapper.h"
+#include "CNTKWrapper.h"
 #include "../../3rd-party/tinyxml2/tinyxml2.h"
 #include "../../RLSimion/named-var-set.h"
 #include <vector>
