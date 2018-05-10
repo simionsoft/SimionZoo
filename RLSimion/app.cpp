@@ -464,18 +464,6 @@ void SimionApp::updateScene(State* s, Action* a)
 	//render the image
 	m_pInputHandler->handleInput();
 	m_pRenderer->draw();
-
-	//real time execution?
-	if (!((FreeCameraInputHandler*)m_pInputHandler)->getRealTimeExecutionDisabled())
-	{
-		double dt = pWorld->getDT();
-		double elapsedTime = m_timer.getElapsedTime(true);
-		if (dt > elapsedTime)
-		{
-			Sleep((unsigned long)(1000.0*(dt - elapsedTime)));
-			m_timer.start();
-		}
-	}
 }
 
 void SimionApp::update2DMeters(State* s, Action* a)
