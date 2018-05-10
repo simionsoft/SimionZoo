@@ -12,22 +12,15 @@ public:
 	virtual void handleInput() = 0;
 };
 
+
+#define NUM_KEYS 256
+
 class FreeCameraInputHandler: public IInputHandler
 {
 	Timer m_timer;
 
-	bool m_bWPressed = false;
-	bool m_bSPressed = false;
-	bool m_bDPressed = false;
-	bool m_bAPressed = false;
-	bool m_bUpArrowPressed = false;
-	bool m_bDownArrowPressed = false;
-	bool m_bLeftArrowPressed = false;
-	bool m_bRightArrowPressed = false;
-	bool m_bShftPressed = false;
-	bool m_bLeftCtrlPressed = false;
-	bool m_bSpacePressed = false;
-	bool m_real_time_execution_disabled = false;
+	bool m_keyboardState[256];
+	bool m_specialKeysState[256];
 
 	static void _onKeyPressed(unsigned char key, int x, int y);
 	static void _onKeyReleased(unsigned char key, int x, int y);
@@ -39,24 +32,21 @@ class FreeCameraInputHandler: public IInputHandler
 	void onSpecialKeyPressed(int key, int x, int y);
 	void onSpecialKeyReleased(int key, int x, int y);
 
-	bool bMoveForward() const { return !m_bShftPressed && (m_bWPressed || m_bUpArrowPressed); }
-	bool bMoveBackward() const { return !m_bShftPressed && (m_bSPressed || m_bDownArrowPressed); }
-	bool bYawRight() const { return !m_bShftPressed && 
-		(((m_bAPressed || m_bLeftArrowPressed) && !bMoveBackward())
-		|| ((m_bDPressed || m_bRightArrowPressed) && bMoveBackward())); }
-	bool bYawLeft() const { return !m_bShftPressed && 
-		(((m_bAPressed || m_bLeftArrowPressed) && bMoveBackward())
-		|| ((m_bDPressed || m_bRightArrowPressed) && !bMoveBackward())); }
-	bool bMoveUp() const { return m_bShftPressed && ( m_bWPressed || m_bUpArrowPressed); }
-	bool bMoveDown() const { return m_bShftPressed && (m_bSPressed || m_bDownArrowPressed); }
-	bool bMoveLeft() const { return m_bShftPressed && (m_bAPressed || m_bLeftArrowPressed); }
-	bool bMoveRight() const { return m_bShftPressed && (m_bDPressed || m_bRightArrowPressed); }
+	bool keyPressed(unsigned char key) const;
+	bool specialKeyPressed(unsigned char key) const;
+
+	bool bMoveForward() const;
+	bool bMoveBackward() const;
+	bool bYawRight() const;
+	bool bYawLeft() const;
+	bool bMoveUp() const;
+	bool bMoveDown() const;
+	bool bMoveLeft() const;
+	bool bMoveRight() const;
 public:
 	FreeCameraInputHandler();
 	virtual ~FreeCameraInputHandler();
 
 	virtual void handleInput();
-
-	bool getRealTimeExecutionDisabled() {return m_real_time_execution_disabled;}
 };
 

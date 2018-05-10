@@ -13,6 +13,12 @@ FreeCameraInputHandler::FreeCameraInputHandler()
 {
 	m_pInstance = this;
 
+	for (size_t key = 0; key < NUM_KEYS; ++key)
+		m_keyboardState[key] = false;
+
+	for (size_t key = 0; key < NUM_KEYS; ++key)
+		m_specialKeysState[key] = false;
+
 	glutSpecialFunc(_onSpecialKeyPressed);
 	glutSpecialUpFunc(_onSpecialKeyReleased);
 	glutKeyboardFunc(_onKeyPressed);
@@ -52,66 +58,80 @@ void FreeCameraInputHandler::_onKeyReleased(unsigned char key, int x, int y)
 	((FreeCameraInputHandler*)IInputHandler::get())->onKeyReleased(key, x, y);
 }
 
+bool FreeCameraInputHandler::keyPressed(unsigned char key) const
+{
+	return m_keyboardState[key];
+}
+
+bool FreeCameraInputHandler::specialKeyPressed(unsigned char key) const
+{
+	return m_specialKeysState[key];
+}
+
+bool FreeCameraInputHandler::bMoveForward() const
+{
+	return keyPressed('w') || specialKeyPressed(GLUT_KEY_UP);
+}
+bool FreeCameraInputHandler::bMoveBackward() const
+{
+	return keyPressed('s') || specialKeyPressed(GLUT_KEY_DOWN);
+}
+bool FreeCameraInputHandler::bYawRight() const
+{
+	if (bMoveBackward())
+		return keyPressed('d') || specialKeyPressed(GLUT_KEY_RIGHT);
+	else
+		return keyPressed('a') || specialKeyPressed(GLUT_KEY_LEFT);
+}
+
+bool FreeCameraInputHandler::bYawLeft() const 
+{
+	if (bMoveBackward())
+		return keyPressed('a') || specialKeyPressed(GLUT_KEY_LEFT);
+	else
+		return keyPressed('d') || specialKeyPressed(GLUT_KEY_RIGHT);
+}
+
+bool FreeCameraInputHandler::bMoveUp() const
+{
+	return keyPressed('W');
+}
+
+bool FreeCameraInputHandler::bMoveDown() const
+{
+	return keyPressed('S');
+}
+
+bool FreeCameraInputHandler::bMoveLeft() const
+{
+	return keyPressed('A');
+}
+
+bool FreeCameraInputHandler::bMoveRight() const 
+{
+	return keyPressed('D');
+}
+
 void FreeCameraInputHandler::onKeyPressed(unsigned char key, int x, int y)
 {
-	//keyboard callback function
-	switch (key)
-	{
-	case 'w': m_bWPressed = true; m_bShftPressed = false; break;
-	case 'W': m_bWPressed = true; m_bShftPressed = true; break;
-	case 's': m_bSPressed = true; m_bShftPressed = false; break;
-	case 'S': m_bSPressed = true; m_bShftPressed = true; break;
-	case 'a': m_bAPressed = true; m_bShftPressed = false; break;
-	case 'A': m_bAPressed = true; m_bShftPressed = true; break;
-	case 'd': m_bDPressed = true; m_bShftPressed = false; break;
-	case 'D': m_bDPressed = true; m_bShftPressed = true; break;
-	case 32: m_bSpacePressed = true; m_bShftPressed = false; break;
-	case 27: exit(0);
-	}
+	if (key == 27)
+		exit(0);
+	m_keyboardState[key] = true;
 }
 
 void FreeCameraInputHandler::onKeyReleased(unsigned char key, int x, int y)
 {
-	//keyboard callback function
-	switch (key)
-	{
-	case 'w':
-	case 'W': m_bWPressed = false; break;
-	case 's':
-	case 'S': m_bSPressed = false; break;
-	case 'a':
-	case 'A': m_bAPressed = false; break;
-	case 'd':
-	case 'D': m_bDPressed = false; break;
-	case 32:
-		m_real_time_execution_disabled = !m_real_time_execution_disabled;
-		m_bSpacePressed = false;
-		break;
-	}
+	m_keyboardState[key] = false;
 }
 
 void FreeCameraInputHandler::onSpecialKeyPressed(int key, int x, int y)
 {
-	switch (key)
-	{
-	case GLUT_KEY_UP: m_bUpArrowPressed = true; break;
-	case GLUT_KEY_DOWN: m_bDownArrowPressed = true; break;
-	case GLUT_KEY_LEFT: m_bLeftArrowPressed = true; break;
-	case GLUT_KEY_RIGHT: m_bRightArrowPressed = true; break;
-	case GLUT_KEY_CTRL_L: m_bLeftCtrlPressed = true; break;
-	}
+	m_specialKeysState[key] = true;
 }
 
 void FreeCameraInputHandler::onSpecialKeyReleased(int key, int x, int y)
 {
-	switch (key)
-	{
-	case GLUT_KEY_UP: m_bUpArrowPressed = false; break;
-	case GLUT_KEY_DOWN: m_bDownArrowPressed = false; break;
-	case GLUT_KEY_LEFT: m_bLeftArrowPressed = false; break;
-	case GLUT_KEY_RIGHT: m_bRightArrowPressed = false; break;
-	case GLUT_KEY_CTRL_L: m_bLeftCtrlPressed = false; break;
-	}
+	m_specialKeysState[key] = false;
 }
 
 void FreeCameraInputHandler::handleInput()
