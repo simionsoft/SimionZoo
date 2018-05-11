@@ -42,10 +42,19 @@
     <ClInclude Include="InputData.h">
       <Filter>Headers</Filter>
     </ClInclude>
+    <ClInclude Include="CNTKWrapper.h">
+      <Filter>Headers</Filter>
+    </ClInclude>
     <ClInclude Include="OptimizerSetting.h">
       <Filter>Headers</Filter>
     </ClInclude>
     <ClInclude Include="Exceptions.h">
+      <Filter>Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="CNTKLibrary.h">
+      <Filter>Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="CNTKLibraryInternals.h">
       <Filter>Headers</Filter>
     </ClInclude>
     <ClInclude Include="CNTKWrapperInternals.h">

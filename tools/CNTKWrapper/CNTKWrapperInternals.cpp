@@ -190,7 +190,7 @@ CNTK::FunctionPtr CNTKWrapper::BatchNormalizationLayer(const Link * pLink, vecto
 	auto runningCount = Constant::Scalar(0.0f, device);
 
 	//TODO: check if spatial=false and 5000 are good values.
-	return BatchNormalization(dependencies[0]->getFunctionPtr(), scaleParams, biasParams, runningMean, runningInvStd, runningCount, false, 5000, 0, 1e-05, true, name);
+	return BatchNormalization(dependencies[0]->getFunctionPtr(), scaleParams, biasParams, runningMean, runningInvStd, runningCount, false);
 
 }
 
@@ -219,47 +219,47 @@ CNTK::TrainerPtr CNTKWrapper::CreateOptimizer(const OptimizerSettings * pOptimiz
 	switch (pOptimizerSetting->getOptimizerType())
 	{
 	case OptimizerType::SGD:
-		pLearner = CNTK::SGDLearner(output->Parameters(),LearningRatePerMinibatchSchedule(learningRate));
+		pLearner = CNTK::SGDLearner(output->Parameters(),TrainingParameterPerSampleSchedule(learningRate));
 		break;
 
 	case OptimizerType::MomentumSGD:
 		pLearner = CNTK::MomentumSGDLearner(output->Parameters(),
-			LearningRatePerMinibatchSchedule(learningRate),
-			LearningRatePerMinibatchSchedule(pOptimizerSetting->getParameterByKey("Momentum")->getValue())
+			TrainingParameterPerSampleSchedule(learningRate),
+			TrainingParameterPerSampleSchedule(pOptimizerSetting->getParameterByKey("Momentum")->getValue())
 		);
 		break;
 
 	case OptimizerType::Nesterov:
 		pLearner = CNTK::NesterovLearner(output->Parameters(),
-			LearningRatePerMinibatchSchedule(learningRate),
-			LearningRatePerMinibatchSchedule(pOptimizerSetting->getParameterByKey("Momentum")->getValue())
+			TrainingParameterPerSampleSchedule(learningRate),
+			TrainingParameterPerSampleSchedule(pOptimizerSetting->getParameterByKey("Momentum")->getValue())
 		); break;
 
 	case OptimizerType::FSAdaGrad:
 		pLearner = CNTK::FSAdaGradLearner(output->Parameters(),
-			LearningRatePerMinibatchSchedule(learningRate),
-			LearningRatePerMinibatchSchedule(pOptimizerSetting->getParameterByKey("Momentum")->getValue()),
+			TrainingParameterPerSampleSchedule(learningRate),
+			TrainingParameterPerSampleSchedule(pOptimizerSetting->getParameterByKey("Momentum")->getValue()),
 			DefaultUnitGainValue(),
-			LearningRatePerMinibatchSchedule(pOptimizerSetting->getParameterByKey("Variance momentum")->getValue())
+			TrainingParameterPerSampleSchedule(pOptimizerSetting->getParameterByKey("Variance momentum")->getValue())
 		); break;
 
 	case OptimizerType::Adam:
 		pLearner = CNTK::AdamLearner(output->Parameters(),
-			LearningRatePerMinibatchSchedule(learningRate),
-			LearningRatePerMinibatchSchedule(pOptimizerSetting->getParameterByKey("Momentum")->getValue()),
+			TrainingParameterPerSampleSchedule(learningRate),
+			TrainingParameterPerSampleSchedule(pOptimizerSetting->getParameterByKey("Momentum")->getValue()),
 			DefaultUnitGainValue(),
-			LearningRatePerMinibatchSchedule(pOptimizerSetting->getParameterByKey("Variance momentum")->getValue()),
+			TrainingParameterPerSampleSchedule(pOptimizerSetting->getParameterByKey("Variance momentum")->getValue()),
 			pOptimizerSetting->getParameterByKey("Epsilon")->getValue()
 		); break;
 
 	case OptimizerType::AdaGrad:
 		pLearner = CNTK::AdaGradLearner(output->Parameters(),
-			LearningRatePerMinibatchSchedule(learningRate)
+			TrainingParameterPerSampleSchedule(learningRate)
 		); break;
 
 	case OptimizerType::RMSProp:
 		pLearner = CNTK::RMSPropLearner(output->Parameters(),
-			LearningRatePerMinibatchSchedule(learningRate),
+			TrainingParameterPerSampleSchedule(learningRate),
 			pOptimizerSetting->getParameterByKey("Gamma")->getValue(),
 			pOptimizerSetting->getParameterByKey("Inc")->getValue(),
 			pOptimizerSetting->getParameterByKey("Dec")->getValue(),
@@ -269,7 +269,7 @@ CNTK::TrainerPtr CNTKWrapper::CreateOptimizer(const OptimizerSettings * pOptimiz
 
 	case OptimizerType::AdaDelta:
 		pLearner = CNTK::AdaDeltaLearner(output->Parameters(),
-			LearningRatePerMinibatchSchedule(learningRate),
+			TrainingParameterPerSampleSchedule(learningRate),
 			pOptimizerSetting->getParameterByKey("Rho")->getValue(),
 			pOptimizerSetting->getParameterByKey("Epsilon")->getValue()
 		); break;
@@ -349,8 +349,7 @@ FunctionPtr CNTKWrapper::Internal::Convolution1D(Variable input, size_t kernelCo
 	auto convParams = Parameter({ kernel, numInputChannels, kernelCount }, DataType::Double
 		, GlorotUniformInitializer(wScale, -1, 2), device,L"ConvParams");
 	return applyActivationFunction(
-		Convolution(convParams, input, { stride, numInputChannels }, { true }, { true }
-			, 0Ui64, outputName),
+		Convolution(convParams, input, { stride, numInputChannels }, { true }, { true }, {1}, 1Ui64, 1Ui64, 0Ui64, outputName),
 		activationFunction
 	);
 }
@@ -363,7 +362,7 @@ FunctionPtr CNTKWrapper::Internal::Convolution2D(Variable input, size_t kernelCo
 
 	auto convParams = Parameter({ kernelWidth, kernelHeight, numInputChannels, kernelCount }, DataType::Double, GlorotUniformInitializer(wScale, -1, 2), device);
 	return applyActivationFunction(
-		Convolution(convParams, input, { strideWidth, strideHeight, numInputChannels }, { true }, { true }, 0Ui64, outputName),
+		Convolution(convParams, input, { strideWidth, strideHeight, numInputChannels }, { true }, { true }, { 1 }, 1Ui64, 1Ui64, 0Ui64, outputName),
 		activationFunction
 	);
 }
@@ -376,7 +375,7 @@ FunctionPtr CNTKWrapper::Internal::Convolution3D(Variable input, size_t kernelCo
 
 	auto convParams = Parameter({ kernelWidth, kernelHeight, kernelDepth, numInputChannels, kernelCount }, DataType::Double, GlorotUniformInitializer(wScale, -1, 2), device);
 	return applyActivationFunction(
-		Convolution(convParams, input, { strideWidth, strideHeight, strideDepth, numInputChannels }, { true }, { true }, 0Ui64, outputName),
+		Convolution(convParams, input, { strideWidth, strideHeight, strideDepth, numInputChannels }, { true }, { true }, { 1 }, 1Ui64, 1Ui64, 0Ui64, outputName),
 		activationFunction
 	);
 }

@@ -345,4 +345,9 @@ wstring NetworkDefinition::getOutputLayer()
 	return m_outputLayerName;
 }
 
+string NetworkDefinition::getDeviceName()
+{
+	return CNTKWrapper::Internal::wstring2string(CNTK::DeviceDescriptor::UseDefaultDevice().AsString());
+}
+
 #endif // _WIN64

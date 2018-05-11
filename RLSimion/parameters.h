@@ -406,12 +406,7 @@ protected:
 
 public:
 	NN_DEFINITION() = default;
-	NN_DEFINITION(ConfigNode* pConfigNode, const char* name, const char* comment)
-	{
-		m_name = name;
-		m_comment = comment;
-		m_pDefinition = CNTKWrapperLoader::getProblem(pConfigNode->FirstChildElement(m_name)->FirstChildElement("Problem"));
-	}
+	NN_DEFINITION(ConfigNode* pConfigNode, const char* name, const char* comment);
 	NN_DEFINITION& operator=(NN_DEFINITION& copied);
 	INetworkDefinition* operator->() { return m_pDefinition; }
 

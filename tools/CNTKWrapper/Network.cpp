@@ -162,8 +162,8 @@ void Network::save(string fileName)
 
 void Network::train(IMinibatch* pMinibatch)
 {
-	unordered_map<CNTK::Variable, CNTK::ValuePtr> arguments =
-		unordered_map<CNTK::Variable, CNTK::ValuePtr>();
+	unordered_map<CNTK::Variable, CNTK::MinibatchData> arguments =
+		unordered_map<CNTK::Variable, CNTK::MinibatchData>();
 	//set inputs
 	if (m_bInputStateUsed)
 	{

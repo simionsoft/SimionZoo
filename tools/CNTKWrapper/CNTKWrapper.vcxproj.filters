@@ -42,19 +42,10 @@
     <ClInclude Include="InputData.h">
       <Filter>Headers</Filter>
     </ClInclude>
-    <ClInclude Include="CNTKWrapper.h">
-      <Filter>Headers</Filter>
-    </ClInclude>
     <ClInclude Include="OptimizerSetting.h">
       <Filter>Headers</Filter>
     </ClInclude>
     <ClInclude Include="Exceptions.h">
-      <Filter>Headers</Filter>
-    </ClInclude>
-    <ClInclude Include="CNTKLibrary.h">
-      <Filter>Headers</Filter>
-    </ClInclude>
-    <ClInclude Include="CNTKLibraryInternals.h">
       <Filter>Headers</Filter>
     </ClInclude>
     <ClInclude Include="CNTKWrapperInternals.h">
@@ -70,6 +61,9 @@
       <Filter>Headers</Filter>
     </ClInclude>
     <ClInclude Include="NetworkDefinition.h">
+      <Filter>Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="CNTKWrapper.h">
       <Filter>Headers</Filter>
     </ClInclude>
   </ItemGroup>
@@ -102,9 +96,6 @@
       <Filter>Source</Filter>
     </ClCompile>
     <ClCompile Include="CNTKWrapperInternals.cpp">
-      <Filter>Source</Filter>
-    </ClCompile>
-    <ClCompile Include="CNTKLibraryInline.cpp">
       <Filter>Source</Filter>
     </ClCompile>
     <ClCompile Include="Minibatch.cpp">

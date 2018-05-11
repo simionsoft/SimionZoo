@@ -78,8 +78,10 @@ public:
 	void setScalarOutput();
 	void setVectorOutput(size_t dimension);
 
-	virtual IMinibatch* createMinibatch(size_t numSamples, size_t outputSize);
+	IMinibatch* createMinibatch(size_t numSamples, size_t outputSize);
 
 	INetwork* createNetwork(double learningRate, bool inputsNeedGradient);
+
+	string getDeviceName();
 };
 

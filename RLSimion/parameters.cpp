@@ -40,6 +40,16 @@ NN_DEFINITION::~NN_DEFINITION()
 {
 }
 
+NN_DEFINITION::NN_DEFINITION(ConfigNode* pConfigNode, const char* name, const char* comment)
+{
+	m_name = name;
+	m_comment = comment;
+	m_pDefinition = CNTKWrapperLoader::getProblem(pConfigNode->FirstChildElement(m_name)->FirstChildElement("Problem"));
+
+	Logger::logMessage(MessageType::Info, m_pDefinition->getDeviceName().c_str());
+
+}
+
 void NN_DEFINITION::destroy()
 {
 	if (m_pDefinition)

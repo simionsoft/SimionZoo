@@ -6,7 +6,6 @@
 #define DLL_API __declspec(dllexport)
 #else
 #define DLL_API
-//#define CNTK_HEADERONLY_DEFINITIONS
 #endif
 
 #include <vector>
@@ -43,6 +42,10 @@ public:
 
 	//for convenience we override the learning rate set in the network definition's parameters
 	virtual INetwork* createNetwork(double learningRate, bool inputsNeedGradient = false) = 0;
+
+
+	//returns the name of the device used by CNTK: either CPU or GPU
+	virtual string getDeviceName() = 0;
 };
 
 class INetwork : public StateActionFunction

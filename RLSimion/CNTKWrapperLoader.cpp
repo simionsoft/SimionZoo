@@ -22,9 +22,12 @@ void CNTKWrapperLoader::Load()
 #ifdef _DEBUG
 		hCNTKWrapperDLL = LoadLibrary(".\\..\\Debug\\x64\\CNTKWrapper.dll");
 #else
+		//In release mode, it could be in the /bin folder (remote execution) or in /bin/x64 (local execution)
+		//We try both to be safe
 		hCNTKWrapperDLL = LoadLibrary(".\\..\\bin\\CNTKWrapper.dll");
 		if (hCNTKWrapperDLL == 0)
 			hCNTKWrapperDLL = LoadLibrary(".\\..\\bin\\x64\\CNTKWrapper.dll");
+#endif
 		if (hCNTKWrapperDLL == 0)
 			Logger::logMessage(MessageType::Error, "Failed to load CNTKWrapper.dll");
 
@@ -32,12 +35,20 @@ void CNTKWrapperLoader::Load()
 
 		//register dependencies
 		SimionApp::get()->registerInputFile("..\\bin\\x64\\CNTKWrapper.dll", "..\\bin\\CNTKWrapper.dll");
-		SimionApp::get()->registerInputFile("..\\bin\\x64\\Cntk.Core-2.1.dll", "..\\bin\\Cntk.Core-2.1.dll");
-		SimionApp::get()->registerInputFile("..\\bin\\x64\\Cntk.Math-2.1.dll", "..\\bin\\Cntk.Math-2.1.dll");
-		SimionApp::get()->registerInputFile("..\\bin\\x64\\Cntk.PerformanceProfiler-2.1.dll", "..\\bin\\Cntk.PerformanceProfiler-2.1.dll");
 		SimionApp::get()->registerInputFile("..\\bin\\x64\\libiomp5md.dll", "..\\bin\\libiomp5md.dll");
-		SimionApp::get()->registerInputFile("..\\bin\\x64\\mkl_cntk_p.dll", "..\\bin\\mkl_cntk_p.dll");
+		SimionApp::get()->registerInputFile("..\\bin\\x64\\mklml.dll", "..\\bin\\mklml.dll");
+		SimionApp::get()->registerInputFile("..\\bin\\x64\\mkldnn.dll", "..\\bin\\mkldnn.dll");
+
+		SimionApp::get()->registerInputFile("..\\bin\\x64\\cudnn64_7.dll", "..\\bin\\cudnn64_7.dll");
+#ifdef _DEBUG
+		SimionApp::get()->registerInputFile("..\\bin\\x64\\Cntk.Core-2.5.1d.dll", "..\\bin\\Cntk.Core-2.5.1d.dll");
+		SimionApp::get()->registerInputFile("..\\bin\\x64\\Cntk.Math-2.5.1d.dll", "..\\bin\\Cntk.Math-2.5.1d.dll");
+#else
+		SimionApp::get()->registerInputFile("..\\bin\\x64\\Cntk.Core-2.5.1.dll", "..\\bin\\Cntk.Core-2.5.1.dll");
+		SimionApp::get()->registerInputFile("..\\bin\\x64\\Cntk.Math-2.5.1.dll", "..\\bin\\Cntk.Math-2.5.1.dll");
 #endif
+
+
 		//get the address of the interface function
 		getProblem = (getProblemInstanceDLL)GetProcAddress(hCNTKWrapperDLL, "CNTKWrapper::getProblemInstance");
 		if (getProblem==0)

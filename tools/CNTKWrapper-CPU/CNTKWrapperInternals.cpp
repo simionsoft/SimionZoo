@@ -190,7 +190,7 @@ CNTK::FunctionPtr CNTKWrapper::BatchNormalizationLayer(const Link * pLink, vecto
 	auto runningCount = Constant::Scalar(0.0f, device);
 
 	//TODO: check if spatial=false and 5000 are good values.
-	return BatchNormalization(dependencies[0]->getFunctionPtr(), scaleParams, biasParams, runningMean, runningInvStd, runningCount, false);
+	return BatchNormalization(dependencies[0]->getFunctionPtr(), scaleParams, biasParams, runningMean, runningInvStd, runningCount, false, 5000, 0, 1e-05, true, name);
 
 }
 

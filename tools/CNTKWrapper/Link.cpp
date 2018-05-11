@@ -99,7 +99,7 @@ void Link::createCNTKFunctionPtr()
 
 void Link::createCNTKFunctionPtr(vector<const Link*> dependencies)
 {
-	auto device = CNTK::DeviceDescriptor::CPUDevice();
+	auto device = CNTK::DeviceDescriptor::UseDefaultDevice();
 	switch (m_linkType)
 	{
 	case LinkType::InputLayer:
