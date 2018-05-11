@@ -8,7 +8,8 @@
 
 HMODULE hCNTKWrapperDLL= 0;
 
-CNTKWrapperLoader::getProblemInstanceDLL CNTKWrapperLoader::getProblem= 0;
+CNTKWrapperLoader::getNetworkDefinitionDLL CNTKWrapperLoader::getNetworkDefinition = 0;
+CNTKWrapperLoader::setDeviceDLL CNTKWrapperLoader::setDevice = 0;
 
 
 void CNTKWrapperLoader::Load()
@@ -49,10 +50,14 @@ void CNTKWrapperLoader::Load()
 #endif
 
 
-		//get the address of the interface function
-		getProblem = (getProblemInstanceDLL)GetProcAddress(hCNTKWrapperDLL, "CNTKWrapper::getProblemInstance");
-		if (getProblem==0)
-			Logger::logMessage(MessageType::Error, "Failed to get a pointer to CNTKWrapper:getProblemInstance()");
+		//get the address of the interface functions
+		getNetworkDefinition = (getNetworkDefinitionDLL)GetProcAddress(hCNTKWrapperDLL, "CNTKWrapper::getNetworkDefinition");
+		if (getNetworkDefinition==0)
+			Logger::logMessage(MessageType::Error, "Failed to get a pointer to CNTKWrapper:getNetworkDefinition()");
+
+		setDevice = (setDeviceDLL)GetProcAddress(hCNTKWrapperDLL, "CNTKWrapper::setDevice");
+		if (setDevice == 0)
+			Logger::logMessage(MessageType::Error, "Failed to get a pointer to CNTKWrapper:setDevice()");
 	}
 }
 

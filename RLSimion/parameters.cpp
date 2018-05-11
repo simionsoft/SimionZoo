@@ -35,6 +35,7 @@ NN_DEFINITION&  NN_DEFINITION::operator=(NN_DEFINITION& copied)
 }
 
 #include "logger.h"
+#include "app.h"
 
 NN_DEFINITION::~NN_DEFINITION()
 {
@@ -44,10 +45,7 @@ NN_DEFINITION::NN_DEFINITION(ConfigNode* pConfigNode, const char* name, const ch
 {
 	m_name = name;
 	m_comment = comment;
-	m_pDefinition = CNTKWrapperLoader::getProblem(pConfigNode->FirstChildElement(m_name)->FirstChildElement("Problem"));
-
-	Logger::logMessage(MessageType::Info, m_pDefinition->getDeviceName().c_str());
-
+	m_pDefinition = CNTKWrapperLoader::getNetworkDefinition(pConfigNode->FirstChildElement(m_name)->FirstChildElement("Problem"));
 }
 
 void NN_DEFINITION::destroy()

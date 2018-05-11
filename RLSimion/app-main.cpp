@@ -31,15 +31,22 @@ int main(int argc, char* argv[])
 		if (SimionApp::flagPassed(argc, argv, "requirements"))
 			Logger::enableLogMessages(false);
 
-		if (!strcmp("RLSimion", pParameters->getName()) || !strcmp("RLSimion-x64", pParameters->getName()) || !strcmp("RLSimion-x64-CNTK", pParameters->getName()))
+		if (!strcmp("RLSimion", pParameters->getName()) || !strcmp("RLSimion-x64", pParameters->getName()) )
 			pApp = new SimionApp(pParameters);
 				
 		if (pApp)
 		{
 			pApp->setConfigFile(argv[1]);
 
+			//if running locally, we show the graphical window
 			if (SimionApp::flagPassed(argc, argv, "local"))
 				pApp->setExecutedRemotely(false);
+
+			//CPU is used by default.
+			//tests so far seem to run faster on multi-core cpus than using gpus O_o
+			if (SimionApp::flagPassed(argc, argv, "gpu"))
+				pApp->setPreferredDevice(Device::GPU);
+			else pApp->setPreferredDevice(Device::CPU);
 
 			if (SimionApp::flagPassed(argc, argv, "requirements"))
 				pApp->printRequirements();

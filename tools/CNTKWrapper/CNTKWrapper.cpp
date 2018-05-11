@@ -17,12 +17,22 @@
 
 #define EXPORT comment(linker, "/EXPORT:" __FUNCTION__ "=" __FUNCDNAME__)
 
-INetworkDefinition* CNTKWrapper::getProblemInstance(tinyxml2::XMLElement* pNode)
+INetworkDefinition* CNTKWrapper::getNetworkDefinition(tinyxml2::XMLElement* pNode)
 {
 #pragma EXPORT
 	size_t maxNumCPUThreads = std::thread::hardware_concurrency();
 	CNTK::SetMaxNumCPUThreads(maxNumCPUThreads);
+
 	return NetworkDefinition::getInstance(pNode);
+}
+
+void CNTKWrapper::setDevice(bool useGPU)
+{
+#pragma EXPORT
+	if (useGPU)
+		CNTK::DeviceDescriptor::TrySetDefaultDevice(CNTK::DeviceDescriptor::GPUDevice(0));
+	else
+		CNTK::DeviceDescriptor::TrySetDefaultDevice(CNTK::DeviceDescriptor::CPUDevice());
 }
 
 

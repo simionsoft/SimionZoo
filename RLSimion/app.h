@@ -27,6 +27,7 @@ class NamedVarSet;
 using State = NamedVarSet;
 using Action = NamedVarSet;
 
+enum Device{ CPU, GPU };
 
 class SimionApp
 {
@@ -100,6 +101,11 @@ public:
 	bool isExecutedRemotely();
 
 	void setNumCPUCores(unsigned int numCPUCores) { m_numCPUCores = numCPUCores; }
+	unsigned int getNumCPUCores() { return m_numCPUCores; }
+
+	
+	void setPreferredDevice(Device device);
+
 private:
 	//Rendering
 	Timer m_timer;

@@ -486,3 +486,17 @@ void SimionApp::update2DMeters(State* s, Action* a)
 	for (int i = 0; i < a->getNumVars(); i++)
 		m_pActionUIMeters[i]->setValue(a->get(i));
 }
+
+#include "CNTKWrapperLoader.h"
+void SimionApp::setPreferredDevice(Device device)
+{
+	//need to check whether CNTK has been loaded. Might not be used
+	if (CNTKWrapperLoader::setDevice != nullptr)
+	{
+		if (device==CPU)
+			Logger::logMessage(MessageType::Info, "Setting CPU as default device");
+		else
+			Logger::logMessage(MessageType::Info, "Setting GPU as default device");
+		CNTKWrapperLoader::setDevice(device == Device::GPU);
+	}
+}
