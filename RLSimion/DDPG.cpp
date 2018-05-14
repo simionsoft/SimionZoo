@@ -81,7 +81,7 @@ void DDPG::deferredLoadStep()
 	m_pActorOnlineNetwork = m_ActorNetworkDefinition->createNetwork(m_learningRate.get());
 	SimionApp::get()->registerStateActionFunction("Policy", m_pActorOnlineNetwork);
 	m_pActorTargetNetwork = m_pActorOnlineNetwork->clone(false);
-	//m_pActorTargetNetwork->initSoftUpdate(m_tau.get(), m_pActorOnlineNetwork);
+	m_pActorTargetNetwork->initSoftUpdate(m_tau.get(), m_pActorOnlineNetwork);
 	
 	//The size of the target in the minibatch has to match the number of actions to save the gradient wrt an action
 	m_pActorMinibatch = m_ActorNetworkDefinition->createMinibatch(minibatchSize, m_outputAction.size());
@@ -135,13 +135,13 @@ void DDPG::updateActor(const State* s, const Action* a, const State* s_p, double
 	{
 		m_pActorOnlineNetwork->applyGradient(m_pActorMinibatch);
 
-		if (SimionApp::get()->pExperiment->getExperimentStep() % 10)
-		{
-			m_pActorTargetNetwork->destroy();
-			m_pActorTargetNetwork = m_pActorOnlineNetwork->clone();
-		}
+		//if (SimionApp::get()->pExperiment->getExperimentStep() % 10)
+		//{
+		//	m_pActorTargetNetwork->destroy();
+		//	m_pActorTargetNetwork = m_pActorOnlineNetwork->clone();
+		//}
 
-		//m_pActorTargetNetwork->softUpdate(m_pActorOnlineNetwork);
+		m_pActorTargetNetwork->softUpdate(m_pActorOnlineNetwork);
 	}
 }
 

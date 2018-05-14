@@ -1,4 +1,4 @@
-<RLSimion-x64 FileVersion="1.0.0.0">
+<RLSimion FileVersion="1.0.0.0">
 <RLSimion>
 	<Log>
 		<Log-Freq>0.25</Log-Freq>
@@ -166,4 +166,4 @@
 		</Simion>
 	</SimGod>
 </RLSimion>
-</RLSimion-x64>
+</RLSimion>
