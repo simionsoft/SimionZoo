@@ -246,6 +246,10 @@ namespace Badger.ViewModels
             {
                 m_numFinishedExperimentalUnits = value;
                 NotifyOfPropertyChange(() => NumFinishedExperimentalUnits);
+
+                //We need to update the progress, because NumFinishedExperimentalUnits is not only updated when monitoring,
+                // but also when a batch is loaded
+                GlobalProgress = CalculateGlobalProgress();
             }
         }
 
