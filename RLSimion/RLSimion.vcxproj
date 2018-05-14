@@ -94,6 +94,7 @@
     <TargetName>$(ProjectName)-$(Platform)</TargetName>
     <IntDir>$(SolutionDir)tmp\$(ProjectName)\$(Configuration)\$(Platform)\</IntDir>
     <CustomBuildAfterTargets>Build</CustomBuildAfterTargets>
+    <PreBuildEventUseInBuild>true</PreBuildEventUseInBuild>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
@@ -227,6 +228,12 @@
     <ProjectReference>
       <UseLibraryDependencyInputs>false</UseLibraryDependencyInputs>
     </ProjectReference>
+    <PreBuildEvent>
+      <Command>xcopy /y /d "..\packages\CNTK.Deps.MKL.2.5.1\support\x64\Dependency\*.dll" "$(OutDir)" &amp;&amp; xcopy /y /d "..\packages\CNTK.Deps.cuDNN.2.5.1\support\x64\Dependency\*.dll" "$(OutDir)" &amp;&amp; xcopy /y /d "..\packages\CNTK.Deps.Cuda.2.5.1\support\x64\Dependency\*.dll" "$(OutDir)" &amp;&amp; xcopy /y /d "..\packages\CNTK.GPU.2.5.1\support\x64\Release\*.dll" "$(OutDir)"</Command>
+    </PreBuildEvent>
+    <PreBuildEvent>
+      <Message>Copy CNTK libraries to the output directory</Message>
+    </PreBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
     <Text Include="ReadMe.txt" />
