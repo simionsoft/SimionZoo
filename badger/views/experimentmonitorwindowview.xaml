@@ -57,12 +57,12 @@
                         IsEnabled="{Binding IsRunning}">
                         <Path Data="{StaticResource Stop}" Width="24" Height="24" Fill="#89000000" />
                     </Button>
-                    <Button ToolTip="Run the experiment" Width="30"
+                    <Button ToolTip="Clean up log files" Width="30"
                         cal:Message.Attach="[Event Click]=[Action CleanExperimentBatch()]" Style="{StaticResource BadgerButtonStyle}" 
                         IsEnabled="{Binding IsBatchLoadedAndNotRunning}">
                         <Path Data="{StaticResource Delete}" Width="24" Height="24" Fill="#89000000" />
                     </Button>
-                    <Button ToolTip="Show report for this experiment" Width="30"
+                    <Button ToolTip="Create reports for this experiment batch" Width="30"
                         cal:Message.Attach="[Event Click]=[Action ShowReports()]" Style="{StaticResource BadgerButtonStyle}"
                         IsEnabled="{Binding IsBatchLoadedAndNotRunning}">
                         <Path Data="{StaticResource Plot}" Width="24" Height="24" Fill="#89000000" />
