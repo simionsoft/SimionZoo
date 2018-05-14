@@ -104,11 +104,29 @@ namespace Herd
             get
             {
                 string prop = Property(PropNames.NumCPUCores);
+                if (prop == PropValues.None)
+                    prop = Property(Deprecated.NumCPUCores); //for retrocompatibility
                 return (!prop.Equals(PropValues.None)) ? int.Parse(prop) : 0;
             }
         }
 
-        public string ProcessorArchitecture { get { return Property(PropNames.Architecture); } }
+        public string ProcessorArchitecture
+        {
+            get
+            {
+                string prop = Property(PropNames.Architecture);
+                if (prop == PropValues.None)
+                {
+                    prop = Property(Deprecated.ProcessorArchitecture); //for retrocompatibility
+                    if (prop == "AMD64" || prop == "IA64")
+                        return PropValues.Win64;
+                    else
+                        return PropValues.Win32;
+                }
+                else
+                    return prop;
+            }
+        }
 
         public double ProcessorLoad
         {
@@ -128,7 +146,16 @@ namespace Herd
             }
         }
 
-        public string CUDA { get { return Property(PropNames.CUDA); } }
+        public string CUDA
+        {
+            get
+            {
+                string prop = Property(PropNames.CUDA);
+                if (prop == PropValues.None)
+                    prop = Property(Deprecated.CUDA);  //for retrocompatibility
+                return prop;
+            }
+        }
 
         public bool IsAvailable
         {

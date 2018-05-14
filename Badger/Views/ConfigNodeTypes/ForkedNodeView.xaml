@@ -9,7 +9,7 @@
              mc:Ignorable="d" d:DesignHeight="50" d:DesignWidth="300">
 
     <Border BorderBrush="Orange">
-        <StackPanel Orientation="Vertical">
+        <StackPanel Orientation="Vertical" Height="50" VerticalAlignment="Bottom">
             <StackPanel Orientation="Horizontal" Background="LightGray">
                 <StackPanel.ContextMenu >
                     <ContextMenu>
@@ -45,21 +45,6 @@
                             <MenuItem.Icon >
                                 <Path Data="{StaticResource Link}" Width="56" Height="56" Margin="0" Fill="#B2000000" />
                             </MenuItem.Icon>
-                            <!--ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Auto">
-                            <ListView ItemsSource="{Binding Path = LinkableNodes}" BorderThickness="0"
-                                      HorizontalContentAlignment="Stretch">
-                                <ListView.ItemContainerStyle>
-                                    <Style TargetType="ListViewItem">
-                                        <Setter Property="Padding" Value="0"/>
-                                    </Style>
-                                </ListView.ItemContainerStyle>
-                                <ListView.Resources>
-                                    <DataTemplate DataType="{x:Type vm:HerdAgentViewModel}">
-                                        <views:HerdAgentView />
-                                    </DataTemplate>
-                                </ListView.Resources>
-                            </ListView>
-                        </ScrollViewer-->
                         </MenuItem>
                         <MenuItem Header="Link" 
                               Visibility="{Binding Path=CanBeLinked,FallbackValue='Hidden',Converter={StaticResource BoolToVis}}">
@@ -95,12 +80,16 @@
                 </Button>
 
                 <Button Background="{x:Null}" BorderBrush="{x:Null}" cal:Message.Attach="[Event Click]=[Action addValue()]"
-                        ToolTip="Add a new value" Width="16" Visibility="{Binding Path=IsNotLinked,FallbackValue='Hidden',Converter={StaticResource BoolToVis}}">
-                    <Path Data="{StaticResource Add}" Stretch="Uniform" Fill="#89000000" Margin="8,0"/>
+                        ToolTip="Add a new value" Width="16" >
+                    <!--I commented this LayoutTransform because it was messing with the rest of the code-->
+                        <!--Visibility="{Binding Path=IsNotLinked,FallbackValue='Hidden',Converter={StaticResource BoolToVis}}"-->
+                        
+                    <Path Data="{StaticResource Add}" Stretch="Uniform" Fill="#89000000"/>
                 </Button>
                 <Button Background="{x:Null}" BorderBrush="{x:Null}" cal:Message.Attach="[Event Click]=[Action removeSelectedValue()]"
-                        Opacity="{Binding bIsThereMoreValues}" ToolTip="Remove this value" Width="16" 
-                        Visibility="{Binding Path=IsNotLinked,FallbackValue='Hidden',Converter={StaticResource BoolToVis}}">
+                        Opacity="{Binding bIsThereMoreValues}" ToolTip="Remove this value" Width="16" >
+                    <!-- Same here-->
+                    <!--Visibility="{Binding Path=IsNotLinked,FallbackValue='Hidden',Converter={StaticResource BoolToVis}}">-->
                     <Path Data="{StaticResource Close}" Stretch="Uniform" Fill="#89000000" />
                 </Button>
             </StackPanel>

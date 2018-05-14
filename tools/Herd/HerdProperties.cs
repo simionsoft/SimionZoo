@@ -27,6 +27,12 @@
         public const string StateBusy = "busy";
         public const string StateCancelling = "cancelling";
     }
+    public class Deprecated
+    {
+        public const string NumCPUCores = "NumberOfProcessors";
+        public const string CUDA = "CudaInfo";
+        public const string ProcessorArchitecture = "ProcessorArchitecture";
+    }
     public class PropNames
     {
         //properties

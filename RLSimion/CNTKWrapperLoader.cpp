@@ -21,13 +21,11 @@ void CNTKWrapperLoader::Load()
 
 		//Load the wrapper library
 #ifdef _DEBUG
-		hCNTKWrapperDLL = LoadLibrary(".\\..\\Debug\\x64\\CNTKWrapper.dll");
+		hCNTKWrapperDLL = LoadLibrary(".\\..\\Debug\\CNTKWrapper.dll");
 #else
 		//In release mode, it could be in the /bin folder (remote execution) or in /bin/x64 (local execution)
 		//We try both to be safe
 		hCNTKWrapperDLL = LoadLibrary(".\\..\\bin\\CNTKWrapper.dll");
-		if (hCNTKWrapperDLL == 0)
-			hCNTKWrapperDLL = LoadLibrary(".\\..\\bin\\x64\\CNTKWrapper.dll");
 #endif
 		if (hCNTKWrapperDLL == 0)
 			Logger::logMessage(MessageType::Error, "Failed to load CNTKWrapper.dll");
@@ -35,19 +33,22 @@ void CNTKWrapperLoader::Load()
 		Logger::logMessage(MessageType::Info, "Loading CNTK library");
 
 		//register dependencies
-		SimionApp::get()->registerInputFile("..\\bin\\x64\\CNTKWrapper.dll", "..\\bin\\CNTKWrapper.dll");
-		SimionApp::get()->registerInputFile("..\\bin\\x64\\libiomp5md.dll", "..\\bin\\libiomp5md.dll");
-		SimionApp::get()->registerInputFile("..\\bin\\x64\\mklml.dll", "..\\bin\\mklml.dll");
-		SimionApp::get()->registerInputFile("..\\bin\\x64\\mkldnn.dll", "..\\bin\\mkldnn.dll");
+		SimionApp::get()->registerInputFile("..\\bin\\CNTKWrapper.dll");
 
-		SimionApp::get()->registerInputFile("..\\bin\\x64\\cudnn64_7.dll", "..\\bin\\cudnn64_7.dll");
-#ifdef _DEBUG
-		SimionApp::get()->registerInputFile("..\\bin\\x64\\Cntk.Core-2.5.1d.dll", "..\\bin\\Cntk.Core-2.5.1d.dll");
-		SimionApp::get()->registerInputFile("..\\bin\\x64\\Cntk.Math-2.5.1d.dll", "..\\bin\\Cntk.Math-2.5.1d.dll");
-#else
-		SimionApp::get()->registerInputFile("..\\bin\\x64\\Cntk.Core-2.5.1.dll", "..\\bin\\Cntk.Core-2.5.1.dll");
-		SimionApp::get()->registerInputFile("..\\bin\\x64\\Cntk.Math-2.5.1.dll", "..\\bin\\Cntk.Math-2.5.1.dll");
-#endif
+		SimionApp::get()->registerInputFile("..\\bin\\Cntk.Composite-2.5.1.dll");
+		SimionApp::get()->registerInputFile("..\\bin\\Cntk.Core-2.5.1.dll");
+		SimionApp::get()->registerInputFile("..\\bin\\Cntk.Math-2.5.1.dll");
+		SimionApp::get()->registerInputFile("..\\bin\\Cntk.PerformanceProfiler-2.5.1.dll");
+
+		SimionApp::get()->registerInputFile("..\\bin\\cublas64_90.dll");
+		SimionApp::get()->registerInputFile("..\\bin\\cudart64_90.dll");
+		SimionApp::get()->registerInputFile("..\\bin\\cudnn64_7.dll");
+
+		SimionApp::get()->registerInputFile("..\\bin\\libiomp5md.dll");
+		SimionApp::get()->registerInputFile("..\\bin\\mklml.dll");
+		SimionApp::get()->registerInputFile("..\\bin\\mkl_cntk_p.dll");
+		SimionApp::get()->registerInputFile("..\\bin\\mkldnn.dll");
+		SimionApp::get()->registerInputFile("..\\bin\\nvml.dll");
 
 
 		//get the address of the interface functions
