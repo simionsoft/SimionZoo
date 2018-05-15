@@ -27,8 +27,6 @@ public:
 	void addSample(double value);
 };
 
-//enum DataType{Double, Int, UnsignedInt};
-
 //common interface
 class IStats
 {
@@ -60,7 +58,7 @@ public:
 	}
 	virtual ~Stats() {}
 
-	virtual void addSample() { m_statsInfo.addSample(m_variable); }
-	virtual double get() { return (double)m_variable; }
+	virtual void addSample() { m_statsInfo.addSample((double) m_variable); }
+	virtual double get() { return (double) m_variable; }
 };
 

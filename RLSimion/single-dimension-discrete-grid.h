@@ -43,7 +43,7 @@ public:
 	double getOffset() { return m_offset; }
 	virtual void setOffset(double offset) = 0;
 
-	int getClosestCenter(double value);
+	int getClosestValue(double value);
 };
 
 class SingleDimensionDiscreteStateVariableGrid : public SingleDimensionDiscreteGrid

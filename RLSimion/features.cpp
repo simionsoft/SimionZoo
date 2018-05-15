@@ -25,7 +25,7 @@ FeatureList::~FeatureList()
 void FeatureList::setName(const char* name)
 {
 	m_name = name;
-	SimionApp::get()->pLogger->addVarToStats<unsigned int>("Features", m_name, m_numFeatures);
+	SimionApp::get()->pLogger->addVarToStats<size_t>("Features", m_name, m_numFeatures);
 }
 const char* FeatureList::getName()
 {
@@ -37,7 +37,7 @@ void FeatureList::clear()
 	m_numFeatures = 0;
 }
 
-void FeatureList::resize(unsigned int newSize, bool bKeepFeatures)
+void FeatureList::resize(size_t newSize, bool bKeepFeatures)
 {
 	//make the newSize a multiple of the block size
 	if (newSize%FEATURE_BLOCK_SIZE != 0)
@@ -45,8 +45,8 @@ void FeatureList::resize(unsigned int newSize, bool bKeepFeatures)
 
 	Feature* pNewFeatures = new Feature[newSize];
 
-	unsigned int oldsize = sizeof(Feature)*m_numFeatures;
-	unsigned int newsize = sizeof(Feature)*newSize;
+	size_t oldsize = sizeof(Feature)*m_numFeatures;
+	size_t newsize = sizeof(Feature)*newSize;
 	if (bKeepFeatures)
 		memcpy_s(pNewFeatures, sizeof(Feature)*newSize, m_pFeatures, sizeof(Feature)*m_numFeatures);
 	else m_numFeatures = 0;
@@ -58,23 +58,17 @@ void FeatureList::resize(unsigned int newSize, bool bKeepFeatures)
 
 void FeatureList::mult(double factor)
 {
-	for (unsigned int i = 0; i < m_numFeatures; i++)
+	for (size_t i = 0; i < m_numFeatures; i++)
 	{
 		m_pFeatures[i].m_factor *= factor;
 	}
 }
-//
-//void FeatureList::swapFeatureLists(FeatureList** pList1,FeatureList** pList2)
-//{
-//	FeatureList *auxList= *pList1;
-//	*pList1= *pList2;
-//	*pList2= auxList;
-//}
 
-double FeatureList::getFactor(unsigned int index) const
+
+double FeatureList::getFactor(size_t index) const
 {
 	double factor = 0.0;
-	for (unsigned int i = 0; i < m_numFeatures; i++)
+	for (size_t i = 0; i < m_numFeatures; i++)
 	{
 		if (m_pFeatures[i].m_index == index)
 			if (m_overwriteMode == AllowDuplicates)
@@ -88,7 +82,7 @@ double FeatureList::getFactor(unsigned int index) const
 double FeatureList::innerProduct(const FeatureList *inList)
 {
 	double innerprod = 0.0;
-	for (unsigned int i = 0; i < m_numFeatures; i++)
+	for (size_t i = 0; i < m_numFeatures; i++)
 	{
 		innerprod += m_pFeatures[i].m_factor* (inList->getFactor(m_pFeatures[i].m_index));
 	}
@@ -101,7 +95,7 @@ void FeatureList::copyMult(double factor, const FeatureList *inList)
 		resize(inList->m_numFeatures);
 
 	m_numFeatures = inList->m_numFeatures;
-	for (unsigned int i = 0; i < m_numFeatures; i++)
+	for (size_t i = 0; i < m_numFeatures; i++)
 	{
 		m_pFeatures[i].m_factor = inList->m_pFeatures[i].m_factor * factor;
 		m_pFeatures[i].m_index = inList->m_pFeatures[i].m_index;
@@ -113,25 +107,25 @@ void FeatureList::addFeatureList(const FeatureList *inList, double factor)
 	//if (m_numFeatures+inList->m_numFeatures >m_numAllocFeatures)
 	//	resize (m_numFeatures+inList->m_numFeatures);
 
-	for (unsigned int i = 0; i < inList->m_numFeatures; i++)
+	for (size_t i = 0; i < inList->m_numFeatures; i++)
 	{
 		add(inList->m_pFeatures[i].m_index, inList->m_pFeatures[i].m_factor*factor);
 	}
 }
 
-int FeatureList::getFeaturePos(unsigned int index)
+size_t FeatureList::getFeaturePos(size_t index)
 {
-	for (unsigned int i = 0; i < m_numFeatures; i++)
+	for (size_t i = 0; i < m_numFeatures; i++)
 	{
 		if (m_pFeatures[i].m_index == index) return i;
 	}
 	return -1;
 }
 
-void FeatureList::add(unsigned int index, double value)
+void FeatureList::add(size_t index, double value)
 {
 	bool bCheckIfExists = m_overwriteMode != OverwriteMode::AllowDuplicates;
-	int pos;
+	size_t pos;
 	if (bCheckIfExists)
 	{
 		pos = getFeaturePos(index);
@@ -155,15 +149,15 @@ void FeatureList::add(unsigned int index, double value)
 }
 
 //spawn: all features (indices and values) are spawned by those in inList
-void FeatureList::spawn(const FeatureList *inList, unsigned int indexOffset)
+void FeatureList::spawn(const FeatureList *inList, size_t indexOffset)
 {
-	unsigned int newNumFeatures = inList->m_numFeatures * m_numFeatures;
+	size_t newNumFeatures = inList->m_numFeatures * m_numFeatures;
 
 	if (m_numAllocFeatures < newNumFeatures)
 		resize(newNumFeatures);
 
-	int i = 0, pos = newNumFeatures - 1;
-	int j = 0;
+	size_t i = 0, pos = newNumFeatures - 1;
+	size_t j = 0;
 
 	for (i = m_numFeatures - 1; i >= 0; i--)
 	{
@@ -179,10 +173,10 @@ void FeatureList::spawn(const FeatureList *inList, unsigned int indexOffset)
 
 void FeatureList::applyThreshold(double threshold)
 {
-	unsigned int oldNumFeatures = m_numFeatures;
-	int firstUnderThreshold = -1;
+	size_t oldNumFeatures = m_numFeatures;
+	long long firstUnderThreshold = -1;
 
-	for (unsigned int i = 0; i < oldNumFeatures; i++)
+	for (size_t i = 0; i < oldNumFeatures; i++)
 	{
 		if (abs(m_pFeatures[i].m_factor) < threshold)
 		{
@@ -203,12 +197,12 @@ void FeatureList::applyThreshold(double threshold)
 void FeatureList::normalize()
 {
 	double sum = 0.0;
-	for (unsigned int i = 0; i < m_numFeatures; i++)
+	for (size_t i = 0; i < m_numFeatures; i++)
 		sum += m_pFeatures[i].m_factor;
 
 	sum = 1. / sum;
 
-	for (unsigned int i = 0; i < m_numFeatures; i++)
+	for (size_t i = 0; i < m_numFeatures; i++)
 		m_pFeatures[i].m_factor *= sum;
 }
 
@@ -219,7 +213,7 @@ void FeatureList::copy(const FeatureList* inList)
 
 	m_numFeatures = inList->m_numFeatures;
 
-	for (unsigned int i = 0; i < m_numFeatures; i++)
+	for (size_t i = 0; i < m_numFeatures; i++)
 	{
 		m_pFeatures[i].m_index = inList->m_pFeatures[i].m_index;
 		m_pFeatures[i].m_factor = inList->m_pFeatures[i].m_factor;
@@ -229,13 +223,13 @@ void FeatureList::copy(const FeatureList* inList)
 void FeatureList::offsetIndices(int offset)
 {
 	if (offset == 0) return;
-	for (unsigned int i = 0; i < m_numFeatures; i++)
+	for (size_t i = 0; i < m_numFeatures; i++)
 		m_pFeatures[i].m_index += offset;
 }
 
-void FeatureList::split(FeatureList *outList1, FeatureList *outList2, unsigned int splitOffset) const
+void FeatureList::split(FeatureList *outList1, FeatureList *outList2, size_t splitOffset) const
 {
-	for (unsigned int i = 0; i < m_numFeatures; i++)
+	for (size_t i = 0; i < m_numFeatures; i++)
 	{
 		if (m_pFeatures[i].m_index < splitOffset)
 			outList1->add(m_pFeatures[i].m_index, m_pFeatures[i].m_factor);
@@ -248,6 +242,6 @@ void FeatureList::split(FeatureList *outList1, FeatureList *outList2, unsigned i
 void FeatureList::multIndices(int mult)
 {
 	if (mult <= 1) return;
-	for (unsigned int i = 0; i < m_numFeatures; i++)
+	for (size_t i = 0; i < m_numFeatures; i++)
 		m_pFeatures[i].m_index *= mult;
 }

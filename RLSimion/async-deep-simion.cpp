@@ -106,7 +106,7 @@ double AsyncQLearning::update(const State * s, const Action * a, const State * s
 		for (int n = 0; n < m_pStateOutFeatures->m_numFeatures; n++)
 			m_minibatch_s[m_pStateOutFeatures->m_pFeatures[n].m_index + i*m_numberOfStateVars] = m_pStateOutFeatures->m_pFeatures[n].m_factor;
 
-		m_pMinibatchActionId[i] = m_pGrid->getClosestCenter(m_pMinibatchExperienceTuples[i]->a->get(m_outputAction.get()));
+		m_pMinibatchActionId[i] = m_pGrid->getClosestValue(m_pMinibatchExperienceTuples[i]->a->get(m_outputAction.get()));
 	}
 
 	std::unordered_map<std::string, std::vector<double>&> inputMap

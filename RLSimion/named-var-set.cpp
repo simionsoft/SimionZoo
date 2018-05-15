@@ -16,19 +16,19 @@ void NamedVarProperties::setName(const char* name)
 	strcpy_s(m_name, VAR_NAME_MAX_LENGTH, name);
 }
 
-int Descriptor::getVarIndex(const char* name)
+size_t Descriptor::getVarIndex(const char* name)
 {
-	for (unsigned int i = 0; i<m_descriptor.size(); i++)
+	for (size_t i = 0; i<m_descriptor.size(); i++)
 	{
 		if (strcmp(m_descriptor[i]->getName(), name) == 0)
 			return i;
 	}
-	return -1; //error return value
+	throw exception("Wrong variable name given to Descriptor::getVarIndex()");
 }
 
-int Descriptor::addVariable(const char* name, const char* units, double min, double max, bool bCircular)
+size_t Descriptor::addVariable(const char* name, const char* units, double min, double max, bool bCircular)
 {
-	int index = (int) m_descriptor.size();
+	size_t index = (int) m_descriptor.size();
 	m_descriptor.push_back(new NamedVarProperties(name, units, min, max, bCircular));
 	return index;
 }
@@ -45,7 +45,8 @@ NamedVarSet::NamedVarSet(Descriptor& descriptor): m_descriptor(descriptor)
 
 	//m_descriptor= new NamedVarProperties[numVars];
 	m_pValues= new double[descriptor.size()];
-	for (unsigned int i = 0; i < descriptor.size(); i++) m_pValues[i] = 0.0;
+	for (size_t i = 0; i < descriptor.size(); i++)
+		m_pValues[i] = 0.0;
 	m_numVars= (int)descriptor.size();
 }
 
@@ -54,25 +55,25 @@ NamedVarSet::~NamedVarSet()
 	if (m_pValues) delete [] m_pValues;
 }
 
-int NamedVarSet::getVarIndex(const char* varName) const
+size_t NamedVarSet::getVarIndex(const char* varName) const
 {
 	return m_descriptor.getVarIndex(varName);
 }
 
 NamedVarProperties& NamedVarSet::getProperties(const char* varName) const
 {
-	int varIndex = m_descriptor.getVarIndex(varName);
+	size_t varIndex = m_descriptor.getVarIndex(varName);
 	return m_descriptor[varIndex];
 }
 
-double NamedVarSet::normalize(int i, double value) const
+double NamedVarSet::normalize(size_t i, double value) const
 {
 	NamedVarProperties& properties = getProperties(i);
 	double range = std::max(0.01, properties.getRangeWidth());
 	return (value - properties.getMin()) / range;
 }
 
-double NamedVarSet::denormalize(int i, double value) const
+double NamedVarSet::denormalize(size_t i, double value) const
 {
 	NamedVarProperties& properties = getProperties(i);
 	double range = properties.getRangeWidth();
@@ -81,7 +82,7 @@ double NamedVarSet::denormalize(int i, double value) const
 
 void NamedVarSet::setNormalized(const char* varName, double value)
 {
-	int i = m_descriptor.getVarIndex(varName);
+	size_t i = m_descriptor.getVarIndex(varName);
 	if (i >= 0)
 	{
 		setNormalized(i, value);
@@ -90,14 +91,14 @@ void NamedVarSet::setNormalized(const char* varName, double value)
 	throw std::exception("Incorrect variable name in NamedVarSet::set()");
 }
 
-void NamedVarSet::setNormalized(int i, double value)
+void NamedVarSet::setNormalized(size_t i, double value)
 {
 	set(i, denormalize(i, value));
 }
 
 void NamedVarSet::set(const char* varName, double value)
 {
-	int i = m_descriptor.getVarIndex(varName);
+	size_t i = m_descriptor.getVarIndex(varName);
 	if (i >= 0)
 	{
 		set(i, value);
@@ -106,7 +107,7 @@ void NamedVarSet::set(const char* varName, double value)
 	throw std::exception("Incorrect variable name in NamedVarSet::set()");
 }
 
-void NamedVarSet::set(int i, double value)
+void NamedVarSet::set(size_t i, double value)
 {
 	if (i >= 0 && i < m_numVars)
 	{
@@ -130,20 +131,20 @@ void NamedVarSet::set(int i, double value)
 
 double NamedVarSet::getNormalized(const char* varName) const
 {
-	int varIndex = m_descriptor.getVarIndex(varName);
+	size_t varIndex = m_descriptor.getVarIndex(varName);
 	if (varIndex >= 0)
 		return normalize(varIndex, m_pValues[varIndex]);
 	throw std::exception("Incorrect variable index in NamedVarSet::getNormalized()");
 }
 
-double NamedVarSet::getNormalized(int i) const
+double NamedVarSet::getNormalized(size_t i) const
 {
 	if (i >= 0 && i<m_numVars)
 		return normalize(i, m_pValues[i]);
 	throw std::exception("Incorrect variable index in NamedVarSet::getNormalized()");
 }
 
-double NamedVarSet::get(int i) const
+double NamedVarSet::get(size_t i) const
 {
 	if (i >= 0 && i<m_numVars)
 		return m_pValues[i];
@@ -152,21 +153,21 @@ double NamedVarSet::get(int i) const
 
 double NamedVarSet::get(const char* varName) const
 {
-	int varIndex = m_descriptor.getVarIndex(varName);
+	size_t varIndex = m_descriptor.getVarIndex(varName);
 	if (varIndex >= 0)
 		return m_pValues[varIndex];
 	throw std::exception("Incorrect variable index in NamedVarSet::get()");
 }
 
 
-double* NamedVarSet::getValuePtr(int i)
+double* NamedVarSet::getValuePtr(size_t i)
 {
 	if (i >= 0 && i<m_numVars)
 		return &m_pValues[i];
 	throw std::exception("Incorrect variable index in NamedVarSet::getValuePtr()");
 }
 
-double& NamedVarSet::getRef(int i)
+double& NamedVarSet::getRef(size_t i)
 {
 	if (i >= 0 && i<m_numVars)
 		return m_pValues[i];
@@ -178,7 +179,7 @@ double& NamedVarSet::getRef(int i)
 double NamedVarSet::getSumValue() const
 {
 	double sum = 0.0;
-	for (int i = 0; i < m_numVars; i++)
+	for (size_t i = 0; i < m_numVars; i++)
 		sum += m_pValues[i];
 	return sum;
 }
@@ -188,7 +189,7 @@ void NamedVarSet::copy(const NamedVarSet* nvs)
 	if(m_numVars != nvs->getNumVars())
 		throw std::exception("Missmatched array lenghts in NamedVarSet::copy()");
 
-	for (int i = 0; i<m_numVars; i++)
+	for (size_t i = 0; i<m_numVars; i++)
 	{
 		set(i, nvs->get(i));
 	}
@@ -196,7 +197,7 @@ void NamedVarSet::copy(const NamedVarSet* nvs)
 
 void NamedVarSet::addOffset(double offset)
 {
-	for (int i = 0; i<m_numVars; i++)
+	for (size_t i = 0; i<m_numVars; i++)
 	{
 		set(i, this->get(i) + offset);
 	}

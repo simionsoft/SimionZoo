@@ -43,7 +43,7 @@
 			<Output-Action>
 			  <Output-Action>pedal</Output-Action>
 			</Output-Action>
-			<Learning-Rate>0.0001</Learning-Rate>
+			<Learning-Rate>0.000001</Learning-Rate>
 			<Tau>0.001</Tau>
 			<Critic-Network>
 			  <Problem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">

@@ -31,52 +31,52 @@ class Descriptor
 public:
 	NamedVarSet* getInstance();
 	size_t size() const { return m_descriptor.size(); }
-	NamedVarProperties& operator[](int idx) { return *m_descriptor[idx]; }
-	const NamedVarProperties& operator[](int idx) const { return *m_descriptor[idx]; }
-	int addVariable(const char* name, const char* units, double min, double max, bool bCircular= false);
-	int getVarIndex (const char* name);
+	NamedVarProperties& operator[](size_t idx) { return *m_descriptor[idx]; }
+	const NamedVarProperties& operator[](size_t idx) const { return *m_descriptor[idx]; }
+	size_t addVariable(const char* name, const char* units, double min, double max, bool bCircular= false);
+	size_t getVarIndex (const char* name);
 };
 
 class NamedVarSet
 {
 	Descriptor &m_descriptor;
 	double *m_pValues;
-	int m_numVars;
+	size_t m_numVars;
 
-	double normalize(int i, double value) const;
-	double denormalize(int i, double value) const;
+	double normalize(size_t i, double value) const;
+	double denormalize(size_t i, double value) const;
 public:
 	NamedVarSet(Descriptor& descriptor);
 	virtual ~NamedVarSet();
 
-	int getNumVars() const{ return m_numVars; }
+	size_t getNumVars() const{ return m_numVars; }
 
-	int getVarIndex(const char* name) const;
+	size_t getVarIndex(const char* name) const;
 
 	double* getValueVector(){return m_pValues;}
 
 	//these two methods return the absolute value
-	double get(int i) const;
+	double get(size_t i) const;
 	double get(const char* varName) const;
 	//these two methods return the value normalized in its value range
-	double getNormalized(int i) const;
+	double getNormalized(size_t i) const;
 	double getNormalized(const char* varName) const;
 
-	double* getValuePtr(int i);
-	double& getRef(int i);
+	double* getValuePtr(size_t i);
+	double& getRef(size_t i);
 
 	//these two methods accept absolute values
 	void set(const char* varName, double value);
-	void set(int i, double value);
+	void set(size_t i, double value);
 	//these two methods accept normalized values that are de-normalized before storing them
 	void setNormalized(const char* varName, double value);
-	void setNormalized(int i, double value);
+	void setNormalized(size_t i, double value);
 
 	//returns the sum of all the values, i.e. used to scalarise a reward vector
 	double getSumValue() const;
 
 	void copy(const NamedVarSet* nvs);
-	NamedVarProperties& getProperties(int i) const { return m_descriptor[i]; }
+	NamedVarProperties& getProperties(size_t i) const { return m_descriptor[i]; }
 	NamedVarProperties& getProperties(const char* varName) const;
 	Descriptor& getDescriptor() { return m_descriptor; }
 	Descriptor* getDescriptorPtr() { return &m_descriptor; }

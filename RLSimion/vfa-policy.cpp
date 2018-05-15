@@ -90,7 +90,7 @@ double StochasticUniformPolicy::selectAction(const State *s, Action *a)
 	if (m_discreteActionSpace)
 	{
 		SingleDimensionDiscreteActionVariableGrid* grid = ((SingleDimensionDiscreteActionVariableGrid*)(((DiscreteActionFeatureMap*)SimGod::getGlobalActionFeatureMap().get())->returnGrid()[actionIndex]));
-		randomValue = grid->getCenters()[grid->getClosestCenter(randomValue)];
+		randomValue = grid->getCenters()[grid->getClosestValue(randomValue)];
 		probability = 1.0 / grid->getNumCenters();
 	}
 
@@ -267,7 +267,7 @@ double StochasticGaussianPolicy::selectAction(const State *s, Action *a)
 	if (m_discreteActionSpace)
 	{
 		SingleDimensionDiscreteActionVariableGrid* grid = ((SingleDimensionDiscreteActionVariableGrid*)(((DiscreteActionFeatureMap*)SimGod::getGlobalActionFeatureMap().get())->returnGrid()[actionIndex]));
-		output = grid->getCenters()[grid->getClosestCenter(output)];
+		output = grid->getCenters()[grid->getClosestValue(output)];
 
 		probability = GaussianNoise::getPDF(mean, sigma, output) * m_space_density;
 	}

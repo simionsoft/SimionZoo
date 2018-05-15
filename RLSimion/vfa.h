@@ -50,9 +50,6 @@ public:
 
 	void setIndexOffset(unsigned int offset);
 
-	bool saveWeights(const char* pFilename) const;
-	bool loadWeights(const char* pFilename);
-
 };
 
 class LinearStateVFA: public LinearVFA, public StateActionFunction, public DeferredLoad
@@ -74,8 +71,6 @@ public:
 
 	void getFeatures(const State* s,FeatureList* outFeatures);
 	void getFeatureState(unsigned int feature, State* s);
-
-	void save(const char* pFilename) const;
 
 	std::shared_ptr<StateFeatureMap> getStateFeatureMap(){ return m_pStateFeatureMap; }
 

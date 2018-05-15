@@ -45,12 +45,12 @@ btCollisionShape* BulletBody::getShape()
 	return m_shape;
 }
 
-void BulletBody::setAbsoluteStateVarIds(int xId, int yId, int thetaId)
+void BulletBody::setAbsoluteStateVarIds(size_t xId, size_t yId, size_t thetaId)
 {
 	m_xId = xId; m_yId = yId; m_thetaId = thetaId;
 	m_bSetAbsStateVars = true;
 }
-void BulletBody::setRelativeStateVarIds(int relXId, int relYId, int refXId, int refYId)
+void BulletBody::setRelativeStateVarIds(size_t relXId, size_t relYId, size_t refXId, size_t refYId)
 {
 	m_relXId = relXId; m_relYId = relYId; m_refXId = refXId; m_refYId = refYId;
 	m_bSetRelStateVars = true;

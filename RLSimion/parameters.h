@@ -132,12 +132,14 @@ public:
 	}
 };
 
+class NamedVarProperties;
 
 class STATE_VARIABLE
 {
 protected:
 	const char* m_name = 0;
 	const char* m_comment = 0;
+	NamedVarProperties& m_properties;
 	int m_hVariable = -1;
 	const char* m_variableName = 0;
 public:
@@ -147,12 +149,14 @@ public:
 	int get() { return m_hVariable; }
 	void set(int hVar) { m_hVariable = hVar; }
 	const char* getName() { return m_variableName; }
+	NamedVarProperties& getProperties() const { return m_properties; }
 };
 
 class ACTION_VARIABLE
 {
 	const char* m_name;
 	const char* m_comment;
+	NamedVarProperties& m_properties;
 	int m_hVariable = -1;
 	const char* m_variableName = 0;
 public:
@@ -162,6 +166,7 @@ public:
 	int get() { return m_hVariable; }
 	void set(unsigned int index) { m_hVariable = index; }
 	const char* getName() { return m_variableName; }
+	NamedVarProperties& getProperties() const { return m_properties; }
 };
 
 template<typename DataType>
@@ -255,7 +260,7 @@ public:
 			pChildParameters = pChildParameters->getNextSibling(name);
 		}
 	}
-	size_t size() { return m_values.size(); }
+	size_t size() const { return m_values.size(); }
 	DataType* operator[] (size_t index) { return m_values[index].get(); }
 };
 

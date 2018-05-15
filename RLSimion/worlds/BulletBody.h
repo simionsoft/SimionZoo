@@ -13,14 +13,14 @@ class BulletBody
 	double m_originZ = 0.0;
 	double m_originTheta = 0.0;
 protected:
-	int m_xId = -1;
-	int m_yId = -1;
-	int m_thetaId = -1;
+	size_t m_xId;
+	size_t m_yId;
+	size_t m_thetaId;
 
-	int m_relXId = -1;
-	int m_relYId = -1;
-	int m_refXId = -1;
-	int m_refYId = -1;
+	size_t m_relXId;
+	size_t m_relYId;
+	size_t m_refXId;
+	size_t m_refYId;
 
 	bool bSetAbsStateVars() { return m_bSetAbsStateVars; }
 	bool bSetRelStateVars() { return m_bSetRelStateVars; }
@@ -33,8 +33,8 @@ protected:
 public:
 	virtual ~BulletBody() { }
 
-	void setAbsoluteStateVarIds(int xId, int yId, int thetaId);
-	void setRelativeStateVarIds(int relXId, int relYId, int refXId, int refYId);
+	void setAbsoluteStateVarIds(size_t xId, size_t yId, size_t thetaId);
+	void setRelativeStateVarIds(size_t relXId, size_t relYId, size_t refXId, size_t refYId);
 	void setOrigin(double x, double y, double theta);
 
 	virtual void reset(State* s);

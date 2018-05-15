@@ -31,10 +31,10 @@ void SingleDimensionDiscreteGrid::getFeatures(const State* s, const Action* a, F
 {
 	double value = getVarValue(s, a) + m_offset;
 	outDimFeatures->clear();
-	outDimFeatures->add(getClosestCenter(value), 1.0);
+	outDimFeatures->add(getClosestValue(value), 1.0);
 }
 
-int SingleDimensionDiscreteGrid::getClosestCenter(double value)
+int SingleDimensionDiscreteGrid::getClosestValue(double value)
 {
 	assert(m_numCenters.get() >= 2);
 	unsigned int nearestIndex = 0;
