@@ -19,7 +19,7 @@ public:
 	double getMax() const { return m_max; }
 	double getRangeWidth() const { return m_max - m_min; }
 	void setCircular(bool bCircular) { m_bCircular = bCircular; }
-	bool bIsCircular() const { return m_bCircular; }
+	bool isCircular() const { return m_bCircular; }
 	const char* getUnits() const { return m_units; }
 };
 

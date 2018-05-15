@@ -16,10 +16,6 @@ class Policy
 {
 protected:
 	ACTION_VARIABLE m_outputAction;
-	bool m_discreteActionSpace = false;
-
-	double m_space_density;
-
 public:
 	Policy(ConfigNode* pConfigNode);
 	virtual ~Policy();
@@ -37,7 +33,7 @@ public:
 
 	virtual void getParameterGradient(const State* s, const Action* a, FeatureList* pOutGradient) = 0;
 
-	int getOutputActionIndex() { return m_outputAction.get(); }
+	size_t getOutputActionIndex() { return m_outputAction.get(); }
 	void setOutputActionIndex(unsigned int outputActionIndex) { m_outputAction.set(outputActionIndex); }
 
 	static std::shared_ptr<Policy> getInstance(ConfigNode* pParameters);
@@ -60,28 +56,6 @@ public:
 	static std::shared_ptr<StochasticPolicy> getInstance(ConfigNode* pParameters) { throw("Not implemented: StochasticPolicy::getInstance()"); }
 };
 
-class StochasticUniformPolicy : public StochasticPolicy
-{
-protected:
-	double m_minActionValue;
-	double m_maxActionValue;
-	double m_action_width;
-
-public:
-	StochasticUniformPolicy(ConfigNode* pParameters);
-	virtual ~StochasticUniformPolicy();
-
-	void getFeatures(const State* state, FeatureList* outFeatureList);
-	void addFeatures(const FeatureList* pFeatureList, double factor);
-	double getDeterministicOutput(const FeatureList* pFeatureList);
-
-	double selectAction(const State *s, Action *a);
-	double getProbability(const State *s, const Action *a, bool bStochastic);
-
-	void getParameterGradient(const State* s, const Action* a, FeatureList* pOutGradient);
-
-	LinearStateVFA* getDetPolicyStateVFA() { throw "StochasticUniformPolicy::getDetPolicyStateVFA() is not implemented"; }
-};
 
 //A policy that adds noise drawn from N(VFA(s),sigma) deterministic
 //As proposed by Hasselt (?)

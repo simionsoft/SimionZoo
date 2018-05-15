@@ -21,10 +21,29 @@ std::shared_ptr<FeatureMap> FeatureMap::getInstance(ConfigNode* pConfigNode)
 {
 	return CHOICE<FeatureMap>(pConfigNode, "Type", "Feature map type",
 		{
-			//{ "Discrete-State-Grid", CHOICE_ELEMENT_NEW<DiscreteFeatureMap> },
+			{ "Discrete-State-Grid", CHOICE_ELEMENT_NEW<DiscreteFeatureMap> },
 			{ "Gaussian-RBF-Grid", CHOICE_ELEMENT_NEW<GaussianRBFGridFeatureMap> },
 			{ "Tile-Coding-State-Grid", CHOICE_ELEMENT_NEW<TileCodingFeatureMap> }
-			//{ "State-Bag", CHOICE_ELEMENT_NEW<BagFeatureMap> }
+		});
+}
+
+std::shared_ptr<StateFeatureMap> StateFeatureMap::getInstance(ConfigNode* pConfigNode)
+{
+	return CHOICE<StateFeatureMap>(pConfigNode, "Type", "Feature map type",
+		{
+			{ "Discrete-State-Grid", CHOICE_ELEMENT_NEW<DiscreteFeatureMap> },
+			{ "Gaussian-RBF-Grid", CHOICE_ELEMENT_NEW<GaussianRBFGridFeatureMap> },
+			{ "Tile-Coding-State-Grid", CHOICE_ELEMENT_NEW<TileCodingFeatureMap> }
+		});
+}
+
+std::shared_ptr<ActionFeatureMap> ActionFeatureMap::getInstance(ConfigNode* pConfigNode)
+{
+	return CHOICE<ActionFeatureMap>(pConfigNode, "Type", "Feature map type",
+		{
+			{ "Discrete-State-Grid", CHOICE_ELEMENT_NEW<DiscreteFeatureMap> },
+			{ "Gaussian-RBF-Grid", CHOICE_ELEMENT_NEW<GaussianRBFGridFeatureMap> },
+			{ "Tile-Coding-State-Grid", CHOICE_ELEMENT_NEW<TileCodingFeatureMap> }
 		});
 }
 

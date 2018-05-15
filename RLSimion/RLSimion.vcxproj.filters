@@ -76,9 +76,6 @@
     <ClCompile Include="featuremap.cpp">
       <Filter>learning</Filter>
     </ClCompile>
-    <ClCompile Include="featuremap-bag.cpp">
-      <Filter>learning</Filter>
-    </ClCompile>
     <ClCompile Include="featuremap-discrete.cpp">
       <Filter>learning</Filter>
     </ClCompile>
@@ -110,15 +107,6 @@
       <Filter>learning</Filter>
     </ClCompile>
     <ClCompile Include="simion.cpp">
-      <Filter>learning</Filter>
-    </ClCompile>
-    <ClCompile Include="single-dimension-grid-rbf.cpp">
-      <Filter>learning</Filter>
-    </ClCompile>
-    <ClCompile Include="single-dimension-discrete-grid.cpp">
-      <Filter>learning</Filter>
-    </ClCompile>
-    <ClCompile Include="single-dimension-grid.cpp">
       <Filter>learning</Filter>
     </ClCompile>
     <ClCompile Include="utils.cpp">
@@ -229,6 +217,9 @@
     <ClCompile Include="worlds\double-pendulum.cpp">
       <Filter>world</Filter>
     </ClCompile>
+    <ClCompile Include="single-dimension-grid.cpp">
+      <Filter>learning</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="resource1.h" />
@@ -308,15 +299,6 @@
       <Filter>learning</Filter>
     </ClInclude>
     <ClInclude Include="simion.h">
-      <Filter>learning</Filter>
-    </ClInclude>
-    <ClInclude Include="single-dimension-grid-rbf.h">
-      <Filter>learning</Filter>
-    </ClInclude>
-    <ClInclude Include="single-dimension-discrete-grid.h">
-      <Filter>learning</Filter>
-    </ClInclude>
-    <ClInclude Include="single-dimension-grid.h">
       <Filter>learning</Filter>
     </ClInclude>
     <ClInclude Include="utils.h">
@@ -438,6 +420,9 @@
     </ClInclude>
     <ClInclude Include="worlds\double-pendulum.h">
       <Filter>world</Filter>
+    </ClInclude>
+    <ClInclude Include="single-dimension-grid.h">
+      <Filter>learning</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

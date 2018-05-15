@@ -23,16 +23,15 @@ TileCodingFeatureMap::TileCodingFeatureMap(ConfigNode* pConfigNode)
 	for (unsigned int i = 0; i < m_stateVariables.size(); i++)
 	{
 		m_grids.push_back(new SingleDimensionGrid(m_numFeaturesPerTile.get()
-			, m_stateVariables[i]->getProperties().getMin(), m_stateVariables[i]->getProperties().getMax()
-			, m_stateVariables[i]->getProperties().bIsCircular()));
+			, m_stateVariables[i]->getProperties()->getMin(), m_stateVariables[i]->getProperties()->getMax()
+			, m_stateVariables[i]->getProperties()->isCircular()));
 	}
 	//action variables
 	for (unsigned int i = 0; i < m_actionVariables.size(); i++)
 	{
-		m_actionVariableNames.push_back(m_actionVariables[i]->getName());
 		m_grids.push_back(new SingleDimensionGrid(m_numFeaturesPerTile.get()
-			, m_actionVariables[i]->getProperties().getMin(), m_actionVariables[i]->getProperties().getMax()
-			, m_actionVariables[i]->getProperties().bIsCircular()));
+			, m_actionVariables[i]->getProperties()->getMin(), m_actionVariables[i]->getProperties()->getMax()
+			, m_actionVariables[i]->getProperties()->isCircular()));
 	}
 }
 
@@ -58,7 +57,7 @@ void TileCodingFeatureMap::getFeatures(const State* s, const Action* a, FeatureL
 		for (size_t variableDimension = 0; variableDimension < m_grids.size(); variableDimension++)
 		{
 			//set offset of the grid
-			double offset = m_grids[variableDimension]->getRangeWidth() * m_tilingOffset * (double) layerIndex;
+			double offset = m_grids[variableDimension]->getRangeWidth() * m_tileOffset.get() * (double) layerIndex;
 
 			double variableValue = getInputVariableValue(variableDimension, s, a);
 			size_t featureIndex= m_grids[variableDimension]->getClosestFeature(variableValue + offset);

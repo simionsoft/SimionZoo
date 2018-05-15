@@ -32,7 +32,7 @@ void Actor::deferredLoadStep()
 	
 	if (m_pInitController.shared_ptr())
 	{
-		int numActionDims = std::min(m_pInitController->getNumOutputs(), (int)m_policyLearners.size());
+		int numActionDims = std::min(m_pInitController->getNumOutputs(), m_policyLearners.size());
 		Logger::logMessage(MessageType::Info, "Initializing the policy weights using the base controller");
 		//initialize the weights using the controller's output at each center point in state space
 		for (int actionIndex = 0; actionIndex < numActionDims; actionIndex++)
@@ -47,7 +47,7 @@ void Actor::deferredLoadStep()
 					pWeights = m_policyLearners[actorActionIndex]->getPolicy()->getDetPolicyStateVFA()->getWeights();
 					for (unsigned int i = 0; i < numWeights; i++)
 					{
-						m_policyLearners[actorActionIndex]->getPolicy()->getDetPolicyStateVFA()->getStateFeatureMap()->getFeatureState(i, s);
+						m_policyLearners[actorActionIndex]->getPolicy()->getDetPolicyStateVFA()->getStateFeatureMap()->getFeatureStateAction(i, s, a);
 						m_pInitController->selectAction(s, a);
 						(*pWeights)[i] = a->get(controllerActionIndex);
 					}

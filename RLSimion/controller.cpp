@@ -28,15 +28,12 @@ std::shared_ptr<Controller> Controller::getInstance(ConfigNode* pConfigNode)
 
 //LQR//////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////
-	/*int* m_pVariableIndices;
-	double *m_pGains;
-	int numVars;*/
-
 LQRGain::LQRGain(ConfigNode* pConfigNode)
 {
 	m_variableIndex = STATE_VARIABLE(pConfigNode, "Variable", "The input state variable");
 	m_gain = DOUBLE_PARAM(pConfigNode, "Gain", "The gain applied to the input state variable", 0.1);
 }
+
 LQRController::LQRController(ConfigNode* pConfigNode)
 {
 	m_outputAction = ACTION_VARIABLE(pConfigNode, "Output-Actionn", "The output action");
@@ -60,11 +57,11 @@ double LQRController::selectAction(const State *s, Action *a)
 	return 1.0;
 }
 
-int LQRController::getNumOutputs()
+size_t LQRController::getNumOutputs()
 {
 	return 1;
 }
-int LQRController::getOutputActionIndex(int output)
+size_t LQRController::getOutputActionIndex(int output)
 {
 	if (output == 0)
 		return m_outputAction.get();
@@ -90,11 +87,11 @@ PIDController::PIDController(ConfigNode* pConfigNode)
 PIDController::~PIDController()
 {}
 
-int PIDController::getNumOutputs()
+size_t PIDController::getNumOutputs()
 {
 	return 1;
 }
-int PIDController::getOutputActionIndex(int output)
+size_t PIDController::getOutputActionIndex(int output)
 {
 	if (output == 0)
 		return m_outputAction.get();
@@ -153,11 +150,11 @@ WindTurbineVidalController::WindTurbineVidalController(ConfigNode* pConfigNode)
 	m_genElecEff = World::getDynamicModel()->getConstant("ElectricalGeneratorEfficiency");
 }
 
-int WindTurbineVidalController::getNumOutputs()
+size_t WindTurbineVidalController::getNumOutputs()
 {
 	return 2;
 }
-int WindTurbineVidalController::getOutputActionIndex(int output)
+size_t WindTurbineVidalController::getOutputActionIndex(int output)
 {
 	switch (output)
 	{
@@ -251,11 +248,11 @@ WindTurbineBoukhezzarController::WindTurbineBoukhezzarController(ConfigNode* pCo
 	m_a_T_g = pActionDescriptor.getVarIndex("T_g");
 }
 
-int WindTurbineBoukhezzarController::getNumOutputs()
+size_t WindTurbineBoukhezzarController::getNumOutputs()
 {
 	return 2;
 }
-int WindTurbineBoukhezzarController::getOutputActionIndex(int output)
+size_t WindTurbineBoukhezzarController::getOutputActionIndex(int output)
 {
 	switch (output)
 	{
@@ -356,11 +353,11 @@ WindTurbineJonkmanController::WindTurbineJonkmanController(ConfigNode* pConfigNo
 	m_a_T_g = pActionDescriptor.getVarIndex("T_g");
 }
 
-int WindTurbineJonkmanController::getNumOutputs()
+size_t WindTurbineJonkmanController::getNumOutputs()
 {
 	return 2;
 }
-int WindTurbineJonkmanController::getOutputActionIndex(int output)
+size_t WindTurbineJonkmanController::getOutputActionIndex(int output)
 {
 	switch (output)
 	{

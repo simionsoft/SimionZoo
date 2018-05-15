@@ -1,100 +1,70 @@
 #include "featuremap.h"
-#include "named-var-set.h"
-#include "worlds/world.h"
 #include "features.h"
-#include "config.h"
+#include "parameters.h"
 #include "single-dimension-grid.h"
 
-#define ACTIVATION_THRESHOLD 0.0001
-
-template <typename dimensionGridType>
-DiscreteFeatureMap<dimensionGridType>::DiscreteFeatureMap(ConfigNode* pParameters)
+DiscreteFeatureMap::DiscreteFeatureMap(ConfigNode* pConfigNode)
+	:FeatureMap(pConfigNode)
 {
+	m_numFeaturesPerVariable = INT_PARAM(pConfigNode, "Num-Features-Per-Dimension", "Number of features per input variable", 20);
+
+	m_totalNumFeatures = 1;
+	//state variables
+	for (size_t i = 0; i < m_stateVariables.size(); i++)
+	{
+		m_totalNumFeatures *= m_numFeaturesPerVariable.get();
+
+		m_grids.push_back(new SingleDimensionGrid(m_numFeaturesPerVariable.get()
+			, m_stateVariables[i]->getProperties()->getMin(), m_stateVariables[i]->getProperties()->getMax()
+			, m_stateVariables[i]->getProperties()->isCircular()));
+	}
+	//action variables
+	for (size_t i = 0; i < m_actionVariables.size(); i++)
+	{
+		m_totalNumFeatures *= m_numFeaturesPerVariable.get();
+
+		m_grids.push_back(new SingleDimensionGrid(m_numFeaturesPerVariable.get()
+			, m_stateVariables[i]->getProperties()->getMin(), m_stateVariables[i]->getProperties()->getMax()
+			, m_stateVariables[i]->getProperties()->isCircular()));
+	}
+	m_maxNumActiveFeatures = 1;
 }
 
-
-template <typename dimensionGridType>
-DiscreteFeatureMap<dimensionGridType>::~DiscreteFeatureMap()
+DiscreteFeatureMap::~DiscreteFeatureMap()
 {
-	delete m_pVarFeatures;
+
 }
 
-template <typename dimensionGridType>
-void DiscreteFeatureMap<dimensionGridType>::getFeatures(const State* s, const Action* a, FeatureList* outFeatures)
+void DiscreteFeatureMap::getFeatures(const State* s, const Action* a, FeatureList* outFeatures)
 {
-	unsigned int offset = 1;
+	size_t offset = 1, featureIndex;
 
 	outFeatures->clear();
-	if (m_grid.size() == 0) return;
+	if (m_grids.size() == 0) return;
 	//features of the 0th variable in m_pBuffer
-	m_grid[0]->getFeatures(s, a, outFeatures);
+	featureIndex = m_grids[0]->getClosestFeature(getInputVariableValue(0, s, a));
 
-	for (unsigned int i = 1; i < m_grid.size(); i++)
+	for (size_t i = 1; i < m_grids.size(); i++)
 	{
-		offset *= m_grid[i - 1]->getNumCenters();
+		offset *= m_numFeaturesPerVariable.get();
 
 		//we calculate the features of i-th variable
-		m_grid[i]->getFeatures(s, a, m_pVarFeatures);
-		//spawn features in buffer with the i-th variable's features
-		outFeatures->spawn(m_pVarFeatures, offset);
+		featureIndex += m_grids[i]->getClosestFeature(getInputVariableValue(i, s, a));
 	}
-	outFeatures->applyThreshold(ACTIVATION_THRESHOLD);
-	outFeatures->normalize();
+	outFeatures->add(featureIndex, 1.0);
 }
 
-template <typename dimensionGridType>
-void DiscreteFeatureMap<dimensionGridType>::getFeatureStateAction(unsigned int feature, State* s, Action* a)
+
+void DiscreteFeatureMap::getFeatureStateAction(size_t feature, State* s, Action* a)
 {
-	unsigned int dimFeature;
+	size_t dimFeature;
 
-	for (unsigned int i = 0; i < m_grid.size(); i++)
+	for (size_t i = 0; i < m_grids.size(); i++)
 	{
-		dimFeature = feature % m_grid[i]->getNumCenters();
+		dimFeature = feature % m_numFeaturesPerVariable.get();
 
-		m_grid[i]->setFeatureStateAction(dimFeature, s, a);
+		setInputVariableValue(i, m_grids[i]->getFeatureValue(dimFeature), s, a);
 
-		feature = feature / m_grid[i]->getNumCenters();
+		feature = feature / m_grids.size();
 	}
-}
-
-DiscreteStateFeatureMap::DiscreteStateFeatureMap(ConfigNode* pConfigNode)
-	: DiscreteFeatureMap(pConfigNode), StateFeatureMap(pConfigNode)
-{
-	m_pVarFeatures = new FeatureList("LinearGrid/var");
-
-	m_grid = MULTI_VALUE<SingleDimensionDiscreteStateVariableGrid>(pConfigNode, "Grid-Dimension", "Parameters of the state-dimension's grid");
-
-	for (unsigned int i = 0; i< m_grid.size(); i++)
-	{
-		m_inputStateVariables.push_back(m_grid[i]->getVariableName());
-	}
-
-	//pre-calculate number of features
-	m_totalNumFeatures = 1;
-
-	for (unsigned int i = 0; i < m_grid.size(); i++)
-		m_totalNumFeatures *= m_grid[i]->getNumCenters();
-
-	m_maxNumActiveFeatures = 1;
-}
-
-DiscreteActionFeatureMap::DiscreteActionFeatureMap(ConfigNode* pConfigNode)
-	: DiscreteFeatureMap(pConfigNode), ActionFeatureMap(pConfigNode)
-{
-	m_pVarFeatures = new FeatureList("LinearGrid/var");
-
-	m_grid = MULTI_VALUE<SingleDimensionDiscreteActionVariableGrid>(pConfigNode, "Grid-Dimension", "Parameters of the action-dimension's grid");
-
-	for (unsigned int i = 0; i< m_grid.size(); i++)
-	{
-		m_inputActionVariables.push_back(m_grid[i]->getVariableName());
-	}
-
-	//pre-calculate number of features
-	m_totalNumFeatures = 1;
-
-	for (unsigned int i = 0; i < m_grid.size(); i++)
-		m_totalNumFeatures *= m_grid[i]->getNumCenters();
-
-	m_maxNumActiveFeatures = 1;
 }

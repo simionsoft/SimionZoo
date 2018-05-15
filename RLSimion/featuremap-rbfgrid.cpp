@@ -1,8 +1,6 @@
 #include "featuremap.h"
 #include "named-var-set.h"
-#include "worlds/world.h"
 #include "features.h"
-#include "config.h"
 #include "single-dimension-grid.h"
 
 #define ACTIVATION_THRESHOLD 0.0001
@@ -24,10 +22,9 @@ GaussianRBFGridFeatureMap::GaussianRBFGridFeatureMap(ConfigNode* pConfigNode): F
 		m_totalNumFeatures *= m_numFeaturesPerVariable.get();
 		m_maxNumActiveFeatures *= m_maxNumActiveFeaturesPerDimension;
 
-		m_stateVariableNames.push_back(m_stateVariables[i]->getName());
 		m_grids.push_back(new SingleDimensionGrid(m_numFeaturesPerVariable.get()
-			, m_stateVariables[i]->getProperties().getMin(), m_stateVariables[i]->getProperties().getMax()
-			, m_stateVariables[i]->getProperties().bIsCircular()));
+			, m_stateVariables[i]->getProperties()->getMin(), m_stateVariables[i]->getProperties()->getMax()
+			, m_stateVariables[i]->getProperties()->isCircular()));
 	}
 	//action variables
 	for (unsigned int i = 0; i < m_actionVariables.size(); i++)
@@ -35,10 +32,9 @@ GaussianRBFGridFeatureMap::GaussianRBFGridFeatureMap(ConfigNode* pConfigNode): F
 		m_totalNumFeatures *= m_numFeaturesPerVariable.get();
 		m_maxNumActiveFeatures *= m_maxNumActiveFeaturesPerDimension;
 
-		m_actionVariableNames.push_back(m_actionVariables[i]->getName());
 		m_grids.push_back(new SingleDimensionGrid(m_numFeaturesPerVariable.get()
-			, m_actionVariables[i]->getProperties().getMin(), m_actionVariables[i]->getProperties().getMax()
-			, m_actionVariables[i]->getProperties().bIsCircular()));
+			, m_actionVariables[i]->getProperties()->getMin(), m_actionVariables[i]->getProperties()->getMax()
+			, m_actionVariables[i]->getProperties()->isCircular()));
 	}
 }
 

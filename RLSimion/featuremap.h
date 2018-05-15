@@ -46,28 +46,30 @@ class StateFeatureMap : public FeatureMap
 {
 public:
 	StateFeatureMap(ConfigNode* pParameters);
+
+	static std::shared_ptr<StateFeatureMap> getInstance(ConfigNode* pParameters);
 };
 
 class ActionFeatureMap : public FeatureMap
 {
 public:
 	ActionFeatureMap(ConfigNode* pParameters);
+
+	static std::shared_ptr<ActionFeatureMap> getInstance(ConfigNode* pParameters);
 };
 
 //Grid of Gaussian Radial Basis Functions///////////////////////
 /////////////////////////////////////////////////////////////////
 class GaussianRBFGridFeatureMap: public FeatureMap
 {
-	const size_t m_maxNumActiveFeaturesPerDimension = 3;
-	FeatureList* m_pVarFeatures;
-
 	INT_PARAM m_numFeaturesPerVariable;
 
+	const size_t m_maxNumActiveFeaturesPerDimension = 3;
+	FeatureList* m_pVarFeatures;
 	vector<SingleDimensionGrid*> m_grids;
 
 	double getFeatureFactor(size_t varIndex, size_t feature, double value) const;
 	void getDimensionFeatures(size_t varIndex, const State* s, const Action* a, FeatureList* outFeatures) const;
-
 public:
 	GaussianRBFGridFeatureMap(ConfigNode* pParameters);
 	virtual ~GaussianRBFGridFeatureMap();
@@ -82,14 +84,11 @@ public:
 class TileCodingFeatureMap: public FeatureMap
 {
 protected:
-	double m_tilingOffset;
-
-	vector<SingleDimensionGrid*> m_grids;
-
 	INT_PARAM m_numTiles;
 	DOUBLE_PARAM m_tileOffset;
 	INT_PARAM m_numFeaturesPerTile;
 
+	vector<SingleDimensionGrid*> m_grids;
 public:
 	TileCodingFeatureMap(ConfigNode* pParameters);
 	virtual ~TileCodingFeatureMap();
@@ -104,66 +103,13 @@ public:
 class DiscreteFeatureMap: public FeatureMap
 {
 protected:
-	FeatureList* m_pVarFeatures;
+	INT_PARAM m_numFeaturesPerVariable;
 
 	vector<SingleDimensionGrid*> m_grids;
-
-	DiscreteFeatureMap(ConfigNode* pParameters);
 public:
+	DiscreteFeatureMap(ConfigNode* pParameters);
 	virtual ~DiscreteFeatureMap();
 
 	void getFeatures(const State* s, const Action* a, FeatureList* outFeatures);
-	void getFeatureStateAction(unsigned int feature, State* s, Action* a);
+	void getFeatureStateAction(size_t feature, State* s, Action* a);
 };
-
-
-//
-//class DiscreteStateFeatureMap : public DiscreteFeatureMap<SingleDimensionDiscreteStateVariableGrid>
-//	, public StateFeatureMap
-//{
-//public:
-//	DiscreteStateFeatureMap(ConfigNode* pParameters);
-//
-//	void getFeatures(const State* s, FeatureList* outFeatures) { DiscreteFeatureMap::getFeatures(s, 0, outFeatures); }
-//	void getFeatureState(unsigned int feature, State* s) { DiscreteFeatureMap::getFeatureStateAction(feature, s, 0); }
-//	size_t getTotalNumFeatures() { return m_totalNumFeatures; }
-//	size_t getMaxNumActiveFeatures() { return m_maxNumActiveFeatures; }
-//};
-//
-//class DiscreteActionFeatureMap : public DiscreteFeatureMap<SingleDimensionDiscreteActionVariableGrid>
-//	, public ActionFeatureMap
-//{
-//public:
-//	DiscreteActionFeatureMap(ConfigNode* pParameters);
-//
-//	void getFeatures(const Action* a, FeatureList* outFeatures) { DiscreteFeatureMap::getFeatures(0, a, outFeatures); }
-//	void getFeatureAction(unsigned int feature, Action* a) { DiscreteFeatureMap::getFeatureStateAction(feature, 0, a); }
-//	size_t getTotalNumFeatures() { return m_totalNumFeatures; }
-//	size_t getMaxNumActiveFeatures() { return m_maxNumActiveFeatures; }
-//};
-//
-////CBagFeatureMap////////////////////////////////////////////////////
-///////////////////////////////////////////////////////////////////
-//class BagStateFeatureMap : public StateFeatureMap
-//{
-//	MULTI_VALUE_VARIABLE<STATE_VARIABLE> m_stateVariables;
-//public:
-//	BagStateFeatureMap(ConfigNode* pParameters);
-//
-//	void getFeatures(const State* s, FeatureList* outFeatures);
-//	void getFeatureState(unsigned int feature, State* s);
-//	size_t getTotalNumFeatures() { return m_stateVariables.size(); }
-//	size_t getMaxNumActiveFeatures() { return m_stateVariables.size(); }
-//};
-//
-//class BagActionFeatureMap : public ActionFeatureMap
-//{
-//	MULTI_VALUE_VARIABLE<ACTION_VARIABLE> m_actionVariables;
-//public:
-//	BagActionFeatureMap(ConfigNode* pParameters);
-//
-//	void getFeatures(const Action* a, FeatureList* outFeatures);
-//	void getFeatureAction(unsigned int feature, Action* a);
-//	size_t getTotalNumFeatures() { return m_actionVariables.size(); }
-//	size_t getMaxNumActiveFeatures() { return m_actionVariables.size(); }
-//};

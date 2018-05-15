@@ -190,7 +190,7 @@ void Logger::writeNamedVarSetDescriptorToBuffer(char* pOutBuffer, const char* id
 	char buffer[BUFFER_SIZE];
 	for (unsigned int i = 0; i < descriptor->size(); i++)
 	{
-		if ((*descriptor)[i].bIsCircular())
+		if ((*descriptor)[i].isCircular())
 			circular = "true";
 		else
 			circular = "false";
@@ -244,7 +244,7 @@ void Logger::firstStep()
 		size_t functionLogFreq = 1;
 		if (m_numFunctionLogPoints.get() > 0)
 		{
-			if (m_numFunctionLogPoints.get() < SimionApp::get()->pExperiment->getTotalNumEpisodes())
+			if ((unsigned int) m_numFunctionLogPoints.get() < SimionApp::get()->pExperiment->getTotalNumEpisodes())
 				functionLogFreq = SimionApp::get()->pExperiment->getTotalNumEpisodes() / m_numFunctionLogPoints.get();
 			else
 				functionLogFreq = 1;

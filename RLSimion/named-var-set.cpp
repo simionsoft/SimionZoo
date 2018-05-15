@@ -111,7 +111,7 @@ void NamedVarSet::set(size_t i, double value)
 {
 	if (i >= 0 && i < m_numVars)
 	{
-		if (!m_descriptor[i].bIsCircular())
+		if (!m_descriptor[i].isCircular())
 		{
 			m_pValues[i] = std::min(m_descriptor[i].getMax()
 				, std::max(m_descriptor[i].getMin(), value));

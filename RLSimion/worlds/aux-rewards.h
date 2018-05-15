@@ -8,7 +8,7 @@ class Descriptor;
 
 class DistanceReward2D : public IRewardComponent
 {
-	int m_var1xId, m_var1yId, m_var2xId, m_var2yId;
+	size_t m_var1xId, m_var1yId, m_var2xId, m_var2yId;
 	double m_maxDist= 1.0;
 public:
 	DistanceReward2D(Descriptor& stateDescr, const char* var1xName, const char* var1yName, const char* var2xName, const char* var2yName);

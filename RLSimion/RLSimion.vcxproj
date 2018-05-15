@@ -263,7 +263,6 @@
     <ClCompile Include="etraces.cpp" />
     <ClCompile Include="experience-replay.cpp" />
     <ClCompile Include="experiment.cpp" />
-    <ClCompile Include="featuremap-bag.cpp" />
     <ClCompile Include="featuremap-discrete.cpp" />
     <ClCompile Include="featuremap-rbfgrid.cpp" />
     <ClCompile Include="featuremap-tilecoding.cpp" />
@@ -284,10 +283,8 @@
     <ClCompile Include="app-main.cpp" />
     <ClCompile Include="simgod.cpp" />
     <ClCompile Include="simion.cpp" />
-    <ClCompile Include="single-dimension-discrete-grid.cpp" />
-    <ClCompile Include="single-dimension-grid-rbf.cpp" />
-    <ClCompile Include="single-dimension-grid.cpp" />
     <ClCompile Include="function-sampler.cpp" />
+    <ClCompile Include="single-dimension-grid.cpp" />
     <ClCompile Include="stats.cpp" />
     <ClCompile Include="utils.cpp" />
     <ClCompile Include="vfa-policy.cpp" />
@@ -331,6 +328,7 @@
     <ClInclude Include="deferred-load.h" />
     <ClInclude Include="DQN.h" />
     <ClInclude Include="function-sampler.h" />
+    <ClInclude Include="single-dimension-grid.h" />
     <ClInclude Include="state-action-function.h" />
     <ClInclude Include="etraces.h" />
     <ClInclude Include="experience-replay.h" />
@@ -354,9 +352,6 @@
     <ClInclude Include="reward.h" />
     <ClInclude Include="simgod.h" />
     <ClInclude Include="simion.h" />
-    <ClInclude Include="single-dimension-discrete-grid.h" />
-    <ClInclude Include="single-dimension-grid-rbf.h" />
-    <ClInclude Include="single-dimension-grid.h" />
     <ClInclude Include="stats.h" />
     <ClInclude Include="utils.h" />
     <ClInclude Include="vfa-critic.h" />

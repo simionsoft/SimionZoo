@@ -122,7 +122,6 @@ class ENUM_PARAM : public SimpleParam<EnumType>
 {
 public:
 	ENUM_PARAM() = default;
-
 	ENUM_PARAM(ConfigNode* pConfigNode, const char* name, const char* comment, EnumType default)
 	{
 		m_name = name;
@@ -139,34 +138,34 @@ class STATE_VARIABLE
 protected:
 	const char* m_name = 0;
 	const char* m_comment = 0;
-	NamedVarProperties& m_properties;
-	int m_hVariable = -1;
+	NamedVarProperties* m_pProperties;
+	size_t m_hVariable;
 	const char* m_variableName = 0;
 public:
 	STATE_VARIABLE() = default;
-
 	STATE_VARIABLE(ConfigNode* pConfigNode, const char* name, const char* comment);
-	int get() { return m_hVariable; }
+
+	size_t get() { return m_hVariable; }
 	void set(int hVar) { m_hVariable = hVar; }
 	const char* getName() { return m_variableName; }
-	NamedVarProperties& getProperties() const { return m_properties; }
+	NamedVarProperties* getProperties() const { return m_pProperties; }
 };
 
 class ACTION_VARIABLE
 {
 	const char* m_name;
 	const char* m_comment;
-	NamedVarProperties& m_properties;
-	int m_hVariable = -1;
+	NamedVarProperties* m_pProperties;
+	size_t m_hVariable;
 	const char* m_variableName = 0;
 public:
 	ACTION_VARIABLE() = default;
-
 	ACTION_VARIABLE(ConfigNode* pConfigNode, const char* name, const char* comment);
-	int get() { return m_hVariable; }
+
+	size_t get() { return m_hVariable; }
 	void set(unsigned int index) { m_hVariable = index; }
 	const char* getName() { return m_variableName; }
-	NamedVarProperties& getProperties() const { return m_properties; }
+	NamedVarProperties* getProperties() const { return m_pProperties; }
 };
 
 template<typename DataType>

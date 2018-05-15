@@ -24,30 +24,13 @@ std::shared_ptr<Policy> Policy::getInstance(ConfigNode* pConfigNode)
 	return CHOICE<Policy>(pConfigNode, "Policy", "The policy type",
 	{
 		{"Deterministic-Policy-Gaussian-Noise",CHOICE_ELEMENT_NEW<DeterministicPolicyGaussianNoise>},
-		{"Stochastic-Policy-Gaussian-Noise",CHOICE_ELEMENT_NEW<StochasticGaussianPolicy>},
-		{"Uniform-Policy",CHOICE_ELEMENT_NEW<StochasticUniformPolicy>}
+		{"Stochastic-Policy-Gaussian-Noise",CHOICE_ELEMENT_NEW<StochasticGaussianPolicy>}
 	});
 }
 
 Policy::Policy(ConfigNode* pConfigNode)
 {
 	m_outputAction = ACTION_VARIABLE(pConfigNode, "Output-Action", "The output action variable");
-
-	//only DiscreteActionFeatureMap is supported for the discrete mode
-	if (SimGod::getGlobalActionFeatureMap().get() != NULL)
-		m_discreteActionSpace = (typeid(*SimGod::getGlobalActionFeatureMap().get()) == typeid(DiscreteActionFeatureMap));
-	else
-		m_discreteActionSpace = false;
-
-	if (m_discreteActionSpace)
-	{
-		//calculate the density of the space
-		m_space_density = 1.0;
-		for (size_t i = 0; i < World::getDynamicModel()->getActionDescriptor().size(); i++)
-		{
-			m_space_density *= ((SingleDimensionDiscreteActionVariableGrid*)(((DiscreteActionFeatureMap*)SimGod::getGlobalActionFeatureMap().get())->returnGrid()[i]))->getStepSize();
-		}
-	}
 }
 
 Policy::~Policy()
@@ -58,77 +41,6 @@ DeterministicPolicy::DeterministicPolicy(ConfigNode* pConfigNode) : Policy(pConf
 
 StochasticPolicy::StochasticPolicy(ConfigNode* pConfigNode) : Policy(pConfigNode) {}
 
-
-//StochasticUniformPolicy/////////////////////////////////////////
-/////////////////////////////////////////////////////////
-StochasticUniformPolicy::StochasticUniformPolicy(ConfigNode* pConfigNode)
-	: StochasticPolicy(pConfigNode)
-{
-	Descriptor& pActionDescriptor = World::getDynamicModel()->getActionDescriptor();
-	m_minActionValue = pActionDescriptor[m_outputAction.get()].getMin();
-	m_maxActionValue = pActionDescriptor[m_outputAction.get()].getMax();
-	m_action_width = pActionDescriptor[m_outputAction.get()].getRangeWidth();
-}
-
-StochasticUniformPolicy::~StochasticUniformPolicy()
-{
-}
-
-void StochasticUniformPolicy::getParameterGradient(const State* s, const Action* a, FeatureList* pOutGradient)
-{
-	throw "StochasticUniformPolicy::getParameterGradient() is not implemented";
-}
-
-double StochasticUniformPolicy::selectAction(const State *s, Action *a)
-{
-	int actionIndex = m_outputAction.get();
-
-	//values for the case of a continuous action space
-	double randomValue = getRandomValue() * m_action_width + m_minActionValue;
-	double probability = 1.0 / m_action_width * PROBABILITY_INTEGRATION_WIDTH;
-
-	if (m_discreteActionSpace)
-	{
-		SingleDimensionDiscreteActionVariableGrid* grid = ((SingleDimensionDiscreteActionVariableGrid*)(((DiscreteActionFeatureMap*)SimGod::getGlobalActionFeatureMap().get())->returnGrid()[actionIndex]));
-		randomValue = grid->getCenters()[grid->getClosestValue(randomValue)];
-		probability = 1.0 / grid->getNumCenters();
-	}
-
-	a->set(actionIndex, randomValue);
-
-	return probability;
-}
-
-double StochasticUniformPolicy::getProbability(const State* s, const Action* a, bool bStochastic)
-{
-	int actionIndex = m_outputAction.get();
-
-	//values for the case of a continuous action space
-	double probability = 1.0 / m_action_width * PROBABILITY_INTEGRATION_WIDTH;
-
-	if (m_discreteActionSpace)
-	{
-		SingleDimensionDiscreteActionVariableGrid* grid = ((SingleDimensionDiscreteActionVariableGrid*)(((DiscreteActionFeatureMap*)SimGod::getGlobalActionFeatureMap().get())->returnGrid()[actionIndex]));
-		probability = 1.0 / grid->getNumCenters();
-	}
-
-	return probability;
-}
-
-void StochasticUniformPolicy::getFeatures(const State* state, FeatureList* outFeatureList)
-{
-	throw "StochasticUniformPolicy::getFeatures() is not implemented";
-}
-
-void StochasticUniformPolicy::addFeatures(const FeatureList* pFeatureList, double factor)
-{
-	throw "StochasticUniformPolicy::addFeatures() is not implemented";
-}
-
-double StochasticUniformPolicy::getDeterministicOutput(const FeatureList* pFeatureList)
-{
-	throw "StochasticUniformPolicy::getDeterministicOutput() is not implemented";
-}
 
 
 //CDetPolicyGaussianNoise////////////////////////////////
@@ -260,30 +172,17 @@ double StochasticGaussianPolicy::selectAction(const State *s, Action *a)
 	}
 
 	//clip the output between the min and max value of the action space
-	unsigned int actionIndex = m_outputAction.get();
+	size_t actionIndex = m_outputAction.get();
 	output = clip(output, a->getProperties(actionIndex).getMin(), a->getProperties(actionIndex).getMax());
 
-	//disctingtion between continuous and discrete action variables
-	if (m_discreteActionSpace)
-	{
-		SingleDimensionDiscreteActionVariableGrid* grid = ((SingleDimensionDiscreteActionVariableGrid*)(((DiscreteActionFeatureMap*)SimGod::getGlobalActionFeatureMap().get())->returnGrid()[actionIndex]));
-		output = grid->getCenters()[grid->getClosestValue(output)];
-
-		probability = GaussianNoise::getPDF(mean, sigma, output) * m_space_density;
-	}
-	else
-	{
-		probability = GaussianNoise::getSampleProbability(mean, sigma, output);
-	}
+	probability = GaussianNoise::getSampleProbability(mean, sigma, output);
 
 	m_lastNoise = output - mean;
 
 	a->set(actionIndex, output);
 
-#ifdef _DEBUG
-	cout << "select action - mean: " << mean << "\tsigma: " << sigma << "\tlog(sigma): " << m_pSigmaVFA->get(s) << "\toutput: " << output << "\n";
-#endif
-	//this is only an approximation as the PDF now looks differntly because of the clipping
+
+	//this is only an approximation as the PDF now looks differently because of the clipping
 	//this means, that the values at the borders will be higher as predicted by this function call
 	//maybe this is causing problems, but I do not see a way to solve this
 	return probability;
@@ -295,20 +194,10 @@ double StochasticGaussianPolicy::getProbability(const State *s, const State *a, 
 
 	if (bStochastic && SimionApp::get()->pSimGod->useSampleImportanceWeights())
 	{
-		unsigned int actionIndex = m_outputAction.get();
+		size_t actionIndex = m_outputAction.get();
 		double value = a->get(actionIndex);
 
-		if (m_discreteActionSpace)
-		{
-			SingleDimensionDiscreteActionVariableGrid* grid = ((SingleDimensionDiscreteActionVariableGrid*)(((DiscreteActionFeatureMap*)SimGod::getGlobalActionFeatureMap().get())->returnGrid()[actionIndex]));
-			//TODO: Multiply with width of the action space!
-			//P(x) = pdf(x) * space_density
-			return GaussianNoise::getPDF(mean, exp(m_pSigmaVFA->get(s)), value) * m_space_density;
-		}
-		else
-		{
-			return GaussianNoise::getSampleProbability(mean, exp(m_pSigmaVFA->get(s)), value);
-		}
+		return GaussianNoise::getSampleProbability(mean, exp(m_pSigmaVFA->get(s)), value);
 	}
 	return 1.0;
 }
@@ -346,15 +235,6 @@ void StochasticGaussianPolicy::getFeatures(const State* state, FeatureList* outF
 }
 void StochasticGaussianPolicy::addFeatures(const FeatureList* pFeatureList, double factor)
 {
-	//m_pMeanAddList->clear();
-	//m_pSigmaAddList->clear();
-
-	//split the long pFeatureList into the two sublists, one for the mean and one for the std.dev.
-	//unsigned int m_numWeights = m_pMeanVFA->getNumWeights();
-	//pFeatureList->split(m_pMeanAddList, m_pSigmaAddList, m_numWeights);
-
-	//m_pMeanVFA->add(m_pMeanAddList);
-	//m_pSigmaVFA->add(m_pSigmaAddList);
 	m_pMeanVFA->add(pFeatureList);
 	m_pSigmaVFA->add(pFeatureList);
 }

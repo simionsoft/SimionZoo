@@ -47,7 +47,7 @@ double QEGreedyPolicy::selectAction(LinearStateActionVFA* pQFunction, const Stat
 	{
 		size_t numActionWeights= pQFunction->getNumActionWeights();
 		size_t randomActionWeight = rand() % numActionWeights;
-		pQFunction->getActionFeatureMap()->getFeatureAction((unsigned int)randomActionWeight, a);
+		pQFunction->getActionFeatureMap()->getFeatureStateAction(randomActionWeight, (State*) s, a);
 		return 1.0 / numActionWeights;
 	}
 }
@@ -100,7 +100,7 @@ double QSoftMaxPolicy::selectAction(LinearStateActionVFA* pQFunction, const Stat
 		actionProbability = m_pProbabilities[i];
 		i++;
 	}
-	pQFunction->getActionFeatureMap()->getFeatureAction((unsigned int) (i-1), a);
+	pQFunction->getActionFeatureMap()->getFeatureStateAction((unsigned int) (i-1), (State*)s, a);
 	return actionProbability;
 	assert(i < numActionWeights);
 }
