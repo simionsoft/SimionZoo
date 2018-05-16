@@ -20,7 +20,8 @@ GaussianRBFGridFeatureMap::GaussianRBFGridFeatureMap(Descriptor& stateDescriptor
 	initGrid();
 }
 
-GaussianRBFGridFeatureMap::GaussianRBFGridFeatureMap(ConfigNode* pConfigNode): FeatureMap(pConfigNode)
+GaussianRBFGridFeatureMap::GaussianRBFGridFeatureMap(ConfigNode* pConfigNode)
+	: FeatureMap(pConfigNode)
 {
 	m_pVarFeatures = new FeatureList("RBFGrid/var");
 

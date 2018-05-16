@@ -13,6 +13,8 @@ DiscreteFeatureMap::DiscreteFeatureMap(Descriptor& stateDescriptor, vector<size_
 	//create ACTION_VARIABLE objects
 	for each (size_t varId in actionVariableIds)
 		m_actionVariables.add(new ACTION_VARIABLE(actionDescriptor, varId));
+
+	initGrid();
 }
 
 DiscreteFeatureMap::DiscreteFeatureMap(ConfigNode* pConfigNode)
@@ -54,7 +56,7 @@ DiscreteFeatureMap::~DiscreteFeatureMap()
 
 void DiscreteFeatureMap::getFeatures(const State* s, const Action* a, FeatureList* outFeatures)
 {
-	size_t offset = 1, featureIndex;
+	size_t offset = 1, featureIndex = 0;
 
 	outFeatures->clear();
 	if (m_grids.size() == 0) return;
@@ -66,7 +68,7 @@ void DiscreteFeatureMap::getFeatures(const State* s, const Action* a, FeatureLis
 		offset *= m_numFeaturesPerVariable.get();
 
 		//we calculate the features of i-th variable
-		featureIndex += m_grids[i]->getClosestFeature(getInputVariableValue(i, s, a));
+		featureIndex += offset*m_grids[i]->getClosestFeature(getInputVariableValue(i, s, a));
 	}
 	outFeatures->add(featureIndex, 1.0);
 }
@@ -82,6 +84,6 @@ void DiscreteFeatureMap::getFeatureStateAction(size_t feature, State* s, Action*
 
 		setInputVariableValue(i, m_grids[i]->getFeatureValue(dimFeature), s, a);
 
-		feature = feature / m_grids.size();
+		feature = feature / m_numFeaturesPerVariable.get();
 	}
 }

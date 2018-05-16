@@ -51,7 +51,7 @@ size_t SingleDimensionGrid::getClosestFeature(double value) const
 	}
 	else
 	{
-		minDist = std::min(abs(value - m_values[0]), abs(value + m_rangeWidth - m_values[0]));
+		minDist = std::min(abs(value - m_values[0]), abs(m_rangeWidth + m_values[0] - value));
 		for (unsigned int i = 1; i < m_values.size(); i++)
 		{
 			dist = abs(value - m_values[i]);
