@@ -7,16 +7,19 @@
 #include "experiment.h"
 #include <assert.h>
 #include <algorithm>
+#include "mem-manager.h"
 
 //LINEAR VFA. Common functionalities: getSample (FeatureList*), saturate, save, load, ....
-LinearVFA::LinearVFA()
+LinearVFA::LinearVFA(MemManager<SimionMemPool>* pMemManager)
 {
+	m_pMemManager = pMemManager;
 	m_pPendingUpdates = new FeatureList("Pending-vfa-updates", OverwriteMode::AllowDuplicates);
 }
 
 LinearVFA::~LinearVFA()
 {
-	delete[] m_pPendingUpdates;
+	if (m_pPendingUpdates)
+		delete[] m_pPendingUpdates;
 }
 
 void LinearVFA::setCanUseDeferredUpdates(bool bCanUseDeferredUpdates)
@@ -30,9 +33,8 @@ double LinearVFA::get(const FeatureList *pFeatures,bool bUseFrozenWeights)
 	size_t localIndex;
 
 	IMemBuffer *pWeights;
-	int updateFreq = SimionApp::get()->pSimGod->getTargetFunctionUpdateFreq();
 
-	if (!bUseFrozenWeights || !m_bCanBeFrozen || updateFreq == 0)
+	if (!bUseFrozenWeights || !m_bCanBeFrozen || SimionApp::get()->pSimGod->getTargetFunctionUpdateFreq() == 0)
 		pWeights = m_pWeights;
 	else
 		pWeights = m_pFrozenWeights;
@@ -117,10 +119,16 @@ void LinearVFA::add(const FeatureList* pFeatures, double alpha)
 	}
 }
 
+void LinearVFA::set(size_t feature, double value)
+{
+	(*m_pWeights)[feature] = value;
+}
+
 
 //STATE VFA: V(s), pi(s), .../////////////////////////////////////////////////////////////////////
 
 LinearStateVFA::LinearStateVFA(ConfigNode* pConfigNode)
+	:LinearVFA(m_pMemManager)
 {
 	m_pStateFeatureMap = SimGod::getGlobalStateFeatureMap();
 
@@ -139,13 +147,13 @@ LinearStateVFA::LinearStateVFA(ConfigNode* pConfigNode)
 void LinearStateVFA::deferredLoadStep()
 {
 	//weights
-	m_pWeights = SimionApp::get()->pMemManager->getMemBuffer(m_numWeights);//std::shared_ptr<double>(new double[m_numWeights]);
+	m_pWeights = m_pMemManager->getMemBuffer(m_numWeights);
 	m_pWeights->setInitValue(m_initValue.get());
 
 	//frozen weights
 	if (m_bCanBeFrozen)
 	{
-		m_pFrozenWeights = SimionApp::get()->pMemManager->getMemBuffer(m_numWeights); //std::shared_ptr<double>(new double[m_numWeights]);
+		m_pFrozenWeights = m_pMemManager->getMemBuffer(m_numWeights);
 		m_pFrozenWeights->setInitValue(m_initValue.get());
 	}
 }
@@ -155,8 +163,10 @@ void LinearStateVFA::setInitValue(double initValue)
 	m_initValue.set(initValue);
 }
 
-LinearStateVFA::LinearStateVFA()
+LinearStateVFA::LinearStateVFA(MemManager<SimionMemPool>* pMemManager, std::shared_ptr<StateFeatureMap> stateFeatureMap)
+	:LinearVFA(pMemManager)
 {
+	m_pStateFeatureMap = stateFeatureMap;
 }
 
 
@@ -213,7 +223,8 @@ const vector<string>& LinearStateVFA::getInputActionVariables()
 
 //STATE-ACTION VFA: Q(s,a), A(s,a), .../////////////////////////////////////////////////////////////////////
 
-LinearStateActionVFA::LinearStateActionVFA(std::shared_ptr<StateFeatureMap> pStateFeatureMap, std::shared_ptr<ActionFeatureMap> pActionFeatureMap)
+LinearStateActionVFA::LinearStateActionVFA(MemManager<SimionMemPool>* pMemManager, std::shared_ptr<StateFeatureMap> pStateFeatureMap, std::shared_ptr<ActionFeatureMap> pActionFeatureMap)
+	:LinearVFA(pMemManager)
 {
 	m_pStateFeatureMap = pStateFeatureMap;
 	m_pActionFeatureMap = pActionFeatureMap;
@@ -236,22 +247,22 @@ LinearStateActionVFA::LinearStateActionVFA(std::shared_ptr<StateFeatureMap> pSta
 }
 
 LinearStateActionVFA::LinearStateActionVFA(ConfigNode* pConfigNode)
-	:LinearStateActionVFA(SimGod::getGlobalStateFeatureMap(),SimGod::getGlobalActionFeatureMap())
+	:LinearStateActionVFA(SimionApp::get()->pMemManager, SimGod::getGlobalStateFeatureMap(),SimGod::getGlobalActionFeatureMap())
 {
 	m_initValue= DOUBLE_PARAM(pConfigNode, "Init-Value","The initial value given to the weights on initialization", 0.0);
 }
 
 LinearStateActionVFA::LinearStateActionVFA(LinearStateActionVFA* pSourceVFA)
-	: LinearStateActionVFA(SimGod::getGlobalStateFeatureMap(), SimGod::getGlobalActionFeatureMap())
+	: LinearStateActionVFA(SimionApp::get()->pMemManager, SimGod::getGlobalStateFeatureMap(), SimGod::getGlobalActionFeatureMap())
 {
 	m_initValue = pSourceVFA->m_initValue;
 }
 
 LinearStateActionVFA::~LinearStateActionVFA()
 {
-	//now SimGod owns the feature maps -> his responsability to free memory
-	delete m_pAux;
-	delete m_pAux2;
+	//SimGod owns the feature maps -> his responsability to free memory
+	if (m_pAux) delete m_pAux;
+	if (m_pAux2) delete m_pAux2;
 
 	if (m_pArgMaxTies) delete [] m_pArgMaxTies;
 }
@@ -264,13 +275,13 @@ void LinearStateActionVFA::setInitValue(double initValue)
 void LinearStateActionVFA::deferredLoadStep()
 {
 	//weights
-	m_pWeights= SimionApp::get()->pMemManager->getMemBuffer(m_numWeights);
+	m_pWeights= m_pMemManager->getMemBuffer(m_numWeights);
 	m_pWeights->setInitValue(m_initValue.get());
 
 	//frozen weights
 	if (m_bCanBeFrozen)
 	{
-		m_pFrozenWeights = SimionApp::get()->pMemManager->getMemBuffer(m_numWeights);
+		m_pFrozenWeights = m_pMemManager->getMemBuffer(m_numWeights);
 		m_pFrozenWeights->setInitValue(m_initValue.get());
 	}
 

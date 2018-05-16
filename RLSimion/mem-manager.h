@@ -11,7 +11,6 @@ using namespace std;
 #include "mem-pool.h"
 #include "deferred-load.h"
 
-
 template <typename MemPoolType>
 class MemManager: public DeferredLoad
 {
@@ -105,4 +104,5 @@ public:
 		init();
 	}
 };
+
 

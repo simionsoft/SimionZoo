@@ -12,7 +12,9 @@ class ConfigFile;
 #include "parameters.h"
 #include "deferred-load.h"
 #include "state-action-function.h"
+#include "mem-manager.h"
 class IMemBuffer;
+
 
 //LinearVFA////////////////////////////////////////////////////////////////////
 /////////////////////////////////////////////////////////////////////////////////
@@ -23,6 +25,7 @@ protected:
 	//this is used to simplify the implementation of the StateActionFunction interface
 	vector<double> m_output = vector<double>(1);
 
+	MemManager<SimionMemPool>* m_pMemManager;
 	FeatureList* m_pPendingUpdates= nullptr;
 	IMemBuffer* m_pFrozenWeights = nullptr;
 	IMemBuffer* m_pWeights= nullptr;
@@ -36,7 +39,8 @@ protected:
 	size_t m_minIndex;
 	size_t m_maxIndex;
 public:
-	LinearVFA();
+	LinearVFA() = default;
+	LinearVFA(MemManager<SimionMemPool>* pMemManager);
 	virtual ~LinearVFA();
 	double get(const FeatureList *features,bool bUseFrozenWeights= true);
 	IMemBuffer *getWeights(){ return m_pWeights; }
@@ -45,6 +49,7 @@ public:
 	void setCanUseDeferredUpdates(bool bCanUseDeferredUpdates);
 	
 	void add(const FeatureList* pFeatures,double alpha= 1.0);
+	void set(size_t feature, double value);
 
 	void saturateOutput(double min, double max);
 
@@ -60,7 +65,8 @@ protected:
 	DOUBLE_PARAM m_initValue;
 	virtual void deferredLoadStep();
 public:
-	LinearStateVFA();
+	LinearStateVFA() = default;
+	LinearStateVFA(MemManager<SimionMemPool>* pMemManager, std::shared_ptr<StateFeatureMap> stateFeatureMap);
 	LinearStateVFA(ConfigNode* pParameters);
 
 	void setInitValue(double initValue);
@@ -90,8 +96,8 @@ protected:
 	size_t m_numStateWeights;
 	size_t m_numActionWeights;
 
-	FeatureList *m_pAux;
-	FeatureList *m_pAux2;
+	FeatureList *m_pAux = nullptr;
+	FeatureList *m_pAux2 = nullptr;
 	DOUBLE_PARAM m_initValue;
 	int *m_pArgMaxTies= nullptr;
 
@@ -104,8 +110,7 @@ public:
 	LinearStateActionVFA()= default;
 	LinearStateActionVFA(ConfigNode* pParameters);
 	LinearStateActionVFA(LinearStateActionVFA* pSourceVFA); //used in double q-learning to getSample a copy of the target function
-	LinearStateActionVFA(std::shared_ptr<StateFeatureMap> pStateFeatureMap
-		, std::shared_ptr<ActionFeatureMap> pActionFeatureMap);
+	LinearStateActionVFA(MemManager<SimionMemPool>* pMemManager, std::shared_ptr<StateFeatureMap> pStateFeatureMap, std::shared_ptr<ActionFeatureMap> pActionFeatureMap);
 
 	void setInitValue(double initValue);
 

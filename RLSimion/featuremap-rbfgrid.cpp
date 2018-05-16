@@ -60,7 +60,8 @@ void GaussianRBFGridFeatureMap::initGrid()
 
 GaussianRBFGridFeatureMap::~GaussianRBFGridFeatureMap()
 {
-	delete m_pVarFeatures;
+	if (m_pVarFeatures)
+		delete m_pVarFeatures;
 }
 
 

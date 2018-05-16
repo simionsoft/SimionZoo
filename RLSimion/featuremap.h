@@ -52,6 +52,7 @@ public:
 	StateFeatureMap(Descriptor& stateDescriptor, vector<size_t> variableIds);
 	//Constructor used when a config file is used
 	StateFeatureMap(ConfigNode* pParameters);
+	virtual ~StateFeatureMap() {};
 
 	static std::shared_ptr<StateFeatureMap> getInstance(ConfigNode* pParameters);
 };
@@ -63,6 +64,7 @@ public:
 	ActionFeatureMap(Descriptor& actionDescriptor, vector<size_t> variableIds);
 	//Constructor used when a config file is used
 	ActionFeatureMap(ConfigNode* pParameters);
+	virtual ~ActionFeatureMap() {};
 
 	static std::shared_ptr<ActionFeatureMap> getInstance(ConfigNode* pParameters);
 };
@@ -97,7 +99,8 @@ class TileCodingFeatureMap: public FeatureMap
 protected:
 	INT_PARAM m_numTiles;
 	DOUBLE_PARAM m_tileOffset;
-	INT_PARAM m_numFeaturesPerTile;
+	INT_PARAM m_numFeaturesPerDimension;
+	size_t m_numFeaturesPerTile;
 
 	vector<SingleDimensionGrid*> m_grids;
 	void initGrid();

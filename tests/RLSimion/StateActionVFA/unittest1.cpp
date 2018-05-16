@@ -6,6 +6,7 @@
 #include "../../../RLSimion/simgod.h"
 #include "../../../RLSimion/worlds/world.h"
 #include "../../../RLSimion/named-var-set.h"
+#include "../../../RLSimion/featuremap.h"
 #include <iostream>
 
 using namespace Microsoft::VisualStudio::CppUnitTestFramework;
@@ -16,167 +17,124 @@ namespace StateActionVFA
 	{
 	public:
 		
-		TEST_METHOD(QFunction_ArgMax)
+		TEST_METHOD(LinearStateActionVFA_ArgMax)
 		{
-			//Because we are mostly only implementing the constructor that takes a ConfigNode,
-			//it is easier to load a config file and then manipulate the classes loaded
-			ConfigFile configFile;			
-			ConfigNode* pConfigNode = configFile.loadFile("..\\tests\\q-learning-test.simion.exp");
-			SimionApp *pApp = new SimionApp(pConfigNode);	
+			double minX = 0.0, maxX = 10.0;
+			double minY = 10.0, maxY = 20.0;
 
-			LinearStateActionVFA *pVFA= new LinearStateActionVFA(
-				pApp->pSimGod->getGlobalStateFeatureMap()
-				,pApp->pSimGod->getGlobalActionFeatureMap());
+			Descriptor stateDescriptor;
+			size_t hX = stateDescriptor.addVariable("x", "m", minX, maxX);
+			size_t hY = stateDescriptor.addVariable("y", "m", minY, maxY);
+			Descriptor actionDescriptor;
+			size_t hAction = actionDescriptor.addVariable("force", "N", -1.0, 1.0);
+
+			State* s = stateDescriptor.getInstance();
+			Action* a = actionDescriptor.getInstance();
+			const int numFeatures = 10;
+
+			GaussianRBFGridFeatureMap* stateFeatureMap = new GaussianRBFGridFeatureMap(stateDescriptor, { hX, hY }, actionDescriptor, {}, numFeatures);
+			GaussianRBFGridFeatureMap* actionFeatureMap = new GaussianRBFGridFeatureMap(stateDescriptor, {}, actionDescriptor, { hAction }, numFeatures);
+
+			MemManager<SimionMemPool> *pMemManager = new MemManager<SimionMemPool>();
+			LinearStateActionVFA *pVFA
+				= new LinearStateActionVFA(pMemManager, std::shared_ptr<StateFeatureMap>((StateFeatureMap*)stateFeatureMap)
+					, std::shared_ptr<ActionFeatureMap>((ActionFeatureMap*)actionFeatureMap));
+
+			FeatureList *outFeatures = new FeatureList("features");
 
 			pVFA->setInitValue(0.0);
-			pApp->pSimGod->deferredLoad();
+			pVFA->deferredLoadStep();
+			pMemManager->deferredLoadStep();
 
-			FeatureList *pFeatures= new FeatureList("features");
 
-			State* pState= pApp->pWorld->getDynamicModel()->getStateInstance();
-			Action* pAction = pApp->pWorld->getDynamicModel()->getActionInstance();
-			//Q(s=2.5,a=8) = 100;
-			pState->set("v-deviation", 2.5);
-			pAction->set("u-thrust", 8.0);
-			pVFA->getFeatures(pState, pAction, pFeatures);
-			pFeatures->normalize();
-			pFeatures->mult(100);
-			pVFA->add(pFeatures);
+			//Q(s= [2.5,13], a= 0.35) = 100;
+			double xValue = 2.5, yValue = 13.98, maxValueAction = 0.35;
+			s->set(hX, xValue);
+			s->set(hY, yValue);
+			for (double aValue = -1.0; aValue <= 1.0; aValue += 2. / (double)numFeatures)
+			{
+				a->set(hAction, aValue);
+				pVFA->getFeatures(s, a, outFeatures);
+				size_t mainfeature = outFeatures->maxFactorFeature();
+				pVFA->set(mainfeature, -abs(maxValueAction - aValue)); // a higher value to actions closer to maxValueAction
+			}
+			pVFA->argMax(s, a);
+			double argMax = a->get((size_t)0); // we know it's only 1 action variable, so we take the shortcut
 
-			for (unsigned int i = 0; i < pFeatures->m_numFeatures; i++)
-				pFeatures->m_pFeatures[i].m_factor = 1.0;
-			double value = pVFA->get(pFeatures);
+			Assert::AreEqual(maxValueAction, argMax, 0.05, L"LinearStateActionVFA::argMax() doesn't work as expected");
 
-			//we should get the same value: 100
-			if (abs(value - 100) > 0.001) Assert::Fail();
+			delete s;
+			delete a;
 
-			//Q(s=2.5,a=-8) = 30
-			pAction->set("u-thrust", -8.0);
-			pVFA->getFeatures(pState, pAction, pFeatures);
-			pFeatures->mult(30);
-			pVFA->argMax(pState, pAction);
-			double argMax = pAction->get((size_t)0); // we know it's only 1 action variable, so we take the shortcut
-			
-			if (abs(argMax - 8) > 1) Assert::Fail();
+			delete outFeatures;
 
-			delete pState;
-			delete pAction;
-
-			delete pFeatures;
-			delete pApp;
 			delete pVFA;
+			delete pMemManager;
 		}
-		TEST_METHOD(QFunction_FeatureMap)
+		TEST_METHOD(LinearStateActionVFA_FeatureMap)
 		{
-			//Because we are mostly only implementing the constructor that takes a ConfigNode,
-			//it is easier to load a config file and then manipulate the classes loaded
-			ConfigFile configFile;
-			ConfigNode* pConfigNode;
+			double minX = 0.0, maxX = 10.0;
+			double minY = 0.0, maxY = 10.0;
 
-			pConfigNode= configFile.loadFile("..\\tests\\q-learning-test.simion.exp");
+			Descriptor stateDescriptor;
+			size_t hX = stateDescriptor.addVariable("x", "m", minX, maxX);
+			Descriptor actionDescriptor;
+			size_t hAction = actionDescriptor.addVariable("force", "N", -1.0, 1.0);
 
-			SimionApp *pApp = new SimionApp(pConfigNode);
+			State* s = stateDescriptor.getInstance();
+			State* s_p = stateDescriptor.getInstance();
+			const int numFeatures = 10;
 
-			LinearStateActionVFA *pVFA = new LinearStateActionVFA(
-				pApp->pSimGod->getGlobalStateFeatureMap()
-				, pApp->pSimGod->getGlobalActionFeatureMap());
+			GaussianRBFGridFeatureMap* stateFeatureMap = new GaussianRBFGridFeatureMap(stateDescriptor, { hX }, actionDescriptor, {}, numFeatures);
+			GaussianRBFGridFeatureMap* actionFeatureMap = new GaussianRBFGridFeatureMap(stateDescriptor, { }, actionDescriptor, { hAction}, numFeatures);
+
+			MemManager<SimionMemPool> *pMemManager = new MemManager<SimionMemPool>();
+			LinearStateActionVFA *pVFA 
+				= new LinearStateActionVFA( pMemManager, std::shared_ptr<StateFeatureMap>((StateFeatureMap*)stateFeatureMap)
+											, std::shared_ptr<ActionFeatureMap>((ActionFeatureMap*)actionFeatureMap) );
 
 			pVFA->setInitValue(0.0);
-			pApp->pSimGod->deferredLoad();
+			pVFA->deferredLoadStep();
+			pMemManager->deferredLoadStep();
 
-			FeatureList *pFeatures = new FeatureList("features");
 
-			State* pState = pApp->pWorld->getDynamicModel()->getStateInstance();
-			Action* pAction = pApp->pWorld->getDynamicModel()->getActionInstance();
+			FeatureList *outFeatures = new FeatureList("features");
 
-			State* pOutState= pApp->pWorld->getDynamicModel()->getStateInstance();
-			Action* pOutAction = pApp->pWorld->getDynamicModel()->getActionInstance();
+			State* pState = stateDescriptor.getInstance();
+			Action* pAction = actionDescriptor.getInstance();
 
-			pState->set("v-deviation", 2.5);
-			pAction->set("u-thrust", 8.0);
-			pVFA->getFeatures(pState, pAction, pFeatures);
+			State* pOutState = stateDescriptor.getInstance();
+			Action* pOutAction = actionDescriptor.getInstance();
+
+			const double x = 2.5;
+			const double a = 0.8;
+
+			pState->set(hX, x);
+			pAction->set(hAction, a);
+			pVFA->getFeatures(pState, pAction, outFeatures);
+
 			double state = 0.0;
 			double action = 0.0;
 
-			for (unsigned int i = 0; i < pFeatures->m_numFeatures; i++)
+			for (unsigned int i = 0; i < outFeatures->m_numFeatures; i++)
 			{
-				pVFA->getFeatureStateAction(pFeatures->m_pFeatures[i].m_index
+				pVFA->getFeatureStateAction(outFeatures->m_pFeatures[i].m_index
 					,pOutState,pOutAction);
-				state += pFeatures->m_pFeatures[i].m_factor*pOutState->get("v-deviation");
-				action += pFeatures->m_pFeatures[i].m_factor*pOutAction->get("u-thrust");
+				state += outFeatures->m_pFeatures[i].m_factor*pOutState->get(hX);
+				action += outFeatures->m_pFeatures[i].m_factor*pOutAction->get(hAction);
 			}
-			if (abs(state - 2.5) > 0.1) Assert::Fail();
-			if (abs(action - 8) > 0.1) Assert::Fail();
+			Assert::AreEqual(x, state, 0.2, L"Error doing map-unmap with LinearStateActionVFA (state)");
+			Assert::AreEqual(a, action, 0.2, L"Error doing map-unmap with LinearStateActionVFA (state)");
 
 
 			delete pState;
 			delete pAction;
+			delete pOutState;
+			delete pOutAction;
 
-			delete pFeatures;
-			delete pApp;
+			delete outFeatures;
 			delete pVFA;
-		}
-
-		TEST_METHOD(QFunction_ArgMax_two_actions)
-		{
-			//Because we are mostly only implementing the constructor that takes a ConfigNode,
-			//it is easier to load a config file and then manipulate the classes loaded
-			ConfigFile configFile;
-			ConfigNode* pConfigNode = configFile.loadFile("..\\tests\\robot-control-test.simion.exp");
-			SimionApp *pApp = new SimionApp(pConfigNode);
-
-			LinearStateActionVFA *pVFA = new LinearStateActionVFA(
-				pApp->pSimGod->getGlobalStateFeatureMap()
-				, pApp->pSimGod->getGlobalActionFeatureMap());
-
-			pVFA->setInitValue(0.0);
-			pApp->pSimGod->deferredLoad();
-
-			FeatureList *pFeatures = new FeatureList("features");
-
-			State* pState = pApp->pWorld->getDynamicModel()->getStateInstance();
-			Action* pAction = pApp->pWorld->getDynamicModel()->getActionInstance();
-			//Q(s={0.0,1.0,0.0},a={1.0,1.0})= 100;
-			pState->set("robot1-x", 0.0);
-			pState->set("robot1-y", 1.0);
-			pState->set("robot1-theta", 0.0);
-			pAction->set("robot1-v", 1.0);
-			pAction->set("robot1-omega", 0.5);
-
-			pVFA->getFeatures(pState, pAction, pFeatures);
-			pFeatures->normalize();
-			pFeatures->mult(100);
-			pVFA->add(pFeatures);
-
-			for (unsigned int i = 0; i < pFeatures->m_numFeatures; i++)
-				pFeatures->m_pFeatures[i].m_factor = 1.0;
-			double value = pVFA->get(pFeatures);
-
-			//we should get the same value: 100
-			if (abs(value - 100) > 0.001) Assert::Fail();
-
-			//Q(s={0.0,1.0,0.0},a={-1.0,0.0})= 10;
-			pState->set("robot1-x", 0.0);
-			pState->set("robot1-y", 1.0);
-			pState->set("robot1-theta", 0.0);
-			pAction->set("robot1-v", -1.0);
-			pAction->set("robot1-omega", -0.5);
-
-			pVFA->getFeatures(pState, pAction, pFeatures);
-			pFeatures->mult(10);
-			pVFA->argMax(pState, pAction);
-			double argMaxV = pAction->get("robot1-v");
-			if (abs(argMaxV - 1.0) > 0.1) Assert::Fail();
-			
-			double argMaxOmega = pAction->get("robot1-omega");
-			if (abs(argMaxOmega - 0.5) > 0.1) Assert::Fail();
-
-			delete pState;
-			delete pAction;
-
-			delete pFeatures;
-			delete pApp;
-			delete pVFA;
+			delete pMemManager;
 		}
 	};
 }

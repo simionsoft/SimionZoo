@@ -5,7 +5,7 @@
 
 DiscreteFeatureMap::DiscreteFeatureMap(Descriptor& stateDescriptor, vector<size_t> stateVariableIds, Descriptor& actionDescriptor, vector<size_t> actionVariableIds, size_t numFeaturesPerVariable)
 {
-	m_numFeaturesPerVariable.set(numFeaturesPerVariable);
+	m_numFeaturesPerVariable.set((int)numFeaturesPerVariable);
 
 	//create STATE_VARIABLE objects
 	for each (size_t varId in stateVariableIds)

@@ -12,7 +12,7 @@ namespace VariableCircularity
 	TEST_CLASS(UnitTest1)
 	{
 	public:
-		TEST_METHOD(RBFGrid_Basic2DGridSweep)
+		TEST_METHOD(FeatureMap_RBFGrid_MapUnmapSweep)
 		{
 			double minX = 0.0, maxX = 10.0;
 			double minY = 0.0, maxY = 10.0;
@@ -29,7 +29,7 @@ namespace VariableCircularity
 
 			GaussianRBFGridFeatureMap rbfGrid = GaussianRBFGridFeatureMap(stateDescriptor, { hX, hY }, actionDescriptor, {}, numFeatures);
 
-			FeatureList* pFeatures = new FeatureList("test");
+			FeatureList* outFeatures = new FeatureList("test");
 
 			for (size_t iX = 0; iX < numFeatures; iX++)
 			{
@@ -38,8 +38,8 @@ namespace VariableCircularity
 					s->set(hX, minX + (maxX - minX) / ((double)(numFeatures - 1)) * (double)iX);
 					s->set(hY, minY + (maxY - minY) / ((double)(numFeatures - 1)) * (double)iY);
 
-					rbfGrid.getFeatures(s, nullptr, pFeatures);
-					size_t maxFactorFeature = pFeatures->maxFactorFeature();
+					rbfGrid.getFeatures(s, nullptr, outFeatures);
+					size_t maxFactorFeature = outFeatures->maxFactorFeature();
 					rbfGrid.getFeatureStateAction(maxFactorFeature, s_p, nullptr);
 
 					Assert::AreEqual(s->get(hX), s_p->get(hX), 0.1, L"Incorrect behavior in GaussianRBFGrid (x)");
@@ -50,7 +50,7 @@ namespace VariableCircularity
 			delete s_p;
 
 		}
-		TEST_METHOD(RBFGrid_VariableCircularity)
+		TEST_METHOD(FeatureMap_RBFGrid_VariableCircularity)
 		{
 			Descriptor stateDescriptor;
 			size_t hState1 = stateDescriptor.addVariable("angle", "rad", -3.1415, 3.1415, true);
@@ -69,12 +69,14 @@ namespace VariableCircularity
 			s->set("angle", -3.14);
 
 			gridState1.getFeatures(s, nullptr, pFeatures);
-			Assert::IsTrue(pFeatures->getFeaturePos(numFeatures - 1)>=0);
+			Assert::IsTrue(pFeatures->getFeaturePos(numFeatures - 1) >= 0);
+			Assert::IsTrue(pFeatures->maxFactorFeature() == 0);
 
 			s->set("angle", 3.14);
 
 			gridState1.getFeatures(s, nullptr, pFeatures);
 			Assert::IsTrue(pFeatures->getFeaturePos(0) >= 0);
+			Assert::IsTrue(pFeatures->maxFactorFeature() == 0);
 
 			//test the non-circular variable
 			GaussianRBFGridFeatureMap gridState2 = GaussianRBFGridFeatureMap(stateDescriptor, { hState2 }, actionDescriptor, {}, numFeatures);
@@ -82,9 +84,12 @@ namespace VariableCircularity
 			s->set("angle2", 3.14);
 			gridState2.getFeatures(s, 0, pFeatures);
 			Assert::IsTrue(pFeatures->getFeaturePos(0) == -1);
+			Assert::IsTrue(pFeatures->maxFactorFeature() == numFeatures-1);
+
 			s->set("angle2", -3.14);
 			gridState2.getFeatures(s, 0, pFeatures);
 			Assert::IsTrue(pFeatures->getFeaturePos(numFeatures - 1) ==-1);
+			Assert::IsTrue(pFeatures->maxFactorFeature() == 0);
 		}
 
 	};

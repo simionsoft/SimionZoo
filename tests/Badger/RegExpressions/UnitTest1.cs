@@ -9,7 +9,7 @@ namespace RegExpressions
     public class UnitTest1
     {
         [TestMethod]
-        public void RegEx_TaskHeader()
+        public void Badger_RegEx_TaskHeader()
         {
             string testTaskHeader= "<Task Name=\"TaskName\" Exe=\"../RLSimion.exe\" Arguments=\"../RLSimion.exe -pipe=harl\" Pipe=\"harl\" AuthenticationToken=\"token\"/>";
             Match match = Regex.Match(testTaskHeader, CJobDispatcher.TaskHeaderRegEx);

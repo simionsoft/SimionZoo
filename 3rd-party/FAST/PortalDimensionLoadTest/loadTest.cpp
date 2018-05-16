@@ -12,6 +12,7 @@ namespace PortalDimensionLoadTest
 		
 		TEST_METHOD(FASTPortalDLL_LoadTest)
 		{
+#ifndef _WIN64
 			// TODO: Your test code here
 			try
 			{
@@ -27,7 +28,7 @@ namespace PortalDimensionLoadTest
 			{
 				Assert::Fail(L"Failed trying to load the DLL");
 			}
-
+#endif
 		}
 
 	};

@@ -26,14 +26,14 @@ double FeatureMap::getInputVariableValue(size_t inputIndex, const State* s, cons
 {
 	if (inputIndex < m_stateVariables.size())
 		return s->get( m_stateVariables[inputIndex]->get() );
-	return a->get( m_stateVariables[inputIndex - m_stateVariables.size()]->get());
+	return a->get( m_actionVariables[inputIndex - m_stateVariables.size()]->get());
 }
 
 void FeatureMap::setInputVariableValue(size_t inputIndex, double value, State* s, Action* a)
 {
 	if (inputIndex < m_stateVariables.size())
 		return s->set(m_stateVariables[inputIndex]->get(), value);
-	return a->set(m_stateVariables[inputIndex - m_stateVariables.size()]->get(), value);
+	return a->set(m_actionVariables[inputIndex - m_stateVariables.size()]->get(), value);
 }
 
 
