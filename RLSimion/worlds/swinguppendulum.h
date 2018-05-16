@@ -12,8 +12,8 @@ class SetPoint;
 //SWINGUP PENDULUM
 class SwingupPendulum : public DynamicModel
 {
-	int m_sAngularVelocity, m_sAngle;
-	int m_aTorque;
+	size_t m_sAngularVelocity, m_sAngle;
+	size_t m_aTorque;
 
 	//DOUBLE_PARAM 
 

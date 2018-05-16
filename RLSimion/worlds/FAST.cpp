@@ -283,7 +283,7 @@ void FASTWindTurbine::reset(State *s)
 		m_namedPipeServer.waitForClientConnection();
 		Logger::logMessage(MessageType::Info, "Client connected");
 		//receive(s)
-		m_namedPipeServer.readToBuffer(s->getValueVector(), s->getNumVars() * sizeof(double));
+		m_namedPipeServer.readToBuffer(s->getValueVector(), (int) s->getNumVars() * sizeof(double));
 	}
 	else
 	{
@@ -318,8 +318,8 @@ void FASTWindTurbine::executeAction(State *s,const Action *a,double dt)
 	}
 
 	//receive(s')
-	int numBytesToRead = s->getNumVars() * sizeof(double);
-	int numBytesRead= m_namedPipeServer.readToBuffer(s->getValueVector(), numBytesToRead);
+	size_t numBytesToRead = s->getNumVars() * sizeof(double);
+	size_t numBytesRead= m_namedPipeServer.readToBuffer(s->getValueVector(), (int) numBytesToRead);
 	if (numBytesToRead!=numBytesRead)
 	{
 		Logger::logMessage(MessageType::Info, "FAST process ended prematurely");

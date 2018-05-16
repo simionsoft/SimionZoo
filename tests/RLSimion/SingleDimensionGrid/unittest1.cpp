@@ -1,63 +1,90 @@
 #include "stdafx.h"
 #include "CppUnitTest.h"
 #include "../../../RLSimion/single-dimension-grid.h"
-#include "../../../RLSimion/single-dimension-grid-rbf.h"
+#include "../../../RLSimion/featuremap.h"
 #include "../../../RLSimion/named-var-set.h"
-#include "../../../RLSimion/app.h"
 #include "../../../RLSimion/features.h"
-#include "../../../RLSimion/worlds/world.h"
 
 using namespace Microsoft::VisualStudio::CppUnitTestFramework;
-#include <Windows.h>
-namespace SingleDimensionGridTest
+
+namespace VariableCircularity
 {		
 	TEST_CLASS(UnitTest1)
 	{
 	public:
-		
-		TEST_METHOD(SingleDimensionGrid_CircularVariables)
+		TEST_METHOD(RBFGrid_Basic2DGridSweep)
 		{
-			DWORD buffer[512];
-			GetCurrentDirectory(512,(LPWSTR)buffer);
-			ConfigFile configFile;
-			ConfigNode* pConfigNode = configFile.loadFile("..\\tests\\q-learning-test.simion.exp");
-			SimionApp *pApp = new SimionApp(pConfigNode);
-			int hVar= pApp->pWorld->getDynamicModel()->addStateVariable("test-angle", "rad", -3.1415, 3.1415);
-			int hVar2= pApp->pWorld->getDynamicModel()->addStateVariable("test-angle2", "rad", -3.1415, 3.1415);
-			Descriptor& descr= pApp->pWorld->getDynamicModel()->getStateDescriptor();
-			descr[hVar].setCircular(true);
+			double minX = 0.0, maxX = 10.0;
+			double minY = 0.0, maxY = 10.0;
 
-			State* s= pApp->pWorld->getDynamicModel()->getStateInstance();
+			Descriptor stateDescriptor;
+			size_t hX = stateDescriptor.addVariable("x", "m", minX, maxX);
+			size_t hY = stateDescriptor.addVariable("y", "m", minY, maxY);
+			Descriptor actionDescriptor;
+			size_t hAction = stateDescriptor.addVariable("force", "N", -1.0, 1.0);
+
+			State* s = stateDescriptor.getInstance();
+			State* s_p = stateDescriptor.getInstance();
 			const int numFeatures = 10;
-			StateVariableGridRBF gridVar1(hVar,numFeatures);
+
+			GaussianRBFGridFeatureMap rbfGrid = GaussianRBFGridFeatureMap(stateDescriptor, { hX, hY }, actionDescriptor, {}, numFeatures);
+
 			FeatureList* pFeatures = new FeatureList("test");
 
-			s->set("test-angle", -3.14);
+			for (size_t iX = 0; iX < numFeatures; iX++)
+			{
+				for (size_t iY = 0; iY < numFeatures; iY++)
+				{
+					s->set(hX, minX + (maxX - minX) / ((double)(numFeatures - 1)) * (double)iX);
+					s->set(hY, minY + (maxY - minY) / ((double)(numFeatures - 1)) * (double)iY);
 
-			gridVar1.getFeatures(s, 0, pFeatures);
-			Assert::IsTrue(pFeatures->m_pFeatures[0].m_index == numFeatures - 1
-				|| pFeatures->m_pFeatures[1].m_index == numFeatures - 1
-				|| pFeatures->m_pFeatures[2].m_index == numFeatures - 1);
+					rbfGrid.getFeatures(s, nullptr, pFeatures);
+					size_t maxFactorFeature = pFeatures->maxFactorFeature();
+					rbfGrid.getFeatureStateAction(maxFactorFeature, s_p, nullptr);
 
-			s->set("test-angle", 3.14);
+					Assert::AreEqual(s->get(hX), s_p->get(hX), 0.1, L"Incorrect behavior in GaussianRBFGrid (x)");
+					Assert::AreEqual(s->get(hY), s_p->get(hY), 0.1, L"Incorrect behavior in GaussianRBFGrid (y)");
+				}
+			}
+			delete s;
+			delete s_p;
 
-			gridVar1.getFeatures(s, 0, pFeatures);
-			Assert::IsTrue(pFeatures->m_pFeatures[0].m_index == 0
-				|| pFeatures->m_pFeatures[1].m_index == 0
-				|| pFeatures->m_pFeatures[2].m_index == 0);
+		}
+		TEST_METHOD(RBFGrid_VariableCircularity)
+		{
+			Descriptor stateDescriptor;
+			size_t hState1 = stateDescriptor.addVariable("angle", "rad", -3.1415, 3.1415, true);
+			size_t hState2 = stateDescriptor.addVariable("angle2", "rad", -3.1415, 3.1415);
+			Descriptor actionDescriptor;
+			size_t hAction = stateDescriptor.addVariable("force", "N", -1.0, 1.0);
+			
+
+			State* s= stateDescriptor.getInstance();
+			const int numFeatures = 10;
+
+			GaussianRBFGridFeatureMap gridState1 = GaussianRBFGridFeatureMap(stateDescriptor, { hState1 }, actionDescriptor, {}, numFeatures);
+
+			FeatureList* pFeatures = new FeatureList("test");
+
+			s->set("angle", -3.14);
+
+			gridState1.getFeatures(s, nullptr, pFeatures);
+			Assert::IsTrue(pFeatures->getFeaturePos(numFeatures - 1)>=0);
+
+			s->set("angle", 3.14);
+
+			gridState1.getFeatures(s, nullptr, pFeatures);
+			Assert::IsTrue(pFeatures->getFeaturePos(0) >= 0);
 
 			//test the non-circular variable
-			StateVariableGridRBF gridVar2(hVar2, numFeatures);
-			s->set("test-angle2", 3.14);
-			gridVar2.getFeatures(s, 0, pFeatures);
-			Assert::IsFalse(pFeatures->m_pFeatures[0].m_index == 0
-				|| pFeatures->m_pFeatures[1].m_index == 0
-				|| pFeatures->m_pFeatures[2].m_index == 0);
-			s->set("test-angle2", -3.14);
-			gridVar2.getFeatures(s, 0, pFeatures);
-			Assert::IsFalse(pFeatures->m_pFeatures[0].m_index == numFeatures - 1
-				|| pFeatures->m_pFeatures[1].m_index == numFeatures - 1
-				|| pFeatures->m_pFeatures[2].m_index == numFeatures - 1);
+			GaussianRBFGridFeatureMap gridState2 = GaussianRBFGridFeatureMap(stateDescriptor, { hState2 }, actionDescriptor, {}, numFeatures);
+
+			s->set("angle2", 3.14);
+			gridState2.getFeatures(s, 0, pFeatures);
+			Assert::IsTrue(pFeatures->getFeaturePos(0) == -1);
+			s->set("angle2", -3.14);
+			gridState2.getFeatures(s, 0, pFeatures);
+			Assert::IsTrue(pFeatures->getFeaturePos(numFeatures - 1) ==-1);
 		}
 
 	};

@@ -11,15 +11,15 @@ class SingleDimensionGrid;
 #include <vector>
 #include <string>
 
-//FeatureMap: generic base class
-////////////////////////////////////////////////////////////////////////
+//FeatureMap: generic base class that provides a common feature-map interface
+/////////////////////////////////////////////////////////////////////////////////
 class FeatureMap
 {
 protected:
-	vector<string> m_stateVariableNames;
-	vector<string> m_actionVariableNames;
 	MULTI_VALUE_VARIABLE<STATE_VARIABLE> m_stateVariables;
 	MULTI_VALUE_VARIABLE<ACTION_VARIABLE> m_actionVariables;
+	vector<string> m_stateVariableNames;
+	vector<string> m_actionVariableNames;
 
 	size_t m_totalNumFeatures;
 	size_t m_maxNumActiveFeatures;
@@ -28,31 +28,40 @@ public:
 	FeatureMap(ConfigNode* pParameters);
 	virtual ~FeatureMap() {};
 
+	static std::shared_ptr<FeatureMap> getInstance(ConfigNode* pParameters);
+
 	virtual void getFeatures(const State* s, const Action* a, FeatureList* outFeatures) = 0;
 	virtual void getFeatureStateAction(size_t feature, State* s, Action* a) = 0;
 
-	static std::shared_ptr<FeatureMap> getInstance(ConfigNode* pParameters);
-
-	const vector<string>& getInputStateVariables() { return m_stateVariableNames; }
-	const vector<string>& getInputActionVariables() { return m_actionVariableNames; }
 	size_t getTotalNumFeatures() const { return m_totalNumFeatures; }
 	size_t getMaxNumActiveFeatures() const { return m_maxNumActiveFeatures; }
 
-	double getInputVariableValue(size_t inputIndex, const State* s, const Action* a) const;
+	double getInputVariableValue(size_t inputIndex, const State* s, const Action* a);
 	void setInputVariableValue(size_t inputIndex, double value, State* s, Action* a);
+
+	vector<string>& getInputStateVariables() { return m_stateVariableNames; }
+	vector<string>& getInputActionVariables() { return m_actionVariableNames; }
 };
 
-class StateFeatureMap : public FeatureMap
+//We distinguish these two feature maps to make sure that only the right subset of variables (state or action variables)
+//is selected as input
+class StateFeatureMap: public FeatureMap
 {
 public:
+	//Constructor used for testing. No config file used
+	StateFeatureMap(Descriptor& stateDescriptor, vector<size_t> variableIds);
+	//Constructor used when a config file is used
 	StateFeatureMap(ConfigNode* pParameters);
 
 	static std::shared_ptr<StateFeatureMap> getInstance(ConfigNode* pParameters);
 };
 
-class ActionFeatureMap : public FeatureMap
+class ActionFeatureMap: public FeatureMap
 {
 public:
+	//Constructor used for testing. No config file used
+	ActionFeatureMap(Descriptor& actionDescriptor, vector<size_t> variableIds);
+	//Constructor used when a config file is used
 	ActionFeatureMap(ConfigNode* pParameters);
 
 	static std::shared_ptr<ActionFeatureMap> getInstance(ConfigNode* pParameters);
@@ -69,8 +78,10 @@ class GaussianRBFGridFeatureMap: public FeatureMap
 	vector<SingleDimensionGrid*> m_grids;
 
 	double getFeatureFactor(size_t varIndex, size_t feature, double value) const;
-	void getDimensionFeatures(size_t varIndex, const State* s, const Action* a, FeatureList* outFeatures) const;
+	void getDimensionFeatures(size_t varIndex, const State* s, const Action* a, FeatureList* outFeatures);
+	void initGrid();
 public:
+	GaussianRBFGridFeatureMap(Descriptor& stateDescriptor, vector<size_t> stateVariableIds, Descriptor& actionDescriptor, vector<size_t> actionVariableIds, size_t numFeaturesPerVariable);
 	GaussianRBFGridFeatureMap(ConfigNode* pParameters);
 	virtual ~GaussianRBFGridFeatureMap();
 
@@ -89,7 +100,9 @@ protected:
 	INT_PARAM m_numFeaturesPerTile;
 
 	vector<SingleDimensionGrid*> m_grids;
+	void initGrid();
 public:
+	TileCodingFeatureMap(Descriptor& stateDescriptor, vector<size_t> stateVariableIds, Descriptor& actionDescriptor, vector<size_t> actionVariableIds, size_t numTiles, double tileOffset, size_t numFeaturesPerTile);
 	TileCodingFeatureMap(ConfigNode* pParameters);
 	virtual ~TileCodingFeatureMap();
 
@@ -106,7 +119,9 @@ protected:
 	INT_PARAM m_numFeaturesPerVariable;
 
 	vector<SingleDimensionGrid*> m_grids;
+	void initGrid();
 public:
+	DiscreteFeatureMap(Descriptor& stateDescriptor, vector<size_t> stateVariableIds, Descriptor& actionDescriptor, vector<size_t> actionVariableIds, size_t numFeaturesPerVariable);
 	DiscreteFeatureMap(ConfigNode* pParameters);
 	virtual ~DiscreteFeatureMap();
 

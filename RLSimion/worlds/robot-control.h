@@ -16,13 +16,13 @@ class RobotControl : public DynamicModel
 	double MASS_GROUND;
 
 	/// State variables
-	int m_target_X, m_target_Y;
-	int m_rob1_X, m_rob1_Y;
-	int m_omega;
-	int m_theta;
+	size_t m_target_X, m_target_Y;
+	size_t m_rob1_X, m_rob1_Y;
+	size_t m_omega;
+	size_t m_theta;
 
 	// Action variables
-	int m_linear_vel;
+	size_t m_linear_vel;
 
 	///inicialización
 	BulletPhysics* m_pBulletPhysics;

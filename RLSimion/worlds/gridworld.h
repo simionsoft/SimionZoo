@@ -7,12 +7,12 @@ class SetPoint;
 //CONTINUOUS GRIDWORLD
 class ContinuousGridWorld : public DynamicModel
 {
-	int m_sXPosition, m_sYPosition;
+	size_t m_sXPosition, m_sYPosition;
 
 	INT_PARAM m_targetX, m_targetY;
 
 	//for continuous case
-	int m_aXStep, m_aYStep;
+	size_t m_aXStep, m_aYStep;
 
 public:
 	ContinuousGridWorld(ConfigNode* pParameters);
@@ -40,12 +40,12 @@ public:
 //DISCRETE GRIDWORLD
 class DiscreteGridWorld : public DynamicModel
 {
-	int m_sXPosition, m_sYPosition;
+	size_t m_sXPosition, m_sYPosition;
 
 	INT_PARAM m_targetX, m_targetY;
 
 	//for discrete case
-	int m_aStep;
+	size_t m_aStep;
 
 public:
 	DiscreteGridWorld(ConfigNode* pParameters);
@@ -59,7 +59,7 @@ public:
 class DiscreteGridWorldReward : public IRewardComponent
 {
 protected:
-	int m_xTarget, m_yTarget;
+	size_t m_xTarget, m_yTarget;
 
 public:
 	DiscreteGridWorldReward(int targetX, int targetY);

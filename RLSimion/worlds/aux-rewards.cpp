@@ -21,7 +21,7 @@ DistanceReward2D::DistanceReward2D(Descriptor& stateDescr, const char* var1xName
 		+ stateDescr[m_var1yId].getRangeWidth()*stateDescr[m_var1yId].getRangeWidth());
 }
 
-DistanceReward2D::DistanceReward2D(Descriptor& stateDescr, int var1xId, int var1yId, int var2xId, int var2yId)
+DistanceReward2D::DistanceReward2D(Descriptor& stateDescr, size_t var1xId, size_t var1yId, size_t var2xId, size_t var2yId)
 {
 	m_var1xId = var1xId;
 	m_var1yId = var1yId;

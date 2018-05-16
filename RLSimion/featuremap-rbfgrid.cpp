@@ -5,6 +5,20 @@
 
 #define ACTIVATION_THRESHOLD 0.0001
 
+GaussianRBFGridFeatureMap::GaussianRBFGridFeatureMap(Descriptor& stateDescriptor, vector<size_t> stateVariableIds, Descriptor& actionDescriptor, vector<size_t> actionVariableIds, size_t numFeaturesPerVariable)
+{
+	m_pVarFeatures = new FeatureList("RBFGrid/var");
+	m_numFeaturesPerVariable.set((int)numFeaturesPerVariable);
+
+	//create STATE_VARIABLE objects
+	for each (size_t varId in stateVariableIds)
+		m_stateVariables.add(new STATE_VARIABLE(stateDescriptor, varId));
+	//create ACTION_VARIABLE objects
+	for each (size_t varId in actionVariableIds)
+		m_actionVariables.add(new ACTION_VARIABLE(actionDescriptor, varId));
+
+	initGrid();
+}
 
 GaussianRBFGridFeatureMap::GaussianRBFGridFeatureMap(ConfigNode* pConfigNode): FeatureMap(pConfigNode)
 {
@@ -12,6 +26,11 @@ GaussianRBFGridFeatureMap::GaussianRBFGridFeatureMap(ConfigNode* pConfigNode): F
 
 	m_numFeaturesPerVariable = INT_PARAM(pConfigNode, "Num-Features-Per-Dimension", "Number of features per input variable", 20);
 
+	initGrid();
+}
+
+void GaussianRBFGridFeatureMap::initGrid()
+{
 	//pre-calculate number of features
 	m_totalNumFeatures = 1;
 	m_maxNumActiveFeatures = 1;
@@ -64,8 +83,12 @@ void GaussianRBFGridFeatureMap::getFeatures(const State* s, const Action* a, Fea
 		//spawn features in buffer with the i-th variable's features
 		outFeatures->spawn(m_pVarFeatures, offset);
 	}
-	outFeatures->applyThreshold(ACTIVATION_THRESHOLD);
-	outFeatures->normalize();
+	//unnecessary (it will be done by each grid) if there is only one variable
+	if (m_grids.size() > 1)
+	{
+		outFeatures->applyThreshold(ACTIVATION_THRESHOLD);
+		outFeatures->normalize();
+	}
 }
 
 
@@ -83,8 +106,7 @@ void GaussianRBFGridFeatureMap::getFeatureStateAction(size_t feature, State* s, 
 	}
 }
 
-void GaussianRBFGridFeatureMap::getDimensionFeatures(size_t varIndex, const State* s, const Action* a, FeatureList* outFeatures) const
-{
+void GaussianRBFGridFeatureMap::getDimensionFeatures(size_t varIndex, const State* s, const Action* a, FeatureList* outFeatures) {
 	double u;
 	size_t i;
 

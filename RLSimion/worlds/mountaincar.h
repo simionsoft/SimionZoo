@@ -12,9 +12,9 @@ class SetPoint;
 //MOUNTAIN CAR
 class MountainCar: public DynamicModel
 {
-	int m_sVelocity, m_sPosition;
-	int m_sHeight, m_sAngle;
-	int m_aPedal;
+	size_t m_sVelocity, m_sPosition;
+	size_t m_sHeight, m_sAngle;
+	size_t m_aPedal;
 	double getHeightAtPos(double x);
 	double getAngleAtPos(double x);
 public:

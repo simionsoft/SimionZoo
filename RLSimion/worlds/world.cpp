@@ -109,12 +109,12 @@ DynamicModel::DynamicModel()
 	m_pRewardFunction = new RewardFunction();
 }
 
-int DynamicModel::addStateVariable(const char* name, const char* units, double min, double max, bool bCircular)
+size_t DynamicModel::addStateVariable(const char* name, const char* units, double min, double max, bool bCircular)
 {
 	return m_pStateDescriptor->addVariable(name, units, min, max, bCircular);
 }
 
-int DynamicModel::addActionVariable(const char* name, const char* units, double min, double max, bool bCircular)
+size_t DynamicModel::addActionVariable(const char* name, const char* units, double min, double max, bool bCircular)
 {
 	return m_pActionDescriptor->addVariable(name, units, min, max, bCircular);
 }

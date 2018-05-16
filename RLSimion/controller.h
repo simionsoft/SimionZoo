@@ -15,7 +15,7 @@ class Controller : public Simion
 public:
 	virtual ~Controller(){}
 	virtual size_t getNumOutputs()= 0;
-	virtual size_t getOutputActionIndex(int output)= 0;
+	virtual size_t getOutputActionIndex(size_t output)= 0;
 
 	static std::shared_ptr<Controller> getInstance(ConfigNode* pConfigNode);
 
@@ -44,7 +44,7 @@ public:
 	virtual ~LQRController();
 
 	size_t getNumOutputs();
-	size_t getOutputActionIndex(int output);
+	size_t getOutputActionIndex(size_t output);
 
 	double selectAction(const State *s,Action *a);
 	virtual double update(const State *s, const Action *a, const State *s_p, double r, double behaviorProb) { return 1.0; }
@@ -63,7 +63,7 @@ public:
 	virtual ~PIDController();
 
 	size_t getNumOutputs();
-	size_t getOutputActionIndex(int output);
+	size_t getOutputActionIndex(size_t output);
 
 	double selectAction(const State *s,Action *a);
 	virtual double update(const State *s, const Action *a, const State *s_p, double r, double behaviorProb) { return 1.0; }
@@ -91,7 +91,7 @@ public:
 	virtual ~WindTurbineVidalController();
 
 	size_t getNumOutputs();
-	size_t getOutputActionIndex(int output);
+	size_t getOutputActionIndex(size_t output);
 
 	virtual double selectAction(const State *s,Action *a);
 	virtual double update(const State *s, const Action *a, const State *s_p, double r, double behaviorProb) { return 1.0; }
@@ -117,7 +117,7 @@ public:
 	virtual ~WindTurbineBoukhezzarController();
 
 	size_t getNumOutputs();
-	size_t getOutputActionIndex(int output);
+	size_t getOutputActionIndex(size_t output);
 
 	virtual double selectAction(const State *s,Action *a);
 	virtual double update(const State *s, const Action *a, const State *s_p, double r, double behaviorProb) { return 1.0; }
@@ -147,7 +147,7 @@ public:
 	virtual ~WindTurbineJonkmanController();
 
 	size_t getNumOutputs();
-	size_t getOutputActionIndex(int output);
+	size_t getOutputActionIndex(size_t output);
 
 	virtual double selectAction(const State *s,Action *a);
 	virtual double update(const State *s, const Action *a, const State *s_p, double r, double behaviorProb) { return 1.0; }

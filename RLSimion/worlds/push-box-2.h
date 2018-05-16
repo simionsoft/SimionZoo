@@ -9,15 +9,15 @@ class BulletPhysics;
 class PushBox2 : public DynamicModel
 {
 	/// State variables
-	int m_target_X, m_target_Y;
-	int m_rob1_X, m_rob1_Y;
-	int m_rob2_X, m_rob2_Y;
-	int m_box_X, m_box_Y, m_boxTheta;
-	int m_D_Br1X, m_D_Br1Y;
-	int m_D_Br2X, m_D_Br2Y;
-	int m_D_BtX, m_D_BtY;
-	int m_theta_r1;
-	int m_theta_r2;
+	size_t m_target_X, m_target_Y;
+	size_t m_rob1_X, m_rob1_Y;
+	size_t m_rob2_X, m_rob2_Y;
+	size_t m_box_X, m_box_Y, m_boxTheta;
+	size_t m_D_Br1X, m_D_Br1Y;
+	size_t m_D_Br2X, m_D_Br2Y;
+	size_t m_D_BtX, m_D_BtY;
+	size_t m_theta_r1;
+	size_t m_theta_r2;
 	
 	BulletPhysics* m_pBulletPhysics;
 

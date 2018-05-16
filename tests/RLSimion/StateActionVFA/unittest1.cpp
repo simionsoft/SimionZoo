@@ -55,7 +55,7 @@ namespace StateActionVFA
 			pVFA->getFeatures(pState, pAction, pFeatures);
 			pFeatures->mult(30);
 			pVFA->argMax(pState, pAction);
-			double argMax = pAction->get(0); // we know it's only 1 action variable, so we take the shortcut
+			double argMax = pAction->get((size_t)0); // we know it's only 1 action variable, so we take the shortcut
 			
 			if (abs(argMax - 8) > 1) Assert::Fail();
 

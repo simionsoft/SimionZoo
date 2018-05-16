@@ -17,9 +17,9 @@ class BalancingPole: public DynamicModel
 	double LENGTH;
 	double POLEMASS_LENGTH;
 
-	int m_sX, m_sX_dot;
-	int m_sTheta, m_sTheta_dot;
-	int m_aPitch;
+	size_t m_sX, m_sX_dot;
+	size_t m_sTheta, m_sTheta_dot;
+	size_t m_aPitch;
 
 public:
 	BalancingPole(ConfigNode* pParameters);

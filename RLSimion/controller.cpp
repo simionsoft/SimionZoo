@@ -61,12 +61,11 @@ size_t LQRController::getNumOutputs()
 {
 	return 1;
 }
-size_t LQRController::getOutputActionIndex(int output)
+size_t LQRController::getOutputActionIndex(size_t output)
 {
 	if (output == 0)
 		return m_outputAction.get();
 	throw std::exception("LQRController. Invalid action output given.");
-	return -1;
 }
 
 //PID//////////////////////////////////////////////////////////////////////////
@@ -91,12 +90,11 @@ size_t PIDController::getNumOutputs()
 {
 	return 1;
 }
-size_t PIDController::getOutputActionIndex(int output)
+size_t PIDController::getOutputActionIndex(size_t output)
 {
 	if (output == 0)
 		return m_outputAction.get();
 	throw std::exception("LQRController. Invalid action output given.");
-	return -1;
 }
 
 double PIDController::selectAction(const State *s, Action *a)
@@ -154,16 +152,14 @@ size_t WindTurbineVidalController::getNumOutputs()
 {
 	return 2;
 }
-size_t WindTurbineVidalController::getOutputActionIndex(int output)
+size_t WindTurbineVidalController::getOutputActionIndex(size_t output)
 {
 	switch (output)
 	{
 	case 0: return m_a_beta;
 	case 1: return m_a_T_g;
-	default: throw std::exception("LQRController. Invalid action output given.");
 	}
-	
-	return -1;
+	throw std::exception("LQRController. Invalid action output given.");
 }
 
 //aux function used in WindTurbineVidal controller
@@ -252,16 +248,14 @@ size_t WindTurbineBoukhezzarController::getNumOutputs()
 {
 	return 2;
 }
-size_t WindTurbineBoukhezzarController::getOutputActionIndex(int output)
+size_t WindTurbineBoukhezzarController::getOutputActionIndex(size_t output)
 {
 	switch (output)
 	{
 	case 0: return m_a_beta;
 	case 1: return m_a_T_g;
-	default: throw std::exception("LQRController. Invalid action output given.");
 	}
-
-	return -1;
+	throw std::exception("LQRController. Invalid action output given.");
 }
 
 
@@ -357,16 +351,15 @@ size_t WindTurbineJonkmanController::getNumOutputs()
 {
 	return 2;
 }
-size_t WindTurbineJonkmanController::getOutputActionIndex(int output)
+size_t WindTurbineJonkmanController::getOutputActionIndex(size_t output)
 {
 	switch (output)
 	{
 	case 0: return m_a_beta;
 	case 1: return m_a_T_g;
-	default: throw std::exception("LQRController. Invalid action output given.");
 	}
 
-	return -1;
+	throw std::exception("LQRController. Invalid action output given.");
 }
 
 double WindTurbineJonkmanController::selectAction(const State *s,Action *a)

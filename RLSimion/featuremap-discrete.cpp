@@ -3,11 +3,28 @@
 #include "parameters.h"
 #include "single-dimension-grid.h"
 
+DiscreteFeatureMap::DiscreteFeatureMap(Descriptor& stateDescriptor, vector<size_t> stateVariableIds, Descriptor& actionDescriptor, vector<size_t> actionVariableIds, size_t numFeaturesPerVariable)
+{
+	m_numFeaturesPerVariable.set(numFeaturesPerVariable);
+
+	//create STATE_VARIABLE objects
+	for each (size_t varId in stateVariableIds)
+		m_stateVariables.add(new STATE_VARIABLE(stateDescriptor, varId));
+	//create ACTION_VARIABLE objects
+	for each (size_t varId in actionVariableIds)
+		m_actionVariables.add(new ACTION_VARIABLE(actionDescriptor, varId));
+}
+
 DiscreteFeatureMap::DiscreteFeatureMap(ConfigNode* pConfigNode)
 	:FeatureMap(pConfigNode)
 {
 	m_numFeaturesPerVariable = INT_PARAM(pConfigNode, "Num-Features-Per-Dimension", "Number of features per input variable", 20);
 
+	initGrid();
+}
+
+void DiscreteFeatureMap::initGrid()
+{
 	m_totalNumFeatures = 1;
 	//state variables
 	for (size_t i = 0; i < m_stateVariables.size(); i++)

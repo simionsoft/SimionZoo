@@ -10,7 +10,7 @@ namespace CNamedVarSets
 	{
 	public:
 		
-		TEST_METHOD(CNamedVarSet_Circularity)
+		TEST_METHOD(NamedVarSet_Circularity)
 		{
 			double lowerLimit = -3.1415;
 			double upperLimit = 3.1415;

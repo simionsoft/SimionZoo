@@ -263,8 +263,6 @@
     <ClInclude Include="..\RLSimion\reward.h" />
     <ClInclude Include="..\RLSimion\simgod.h" />
     <ClInclude Include="..\RLSimion\simion.h" />
-    <ClInclude Include="..\RLSimion\single-dimension-discrete-grid.h" />
-    <ClInclude Include="..\RLSimion\single-dimension-grid-rbf.h" />
     <ClInclude Include="..\RLSimion\single-dimension-grid.h" />
     <ClInclude Include="..\RLSimion\stats.h" />
     <ClInclude Include="..\RLSimion\utils.h" />
@@ -356,7 +354,6 @@
     <ClCompile Include="..\RLSimion\etraces.cpp" />
     <ClCompile Include="..\RLSimion\experience-replay.cpp" />
     <ClCompile Include="..\RLSimion\experiment.cpp" />
-    <ClCompile Include="..\RLSimion\featuremap-bag.cpp" />
     <ClCompile Include="..\RLSimion\featuremap-discrete.cpp" />
     <ClCompile Include="..\RLSimion\featuremap-rbfgrid.cpp" />
     <ClCompile Include="..\RLSimion\featuremap-tilecoding.cpp" />
@@ -377,8 +374,6 @@
     <ClCompile Include="..\RLSimion\reward.cpp" />
     <ClCompile Include="..\RLSimion\simgod.cpp" />
     <ClCompile Include="..\RLSimion\simion.cpp" />
-    <ClCompile Include="..\RLSimion\single-dimension-discrete-grid.cpp" />
-    <ClCompile Include="..\RLSimion\single-dimension-grid-rbf.cpp" />
     <ClCompile Include="..\RLSimion\single-dimension-grid.cpp" />
     <ClCompile Include="..\RLSimion\stats.cpp" />
     <ClCompile Include="..\RLSimion\utils.cpp" />

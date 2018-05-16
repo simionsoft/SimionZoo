@@ -70,7 +70,7 @@ public:
 	double get(const State *s);
 
 	void getFeatures(const State* s,FeatureList* outFeatures);
-	void getFeatureState(unsigned int feature, State* s);
+	void getFeatureState(size_t feature, State* s);
 
 	std::shared_ptr<StateFeatureMap> getStateFeatureMap(){ return m_pStateFeatureMap; }
 
@@ -124,7 +124,7 @@ public:
 
 	//features are built using the two feature maps: the state and action feature maps
 	//the input is a feature in state-action space
-	void getFeatureStateAction(unsigned int feature,State* s, Action* a);
+	void getFeatureStateAction(size_t feature,State* s, Action* a);
 
 	void deferredLoadStep();
 

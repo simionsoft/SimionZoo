@@ -132,6 +132,7 @@ public:
 };
 
 class NamedVarProperties;
+class Descriptor;
 
 class STATE_VARIABLE
 {
@@ -144,9 +145,10 @@ protected:
 public:
 	STATE_VARIABLE() = default;
 	STATE_VARIABLE(ConfigNode* pConfigNode, const char* name, const char* comment);
+	STATE_VARIABLE(Descriptor& actionDescriptor, size_t varId);
 
 	size_t get() { return m_hVariable; }
-	void set(int hVar) { m_hVariable = hVar; }
+	void set(size_t hVar) { m_hVariable = hVar; }
 	const char* getName() { return m_variableName; }
 	NamedVarProperties* getProperties() const { return m_pProperties; }
 };
@@ -161,9 +163,10 @@ class ACTION_VARIABLE
 public:
 	ACTION_VARIABLE() = default;
 	ACTION_VARIABLE(ConfigNode* pConfigNode, const char* name, const char* comment);
+	ACTION_VARIABLE(Descriptor& actionDescriptor, size_t varId);
 
 	size_t get() { return m_hVariable; }
-	void set(unsigned int index) { m_hVariable = index; }
+	void set(size_t index) { m_hVariable = index; }
 	const char* getName() { return m_variableName; }
 	NamedVarProperties* getProperties() const { return m_pProperties; }
 };
@@ -261,15 +264,12 @@ public:
 	}
 	size_t size() const { return m_values.size(); }
 	DataType* operator[] (size_t index) { return m_values[index].get(); }
+	void add(DataType* pObj) { m_values.push_back(shared_ptr<DataType>(pObj)); }
 };
 
 template <typename DataType>
 class MULTI_VALUE_FACTORY : public MULTI_VALUE<DataType>
 {
-protected:
-	const char* m_name = 0;
-	const char* m_comment = 0;
-	bool m_bOptional = false;
 public:
 	MULTI_VALUE_FACTORY() = default;
 
@@ -291,9 +291,6 @@ public:
 template <typename DataType, typename baseDataType>
 class MULTI_VALUE_SIMPLE_PARAM : public MULTI_VALUE<DataType>
 {
-protected:
-	const char* m_name = 0;
-	const char* m_comment = 0;
 public:
 	MULTI_VALUE_SIMPLE_PARAM() = default;
 
@@ -314,9 +311,6 @@ public:
 template <typename DataType>
 class MULTI_VALUE_VARIABLE : public MULTI_VALUE<DataType>
 {
-protected:
-	const char* m_name = 0;
-	const char* m_comment = 0;
 public:
 	MULTI_VALUE_VARIABLE() = default;
 

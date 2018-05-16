@@ -113,7 +113,7 @@ void FeatureList::addFeatureList(const FeatureList *inList, double factor)
 	}
 }
 
-size_t FeatureList::getFeaturePos(size_t index)
+long long FeatureList::getFeaturePos(size_t index)
 {
 	for (size_t i = 0; i < m_numFeatures; i++)
 	{
@@ -148,6 +148,21 @@ void FeatureList::add(size_t index, double value)
 	m_numFeatures++;
 }
 
+long long FeatureList::maxFactorFeature()
+{
+	double maxFactor = std::numeric_limits<double>::lowest();
+	long long maxFactorFeature = -1;
+	for (size_t i = 0; i < m_numFeatures; i++)
+	{
+		if (m_pFeatures[i].m_factor > maxFactor)
+		{
+			maxFactorFeature = m_pFeatures[i].m_index;
+			maxFactor = m_pFeatures[i].m_factor;
+		}
+	}
+	return maxFactorFeature;
+}
+
 //spawn: all features (indices and values) are spawned by those in inList
 void FeatureList::spawn(const FeatureList *inList, size_t indexOffset)
 {
@@ -156,8 +171,8 @@ void FeatureList::spawn(const FeatureList *inList, size_t indexOffset)
 	if (m_numAllocFeatures < newNumFeatures)
 		resize(newNumFeatures);
 
-	size_t i = 0, pos = newNumFeatures - 1;
-	size_t j = 0;
+	long long i = 0, pos = newNumFeatures - 1;
+	long long j = 0;
 
 	for (i = m_numFeatures - 1; i >= 0; i--)
 	{
@@ -220,7 +235,7 @@ void FeatureList::copy(const FeatureList* inList)
 	}
 }
 
-void FeatureList::offsetIndices(int offset)
+void FeatureList::offsetIndices(size_t offset)
 {
 	if (offset == 0) return;
 	for (size_t i = 0; i < m_numFeatures; i++)

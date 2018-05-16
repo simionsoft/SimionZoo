@@ -7,8 +7,8 @@ class RewardFunction;
 
 class UnderwaterVehicle : public DynamicModel
 {
-	int m_sVSetpoint, m_sV, m_sVDeviation;
-	int m_aUThrust;
+	size_t m_sVSetpoint, m_sV, m_sVDeviation;
+	size_t m_aUThrust;
 	SetPoint *m_pSetpoint;
 public:
 

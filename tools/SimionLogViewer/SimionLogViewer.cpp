@@ -278,7 +278,7 @@ void SimionLogViewer::interpolateStepData(double t, Episode* pInEpisode, Step* p
 		v0 = pInEpisode->getStep(step)->getValue(i);
 		v1 = pInEpisode->getStep(step + 1)->getValue(i);
 		//if the variable is circular and the two values lay on opposite sides of the range, make them closer
-		if (descriptor[i].bIsCircular() && abs(v0 - v1) > descriptor[i].getRangeWidth()*0.8)
+		if (descriptor[i].isCircular() && abs(v0 - v1) > descriptor[i].getRangeWidth()*0.8)
 		{
 			if (v0 < v1)
 				v1 -= descriptor[i].getRangeWidth();

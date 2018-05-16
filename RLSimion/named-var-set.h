@@ -29,6 +29,8 @@ class Descriptor
 {
 	std::vector<NamedVarProperties*> m_descriptor;
 public:
+	Descriptor() = default;
+
 	NamedVarSet* getInstance();
 	size_t size() const { return m_descriptor.size(); }
 	NamedVarProperties& operator[](size_t idx) { return *m_descriptor[idx]; }

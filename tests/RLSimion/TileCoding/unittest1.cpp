@@ -18,62 +18,78 @@ namespace TileCodingTest
 	{
 	public:
 
-		void test_all_low(int highDimension, TileCodingStateFeatureMap* map,
-			FeatureList* outFeatureList, MULTI_VALUE<SingleDimensionStateVariableGrid> m_grid, State* s)
-		{
-			outFeatureList->clear();
+		//void test_all_low(int highDimension, TileCodingStateFeatureMap* map,
+		//	FeatureList* outFeatureList, MULTI_VALUE<SingleDimensionStateVariableGrid> m_grid, State* s)
+		//{
+		//	outFeatureList->clear();
 
-			//set al values to min value
-			for (int i = 0; i < m_grid.size(); i++)
-			{
-				NamedVarProperties& prop = m_grid[i]->getVarProperties(s, NULL);
+		//	//set al values to min value
+		//	for (int i = 0; i < m_grid.size(); i++)
+		//	{
+		//		NamedVarProperties& prop = m_grid[i]->getVarProperties(s, NULL);
 
-				double val = prop.getMin();
-				s->set(prop.getName(), val);
-				double b = s->get(prop.getName());
-				Assert::IsTrue(val == b);
-			}
+		//		double val = prop.getMin();
+		//		s->set(prop.getName(), val);
+		//		double b = s->get(prop.getName());
+		//		Assert::IsTrue(val == b);
+		//	}
 
-			//set the one dimension to its max value
-			NamedVarProperties& prop = m_grid[highDimension]->getVarProperties(s, NULL);
-			double val = prop.getMax();
-			s->set(prop.getName(), val);
+		//	//set the one dimension to its max value
+		//	NamedVarProperties& prop = m_grid[highDimension]->getVarProperties(s, NULL);
+		//	double val = prop.getMax();
+		//	s->set(prop.getName(), val);
 
-			//get the resulting features
-			map->getFeatures(s, outFeatureList);
-			Assert::IsTrue(outFeatureList->m_numFeatures == map->getNumTilings());
+		//	//get the resulting features
+		//	map->getFeatures(s, outFeatureList);
+		//	Assert::IsTrue(outFeatureList->m_numFeatures == map->getNumTilings());
 
-			int expectedIndex = (m_grid[highDimension]->getNumCenters()-1);
+		//	int expectedIndex = (m_grid[highDimension]->getNumCenters()-1);
 
-			for (int i = 0; i < highDimension; i++)
-			{
-				expectedIndex *= (m_grid[i]->getNumCenters());
-			}
+		//	for (int i = 0; i < highDimension; i++)
+		//	{
+		//		expectedIndex *= (m_grid[i]->getNumCenters());
+		//	}
 
-			Assert::IsTrue(outFeatureList->m_pFeatures[0].m_index == expectedIndex);
-		}
+		//	Assert::IsTrue(outFeatureList->m_pFeatures[0].m_index == expectedIndex);
+		//}
 
 		TEST_METHOD(TileCoding_Test)
 		{
-			DWORD buffer[512];
-			GetCurrentDirectory(512, (LPWSTR)buffer);
-			ConfigFile configFile;
-			ConfigNode* pConfigNode = configFile.loadFile("..\\tests\\pull-box-1.simion.exp");
-			SimionApp *pApp = new SimionApp(pConfigNode);
+			double minX = 0.0, maxX = 10.0;
+			double minY = 0.0, maxY = 10.0;
 
-			State* s = pApp->pWorld->getDynamicModel()->getStateInstance();
-			Action* a = pApp->pWorld->getDynamicModel()->getActionInstance();
+			Descriptor stateDescriptor;
+			size_t hX = stateDescriptor.addVariable("x", "m", minX, maxX);
+			size_t hY = stateDescriptor.addVariable("y", "m", minY, maxY);
+			Descriptor actionDescriptor;
+			size_t hAction = stateDescriptor.addVariable("force", "N", -1.0, 1.0);
 
-			StateFeatureMap* rawMap = pApp->pSimGod->getGlobalStateFeatureMap().get();
-			TileCodingStateFeatureMap* map = (TileCodingStateFeatureMap*)rawMap;
+			State* s = stateDescriptor.getInstance();
+			State* s_p = stateDescriptor.getInstance();
+
+			const int numFeaturesPerTile = 10;
+			const double offset = 0.05;
+			const double numTiles = 5;
+
+			TileCodingFeatureMap tileCodingFeatureMap = TileCodingFeatureMap(stateDescriptor, { hX, hY }, actionDescriptor, {}, numTiles, offset, numFeaturesPerTile);
 
 			FeatureList* outFeatureList = new FeatureList("testFeatureList");
 
-			MULTI_VALUE<SingleDimensionStateVariableGrid> m_grid = map->returnGrid();
-
-			for (int i = 0; i < m_grid.size(); i++)
+			for (size_t iX = 0; iX < numFeaturesPerTile; iX++)
 			{
-				test_all_low(i, map, outFeatureList, m_grid, s);
+				for (size_t iY = 0; iY < numFeaturesPerTile; iY++)
+				{
+					s->set(hX, minX + (maxX - minX) / ((double)(numFeaturesPerTile - 1)) * (double)iX);
+					s->set(hY, minY + (maxY - minY) / ((double)(numFeaturesPerTile - 1)) * (double)iY);
+
+					tileCodingFeatureMap.getFeatures(s, nullptr, outFeatureList);
+					size_t maxFactorFeature = outFeatureList->maxFactorFeature();
+					tileCodingFeatureMap.getFeatureStateAction(maxFactorFeature, s_p, nullptr);
+
+					Assert::IsTrue(outFeatureList->m_numFeatures == numTiles);
+					Assert::AreEqual(s->get(hX), s_p->get(hX), 0.1, L"Incorrect behavior in GaussianRBFGrid (x)");
+					Assert::AreEqual(s->get(hY), s_p->get(hY), 0.1, L"Incorrect behavior in GaussianRBFGrid (y)");
+				}
 			}
 		}
 

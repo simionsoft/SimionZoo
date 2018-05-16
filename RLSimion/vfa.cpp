@@ -172,14 +172,14 @@ void LinearStateVFA::getFeatures(const State* s, FeatureList* outFeatures)
 {
 	assert (s);
 	assert (outFeatures);
-	m_pStateFeatureMap->getFeatures(s,outFeatures);
-	outFeatures->offsetIndices((int) m_minIndex);
+	m_pStateFeatureMap->getFeatures(s, nullptr,outFeatures);
+	outFeatures->offsetIndices(m_minIndex);
 }
 
-void LinearStateVFA::getFeatureState(unsigned int feature, State* s)
+void LinearStateVFA::getFeatureState(size_t feature, State* s)
 {
 	if (feature>=m_minIndex && feature<m_maxIndex)
-		m_pStateFeatureMap->getFeatureState(feature,s);
+		m_pStateFeatureMap->getFeatureStateAction(feature, nullptr ,s);
 }
 
 double LinearStateVFA::get(const State *s)
@@ -284,9 +284,9 @@ void LinearStateActionVFA::getFeatures(const State* s, const Action* a, FeatureL
 
 	if (a)
 	{
-		m_pStateFeatureMap->getFeatures(s, outFeatures);
+		m_pStateFeatureMap->getFeatures(s, nullptr, outFeatures);
 
-		m_pActionFeatureMap->getFeatures(a, m_pAux2);
+		m_pActionFeatureMap->getFeatures(nullptr, a, m_pAux2);
 
 		outFeatures->spawn(m_pAux2, (unsigned int) m_numStateWeights);
 
@@ -295,20 +295,20 @@ void LinearStateActionVFA::getFeatures(const State* s, const Action* a, FeatureL
 	else if (s)
 	{
 		//if we want the state features only, no action values will be provided and the action should not be taken into account
-		m_pStateFeatureMap->getFeatures(s, outFeatures);
+		m_pStateFeatureMap->getFeatures(s, a, outFeatures);
 	}
 	else
 		Logger::logMessage(MessageType::Error, "LinearStateActionVFA::getFeatures() called with neither a state nor an action");
 }
 
-void LinearStateActionVFA::getFeatureStateAction(unsigned int feature, State* s, Action* a)
+void LinearStateActionVFA::getFeatureStateAction(size_t feature, State* s, Action* a)
 {
 	if (feature >= m_minIndex && feature < m_maxIndex)
 	{
 		if (s)
-			m_pStateFeatureMap->getFeatureState(feature % m_numStateWeights, s);
+			m_pStateFeatureMap->getFeatureStateAction(feature % m_numStateWeights, s, nullptr);
 		if (a)
-			m_pActionFeatureMap->getFeatureAction(feature / (unsigned int) m_numStateWeights, a);
+			m_pActionFeatureMap->getFeatureStateAction(feature / (unsigned int) m_numStateWeights, nullptr, a);
 	}
 }
 
@@ -349,7 +349,7 @@ void LinearStateActionVFA::argMax(const State *s, Action* a)
 			numTies = 1;
 		}
 
-		m_pAux->offsetIndices((int) m_numStateWeights);
+		m_pAux->offsetIndices(m_numStateWeights);
 	}
 
 	//any ties?
@@ -357,13 +357,13 @@ void LinearStateActionVFA::argMax(const State *s, Action* a)
 		arg = m_pArgMaxTies[rand() % numTies]; //select one randomly
 
 	//retrieve action
-	m_pActionFeatureMap->getFeatureAction(arg, a);
+	m_pActionFeatureMap->getFeatureStateAction(arg, nullptr, a);
 }
 
 double LinearStateActionVFA::max(const State* s, bool bUseFrozenWeights)
 {
 	//state features in aux list
-	m_pStateFeatureMap->getFeatures(s, m_pAux);
+	m_pStateFeatureMap->getFeatures(s, nullptr, m_pAux);
 
 	double value = 0.0;
 	double maxValue = std::numeric_limits<double>::lowest();
@@ -386,7 +386,7 @@ void LinearStateActionVFA::getActionValues(const State* s,double *outActionValue
 	if (!outActionValues)
 		throw std::exception("LinearStateActionVFA::getAction Values(...) tried to get action values without providing a buffer");
 	//state features in aux list
-	m_pStateFeatureMap->getFeatures(s, m_pAux);
+	m_pStateFeatureMap->getFeatures(s, nullptr, m_pAux);
 
 	//action-value maximization
 	for (unsigned int i = 0; i < m_numActionWeights; i++)

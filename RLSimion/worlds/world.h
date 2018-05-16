@@ -28,8 +28,8 @@ public:
 
 	string getWorldSceneFile() { return m_name + ".scene"; }
 
-	int addStateVariable(const char* name, const char* units, double min, double max, bool bCircular= false);
-	int addActionVariable(const char* name, const char* units, double min, double max, bool bCircular = false);
+	size_t addStateVariable(const char* name, const char* units, double min, double max, bool bCircular= false);
+	size_t addActionVariable(const char* name, const char* units, double min, double max, bool bCircular = false);
 	void addConstant(const char* name, double value);
 
 	const string getName() { return m_name; }

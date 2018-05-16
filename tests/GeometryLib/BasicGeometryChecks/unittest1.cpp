@@ -222,7 +222,7 @@ namespace BasicGeometryChecks
 			//if (error > 0.1)
 			//	Assert::Fail(L"Multiplication of yaw and pitch quaternions doesn't work as expected");
 		}
-		TEST_METHOD(Rotation2Dvs3D)
+		TEST_METHOD(Geometry_Rotation2Dvs3D)
 		{
 			Point3D point3D = Point3D(1.0, 1.0, 1.0);
 			Quaternion rollQuat = Quaternion(0.0, 0.0, 1.57);

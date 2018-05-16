@@ -382,11 +382,11 @@ int Logger::writeStepHeaderToBuffer(char* buffer, int offset)
 
 int Logger::writeNamedVarSetToBuffer(char* buffer, int offset, const NamedVarSet* pNamedVarSet)
 {
-	int numVars = pNamedVarSet->getNumVars();
+	size_t numVars = pNamedVarSet->getNumVars();
 	double* pDoubleBuffer = (double*)(buffer + offset);
-	for (int i = 0; i < numVars; ++i)
+	for (size_t i = 0; i < numVars; ++i)
 		pDoubleBuffer[i] = pNamedVarSet->get(i);
-	return numVars * sizeof(double);
+	return (int) numVars * sizeof(double);
 }
 
 int Logger::writeStatsToBuffer(char* buffer, int offset)

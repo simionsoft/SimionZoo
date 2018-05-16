@@ -1,5 +1,6 @@
 #include "parameters.h"
 #include "worlds/world.h"
+#include "named-var-set.h"
 
 STATE_VARIABLE::STATE_VARIABLE(ConfigNode* pConfigNode, const char* name, const char* comment)
 {
@@ -8,7 +9,15 @@ STATE_VARIABLE::STATE_VARIABLE(ConfigNode* pConfigNode, const char* name, const 
 	m_pProperties = &World::getDynamicModel()->getStateDescriptor()[m_hVariable];
 	m_name = name;
 	m_comment = comment;
+}
 
+STATE_VARIABLE::STATE_VARIABLE(Descriptor& stateDescriptor, size_t varId)
+{
+	m_variableName = stateDescriptor[varId].getName();
+	m_name = m_variableName;
+	m_hVariable = varId;
+	m_pProperties = &stateDescriptor[varId];
+	m_comment = "Object created from code, not a data file";
 }
 
 ACTION_VARIABLE::ACTION_VARIABLE(ConfigNode* pConfigNode, const char* name, const char* comment)
@@ -18,6 +27,15 @@ ACTION_VARIABLE::ACTION_VARIABLE(ConfigNode* pConfigNode, const char* name, cons
 	m_pProperties = &World::getDynamicModel()->getActionDescriptor()[m_hVariable];
 	m_name = name;
 	m_comment = comment;
+}
+
+ACTION_VARIABLE::ACTION_VARIABLE(Descriptor& actionDescriptor, size_t varId)
+{
+	m_variableName = actionDescriptor[varId].getName();
+	m_name = m_variableName;
+	m_hVariable = varId;
+	m_pProperties = &actionDescriptor[varId];
+	m_comment = "Object created from code, not a data file";
 }
 
 #ifdef _WIN64

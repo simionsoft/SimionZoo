@@ -11,10 +11,10 @@ class SetPoint;
 //DOUBLE PENDULUM
 class DoublePendulum : public DynamicModel
 {
-	int m_sTheta1, m_sTheta2;
-	int m_sTheta1Dot, m_sTheta2Dot;
-	int m_sJointPosX, m_sJointPosY;
-	int m_aTorque1, m_aTorque2;
+	size_t m_sTheta1, m_sTheta2;
+	size_t m_sTheta1Dot, m_sTheta2Dot;
+	size_t m_sJointPosX, m_sJointPosY;
+	size_t m_aTorque1, m_aTorque2;
 
 	//DOUBLE_PARAM 
 

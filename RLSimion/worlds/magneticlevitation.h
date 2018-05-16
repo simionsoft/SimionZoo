@@ -7,9 +7,9 @@ class SetPoint;
 //MAGNETIC LEVIATION OF A STEEL BALL
 class MagneticLevitation: public DynamicModel
 {
-	int m_sPosition, m_sVelocity, m_sCurrent;
-	int m_sPositionSetpoint, m_sPositionDeviation;
-	int m_aVoltage;
+	size_t m_sPosition, m_sVelocity, m_sCurrent;
+	size_t m_sPositionSetpoint, m_sPositionDeviation;
+	size_t m_aVoltage;
 	SetPoint *m_pEvalSetPoint,*m_pLearnSetPoint;
 
 public:

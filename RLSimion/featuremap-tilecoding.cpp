@@ -6,6 +6,23 @@
 #include "single-dimension-grid.h"
 #include "app.h"
 
+TileCodingFeatureMap::TileCodingFeatureMap(Descriptor& stateDescriptor, vector<size_t> stateVariableIds, Descriptor& actionDescriptor, vector<size_t> actionVariableIds
+	, size_t numTiles, double tileOffset, size_t numFeaturesPerTile)
+{
+	m_numTiles.set(numTiles);
+	m_tileOffset.set(tileOffset);
+	m_numFeaturesPerTile.set(numFeaturesPerTile);
+
+	//create STATE_VARIABLE objects
+	for each (size_t varId in stateVariableIds)
+		m_stateVariables.add(new STATE_VARIABLE(stateDescriptor, varId));
+	//create ACTION_VARIABLE objects
+	for each (size_t varId in actionVariableIds)
+		m_actionVariables.add(new ACTION_VARIABLE(actionDescriptor, varId));
+
+	initGrid();
+}
+
 TileCodingFeatureMap::TileCodingFeatureMap(ConfigNode* pConfigNode)
 	:FeatureMap(pConfigNode)
 {
@@ -13,11 +30,13 @@ TileCodingFeatureMap::TileCodingFeatureMap(ConfigNode* pConfigNode)
 	m_tileOffset = DOUBLE_PARAM(pConfigNode, "Tile-offset", "Offset of each tile relative to the previous one. It is scaled by the value range of the input variable", 0.05);
 	m_numFeaturesPerTile = INT_PARAM(pConfigNode, "Features-Per-Tile", "Number of tiles per input variable", 10);
 
+	initGrid();
+}
+
+void TileCodingFeatureMap::initGrid()
+{
 	//pre-calculate number of features
 	m_maxNumActiveFeatures = m_numTiles.get();
-
-	for (unsigned int i = 0; i < m_grids.size(); i++)
-		m_totalNumFeatures *= m_numFeaturesPerTile.get();
 
 	//state variables
 	for (unsigned int i = 0; i < m_stateVariables.size(); i++)
@@ -33,6 +52,10 @@ TileCodingFeatureMap::TileCodingFeatureMap(ConfigNode* pConfigNode)
 			, m_actionVariables[i]->getProperties()->getMin(), m_actionVariables[i]->getProperties()->getMax()
 			, m_actionVariables[i]->getProperties()->isCircular()));
 	}
+
+	m_totalNumFeatures = 1;
+	for (unsigned int i = 0; i < m_grids.size(); i++)
+		m_totalNumFeatures *= m_numFeaturesPerTile.get();
 }
 
 TileCodingFeatureMap::~TileCodingFeatureMap()

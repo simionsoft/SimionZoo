@@ -7,9 +7,9 @@ class RewardFunction;
 //AIRPLANE PITCH CONTROL
 class PitchControl: public DynamicModel
 {
-	int m_sSetpointPitch, m_sAttackAngle;
-	int m_sPitch, m_sPitchRate, m_sControlDeviation;
-	int m_aPitch;
+	size_t m_sSetpointPitch, m_sAttackAngle;
+	size_t m_sPitch, m_sPitchRate, m_sControlDeviation;
+	size_t m_aPitch;
 	SetPoint *m_pSetpoint;
 public:
 	PitchControl(ConfigNode* pParameters);

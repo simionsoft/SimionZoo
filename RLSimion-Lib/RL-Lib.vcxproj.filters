@@ -74,13 +74,7 @@
     <ClInclude Include="..\RLSimion\simion.h">
       <Filter>learning</Filter>
     </ClInclude>
-    <ClInclude Include="..\RLSimion\single-dimension-grid-rbf.h">
-      <Filter>learning</Filter>
-    </ClInclude>
     <ClInclude Include="..\RLSimion\stats.h">
-      <Filter>learning</Filter>
-    </ClInclude>
-    <ClInclude Include="..\RLSimion\single-dimension-discrete-grid.h">
       <Filter>learning</Filter>
     </ClInclude>
     <ClInclude Include="..\RLSimion\single-dimension-grid.h">
@@ -294,9 +288,6 @@
     <ClCompile Include="..\RLSimion\featuremap.cpp">
       <Filter>learning</Filter>
     </ClCompile>
-    <ClCompile Include="..\RLSimion\featuremap-bag.cpp">
-      <Filter>learning</Filter>
-    </ClCompile>
     <ClCompile Include="..\RLSimion\featuremap-discrete.cpp">
       <Filter>learning</Filter>
     </ClCompile>
@@ -330,13 +321,7 @@
     <ClCompile Include="..\RLSimion\simion.cpp">
       <Filter>learning</Filter>
     </ClCompile>
-    <ClCompile Include="..\RLSimion\single-dimension-grid-rbf.cpp">
-      <Filter>learning</Filter>
-    </ClCompile>
     <ClCompile Include="..\RLSimion\stats.cpp">
-      <Filter>learning</Filter>
-    </ClCompile>
-    <ClCompile Include="..\RLSimion\single-dimension-discrete-grid.cpp">
       <Filter>learning</Filter>
     </ClCompile>
     <ClCompile Include="..\RLSimion\single-dimension-grid.cpp">
