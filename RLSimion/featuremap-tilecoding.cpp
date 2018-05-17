@@ -15,7 +15,7 @@ TileCodingFeatureMap::TileCodingFeatureMap(size_t numTiles, double tileOffset)
 TileCodingFeatureMap::TileCodingFeatureMap(ConfigNode* pConfigNode)
 {
 	m_numTiles = INT_PARAM(pConfigNode, "Num-Tiles", "Number of tile layers of the grid", 5);
-	m_tileOffset = DOUBLE_PARAM(pConfigNode, "Tile-tileDimOffset", "Offset of each tile relative to the previous one. It is scaled by the value range of the input variable", 0.05);
+	m_tileOffset = DOUBLE_PARAM(pConfigNode, "Tile-Offset", "Offset of each tile relative to the previous one. It is scaled by the value range of the input variable", 0.05);
 }
 
 void TileCodingFeatureMap::init(vector<SingleDimensionGrid*>& grids)

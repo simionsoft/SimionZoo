@@ -27,6 +27,8 @@ IncrementalNaturalActorCritic::IncrementalNaturalActorCritic(ConfigNode* pConfig
 
 	//critic's stuff
 	m_pVFunction = CHILD_OBJECT<LinearStateVFA>(pConfigNode, "VFunction", "The Value-function");
+	SimionApp::get()->registerStateActionFunction("V", m_pVFunction.ptr());
+
 	m_s_features = new FeatureList("Critic/s");
 	m_s_p_features = new FeatureList("Critic/s_p");
 	m_pAlphaV = CHILD_OBJECT_FACTORY <NumericValue>(pConfigNode, "Alpha-v", "Learning gain used by the critic");
@@ -41,6 +43,7 @@ IncrementalNaturalActorCritic::IncrementalNaturalActorCritic(ConfigNode* pConfig
 	m_w = new FeatureList*[m_policies.size()];
 	for (unsigned int i = 0; i < m_policies.size(); i++)
 	{
+		SimionApp::get()->registerStateActionFunction(string("V_") + std::to_string(i), m_policies[i]->getDetPolicyStateVFA());
 		m_w[i] = new FeatureList("INAC/Actor/w");
 	}
 

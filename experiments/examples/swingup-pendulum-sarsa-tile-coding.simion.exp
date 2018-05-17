@@ -32,36 +32,31 @@
 			<Update-Batch-Size>10</Update-Batch-Size>
 		</Experience-Replay>
 		<State-Feature-Map>
-			<Type>
-		<Tile-Coding-State-Grid>
-			<Tile-layers>10</Tile-layers>
-			<Tile-offset>0.05</Tile-offset>
-			<Tile-Encoding-Grid-Dimension>
-				<Num-Features>20</Num-Features>
-				<Variable>angle</Variable>
-				<Distribution>linear</Distribution>
-			</Tile-Encoding-Grid-Dimension>
-			<Tile-Encoding-Grid-Dimension>
-				<Num-Features>20</Num-Features>
-				<Variable>angular-velocity</Variable>
-				<Distribution>linear</Distribution>
-			</Tile-Encoding-Grid-Dimension>
-		</Tile-Coding-State-Grid>
-		</Type>
+		  <Num-Features-Per-Dimension>20</Num-Features-Per-Dimension>
+		  <Input-State><Input-State>angle</Input-State></Input-State>
+		  <Input-State><Input-State>angular-velocity</Input-State></Input-State>
+		  <Feature-Mapper>
+		    <Type>
+		      <Tile-Coding>
+			<Num-Tiles>10</Num-Tiles>
+			<Tile-Offset>0.05</Tile-Offset>
+		      </Tile-Coding>
+		    </Type>
+		  </Feature-Mapper>
 		</State-Feature-Map>
 		<Action-Feature-Map>
-			<Type>
-		<Tile-Coding-Action-Grid>
-			<Tile-layers>10</Tile-layers>
-			<Tile-offset>0.05</Tile-offset>
-			<Tile-Encoding-Grid-Dimension>
-				<Num-Features>20</Num-Features>
-				<Variable>torque</Variable>
-				<Distribution>linear</Distribution>
-			</Tile-Encoding-Grid-Dimension>
-		</Tile-Coding-Action-Grid>
-		</Type>
+		  <Num-Features-Per-Dimension>20</Num-Features-Per-Dimension>
+		  <Input-Action><Input-Action>torque</Input-Action></Input-Action>
+		  <Feature-Mapper>
+		    <Type>
+		      <Tile-Coding>
+			<Num-Tiles>10</Num-Tiles>
+			<Tile-Offset>0.05</Tile-Offset>
+		      </Tile-Coding>
+		    </Type>
+		  </Feature-Mapper>
 		</Action-Feature-Map>
+
 		<Simion>
 			<Type>
 		<SARSA>

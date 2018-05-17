@@ -73,21 +73,6 @@
     <ClCompile Include="experiment.cpp">
       <Filter>learning</Filter>
     </ClCompile>
-    <ClCompile Include="featuremap.cpp">
-      <Filter>learning</Filter>
-    </ClCompile>
-    <ClCompile Include="featuremap-discrete.cpp">
-      <Filter>learning</Filter>
-    </ClCompile>
-    <ClCompile Include="featuremap-rbfgrid.cpp">
-      <Filter>learning</Filter>
-    </ClCompile>
-    <ClCompile Include="featuremap-tilecoding.cpp">
-      <Filter>learning</Filter>
-    </ClCompile>
-    <ClCompile Include="features.cpp">
-      <Filter>learning</Filter>
-    </ClCompile>
     <ClCompile Include="named-var-set.cpp">
       <Filter>learning</Filter>
     </ClCompile>
@@ -110,9 +95,6 @@
       <Filter>learning</Filter>
     </ClCompile>
     <ClCompile Include="utils.cpp">
-      <Filter>learning</Filter>
-    </ClCompile>
-    <ClCompile Include="vfa.cpp">
       <Filter>learning</Filter>
     </ClCompile>
     <ClCompile Include="vfa-policy.cpp">
@@ -220,6 +202,24 @@
     <ClCompile Include="single-dimension-grid.cpp">
       <Filter>learning</Filter>
     </ClCompile>
+    <ClCompile Include="vfa.cpp">
+      <Filter>linear-vfa</Filter>
+    </ClCompile>
+    <ClCompile Include="featuremap.cpp">
+      <Filter>linear-vfa</Filter>
+    </ClCompile>
+    <ClCompile Include="featuremap-discrete.cpp">
+      <Filter>linear-vfa</Filter>
+    </ClCompile>
+    <ClCompile Include="featuremap-rbfgrid.cpp">
+      <Filter>linear-vfa</Filter>
+    </ClCompile>
+    <ClCompile Include="featuremap-tilecoding.cpp">
+      <Filter>linear-vfa</Filter>
+    </ClCompile>
+    <ClCompile Include="features.cpp">
+      <Filter>linear-vfa</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="resource1.h" />
@@ -262,9 +262,6 @@
     <ClInclude Include="DQN.h">
       <Filter>learning</Filter>
     </ClInclude>
-    <ClInclude Include="features.h">
-      <Filter>learning</Filter>
-    </ClInclude>
     <ClInclude Include="etraces.h">
       <Filter>learning</Filter>
     </ClInclude>
@@ -272,9 +269,6 @@
       <Filter>learning</Filter>
     </ClInclude>
     <ClInclude Include="experiment.h">
-      <Filter>learning</Filter>
-    </ClInclude>
-    <ClInclude Include="featuremap.h">
       <Filter>learning</Filter>
     </ClInclude>
     <ClInclude Include="named-var-set.h">
@@ -302,9 +296,6 @@
       <Filter>learning</Filter>
     </ClInclude>
     <ClInclude Include="utils.h">
-      <Filter>learning</Filter>
-    </ClInclude>
-    <ClInclude Include="vfa.h">
       <Filter>learning</Filter>
     </ClInclude>
     <ClInclude Include="vfa-critic.h">
@@ -424,6 +415,15 @@
     <ClInclude Include="single-dimension-grid.h">
       <Filter>learning</Filter>
     </ClInclude>
+    <ClInclude Include="vfa.h">
+      <Filter>linear-vfa</Filter>
+    </ClInclude>
+    <ClInclude Include="featuremap.h">
+      <Filter>linear-vfa</Filter>
+    </ClInclude>
+    <ClInclude Include="features.h">
+      <Filter>linear-vfa</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Text Include="ReadMe.txt" />
@@ -455,6 +455,9 @@
     </Filter>
     <Filter Include="logging">
       <UniqueIdentifier>{076c7ada-b33f-4cb5-bc29-6e0f1d66ee2c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="linear-vfa">
+      <UniqueIdentifier>{a2ec0f8c-b5e8-495e-88ee-9c03cc168241}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
 </Project>

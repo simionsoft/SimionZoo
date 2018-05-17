@@ -128,7 +128,7 @@ void LinearVFA::set(size_t feature, double value)
 //STATE VFA: V(s), pi(s), .../////////////////////////////////////////////////////////////////////
 
 LinearStateVFA::LinearStateVFA(ConfigNode* pConfigNode)
-	:LinearVFA(m_pMemManager)
+	:LinearVFA(SimionApp::get()->pMemManager)
 {
 	m_pStateFeatureMap = SimGod::getGlobalStateFeatureMap();
 

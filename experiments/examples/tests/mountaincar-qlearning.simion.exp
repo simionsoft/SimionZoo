@@ -32,19 +32,28 @@
 			<Update-Batch-Size>10</Update-Batch-Size>
 		</Experience-Replay>
 		<State-Feature-Map>
-			<Type>
-		<Discrete-State-Grid>
-			<Grid-Dimension>
-				<Steps>10</Steps>
-				<Variable>position</Variable>
-			</Grid-Dimension>
-			<Grid-Dimension>
-				<Steps>10</Steps>
-				<Variable>velocity</Variable>
-			</Grid-Dimension>
-		</Discrete-State-Grid>
-		</Type>
+		  <Num-Features-Per-Dimension>10</Num-Features-Per-Dimension>
+		  <Input-Action><Input-Action>position</Input-Action></Input-Action>
+		  <Input-Action><Input-Action>velocity</Input-Action></Input-Action>
+		  <Feature-Mapper>
+		    <Type>
+		      <Discrete-Grid>
+
+		      </Discrete-Grid>
+		    </Type>
+		  </Feature-Mapper>
 		</State-Feature-Map>
+		<Action-Feature-Map>
+		  <Num-Features-Per-Dimension>20</Num-Features-Per-Dimension>
+		  <Input-Action><Input-Action>pedal</Input-Action></Input-Action>
+		  <Feature-Mapper>
+		    <Type>
+		      <Discrete-Grid>
+
+		      </Discrete-Grid>
+		    </Type>
+		  </Feature-Mapper>
+		</Action-Feature-Map>
 		<Action-Feature-Map>
 			<Type>
 		<Discrete-Action-Grid>

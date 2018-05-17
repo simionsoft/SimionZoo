@@ -362,7 +362,7 @@ shared_ptr<BaseClass> CHOICE(ConfigNode* pConfig, const char* choiceName, const 
 			return choiceConstructor(pChoiceConfig);
 		}
 	}
-	return 0;
+	throw exception("Couldn't read the value of a CHOICE parameter from the configuration file.");
 }
 
 template<typename BaseClass>
@@ -382,7 +382,7 @@ shared_ptr<BaseClass> CHOICE(ConfigNode* pConfig, const char* choiceName, const 
 			return var.second(pChoiceConfig);
 		}
 	}
-	return 0;
+	throw exception("Couldn't read the value of a CHOICE parameter from the configuration file.");
 }
 
 //quick and dirty hack to store the name of the dynamic world in a choice

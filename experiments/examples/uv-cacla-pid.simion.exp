@@ -24,17 +24,15 @@
       <Episode-Length>200.0</Episode-Length>
     </Experiment>
     <SimGod>
-      <State-Feature-Map>
-        <Type>
-          <RBF-State-Grid>
-            <RBF-Grid-Dimension>
-              <Num-Features>5000</Num-Features>
-              <Variable>v-deviation</Variable>
-              <Distribution>linear</Distribution>
-            </RBF-Grid-Dimension>
-          </RBF-State-Grid>
-        </Type>
-      </State-Feature-Map>
+	<State-Feature-Map>
+	  <Num-Features-Per-Dimension>5000</Num-Features-Per-Dimension>
+	  <Input-State><Input-State>v-deviation</Input-State></Input-State>
+	  <Feature-Mapper>
+	    <Type>
+	      <Gaussian-RBF-Grid/>
+	    </Type>
+	  </Feature-Mapper>
+	</State-Feature-Map>
       <Simion>
         <Type>
           <Actor-Critic>

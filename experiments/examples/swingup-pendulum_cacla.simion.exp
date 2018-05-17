@@ -32,20 +32,14 @@
 			<Update-Batch-Size>10</Update-Batch-Size>
 		</Experience-Replay>
 		<State-Feature-Map>
-			<Type>
-		<RBF-State-Grid>
-			<RBF-Grid-Dimension>
-				<Num-Features>20</Num-Features>
-				<Variable>angle</Variable>
-				<Distribution>linear</Distribution>
-			</RBF-Grid-Dimension>
-			<RBF-Grid-Dimension>
-				<Num-Features>20</Num-Features>
-				<Variable>angular-velocity</Variable>
-				<Distribution>linear</Distribution>
-			</RBF-Grid-Dimension>
-		</RBF-State-Grid>
-		</Type>
+		  <Num-Features-Per-Dimension>20</Num-Features-Per-Dimension>
+		  <Input-State><Input-State>angle</Input-State></Input-State>
+		  <Input-State><Input-State>angular-velocity</Input-State></Input-State>
+		  <Feature-Mapper>
+		    <Type>
+		      <Gaussian-RBF-Grid/>
+		    </Type>
+		  </Feature-Mapper>
 		</State-Feature-Map>
 		<Simion>
 			<Type>

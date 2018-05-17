@@ -57,9 +57,9 @@ std::shared_ptr<FeatureMapper> FeatureMapper::getInstance(ConfigNode* pConfigNod
 {
 	return CHOICE<FeatureMapper>(pConfigNode, "Type", "Feature map type",
 		{
-			{ "Discrete-State-Grid", CHOICE_ELEMENT_NEW<DiscreteFeatureMap> },
+			{ "Discrete-Grid", CHOICE_ELEMENT_NEW<DiscreteFeatureMap> },
 			{ "Gaussian-RBF-Grid", CHOICE_ELEMENT_NEW<GaussianRBFGridFeatureMap> },
-			{ "Tile-Coding-State-Grid", CHOICE_ELEMENT_NEW<TileCodingFeatureMap> }
+			{ "Tile-Coding", CHOICE_ELEMENT_NEW<TileCodingFeatureMap> }
 		});
 }
 
@@ -77,7 +77,7 @@ StateFeatureMap::StateFeatureMap()
 StateFeatureMap::StateFeatureMap(ConfigNode* pConfigNode)
 	:FeatureMap(pConfigNode)
 {
-	m_stateVariables = MULTI_VALUE_VARIABLE<STATE_VARIABLE>(pConfigNode, "State-Variables", "State variables used as input of the feature map");
+	m_stateVariables = MULTI_VALUE_VARIABLE<STATE_VARIABLE>(pConfigNode, "Input-State", "State variables used as input of the feature map");
 
 	//add the names of the input state variables to the list
 	for (unsigned int i = 0; i < m_stateVariables.size(); i++)
@@ -130,7 +130,7 @@ ActionFeatureMap::ActionFeatureMap()
 ActionFeatureMap::ActionFeatureMap(ConfigNode* pConfigNode)
 	:FeatureMap(pConfigNode)
 {
-	m_actionVariables = MULTI_VALUE_VARIABLE<ACTION_VARIABLE>(pConfigNode, "Action-Variables", "Action variables used as input of the feature map");
+	m_actionVariables = MULTI_VALUE_VARIABLE<ACTION_VARIABLE>(pConfigNode, "Input-Action", "Action variables used as input of the feature map");
 
 	//add the names of the input action variables to the list
 	for (unsigned int i = 0; i < m_actionVariables.size(); i++)

@@ -32,17 +32,16 @@
 			<Update-Batch-Size>10</Update-Batch-Size>
 		</Experience-Replay>
 		<State-Feature-Map>
-		  <Type>
-		      <Gaussian-RBF-Grid>
-		        <Num-Features-Per-Dimension>10</Num-Features-Per-Dimension>
-		        <State-Variables>
-			  <State-Variables>x</State-Variables>
-			  <State-Variables>x_dot</State-Variables>
-			  <State-Variables>theta</State-Variables>
-			  <State-Variables>theta_dot</State-Variables>
-		        </State-Variables>
-		    </Gaussian-RBF-Grid>
-		  </Type>
+		  <Num-Features-Per-Dimension>10</Num-Features-Per-Dimension>
+		  <Input-State><Input-State>x</Input-State></Input-State>
+		  <Input-State><Input-State>x_dot</Input-State></Input-State>
+		  <Input-State><Input-State>theta</Input-State></Input-State>
+		  <Input-State><Input-State>theta_dot</Input-State></Input-State>
+		  <Feature-Mapper>
+		    <Type>
+		      <Gaussian-RBF-Grid/>
+		    </Type>
+		  </Feature-Mapper>
 		</State-Feature-Map>
 		<Simion>
 			<Type>

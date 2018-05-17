@@ -37,7 +37,7 @@ void GaussianRBFGridFeatureMap::init(vector<SingleDimensionGrid*>& grids)
 
 void GaussianRBFGridFeatureMap::map(vector<SingleDimensionGrid*>& grids, const vector<double>& values, FeatureList* outFeatures)
 {
-	unsigned int offset = 1;
+	size_t offset = 1;
 
 	outFeatures->clear();
 	if (grids.size() == 0) return;
@@ -64,9 +64,9 @@ void GaussianRBFGridFeatureMap::map(vector<SingleDimensionGrid*>& grids, const v
 
 void GaussianRBFGridFeatureMap::unmap(size_t feature, vector<SingleDimensionGrid*>& grids, vector<double>& outValues)
 {
-	unsigned int dimFeature;
+	size_t dimFeature;
 
-	for (unsigned int i = 0; i < grids.size(); i++)
+	for (size_t i = 0; i < grids.size(); i++)
 	{
 		dimFeature = feature % grids[i]->getValues().size();
 
