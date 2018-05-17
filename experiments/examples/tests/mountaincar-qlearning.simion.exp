@@ -37,9 +37,7 @@
 		  <Input-Action><Input-Action>velocity</Input-Action></Input-Action>
 		  <Feature-Mapper>
 		    <Type>
-		      <Discrete-Grid>
-
-		      </Discrete-Grid>
+		      <Discrete-Grid/>
 		    </Type>
 		  </Feature-Mapper>
 		</State-Feature-Map>

@@ -35,6 +35,8 @@ TileCodingFeatureMap::~TileCodingFeatureMap()
 {
 }
 
+
+//https://www.cs.utexas.edu/~pstone/Papers/bib2html-links/SARA05.slides.pdf
 void TileCodingFeatureMap::map(vector<SingleDimensionGrid*>& grids, const vector<double>& values, FeatureList* outFeatures)
 {
 	//initialize outFeatures with the right size

@@ -134,9 +134,12 @@ StochasticGaussianPolicy::StochasticGaussianPolicy(ConfigNode* pConfigNode)
 	m_pMeanVFA = CHILD_OBJECT<LinearStateVFA>(pConfigNode, "Mean-VFA", "The parameterized VFA that approximates the function");
 	SimionApp::get()->registerStateActionFunction(string("Policy"), m_pMeanVFA.ptr());
 
+	Descriptor& pActionDescriptor = World::getDynamicModel()->getActionDescriptor();
+	m_pMeanVFA->saturateOutput(pActionDescriptor[m_outputAction.get()].getMin(), pActionDescriptor[m_outputAction.get()].getMax());
+
 	m_pSigmaVFA = CHILD_OBJECT<LinearStateVFA>(pConfigNode, "Sigma-VFA", "The parameterized VFA that approximates variance(s)");
 	SimionApp::get()->registerStateActionFunction(string("Policy"), m_pSigmaVFA.ptr());
-	//m_pSigmaVFA->saturateOutput(0.0, 1.0);
+	m_pSigmaVFA->saturateOutput(0.0, 1.0);
 	m_pSigmaVFA->setIndexOffset((unsigned int) m_pMeanVFA->getNumWeights());
 	m_pMeanFeatures = new FeatureList("Sto-Policy/mean-features");
 	m_pSigmaFeatures = new FeatureList("Sto-Policy/sigma-features");
@@ -163,8 +166,7 @@ double StochasticGaussianPolicy::selectAction(const State *s, Action *a)
 	double output = mean;
 	double probability;
 
-	//TODO: Add If statement again?
-	//if (!SimionApp::get()->pExperiment->isEvaluationEpisode())
+	if (!SimionApp::get()->pExperiment->isEvaluationEpisode())
 	{
 		//Training: add noise
 		sigma = exp(m_pSigmaVFA->get(s));

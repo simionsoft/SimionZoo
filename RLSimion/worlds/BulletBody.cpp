@@ -48,12 +48,20 @@ btCollisionShape* BulletBody::getShape()
 void BulletBody::setAbsoluteStateVarIds(size_t xId, size_t yId, size_t thetaId)
 {
 	m_xId = xId; m_yId = yId; m_thetaId = thetaId;
-	m_bSetAbsStateVars = true;
+	m_bAbsVariablesSet = true;
+	m_bAngleSet = true;
 }
+void BulletBody::setAbsoluteStateVarIds(size_t xId, size_t yId)
+{
+	m_xId = xId; m_yId = yId;
+	m_bAbsVariablesSet = true;
+	m_bAngleSet = false;
+}
+
 void BulletBody::setRelativeStateVarIds(size_t relXId, size_t relYId, size_t refXId, size_t refYId)
 {
 	m_relXId = relXId; m_relYId = relYId; m_refXId = refXId; m_refYId = refYId;
-	m_bSetRelStateVars = true;
+	m_bRelVariablesSet = true;
 }
 void BulletBody::setOrigin(double x, double y, double theta)
 {
@@ -72,7 +80,6 @@ void BulletBody::reset(State* s)
 	m_pBody->setAngularVelocity(zeroVector);
 
 	bodyTransform= m_pBody->getWorldTransform();
-	//bodyTransform.setIdentity();
 	bodyTransform.setOrigin(btVector3(m_originX, m_originZ, m_originY));
 	orientation.setEuler(m_originTheta, 0.0, 0.0);
 	bodyTransform.setRotation(orientation);
@@ -88,7 +95,7 @@ void BulletBody::reset(State* s)
 void BulletBody::updateState(State* s)
 {
 	btTransform trans;
-	if (bSetAbsStateVars())
+	if (areAbsVariablesSet())
 	{
 		m_pBody->getMotionState()->getWorldTransform(trans);
 
@@ -96,7 +103,7 @@ void BulletBody::updateState(State* s)
 		if (m_yId >= 0) s->set(m_yId, float(trans.getOrigin().getZ()));
 		updateYawState(s);
 	}
-	if (bSetRelStateVars())
+	if (areRelVariablesSet())
 	{
 		s->set(m_relXId, s->get(m_refXId) - s->get(m_xId));
 		s->set(m_relYId, s->get(m_refYId) - s->get(m_yId));
@@ -105,7 +112,7 @@ void BulletBody::updateState(State* s)
 
 void BulletBody::updateYawState(State* s)
 {
-	if (m_thetaId >= 0)
+	if (isAngleSet())
 	{
 		btTransform transform;
 		m_pBody->getMotionState()->getWorldTransform(transform);

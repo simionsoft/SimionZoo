@@ -27,39 +27,22 @@
 		<Gamma>0.9</Gamma>
 		<Freeze-Target-Function>true</Freeze-Target-Function>
 		<Use-Importance-Weights>false</Use-Importance-Weights>
-		<State-Feature-Map>
-			<Type>
-		<Tile-Coding-State-Grid>
-			<Tile-layers>10</Tile-layers>
-			<Tile-offset>0.2</Tile-offset>
-			<Tile-Encoding-Grid-Dimension>
-				<Num-Features>20</Num-Features>
-				<Variable>box-to-target-x</Variable>
-				<Distribution>linear</Distribution>
-			</Tile-Encoding-Grid-Dimension>
-			<Tile-Encoding-Grid-Dimension>
-				<Num-Features>20</Num-Features>
-				<Variable>box-to-target-y</Variable>
-				<Distribution>linear</Distribution>
-			</Tile-Encoding-Grid-Dimension>
-			<Tile-Encoding-Grid-Dimension>
-				<Num-Features>20</Num-Features>
-				<Variable>robot1-to-box-x</Variable>
-				<Distribution>linear</Distribution>
-			</Tile-Encoding-Grid-Dimension>
-			<Tile-Encoding-Grid-Dimension>
-				<Num-Features>20</Num-Features>
-				<Variable>robot1-to-box-y</Variable>
-				<Distribution>linear</Distribution>
-			</Tile-Encoding-Grid-Dimension>
-			<Tile-Encoding-Grid-Dimension>
-				<Num-Features>20</Num-Features>
-				<Variable>robot1-theta</Variable>
-				<Distribution>linear</Distribution>
-			</Tile-Encoding-Grid-Dimension>
-		</Tile-Coding-State-Grid>
-		</Type>
-		</State-Feature-Map>
+	<State-Feature-Map>
+	  <Num-Features-Per-Dimension>20</Num-Features-Per-Dimension>
+	  <Input-State><Input-State>box-to-target-x</Input-State></Input-State>
+	  <Input-State><Input-State>box-to-target-y</Input-State></Input-State>
+	  <Input-State><Input-State>robot1-to-box-x</Input-State></Input-State>
+	  <Input-State><Input-State>robot1-to-box-y</Input-State></Input-State>
+	  <Input-State><Input-State>robot1-theta</Input-State></Input-State>
+	  <Feature-Mapper>
+	    <Type>
+	      <Tile-Coding>
+		<Num-Tiles>3</Num-Tiles>
+		<Tile-Offset>0.1</Tile-Offset>
+	      </Tile-Coding>
+	    </Type>
+	  </Feature-Mapper>
+	</State-Feature-Map>
 		<Simion>
 			<Type>
 		<Actor-Critic>

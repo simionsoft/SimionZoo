@@ -11,6 +11,7 @@
 #include <algorithm>
 #include <assert.h>
 #include "simgod.h"
+#include "experiment.h"
 
 ///////////////////////////////////////
 //Q-function-based POLICIES
@@ -38,7 +39,7 @@ double QEGreedyPolicy::selectAction(LinearStateActionVFA* pQFunction, const Stat
 	double epsilon = m_pEpsilon->get();
 	double randomValue = getRandomValue();
 
-	if (randomValue >= epsilon)
+	if (SimionApp::get()->pExperiment->isEvaluationEpisode() || randomValue >= epsilon)
 	{
 		pQFunction->argMax(s, a);
 		return epsilon;
@@ -66,7 +67,7 @@ QSoftMaxPolicy::~QSoftMaxPolicy()
 
 double QSoftMaxPolicy::selectAction(LinearStateActionVFA* pQFunction, const State* s, Action* a)
 {
-	if (m_pTau->get() == 0.0)
+	if (SimionApp::get()->pExperiment->isEvaluationEpisode() || m_pTau->get() == 0.0)
 	{
 		pQFunction->argMax(s, a);
 		return 1.0;

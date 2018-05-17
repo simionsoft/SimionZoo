@@ -125,7 +125,7 @@ long long FeatureList::getFeaturePos(size_t index)
 void FeatureList::add(size_t index, double value)
 {
 	bool bCheckIfExists = m_overwriteMode != OverwriteMode::AllowDuplicates;
-	size_t pos;
+	long long pos;
 	if (bCheckIfExists)
 	{
 		pos = getFeaturePos(index);
@@ -193,7 +193,7 @@ void FeatureList::applyThreshold(double threshold)
 
 	for (size_t i = 0; i < oldNumFeatures; i++)
 	{
-		if (abs(m_pFeatures[i].m_factor) < threshold)
+		if (abs(m_pFeatures[i].m_factor) < abs(threshold))
 		{
 			if (firstUnderThreshold < 0) firstUnderThreshold = i;
 

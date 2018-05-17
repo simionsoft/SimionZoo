@@ -25,12 +25,12 @@
 	<SimGod>
 		<Target-Function-Update-Freq>100</Target-Function-Update-Freq>
 		<Gamma>1.0</Gamma>
-		<Freeze-Target-Function>false</Freeze-Target-Function>
+		<Freeze-Target-Function>true</Freeze-Target-Function>
 		<Use-Importance-Weights>true</Use-Importance-Weights>
 		<State-Feature-Map>
 		  <Num-Features-Per-Dimension>10</Num-Features-Per-Dimension>
-		  <Input-Action><Input-Action>position</Input-Action></Input-Action>
-		  <Input-Action><Input-Action>velocity</Input-Action></Input-Action>
+		  <Input-State><Input-State>position</Input-State></Input-State>
+		  <Input-State><Input-State>velocity</Input-State></Input-State>
 		  <Feature-Mapper>
 		    <Type>
 		      <Tile-Coding>
@@ -80,7 +80,7 @@
 			<Alpha-u>
 				<Schedule>
 		<Constant>
-			<Value>0.01</Value>
+			<Value>0.001</Value>
 		</Constant>
 		</Schedule>
 			</Alpha-u>

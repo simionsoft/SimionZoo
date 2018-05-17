@@ -43,7 +43,6 @@ IncrementalNaturalActorCritic::IncrementalNaturalActorCritic(ConfigNode* pConfig
 	m_w = new FeatureList*[m_policies.size()];
 	for (unsigned int i = 0; i < m_policies.size(); i++)
 	{
-		SimionApp::get()->registerStateActionFunction(string("V_") + std::to_string(i), m_policies[i]->getDetPolicyStateVFA());
 		m_w[i] = new FeatureList("INAC/Actor/w");
 	}
 
@@ -148,11 +147,11 @@ void IncrementalNaturalActorCritic::updatePolicy(const State* s, const State* a,
 		m_grad_u->clear();
 		m_policies[i]->getParameterGradient(s, a, m_grad_u);
 
-#ifdef _DEBUG
-		for (unsigned int j = 0; j < m_grad_u->m_numFeatures; j++)
-			if (isnan(m_grad_u->m_pFeatures[j].m_factor))
-				cout << "nan!\n";
-#endif // DEBUG
+//#ifdef _DEBUG
+//		for (unsigned int j = 0; j < m_grad_u->m_numFeatures; j++)
+//			if (isnan(m_grad_u->m_pFeatures[j].m_factor))
+//				cout << "nan!\n";
+//#endif // DEBUG
 
 		//1. e_u= gamma*lambda*e_u + Grad_u pi(a|s)/pi(a|s)
 		m_e_u[i]->update(gamma);
@@ -161,37 +160,37 @@ void IncrementalNaturalActorCritic::updatePolicy(const State* s, const State* a,
 		//2. w= w - alpha_v * Grad_u pi(a|s)/pi(a|s) * Grad_u pi(a|s)/pi(a|s)^T * w + alpha_v*td*e_u
 		double innerprod = m_grad_u->innerProduct(m_w[i]); //Grad_u pi(a|s)/pi(a|s)^T * w
 
-#ifdef _DEBUG
-		if (isnan(innerprod) || isinf(innerprod))
-		{
-			//m_grad_u->clear();
-			//m_policies[i]->getParameterGradient(s, a, m_grad_u);
-
-			cout << "nope\n";
-			cout << "\n\n";
-			for (unsigned int j = 0; j < m_w[i]->m_numFeatures; j++)
-				cout << ((m_grad_u->m_pFeatures[j].m_factor)) << "\n";
-		}
-#endif // DEBUG
+//#ifdef _DEBUG
+//		if (isnan(innerprod) || isinf(innerprod))
+//		{
+//			//m_grad_u->clear();
+//			//m_policies[i]->getParameterGradient(s, a, m_grad_u);
+//
+//			cout << "nope\n";
+//			cout << "\n\n";
+//			for (unsigned int j = 0; j < m_w[i]->m_numFeatures; j++)
+//				cout << m_w[i]->m_pFeatures.m_factor << "\n";
+//		}
+//#endif // DEBUG
 
 		m_w[i]->addFeatureList(m_grad_u, -1.0*alpha_v*innerprod);
 		m_w[i]->addFeatureList(m_e_u[i], alpha_v*m_td);
 
-#ifdef _DEBUG
-		double avg_w = 0;
-		for (unsigned int j = 0; j < m_w[i]->m_numFeatures; j++)
-			avg_w += abs(m_w[i]->m_pFeatures[j].m_factor);
-		double avg_u = 0;
-		for (unsigned int j = 0; j < m_grad_u->m_numFeatures; j++)
-		{
-			avg_u = avg_u + abs(m_grad_u->m_pFeatures[j].m_factor);
-		}
-		cout << "td: " << m_td << "\tinnerprod: " << innerprod << "\tsum |w|: " << avg_w << "\tsum |grad u|: " << avg_u << "\n";
-
-		for (unsigned int j = 0; j < m_w[i]->m_numFeatures; j++)
-			if (isnan(m_w[i]->m_pFeatures[j].m_factor))
-				cout << "nan!\n";
-#endif // DEBUG
+//#ifdef _DEBUG
+//		double avg_w = 0;
+//		for (unsigned int j = 0; j < m_w[i]->m_numFeatures; j++)
+//			avg_w += abs(m_w[i]->m_pFeatures[j].m_factor);
+//		double avg_u = 0;
+//		for (unsigned int j = 0; j < m_grad_u->m_numFeatures; j++)
+//		{
+//			avg_u = avg_u + abs(m_grad_u->m_pFeatures[j].m_factor);
+//		}
+//		cout << "td: " << m_td << "\tinnerprod: " << innerprod << "\tsum |w|: " << avg_w << "\tsum |grad u|: " << avg_u << "\n";
+//
+//		for (unsigned int j = 0; j < m_w[i]->m_numFeatures; j++)
+//			if (isnan(m_w[i]->m_pFeatures[j].m_factor))
+//				cout << "nan!\n";
+//#endif // DEBUG
 
 		//3. u= u + alpha_u * w
 		m_policies[i]->addFeatures(m_w[i], alpha_u);
@@ -207,12 +206,6 @@ double IncrementalNaturalActorCritic::update(const State *s, const Action *a, co
 
 double IncrementalNaturalActorCritic::selectAction(const State *s, Action *a)
 {
-	/*
-	if (SimionApp::get()->pExperiment->isFirstStep())
-	{
-		cout << "first step\n";
-	}
-	*/
 	double prob = 1.0;
 	for (unsigned int i = 0; i < m_policies.size(); i++)
 	{

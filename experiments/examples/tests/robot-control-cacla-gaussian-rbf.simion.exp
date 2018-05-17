@@ -10,55 +10,38 @@
       <Delta-T>0.1</Delta-T>
       <Dynamic-Model>
         <Model>
-          <Pull-Box-1>
-          </Pull-Box-1>
+          <Robot-control>
+          </Robot-control>
         </Model>
       </Dynamic-Model>
     </World>
     <Experiment>
       <Random-Seed>1</Random-Seed>
-      <Num-Episodes>2000</Num-Episodes>
-      <Eval-Freq>50</Eval-Freq>
+      <Num-Episodes>500</Num-Episodes>
+      <Eval-Freq>25</Eval-Freq>
       <Progress-Update-Freq>1.0</Progress-Update-Freq>
-      <Episode-Length>250</Episode-Length>
+      <Episode-Length>200</Episode-Length>
     </Experiment>
     <SimGod>
       <Target-Function-Update-Freq>100</Target-Function-Update-Freq>
       <Gamma>0.9</Gamma>
-      <Count-State-Visits>true</Count-State-Visits>
       <Freeze-Target-Function>true</Freeze-Target-Function>
       <Use-Importance-Weights>false</Use-Importance-Weights>
-      <State-Feature-Map>
-        <Type>
-          <RBF-State-Grid>
-            <RBF-Grid-Dimension>
-              <Num-Features>20</Num-Features>
-              <Variable>box-to-target-x</Variable>
-              <Distribution>linear</Distribution>
-            </RBF-Grid-Dimension>
-            <RBF-Grid-Dimension>
-              <Num-Features>20</Num-Features>
-              <Variable>box-to-target-y</Variable>
-              <Distribution>linear</Distribution>
-            </RBF-Grid-Dimension>
-            <RBF-Grid-Dimension>
-              <Num-Features>20</Num-Features>
-              <Variable>robot1-to-box-x</Variable>
-              <Distribution>linear</Distribution>
-            </RBF-Grid-Dimension>
-            <RBF-Grid-Dimension>
-              <Num-Features>20</Num-Features>
-              <Variable>robot1-to-box-y</Variable>
-              <Distribution>linear</Distribution>
-            </RBF-Grid-Dimension>
-            <RBF-Grid-Dimension>
-              <Num-Features>20</Num-Features>
-              <Variable>robot1-theta</Variable>
-              <Distribution>linear</Distribution>
-            </RBF-Grid-Dimension>
-          </RBF-State-Grid>
-        </Type>
-      </State-Feature-Map>
+      <Experience-Replay>
+        <Buffer-Size>1000</Buffer-Size>
+        <Update-Batch-Size>10</Update-Batch-Size>
+      </Experience-Replay>
+	<State-Feature-Map>
+	  <Num-Features-Per-Dimension>20</Num-Features-Per-Dimension>
+	  <Input-State><Input-State>robot1-x</Input-State></Input-State>
+	  <Input-State><Input-State>robot1-y</Input-State></Input-State>
+	  <Input-State><Input-State>robot1-theta</Input-State></Input-State>
+	  <Feature-Mapper>
+	    <Type>
+	      <Gaussian-RBF-Grid/>
+	    </Type>
+	  </Feature-Mapper>
+	</State-Feature-Map>
       <Simion>
         <Type>
           <Actor-Critic>
@@ -69,7 +52,7 @@
                     <Alpha>
                       <Schedule>
                         <Constant>
-                          <Value>0.1</Value>
+                          <Value>0.01</Value>
                         </Constant>
                       </Schedule>
                     </Alpha>
@@ -88,10 +71,9 @@
                                 <Theta>0.5</Theta>
                                 <Scale>
                                   <Schedule>
-                                    <Simple-Linear-Decay>
-                                      <Initial-Value>1.0</Initial-Value>
-                                      <End-Value>0.1</End-Value>
-                                    </Simple-Linear-Decay>
+                                    <Constant>
+                                      <Value>1.0</Value>
+                                    </Constant>
                                   </Schedule>
                                 </Scale>
                               </Ornstein-Uhlenbeck>
@@ -109,7 +91,7 @@
                     <Alpha>
                       <Schedule>
                         <Constant>
-                          <Value>0.1</Value>
+                          <Value>0.01</Value>
                         </Constant>
                       </Schedule>
                     </Alpha>
@@ -124,14 +106,13 @@
                             <Noise>
                               <Ornstein-Uhlenbeck>
                                 <Mu>0.0</Mu>
-                                <Sigma>0.5</Sigma>
+                                <Sigma>0.2</Sigma>
                                 <Theta>0.1</Theta>
                                 <Scale>
                                   <Schedule>
-                                    <Simple-Linear-Decay>
-                                      <Initial-Value>1.0</Initial-Value>
-                                      <End-Value>0.5</End-Value>
-                                    </Simple-Linear-Decay>
+                                    <Constant>
+                                      <Value>1.0</Value>
+                                    </Constant>
                                   </Schedule>
                                 </Scale>
                               </Ornstein-Uhlenbeck>

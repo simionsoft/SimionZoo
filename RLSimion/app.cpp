@@ -161,7 +161,11 @@ string SimionApp::getOutputDirectory()
 
 void SimionApp::registerStateActionFunction(string name, StateActionFunction* pFunction)
 {
-	m_pStateActionFunctions[name] = pFunction;
+	string finalName = name;
+	size_t index = 0;
+	while (m_pStateActionFunctions.find(finalName) != m_pStateActionFunctions.end())
+		finalName = name + "_" + to_string(index);
+	m_pStateActionFunctions[finalName] = pFunction;
 }
 
 void SimionApp::registerInputFile(const char* filepath, const char* rename)

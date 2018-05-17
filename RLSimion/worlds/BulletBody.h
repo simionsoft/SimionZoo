@@ -5,8 +5,9 @@
 class BulletBody
 {
 	btVector3 m_localInertia;
-	bool m_bSetRelStateVars = false;
-	bool m_bSetAbsStateVars = false;
+	bool m_bRelVariablesSet = false;
+	bool m_bAbsVariablesSet = false;
+	bool m_bAngleSet = false;
 
 	double m_originX = 0.0;
 	double m_originY = 0.0;
@@ -22,8 +23,9 @@ protected:
 	size_t m_refXId;
 	size_t m_refYId;
 
-	bool bSetAbsStateVars() { return m_bSetAbsStateVars; }
-	bool bSetRelStateVars() { return m_bSetRelStateVars; }
+	bool areAbsVariablesSet() { return m_bAbsVariablesSet; }
+	bool areRelVariablesSet() { return m_bRelVariablesSet; }
+	bool isAngleSet() const { return m_bAngleSet; }
 
 	//only to be called by Rope subclass
 	BulletBody() {}
@@ -34,6 +36,7 @@ public:
 	virtual ~BulletBody() { }
 
 	void setAbsoluteStateVarIds(size_t xId, size_t yId, size_t thetaId);
+	void setAbsoluteStateVarIds(size_t xId, size_t yId);
 	void setRelativeStateVarIds(size_t relXId, size_t relYId, size_t refXId, size_t refYId);
 	void setOrigin(double x, double y, double theta);
 

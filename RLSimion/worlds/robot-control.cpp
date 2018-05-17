@@ -37,7 +37,7 @@ RobotControl::RobotControl(ConfigNode* pConfigNode)
 			, btVector3(BulletPhysics::TargetX, 0, BulletPhysics::TargetY)
 			, new btConeShape(btScalar(0.5), btScalar(0.001)));
 		pTarget->setAbsoluteStateVarIds(getStateDescriptor().getVarIndex("target-x")
-			, getStateDescriptor().getVarIndex("target-y"), -1);
+			, getStateDescriptor().getVarIndex("target-y"));
 		m_pBulletPhysics->add(pTarget);
 	}
 
