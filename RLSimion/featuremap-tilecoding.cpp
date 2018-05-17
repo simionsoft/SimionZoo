@@ -6,56 +6,27 @@
 #include "single-dimension-grid.h"
 #include "app.h"
 
-TileCodingFeatureMap::TileCodingFeatureMap(Descriptor& stateDescriptor, vector<size_t> stateVariableIds, Descriptor& actionDescriptor, vector<size_t> actionVariableIds
-	, size_t numTiles, double tileOffset, size_t numFeaturesPerVariable)
+TileCodingFeatureMap::TileCodingFeatureMap(size_t numTiles, double tileOffset)
 {
 	m_numTiles.set( (int) numTiles);
 	m_tileOffset.set( (int) tileOffset);
-	m_numFeaturesPerDimension.set( (int) numFeaturesPerVariable);
-
-	//create STATE_VARIABLE objects
-	for each (size_t varId in stateVariableIds)
-		m_stateVariables.add(new STATE_VARIABLE(stateDescriptor, varId));
-	//create ACTION_VARIABLE objects
-	for each (size_t varId in actionVariableIds)
-		m_actionVariables.add(new ACTION_VARIABLE(actionDescriptor, varId));
-
-	initGrid();
 }
 
 TileCodingFeatureMap::TileCodingFeatureMap(ConfigNode* pConfigNode)
-	:FeatureMap(pConfigNode)
 {
 	m_numTiles = INT_PARAM(pConfigNode, "Num-Tiles", "Number of tile layers of the grid", 5);
 	m_tileOffset = DOUBLE_PARAM(pConfigNode, "Tile-tileDimOffset", "Offset of each tile relative to the previous one. It is scaled by the value range of the input variable", 0.05);
-	m_numFeaturesPerDimension = INT_PARAM(pConfigNode, "Features-Per-Dimension", "Number of feature per input variable", 10);
-
-	initGrid();
 }
 
-void TileCodingFeatureMap::initGrid()
+void TileCodingFeatureMap::init(vector<SingleDimensionGrid*>& grids)
 {
-	//pre-calculate number of features
+	//calculate number of features
 	m_maxNumActiveFeatures = m_numTiles.get();
 
 	m_numFeaturesPerTile = 1;
 
-	//state variables
-	for (unsigned int i = 0; i < m_stateVariables.size(); i++)
-	{
-		m_grids.push_back(new SingleDimensionGrid(m_numFeaturesPerDimension.get()
-			, m_stateVariables[i]->getProperties()->getMin(), m_stateVariables[i]->getProperties()->getMax()
-			, m_stateVariables[i]->getProperties()->isCircular()));
-		m_numFeaturesPerTile *= m_numFeaturesPerDimension.get();
-	}
-	//action variables
-	for (unsigned int i = 0; i < m_actionVariables.size(); i++)
-	{
-		m_grids.push_back(new SingleDimensionGrid(m_numFeaturesPerDimension.get()
-			, m_actionVariables[i]->getProperties()->getMin(), m_actionVariables[i]->getProperties()->getMax()
-			, m_actionVariables[i]->getProperties()->isCircular()));
-		m_numFeaturesPerTile *= m_numFeaturesPerDimension.get();
-	}
+	for (unsigned int i = 0; i < grids.size(); i++)
+		m_numFeaturesPerTile *= grids[i]->getValues().size();
 
 	m_totalNumFeatures = m_numTiles.get() * m_numFeaturesPerTile;
 }
@@ -64,12 +35,12 @@ TileCodingFeatureMap::~TileCodingFeatureMap()
 {
 }
 
-void TileCodingFeatureMap::getFeatures(const State* s, const Action* a, FeatureList* outFeatures)
+void TileCodingFeatureMap::map(vector<SingleDimensionGrid*>& grids, const vector<double>& values, FeatureList* outFeatures)
 {
 	//initialize outFeatures with the right size
 	outFeatures->clear();
 
-	if (m_grids.size() == 0) return;
+	if (grids.size() == 0) return;
 
 	//each tile's features start from a different offset. If each tile has n features,
 	//tile #0 starts from feature #0, tile #1 from feature #n, ...
@@ -77,20 +48,20 @@ void TileCodingFeatureMap::getFeatures(const State* s, const Action* a, FeatureL
 
 	for (size_t layerIndex = 0; layerIndex < m_numTiles.get(); layerIndex++)
 	{
-		//the offset by which the feature of a dimension is multiplied
+		//the offset by which the feature of a i is multiplied
 		size_t tileDimIndexOffset = 1;
 		//the index of the feature within current tile (the tile's offset will be added before adding the feature to the output)
 		size_t tileFeatureIndex = 0;
-		for (size_t dimension = 0; dimension < m_grids.size(); dimension++)
+		for (size_t dimension = 0; dimension < grids.size(); dimension++)
 		{
 			//the value offset added to the variable value
-			double tileDimOffset = m_grids[dimension]->getRangeWidth() * m_tileOffset.get() * (double) layerIndex;
+			double tileDimOffset = grids[dimension]->getRangeWidth() * m_tileOffset.get() * (double) layerIndex;
 			//the value of the variable
-			double variableValue = getInputVariableValue(dimension, s, a);
-			//calculate the index within the current tile using the dimension's offset
-			tileFeatureIndex += tileDimIndexOffset * m_grids[dimension]->getClosestFeature(variableValue + tileDimOffset);
-			//update dimension offset
-			tileDimIndexOffset *= m_numFeaturesPerDimension.get();
+			double variableValue = values[dimension];
+			//calculate the index within the current tile using the i's offset
+			tileFeatureIndex += tileDimIndexOffset * grids[dimension]->getClosestFeature(variableValue + tileDimOffset);
+			//update i offset
+			tileDimIndexOffset *= grids[dimension]->getValues().size();
 		}
 		//set the activation feature of this tile
 		outFeatures->add(tileFeatureIndex + tileIndexOffset, 1.0);
@@ -102,23 +73,21 @@ void TileCodingFeatureMap::getFeatures(const State* s, const Action* a, FeatureL
 }
 
 
-void TileCodingFeatureMap::getFeatureStateAction(size_t feature, State* s, Action* a)
+void TileCodingFeatureMap::unmap(size_t feature, vector<SingleDimensionGrid*>& grids, vector<double>& outValues)
 {
 	//tiles overlap and there is no easy way to invert the feature map
-	//as an approximation, instead of averaging the centers of every tile, we use the first dimension
+	//as an approximation, instead of averaging the centers of every tile, we use the first i
 
 	//calculate the feature index within the first tile
 	feature = feature % m_numFeaturesPerTile;
 
 	//now unpack each variable's value in the first tile
-	for (size_t dimension = 0; dimension < m_grids.size(); dimension++)
+	for (size_t i = 0; i < grids.size(); i++)
 	{
-		size_t tileDimIndex = feature % m_numFeaturesPerDimension.get();
+		size_t tileDimIndex = feature % grids[i]->getValues().size();
 
-		double dimensionValue = m_grids[dimension]->getValues()[tileDimIndex];
+		outValues[i] = grids[i]->getValues()[tileDimIndex];
 
-		setInputVariableValue(dimension, dimensionValue, s, a);
-
-		feature = feature / m_numFeaturesPerDimension.get();
+		feature = feature / grids[i]->getValues().size();
 	}
 }

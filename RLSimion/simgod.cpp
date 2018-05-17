@@ -13,16 +13,16 @@
 #include <algorithm>
 
 std::vector<std::pair<DeferredLoad*, unsigned int>> SimGod::m_deferredLoadSteps;
-CHILD_OBJECT_FACTORY<StateFeatureMap> SimGod::m_pGlobalStateFeatureMap;
-CHILD_OBJECT_FACTORY<ActionFeatureMap> SimGod::m_pGlobalActionFeatureMap;
+CHILD_OBJECT<StateFeatureMap> SimGod::m_pGlobalStateFeatureMap;
+CHILD_OBJECT<ActionFeatureMap> SimGod::m_pGlobalActionFeatureMap;
 
 SimGod::SimGod(ConfigNode* pConfigNode)
 {
 	if (!pConfigNode) return;
 
 	//the global parameterizations of the state/action spaces
-	m_pGlobalStateFeatureMap = CHILD_OBJECT_FACTORY<StateFeatureMap>(pConfigNode, "State-Feature-Map", "The state feature map", true);
-	m_pGlobalActionFeatureMap = CHILD_OBJECT_FACTORY<ActionFeatureMap>(pConfigNode, "Action-Feature-Map", "The state feature map", true);
+	m_pGlobalStateFeatureMap = CHILD_OBJECT<StateFeatureMap>(pConfigNode, "State-Feature-Map", "The state feature map", true);
+	m_pGlobalActionFeatureMap = CHILD_OBJECT<ActionFeatureMap>(pConfigNode, "Action-Feature-Map", "The state feature map", true);
 	m_pExperienceReplay = CHILD_OBJECT<ExperienceReplay>(pConfigNode, "Experience-Replay", "The experience replay parameters", true);
 	m_simions = MULTI_VALUE_FACTORY<Simion>(pConfigNode, "Simion", "Simions: learning agents and controllers");
 

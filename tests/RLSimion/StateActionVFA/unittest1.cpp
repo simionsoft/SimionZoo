@@ -32,8 +32,8 @@ namespace StateActionVFA
 			Action* a = actionDescriptor.getInstance();
 			const int numFeatures = 10;
 
-			GaussianRBFGridFeatureMap* stateFeatureMap = new GaussianRBFGridFeatureMap(stateDescriptor, { hX, hY }, actionDescriptor, {}, numFeatures);
-			GaussianRBFGridFeatureMap* actionFeatureMap = new GaussianRBFGridFeatureMap(stateDescriptor, {}, actionDescriptor, { hAction }, numFeatures);
+			StateFeatureMap* stateFeatureMap = new StateFeatureMap(new GaussianRBFGridFeatureMap(),stateDescriptor, { hX, hY }, numFeatures);
+			ActionFeatureMap* actionFeatureMap = new ActionFeatureMap(new GaussianRBFGridFeatureMap(), actionDescriptor, { hAction }, numFeatures);
 
 			MemManager<SimionMemPool> *pMemManager = new MemManager<SimionMemPool>();
 			LinearStateActionVFA *pVFA
@@ -85,8 +85,8 @@ namespace StateActionVFA
 			State* s_p = stateDescriptor.getInstance();
 			const int numFeatures = 10;
 
-			GaussianRBFGridFeatureMap* stateFeatureMap = new GaussianRBFGridFeatureMap(stateDescriptor, { hX }, actionDescriptor, {}, numFeatures);
-			GaussianRBFGridFeatureMap* actionFeatureMap = new GaussianRBFGridFeatureMap(stateDescriptor, { }, actionDescriptor, { hAction}, numFeatures);
+			StateFeatureMap* stateFeatureMap = new StateFeatureMap(new GaussianRBFGridFeatureMap(), stateDescriptor, { hX }, numFeatures);
+			ActionFeatureMap* actionFeatureMap = new ActionFeatureMap(new GaussianRBFGridFeatureMap(), actionDescriptor, { hAction }, numFeatures);
 
 			MemManager<SimionMemPool> *pMemManager = new MemManager<SimionMemPool>();
 			LinearStateActionVFA *pVFA 

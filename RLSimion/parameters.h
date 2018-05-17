@@ -200,6 +200,7 @@ public:
 		}
 	}
 
+	DataType* operator->() const { return m_pValue.get(); }
 	DataType* operator->() { return m_pValue.get(); }
 	shared_ptr<DataType> shared_ptr() { return m_pValue; }
 	DataType* ptr() { return m_pValue.get(); }
@@ -233,6 +234,7 @@ public:
 		m_pValue = std::shared_ptr<DataType>(newValue);
 	}
 
+	DataType* operator->() const { return m_pValue.get(); }
 	DataType* operator->() { return m_pValue.get(); }
 	shared_ptr<DataType> shared_ptr() { return m_pValue; }
 	DataType* ptr() { return m_pValue.get(); }

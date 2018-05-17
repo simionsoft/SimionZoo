@@ -5,59 +5,15 @@
 
 #define ACTIVATION_THRESHOLD 0.0001
 
-GaussianRBFGridFeatureMap::GaussianRBFGridFeatureMap(Descriptor& stateDescriptor, vector<size_t> stateVariableIds, Descriptor& actionDescriptor, vector<size_t> actionVariableIds, size_t numFeaturesPerVariable)
+GaussianRBFGridFeatureMap::GaussianRBFGridFeatureMap()
 {
 	m_pVarFeatures = new FeatureList("RBFGrid/var");
-	m_numFeaturesPerVariable.set((int)numFeaturesPerVariable);
-
-	//create STATE_VARIABLE objects
-	for each (size_t varId in stateVariableIds)
-		m_stateVariables.add(new STATE_VARIABLE(stateDescriptor, varId));
-	//create ACTION_VARIABLE objects
-	for each (size_t varId in actionVariableIds)
-		m_actionVariables.add(new ACTION_VARIABLE(actionDescriptor, varId));
-
-	initGrid();
 }
 
 GaussianRBFGridFeatureMap::GaussianRBFGridFeatureMap(ConfigNode* pConfigNode)
-	: FeatureMap(pConfigNode)
 {
 	m_pVarFeatures = new FeatureList("RBFGrid/var");
-
-	m_numFeaturesPerVariable = INT_PARAM(pConfigNode, "Num-Features-Per-Dimension", "Number of features per input variable", 20);
-
-	initGrid();
 }
-
-void GaussianRBFGridFeatureMap::initGrid()
-{
-	//pre-calculate number of features
-	m_totalNumFeatures = 1;
-	m_maxNumActiveFeatures = 1;
-
-	//state variables
-	for (unsigned int i = 0; i < m_stateVariables.size(); i++)
-	{
-		m_totalNumFeatures *= m_numFeaturesPerVariable.get();
-		m_maxNumActiveFeatures *= m_maxNumActiveFeaturesPerDimension;
-
-		m_grids.push_back(new SingleDimensionGrid(m_numFeaturesPerVariable.get()
-			, m_stateVariables[i]->getProperties()->getMin(), m_stateVariables[i]->getProperties()->getMax()
-			, m_stateVariables[i]->getProperties()->isCircular()));
-	}
-	//action variables
-	for (unsigned int i = 0; i < m_actionVariables.size(); i++)
-	{
-		m_totalNumFeatures *= m_numFeaturesPerVariable.get();
-		m_maxNumActiveFeatures *= m_maxNumActiveFeaturesPerDimension;
-
-		m_grids.push_back(new SingleDimensionGrid(m_numFeaturesPerVariable.get()
-			, m_actionVariables[i]->getProperties()->getMin(), m_actionVariables[i]->getProperties()->getMax()
-			, m_actionVariables[i]->getProperties()->isCircular()));
-	}
-}
-
 
 GaussianRBFGridFeatureMap::~GaussianRBFGridFeatureMap()
 {
@@ -65,28 +21,40 @@ GaussianRBFGridFeatureMap::~GaussianRBFGridFeatureMap()
 		delete m_pVarFeatures;
 }
 
+void GaussianRBFGridFeatureMap::init(vector<SingleDimensionGrid*>& grids)
+{
+	//calculate the number of features
+	m_totalNumFeatures = 1;
+	m_maxNumActiveFeatures = 1;
+
+	for (unsigned int i = 0; i < grids.size(); i++)
+	{
+		m_totalNumFeatures *= grids[i]->getValues().size();
+		m_maxNumActiveFeatures *= m_maxNumActiveFeaturesPerDimension;
+	}
+}
 
 
-void GaussianRBFGridFeatureMap::getFeatures(const State* s, const Action* a, FeatureList* outFeatures)
+void GaussianRBFGridFeatureMap::map(vector<SingleDimensionGrid*>& grids, const vector<double>& values, FeatureList* outFeatures)
 {
 	unsigned int offset = 1;
 
 	outFeatures->clear();
-	if (m_grids.size() == 0) return;
+	if (grids.size() == 0) return;
 	//features of the 0th variable in outFeatures
-	getDimensionFeatures(0, s, a, outFeatures);
+	getDimensionFeatures(grids[0], values[0], outFeatures);
 
-	for (unsigned int i = 1; i < m_grids.size(); i++)
+	for (unsigned int i = 1; i < grids.size(); i++)
 	{
-		offset *= m_numFeaturesPerVariable.get();
+		offset *= grids[i-1]->getValues().size();
 
 		//we calculate the features of i-th variable in m_pVarFeatures
-		getDimensionFeatures(i, s, a, m_pVarFeatures);
+		getDimensionFeatures(grids[i], values[i], m_pVarFeatures);
 		//spawn features in buffer with the i-th variable's features
 		outFeatures->spawn(m_pVarFeatures, offset);
 	}
 	//unnecessary (it will be done by each grid) if there is only one variable
-	if (m_grids.size() > 1)
+	if (grids.size() > 1)
 	{
 		outFeatures->applyThreshold(ACTIVATION_THRESHOLD);
 		outFeatures->normalize();
@@ -94,27 +62,24 @@ void GaussianRBFGridFeatureMap::getFeatures(const State* s, const Action* a, Fea
 }
 
 
-void GaussianRBFGridFeatureMap::getFeatureStateAction(size_t feature, State* s, Action* a)
+void GaussianRBFGridFeatureMap::unmap(size_t feature, vector<SingleDimensionGrid*>& grids, vector<double>& outValues)
 {
 	unsigned int dimFeature;
 
-	for (unsigned int i = 0; i < m_grids.size(); i++)
+	for (unsigned int i = 0; i < grids.size(); i++)
 	{
-		dimFeature = feature % m_numFeaturesPerVariable.get();
+		dimFeature = feature % grids[i]->getValues().size();
 
-		setInputVariableValue(i, m_grids[i]->getFeatureValue(dimFeature) , s, a);
+		outValues[i] = grids[i]->getFeatureValue(dimFeature);
 
-		feature = feature / m_numFeaturesPerVariable.get();
+		feature = feature / grids[i]->getValues().size();
 	}
 }
 
-void GaussianRBFGridFeatureMap::getDimensionFeatures(size_t varIndex, const State* s, const Action* a, FeatureList* outFeatures) {
+void GaussianRBFGridFeatureMap::getDimensionFeatures(SingleDimensionGrid* pGrid, double value, FeatureList* outFeatures)
+{
 	double u;
 	size_t i;
-
-	if (varIndex<0 || varIndex>m_grids.size())
-		throw exception("Invalid variable index give to GaussianRBFGridFeatureMap::getDimensionFeatures()");
-	SingleDimensionGrid* pGrid = m_grids[varIndex];
 
 	outFeatures->clear();
 
@@ -122,36 +87,34 @@ void GaussianRBFGridFeatureMap::getDimensionFeatures(size_t varIndex, const Stat
 
 	if (numCenters <= 2) return;
 
-	double value = getInputVariableValue(varIndex, s, a);
-
 	if (value <= pGrid->getValues()[1])
 	{
 		if (!pGrid->isCircular())
 		{
-			outFeatures->add(0, getFeatureFactor(varIndex, 0, value));
-			outFeatures->add(1, getFeatureFactor(varIndex, 1, value));
-			outFeatures->add(2, getFeatureFactor(varIndex, 2, value));
+			outFeatures->add(0, getFeatureFactor(pGrid, 0, value));
+			outFeatures->add(1, getFeatureFactor(pGrid, 1, value));
+			outFeatures->add(2, getFeatureFactor(pGrid, 2, value));
 		}
 		else
 		{
-			outFeatures->add(0, getFeatureFactor(varIndex, 0, value));
-			outFeatures->add(1, getFeatureFactor(varIndex, 1, value));
-			outFeatures->add(numCenters - 1, getFeatureFactor(varIndex, numCenters - 1, value + pGrid->getRangeWidth()));
+			outFeatures->add(0, getFeatureFactor(pGrid, 0, value));
+			outFeatures->add(1, getFeatureFactor(pGrid, 1, value));
+			outFeatures->add(numCenters - 1, getFeatureFactor(pGrid, numCenters - 1, value + pGrid->getRangeWidth()));
 		}
 	}
 	else if (value >= pGrid->getValues()[numCenters - 2])
 	{
 		if (!pGrid->isCircular())
 		{
-			outFeatures->add(numCenters - 3, getFeatureFactor(varIndex, numCenters - 3, value));
-			outFeatures->add(numCenters - 2, getFeatureFactor(varIndex, numCenters - 2, value));
-			outFeatures->add(numCenters - 1, getFeatureFactor(varIndex, numCenters - 1, value));
+			outFeatures->add(numCenters - 3, getFeatureFactor(pGrid, numCenters - 3, value));
+			outFeatures->add(numCenters - 2, getFeatureFactor(pGrid, numCenters - 2, value));
+			outFeatures->add(numCenters - 1, getFeatureFactor(pGrid, numCenters - 1, value));
 		}
 		else
 		{
-			outFeatures->add(numCenters - 2, getFeatureFactor(varIndex, numCenters - 2, value));
-			outFeatures->add(numCenters - 1, getFeatureFactor(varIndex, numCenters - 1, value));
-			outFeatures->add(0, getFeatureFactor(varIndex, 0, value - pGrid->getRangeWidth()));
+			outFeatures->add(numCenters - 2, getFeatureFactor(pGrid, numCenters - 2, value));
+			outFeatures->add(numCenters - 1, getFeatureFactor(pGrid, numCenters - 1, value));
+			outFeatures->add(0, getFeatureFactor(pGrid, 0, value - pGrid->getRangeWidth()));
 		}
 	}
 	else
@@ -164,29 +127,27 @@ void GaussianRBFGridFeatureMap::getDimensionFeatures(size_t varIndex, const Stat
 
 		if (u < 0.5)
 		{
-			outFeatures->add(i, getFeatureFactor(varIndex, i, value));
-			outFeatures->add(i + 1, getFeatureFactor(varIndex, i + 1, value));
+			outFeatures->add(i, getFeatureFactor(pGrid, i, value));
+			outFeatures->add(i + 1, getFeatureFactor(pGrid, i + 1, value));
 		}
 		else
 		{
-			outFeatures->add(i + 1, getFeatureFactor(varIndex, i + 1, value));
-			outFeatures->add(i, getFeatureFactor(varIndex, i, value));
+			outFeatures->add(i + 1, getFeatureFactor(pGrid, i + 1, value));
+			outFeatures->add(i, getFeatureFactor(pGrid, i, value));
 		}
 
 		if (value - pGrid->getValues()[i - 1] < pGrid->getValues()[i + 2] - value)
-			outFeatures->add(i - 1, getFeatureFactor(varIndex, i - 1, value));
+			outFeatures->add(i - 1, getFeatureFactor(pGrid, i - 1, value));
 		else
-			outFeatures->add(i + 2, getFeatureFactor(varIndex, i + 2, value));
+			outFeatures->add(i + 2, getFeatureFactor(pGrid, i + 2, value));
 	}
 	outFeatures->applyThreshold(ACTIVATION_THRESHOLD);
 	outFeatures->normalize();
 }
 
-double GaussianRBFGridFeatureMap::getFeatureFactor(size_t varIndex, size_t feature, double value) const
+double GaussianRBFGridFeatureMap::getFeatureFactor(SingleDimensionGrid* pGrid, size_t feature, double value) const
 {
 	double range, dist;
-
-	SingleDimensionGrid* pGrid = m_grids[varIndex];
 
 	if (value > pGrid->getValues()[feature])
 	{

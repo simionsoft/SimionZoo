@@ -20,8 +20,8 @@ class FeatureList;
 //Some members are declared static because they are requested by children before the SimGod object is actually constructed
 class SimGod
 {
-	static CHILD_OBJECT_FACTORY<StateFeatureMap> m_pGlobalStateFeatureMap;
-	static CHILD_OBJECT_FACTORY<ActionFeatureMap> m_pGlobalActionFeatureMap;
+	static CHILD_OBJECT<StateFeatureMap> m_pGlobalStateFeatureMap;
+	static CHILD_OBJECT<ActionFeatureMap> m_pGlobalActionFeatureMap;
 
 	bool m_bReplayingExperience= false;
 

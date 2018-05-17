@@ -169,11 +169,11 @@ void FASTWorldPortal::disconnectFromNamedPipeServer()
 void FASTWorldPortal::sendState()
 {
 	double *pValues= s->getValueVector();
-	m_namedPipeClient.writeBuffer(pValues, s->getNumVars()*sizeof(double));
+	m_namedPipeClient.writeBuffer(pValues, (int) s->getNumVars()*sizeof(double));
 }
 
 void FASTWorldPortal::receiveAction()
 {
 	double *pValues = a->getValueVector();
-	m_namedPipeClient.readToBuffer(pValues, a->getNumVars() * sizeof(double));
+	m_namedPipeClient.readToBuffer(pValues, (int) a->getNumVars() * sizeof(double));
 }

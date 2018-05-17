@@ -3,48 +3,23 @@
 #include "parameters.h"
 #include "single-dimension-grid.h"
 
-DiscreteFeatureMap::DiscreteFeatureMap(Descriptor& stateDescriptor, vector<size_t> stateVariableIds, Descriptor& actionDescriptor, vector<size_t> actionVariableIds, size_t numFeaturesPerVariable)
+DiscreteFeatureMap::DiscreteFeatureMap()
 {
-	m_numFeaturesPerVariable.set((int)numFeaturesPerVariable);
-
-	//create STATE_VARIABLE objects
-	for each (size_t varId in stateVariableIds)
-		m_stateVariables.add(new STATE_VARIABLE(stateDescriptor, varId));
-	//create ACTION_VARIABLE objects
-	for each (size_t varId in actionVariableIds)
-		m_actionVariables.add(new ACTION_VARIABLE(actionDescriptor, varId));
-
-	initGrid();
 }
 
 DiscreteFeatureMap::DiscreteFeatureMap(ConfigNode* pConfigNode)
-	:FeatureMap(pConfigNode)
 {
-	m_numFeaturesPerVariable = INT_PARAM(pConfigNode, "Num-Features-Per-Dimension", "Number of features per input variable", 20);
 
-	initGrid();
 }
 
-void DiscreteFeatureMap::initGrid()
+void DiscreteFeatureMap::init(vector<SingleDimensionGrid*>& grids)
 {
+	//calculate the number of features
 	m_totalNumFeatures = 1;
-	//state variables
-	for (size_t i = 0; i < m_stateVariables.size(); i++)
+	for (size_t i = 0; i < grids.size(); i++)
 	{
-		m_totalNumFeatures *= m_numFeaturesPerVariable.get();
+		m_totalNumFeatures *= grids[i]->getValues().size();
 
-		m_grids.push_back(new SingleDimensionGrid(m_numFeaturesPerVariable.get()
-			, m_stateVariables[i]->getProperties()->getMin(), m_stateVariables[i]->getProperties()->getMax()
-			, m_stateVariables[i]->getProperties()->isCircular()));
-	}
-	//action variables
-	for (size_t i = 0; i < m_actionVariables.size(); i++)
-	{
-		m_totalNumFeatures *= m_numFeaturesPerVariable.get();
-
-		m_grids.push_back(new SingleDimensionGrid(m_numFeaturesPerVariable.get()
-			, m_stateVariables[i]->getProperties()->getMin(), m_stateVariables[i]->getProperties()->getMax()
-			, m_stateVariables[i]->getProperties()->isCircular()));
 	}
 	m_maxNumActiveFeatures = 1;
 }
@@ -54,36 +29,36 @@ DiscreteFeatureMap::~DiscreteFeatureMap()
 
 }
 
-void DiscreteFeatureMap::getFeatures(const State* s, const Action* a, FeatureList* outFeatures)
+void DiscreteFeatureMap::map(vector<SingleDimensionGrid*>& grids, const vector<double>& values, FeatureList* outFeatures)
 {
 	size_t offset = 1, featureIndex = 0;
 
 	outFeatures->clear();
-	if (m_grids.size() == 0) return;
+	if (grids.size() == 0) return;
 	//features of the 0th variable in m_pBuffer
-	featureIndex = m_grids[0]->getClosestFeature(getInputVariableValue(0, s, a));
+	featureIndex = grids[0]->getClosestFeature(values[0]);
 
-	for (size_t i = 1; i < m_grids.size(); i++)
+	for (size_t i = 1; i < grids.size(); i++)
 	{
-		offset *= m_numFeaturesPerVariable.get();
+		offset *= grids[i-1]->getValues().size();
 
 		//we calculate the features of i-th variable
-		featureIndex += offset*m_grids[i]->getClosestFeature(getInputVariableValue(i, s, a));
+		featureIndex += offset*grids[i]->getClosestFeature(values[i]);
 	}
 	outFeatures->add(featureIndex, 1.0);
 }
 
 
-void DiscreteFeatureMap::getFeatureStateAction(size_t feature, State* s, Action* a)
+void DiscreteFeatureMap::unmap(size_t feature, vector<SingleDimensionGrid*>& grids, vector<double>& outValues)
 {
 	size_t dimFeature;
 
-	for (size_t i = 0; i < m_grids.size(); i++)
+	for (size_t i = 0; i < grids.size(); i++)
 	{
-		dimFeature = feature % m_numFeaturesPerVariable.get();
+		dimFeature = feature % grids[i]->getValues().size();
 
-		setInputVariableValue(i, m_grids[i]->getFeatureValue(dimFeature), s, a);
+		outValues[i] = grids[i]->getFeatureValue(dimFeature);
 
-		feature = feature / m_numFeaturesPerVariable.get();
+		feature = feature / grids[i]->getValues().size();
 	}
 }
