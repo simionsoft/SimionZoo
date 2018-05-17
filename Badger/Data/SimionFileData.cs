@@ -28,6 +28,10 @@ namespace Badger.Simion
         public const string BadgerProjectFilter = "Badger project|*.";
         public const string ExperimentFilter = "Experiment|*.";
 
+        public const string ExperimentExtension = "simion.exp";
+        public const string ExperimentBatchExtension = "simion.batch";
+        public const string BadgerProjectExtension = "badger.proj";
+
         public delegate void LogFunction(string message);
         public delegate void LoadUpdateFunction();
 
@@ -185,7 +189,7 @@ namespace Badger.Simion
             if (batchFilename == "")
             {
                 //Save dialog -> returns the experiment batch file
-                var sfd = SaveFile(ExperimentBatchFilter, XMLConfig.experimentBatchExtension);
+                var sfd = SaveFile(ExperimentBatchFilter, SimionFileData.ExperimentBatchExtension);
                 if (sfd.ShowDialog() == DialogResult.OK)
                 {
                     batchFilename = sfd.FileName;
@@ -196,7 +200,7 @@ namespace Badger.Simion
                     return -1;
                 }
             }
-            string batchFileDir = batchFilename.Remove(batchFilename.LastIndexOf("." + XMLConfig.experimentBatchExtension));
+            string batchFileDir = batchFilename.Remove(batchFilename.LastIndexOf("." + SimionFileData.ExperimentBatchExtension));
             string batchFileName = Utility.GetFilename(batchFileDir);
             batchFileDir = Utility.GetRelativePathTo(Directory.GetCurrentDirectory(), batchFileDir);
             // Clean output directory if it exists
@@ -211,7 +215,7 @@ namespace Badger.Simion
                     return -1;
                 }
             }
-            string fullBatchFileName = batchFileDir + "." + XMLConfig.experimentBatchExtension;
+            string fullBatchFileName = batchFileDir + "." + SimionFileData.ExperimentBatchExtension;
 
             
             using (StreamWriter batchFileWriter = new StreamWriter(fullBatchFileName))
@@ -240,9 +244,9 @@ namespace Badger.Simion
 
                         string folderPath = batchFileDir + "\\" + experimentName;
                         Directory.CreateDirectory(folderPath);
-                        string filePath = folderPath + "\\" + experimentName + "." + XMLConfig.experimentExtension;
+                        string filePath = folderPath + "\\" + experimentName + "." + SimionFileData.ExperimentExtension;
                         experimentViewModel.save(filePath, SaveMode.AsExperimentalUnit);
-                        string relativePathToExperimentalUnit = batchFileName + "\\" + experimentName + "\\" + experimentName + "." + XMLConfig.experimentExtension;
+                        string relativePathToExperimentalUnit = batchFileName + "\\" + experimentName + "\\" + experimentName + "." + SimionFileData.ExperimentExtension;
 
                         // Save the experiment reference in the root batch file. Open 'EXPERIMENTAL-UNIT' tag
                         // with its corresponding attributes.
@@ -273,7 +277,7 @@ namespace Badger.Simion
             Dictionary<string, string> appDefinitions, LogFunction log)
         {
             string fileDoc = null;
-            bool isOpen = OpenFileDialog(ref fileDoc, BadgerProjectFilter, XMLConfig.badgerProjectExtension);
+            bool isOpen = OpenFileDialog(ref fileDoc, BadgerProjectFilter, SimionFileData.BadgerProjectExtension);
             if (!isOpen) return;
 
             XmlDocument badgerDoc = new XmlDocument();
@@ -308,7 +312,7 @@ namespace Badger.Simion
         ///     of experiments later.
         /// </summary>
         /// <param name="experiments"></param>
-        static public void SaveExperiments(BindableCollection<ExperimentViewModel> experiments)
+        static public void SaveExperiments(BindableCollection<ExperimentViewModel> experiments, string outputFile = null)
         {
             foreach (ExperimentViewModel experiment in experiments)
             {
@@ -320,11 +324,17 @@ namespace Badger.Simion
                 }
             }
 
-            var sfd = SaveFile(BadgerProjectFilter, XMLConfig.badgerProjectExtension);
-            if (sfd.ShowDialog() == DialogResult.OK)
+            if (outputFile == null)
+            {
+                var sfd = SaveFile(BadgerProjectFilter, SimionFileData.BadgerProjectExtension);
+                if (sfd.ShowDialog() == DialogResult.OK)
+                    outputFile = sfd.FileName;
+            }
+
+            if (outputFile != null) //either because a name was provided when the method was called or because the user selected one from the dialog
             {
                 string leftSpace;
-                using (StreamWriter writer = new StreamWriter(sfd.FileName))
+                using (StreamWriter writer = new StreamWriter(outputFile))
                 {
                     writer.WriteLine("<" + XMLConfig.badgerNodeTag + " " + XMLConfig.versionAttribute
                         + "=\"" + XMLConfig.BadgerProjectConfigVersion + "\">");
@@ -352,7 +362,7 @@ namespace Badger.Simion
         static public ExperimentViewModel LoadExperiment(Dictionary<string, string> appDefinitions)
         {
             string fileDoc = null;
-            bool isOpen = OpenFileDialog(ref fileDoc, ExperimentFilter, XMLConfig.experimentExtension);
+            bool isOpen = OpenFileDialog(ref fileDoc, ExperimentFilter, SimionFileData.ExperimentExtension);
             if (!isOpen)
                 return null;
 
@@ -374,7 +384,7 @@ namespace Badger.Simion
                 return;
             }
 
-            var sfd = SaveFile(ExperimentFilter, XMLConfig.experimentExtension);
+            var sfd = SaveFile(ExperimentFilter, SimionFileData.ExperimentExtension);
             if (sfd.ShowDialog() == DialogResult.OK)
                 experiment.save(sfd.FileName, SaveMode.AsExperiment);
         }
@@ -434,7 +444,7 @@ namespace Badger.Simion
         {
             OpenFileDialog ofd = new OpenFileDialog();
             ofd.Filter = filterPrefix + extension;
-            ofd.InitialDirectory = Path.Combine(Path.GetDirectoryName(Directory.GetCurrentDirectory()), "experiments");
+            ofd.InitialDirectory = Path.Combine(Path.GetDirectoryName(Directory.GetCurrentDirectory()), SimionFileData.experimentDir);
 
             if (ofd.ShowDialog() == DialogResult.OK)
             {

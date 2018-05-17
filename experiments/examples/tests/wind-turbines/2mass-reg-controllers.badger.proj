@@ -1,3 +1,5 @@
+<BADGER-PROJECT FileVersion="1.0.0.0">
+  <EXPERIMENT Name="2mass-reg-controllers">
 <RLSimion FileVersion="1.0.0.0">
 <RLSimion>
 	<Log>
@@ -158,3 +160,5 @@
 	</SimGod>
 </RLSimion>
 </RLSimion>
+  </EXPERIMENT>
+</BADGER-PROJECT>

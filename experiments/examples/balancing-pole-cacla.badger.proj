@@ -1,3 +1,5 @@
+<BADGER-PROJECT FileVersion="1.0.0.0">
+  <EXPERIMENT Name="balancing-pole-cacla">
 <RLSimion FileVersion="1.0.0.0">
 <RLSimion>
 	<Log>
@@ -146,3 +148,5 @@
 	</SimGod>
 </RLSimion>
 </RLSimion>
+  </EXPERIMENT>
+</BADGER-PROJECT>

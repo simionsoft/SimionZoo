@@ -215,7 +215,7 @@ namespace Badger.ViewModels
         {
             string fileName = null;
             bool isOpen = SimionFileData.OpenFileDialog(ref fileName, SimionFileData.ExperimentBatchFilter
-                , XMLConfig.experimentBatchExtension);
+                , SimionFileData.ExperimentBatchExtension);
             if (!isOpen) return;
             LoadExperimentBatch(fileName);
         }

@@ -350,7 +350,7 @@ namespace Badger.ViewModels
             //we save the experiment with the currently selected fork values
             int fileId = new Random().Next(1, 1000);
             string filename = SimionFileData.tempRelativeDir + fileId.ToString() 
-                + "." +  XMLConfig.experimentExtension;
+                + "." + SimionFileData.ExperimentExtension;
 
             if (!Directory.Exists(SimionFileData.tempRelativeDir))
                 Directory.CreateDirectory(SimionFileData.tempRelativeDir);

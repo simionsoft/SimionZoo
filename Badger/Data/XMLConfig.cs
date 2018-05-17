@@ -8,11 +8,6 @@ namespace Badger.Simion
         public const string BadgerProjectConfigVersion = "1.0.0.0";
         public const string BatchConfigVersion = "1.0.0.0";
 
-        public const string experimentExtension = "simion.exp";
-        //public const string experimentalUnitExtension = "simion.exp.unit";
-        public const string experimentBatchExtension = "simion.batch";
-        public const string badgerProjectExtension = "badger.proj";
-
         public const string definitionNodeTag = "DEFINITIONS";
         public const string classDefinitionNodeTag = "CLASS";
         public const string enumDefinitionNodeTag = "ENUMERATION";

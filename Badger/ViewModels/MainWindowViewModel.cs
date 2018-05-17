@@ -16,8 +16,6 @@ namespace Badger.ViewModels
     /// </summary>
     public class MainWindowViewModel : PropertyChangedBase
     {
-        private const string BatchFile = "Batch File";
-
         static private BindableCollection<ExperimentViewModel> m_experimentViewModels
             = new BindableCollection<ExperimentViewModel>();
         //these two properties interface to the same hidden attribute
@@ -205,12 +203,25 @@ namespace Badger.ViewModels
                 return;
             }
 
-            SimionFileData.SaveExperiment(SelectedExperiment);
+            if (SelectedExperiment.getNumForkCombinations() > 1)
+                SimionFileData.SaveExperiments(m_experimentViewModels);
+            else
+                SimionFileData.SaveExperiment(SelectedExperiment);
         }
 
-        public void SaveAllExperiments()
+        /// <summary>
+        ///     Load multiple experiments all at once.
+        ///     Used from MainWindowView when the Load experiments button is clicked.
+        /// </summary>
+        public void LoadExperiments()
         {
-            SimionFileData.SaveExperiments(m_experimentViewModels);
+            SimionFileData.loadExperiments(ref m_experimentViewModels, appDefinitions, logToFile);
+            NotifyOfPropertyChange(() => ExperimentViewModels);
+
+            if (m_experimentViewModels.Count > 0)
+                SelectedExperiment = m_experimentViewModels[0];
+
+            CheckEmptyExperimentList();
         }
 
         /// <summary>
@@ -260,21 +271,6 @@ namespace Badger.ViewModels
             e.RunLocallyCurrentConfiguration();
         }
 
-        /// <summary>
-        ///     Load multiple experiments all at once.
-        ///     Used from MainWindowView when the Load experiments button is clicked.
-        /// </summary>
-        public void LoadExperiments()
-        {
-            SimionFileData.loadExperiments(ref m_experimentViewModels, appDefinitions, logToFile);
-            NotifyOfPropertyChange(() => ExperimentViewModels);
-
-            if (m_experimentViewModels.Count > 0)
-                SelectedExperiment = m_experimentViewModels[0];
-
-            CheckEmptyExperimentList();
-        }
-
 
         private List<LoggedExperimentViewModel> m_loggedExperiments = new List<LoggedExperimentViewModel>();
 
@@ -302,13 +298,19 @@ namespace Badger.ViewModels
         {
             string batchFileName = "";
 
+            //Save the experiment batch, read by the Experiment Monitor
             int experimentalUnitsCount = SimionFileData.SaveExperimentBatchFile(ExperimentViewModels,
                 ref batchFileName, logToFile);
 
-            // Experiments are sent and executed remotely
+            //Save the badger project to allow later changes and re-runs of the experiment
+            string badgerProjFileName = Utility.RemoveExtension(batchFileName, Utility.NumParts(SimionFileData.BadgerProjectExtension, '.'))
+                + "." + SimionFileData.BadgerProjectExtension;
+            SimionFileData.SaveExperiments(m_experimentViewModels, badgerProjFileName);
+
+            //Experiments are sent and executed remotely
             logToFile("Running experiment queue remotely");
 
-            m_monitorWindowViewModel = new ExperimentMonitorWindowViewModel(ShepherdViewModel,logToFile);
+            m_monitorWindowViewModel = new ExperimentMonitorWindowViewModel(ShepherdViewModel, logToFile);
 
             CaliburnUtility.ShowPopupWindow(m_monitorWindowViewModel, "Experiment Monitor", false);
 

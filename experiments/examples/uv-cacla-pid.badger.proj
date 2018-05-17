@@ -1,18 +1,20 @@
+<BADGER-PROJECT FileVersion="1.0.0.0">
+  <EXPERIMENT Name="uv-cacla-pid">
 <RLSimion FileVersion="1.0.0.0">
   <RLSimion>
     <Log>
       <Log-Freq>0.25</Log-Freq>
-      <Log-eval-episodes>true</Log-eval-episodes>
-      <Log-training-episodes>false</Log-training-episodes>
+      <Log-eval-episodes>True</Log-eval-episodes>
+      <Log-training-episodes>False</Log-training-episodes>
     </Log>
     <World>
       <Num-Integration-Steps>4</Num-Integration-Steps>
-      <Delta-T>0.05</Delta-T>
+      <Delta-T>0.01</Delta-T>
       <Dynamic-Model>
         <Model>
-          <Pitch-control>
-            <Set-Point-File>../config/world/pitch-control/setpoint.txt</Set-Point-File>
-          </Pitch-control>
+          <Underwater-vehicle>
+            <Set-Point-File>../config/world/underwater-vehicle/setpoint.txt</Set-Point-File>
+          </Underwater-vehicle>
         </Model>
       </Dynamic-Model>
     </World>
@@ -20,15 +22,13 @@
       <Random-Seed>1</Random-Seed>
       <Num-Episodes>1000</Num-Episodes>
       <Eval-Freq>25</Eval-Freq>
-      <Progress-Update-Freq>1</Progress-Update-Freq>
-      <Episode-Length>50</Episode-Length>
+      <Progress-Update-Freq>0.5</Progress-Update-Freq>
+      <Episode-Length>200.0</Episode-Length>
     </Experiment>
     <SimGod>
 	<State-Feature-Map>
-	  <Num-Features-Per-Dimension>100</Num-Features-Per-Dimension>
-	  <Input-State><Input-State>attack-angle</Input-State></Input-State>
-	  <Input-State><Input-State>control-deviation</Input-State></Input-State>
-	  <Input-State><Input-State>pitch-rate</Input-State></Input-State>
+	  <Num-Features-Per-Dimension>5000</Num-Features-Per-Dimension>
+	  <Input-State><Input-State>v-deviation</Input-State></Input-State>
 	  <Feature-Mapper>
 	    <Type>
 	      <Gaussian-RBF-Grid/>
@@ -41,21 +41,31 @@
             <Actor>
               <Base-Controller>
                 <Controller>
-                  <LQR>
-                    <Output-Actionn>pitch</Output-Actionn>
-                    <LQR-Gain>
-                      <Gain>-7.0711</Gain>
-                      <Variable>control-deviation</Variable>
-                    </LQR-Gain>
-                    <LQR-Gain>
-                      <Gain>-0.6435</Gain>
-                      <Variable>attack-angle</Variable>
-                    </LQR-Gain>
-                    <LQR-Gain>
-                      <Gain>169.695</Gain>
-                      <Variable>pitch-rate</Variable>
-                    </LQR-Gain>
-                  </LQR>
+                  <PID>
+                    <Input-Variable>v-deviation</Input-Variable>
+                    <Output-Action>u-thrust</Output-Action>
+                    <KP>
+                      <Schedule>
+                        <Constant>
+                          <Value>100</Value>
+                        </Constant>
+                      </Schedule>
+                    </KP>
+                    <KI>
+                      <Schedule>
+                        <Constant>
+                          <Value>0.0</Value>
+                        </Constant>
+                      </Schedule>
+                    </KI>
+                    <KD>
+                      <Schedule>
+                        <Constant>
+                          <Value>0.0</Value>
+                        </Constant>
+                      </Schedule>
+                    </KD>
+                  </PID>
                 </Controller>
               </Base-Controller>
               <Output>
@@ -69,10 +79,10 @@
                               <Initial-Value>0.001</Initial-Value>
                             </FORK-VALUE>
                             <FORK-VALUE Name="Value-1">
-                              <Initial-Value>0.002</Initial-Value>
+                              <Initial-Value>0.0025</Initial-Value>
                             </FORK-VALUE>
                             <FORK-VALUE Name="Value-2">
-                              <Initial-Value>0.003</Initial-Value>
+                              <Initial-Value>0.005</Initial-Value>
                             </FORK-VALUE>
                           </FORKED-NODE>
                           <End-Value>0.0</End-Value>
@@ -82,7 +92,7 @@
                     <Policy>
                       <Policy>
                         <Deterministic-Policy-Gaussian-Noise>
-                          <Output-Action>pitch</Output-Action>
+                          <Output-Action>u-thrust</Output-Action>
                           <Deterministic-Policy-VFA>
                             <Init-Value>0.0</Init-Value>
                           </Deterministic-Policy-VFA>
@@ -96,13 +106,13 @@
                                     <Simple-Linear-Decay>
                                       <FORKED-NODE Name="Initial-Value" Alias="Noise-Width">
                                         <FORK-VALUE Name="Value-0">
-                                          <Initial-Value>0.001</Initial-Value>
+                                          <Initial-Value>0.01</Initial-Value>
                                         </FORK-VALUE>
                                         <FORK-VALUE Name="Value-1">
-                                          <Initial-Value>0.002</Initial-Value>
+                                          <Initial-Value>0.025</Initial-Value>
                                         </FORK-VALUE>
                                         <FORK-VALUE Name="Value-2">
-                                          <Initial-Value>0.003</Initial-Value>
+                                          <Initial-Value>0.05</Initial-Value>
                                         </FORK-VALUE>
                                       </FORKED-NODE>
                                       <End-Value>0.0</End-Value>
@@ -125,22 +135,12 @@
                   <E-Traces>
                     <Threshold>0.001</Threshold>
                     <Lambda>0.9</Lambda>
-                    <Replace>true</Replace>
+                    <Replace>True</Replace>
                   </E-Traces>
                   <Alpha>
                     <Schedule>
                       <Simple-Linear-Decay>
-                        <FORKED-NODE Name="Initial-Value" Alias="Critic-Gain">
-                          <FORK-VALUE Name="Value-0">
-                            <Initial-Value>0.1</Initial-Value>
-                          </FORK-VALUE>
-                          <FORK-VALUE Name="Value-1">
-                            <Initial-Value>0.05</Initial-Value>
-                          </FORK-VALUE>
-                          <FORK-VALUE Name="Value-2">
-                            <Initial-Value>0.01</Initial-Value>
-                          </FORK-VALUE>
-                        </FORKED-NODE>
+                        <Initial-Value>0.1</Initial-Value>
                         <End-Value>0.0</End-Value>
                       </Simple-Linear-Decay>
                     </Schedule>
@@ -164,3 +164,5 @@
     </SimGod>
   </RLSimion>
 </RLSimion>
+  </EXPERIMENT>
+</BADGER-PROJECT>
