@@ -282,6 +282,8 @@ namespace Badger.ViewModels
 
         bool InitializeExperimentBatchForExecution()
         {
+            m_pendingExperiments.Clear();
+
             foreach (var experiment in LoggedExperiments)
             {
                 foreach (AppVersion version in experiment.AppVersions)
@@ -299,8 +301,6 @@ namespace Badger.ViewModels
                             return false;
                         }
                 }
-
-                m_pendingExperiments.Clear();
                 foreach (var unit in experiment.ExperimentalUnits)
                 {
                     MonitoredExperimentalUnitViewModel monitoredExperiment =
@@ -341,9 +341,10 @@ namespace Badger.ViewModels
             lock (m_globalProgressUpdateObj)
             {
                 double progress = 0.0;
+                double sum = 0.0;
                 if (NumExperimentalUnits > 0)
                 {
-                    double sum = 0.0;
+
                     foreach (MonitoredJobViewModel exp in AllMonitoredJobs)
                         sum += exp.MonitoredExperimentalUnits.Count * exp.NormalizedProgress;
                     progress = sum / NumExperimentalUnits;

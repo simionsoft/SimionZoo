@@ -83,23 +83,23 @@ namespace Badger.ViewModels
 
         public bool bCanBeForked { get { return m_bCanBeForked; } set { m_bCanBeForked = value; NotifyOfPropertyChange(() => bCanBeForked); } }
 
-        public void forkThisNode()
+        public void ForkThisNode(ConfigNodeViewModel originNode)
         {
             bCanBeForked = false;
 
-            if (m_parent != null)
+            if (originNode.m_parent != null)
             {
-                m_parent.forkChild(this);
+                originNode.m_parent.ForkChild(originNode);
             }
             else Console.WriteLine("Can't fork this node because it has no parent: " + name);
         }
 
-        virtual public void forkChild(ConfigNodeViewModel forkedChild)
+        virtual public void ForkChild(ConfigNodeViewModel forkedChild)
         {
             Console.WriteLine("Error: non-nested config node asked to fork a child");
         }
 
-        virtual public void unforkThisNode() { }
+        virtual public void UnforkThisNode() { }
 
         private bool m_bCanBeLinked;
 

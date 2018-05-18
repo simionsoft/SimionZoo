@@ -23,12 +23,11 @@ OffPolicyActorCritic::OffPolicyActorCritic(ConfigNode* pConfigNode)
 	//pi(a|s)/b(a|s)
 	m_rho = 0.0;
 
-	//base policy b(a|s)
-	m_b_policies = MULTI_VALUE_FACTORY<Policy>(pConfigNode, "b-Policy", "The base-policy b(a|s)");
-
 	/*critic's stuff*/
 	//linear state value function (represented by v^t * x in the paper)
 	m_pVFunction = CHILD_OBJECT<LinearStateVFA>(pConfigNode, "VFunction", "The Value-function");
+	SimionApp::get()->registerStateActionFunction("V", m_pVFunction.ptr());
+
 	//buffer to store features of the value function activated by the state s and the state s'
 	m_s_features = new FeatureList("Critic/s");
 	m_s_p_features = new FeatureList("Critic/s_p");
@@ -115,19 +114,12 @@ void OffPolicyActorCritic::updateValue(const State *s, const Action *a, const St
 
 	//rho = pi(a|s)/b(a|s)
 	m_rho = 1.0;
-	for (unsigned int i = 0; i < m_policies.size(); i++)
-	{
-		double b_prob = m_b_policies[i]->getProbability(s, a, true);
-		//bStochastic must be true, otherwise this will always yield 1.0 which would be fatal
-		double prob = m_policies[i]->getProbability(s, a, true);
-		m_rho *= prob / b_prob;
-	}
 
 	//v   = v + alpha_v * (td * e_v - gamma(s')*(1-lambda)*(w^T*e_v)*x(s))
 	//w   = w + alpha_w * (td * e_v - (w^T*x(s))*x(s))
 	m_e_v->update(gamma);
 	m_e_v->addFeatureList(m_s_features, 1.0);
-	m_e_v->mult(m_rho);
+//	m_e_v->mult(m_rho);
 	m_e_v->applyThreshold(m_e_v->getTreshold());
 
 	for (unsigned int i = 0; i < m_policies.size(); i++)
@@ -180,19 +172,9 @@ double OffPolicyActorCritic::update(const State *s, const Action *a, const State
 double OffPolicyActorCritic::selectAction(const State *s, Action *a)
 {
 	double prob = 1.0;
-	if (!SimionApp::get()->pExperiment->isEvaluationEpisode())
+	for (unsigned int i = 0; i < m_policies.size(); i++)
 	{
-		for (unsigned int i = 0; i < m_policies.size(); i++)
-		{
-			prob *= m_b_policies[i]->selectAction(s, a);
-		}
-	}
-	else
-	{
-		for (unsigned int i = 0; i < m_policies.size(); i++)
-		{
-			prob *= m_policies[i]->selectAction(s, a);
-		}
+		prob *= m_policies[i]->selectAction(s, a);
 	}
 	return prob;
 }

@@ -1,9 +1,11 @@
-<RLSimion-x64 FileVersion="1.0.0.0">
+<RLSimion FileVersion="1.0.0.0">
 <RLSimion>
 	<Log>
+		<Num-functions-logged>10</Num-functions-logged>
 		<Log-Freq>0.01</Log-Freq>
 		<Log-eval-episodes>true</Log-eval-episodes>
 		<Log-training-episodes>false</Log-training-episodes>
+		<Log-functions>true</Log-functions>
 	</Log>
 	<World>
 		<Num-Integration-Steps>4</Num-Integration-Steps>
@@ -27,41 +29,37 @@
 		<Gamma>0.9</Gamma>
 		<Freeze-Target-Function>true</Freeze-Target-Function>
 		<Use-Importance-Weights>false</Use-Importance-Weights>
+		<State-Feature-Map>
+			<Input-State>
+				<Input-State>position</Input-State>
+			</Input-State>
+			<Input-State>
+				<Input-State>velocity</Input-State>
+			</Input-State>
+			<Num-Features-Per-Dimension>10</Num-Features-Per-Dimension>
+			<Feature-Mapper>
+				<Type>
+		<Discrete-Grid>
+		</Discrete-Grid>
+		</Type>
+			</Feature-Mapper>
+		</State-Feature-Map>
+		<Action-Feature-Map>
+			<Input-Action>
+				<Input-Action>pedal</Input-Action>
+			</Input-Action>
+			<Num-Features-Per-Dimension>20</Num-Features-Per-Dimension>
+			<Feature-Mapper>
+				<Type>
+		<Discrete-Grid>
+		</Discrete-Grid>
+		</Type>
+			</Feature-Mapper>
+		</Action-Feature-Map>
 		<Experience-Replay>
 			<Buffer-Size>1000</Buffer-Size>
 			<Update-Batch-Size>10</Update-Batch-Size>
 		</Experience-Replay>
-		<State-Feature-Map>
-		  <Num-Features-Per-Dimension>10</Num-Features-Per-Dimension>
-		  <Input-Action><Input-Action>position</Input-Action></Input-Action>
-		  <Input-Action><Input-Action>velocity</Input-Action></Input-Action>
-		  <Feature-Mapper>
-		    <Type>
-		      <Discrete-Grid/>
-		    </Type>
-		  </Feature-Mapper>
-		</State-Feature-Map>
-		<Action-Feature-Map>
-		  <Num-Features-Per-Dimension>20</Num-Features-Per-Dimension>
-		  <Input-Action><Input-Action>pedal</Input-Action></Input-Action>
-		  <Feature-Mapper>
-		    <Type>
-		      <Discrete-Grid>
-
-		      </Discrete-Grid>
-		    </Type>
-		  </Feature-Mapper>
-		</Action-Feature-Map>
-		<Action-Feature-Map>
-			<Type>
-		<Discrete-Action-Grid>
-			<Grid-Dimension>
-				<Steps>10</Steps>
-				<Variable>pedal</Variable>
-			</Grid-Dimension>
-		</Discrete-Action-Grid>
-		</Type>
-		</Action-Feature-Map>
 		<Simion>
 			<Type>
 		<Q-Learning>
@@ -95,4 +93,4 @@
 		</Simion>
 	</SimGod>
 </RLSimion>
-</RLSimion-x64>
+</RLSimion>

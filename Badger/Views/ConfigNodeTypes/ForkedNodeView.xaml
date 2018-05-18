@@ -14,7 +14,7 @@
                 <StackPanel.ContextMenu >
                     <ContextMenu>
                         <!-- If is linked then we should not be showing certain options-->
-                        <MenuItem Header="Remove Fork" cal:Message.Attach="unforkThisNode"
+                        <MenuItem Header="Remove Fork" cal:Message.Attach="UnforkThisNode"
                                   Visibility="{Binding Path=IsNotLinked,FallbackValue='Hidden',Converter={StaticResource BoolToVis}}">
                             <MenuItem.Icon>
                                 <Path Data="{StaticResource Fork}" Width="24" Height="24" Fill="#89000000" />
@@ -79,17 +79,14 @@
                     <Path Data="{StaticResource RightArrow}" Stretch="Uniform" Fill="#89000000" />
                 </Button>
 
-                <Button Background="{x:Null}" BorderBrush="{x:Null}" cal:Message.Attach="[Event Click]=[Action addValue()]"
-                        ToolTip="Add a new value" Width="16" >
-                    <!--I commented this LayoutTransform because it was messing with the rest of the code-->
-                        <!--Visibility="{Binding Path=IsNotLinked,FallbackValue='Hidden',Converter={StaticResource BoolToVis}}"-->
+                <Button Background="{x:Null}" BorderBrush="{x:Null}" cal:Message.Attach="[Event Click]=[Action AddValue()]"
+                        ToolTip="Add a new value" Width="16" Visibility="{Binding Path=IsNotLinked,FallbackValue='Hidden',Converter={StaticResource BoolToVis}}">
                         
                     <Path Data="{StaticResource Add}" Stretch="Uniform" Fill="#89000000"/>
                 </Button>
-                <Button Background="{x:Null}" BorderBrush="{x:Null}" cal:Message.Attach="[Event Click]=[Action removeSelectedValue()]"
-                        Opacity="{Binding bIsThereMoreValues}" ToolTip="Remove this value" Width="16" >
-                    <!-- Same here-->
-                    <!--Visibility="{Binding Path=IsNotLinked,FallbackValue='Hidden',Converter={StaticResource BoolToVis}}">-->
+                <Button Background="{x:Null}" BorderBrush="{x:Null}" cal:Message.Attach="[Event Click]=[Action RemoveSelectedValue()]"
+                        Opacity="{Binding bIsThereMoreValues}" ToolTip="Remove this value" Width="16" 
+                    Visibility="{Binding Path=IsNotLinked,FallbackValue='Hidden',Converter={StaticResource BoolToVis}}">
                     <Path Data="{StaticResource Close}" Stretch="Uniform" Fill="#89000000" />
                 </Button>
             </StackPanel>

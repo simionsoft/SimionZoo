@@ -24,9 +24,6 @@ OffPolicyDeterministicActorCritic::OffPolicyDeterministicActorCritic(ConfigNode*
 	//td error
 	m_td = 0.0;
 
-	//base policies beta_i(a|s)
-	m_beta_policies = MULTI_VALUE_FACTORY<Policy>(pConfigNode, "beta-Policy", "The base-policy beta(a|s)");
-
 	//critic's stuff
 	//linear state action value function
 	//(in the paper this is a general function without any more knowledge about it)
@@ -120,19 +117,9 @@ double OffPolicyDeterministicActorCritic::update(const State *s, const Action *a
 double OffPolicyDeterministicActorCritic::selectAction(const State *s, Action *a)
 {
 	double prob = 1.0;
-	if (!SimionApp::get()->pExperiment->isEvaluationEpisode())
+	for (unsigned int i = 0; i < m_policies.size(); i++)
 	{
-		for (unsigned int i = 0; i < m_policies.size(); i++)
-		{
-			prob *= m_beta_policies[i]->selectAction(s, a);
-		}
-	}
-	else
-	{
-		for (unsigned int i = 0; i < m_policies.size(); i++)
-		{
-			prob *= m_policies[i]->selectAction(s, a);
-		}
+		prob *= m_policies[i]->selectAction(s, a);
 	}
 	return prob;
 }

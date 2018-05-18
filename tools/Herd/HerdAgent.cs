@@ -678,7 +678,7 @@ namespace Herd
             }
             catch (IOException)
             {
-                logMessage("IOException in readFromShepherd()");
+                logMessage("IOException in CheckCancellationRequests()");
             }
             catch (OperationCanceledException)
             {
@@ -688,9 +688,14 @@ namespace Herd
             {
                 logMessage("Network stream closed: async read finished");
             }
+            catch (InvalidOperationException ex)
+            {
+                logMessage("InvalidOperationException in CheckCancellationRequests");
+                logMessage(ex.ToString());
+            }
             catch (Exception ex)
             {
-                logMessage("Unhandled exception in readFromShepherd");
+                logMessage("Unhandled exception in CheckCancellationRequests");
                 logMessage(ex.ToString());
             }
         }

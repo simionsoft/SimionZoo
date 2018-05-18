@@ -98,9 +98,6 @@ class OffPolicyActorCritic : public Simion
 	//pi(a|s)/b(a|s) while pi(a|s) is the learned policy and b(s|a) is arbitrary chosen
 	double m_rho;
 
-	//list base policies b_i(a|s) for each pi_i(a|s)
-	MULTI_VALUE_FACTORY<Policy> m_b_policies;
-
 	//linear state value function (represented by v^T * x(s) in the paper)
 	CHILD_OBJECT<LinearStateVFA> m_pVFunction;
 

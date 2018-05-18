@@ -29,8 +29,8 @@
 		<Use-Importance-Weights>true</Use-Importance-Weights>
 		<State-Feature-Map>
 		  <Num-Features-Per-Dimension>10</Num-Features-Per-Dimension>
-		  <Input-Action><Input-Action>position</Input-Action></Input-Action>
-		  <Input-Action><Input-Action>velocity</Input-Action></Input-Action>
+		  <Input-State><Input-State>position</Input-State></Input-State>
+		  <Input-State><Input-State>velocity</Input-State></Input-State>
 		  <Feature-Mapper>
 		    <Type>
 		      <Tile-Coding>
@@ -80,30 +80,37 @@
 			<Alpha-u>
 				<Schedule>
 		<Constant>
-			<Value>0.0</Value>
+			<Value>0.001</Value>
 		</Constant>
 		</Schedule>
 			</Alpha-u>
-			<b-Policy>
-				<Policy>
-		<Uniform-Policy>
-			<Output-Action>pedal</Output-Action>
-		</Uniform-Policy>
-		</Policy>
-			</b-Policy>
-			<Policy>
-				<Policy>
-		<Stochastic-Policy-Gaussian-Noise>
-			<Output-Action>pedal</Output-Action>
-			<Mean-VFA>
-				<Init-Value>0.0</Init-Value>
-			</Mean-VFA>
-			<Sigma-VFA>
-				<Init-Value>0.0</Init-Value>
-			</Sigma-VFA>
-		</Stochastic-Policy-Gaussian-Noise>
-		</Policy>
-			</Policy>
+                    <Policy>
+                      <Policy>
+                        <Deterministic-Policy-Gaussian-Noise>
+                          <Output-Action>pedal</Output-Action>
+                          <Deterministic-Policy-VFA>
+                            <Init-Value>0.0</Init-Value>
+                          </Deterministic-Policy-VFA>
+                          <Exploration-Noise>
+                            <Noise>
+                              <Ornstein-Uhlenbeck>
+                                <Mu>0.0</Mu>
+                                <Sigma>1.0</Sigma>
+                                <Theta>0.5</Theta>
+                                <Scale>
+                                  <Schedule>
+                                    <Simple-Linear-Decay>
+                                      <Initial-Value>1.0</Initial-Value>
+                                      <End-Value>0.1</End-Value>
+                                    </Simple-Linear-Decay>
+                                  </Schedule>
+                                </Scale>
+                              </Ornstein-Uhlenbeck>
+                            </Noise>
+                          </Exploration-Noise>
+                        </Deterministic-Policy-Gaussian-Noise>
+                      </Policy>
+                    </Policy>
 		</Off-Policy-Actor-Critic>
 		</Type>
 		</Simion>

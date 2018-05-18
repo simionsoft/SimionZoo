@@ -90,7 +90,7 @@ namespace Badger.ViewModels
         }
 
 
-        public override void forkChild(ConfigNodeViewModel forkedChild)
+        public override void ForkChild(ConfigNodeViewModel forkedChild)
         {
             ForkedNodeViewModel newForkNode;
 

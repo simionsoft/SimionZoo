@@ -69,7 +69,6 @@ IncrementalNaturalActorCritic::~IncrementalNaturalActorCritic()
 	for (unsigned int i = 0; i < m_policies.size(); i++)
 	{
 		delete m_w[i];
-		delete[] m_e_u[i]->getName(); //the destructor of ETraces doesn't free the memory reserved for the name
 		delete m_e_u[i];
 	}
 	delete[]m_w;

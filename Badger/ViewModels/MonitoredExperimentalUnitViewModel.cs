@@ -187,7 +187,10 @@ namespace Badger.ViewModels
 
         //run-time app requirements
         RunTimeRequirements m_runTimeRequirements = null;
-        public RunTimeRequirements RunTimeReqs { get { return m_runTimeRequirements; } }
+        public RunTimeRequirements RunTimeReqs
+        {
+            get { return m_runTimeRequirements; }
+        }
 
         private void OnVersionSelection(AppVersion selectedVersion)
         {

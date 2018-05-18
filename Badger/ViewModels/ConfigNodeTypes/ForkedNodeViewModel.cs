@@ -216,7 +216,7 @@ namespace Badger.ViewModels
         }
 
 
-        public void addValue()
+        public void AddValue()
         {
             string newValueName = "Value-" + children.Count;
             ForkValueViewModel newForkValue = new ForkValueViewModel(newValueName, this, selectedValueConfigNode.clone());
@@ -226,7 +226,7 @@ namespace Badger.ViewModels
         }
 
 
-        public override void unforkThisNode()
+        public override void UnforkThisNode()
         {
             //unregister this fork
             m_parentExperiment.forkRegistry.Remove(this);
@@ -244,7 +244,7 @@ namespace Badger.ViewModels
             }
         }
 
-        public void removeSelectedValue()
+        public void RemoveSelectedValue()
         {
             //we don't remove the value if there is no other value
             if (children.Count == 1) return;

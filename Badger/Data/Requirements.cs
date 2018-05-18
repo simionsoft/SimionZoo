@@ -129,7 +129,7 @@ namespace Badger.Data
 
     public class RunTimeRequirements : Requirements
     {
-        private int m_numCPUCores;
+        private int m_numCPUCores = 0;
         public int NumCPUCores { get { return m_numCPUCores; } set { m_numCPUCores = value; } }
 
         public RunTimeRequirements(int numCPUCores)

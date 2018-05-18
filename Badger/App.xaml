@@ -183,7 +183,9 @@
                 <MenuItem Header="Fork" Visibility="{Binding Path=IsNotLinked,FallbackValue='Hidden',Converter={StaticResource BoolToVis}}">
                     <i:Interaction.Triggers>
                         <i:EventTrigger EventName="Click">
-                            <cal:ActionMessage MethodName="forkThisNode"/>
+                            <cal:ActionMessage MethodName="ForkThisNode">
+                                <cal:Parameter Value="{Binding BindsDirectlyToSource=True}" />
+                            </cal:ActionMessage>
                         </i:EventTrigger>
                     </i:Interaction.Triggers>
                     <MenuItem.Icon>
