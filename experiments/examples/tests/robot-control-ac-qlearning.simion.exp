@@ -32,43 +32,27 @@
 			<Buffer-Size>1000</Buffer-Size>
 			<Update-Batch-Size>10</Update-Batch-Size>
 		</Experience-Replay>
-		<State-Feature-Map>
-			<Type>
-		<RBF-State-Grid>
-			<RBF-Grid-Dimension>
-				<Num-Features>20</Num-Features>
-				<Variable>robot1-x</Variable>
-				<Distribution>linear</Distribution>
-			</RBF-Grid-Dimension>
-			<RBF-Grid-Dimension>
-				<Num-Features>20</Num-Features>
-				<Variable>robot1-y</Variable>
-				<Distribution>linear</Distribution>
-			</RBF-Grid-Dimension>
-			<RBF-Grid-Dimension>
-				<Num-Features>20</Num-Features>
-				<Variable>robot1-theta</Variable>
-				<Distribution>linear</Distribution>
-			</RBF-Grid-Dimension>
-		</RBF-State-Grid>
-		</Type>
-		</State-Feature-Map>
+	<State-Feature-Map>
+	  <Num-Features-Per-Dimension>20</Num-Features-Per-Dimension>
+	  <Input-State><Input-State>robot1-x</Input-State></Input-State>
+	  <Input-State><Input-State>robot1-y</Input-State></Input-State>
+	  <Input-State><Input-State>robot1-theta</Input-State></Input-State>
+	  <Feature-Mapper>
+	    <Type>
+	      <Gaussian-RBF-Grid/>
+	    </Type>
+	  </Feature-Mapper>
+	</State-Feature-Map>
 	<Action-Feature-Map>
-			<Type>
-		<RBF-Action-Grid>
-			<RBF-Grid-Dimension>
-				<Num-Features>20</Num-Features>
-				<Variable>robot1-v</Variable>
-				<Distribution>linear</Distribution>
-			</RBF-Grid-Dimension>
-			<RBF-Grid-Dimension>
-				<Num-Features>20</Num-Features>
-				<Variable>robot1-omega</Variable>
-				<Distribution>linear</Distribution>
-			</RBF-Grid-Dimension>
-		</RBF-Action-Grid>
-		</Type>
-		</Action-Feature-Map>
+	  <Num-Features-Per-Dimension>20</Num-Features-Per-Dimension>
+	  <Input-Action><Input-Action>robot1-v</Input-Action></Input-Action>
+	  <Input-Action><Input-Action>robot1-omega</Input-Action></Input-Action>
+	  <Feature-Mapper>
+	    <Type>
+	      <Gaussian-RBF-Grid/>
+	    </Type>
+	  </Feature-Mapper>
+	</Action-Feature-Map>
 		<Simion>
 			<Type>
 		<Actor-Critic>

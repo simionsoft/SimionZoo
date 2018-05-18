@@ -377,24 +377,10 @@ void SimionApp::initRenderer(string sceneFile, State* s, Action* a)
 		}
 
 		Arranger objectArranger;
-		objectArranger.arrangeObjects2D(objects, Vector2D(0.0,0.0), Vector2D(1.0,1.0), Vector2D(0.15,0.25)
-			, Vector2D(0.20, 1.0), Vector2D(0.0075, 0.02));
+		objectArranger.arrange2DObjects(objects, Vector2D(0.0,0.0), Vector2D(1.0,1.0), Vector2D(0.15,0.25)
+			, Vector2D(0.20, 1.0), Vector2D(0.0075, 0.06));
 
-		//set legend to each function viewer
-		int objIndex = 0;
-		Vector2D legendOffset;
-		for each (GraphicObject2D* pObj in objects)
-		{
-			if (objIndex % 2 == 0)
-				legendOffset = Vector2D(0.01, 0.02);
-			else
-				legendOffset = Vector2D(0.01, pObj->getTransform().scale().y() - 0.1);
-			Text2D* pFunctionLegend = new Text2D(pObj->name() + string("-legend"), pObj->getTransform().translation() + legendOffset, 0.3);
-			pFunctionLegend->set(pObj->name());
-			m_pRenderer->add2DGraphicObject(pFunctionLegend, functionViewPort);
-
-			objIndex++;
-		}
+		objectArranger.tag2DObjects(objects, functionViewPort);
 	}
 
 	m_pInputHandler = new FreeCameraInputHandler();

@@ -1,6 +1,8 @@
 #include "stdafx.h"
 #include "arranger.h"
 #include "graphic-object-2d.h"
+#include "renderer.h"
+#include "text.h"
 #include "../../tools/GeometryLib/vector2d.h"
 #include <algorithm>
 
@@ -13,7 +15,7 @@ Arranger::~Arranger()
 {
 }
 
-void Arranger::arrangeObjects2D(vector<GraphicObject2D*>& objects, Vector2D& areaOrigin, Vector2D& areaSize, Vector2D& minObjSize, Vector2D& maxObjSize, Vector2D& margin)
+void Arranger::arrange2DObjects(vector<GraphicObject2D*>& objects, Vector2D& areaOrigin, Vector2D& areaSize, Vector2D& minObjSize, Vector2D& maxObjSize, Vector2D& margin)
 {
 
 	if (objects.size() == 0)
@@ -58,5 +60,21 @@ void Arranger::arrangeObjects2D(vector<GraphicObject2D*>& objects, Vector2D& are
 		objOrigin.setX(objOrigin.x() + objSize.x() + 2 * margin.x());
 
 		viewIndex++;
+	}
+}
+
+void Arranger::tag2DObjects(vector<GraphicObject2D*>& objects, ViewPort* pViewPort)
+{
+	//set legend to each function viewer
+	int objIndex = 0;
+	Vector2D legendOffset;
+	for each (GraphicObject2D* pObj in objects)
+	{
+		legendOffset = Vector2D(0.0, pObj->getTransform().scale().y() + 0.01);
+		Text2D* pFunctionLegend = new Text2D(pObj->name() + string("-legend"), pObj->getTransform().translation() + legendOffset, 0.3);
+		pFunctionLegend->set(pObj->name());
+		Renderer::get()->add2DGraphicObject(pFunctionLegend, pViewPort);
+
+		objIndex++;
 	}
 }
