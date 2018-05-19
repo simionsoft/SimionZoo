@@ -1,4 +1,5 @@
 #include "Minibatch.h"
+#ifdef _WIN64
 #include "NetworkDefinition.h"
 
 Minibatch::Minibatch(size_t size, NetworkDefinition* pNetworkDefinition, size_t outputSize)
@@ -99,3 +100,5 @@ size_t Minibatch::outputSize() const
 {
 	return m_outputSize;
 }
+
+#endif

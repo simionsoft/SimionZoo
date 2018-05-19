@@ -246,7 +246,8 @@ void FunctionLog::load(const char* functionLogFile)
 			fread_s(&funDeclHeader, sizeof(FunctionDeclarationHeader), sizeof(FunctionDeclarationHeader), 1, pFile);
 			if (funDeclHeader.magicNumber != FUNCTION_DECLARATION_HEADER)
 				throw exception("Incorrect magic number trying to read function log file");
-			Function* pFunction = new Function(funDeclHeader.name, funDeclHeader.numSamplesX, funDeclHeader.numSamplesY, funDeclHeader.numSamplesZ);
+			Function* pFunction = new Function(funDeclHeader.name, (size_t) funDeclHeader.numSamplesX
+				, (size_t)funDeclHeader.numSamplesY, (size_t) funDeclHeader.numSamplesZ);
 			m_functions.push_back(pFunction);
 		}
 

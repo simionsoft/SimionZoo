@@ -1,4 +1,6 @@
 #pragma once
+#ifdef __WIN64
+
 #include "CNTKWrapper.h"
 #include "../../3rd-party/tinyxml2/tinyxml2.h"
 #include "../../RLSimion/named-var-set.h"
@@ -85,3 +87,4 @@ public:
 	string getDeviceName();
 };
 
+#endif

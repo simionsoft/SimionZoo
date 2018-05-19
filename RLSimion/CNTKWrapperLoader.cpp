@@ -1,5 +1,5 @@
 #include "CNTKWrapperLoader.h"
-#ifdef _WIN64
+
 
 #include <windows.h>
 #include "app.h"
@@ -14,6 +14,7 @@ CNTKWrapperLoader::setDeviceDLL CNTKWrapperLoader::setDevice = 0;
 
 void CNTKWrapperLoader::Load()
 {
+#ifdef _WIN64
 	if (hCNTKWrapperDLL == 0)
 	{
 		//Set the number of CPU threads to "all"
@@ -60,15 +61,16 @@ void CNTKWrapperLoader::Load()
 		if (setDevice == 0)
 			Logger::logMessage(MessageType::Error, "Failed to get a pointer to CNTKWrapper:setDevice()");
 	}
+#endif
 }
 
 void CNTKWrapperLoader::UnLoad()
 {
+#ifdef _WIN64
 	if (hCNTKWrapperDLL)
 	{
 		FreeLibrary(hCNTKWrapperDLL);
 		hCNTKWrapperDLL = 0;
 	}
-}
-
 #endif
+}
