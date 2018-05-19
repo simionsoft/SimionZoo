@@ -40,7 +40,6 @@
     </Directional-Light>
   </Light>
   <Objects2D>
-
     <Sprite Name="Speedometer-base">
       <Transform>
         <Translation>
@@ -58,6 +57,26 @@
 	<Translucent-Material>
           <Texture>
             <Path>underwater-vehicle/speedometer-base.png</Path>
+          </Texture>
+        </Translucent-Material>
+      </Material>
+    </Sprite>
+    <Sprite Name="Cover">
+      <Transform>
+        <Translation>
+          <X>0.372973</X>
+          <Y>0.18738</Y>
+        </Translation>
+        <Scale>
+          <X>0.2743</X>
+          <Y>0.17838</Y>
+        </Scale>
+        <Depth>0.1</Depth>
+      </Transform>
+      <Material>
+        <Translucent-Material>
+          <Texture>
+            <Path>underwater-vehicle/speedometer-cover.png</Path>
           </Texture>
         </Translucent-Material>
       </Material>
