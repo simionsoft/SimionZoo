@@ -61,7 +61,7 @@
         </Unlit-Texture-Material>
       </Material>
     </Sprite>
-    <Sprite Name="Plane-setpoint" Coordinates="Around-Origin">
+    <Sprite Name="Plane-setpoint" Min-X="-0.5" Max-X="0.5" Min-Y="-0.5" Max-Y="0.5">
       <Transform>
         <Translation>
           <X>0.5</X>
@@ -82,7 +82,7 @@
         </Translucent-Material>
       </Material>
     </Sprite>
-    <Sprite Name="Plane" Coordinates="Around-Origin">
+    <Sprite Name="Plane" Min-X="-0.5" Max-X="0.5" Min-Y="-0.5" Max-Y="0.5">
       <Transform>
         <Translation>
           <X>0.5</X>
