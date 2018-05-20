@@ -1,0 +1,74 @@
+<Scene>
+  <Background-Color>
+    <R>1.0</R>
+    <G>1.0</G>
+    <B>1.0</B>
+  </Background-Color>
+  <Camera>
+    <Simple-Camera Name="Main-camera">
+      <Transform>
+        <Translation>
+          <X>0.0</X>
+          <Y>0.0</Y>
+          <Z>2.0</Z>
+        </Translation>
+      </Transform>
+    </Simple-Camera>
+  </Camera>
+  <Light>
+    <Directional-Light>
+      <Direction>
+        <X>0.577</X>
+        <Y>0.577</Y>
+        <Z>0.577</Z>
+      </Direction>
+      <Ambient>
+        <R>0.2</R>
+        <G>0.2</G>
+        <B>0.2</B>
+      </Ambient>
+      <Diffuse>
+        <R>1.0</R>
+        <G>1.0</G>
+        <B>1.0</B>
+      </Diffuse>
+      <Specular>
+        <R>0.0</R>
+        <G>0.0</G>
+        <B>0.0</B>
+      </Specular>
+    </Directional-Light>
+  </Light>
+  <Objects2D>
+    <Sprite Name="Background">
+      <Material>
+        <Unlit-Texture-Material>
+          <Texture>
+            <Path>wind-turbine/background.png</Path>
+          </Texture>
+        </Unlit-Texture-Material>
+      </Material>
+    </Sprite>
+    <Sprite Name="Blades" Min-X="-0.42968" Max-X="0.5703125" Min-Y="0.3984375" Max-Y="0.6015625">
+      <Transform>
+        <Translation>
+          <X>0.23</X>
+          <Y>0.70898</Y>
+        </Translation>
+        <Scale>
+          <X>0.30859375</X>
+          <Y>0.3828125</Y>
+        </Scale>
+        <Rotation Bind="theta"/>
+        <Depth>0.025</Depth>
+      </Transform>
+      <Material>
+        <Translucent-Material>
+          <Texture>
+            <Path>wind-turbine/blades.png</Path>
+          </Texture>
+        </Translucent-Material>
+      </Material>
+    </Sprite>
+  </Objects2D>
+</Scene>

@@ -75,6 +75,7 @@ FASTWindTurbine::FASTWindTurbine(ConfigNode* pConfigNode)
 	addStateVariable("d_T_g", "N/m/s", -15000, 15000);
 	addStateVariable("E_int_omega_r", "rad/s", -1.0e6, 1.0e6);
 	addStateVariable("E_int_omega_g", "rad/s", -1.0e6, 1.0e6);
+	addStateVariable("theta", "rad", -3.1415, 3.1415, true); //roll angle of the blades in the rotor
 
 	//action handlers
 	addActionVariable("beta", "rad", 0.0, 1.570796);

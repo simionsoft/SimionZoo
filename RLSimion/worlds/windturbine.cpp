@@ -157,6 +157,7 @@ WindTurbine::WindTurbine(ConfigNode* pConfigNode)
 	addStateVariable("d_T_g", "N/m/s", -15000, 15000);
 	addStateVariable("E_int_omega_r", "rad/s", -1.0e6, 1.0e6);
 	addStateVariable("E_int_omega_g", "rad/s", -1.0e6, 1.0e6);
+	addStateVariable("theta", "rad", -3.1415, 3.1415, true); //roll angle of the blades in the rotor
 
 	addActionVariable("beta", "rad", 0.0, 1.570796);
 	addActionVariable("T_g", "N/m", 0.0, 47402.91);
@@ -165,19 +166,6 @@ WindTurbine::WindTurbine(ConfigNode* pConfigNode)
 	pToleranceReward->setMin(-1000.0);
 	m_pRewardFunction->addRewardComponent(pToleranceReward);
 	m_pRewardFunction->initialize();
-
-	//double initial_T_g= getConstant("RatedPower")/(getConstant("ElectricalGeneratorEfficiency"))
-	//	/getConstant("RatedGeneratorSpeed");
-	//m_initial_torque= initial_T_g + getConstant("TotalTurbineTorsionalDamping")
-	//	*getConstant("RatedRotorSpeed");
-	//m_initial_blade_angle= 0.0;
-
-	//the reward function
-	//m_pRewardFunction->addRewardComponent(new ToleranceRegionReward("d_T_g",12000.0,1.0));
-	//m_pRewardFunction->addRewardComponent(new ToleranceRegionReward("E_p", 10.0, 1.0));
-	//m_pRewardFunction->addRewardComponent(new ToleranceRegionReward("E_omega_r", 0.02, 1.0));
-	//m_pRewardFunction->addRewardComponent(new ToleranceRegionReward("d_beta", 0.1745, 1.0));
-	//m_pRewardFunction->initialize();
 }
 
 WindTurbine::~WindTurbine()
@@ -224,6 +212,7 @@ void WindTurbine::reset(State *s)
 	s->set("d_T_g",0.0);
 	s->set("E_int_omega_r", 0.0);
 	s->set("E_int_omega_g", 0.0);
+	s->set("theta", 0.0);
 }
 
 
@@ -278,4 +267,6 @@ void WindTurbine::executeAction(State *s, const Action *a, double dt)
 	s->set("E_omega_r", s->get("omega_r") - getConstant("RatedRotorSpeed"));
 	s->set("E_omega_g", s->get("omega_g") - getConstant("RatedGeneratorSpeed"));
 	s->set("E_int_omega_r", s->get("E_int_omega_r") + s->get("E_omega_r")*dt);
+
+	s->set("theta", s->get("theta") + omega_r * dt);
 }

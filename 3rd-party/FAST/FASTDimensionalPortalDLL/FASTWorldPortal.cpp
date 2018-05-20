@@ -105,6 +105,10 @@ void FASTWorldPortal::retrieveStateVariables(float* FASTdata, bool bFirstTime)
 	}
 	else m_prevPitch = beta;
 
+	if (!bFirstTime)
+		s->set("theta", s->get("theta") + s->get("omega_r")*m_elapsedTime);
+	else s->set("theta", 0.0);
+
 	m_lastTime = currentTime;
 }
 
