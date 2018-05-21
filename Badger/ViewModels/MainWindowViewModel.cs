@@ -209,40 +209,45 @@ namespace Badger.ViewModels
                 SimionFileData.SaveExperiment(SelectedExperiment);
         }
 
-        /// <summary>
-        ///     Load multiple experiments all at once.
-        ///     Used from MainWindowView when the Load experiments button is clicked.
-        /// </summary>
-        public void LoadExperiments()
+
+        public void LoadExperimentOrProject()
         {
-            SimionFileData.loadExperiments(ref m_experimentViewModels, appDefinitions, logToFile);
-            NotifyOfPropertyChange(() => ExperimentViewModels);
+            string extension = SimionFileData.ExperimentDescription;
+            string filter = SimionFileData.ExperimentOrProjectFilter;
 
-            if (m_experimentViewModels.Count > 0)
-                SelectedExperiment = m_experimentViewModels[0];
-
-            CheckEmptyExperimentList();
-        }
-
-        /// <summary>
-        ///     Load a single experiment and adds it to the experiment list.
-        ///     Used from MainWindowView when the Load experiment button is clicked.
-        /// </summary>
-        public void LoadExperiment()
-        {
-            ExperimentViewModel newExperiment = SimionFileData.LoadExperiment(appDefinitions);
-
-            if (newExperiment != null)
+            List<string> filenames = SimionFileData.OpenFileDialogMultipleFiles(extension, filter);
+            foreach(string filename in filenames)
             {
-                ExperimentViewModels.Add(newExperiment);
-                CheckEmptyExperimentList();
+                string fileExtension = Utility.GetExtension(filename, 2);
+                if (fileExtension== SimionFileData.ExperimentExtension)
+                {
+                    ExperimentViewModel newExperiment = 
+                        SimionFileData.LoadExperiment(appDefinitions, filename);
 
-                CanLaunchExperiment = m_bIsExperimentListNotEmpty;
+                    if (newExperiment != null)
+                    {
+                        ExperimentViewModels.Add(newExperiment);
+                        CheckEmptyExperimentList();
 
-                SelectedExperiment = newExperiment;
+                        CanLaunchExperiment = m_bIsExperimentListNotEmpty;
+
+                        SelectedExperiment = newExperiment;
+                    }
+
+                }
+                else if (fileExtension == SimionFileData.ProjectExtension)
+                {
+                    SimionFileData.loadExperiments(ref m_experimentViewModels, appDefinitions, logToFile
+                        ,filename);
+                    NotifyOfPropertyChange(() => ExperimentViewModels);
+
+                    if (m_experimentViewModels.Count > 0)
+                        SelectedExperiment = m_experimentViewModels[0];
+
+                    CheckEmptyExperimentList();
+                }
             }
         }
-
 
         public void ClearExperiments()
         {
@@ -303,8 +308,8 @@ namespace Badger.ViewModels
                 ref batchFileName, logToFile);
 
             //Save the badger project to allow later changes and re-runs of the experiment
-            string badgerProjFileName = Utility.RemoveExtension(batchFileName, Utility.NumParts(SimionFileData.BadgerProjectExtension, '.'))
-                + "." + SimionFileData.BadgerProjectExtension;
+            string badgerProjFileName = Utility.RemoveExtension(batchFileName, Utility.NumParts(SimionFileData.ProjectExtension, '.'))
+                + "." + SimionFileData.ProjectExtension;
             SimionFileData.SaveExperiments(m_experimentViewModels, badgerProjFileName);
 
             //Experiments are sent and executed remotely

@@ -256,7 +256,7 @@ namespace Badger.ViewModels
             if (string.IsNullOrEmpty(batchFileName))
             {
                 bool bSuccess = SimionFileData.OpenFileDialog(ref batchFileName
-                    , SimionFileData.ExperimentBatchFilter, SimionFileData.ExperimentBatchExtension);
+                    , SimionFileData.ExperimentBatchDescription, SimionFileData.ExperimentBatchFilter);
                 if (!bSuccess)
                     return;
             }

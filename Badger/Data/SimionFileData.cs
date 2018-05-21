@@ -24,13 +24,19 @@ namespace Badger.Simion
         public const string tempRelativeDir = "..\\temp\\";
         public const string logViewerExePath = "..\\" + binDir + "\\SimionLogViewer.exe";
 
-        public const string ExperimentBatchFilter = "Experiment-batch|*.";
-        public const string BadgerProjectFilter = "Badger project|*.";
-        public const string ExperimentFilter = "Experiment|*.";
-
         public const string ExperimentExtension = "simion.exp";
         public const string ExperimentBatchExtension = "simion.batch";
-        public const string BadgerProjectExtension = "badger.proj";
+        public const string ProjectExtension = "simion.proj";
+
+        public const string ExperimentBatchFilter = "*." + ExperimentBatchExtension;//"Experiment-batch|*.";
+        public const string ProjectFilter = "*." + ProjectExtension;//"Badger project|*.";
+        public const string ExperimentFilter = "*." + ExperimentExtension;//"Experiment|*.";
+
+        public const string ExperimentDescription = "Experiment";
+        public const string ExperimentBatchDescription = "Batch";
+        public const string ProjectDescription = "Project";
+
+        public const string ExperimentOrProjectFilter = ExperimentFilter + ";" + ProjectFilter;
 
         public delegate void LogFunction(string message);
         public delegate void LoadUpdateFunction();
@@ -189,7 +195,7 @@ namespace Badger.Simion
             if (batchFilename == "")
             {
                 //Save dialog -> returns the experiment batch file
-                var sfd = SaveFile(ExperimentBatchFilter, SimionFileData.ExperimentBatchExtension);
+                var sfd = SaveFileDialog(ExperimentBatchDescription, ExperimentBatchExtension);
                 if (sfd.ShowDialog() == DialogResult.OK)
                 {
                     batchFilename = sfd.FileName;
@@ -274,14 +280,17 @@ namespace Badger.Simion
 
         //BADGER project: LOAD
         static public void loadExperiments(ref BindableCollection<ExperimentViewModel> experiments,
-            Dictionary<string, string> appDefinitions, LogFunction log)
+            Dictionary<string, string> appDefinitions, LogFunction log, string filename= null)
         {
-            string fileDoc = null;
-            bool isOpen = OpenFileDialog(ref fileDoc, BadgerProjectFilter, SimionFileData.BadgerProjectExtension);
-            if (!isOpen) return;
+            if (filename == null)
+            {
+                bool isOpen = OpenFileDialog(ref filename, ProjectDescription, ProjectFilter);
+                if (!isOpen)
+                    return;
+            }
 
             XmlDocument badgerDoc = new XmlDocument();
-            badgerDoc.Load(fileDoc);
+            badgerDoc.Load(filename);
             XmlElement fileRoot = badgerDoc.DocumentElement;
             if (fileRoot.Name != XMLConfig.badgerNodeTag)
             {
@@ -326,7 +335,7 @@ namespace Badger.Simion
 
             if (outputFile == null)
             {
-                var sfd = SaveFile(BadgerProjectFilter, SimionFileData.BadgerProjectExtension);
+                var sfd = SaveFileDialog(ProjectDescription, ProjectFilter);
                 if (sfd.ShowDialog() == DialogResult.OK)
                     outputFile = sfd.FileName;
             }
@@ -359,18 +368,20 @@ namespace Badger.Simion
         /// </summary>
         /// <param name="appDefinitions"></param>
         /// <returns></returns>
-        static public ExperimentViewModel LoadExperiment(Dictionary<string, string> appDefinitions)
+        static public ExperimentViewModel LoadExperiment(Dictionary<string, string> appDefinitions, string filename= null)
         {
-            string fileDoc = null;
-            bool isOpen = OpenFileDialog(ref fileDoc, ExperimentFilter, SimionFileData.ExperimentExtension);
-            if (!isOpen)
-                return null;
+            if (filename == null)
+            {
+                bool isOpen = OpenFileDialog(ref filename, ExperimentDescription, ExperimentFilter);
+                if (!isOpen)
+                    return null;
+            }
 
             // Open the config file to retrive the app's name before loading it
             XmlDocument configDocument = new XmlDocument();
-            configDocument.Load(fileDoc);
+            configDocument.Load(filename);
             XmlNode rootNode = configDocument.LastChild;
-            ExperimentViewModel newExperiment = new ExperimentViewModel(appDefinitions[rootNode.Name], fileDoc);
+            ExperimentViewModel newExperiment = new ExperimentViewModel(appDefinitions[rootNode.Name], filename);
             return newExperiment;
         }
 
@@ -384,7 +395,7 @@ namespace Badger.Simion
                 return;
             }
 
-            var sfd = SaveFile(ExperimentFilter, SimionFileData.ExperimentExtension);
+            var sfd = SaveFileDialog(ExperimentDescription, ExperimentFilter);
             if (sfd.ShowDialog() == DialogResult.OK)
                 experiment.save(sfd.FileName, SaveMode.AsExperiment);
         }
@@ -417,13 +428,13 @@ namespace Badger.Simion
         /// <summary>
         ///     Show a dialog used to save a file with an specific extension.
         /// </summary>
-        /// <param name="filterPrefix"></param>
+        /// <param name="description">The description of the file type</param>
         /// <param name="extension">The extension of the file</param>
         /// <returns></returns>
-        private static SaveFileDialog SaveFile(string filterPrefix, string extension)
+        private static SaveFileDialog SaveFileDialog(string description, string extension)
         {
             SaveFileDialog sfd = new SaveFileDialog();
-            sfd.Filter = filterPrefix + extension;
+            sfd.Filter = description + "|" + extension;
             string combinedPath = Path.Combine(Directory.GetCurrentDirectory(), experimentRelativeDir);
 
             if (!Directory.Exists(combinedPath))
@@ -437,13 +448,13 @@ namespace Badger.Simion
         ///     Open a file that fulfills the requirements passed as parameters.
         /// </summary>
         /// <param name="fileName">The name of the file</param>
-        /// <param name="filterPrefix"></param>
-        /// <param name="extension">The extension of the file</param>
+        /// <param name="description">Description of the file type</param>
+        /// <param name="extension">The extension of the file type</param>
         /// <returns>Wheter the file was successfully open or not</returns>
-        public static bool OpenFileDialog(ref string fileName, string filterPrefix, string extension)
+        public static bool OpenFileDialog(ref string fileName, string description, string extension)
         {
             OpenFileDialog ofd = new OpenFileDialog();
-            ofd.Filter = filterPrefix + extension;
+            ofd.Filter = description + "|" + extension;
             ofd.InitialDirectory = Path.Combine(Path.GetDirectoryName(Directory.GetCurrentDirectory()), SimionFileData.experimentDir);
 
             if (ofd.ShowDialog() == DialogResult.OK)
@@ -454,6 +465,33 @@ namespace Badger.Simion
 
             return false;
         }
+
+        /// <summary>
+        /// Opens a dialog window to select files of a type in the dictionary and returns the list with the files selected
+        /// as absolute paths
+        /// </summary>
+        /// <param name="filetypes">Dictionary where the key is the extension, and the value is the filter</param>
+        /// <returns>A list of the selected files</returns>
+        public static List<string> OpenFileDialogMultipleFiles(string extension, string filter)
+        {
+            List<string> filenames = new List<string>();
+            OpenFileDialog ofd = new OpenFileDialog();
+            ofd.Multiselect = true;
+            ofd.SupportMultiDottedExtensions = true;
+            ofd.Filter = extension + "|" + filter;
+
+            ofd.InitialDirectory = Path.Combine(Path.GetDirectoryName(Directory.GetCurrentDirectory())
+                , SimionFileData.experimentDir);
+
+            if (ofd.ShowDialog() == DialogResult.OK)
+            {
+                foreach (string filename in ofd.FileNames)
+                    filenames.Add(filename);
+            }
+
+            return filenames;
+        }
+
     }
 }
 
