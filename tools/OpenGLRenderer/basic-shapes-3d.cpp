@@ -62,6 +62,19 @@ Box::Box(tinyxml2::XMLElement* pNode) : BasicShape(pNode)
 			|| !strcmp(pNode->Attribute(XML_TAG_BOX_DRAW_TOP), "False")))
 		bDrawTopSide = false;
 
+	if (pNode->Attribute(XML_ATTR_MIN_X))
+		m_min.setX(atof(pNode->Attribute(XML_ATTR_MIN_X)));
+	if (pNode->Attribute(XML_ATTR_MAX_X))
+		m_max.setX(atof(pNode->Attribute(XML_ATTR_MAX_X)));
+	if (pNode->Attribute(XML_ATTR_MIN_Y))
+		m_min.setY(atof(pNode->Attribute(XML_ATTR_MIN_Y)));
+	if (pNode->Attribute(XML_ATTR_MAX_Y))
+		m_max.setY(atof(pNode->Attribute(XML_ATTR_MAX_Y)));
+	if (pNode->Attribute(XML_ATTR_MIN_Z))
+		m_min.setZ(atof(pNode->Attribute(XML_ATTR_MIN_Z)));
+	if (pNode->Attribute(XML_ATTR_MAX_Z))
+		m_max.setZ(atof(pNode->Attribute(XML_ATTR_MAX_Z)));
+
 	Mesh* pMesh = new Mesh();
 	//vertex positions
 	pMesh->allocPositions(8);

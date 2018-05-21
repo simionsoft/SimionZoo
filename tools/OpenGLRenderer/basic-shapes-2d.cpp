@@ -20,17 +20,17 @@ Sprite2D::Sprite2D(tinyxml2::XMLElement* pNode)
 	if (pChild)
 		m_pMaterial = Material::getInstance(pChild->FirstChildElement());
 
-	if (pNode->Attribute(XML_ATTR_COORDINATES) 
-		&& !strcmp(pNode->Attribute(XML_ATTR_COORDINATES), XML_ATTR_VALUE_AROUND_ORIGIN))
-	{
-		m_minCoord = Vector2D(-0.5, -0.5);
-		m_maxCoord = Vector2D(0.5, 0.5);
-	}
-	else
-	{
-		m_minCoord = Vector2D(0.0, 0.0);
-		m_maxCoord = Vector2D(1.0, 1.0);
-	}
+	m_minCoord = Vector2D(0.0, 0.0);
+	m_maxCoord = Vector2D(1.0, 1.0);
+	if (pNode->Attribute(XML_ATTR_MIN_X))
+		m_minCoord.setX(atof(pNode->Attribute(XML_ATTR_MIN_X)));
+	if (pNode->Attribute(XML_ATTR_MAX_X))
+		m_maxCoord.setX(atof(pNode->Attribute(XML_ATTR_MAX_X)));
+	if (pNode->Attribute(XML_ATTR_MIN_Y))
+		m_minCoord.setY(atof(pNode->Attribute(XML_ATTR_MIN_Y)));
+	if (pNode->Attribute(XML_ATTR_MAX_Y))
+		m_maxCoord.setY(atof(pNode->Attribute(XML_ATTR_MAX_Y)));
+
 }
 
 Sprite2D::~Sprite2D()

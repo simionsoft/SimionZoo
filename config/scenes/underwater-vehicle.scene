@@ -54,25 +54,64 @@
         <Depth>0.0</Depth>
       </Transform>
       <Material>
-        <Unlit-Texture-Material>
+	<Translucent-Material>
           <Texture>
             <Path>underwater-vehicle/speedometer-base.png</Path>
           </Texture>
-        </Unlit-Texture-Material>
+        </Translucent-Material>
       </Material>
     </Sprite>
-    <Sprite Name="Needle" Coordinates="Around-Origin">
+    <Sprite Name="Cover">
       <Transform>
         <Translation>
-          <X>0.0</X>
-          <Y>0.0</Y>
+          <X>0.372973</X>
+          <Y>0.18738</Y>
         </Translation>
-	<Rotation>
-	  <Roll Bind="v" Offset="3.4292" Multiplier="0.3141592"/>
-	</Rotation>
         <Scale>
-          <X>0.125</X>
-          <Y>0.125</Y>
+          <X>0.2743</X>
+          <Y>0.17838</Y>
+        </Scale>
+        <Depth>0.1</Depth>
+      </Transform>
+      <Material>
+        <Translucent-Material>
+          <Texture>
+            <Path>underwater-vehicle/speedometer-cover.png</Path>
+          </Texture>
+        </Translucent-Material>
+      </Material>
+    </Sprite>
+    <Sprite Name="Needle" Min-X="-0.5" Max-X="0.5" Min-Y="0.0" Max-Y="1.0">
+      <Transform>
+        <Translation>
+          <X>0.5</X>
+          <Y>0.25946</Y>
+        </Translation>
+	<Rotation Bind="v-setpoint" Multiplier="0.3141592"/>
+        <Scale>
+          <X>0.0473</X>
+          <Y>0.362</Y>
+        </Scale>
+        <Depth>0.03</Depth>
+      </Transform>
+      <Material>
+        <Translucent-Material>
+          <Texture>
+            <Path>underwater-vehicle/speedometer-needle-setpoint.png</Path>
+          </Texture>
+        </Translucent-Material>
+      </Material>
+    </Sprite>
+    <Sprite Name="Needle" Min-X="-0.5" Max-X="0.5" Min-Y="0.0" Max-Y="1.0">
+      <Transform>
+        <Translation>
+          <X>0.5</X>
+          <Y>0.25946</Y>
+        </Translation>
+	<Rotation Bind="v" Multiplier="0.3141592"/>
+        <Scale>
+          <X>0.0473</X>
+          <Y>0.362</Y>
         </Scale>
         <Depth>0.05</Depth>
       </Transform>
