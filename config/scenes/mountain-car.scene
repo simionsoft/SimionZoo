@@ -61,7 +61,7 @@
         </Unlit-Texture-Material>
       </Material>
     </Sprite>
-    <Sprite Name="Car" Coordinates="Around-Origin">
+    <Sprite Name="Car" Min-X="-0.5" Max-X="0.5" Min-Y="-0.5" Max-Y="0.5">
       <Transform>
         <Translation>
           <X Bind="position" Offset="0.65" Multiplier="0.5">0.0</X>

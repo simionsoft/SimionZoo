@@ -20,7 +20,8 @@ std::shared_ptr<QPolicy> QPolicy::getInstance(ConfigNode* pConfigNode)
 	return CHOICE<QPolicy>(pConfigNode,"Policy", "The exploration policy used to learn",
 	{
 		{"Epsilon-Greedy",CHOICE_ELEMENT_NEW<QEGreedyPolicy>},
-		{"Soft-Max",CHOICE_ELEMENT_NEW<QSoftMaxPolicy>}
+		{"Soft-Max",CHOICE_ELEMENT_NEW<QSoftMaxPolicy>},
+		{"Greedy-Q-Plus-Noise",CHOICE_ELEMENT_NEW<GreedyQPlusNoisePolicy>}
 	});
 }
 
@@ -104,6 +105,42 @@ double QSoftMaxPolicy::selectAction(LinearStateActionVFA* pQFunction, const Stat
 	pQFunction->getActionFeatureMap()->getFeatureStateAction((unsigned int) (i-1), (State*)s, a);
 	return actionProbability;
 	assert(i < numActionWeights);
+}
+
+//GreedyQPlusNoisePolicy
+GreedyQPlusNoisePolicy::GreedyQPlusNoisePolicy(ConfigNode* pConfigNode)
+{
+	m_noise = MULTI_VALUE_FACTORY<Noise>(pConfigNode, "Noise", "Noise signal added to the typical greedy action selection. The number of noise signals should match the number of actions in the action feature amp");
+}
+
+GreedyQPlusNoisePolicy::~GreedyQPlusNoisePolicy()
+{}
+
+double GreedyQPlusNoisePolicy::selectAction(LinearStateActionVFA* pQFunction, const State* s, Action* a)
+{
+	if (m_noise.size() != pQFunction->getInputActionVariables().size())
+		throw ("GreedyQPlusNoisePolicy: the number of noise signals must match the number of actions in the action feature map");
+
+	if (!SimionApp::get()->pExperiment->isEvaluationEpisode())
+	{
+		//greedy action selection
+		pQFunction->argMax(s, a);
+
+		size_t action = 0;
+		for each(string outputAction in pQFunction->getInputActionVariables())
+		{
+			NamedVarProperties& prop = a->getProperties(outputAction.c_str());
+			
+			a->set(outputAction.c_str(), 0.5*a->get(outputAction.c_str()) + /*prop.getMin() + prop.getRangeWidth() **/ 0.5*m_noise[action]->getSample() );
+			action++;
+		}
+	}
+	else
+	{
+		//greedy action selection
+		pQFunction->argMax(s, a);
+	}
+	return 1.0;
 }
 
 ///////////////////////////////////

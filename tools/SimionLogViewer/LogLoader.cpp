@@ -203,12 +203,15 @@ const vector<double>& Function::getInterpolatedData(size_t episode, size_t step,
 	episode++; //saved episodes start from 1
 	if (episode != m_lastInterpolatedEpisode)
 	{
-		while (previous<m_samples.size()-2 && m_samples[previous+1]->episode() < episode)
-			++previous;
+		if (m_samples.size() > 1)
+		{
+			while (previous < m_samples.size() - 2 && m_samples[previous + 1]->episode() < episode)
+				++previous;
 
-		next = previous + 1;
-		//if (m_samples[prevSample]->episode() > episode)
-		//	prevSample = std::max(0, prevSample - 1);
+			next = previous + 1;
+		}
+		else
+			previous = next = 0;
 
 		double u = ((double)(episode - m_samples[previous]->episode())) / (double)(m_samples[next]->episode() - m_samples[previous]->episode());
 		double inv_u = 1. - u;

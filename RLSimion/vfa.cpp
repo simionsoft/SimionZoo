@@ -334,7 +334,7 @@ double LinearStateActionVFA::get(const State *s, const Action* a)
 
 
 
-void LinearStateActionVFA::argMax(const State *s, Action* a)
+void LinearStateActionVFA::argMax(const State *s, Action* a, bool bSolveTiesRandomly)
 {
 	int numTies = 0;
 	//state features in aux list
@@ -363,9 +363,13 @@ void LinearStateActionVFA::argMax(const State *s, Action* a)
 		m_pAux->offsetIndices(m_numStateWeights);
 	}
 
-	//any ties?
-	if (numTies > 1)
-		arg = m_pArgMaxTies[rand() % numTies]; //select one randomly
+	if (bSolveTiesRandomly)
+	{
+		//any ties?
+		if (numTies > 1)
+			arg = m_pArgMaxTies[rand() % numTies]; //select one randomly
+	}
+	else arg = m_pArgMaxTies[0];
 
 	//retrieve action
 	m_pActionFeatureMap->getFeatureStateAction(arg, nullptr, a);
@@ -427,5 +431,5 @@ const vector<string>& LinearStateActionVFA::getInputStateVariables()
 
 const vector<string>& LinearStateActionVFA::getInputActionVariables()
 {
-	return m_pStateFeatureMap->getInputActionVariables();
+	return m_pActionFeatureMap->getInputActionVariables();
 }

@@ -10,6 +10,7 @@ class QFunctionUpdater;
 class ETraces;
 class NumericValue;
 class FeatureList;
+class Noise;
 
 #include "parameters.h"
 
@@ -38,7 +39,6 @@ public:
 
 class QSoftMaxPolicy : public QPolicy
 {
-
 	double *m_pProbabilities;
 	CHILD_OBJECT_FACTORY<NumericValue> m_pTau;
 public:
@@ -47,6 +47,14 @@ public:
 	double selectAction(LinearStateActionVFA* pQFunction, const State* s, Action* a);
 };
 
+class GreedyQPlusNoisePolicy : public QPolicy
+{
+	MULTI_VALUE_FACTORY<Noise> m_noise;
+public:
+	GreedyQPlusNoisePolicy(ConfigNode* pParameters);
+	virtual ~GreedyQPlusNoisePolicy();
+	double selectAction(LinearStateActionVFA* pQFunction, const State* s, Action* a);
+};
 
 /////////////////////////////
 //Q-Learning

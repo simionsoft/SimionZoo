@@ -118,7 +118,7 @@ public:
 	using LinearVFA::get;
 	double get(const State *s, const Action *a);
 
-	void argMax(const State *s, Action* a);
+	void argMax(const State *s, Action* a, bool bSolveTiesRandomly= false);
 	double max(const State *s, bool bUseFrozenWeights= true);
 	
 	//This function fills the pre-allocated array outActionVariables with the values of the different actions in state s
