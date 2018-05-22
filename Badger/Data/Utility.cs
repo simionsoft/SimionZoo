@@ -158,6 +158,27 @@ namespace Badger.Data
             return numSeparators + 1;
         }
 
+        //given the path to a file, this function returns [numExtensions] extensions of the file
+        //if not enough extensions are found, nothing is changed from the input path
+        public static string GetExtension(string filename, uint numExtensions = 1)
+        {
+            string result = filename;
+            int lastBar;
+            lastBar = Math.Max(filename.LastIndexOf('/'), filename.LastIndexOf('\\'));
+            int numExtensionsFound = 0;
+            int index = filename.Length - 1;
+            while (index>0 && numExtensionsFound< numExtensions && index>lastBar)
+            {
+                index--;
+                if (filename[index] == '.')
+                    numExtensionsFound++;
+            }
+            if (numExtensionsFound == numExtensions)
+                return filename.Substring(index+1);
+            return filename;
+        }
+
+
         //given the path to a file, this function removes [numExtensions] extensions of the file
         //if not enough extensions are found, nothing is changed from the input path
         public static string RemoveExtension(string filename, uint numExtensions= 1)

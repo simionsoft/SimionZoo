@@ -2,41 +2,44 @@
 <RLSimion>
 	<Log>
 		<Num-functions-logged>10</Num-functions-logged>
-		<Log-Freq>0.01</Log-Freq>
+		<Log-Freq>0.25</Log-Freq>
 		<Log-eval-episodes>true</Log-eval-episodes>
 		<Log-training-episodes>false</Log-training-episodes>
 		<Log-functions>true</Log-functions>
 	</Log>
 	<World>
-		<Num-Integration-Steps>4</Num-Integration-Steps>
-		<Delta-T>0.25</Delta-T>
+		<Num-Integration-Steps>1</Num-Integration-Steps>
+		<Delta-T>0.1</Delta-T>
 		<Dynamic-Model>
 			<Model>
-		<Mountain-car>
-		</Mountain-car>
+		<Robot-control>
+		</Robot-control>
 		</Model>
 		</Dynamic-Model>
 	</World>
 	<Experiment>
 		<Random-Seed>1</Random-Seed>
 		<Num-Episodes>1000</Num-Episodes>
-		<Eval-Freq>10</Eval-Freq>
+		<Eval-Freq>100</Eval-Freq>
 		<Progress-Update-Freq>1.0</Progress-Update-Freq>
-		<Episode-Length>360.0</Episode-Length>
+		<Episode-Length>200</Episode-Length>
 	</Experiment>
 	<SimGod>
-		<Target-Function-Update-Freq>50</Target-Function-Update-Freq>
+		<Target-Function-Update-Freq>100</Target-Function-Update-Freq>
 		<Gamma>0.9</Gamma>
 		<Freeze-Target-Function>true</Freeze-Target-Function>
 		<Use-Importance-Weights>false</Use-Importance-Weights>
 		<State-Feature-Map>
 			<Input-State>
-				<Input-State>position</Input-State>
+				<Input-State>robot1-x</Input-State>
 			</Input-State>
 			<Input-State>
-				<Input-State>velocity</Input-State>
+				<Input-State>robot1-y</Input-State>
 			</Input-State>
-			<Num-Features-Per-Dimension>10</Num-Features-Per-Dimension>
+			<Input-State>
+				<Input-State>robot1-theta</Input-State>
+			</Input-State>
+			<Num-Features-Per-Dimension>20</Num-Features-Per-Dimension>
 			<Feature-Mapper>
 				<Type>
 		<Discrete-Grid>
@@ -46,13 +49,16 @@
 		</State-Feature-Map>
 		<Action-Feature-Map>
 			<Input-Action>
-				<Input-Action>pedal</Input-Action>
+				<Input-Action>robot1-v</Input-Action>
 			</Input-Action>
-			<Num-Features-Per-Dimension>20</Num-Features-Per-Dimension>
+			<Input-Action>
+				<Input-Action>robot1-omega</Input-Action>
+			</Input-Action>
+			<Num-Features-Per-Dimension>10</Num-Features-Per-Dimension>
 			<Feature-Mapper>
 				<Type>
-		<Discrete-Grid>
-		</Discrete-Grid>
+		<Gaussian-RBF-Grid>
+		</Gaussian-RBF-Grid>
 		</Type>
 			</Feature-Mapper>
 		</Action-Feature-Map>
@@ -65,16 +71,42 @@
 		<Q-Learning>
 			<Policy>
 				<Policy>
-		<Epsilon-Greedy>
-			<Epsilon>
+		<Greedy-Q-Plus-Noise>
+			<Noise>
+				<Noise>
+		<Ornstein-Uhlenbeck>
+			<Mu>0.0</Mu>
+			<Sigma>0.5</Sigma>
+			<Theta>0.5</Theta>
+			<Scale>
 				<Schedule>
 		<Simple-Linear-Decay>
-			<Initial-Value>0.5</Initial-Value>
-			<End-Value>0.01</End-Value>
+			<Initial-Value>1</Initial-Value>
+			<End-Value>0.0</End-Value>
 		</Simple-Linear-Decay>
 		</Schedule>
-			</Epsilon>
-		</Epsilon-Greedy>
+			</Scale>
+		</Ornstein-Uhlenbeck>
+		</Noise>
+			</Noise>
+			<Noise>
+				<Noise>
+		<Ornstein-Uhlenbeck>
+			<Mu>0.0</Mu>
+			<Sigma>0.5</Sigma>
+			<Theta>0.1</Theta>
+			<Scale>
+				<Schedule>
+		<Simple-Linear-Decay>
+			<Initial-Value>1</Initial-Value>
+			<End-Value>0.0</End-Value>
+		</Simple-Linear-Decay>
+		</Schedule>
+			</Scale>
+		</Ornstein-Uhlenbeck>
+		</Noise>
+			</Noise>
+		</Greedy-Q-Plus-Noise>
 		</Policy>
 			</Policy>
 			<Q-Function>
@@ -82,10 +114,9 @@
 			</Q-Function>
 			<Alpha>
 				<Schedule>
-		<Simple-Linear-Decay>
-			<Initial-Value>0.1</Initial-Value>
-			<End-Value>0.01</End-Value>
-		</Simple-Linear-Decay>
+		<Constant>
+			<Value>0.0005</Value>
+		</Constant>
 		</Schedule>
 			</Alpha>
 		</Q-Learning>

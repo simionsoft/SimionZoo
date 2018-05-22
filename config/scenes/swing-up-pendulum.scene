@@ -35,7 +35,7 @@
     </Directional-Light>
   </Light>
   <Objects>
-    <Box Name="Sphere">
+    <Box Name="Sphere" Min-X="-0.5" Max-X="0.5" Min-Y="-0.5" Max-Y="0.5">
       <Material>
         <Simple-TL-Material>
           <Diffuse>
@@ -72,7 +72,7 @@
         <Scale><X>0.2</X><Y>0.2</Y><Z>0.2</Z></Scale>
       </Transform>
     </Box>
-    <Box Name="Pendulum">
+    <Box Name="Pendulum" Min-X="-0.5" Max-X="0.5" Min-Y="-0.05" Max-Y="0.95">
       <Material>
         <Simple-TL-Material>
           <Diffuse>

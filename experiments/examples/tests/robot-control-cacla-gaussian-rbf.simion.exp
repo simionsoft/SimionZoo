@@ -106,7 +106,7 @@
                             <Noise>
                               <Ornstein-Uhlenbeck>
                                 <Mu>0.0</Mu>
-                                <Sigma>0.2</Sigma>
+                                <Sigma>1.0</Sigma>
                                 <Theta>0.1</Theta>
                                 <Scale>
                                   <Schedule>

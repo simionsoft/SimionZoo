@@ -65,6 +65,7 @@ void Logger::openFunctionLogFile(const char* filename)
 			functionId++;
 		}
 	}
+	else Logger::logMessage(MessageType::Warning, "Function log file couldn't be opened, so no function info will be saved.");
 }
 
 void Logger::closeFunctionLogFile()
@@ -76,6 +77,9 @@ void Logger::closeFunctionLogFile()
 
 void Logger::writeFunctionLogSample()
 {
+	if (!m_functionLogFile)
+		return;
+
 	unsigned int functionId = 0;
 	for each (FunctionSampler* sampler in SimionApp::get()->getFunctionSamplers())
 	{
