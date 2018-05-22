@@ -47,7 +47,7 @@ extern "C" {
 			}
 			else
 			{
-				printf("FASTDimensionalPortalDLL: Could not open configuration file\n");
+				printf("FASTDimensionalPortal.dll: Could not open configuration file\n");
 				*aviFAIL = -1;
 			}
 

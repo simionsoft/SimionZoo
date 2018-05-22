@@ -1,13 +1,21 @@
 #include "stdafx.h"
 #include "text.h"
 #include "renderer.h"
-
+#include "xml-load.h"
 
 
 Text2D::Text2D(string name, Vector2D origin, double depth)
 	: m_color(Color(0.0, 0.0, 0.0, 1.0))
 	, GraphicObject2D(name,origin,Vector2D(1.0,1.0),0.0, depth) //size 1, no rotation
 {
+}
+
+Text2D::Text2D(tinyxml2::XMLElement* pNode)
+	:GraphicObject2D(pNode)
+{
+	m_text = pNode->Attribute(XML_ATTR_VALUE);
+	if (pNode->FirstChildElement(XML_TAG_COLOR))
+		XML::load(pNode, m_color);
 }
 
 Text2D::~Text2D()

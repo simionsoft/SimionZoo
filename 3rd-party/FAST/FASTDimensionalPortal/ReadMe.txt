@@ -2,7 +2,7 @@
     DYNAMIC LINK LIBRARY : FASTDimensionalPortalDLL Project Overview
 ========================================================================
 
-AppWizard has created this FASTDimensionalPortalDLL DLL for you.  
+AppWizard has created this FASTDimensionalPortal.dll for you.  
 
 This file contains a summary of what you will find in each of the files that
 make up your FASTDimensionalPortalDLL application.

@@ -10,6 +10,7 @@
 #include <string>
 #include <stdio.h>
 #include <algorithm>
+using namespace std;
 
 #define FAST_FAILURE_REWARD -100.0 //reward given in case a simulation error arises
 
@@ -18,15 +19,19 @@
 #define TURBSIM_TEMPLATE_CONFIG_FILE "..\\config\\world\\TurbSim\\TurbSimConfigTemplate.inp"
 #define FAST_TEMPLATE_CONFIG_FILE "..\\config\\world\\FAST\\configFileTemplate.fst"
 #define FAST_CONFIG_FILE "fast-config.fst"
-#define PORTAL_CONFIG_FILE "FASTDimensionalPortalDLL.xml"
+#define SERVO_MODULE_TEMPLATE_FILE "..\\config\\world\\FAST\\NRELOffshrBsline5MW_Onshore_ServoDyn_Template.dat"
+#define SERVO_MODULE_CONFIG_FILE "..\\config\\world\\FAST\\NRELOffshrBsline5MW_Onshore_ServoDyn.dat"
+#define PORTAL_CONFIG_FILE "FASTDimensionalPortal.xml"
 #define DIMENSIONAL_PORTAL_PIPE_NAME "FASTDimensionalPortal"
+#define DIMENSIONAL_PORTAL_DLL "..\\bin\\FASTDimensionalPortal.dll"
 
 #define TRAINING_WIND_BASE_FILE_NAME "training-wind-file-"
 #define EVALUATION_WIND_BASE_FILE_NAME "eval-wind-file-"
 
 FASTWindTurbine::FASTWindTurbine(ConfigNode* pConfigNode)
 {
-	//This class is used both in the DimensionalPortalDLL (pConfigNode will be nullptr) and in RLSimion (pConfigNode will not be nullptr)
+	//This class is used both in the DimensionalPortal DLL (pConfigNode will be nullptr) 
+	//and in RLSimion (pConfigNode will not be nullptr)
 	METADATA("World", "FAST-Wind-turbine");
 	
 	//This if allows prevents erros when the constructor is called without a config node
@@ -87,7 +92,7 @@ FASTWindTurbine::FASTWindTurbine(ConfigNode* pConfigNode)
 	if (SimionApp::get())
 	{
 		//input/output files
-		SimionApp::get()->registerInputFile("..\\bin\\FASTDimensionalPortalDLL.dll");
+		SimionApp::get()->registerInputFile("..\\bin\\FASTDimensionalPortal.dll");
 		SimionApp::get()->registerInputFile("..\\bin\\FAST_win32.exe");
 		SimionApp::get()->registerInputFile("..\\bin\\MAP_win32.dll");
 		SimionApp::get()->registerInputFile("..\\bin\\TurbSim.exe");
@@ -139,8 +144,8 @@ FASTWindTurbine::FASTWindTurbine(ConfigNode* pConfigNode)
 
 void FASTWindTurbine::deferredLoadStep()
 {
-	std::string outConfigFileName, exeFileName;
-	std::string commandLine;
+	string outConfigFileName, exeFileName;
+	string commandLine;
 
 	//Generate templated TurbSim wind profiles
 	bool bLoaded = m_TurbSimConfigTemplate.load(TURBSIM_TEMPLATE_CONFIG_FILE);
@@ -148,19 +153,19 @@ void FASTWindTurbine::deferredLoadStep()
 	{
 		Logger::logMessage(MessageType::Info, "Generating TurbSim wind files");
 
-		exeFileName = std::string("..\\bin\\TurbSim.exe");
+		exeFileName = string("..\\bin\\TurbSim.exe");
 
 		//evaluation wind files
 		for (unsigned int i = 0; i < m_evaluationMeanWindSpeeds.size(); i++)
 		{
-			outConfigFileName = std::string(SimionApp::get()->getOutputDirectory()) + std::string("\\")
-				+ std::string(EVALUATION_WIND_BASE_FILE_NAME) + std::to_string(i) + std::string(".inp");
+			outConfigFileName = string(SimionApp::get()->getOutputDirectory()) + string("\\")
+				+ string(EVALUATION_WIND_BASE_FILE_NAME) + to_string(i) + string(".inp");
 			m_TurbSimConfigTemplate.instantiateConfigFile(outConfigFileName.c_str()
 				, SimionApp::get()->pExperiment->getEpisodeLength() + 30.0	//AnalysisTime
 				, SimionApp::get()->pExperiment->getEpisodeLength() + 30.0	//UsableTime
 				, m_evaluationMeanWindSpeeds[i]->get());						//URef
 
-			commandLine = exeFileName + std::string(" ") + outConfigFileName;
+			commandLine = exeFileName + string(" ") + outConfigFileName;
 			TurbSimProcess.spawn((char*)(commandLine).c_str(), true);
 		}
 		//set the number of episodes per evaluation
@@ -169,14 +174,14 @@ void FASTWindTurbine::deferredLoadStep()
 		//training wind files
 		for (unsigned int i = 0; i < m_trainingMeanWindSpeeds.size(); i++)
 		{
-			outConfigFileName = std::string(SimionApp::get()->getOutputDirectory()) + std::string("\\") 
-				+ std::string(TRAINING_WIND_BASE_FILE_NAME) + std::to_string(i) + std::string(".inp");
+			outConfigFileName = string(SimionApp::get()->getOutputDirectory()) + string("\\") 
+				+ string(TRAINING_WIND_BASE_FILE_NAME) + to_string(i) + string(".inp");
 			m_TurbSimConfigTemplate.instantiateConfigFile(outConfigFileName.c_str()
 				, SimionApp::get()->pExperiment->getEpisodeLength()+30.0	//AnalysisTime
 				, SimionApp::get()->pExperiment->getEpisodeLength()+30.0	//UsableTime
 				, m_trainingMeanWindSpeeds[i]->get());						//URef
 
-			commandLine = exeFileName + std::string(" ") + outConfigFileName;
+			commandLine = exeFileName + string(" ") + outConfigFileName;
 			TurbSimProcess.spawn((char*)(commandLine).c_str(), true);
 		}
 	}
@@ -184,9 +189,13 @@ void FASTWindTurbine::deferredLoadStep()
 	m_FASTWindConfigTemplate.load(FAST_WIND_CONFIG_TEMPLATE_FILE);
 	
 	//copy input files to experiment directory to avoid problems with FAST adding base config file's directory
+	commandLine= string("copy ..\\config\\world\\FAST\\*.dat ") + string(SimionApp::get()->getOutputDirectory());
+	replace(commandLine.begin(), commandLine.end(), '/', '\\');
+	system(commandLine.c_str());
 
-	commandLine= std::string("copy ..\\config\\world\\FAST\\*.dat ") + std::string(SimionApp::get()->getOutputDirectory());
-	std::replace(commandLine.begin(), commandLine.end(), '/', '\\');
+	//copy DLL to avoid problems with relative paths in the config file
+	commandLine = string("copy " + string(DIMENSIONAL_PORTAL_DLL) + string(" ") + string(SimionApp::get()->getOutputDirectory()));
+	replace(commandLine.begin(), commandLine.end(), '/', '\\'); 
 	system(commandLine.c_str());
 
 	Logger::logMessage(MessageType::Info, "Input files copied");
@@ -195,14 +204,14 @@ void FASTWindTurbine::deferredLoadStep()
 FASTWindTurbine::~FASTWindTurbine()
 {
 	m_namedPipeServer.closeServer();
-	Logger::logMessage(MessageType::Info, "Closed connection to FASTDimensionalPortalDLL");
+	Logger::logMessage(MessageType::Info, "Closed connection to FASTDimensionalPortal");
 }
 
 
 
 void FASTWindTurbine::reset(State *s)
 {
-	std::string outConfigFileName,windFile;
+	string outConfigFileName,windFile;
 	FILE *pOutConfigFile;
 
 	//Check if a previous instance of FAST is running and, if it is, kill the process
@@ -213,21 +222,21 @@ void FASTWindTurbine::reset(State *s)
 	m_namedPipeServer.closeServer();
 
 	//Open the named pipe server
-	//FASTDimensionalPortalDLL.xml -> used to pass the pipe's name to the dll
+	//FASTDimensionalPortal.xml -> used to pass the pipe's name to the dll
 	bool pipeServerOpened = m_namedPipeServer.openUniqueNamedPipeServer(DIMENSIONAL_PORTAL_PIPE_NAME);
 	if (pipeServerOpened)
 	{
-		outConfigFileName = std::string(SimionApp::get()->getOutputDirectory()) + std::string("\\")
-			+ std::string(PORTAL_CONFIG_FILE);
+		outConfigFileName = string(SimionApp::get()->getOutputDirectory()) + string("\\")
+			+ string(PORTAL_CONFIG_FILE);
 		fopen_s(&pOutConfigFile, outConfigFileName.c_str(), "w");
 		if (pOutConfigFile)
 		{
 			fprintf_s(pOutConfigFile, "<?xml version=\"1.0\"?>\n<FAST-DIMENSIONAL-PORTAL>\n  <PIPE-NAME>%s</PIPE-NAME>\n</FAST-DIMENSIONAL-PORTAL>"
 				, m_namedPipeServer.getPipeFullName());
 			fclose(pOutConfigFile);
-			Logger::logMessage(MessageType::Info, "FASTDimensionalPortalDLL: pipe server created");
+			Logger::logMessage(MessageType::Info, "FASTDimensionalPortal.dll: pipe server created");
 		}
-		else Logger::logMessage(MessageType::Error, (std::string("Couldn't create config file: ") + outConfigFileName).c_str());
+		else Logger::logMessage(MessageType::Error, (string("Couldn't create config file: ") + outConfigFileName).c_str());
 	}
 	else Logger::logMessage(MessageType::Error, "Couldn't open named pipe server");
 
@@ -242,23 +251,23 @@ void FASTWindTurbine::reset(State *s)
 		{
 			//evaluation wind file
 			index = SimionApp::get()->pExperiment->getEpisodeInEvaluationIndex()-1; //names are 0-based and indices are 1-based
-			windFile = std::string(EVALUATION_WIND_BASE_FILE_NAME)
-				+ std::to_string(index) + std::string(".bts");
+			windFile = string(EVALUATION_WIND_BASE_FILE_NAME)
+				+ to_string(index) + string(".bts");
 		}
 		else
 		{
 			//training wind file
 			index = rand() % m_trainingMeanWindSpeeds.size();
-			windFile = std::string(TRAINING_WIND_BASE_FILE_NAME)
-				+ std::to_string(index) + std::string(".bts");
+			windFile = string(TRAINING_WIND_BASE_FILE_NAME)
+				+ to_string(index) + string(".bts");
 		}
-		outConfigFileName = std::string(SimionApp::get()->getOutputDirectory()) + std::string("\\")
-			+ std::string(FAST_WIND_CONFIG_FILE);
+		outConfigFileName = string(SimionApp::get()->getOutputDirectory()) + string("\\")
+			+ string(FAST_WIND_CONFIG_FILE);
 		m_FASTWindConfigTemplate.instantiateConfigFile(outConfigFileName.c_str(), windFile.c_str());
 
 		Logger::logMessage(MessageType::Info, "Instantiating FAST config file");
-		outConfigFileName = std::string(SimionApp::get()->getOutputDirectory()) + std::string("\\")
-			+ std::string(FAST_CONFIG_FILE);
+		outConfigFileName = string(SimionApp::get()->getOutputDirectory()) + string("\\")
+			+ string(FAST_CONFIG_FILE);
 		m_FASTConfigTemplate.instantiateConfigFile(outConfigFileName.c_str()
 			, SimionApp::get()->pExperiment->getEpisodeLength()
 			, SimionApp::get()->pWorld->getDT()
@@ -270,14 +279,14 @@ void FASTWindTurbine::reset(State *s)
 
 
 	//spawn the FAST exe file
-	std::string commandLine;
+	string commandLine;
 
-	commandLine= std::string("..\\bin\\fast_win32.exe");
+	commandLine= string("..\\bin\\fast_win32.exe");
 
-	commandLine+= std::string(" ") + std::string(SimionApp::get()->getOutputDirectory())+ std::string("\\")
-		+ std::string(FAST_CONFIG_FILE);
+	commandLine+= string(" ") + string(SimionApp::get()->getOutputDirectory())+ string("\\")
+		+ string(FAST_CONFIG_FILE);
 	bool bSpawned= FASTprocess.spawn((char*)(commandLine).c_str());
-	//wait for the client (FASTDimensionalPortalDLL) to connect
+	//wait for the client (FASTDimensionalPortal DLL) to connect
 	if (bSpawned && FASTprocess.isRunning())
 	{
 		Logger::logMessage(MessageType::Info, "Waiting for the client to connect");

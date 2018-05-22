@@ -102,6 +102,7 @@ DynamicModel::~DynamicModel()
 }
 
 
+
 DynamicModel::DynamicModel()
 {
 	m_pStateDescriptor = new Descriptor();

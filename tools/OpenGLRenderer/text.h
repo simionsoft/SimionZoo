@@ -11,6 +11,8 @@ class Text2D: public GraphicObject2D
 	Color m_color;
 	string m_text;
 public:
+	Text2D(tinyxml2::XMLElement* pNode);
+
 	Text2D(string name,Vector2D origin, double depth);
 	virtual ~Text2D();
 

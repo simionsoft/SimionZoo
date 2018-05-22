@@ -54,6 +54,8 @@ void Sprite2D::draw()
 	glTexCoord2d(0.0, 0.0);
 	glVertex2d(m_minCoord.x(), m_maxCoord.y());
 	glEnd();
+
+	drawChildren();
 }
 
 Meter2D::Meter2D(tinyxml2::XMLElement* pNode): GraphicObject2D(pNode)
@@ -64,12 +66,12 @@ Meter2D::Meter2D(string name, Vector2D origin, Vector2D size, double depth)
 	: GraphicObject2D(name, origin, size, 0.0, depth) //no rotation allowed
 {
 	//text on the progress bar, shifted a bit to the top-right toward the viewer
-	m_pText = new Text2D(name + "/text", Vector2D( 0.025, 0.25), 0.1);
+	m_pText = new Text2D(name + "/text", Vector2D(0.025, 0.25), 0.1);
+	addChild(m_pText);
 }
 
 Meter2D::~Meter2D()
 {
-	delete m_pText;
 }
 
 
@@ -99,9 +101,7 @@ void Meter2D::draw()
 		glVertex2d(0.0, 1.0);
 	glEnd();
 
-	m_pText->setTransform();
-	m_pText->draw();
-	m_pText->restoreTransform();
+	drawChildren();
 }
 
 void Meter2D::setValue(double value)
@@ -111,7 +111,7 @@ void Meter2D::setValue(double value)
 	double normValue = m_valueRange.normPosInRange(m_value);
 
 	//udpate the color
-	m_valueColor = m_startColor.lerp(m_endColor, normValue); // Color(1.0, 0.0, 0.0, 1.0).lerp(Color(0.0, 1.0, 0.0, 1.0), normValue);
+	m_valueColor = m_startColor.lerp(m_endColor, normValue);
 
 	//update the text
 	char buffer[1024];

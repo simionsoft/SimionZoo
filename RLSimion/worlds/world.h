@@ -14,11 +14,20 @@ class RewardFunction;
 #include "../parameters.h"
 #include "../named-var-set.h"
 
+struct cmp_str
+{
+	bool operator()(const char *a, const char *b) const
+	{
+		return std::strcmp(a, b) < 0;
+	}
+};
+
+
 class DynamicModel
 {
 	Descriptor *m_pStateDescriptor;
 	Descriptor *m_pActionDescriptor;
-	std::map<const char*, double> m_pConstants;
+	std::map<const char*, double, cmp_str> m_pConstants;
 protected:
 	string m_name= string("");
 	RewardFunction* m_pRewardFunction;
