@@ -122,9 +122,6 @@
     <ClInclude Include="..\RLSimion\worlds\FAST.h">
       <Filter>world</Filter>
     </ClInclude>
-    <ClInclude Include="..\RLSimion\worlds\gridworld.h">
-      <Filter>world</Filter>
-    </ClInclude>
     <ClInclude Include="..\RLSimion\worlds\mountaincar.h">
       <Filter>world</Filter>
     </ClInclude>
@@ -190,6 +187,9 @@
     </ClInclude>
     <ClInclude Include="..\RLSimion\function-sampler.h">
       <Filter>graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="..\RLSimion\worlds\double-pendulum.h">
+      <Filter>world</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -360,9 +360,6 @@
     <ClCompile Include="..\RLSimion\worlds\FAST.cpp">
       <Filter>world</Filter>
     </ClCompile>
-    <ClCompile Include="..\RLSimion\worlds\gridworld.cpp">
-      <Filter>world</Filter>
-    </ClCompile>
     <ClCompile Include="..\RLSimion\worlds\mountaincar.cpp">
       <Filter>world</Filter>
     </ClCompile>
@@ -422,6 +419,9 @@
     </ClCompile>
     <ClCompile Include="..\RLSimion\logger-functions.cpp">
       <Filter>app</Filter>
+    </ClCompile>
+    <ClCompile Include="..\RLSimion\worlds\double-pendulum.cpp">
+      <Filter>world</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

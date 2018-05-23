@@ -11,28 +11,7 @@
     </Simple-Camera>
   </Camera>
   <Light>
-    <Directional-Light>
-      <Direction>
-        <X>0.577</X>
-        <Y>0.577</Y>
-        <Z>0.577</Z>
-      </Direction>
-      <Ambient>
-        <R>0.2</R>
-        <G>0.2</G>
-        <B>0.2</B>
-      </Ambient>
-      <Diffuse>
-        <R>1.0</R>
-        <G>1.0</G>
-        <B>1.0</B>
-      </Diffuse>
-      <Specular>
-        <R>0.5</R>
-        <G>0.5</G>
-        <B>0.5</B>
-      </Specular>
-    </Directional-Light>
+    <Directional-Light/>
   </Light>
   <Objects2D>
     <Sprite Name="Floor" Min-X="0.0" Max-X="1.0" Min-Y="0.0" Max-Y="0.5">
@@ -87,12 +66,11 @@
         </Translucent-Material>
       </Material>
     </Sprite>
-    <Sprite Name="Pendulum" Min-X="-0.5" Max-X="0.5" Min-Y="-0.9375" Max-Y="0.0625">
+    <Sprite Name="Pendulum_1" Min-X="-0.015625" Max-X="0.015625" Min-Y="-0.234375" Max-Y="0.015625">
       <Transform>
         <Translation><X>0.5</X><Y>0.5</Y></Translation>
-	<Scale><X>0.03125</X><Y>0.25</Y></Scale>
-	<Rotation Bind="angle"/>
-        <Depth>0.5</Depth>
+	<Rotation Bind="theta_1"/>
+        <Depth>0.4</Depth>
       </Transform>
       <Material>
         <Translucent-Material>
@@ -101,6 +79,20 @@
           </Texture>
         </Translucent-Material>
       </Material>
+      <Sprite Name="Pendulum_2" Min-X="-0.015625" Max-X="0.015625" Min-Y="-0.234375" Max-Y="0.015625">
+        <Transform>
+          <Translation><Y>-0.234375</Y></Translation>
+          <Rotation Bind="theta_2"/>
+          <Depth>0.5</Depth>
+        </Transform>
+        <Material>
+          <Translucent-Material>
+            <Texture>
+              <Path>pendulum/pendulum.png</Path>
+            </Texture>
+          </Translucent-Material>
+        </Material>
+      </Sprite>
     </Sprite>
 
    </Objects2D>
