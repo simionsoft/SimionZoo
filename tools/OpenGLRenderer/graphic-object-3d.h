@@ -17,6 +17,8 @@ protected:
 	vector<Mesh*> m_meshes;
 	BoundingBox3D m_bb;
 
+	vector<GraphicObject3D*> m_children;
+
 	void updateBoundingBox();
 public:
 	GraphicObject3D(string name);
@@ -26,6 +28,10 @@ public:
 	string name() { return m_name; }
 
 	static GraphicObject3D* getInstance(tinyxml2::XMLElement* pNode);
+
+	void drawChildren();
+	void addChild(GraphicObject3D* child);
+	vector<GraphicObject3D*>& getChildren();
 
 	void addMesh(Mesh* pMesh) { m_meshes.push_back(pMesh); }
 

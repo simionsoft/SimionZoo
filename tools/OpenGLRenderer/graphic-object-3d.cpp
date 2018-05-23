@@ -19,6 +19,8 @@ GraphicObject3D::GraphicObject3D(tinyxml2::XMLElement* pNode): SceneActor3D(pNod
 {
 	if (pNode->Attribute(XML_TAG_NAME_ATTR))
 		m_name= string(pNode->Attribute(XML_TAG_NAME_ATTR));
+
+	loadChildren<GraphicObject3D>(pNode, nullptr, m_children);
 }
 
 GraphicObject3D* GraphicObject3D::getInstance(tinyxml2::XMLElement* pNode)
@@ -38,9 +40,31 @@ GraphicObject3D* GraphicObject3D::getInstance(tinyxml2::XMLElement* pNode)
 	return nullptr;
 }
 
+void GraphicObject3D::addChild(GraphicObject3D* child)
+{
+	m_children.push_back(child);
+}
+
+vector<GraphicObject3D*>& GraphicObject3D::getChildren()
+{
+	return m_children;
+}
+
+void GraphicObject3D::drawChildren()
+{
+	for each(GraphicObject3D* pChild in m_children)
+	{
+		pChild->setTransform();
+		pChild->draw();
+		pChild->restoreTransform();
+	}
+}
 
 GraphicObject3D::~GraphicObject3D()
 {
+	//The renderer doesn't know about children, so we have to delete them here
+	for each(GraphicObject3D* pChild in m_children)
+		delete pChild;
 }
 
 BoundingBox3D GraphicObject3D::boundingBox()
@@ -55,6 +79,8 @@ void GraphicObject3D::draw()
 
 	for (auto it = m_meshes.begin(); it != m_meshes.end(); ++it)
 		(*it)->draw();
+
+	drawChildren();
 
 	restoreTransform();
 }
