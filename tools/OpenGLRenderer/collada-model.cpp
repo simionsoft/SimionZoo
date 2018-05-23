@@ -701,21 +701,21 @@ void ColladaModel::loadMaterialProperties(tinyxml2::XMLElement* pRootNode
 			{
 				parseFloatArray(pMatProp->FirstChildElement(XML_TAG_COLLADA_AMBIENT)
 					->FirstChildElement(XML_TAG_COLLADA_COLOR)->GetText(), rgba, 4);
-				pMaterial->setAmbient(Color(rgba[0], rgba[1], rgba[2], rgba[3]));
+				pMaterial->setAmbient(Color((float)rgba[0], (float)rgba[1], (float)rgba[2], (float)rgba[3]));
 			}
 			//SPECULAR
 			if (pMatProp->FirstChildElement(XML_TAG_COLLADA_SPECULAR)!=nullptr)
 			{
 				parseFloatArray(pMatProp->FirstChildElement(XML_TAG_COLLADA_SPECULAR)
 					->FirstChildElement(XML_TAG_COLLADA_COLOR)->GetText(), rgba, 4);
-				pMaterial->setSpecular(Color(rgba[0], rgba[1], rgba[2], rgba[3]));
+				pMaterial->setSpecular(Color((float)rgba[0], (float)rgba[1], (float)rgba[2], (float)rgba[3]));
 			}
 			//EMISSION
 			if (pMatProp->FirstChildElement(XML_TAG_COLLADA_EMISSION) != nullptr)
 			{
 				parseFloatArray(pMatProp->FirstChildElement(XML_TAG_COLLADA_EMISSION)
 					->FirstChildElement(XML_TAG_COLLADA_COLOR)->GetText(), rgba, 4);
-				pMaterial->setEmission(Color(rgba[0], rgba[1], rgba[2], rgba[3]));
+				pMaterial->setEmission(Color((float)rgba[0], (float)rgba[1], (float)rgba[2], (float)rgba[3]));
 			}
 			//SHININESS
 			if (pMatProp->FirstChildElement(XML_TAG_COLLADA_SHININESS) != nullptr)
@@ -731,7 +731,7 @@ void ColladaModel::loadMaterialProperties(tinyxml2::XMLElement* pRootNode
 				{
 					parseFloatArray(pMatProp->FirstChildElement(XML_TAG_COLLADA_DIFFUSE)
 						->FirstChildElement(XML_TAG_COLLADA_COLOR)->GetText(), rgba, 4);
-					pMaterial->setDiffuse(Color(rgba[0], rgba[1], rgba[2], rgba[3]));
+					pMaterial->setDiffuse(Color((float)rgba[0], (float)rgba[1], (float)rgba[2], (float)rgba[3]));
 				}
 
 				//DIFFUSE-TEXTURE

@@ -295,8 +295,6 @@
     <ClCompile Include="worlds\BulletPhysics.cpp" />
     <ClCompile Include="worlds\double-pendulum.cpp" />
     <ClCompile Include="worlds\FAST.cpp" />
-    <ClCompile Include="worlds\gridworld.cpp" />
-    <ClCompile Include="worlds\magneticlevitation.cpp" />
     <ClCompile Include="worlds\mountaincar.cpp" />
     <ClCompile Include="worlds\pitchcontrol.cpp" />
     <ClCompile Include="worlds\pull-box-1.cpp" />
@@ -365,8 +363,6 @@
     <ClInclude Include="worlds\BulletPhysics.h" />
     <ClInclude Include="worlds\double-pendulum.h" />
     <ClInclude Include="worlds\FAST.h" />
-    <ClInclude Include="worlds\gridworld.h" />
-    <ClInclude Include="worlds\magneticlevitation.h" />
     <ClInclude Include="worlds\mountaincar.h" />
     <ClInclude Include="worlds\pitchcontrol.h" />
     <ClInclude Include="worlds\pull-box-1.h" />

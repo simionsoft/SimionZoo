@@ -118,12 +118,6 @@
     <ClCompile Include="worlds\FAST.cpp">
       <Filter>world</Filter>
     </ClCompile>
-    <ClCompile Include="worlds\gridworld.cpp">
-      <Filter>world</Filter>
-    </ClCompile>
-    <ClCompile Include="worlds\magneticlevitation.cpp">
-      <Filter>world</Filter>
-    </ClCompile>
     <ClCompile Include="worlds\mountaincar.cpp">
       <Filter>world</Filter>
     </ClCompile>
@@ -323,12 +317,6 @@
       <Filter>world</Filter>
     </ClInclude>
     <ClInclude Include="worlds\FAST.h">
-      <Filter>world</Filter>
-    </ClInclude>
-    <ClInclude Include="worlds\gridworld.h">
-      <Filter>world</Filter>
-    </ClInclude>
-    <ClInclude Include="worlds\magneticlevitation.h">
       <Filter>world</Filter>
     </ClInclude>
     <ClInclude Include="worlds\mountaincar.h">

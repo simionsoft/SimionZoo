@@ -82,7 +82,8 @@ namespace Badger.ViewModels
         public override bool validate()
         {
             bool bChoiceNameIsValid = false;
-            if (selectedChoiceName == null || selectedChoiceName == "") return false;
+            if (selectedChoiceName == null || selectedChoiceName == "")
+                return false;
             foreach (XmlNode choiceElement in nodeDefinition)
                 if (selectedChoiceName == choiceElement.Attributes[XMLConfig.nameAttribute].Value)
                     bChoiceNameIsValid = true;

@@ -277,7 +277,6 @@
     <ClInclude Include="..\RLSimion\worlds\BulletPhysics.h" />
     <ClInclude Include="..\RLSimion\worlds\FAST.h" />
     <ClInclude Include="..\RLSimion\worlds\gridworld.h" />
-    <ClInclude Include="..\RLSimion\worlds\magneticlevitation.h" />
     <ClInclude Include="..\RLSimion\worlds\mountaincar.h" />
     <ClInclude Include="..\RLSimion\worlds\pitchcontrol.h" />
     <ClInclude Include="..\RLSimion\worlds\pull-box-1.h" />
@@ -385,7 +384,6 @@
     <ClCompile Include="..\RLSimion\worlds\BulletPhysics.cpp" />
     <ClCompile Include="..\RLSimion\worlds\FAST.cpp" />
     <ClCompile Include="..\RLSimion\worlds\gridworld.cpp" />
-    <ClCompile Include="..\RLSimion\worlds\magneticlevitation.cpp" />
     <ClCompile Include="..\RLSimion\worlds\mountaincar.cpp" />
     <ClCompile Include="..\RLSimion\worlds\pitchcontrol.cpp" />
     <ClCompile Include="..\RLSimion\worlds\pull-box-1.cpp" />

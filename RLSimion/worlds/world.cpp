@@ -3,7 +3,7 @@
 #include "windturbine.h"
 #include "underwatervehicle.h"
 #include "pitchcontrol.h"
-#include "magneticlevitation.h"
+#include "magnetic-levitation.h"
 #include "balancingpole.h"
 #include "swinguppendulum.h"
 #include "gridworld.h"
@@ -203,8 +203,7 @@ std::shared_ptr<DynamicModel> DynamicModel::getInstance(ConfigNode* pConfigNode)
 		{make_tuple("Pull-Box-2",CHOICE_ELEMENT_NEW<PullBox2>,"World=Pull-Box-2") },
 		{make_tuple("Pull-Box-1",CHOICE_ELEMENT_NEW<PullBox1>,"World=Pull-Box-1") },
 		{ make_tuple("Mountain-car",CHOICE_ELEMENT_NEW<MountainCar>,"World=Mountain-car") },
-		{ make_tuple("Swing-up-pendulum",CHOICE_ELEMENT_NEW<SwingupPendulum>,"World=Swing-up-pendulum") },
-		{ make_tuple("Continuous-Gridworld",CHOICE_ELEMENT_NEW<ContinuousGridWorld>,"World=Continuous-GridWorld") }
+		{ make_tuple("Swing-up-pendulum",CHOICE_ELEMENT_NEW<SwingupPendulum>,"World=Swing-up-pendulum") }
 	});
 }
 

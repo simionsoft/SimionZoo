@@ -125,9 +125,6 @@
     <ClInclude Include="..\RLSimion\worlds\gridworld.h">
       <Filter>world</Filter>
     </ClInclude>
-    <ClInclude Include="..\RLSimion\worlds\magneticlevitation.h">
-      <Filter>world</Filter>
-    </ClInclude>
     <ClInclude Include="..\RLSimion\worlds\mountaincar.h">
       <Filter>world</Filter>
     </ClInclude>
@@ -364,9 +361,6 @@
       <Filter>world</Filter>
     </ClCompile>
     <ClCompile Include="..\RLSimion\worlds\gridworld.cpp">
-      <Filter>world</Filter>
-    </ClCompile>
-    <ClCompile Include="..\RLSimion\worlds\magneticlevitation.cpp">
       <Filter>world</Filter>
     </ClCompile>
     <ClCompile Include="..\RLSimion\worlds\mountaincar.cpp">
