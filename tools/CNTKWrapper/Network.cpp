@@ -302,13 +302,13 @@ void Network::applyGradient(IMinibatch* pMinibatch)
 	auto backPropState = m_FunctionPtr->Forward(arguments, output, DeviceDescriptor::UseDefaultDevice(), { m_FunctionPtr });
 
 	//Backward pass
-	vector<double> RootValue = vector<double>(pMinibatch->size());
+	vector<double> RootValue = vector<double>(pMinibatch->outputSize()*pMinibatch->size());
 	auto RootGradientValue = MakeSharedObject<Value>(MakeSharedObject<NDArrayView>(
 		m_FunctionPtr->Output().Shape().AppendShape({ 1, RootValue.size() / m_FunctionPtr->Output().Shape().TotalSize() })
 		, RootValue, false));
 
 	for (int i = 0; i < pMinibatch->outputSize()*pMinibatch->size(); i++)
-		RootValue[i] = pMinibatch->getOutput()[i];// -qGradientCpuVector[i];
+		RootValue[i] = pMinibatch->getOutput()[i];
 
 	unordered_map<Variable, ValuePtr> parameterGradients = {};
 	for (const LearnerPtr& learner : m_trainer->ParameterLearners())
