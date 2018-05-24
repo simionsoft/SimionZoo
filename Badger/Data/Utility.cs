@@ -174,7 +174,7 @@ namespace Badger.Data
                     numExtensionsFound++;
             }
             if (numExtensionsFound == numExtensions)
-                return filename.Substring(index+1);
+                return filename.Substring(index);
             return filename;
         }
 

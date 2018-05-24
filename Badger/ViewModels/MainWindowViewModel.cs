@@ -227,6 +227,7 @@ namespace Badger.ViewModels
                     if (newExperiment != null)
                     {
                         ExperimentViewModels.Add(newExperiment);
+
                         CheckEmptyExperimentList();
 
                         CanLaunchExperiment = m_bIsExperimentListNotEmpty;
@@ -309,7 +310,7 @@ namespace Badger.ViewModels
 
             //Save the badger project to allow later changes and re-runs of the experiment
             string badgerProjFileName = Utility.RemoveExtension(batchFileName, Utility.NumParts(SimionFileData.ProjectExtension, '.'))
-                + "." + SimionFileData.ProjectExtension;
+                + SimionFileData.ProjectExtension;
             SimionFileData.SaveExperiments(m_experimentViewModels, badgerProjFileName);
 
             //Experiments are sent and executed remotely

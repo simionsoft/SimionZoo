@@ -26,11 +26,11 @@ namespace Badger.Simion
 
         public const string ExperimentExtension = ".simion.exp";
         public const string ExperimentBatchExtension = ".simion.batch";
-        public const string ProjectExtension = "simion.proj";
+        public const string ProjectExtension = ".simion.proj";
 
-        public const string ExperimentBatchFilter = "*." + ExperimentBatchExtension;//"Experiment-batch|*.";
-        public const string ProjectFilter = "*." + ProjectExtension;//"Badger project|*.";
-        public const string ExperimentFilter = "*." + ExperimentExtension;//"Experiment|*.";
+        public const string ExperimentBatchFilter = "*" + ExperimentBatchExtension;
+        public const string ProjectFilter = "*" + ProjectExtension;
+        public const string ExperimentFilter = "*" + ExperimentExtension;
 
         public const string ExperimentDescription = "Experiment";
         public const string ExperimentBatchDescription = "Batch";
@@ -206,7 +206,7 @@ namespace Badger.Simion
                     return -1;
                 }
             }
-            string batchFileDir = batchFilename.Remove(batchFilename.LastIndexOf("." + SimionFileData.ExperimentBatchExtension));
+            string batchFileDir = batchFilename.Remove(batchFilename.LastIndexOf(ExperimentBatchExtension));
             string batchFileName = Utility.GetFilename(batchFileDir);
             batchFileDir = Utility.GetRelativePathTo(Directory.GetCurrentDirectory(), batchFileDir);
             // Clean output directory if it exists
@@ -221,7 +221,7 @@ namespace Badger.Simion
                     return -1;
                 }
             }
-            string fullBatchFileName = batchFileDir + "." + SimionFileData.ExperimentBatchExtension;
+            string fullBatchFileName = batchFileDir + ExperimentBatchExtension;
 
             
             using (StreamWriter batchFileWriter = new StreamWriter(fullBatchFileName))
@@ -250,9 +250,9 @@ namespace Badger.Simion
 
                         string folderPath = batchFileDir + "\\" + experimentName;
                         Directory.CreateDirectory(folderPath);
-                        string filePath = folderPath + "\\" + experimentName + "." + SimionFileData.ExperimentExtension;
+                        string filePath = folderPath + "\\" + experimentName + ExperimentExtension;
                         experimentViewModel.save(filePath, SaveMode.AsExperimentalUnit);
-                        string relativePathToExperimentalUnit = batchFileName + "\\" + experimentName + "\\" + experimentName + "." + SimionFileData.ExperimentExtension;
+                        string relativePathToExperimentalUnit = batchFileName + "\\" + experimentName + "\\" + experimentName + ExperimentExtension;
 
                         // Save the experiment reference in the root batch file. Open 'EXPERIMENTAL-UNIT' tag
                         // with its corresponding attributes.
@@ -435,6 +435,7 @@ namespace Badger.Simion
         {
             SaveFileDialog sfd = new SaveFileDialog();
             sfd.Filter = description + "|" + extension;
+            sfd.SupportMultiDottedExtensions = true;
             string combinedPath = Path.Combine(Directory.GetCurrentDirectory(), experimentRelativeDir);
 
             if (!Directory.Exists(combinedPath))

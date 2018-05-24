@@ -17,7 +17,7 @@ namespace examplesBatchUpdater
             {
                 //process all the experiment files
                 IEnumerable<string> experimentFiles = Directory.EnumerateFiles("../experiments"
-                    , "*." + SimionFileData.ExperimentExtension
+                    , "*" + SimionFileData.ExperimentExtension
                     , SearchOption.AllDirectories);
                 foreach (string file in experimentFiles)
                 {
