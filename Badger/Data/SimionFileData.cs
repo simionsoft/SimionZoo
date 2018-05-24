@@ -24,8 +24,8 @@ namespace Badger.Simion
         public const string tempRelativeDir = "..\\temp\\";
         public const string logViewerExePath = "..\\" + binDir + "\\SimionLogViewer.exe";
 
-        public const string ExperimentExtension = "simion.exp";
-        public const string ExperimentBatchExtension = "simion.batch";
+        public const string ExperimentExtension = ".simion.exp";
+        public const string ExperimentBatchExtension = ".simion.batch";
         public const string ProjectExtension = "simion.proj";
 
         public const string ExperimentBatchFilter = "*." + ExperimentBatchExtension;//"Experiment-batch|*.";
