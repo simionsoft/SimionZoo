@@ -96,7 +96,7 @@ void Logger::writeFunctionLogSample()
 		//Write the values sampled
 		const vector<double>& valuesSampled = sampler->sample();
 
-		fwrite(valuesSampled.data(), sizeof(double), valuesSampled.size(), m_functionLogFile);
+		fwrite(&valuesSampled[0], sizeof(double), valuesSampled.size(), m_functionLogFile);
 
 		functionId++;
 	}

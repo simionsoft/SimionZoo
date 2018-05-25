@@ -105,7 +105,7 @@ const vector<double>& FunctionSampler3D::sample(unsigned int outputIndex)
 FunctionSampler2D::FunctionSampler2D(string functionId, StateActionFunction* pFunction, size_t samplesPerDimension
 	, Descriptor& stateDescriptor, Descriptor& actionDescriptor
 	, VariableSource xVarSource, string xVarName)
-	:FunctionSampler(functionId, pFunction, samplesPerDimension, 2, stateDescriptor, actionDescriptor)
+	:FunctionSampler(functionId, pFunction, samplesPerDimension, 1, stateDescriptor, actionDescriptor)
 	, m_xVarName(xVarName)
 {
 	m_xVarSource = Source(xVarSource);

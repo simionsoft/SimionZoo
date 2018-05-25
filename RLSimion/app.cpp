@@ -367,12 +367,20 @@ void SimionApp::initRenderer(string sceneFile, State* s, Action* a)
 		for each (FunctionSampler* pSampler in m_pFunctionSamplers)
 		{
 			//create the function viewer
-			FunctionViewer* pFunctionViewer = new FunctionViewer3D(pSampler->getFunctionId(), Vector2D(0.0, 0.0), Vector2D(0.0, 0.0), m_numSamplesPerDim, 0.25);
+			FunctionViewer* pFunctionViewer = nullptr;
+			//depending on the dimensions, we create a 3d viewer or a 2d viewer
+			if (pSampler->getNumSamplesY() > 1)
+				pFunctionViewer= new FunctionViewer3D(pSampler->getFunctionId(), Vector2D(0.0, 0.0), Vector2D(0.0, 0.0), m_numSamplesPerDim, 0.25);
+			else if (pSampler->getNumSamplesY() == 1)
+				pFunctionViewer = new FunctionViewer2D(pSampler->getFunctionId(), Vector2D(0.0, 0.0), Vector2D(0.0, 0.0), m_numSamplesPerDim, 0.25);
 
-			m_pFunctionViews[pFunctionViewer] = pSampler;
+			if (pFunctionViewer)
+			{
+				m_pFunctionViews[pFunctionViewer] = pSampler;
 
-			m_pRenderer->add2DGraphicObject(pFunctionViewer, functionViewPort);
-			objects.push_back(pFunctionViewer);
+				m_pRenderer->add2DGraphicObject(pFunctionViewer, functionViewPort);
+				objects.push_back(pFunctionViewer);
+			}
 		}
 
 		Arranger objectArranger;
@@ -394,7 +402,7 @@ void SimionApp::initFunctionSamplers(State* s, Action* a)
 	for (auto functionIt : m_pStateActionFunctions)
 	{
 		numInputs = functionIt.second->getInputActionVariables().size() + functionIt.second->getInputStateVariables().size();
-		if (numInputs > 1)
+		if (numInputs > 0)
 		{
 			//store all sampled variables to group them in pairs
 			m_sampledVariables.clear();
@@ -403,17 +411,22 @@ void SimionApp::initFunctionSamplers(State* s, Action* a)
 			for each(string varName in functionIt.second->getInputActionVariables())
 				m_sampledVariables.push_back(make_pair(VariableSource::ActionSource, varName));
 
-			//make all possible input variable combinations and one function sampler for each
-			for (int i = 0; i < numInputs - 1; ++i)
+			//3d sampler
+			if (numInputs > 1)
 			{
-				for (int j = i + 1; j < numInputs; j++)
-				{
-					//create the sampler: it will transform the state-action function to a 2D texture
-					FunctionSampler* pSampler = new FunctionSampler3D(functionIt.first, functionIt.second, m_numSamplesPerDim
-						, s->getDescriptor(), a->getDescriptor(), m_sampledVariables[i].first, m_sampledVariables[i].second
-						, m_sampledVariables[j].first, m_sampledVariables[j].second);
-					m_pFunctionSamplers.push_back(pSampler);
-				}
+				//create the 3D sampler: only the two first inputs will be used
+				FunctionSampler* pSampler = new FunctionSampler3D(functionIt.first, functionIt.second, m_numSamplesPerDim
+					, s->getDescriptor(), a->getDescriptor(), m_sampledVariables[0].first, m_sampledVariables[0].second
+					, m_sampledVariables[1].first, m_sampledVariables[1].second);
+				m_pFunctionSamplers.push_back(pSampler);
+			}
+			//2d sampler
+			else if (numInputs == 1)
+			{
+				//create the 2D sampler: only one input
+				FunctionSampler* pSampler = new FunctionSampler2D(functionIt.first, functionIt.second, m_numSamplesPerDim
+					, s->getDescriptor(), a->getDescriptor(), m_sampledVariables[0].first, m_sampledVariables[0].second);
+				m_pFunctionSamplers.push_back(pSampler);
 			}
 		}
 	}

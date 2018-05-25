@@ -267,7 +267,7 @@ void FunctionLog::load(const char* functionLogFile)
 
 				FunctionSample* pSample = new FunctionSample(sampleHeader.episode, sampleHeader.step, sampleHeader.experimentStep, numSamples);
 
-				if (fread_s(pSample->values().data(), numSamples * sizeof(double), sizeof(double), numSamples, pFile) == numSamples)
+				if (fread_s(&pSample->values()[0], numSamples * sizeof(double), sizeof(double), numSamples, pFile) == numSamples)
 					m_functions[sampleHeader.id]->addSample(pSample);
 				else
 					break; //file wasn't fully saved. Silent error, this is expected to happen sometimes

@@ -144,8 +144,8 @@ void FunctionViewer3D::update(const vector<double>& pBuffer)
 	((UnlitLiveTextureMaterial*)m_pMaterial)->updateTexture(pBuffer);
 }
 
-FunctionViewer2D::FunctionViewer2D(string name, Vector2D origin, Vector2D size, unsigned int pixelRes, double depth = 0)
-	:FunctionViewer(name, origin, size, depth) //no material
+FunctionViewer2D::FunctionViewer2D(string name, Vector2D origin, Vector2D size, unsigned int pixelRes, double depth)
+	:FunctionViewer(name, origin, size, depth, new LineMaterial())
 {
 	m_lastValues = vector<double>(pixelRes);
 }
@@ -165,16 +165,25 @@ void FunctionViewer2D::update(const vector<double>& pBuffer)
 	double invValueRange;
 	if (maxValue - minValue > 0)
 		invValueRange = 1.0 / (maxValue - minValue);
-	else invValueRange = 1.0;
+	else
+	{
+		minValue = minValue - 0.01;
+		maxValue = maxValue + 0.01;
+		invValueRange = 1.0 / 0.02;
+	}
+
 	for (size_t i = 0; i < pBuffer.size(); ++i)
 	{
-		m_lastValues[i] = minValue + (pBuffer[i] - minValue) * invValueRange;
+		m_lastValues[i] = (pBuffer[i] - minValue) * invValueRange;
 	}
 }
 
-void draw()
+void FunctionViewer2D::draw()
 {
-	glBegin(GL_LINES);
-
+	glBegin(GL_LINE_STRIP);
+	for (size_t i = 0; i < m_lastValues.size(); ++i)
+	{
+		glVertex2d(((double)i) / (double)(m_lastValues.size() - 1) , m_lastValues[i]);
+	}
 	glEnd();
 }

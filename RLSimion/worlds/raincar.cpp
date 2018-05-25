@@ -55,14 +55,17 @@ void RainCar::executeAction(State *s, const Action *a, double dt)
 double RainCarReward::getReward(const State* s, const Action* a, const State* s_p)
 {
 	double position = s_p->get("position");
+	if ((position == s->getProperties("position").getMin() && a->get((size_t)0) < 0.0)
+		|| (position == s->getProperties("position").getMax() && a->get((size_t)0) > 0.0))
+		return -10;
 	double targetPosition = 24.0;
 
-	double reward= 1.0 - (targetPosition-position)*(targetPosition-position);
+	double reward= 1.0 - abs(targetPosition-position);
 	reward = std::max(-1.0, reward);
 
 	return reward;
 }
 
-double RainCarReward::getMin() { return -1.0; }
+double RainCarReward::getMin() { return -10.0; }
 
 double RainCarReward::getMax() { return 1.0; }

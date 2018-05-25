@@ -219,12 +219,20 @@ bool SimionLogViewer::loadLogFile(string filename)
 	for each (Function* pFunction in m_pExperimentLog->getFunctionLog().getFunctions())
 	{
 		//create the function viewer and associate it to the function
-		FunctionViewer* pFunctionViewer = new FunctionViewer3D(pFunction->name(), Vector2D(0.0, 0.0), Vector2D(0.0, 0.0), (unsigned int)pFunction->numSamplesX(), 0.25);
-		m_functionViews[pFunctionViewer] = pFunction;
+		FunctionViewer* pFunctionViewer = nullptr;
+		if (pFunction->numSamplesY() > 1)
+			pFunctionViewer = new FunctionViewer3D(pFunction->name(), Vector2D(0.0, 0.0), Vector2D(0.0, 0.0), (unsigned int)pFunction->numSamplesX(), 0.25);
+		else if (pFunction->numSamplesY() == 1)
+			pFunctionViewer = new FunctionViewer2D(pFunction->name(), Vector2D(0.0, 0.0), Vector2D(0.0, 0.0), (unsigned int)pFunction->numSamplesX(), 0.25);
 
-		//create the sprite with the live texture attached to it
-		m_pRenderer->add2DGraphicObject(pFunctionViewer, pFunctionsViewPort);
-		objects.push_back(pFunctionViewer);
+		if (pFunctionViewer != nullptr)
+		{
+			m_functionViews[pFunctionViewer] = pFunction;
+
+			//create the sprite with the live texture attached to it
+			m_pRenderer->add2DGraphicObject(pFunctionViewer, pFunctionsViewPort);
+			objects.push_back(pFunctionViewer);
+		}
 	}
 	Arranger objectArranger;
 	objectArranger.arrange2DObjects(objects, Vector2D(0.0, 0.0), Vector2D(1.0, 1.0), Vector2D(0.15, 0.25)
