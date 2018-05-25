@@ -58,6 +58,7 @@ private:
 
 	//requirements/support
 	unsigned int m_numCPUCores = 1;
+	string m_architecture = ""; //required architecture. None if not set
 
 public:
 
@@ -103,6 +104,7 @@ public:
 	void setNumCPUCores(unsigned int numCPUCores) { m_numCPUCores = numCPUCores; }
 	unsigned int getNumCPUCores() { return m_numCPUCores; }
 
+	void setRequiredArchitecture(string architecture) { m_architecture = architecture; }
 	
 	void setPreferredDevice(Device device);
 

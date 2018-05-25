@@ -129,12 +129,15 @@ namespace Badger.Data
 
     public class RunTimeRequirements : Requirements
     {
+        private string m_architecture = PropValues.None;
+        public string Architecture { get { return m_architecture; } set { m_architecture = value; } }
         private int m_numCPUCores = 0;
         public int NumCPUCores { get { return m_numCPUCores; } set { m_numCPUCores = value; } }
 
-        public RunTimeRequirements(int numCPUCores)
+        public RunTimeRequirements(int numCPUCores, string architecture = PropValues.None)
         {
             m_numCPUCores = numCPUCores;
+            m_architecture = architecture;
         }
 
         public RunTimeRequirements(XmlNode node)
@@ -145,10 +148,10 @@ namespace Badger.Data
             foreach (XmlNode child in node.ChildNodes)
             {
                 if (child.Name == PropNames.NumCPUCores)
-                {
                     //parse "NumCPUCores" property
                     NumCPUCores = int.Parse(child.InnerText);
-                }
+                if (child.Name == PropNames.Architecture)
+                    Architecture = child.InnerText;
             }
         }
 

@@ -1,7 +1,5 @@
 #include "DDPG.h"
 
-#ifdef _WIN64
-
 #include "../tools/CNTKWrapper/CNTKWrapper.h"
 #include "app.h"
 #include "noise.h"
@@ -13,18 +11,25 @@
 DDPG::~DDPG()
 {
 	m_CriticNetworkDefinition->destroy();
-	m_pCriticOnlineNetwork->destroy();
-	m_pCriticTargetNetwork->destroy();
-	m_pCriticMinibatch->destroy();
+	if (m_pCriticOnlineNetwork!=nullptr)
+		m_pCriticOnlineNetwork->destroy();
+	if (m_pCriticTargetNetwork!=nullptr)
+		m_pCriticTargetNetwork->destroy();
+	if (m_pCriticMinibatch!=nullptr)
+		m_pCriticMinibatch->destroy();
 
 	m_ActorNetworkDefinition->destroy();
+	if (m_pActorOnlineNetwork !=nullptr)
 	m_pActorOnlineNetwork->destroy();
-	m_pActorTargetNetwork->destroy();
-	m_pActorMinibatch->destroy();
+	if (m_pActorTargetNetwork!=nullptr)
+		m_pActorTargetNetwork->destroy();
+	if (m_pActorMinibatch!=nullptr)
+		m_pActorMinibatch->destroy();
 
 	CNTKWrapperLoader::UnLoad();
 
-	delete m_pActorOutput;
+	if (m_pActorOutput != nullptr)
+		delete m_pActorOutput;
 }
 
 
@@ -187,4 +192,3 @@ void DDPG::updateCritic(const State* s, const Action* a, const State* s_p, doubl
 }
 
 
-#endif

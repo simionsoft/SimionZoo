@@ -1,5 +1,3 @@
-#ifdef _WIN64
-
 #include "deep-vfa-policy.h"
 #include "parameters.h"
 #include "SimGod.h"
@@ -73,4 +71,3 @@ int DiscreteSoftmaxDeepPolicy::selectAction(const std::vector<double>& values)
 	return chooseRandomInteger(newValues);
 }
 
-#endif
