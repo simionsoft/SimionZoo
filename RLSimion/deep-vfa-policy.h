@@ -1,5 +1,5 @@
 #pragma once
-#ifdef _WIN64
+
 #include "policy.h"
 #include "parameters-numeric.h"
 
@@ -34,4 +34,3 @@ public:
 
 	virtual int selectAction(const std::vector<double>& values);
 };
-#endif

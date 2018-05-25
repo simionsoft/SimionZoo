@@ -1,5 +1,4 @@
 #pragma once
-#ifdef _WIN64
 
 #include "simion.h"
 #include "deferred-load.h"
@@ -40,7 +39,7 @@ class DDPG : public Simion, DeferredLoad
 	DOUBLE_PARAM m_tau;
 
 	//used to hold the actor's output
-	Action* m_pActorOutput;
+	Action* m_pActorOutput = nullptr;
 	
 	//update policy network
 	void updateActor(const State* s, const Action* a, const State* s_p, double r);
@@ -61,5 +60,3 @@ public:
 	//updates the critic network and the actor's policy network (both the target and the prediction network)
 	virtual double update(const State *s, const Action *a, const State *s_p, double r, double behaviorProb);
 };
-
-#endif

@@ -38,7 +38,7 @@ ACTION_VARIABLE::ACTION_VARIABLE(Descriptor& actionDescriptor, size_t varId)
 	m_comment = "Object created from code, not a data file";
 }
 
-#ifdef _WIN64
+
 #include "../tools/CNTKWrapper/CNTKWrapper.h"
 
 //Overriden Copy-assignment to avoid destroying copied buffer
@@ -65,16 +65,18 @@ NN_DEFINITION::NN_DEFINITION(ConfigNode* pConfigNode, const char* name, const ch
 {
 	m_name = name;
 	m_comment = comment;
+#ifdef _WIN64
 	m_pDefinition = CNTKWrapperLoader::getNetworkDefinition(pConfigNode->FirstChildElement(m_name)->FirstChildElement("Problem"));
+#endif
 }
 
 void NN_DEFINITION::destroy()
 {
+#ifdef _WIN64
 	if (m_pDefinition)
 	{
 		m_pDefinition->destroy();
 		m_pDefinition = nullptr;
 	}
-}
-
 #endif
+}

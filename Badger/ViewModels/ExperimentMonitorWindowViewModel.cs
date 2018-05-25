@@ -550,10 +550,17 @@ namespace Badger.ViewModels
                     //run-time requirements are calculated when a version is selected
                     experiment.SelectedVersion = HerdAgentViewModel.BestMatch(experiment.AppVersions, agent);
 
-                    //If NumCPUCores = "all", then the experiment only fits the agent in case it hasn't been given any other experimental unit
-                    if ((experiment.RunTimeReqs.NumCPUCores == 0 && !bAgentUsed)
+                    if (experiment.RunTimeReqs == null)
+                        return null;
+                        
+
+                    //Check that the version chosen for the agent supports the architecture requested by the run-time 
+                    if ( (experiment.RunTimeReqs.Architecture==PropValues.None || experiment.RunTimeReqs.Architecture == experiment.SelectedVersion.Requirements.Architecture)
+                        &&
+                        //If NumCPUCores = "all", then the experiment only fits the agent in case it hasn't been given any other experimental unit
+                        ((experiment.RunTimeReqs.NumCPUCores == 0 && !bAgentUsed)
                         //If NumCPUCores != "all", then experiment only fits the agent if the number of cpu cores used is less than those available
-                        || (experiment.RunTimeReqs.NumCPUCores > 0 && experiment.RunTimeReqs.NumCPUCores <= numFreeCores))
+                        || (experiment.RunTimeReqs.NumCPUCores > 0 && experiment.RunTimeReqs.NumCPUCores <= numFreeCores)))
                         return experiment;
                 }
             }

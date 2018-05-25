@@ -6,7 +6,7 @@
              xmlns:system="clr-namespace:System;assembly=mscorlib"
              xmlns:badger="clr-namespace:Badger.Data"
              mc:Ignorable="d" 
-             d:DesignHeight="110" d:DesignWidth="250">
+             d:DesignHeight="110" d:DesignWidth="300">
 
     <UserControl.Resources>
         <ControlTemplate x:Key="HerdAgentExpanderButton" TargetType="{x:Type ToggleButton}">
@@ -100,17 +100,17 @@
             <Expander.Header>
                 <Grid>
                     <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="Auto" MinWidth="15" />
-                        <ColumnDefinition Width="*" MinWidth="15" />
-                        <ColumnDefinition Width="*" MinWidth="15" />
-                        <ColumnDefinition Width="Auto" MinWidth="15" />
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="105"/>
+                        <ColumnDefinition Width="60"/>
+                        <ColumnDefinition Width="40"/>
                     </Grid.ColumnDefinitions>
 
                     <CheckBox VerticalAlignment="Center" IsChecked="{Binding IsSelected, Mode=TwoWay}" Margin="5,8"/>
                     <TextBlock Grid.Column="1" Text="{Binding Path=IpAddressString}" FontWeight="Bold"  Margin="5,8"/>
-                    <TextBlock Grid.Column="2" Text="{Binding Path=State}" HorizontalAlignment="Right"  Margin="5,8"/>
-                    <TextBlock Grid.Column="3" Text="{Binding Path=Version}" HorizontalAlignment="Right"
-                               Foreground="#FF616161" Margin="5,8"/>
+                    <TextBlock Grid.Column="2" Text="{Binding Path=State}" HorizontalAlignment="Left"  Margin="3,8"/>
+                    <TextBlock Grid.Column="3" Text="{Binding Path=Version}" HorizontalAlignment="Left"
+                               Foreground="#FF616161" Margin="1,8"/>
                 </Grid>
             </Expander.Header>
 

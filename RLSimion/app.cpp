@@ -19,6 +19,7 @@
 //Properties and xml tags
 #define APP_REQUIREMENTS_XML_TAG "Requirements"
 #define NUM_CPU_CORES_XML_TAG "NumCPUCores"
+#define ARCHITECTURE_XML_TAG "Architecture"
 #define INPUT_FILE_XML_TAG "Input-File"
 #define OUTPUT_FILE_XML_TAG "Output-File"
 #define RENAME_XML_ATTR "Rename"
@@ -118,8 +119,11 @@ void SimionApp::printRequirements()
 		printf("  <%s>%s</%s>\n", OUTPUT_FILE_XML_TAG, pFileName, OUTPUT_FILE_XML_TAG);
 	}
 
-	//other requirements: #CPU cores and CUDA support
+	//other requirements: #CPU cores
 	printf("  <%s>%d</%s>\n", NUM_CPU_CORES_XML_TAG, m_numCPUCores, NUM_CPU_CORES_XML_TAG);
+	//other requirements: architecture
+	if (m_architecture != "")
+		printf("  <%s>%s</%s>\n", ARCHITECTURE_XML_TAG, m_architecture.c_str(), ARCHITECTURE_XML_TAG);
 
 	printf("</%s>\n", APP_REQUIREMENTS_XML_TAG);
 }

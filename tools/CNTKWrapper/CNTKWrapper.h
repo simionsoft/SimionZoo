@@ -1,5 +1,5 @@
 #pragma once
-#ifdef _WIN64
+
 
 #ifdef BUILD_CNTK_WRAPPER
 //we are building the CNTK Wrapper
@@ -95,5 +95,3 @@ namespace CNTKWrapper
 	DLL_API INetworkDefinition* getNetworkDefinition(tinyxml2::XMLElement* pNode);
 	DLL_API void setDevice(bool useGPU);
 }
-
-#endif

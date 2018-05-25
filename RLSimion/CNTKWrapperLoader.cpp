@@ -11,27 +11,41 @@ HMODULE hCNTKWrapperDLL= 0;
 CNTKWrapperLoader::getNetworkDefinitionDLL CNTKWrapperLoader::getNetworkDefinition = 0;
 CNTKWrapperLoader::setDeviceDLL CNTKWrapperLoader::setDevice = 0;
 
+//We want to be able to know the requirements even if we are running Badger on a Win-32 machine
+//so, the only thing we actually don't do on Win-32 is load the dll and retrieve the access point
 
 void CNTKWrapperLoader::Load()
 {
-#ifdef _WIN64
+
 	if (hCNTKWrapperDLL == 0)
 	{
 		//Set the number of CPU threads to "all"
 		SimionApp::get()->setNumCPUCores(0);
+		SimionApp::get()->setRequiredArchitecture("Win-64");
 
+#ifdef _WIN64
 		//Load the wrapper library
+		Logger::logMessage(MessageType::Info, "Loading CNTK library");
+
 #ifdef _DEBUG
 		hCNTKWrapperDLL = LoadLibrary(".\\..\\Debug\\CNTKWrapper.dll");
 #else
-		//In release mode, it could be in the /bin folder (remote execution) or in /bin/x64 (local execution)
-		//We try both to be safe
 		hCNTKWrapperDLL = LoadLibrary(".\\..\\bin\\CNTKWrapper.dll");
 #endif
 		if (hCNTKWrapperDLL == 0)
 			Logger::logMessage(MessageType::Error, "Failed to load CNTKWrapper.dll");
 
-		Logger::logMessage(MessageType::Info, "Loading CNTK library");
+		//get the address of the interface functions
+		getNetworkDefinition = (getNetworkDefinitionDLL)GetProcAddress(hCNTKWrapperDLL, "CNTKWrapper::getNetworkDefinition");
+		if (getNetworkDefinition == 0)
+			Logger::logMessage(MessageType::Error, "Failed to get a pointer to CNTKWrapper:getNetworkDefinition()");
+
+		setDevice = (setDeviceDLL)GetProcAddress(hCNTKWrapperDLL, "CNTKWrapper::setDevice");
+		if (setDevice == 0)
+			Logger::logMessage(MessageType::Error, "Failed to get a pointer to CNTKWrapper:setDevice()");
+
+#endif
+
 
 		//register dependencies
 		SimionApp::get()->registerInputFile("..\\bin\\CNTKWrapper.dll");
@@ -50,18 +64,7 @@ void CNTKWrapperLoader::Load()
 		SimionApp::get()->registerInputFile("..\\bin\\mkl_cntk_p.dll");
 		SimionApp::get()->registerInputFile("..\\bin\\mkldnn.dll");
 		SimionApp::get()->registerInputFile("..\\bin\\nvml.dll");
-
-
-		//get the address of the interface functions
-		getNetworkDefinition = (getNetworkDefinitionDLL)GetProcAddress(hCNTKWrapperDLL, "CNTKWrapper::getNetworkDefinition");
-		if (getNetworkDefinition==0)
-			Logger::logMessage(MessageType::Error, "Failed to get a pointer to CNTKWrapper:getNetworkDefinition()");
-
-		setDevice = (setDeviceDLL)GetProcAddress(hCNTKWrapperDLL, "CNTKWrapper::setDevice");
-		if (setDevice == 0)
-			Logger::logMessage(MessageType::Error, "Failed to get a pointer to CNTKWrapper:setDevice()");
 	}
-#endif
 }
 
 void CNTKWrapperLoader::UnLoad()

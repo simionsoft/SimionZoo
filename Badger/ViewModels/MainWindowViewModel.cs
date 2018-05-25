@@ -228,10 +228,6 @@ namespace Badger.ViewModels
                     {
                         ExperimentViewModels.Add(newExperiment);
 
-                        CheckEmptyExperimentList();
-
-                        CanLaunchExperiment = m_bIsExperimentListNotEmpty;
-
                         SelectedExperiment = newExperiment;
                     }
 
@@ -244,10 +240,12 @@ namespace Badger.ViewModels
 
                     if (m_experimentViewModels.Count > 0)
                         SelectedExperiment = m_experimentViewModels[0];
-
-                    CheckEmptyExperimentList();
                 }
             }
+
+            CheckEmptyExperimentList();
+
+            CanLaunchExperiment = m_bIsExperimentListNotEmpty;
         }
 
         public void ClearExperiments()

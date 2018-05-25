@@ -7,10 +7,6 @@
 #include <list>
 #include <tuple>
 #include "config.h"
-#ifdef _WIN64
-#include "CNTKWrapperLoader.h"
-
-#endif
 
 using namespace std;
 //Enumerated types
@@ -388,7 +384,6 @@ shared_ptr<BaseClass> CHOICE(ConfigNode* pConfig, const char* choiceName, const 
 //quick and dirty hack to store the name of the dynamic world in a choice
 #define METADATA(name, value) m_name= value;
 
-#ifdef _WIN64
 
 #include "CNTKWrapperLoader.h"
 class INetwork;
@@ -415,4 +410,3 @@ public:
 	//need to explicitly destroy the object allocated from the CNTK wrapper DLL
 	void destroy();
 };
-#endif
