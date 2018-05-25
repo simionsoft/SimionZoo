@@ -6,10 +6,10 @@
              xmlns:cal="http://www.caliburnproject.org"
              xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
              x:Class="Badger.Views.ForkedNodeView"
-             mc:Ignorable="d" d:DesignHeight="50" d:DesignWidth="300">
+             mc:Ignorable="d" d:DesignHeight="150" d:DesignWidth="300">
 
     <Border BorderBrush="Orange">
-        <StackPanel Orientation="Vertical" Height="50" VerticalAlignment="Bottom">
+        <StackPanel Orientation="Vertical">
             <StackPanel Orientation="Horizontal" Background="LightGray">
                 <StackPanel.ContextMenu >
                     <ContextMenu>
@@ -98,10 +98,6 @@
                     </LinearGradientBrush>
                 </StackPanel.Background>
                 <ContentControl x:Name="selectedValueConfigNode"/>
-                <!--<Button Style="{StaticResource BadgerButtonStyle}" ToolTip="Link with other forked value"
-                        Width="40" Height="40" cal:Message.Attach="[Event Click]=[Action LinkFork()]">
-                    <Path Data="{StaticResource Link}" Width="24" Height="24" Fill="#B2000000" />
-                </Button>-->
             </StackPanel>
         </StackPanel>
     </Border>

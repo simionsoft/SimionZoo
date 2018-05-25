@@ -16,7 +16,7 @@ RainCar::RainCar(ConfigNode* pConfigNode)
 	m_sVelocity = addStateVariable("velocity", "m/s", -5.0, 5.0);
 	m_sPositionDeviation = addStateVariable("position-deviation", "m", -25.0, 25.0);
 
-	m_aAcceleration = addActionVariable("pedal", "m", -1.0, 1.0);
+	m_aAcceleration = addActionVariable("acceleration", "m", -1.0, 1.0);
 
 	//the reward function
 	m_pRewardFunction->addRewardComponent(new RainCarReward());

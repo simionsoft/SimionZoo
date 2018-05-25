@@ -195,7 +195,7 @@ namespace Badger.Simion
             if (batchFilename == "")
             {
                 //Save dialog -> returns the experiment batch file
-                var sfd = SaveFileDialog(ExperimentBatchDescription, ExperimentBatchExtension);
+                var sfd = SaveFileDialog(ExperimentBatchDescription, ExperimentBatchFilter);
                 if (sfd.ShowDialog() == DialogResult.OK)
                 {
                     batchFilename = sfd.FileName;
@@ -431,10 +431,10 @@ namespace Badger.Simion
         /// <param name="description">The description of the file type</param>
         /// <param name="extension">The extension of the file</param>
         /// <returns></returns>
-        private static SaveFileDialog SaveFileDialog(string description, string extension)
+        private static SaveFileDialog SaveFileDialog(string description, string filter)
         {
             SaveFileDialog sfd = new SaveFileDialog();
-            sfd.Filter = description + "|" + extension;
+            sfd.Filter = description + "|" + filter;
             sfd.SupportMultiDottedExtensions = true;
             string combinedPath = Path.Combine(Directory.GetCurrentDirectory(), experimentRelativeDir);
 
