@@ -4,6 +4,7 @@
 
 class Sprite2D : public GraphicObject2D
 {
+protected:
 	Vector2D m_minCoord, m_maxCoord;
 	Material* m_pMaterial= nullptr;
 public:
@@ -12,6 +13,34 @@ public:
 	virtual ~Sprite2D();
 
 	virtual void draw();
+};
+
+class FunctionViewer : public Sprite2D
+{
+public:
+	FunctionViewer(string name, Vector2D origin, Vector2D size, double depth = 0.0, Material* pMaterial= nullptr);
+	virtual void update(const vector<double>& pBuffer) = 0;
+};
+
+class FunctionViewer3D : public FunctionViewer
+{
+public:
+	FunctionViewer3D(string name, Vector2D origin, Vector2D size, unsigned int pixelRes,double depth = 0);
+	virtual ~FunctionViewer3D();
+
+	void update(const vector<double>& pBuffer);
+};
+
+class FunctionViewer2D : public FunctionViewer
+{
+	vector<double> m_lastValues;
+public:
+	FunctionViewer2D(string name, Vector2D origin, Vector2D size, unsigned int pixelRes, double depth = 0);
+	virtual ~FunctionViewer2D();
+
+	void update(const vector<double>& pBuffer);
+
+	void draw();
 };
 
 class Meter2D : public GraphicObject2D

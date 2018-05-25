@@ -218,13 +218,11 @@ bool SimionLogViewer::loadLogFile(string filename)
 	vector<GraphicObject2D*> objects;
 	for each (Function* pFunction in m_pExperimentLog->getFunctionLog().getFunctions())
 	{
-		//create the live material. We can update its associated texture
-		UnlitLiveTextureMaterial* pLiveMaterial = new UnlitLiveTextureMaterial((unsigned int)pFunction->numSamplesX()
-			, (unsigned int) pFunction->numSamplesX());
-		m_functionViews[pLiveMaterial] = pFunction;
+		//create the function viewer and associate it to the function
+		FunctionViewer* pFunctionViewer = new FunctionViewer3D(pFunction->name(), Vector2D(0.0, 0.0), Vector2D(0.0, 0.0), (unsigned int)pFunction->numSamplesX(), 0.25);
+		m_functionViews[pFunctionViewer] = pFunction;
 
 		//create the sprite with the live texture attached to it
-		Sprite2D* pFunctionViewer = new Sprite2D(pFunction->name(), Vector2D(0.0, 0.0), Vector2D(0.0, 0.0), 0.25, pLiveMaterial);
 		m_pRenderer->add2DGraphicObject(pFunctionViewer, pFunctionsViewPort);
 		objects.push_back(pFunctionViewer);
 	}
@@ -329,7 +327,7 @@ void SimionLogViewer::draw()
 		if (needUpdate)
 		{
 			//no update needed if the function return nullptr
-			function.first->updateTexture(data);
+			function.first->update(data);
 		}		
 	}
 

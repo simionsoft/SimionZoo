@@ -366,12 +366,11 @@ void SimionApp::initRenderer(string sceneFile, State* s, Action* a)
 		vector<GraphicObject2D*> objects;
 		for each (FunctionSampler* pSampler in m_pFunctionSamplers)
 		{
-			//create the live material. We can update its associated texture
-			UnlitLiveTextureMaterial* pLiveMaterial = new UnlitLiveTextureMaterial(m_numSamplesPerDim, m_numSamplesPerDim);
-			m_pFunctionViews[pLiveMaterial] = pSampler;
+			//create the function viewer
+			FunctionViewer* pFunctionViewer = new FunctionViewer3D(pSampler->getFunctionId(), Vector2D(0.0, 0.0), Vector2D(0.0, 0.0), m_numSamplesPerDim, 0.25);
 
-			//create the sprite with the live texture attached to it
-			Sprite2D* pFunctionViewer = new Sprite2D(pSampler->getFunctionId(), Vector2D(0.0, 0.0), Vector2D(0.0,0.0), 0.25, pLiveMaterial);
+			m_pFunctionViews[pFunctionViewer] = pSampler;
+
 			m_pRenderer->add2DGraphicObject(pFunctionViewer, functionViewPort);
 			objects.push_back(pFunctionViewer);
 		}
@@ -448,7 +447,7 @@ void SimionApp::updateScene(State* s, Action* a)
 		for each(auto functionIt in m_pFunctionViews)
 		{
 			const vector<double>& sampledValues = functionIt.second->sample();
-			functionIt.first->updateTexture(sampledValues);
+			functionIt.first->update(sampledValues);
 		}
 	}
 	//render the image

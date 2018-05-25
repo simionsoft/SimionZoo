@@ -43,7 +43,6 @@ public:
 	virtual ~UnlitLiveTextureMaterial();
 	void updateTexture(const vector<double>& pBuffer);
 	virtual void set();
-	
 };
 
 class SimpleTLMaterial : public Material

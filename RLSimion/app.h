@@ -15,7 +15,7 @@ class IInputHandler;
 class Text2D;
 class Meter2D;
 class FunctionSampler;
-class UnlitLiveTextureMaterial;
+class FunctionViewer;
 class ConfigNode;
 class ConfigFile;
 class Logger;
@@ -119,7 +119,7 @@ private:
 
 	const int m_numSamplesPerDim = 16;
 	const unsigned int m_functionViewUpdateStepFreq = 100;
-	unordered_map<UnlitLiveTextureMaterial*, FunctionSampler*> m_pFunctionViews;
+	unordered_map<FunctionViewer*, FunctionSampler*> m_pFunctionViews;
 	vector<FunctionSampler*> m_pFunctionSamplers;
 	void initFunctionSamplers(State* s, Action* a);
 

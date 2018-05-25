@@ -4,6 +4,7 @@
 #include "text.h"
 #include "renderer.h"
 #include "xml-load.h"
+#include <algorithm>
 
 Sprite2D::Sprite2D(string name, Vector2D origin, Vector2D size, double depth, Material* material)
 	:GraphicObject2D(name, origin, size, 0.0, depth)
@@ -122,4 +123,58 @@ void Meter2D::setValue(double value)
 BoundingBox2D& GraphicObject2D::boundingBox()
 {
 	return m_bb;
+}
+
+FunctionViewer::FunctionViewer(string name, Vector2D origin, Vector2D size, double depth, Material* pMaterial)
+	:Sprite2D(name, origin, size, depth, pMaterial)
+{}
+
+FunctionViewer3D::FunctionViewer3D(string name, Vector2D origin, Vector2D size, unsigned int pixelRes, double depth)
+	:FunctionViewer(name, origin, size, depth, new UnlitLiveTextureMaterial(pixelRes, pixelRes))
+{
+}
+
+
+FunctionViewer3D::~FunctionViewer3D()
+{
+}
+
+void FunctionViewer3D::update(const vector<double>& pBuffer)
+{
+	((UnlitLiveTextureMaterial*)m_pMaterial)->updateTexture(pBuffer);
+}
+
+FunctionViewer2D::FunctionViewer2D(string name, Vector2D origin, Vector2D size, unsigned int pixelRes, double depth = 0)
+	:FunctionViewer(name, origin, size, depth) //no material
+{
+	m_lastValues = vector<double>(pixelRes);
+}
+
+FunctionViewer2D::~FunctionViewer2D()
+{}
+
+void FunctionViewer2D::update(const vector<double>& pBuffer)
+{
+	double minValue = pBuffer[0];
+	double maxValue = pBuffer[0];
+	for (size_t i = 1; i < pBuffer.size(); ++i)
+	{
+		minValue = std::min(minValue, pBuffer[i]);
+		maxValue = std::max(maxValue, pBuffer[i]);
+	}
+	double invValueRange;
+	if (maxValue - minValue > 0)
+		invValueRange = 1.0 / (maxValue - minValue);
+	else invValueRange = 1.0;
+	for (size_t i = 0; i < pBuffer.size(); ++i)
+	{
+		m_lastValues[i] = minValue + (pBuffer[i] - minValue) * invValueRange;
+	}
+}
+
+void draw()
+{
+	glBegin(GL_LINES);
+
+	glEnd();
 }

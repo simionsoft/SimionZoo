@@ -14,7 +14,7 @@ class Step;
 class Meter2D;
 class ViewPort;
 class Function;
-class UnlitLiveTextureMaterial;
+class FunctionViewer;
 
 enum PlaybackMode {Quarter,Half,Normal,x2,x4};
 
@@ -39,7 +39,7 @@ class SimionLogViewer: public IInputHandler
 	vector <Meter2D*> m_variableMeters;
 	ViewPort * m_pMetersViewport;
 
-	unordered_map<UnlitLiveTextureMaterial*, Function*> m_functionViews;
+	unordered_map<FunctionViewer*, Function*> m_functionViews;
 
 	bool m_bExitRequested = false;
 

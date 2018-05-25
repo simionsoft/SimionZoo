@@ -48,9 +48,9 @@ int main(int argc, char** argv)
 	pMeter2->setValueRange(Range(-5.0, 5.0));
 
 	vector<double> pLiveTextureValues = vector<double>(LIVE_TEX_SIZE_X*LIVE_TEX_SIZE_Y);
-	UnlitLiveTextureMaterial* pLiveMaterial = new UnlitLiveTextureMaterial(LIVE_TEX_SIZE_X, LIVE_TEX_SIZE_Y);
-	Sprite2D* sprite = new Sprite2D("test-sprite", Vector2D(0.5, 0.5), Vector2D(0.25, 0.25), 0.0, pLiveMaterial);
-	pRenderer->add2DGraphicObject(sprite);
+
+	FunctionViewer* pFunctionView = new FunctionViewer3D("function-view", Vector2D(0.5, 0.5), Vector2D(0.25, 0.25),LIVE_TEX_SIZE_X, 0.0);
+	pRenderer->add2DGraphicObject(pFunctionView);
 
 
 	double t = 0.0;
@@ -87,7 +87,7 @@ int main(int argc, char** argv)
 			}
 		}
 
-		pLiveMaterial->updateTexture(pLiveTextureValues);
+		pFunctionView->update(pLiveTextureValues);
 
 		
 		pInputHandler->handleInput();
