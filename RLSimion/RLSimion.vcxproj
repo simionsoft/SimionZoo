@@ -301,6 +301,7 @@
     <ClCompile Include="worlds\pull-box-2.cpp" />
     <ClCompile Include="worlds\push-box-1.cpp" />
     <ClCompile Include="worlds\push-box-2.cpp" />
+    <ClCompile Include="worlds\raincar.cpp" />
     <ClCompile Include="worlds\robot-control.cpp" />
     <ClCompile Include="worlds\Robot.cpp" />
     <ClCompile Include="worlds\Rope.cpp" />
@@ -369,6 +370,7 @@
     <ClInclude Include="worlds\pull-box-2.h" />
     <ClInclude Include="worlds\push-box-1.h" />
     <ClInclude Include="worlds\push-box-2.h" />
+    <ClInclude Include="worlds\raincar.h" />
     <ClInclude Include="worlds\robot-control.h" />
     <ClInclude Include="worlds\Robot.h" />
     <ClInclude Include="worlds\Rope.h" />

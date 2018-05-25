@@ -12,6 +12,7 @@
 #include "mountaincar.h"
 #include "robot-control.h"
 #include "double-pendulum.h"
+#include "raincar.h"
 #include "FAST.h"
 #include "../reward.h"
 #include "../config.h"
@@ -201,9 +202,10 @@ std::shared_ptr<DynamicModel> DynamicModel::getInstance(ConfigNode* pConfigNode)
 		{make_tuple("Robot-control",CHOICE_ELEMENT_NEW<RobotControl>,"World=Robot-control") },
 		{make_tuple("Pull-Box-2",CHOICE_ELEMENT_NEW<PullBox2>,"World=Pull-Box-2") },
 		{make_tuple("Pull-Box-1",CHOICE_ELEMENT_NEW<PullBox1>,"World=Pull-Box-1") },
-		{ make_tuple("Mountain-car",CHOICE_ELEMENT_NEW<MountainCar>,"World=Mountain-car") },
-		{ make_tuple("Swing-up-pendulum",CHOICE_ELEMENT_NEW<SwingupPendulum>,"World=Swing-up-pendulum") },
-		{ make_tuple("Double-pendulum",CHOICE_ELEMENT_NEW<DoublePendulum>,"World=Double-pendulum") }
+		{make_tuple("Mountain-car",CHOICE_ELEMENT_NEW<MountainCar>,"World=Mountain-car") },
+		{make_tuple("Swing-up-pendulum",CHOICE_ELEMENT_NEW<SwingupPendulum>,"World=Swing-up-pendulum") },
+		{make_tuple("Double-pendulum",CHOICE_ELEMENT_NEW<DoublePendulum>,"World=Double-pendulum") },
+		{make_tuple("Rain-car",CHOICE_ELEMENT_NEW<RainCar>,"World=Rain-car") }
 	});
 }
 

@@ -191,6 +191,9 @@
     <ClInclude Include="..\RLSimion\worlds\double-pendulum.h">
       <Filter>world</Filter>
     </ClInclude>
+    <ClInclude Include="..\RLSimion\worlds\raincar.h">
+      <Filter>world</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="app">
@@ -421,6 +424,9 @@
       <Filter>app</Filter>
     </ClCompile>
     <ClCompile Include="..\RLSimion\worlds\double-pendulum.cpp">
+      <Filter>world</Filter>
+    </ClCompile>
+    <ClCompile Include="..\RLSimion\worlds\raincar.cpp">
       <Filter>world</Filter>
     </ClCompile>
   </ItemGroup>

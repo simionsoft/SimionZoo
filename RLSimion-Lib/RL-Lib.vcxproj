@@ -283,6 +283,7 @@
     <ClInclude Include="..\RLSimion\worlds\pull-box-2.h" />
     <ClInclude Include="..\RLSimion\worlds\push-box-1.h" />
     <ClInclude Include="..\RLSimion\worlds\push-box-2.h" />
+    <ClInclude Include="..\RLSimion\worlds\raincar.h" />
     <ClInclude Include="..\RLSimion\worlds\robot-control.h" />
     <ClInclude Include="..\RLSimion\worlds\Robot.h" />
     <ClInclude Include="..\RLSimion\worlds\Rope.h" />
@@ -390,6 +391,7 @@
     <ClCompile Include="..\RLSimion\worlds\pull-box-2.cpp" />
     <ClCompile Include="..\RLSimion\worlds\push-box-1.cpp" />
     <ClCompile Include="..\RLSimion\worlds\push-box-2.cpp" />
+    <ClCompile Include="..\RLSimion\worlds\raincar.cpp" />
     <ClCompile Include="..\RLSimion\worlds\robot-control.cpp" />
     <ClCompile Include="..\RLSimion\worlds\Robot.cpp" />
     <ClCompile Include="..\RLSimion\worlds\Rope.cpp" />
