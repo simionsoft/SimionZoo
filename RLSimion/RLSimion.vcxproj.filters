@@ -214,6 +214,9 @@
     <ClCompile Include="features.cpp">
       <Filter>linear-vfa</Filter>
     </ClCompile>
+    <ClCompile Include="worlds\raincar.cpp">
+      <Filter>world</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="resource1.h" />
@@ -411,6 +414,9 @@
     </ClInclude>
     <ClInclude Include="features.h">
       <Filter>linear-vfa</Filter>
+    </ClInclude>
+    <ClInclude Include="worlds\raincar.h">
+      <Filter>world</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
