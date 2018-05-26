@@ -189,6 +189,7 @@ QLearning::QLearning(ConfigNode* pConfigNode): QLearningCritic(pConfigNode)
 	m_pQPolicy= CHILD_OBJECT_FACTORY<QPolicy>(pConfigNode, "Policy", "The policy to be followed");
 	m_bUseVFunctionAsBaseline = false;
 }
+
 QLearning::~QLearning()
 {
 
@@ -238,7 +239,7 @@ double DoubleQLearning::update(const State *s, const Action *a, const State *s_p
 
 	double td = r + gamma*pQ_b->max(s_p) - pQ_a->get(s, a);
 
-	pQ_a->add(m_pAux, td);
+	pQ_a->add(m_pAux, td * m_pAlpha->get());
 
 	return td;
 }
