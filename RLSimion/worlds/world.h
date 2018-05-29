@@ -85,6 +85,9 @@ public:
 	bool bIsFirstIntegrationStep() { return m_bFirstIntegrationStep; }
 	void setIsFirstIntegrationStep(bool bFirstIntegrationStep) { m_bFirstIntegrationStep = bFirstIntegrationStep; }
 
+	void overrideDT(double dt) { m_dt.set(dt); }
+	void overrideNumIntegrationSteps(int numIntegrationSteps) { m_numIntegrationSteps.set(numIntegrationSteps); }
+
 	World(ConfigNode* pConfigNode);
 	World() = default;
 	virtual ~World();

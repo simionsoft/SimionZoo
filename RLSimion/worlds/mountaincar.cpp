@@ -41,6 +41,11 @@ double MountainCar::getAngleAtPos(double x)
 
 void MountainCar::reset(State *s)
 {
+	//Here because the world needs to be initialized
+	//Override delta_t and Num-Integration-Steps
+	SimionApp::get()->pWorld->overrideDT(1.0);
+	SimionApp::get()->pWorld->overrideNumIntegrationSteps(1);
+
 	double x;
 	if (SimionApp::get()->pExperiment->isEvaluationEpisode())
 	{
@@ -67,12 +72,12 @@ void MountainCar::executeAction(State *s, const Action *a, double dt)
 	double pedal = a->get(m_aPedal);
 
 	if (position <= s->getProperties(m_sPosition).getMin() && velocity < 0)
-	{
 		velocity = 0;
-	}
 
-	s->set(m_sVelocity, velocity + pedal*0.001 - 0.0025 * cos(3 * position));	//velocity update ignores dt
-	s->set(m_sPosition, position + velocity * dt);								//position update does not
+	if (m_sPosition!=-0.5 && pedal!=0.0)
+		s->set(m_sVelocity, velocity + pedal*0.001 - 0.0025 * cos(3 * position));
+	else s->set(m_sVelocity, 0.0);
+	s->set(m_sPosition, position + velocity );
 	s->set(m_sHeight, getHeightAtPos(s->get(m_sPosition)));
 	s->set(m_sAngle, getAngleAtPos(s->get(m_sPosition)));
 }

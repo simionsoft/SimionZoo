@@ -74,14 +74,14 @@ Logger::Logger(ConfigNode* pConfigNode)
 {
 	if (!pConfigNode) return;
 
-	m_bLogEvaluationEpisodes = BOOL_PARAM(pConfigNode, "Log-eval-episodes", "Log evaluation episodes?", true);
+	m_bLogEvaluationEpisodes = BOOL_PARAM(pConfigNode, "Log-Eval-Episodes", "Log evaluation episodes?", true);
 
-	m_bLogTrainingEpisodes = BOOL_PARAM(pConfigNode, "Log-training-episodes", "Log training episodes?", false);
+	m_bLogTrainingEpisodes = BOOL_PARAM(pConfigNode, "Log-Training-Episodes", "Log training episodes?", false);
 
 	m_logFreq = DOUBLE_PARAM(pConfigNode, "Log-Freq", "Log frequency. Simulation time in seconds.", 0.25);
 
-	m_bLogFunctions = BOOL_PARAM(pConfigNode, "Log-functions", "Log functions learned?", true);
-	m_numFunctionLogPoints = INT_PARAM(pConfigNode, "Num-functions-logged", "How many times per experiment save logged functions", 10);
+	m_bLogFunctions = BOOL_PARAM(pConfigNode, "Log-Functions", "Log functions learned?", true);
+	m_numFunctionLogPoints = INT_PARAM(pConfigNode, "Num-Functions-Logged", "How many times per experiment save logged functions", 10);
 
 	m_pEpisodeTimer = new Timer();
 	m_pExperimentTimer = new Timer();

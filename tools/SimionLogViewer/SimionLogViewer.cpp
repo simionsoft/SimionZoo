@@ -39,7 +39,7 @@ void SimionLogViewer::init(int argc,char** argv)
 {
 	//init the renderer
 	m_pRenderer = new Renderer();
-	m_pRenderer->init(argc, argv, 600, 400);
+	m_pRenderer->init(argc, argv, 800, 600);
 
 	//resize the main viewport to (0,0) - (0.7,1)
 	ViewPort* pMainViewport = m_pRenderer->getDefaultViewPort();
@@ -181,8 +181,12 @@ bool SimionLogViewer::loadLogFile(string filename)
 
 		//allocate a step object to store the interpolated data
 		Episode* pFirstEpisode = m_pExperimentLog->getEpisode(0);
-		m_pInterpolatedStep = new Step(pFirstEpisode->getNumValuesPerStep());
-		m_numEpisodes = m_pExperimentLog->getNumEpisodes();
+		if (pFirstEpisode)
+		{
+			m_pInterpolatedStep = new Step(pFirstEpisode->getNumValuesPerStep());
+			m_numEpisodes = m_pExperimentLog->getNumEpisodes();
+		}
+		else return false;
 	}
 	else return false;
 
