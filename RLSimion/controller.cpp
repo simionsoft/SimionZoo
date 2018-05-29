@@ -36,7 +36,7 @@ LQRGain::LQRGain(ConfigNode* pConfigNode)
 
 LQRController::LQRController(ConfigNode* pConfigNode)
 {
-	m_outputAction = ACTION_VARIABLE(pConfigNode, "Output-Actionn", "The output action");
+	m_outputAction = ACTION_VARIABLE(pConfigNode, "Output-Action", "The output action");
 	m_gains = MULTI_VALUE<LQRGain>(pConfigNode, "LQR-Gain", "An LQR gain on an input state variable");
 
 }

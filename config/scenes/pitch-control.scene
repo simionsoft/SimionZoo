@@ -71,7 +71,7 @@
           <X>0.8</X>
           <Y>0.8</Y>
         </Scale>
-        <Rotation Bind="setpoint-pitch"/>
+        <Rotation Bind="setpoint-pitch" Multiplier="-1.0"/>
         <Depth>0.025</Depth>
       </Transform>
       <Material>
@@ -92,7 +92,7 @@
           <X>0.8</X>
           <Y>0.8</Y>
         </Scale>
-        <Rotation Bind="pitch"/>
+        <Rotation Bind="pitch" Multiplier="-1.0"/>
         <Depth>0.05</Depth>
       </Transform>
       <Material>

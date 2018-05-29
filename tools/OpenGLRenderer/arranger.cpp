@@ -26,26 +26,31 @@ void Arranger::arrange2DObjects(vector<GraphicObject2D*>& objects, Vector2D& are
 	Vector2D objSize;
 	
 	objSize.setX( std::max(minObjSize.x(), std::min(maxObjSize.x(), 1.0 / numObjects)) );
+	
+	//keep objects as separate from each other as possible
+	if ((objSize.x() + margin.x())*numObjects < areaSize.x())
+		margin.setX( (areaSize.x() - objSize.x()*numObjects) / (2*numObjects));
 		
 	double totalSizeInX = (objSize.x() + 2 * margin.x()) * numObjects;
 	double numRows = ceil(totalSizeInX);
 
 	objSize.setY( std::max(minObjSize.y(), std::min(maxObjSize.y(), 1.0 / numRows)) );
 
+	if ((objSize.y() + margin.y())*numRows > areaSize.y())
+		objSize.setY((areaSize.y() - 2*margin.y()*numRows) / numRows);
+
 	Vector2D objOrigin;
 	if (numRows == 1)
 		objOrigin = Vector2D((1 - totalSizeInX) *0.5 + margin.x(), margin.y());
 	else
 		objOrigin = margin;
-	//Vector2D functionViewSize = Vector2D(objSize - 2 * xOffset, viewSizeInY - 2 * yOffset);
-	objSize = objSize - margin * 2.0;
 
-	unsigned int lastRow = 0;
+	double lastRow = 0.0;
 	unsigned int viewIndex = 0;
 	for each (GraphicObject2D* pObj in objects)
 	{
 		//new row??
-		if ((unsigned int)floor((objSize.x() + margin.x() * 2.0) *(double)(viewIndex + 1)) != lastRow)
+		if ((objSize.x() + margin.x() * 2.0) *(double)(viewIndex + 1) - lastRow >1.01)
 		{
 			//shift the origin y coordinate down
 			objOrigin.setX(margin.x());
