@@ -95,6 +95,9 @@
             <Geometry x:Key="Film">
                 M18,4L20,8H17L15,4H13L15,8H12L10,4H8L10,8H7L5,4H4A2,2 0 0,0 2,6V18A2,2 0 0,0 4,20H20A2,2 0 0,0 22,18V4H18Z
             </Geometry>
+            <Geometry x:Key="Plug">
+                M16,7V3H14V7H10V3H8V7H8C7,7 6,8 6,9V14.5L9.5,18V21H14.5V18L18,14.5V9C18,8 17,7 16,7Z
+            </Geometry>
             <cv:NullToVisibilityConverter x:Key="NullToVisibilityConverter" />
             <cv:StringToVisibilityConverter x:Key="StringToVisibilityConverter" />
             <cv:InvertedBooleanToVisibilityConverter x:Key="InvertedBooleanToVisibilityConverter" />

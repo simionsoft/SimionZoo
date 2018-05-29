@@ -106,6 +106,17 @@
                             <TextBox Text="{Binding Path=Name,Mode=TwoWay}" BorderBrush="Transparent"
                                    VerticalAlignment="Center"/>
                             <Label Content="{Binding Path=NumForkCombinations}" VerticalAlignment="Center"/>
+                            <!--<Button Style="{StaticResource BadgerButtonStyle}" Width="18" Height="18">
+                                <i:Interaction.Triggers>
+                                    <i:EventTrigger EventName="Click">
+                                        <cal:ActionMessage MethodName="ShowConnections" >
+                                            <cal:Parameter Value="{Binding BindsDirectlyToSource=True}" />
+                                        </cal:ActionMessage>
+                                    </i:EventTrigger>
+                                </i:Interaction.Triggers>
+                                <Path Data="{StaticResource Plug}" Width="15" Height="15" Fill="#89000000"
+                                      HorizontalAlignment="Center" VerticalAlignment="Center" Margin="1"/>
+                            </Button>-->
                             <Button Style="{StaticResource BadgerButtonStyle}" Width="18" Height="18">
                                 <i:Interaction.Triggers>
                                     <i:EventTrigger EventName="Click">
