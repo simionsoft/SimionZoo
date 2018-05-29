@@ -17,16 +17,17 @@ namespace Portable_Badger
             string version;
 
             version = getVersion(inBaseRelPath + @"bin\Badger.exe");
-            outBaseFolder = @"Badger-" + version + @"\";
+            outBaseFolder = @"SimionZoo-" + version + @"\";
 
+            //Herd Agent
+            files.Add(inBaseRelPath + @"bin\HerdAgentInstaller.msi");
+
+            //Badger
             files.Add(inBaseRelPath + @"bin\Badger.exe");
 
             List<string> dependencyList = new List<string>();
             getDependencies(inBaseRelPath + @"bin\", "Badger.exe", ref dependencyList);
             files.AddRange(dependencyList);
-
-            //for some unknown reason, this dependency is not detected, so we add it manually:
-            files.Add(inBaseRelPath + @"bin\GongSolutions.Wpf.DragDrop.dll");
 
             //RLSimion
             files.Add(inBaseRelPath + @"bin\RLSimion.exe");
@@ -34,25 +35,37 @@ namespace Portable_Badger
             //FAST
             files.Add(inBaseRelPath + @"bin\FAST_Win32.exe");
             files.Add(inBaseRelPath + @"bin\TurbSim.exe");
+            files.Add(inBaseRelPath + @"bin\MAP_Win32.dll");
+
             //C++ Runtime libraries: x86 and x64 versions
             files.Add(inBaseRelPath + @"bin\vcruntime140.dll");
             files.Add(inBaseRelPath + @"bin\msvcp140.dll");
             files.Add(inBaseRelPath + @"bin\x64\vcruntime140.dll");
             files.Add(inBaseRelPath + @"bin\x64\msvcp140.dll");
             //CNTK library and dependencies
-            files.Add(inBaseRelPath + "bin\\x64\\CNTKWrapper.dll");
-            files.Add(inBaseRelPath + "bin\\x64\\Cntk.Core-2.1.dll");
-            files.Add(inBaseRelPath + "bin\\x64\\Cntk.Math-2.1.dll");
-            files.Add(inBaseRelPath + "bin\\x64\\Cntk.PerformanceProfiler-2.1.dll");
-            files.Add(inBaseRelPath + "bin\\x64\\libiomp5md.dll");
-            files.Add(inBaseRelPath + "bin\\x64\\mkl_cntk_p.dll");
+            files.Add(inBaseRelPath + "bin\\CNTKWrapper.dll");
+            files.Add(inBaseRelPath + "bin\\Cntk.Composite-2.5.1.dll");
+            files.Add(inBaseRelPath + "bin\\Cntk.Core-2.5.1.dll");
+            files.Add(inBaseRelPath + "bin\\Cntk.Math-2.5.1.dll");
+            files.Add(inBaseRelPath + "bin\\Cntk.PerformanceProfiler-2.5.1.dll");
+            files.Add(inBaseRelPath + "bin\\cublas64_90.dll");
+            files.Add(inBaseRelPath + "bin\\cudart64_90.dll");
+            files.Add(inBaseRelPath + "bin\\cudnn64_7.dll");
+            files.Add(inBaseRelPath + "bin\\libiomp5md.dll");
+            files.Add(inBaseRelPath + "bin\\mklml.dll");
+            files.Add(inBaseRelPath + "bin\\mkl_cntk_p.dll");
+            files.Add(inBaseRelPath + "bin\\mkldnn.dll");
+            files.Add(inBaseRelPath + "bin\\nvml.dll");
 
             //Config files and example experiments
             files.AddRange(getFilesInFolder(inBaseRelPath + @"config\", true));
             files.AddRange(getFilesInFolder(inBaseRelPath + @"experiments\examples", true));
 
-            string outputFile = inBaseRelPath + @"PortableBadger-" + version + ".gz";
+            string outputFile = inBaseRelPath + @"SimionZoo-" + version + ".gz";
+
+            Console.WriteLine("Compressing files");
             Compress(outputFile, files);
+            Console.WriteLine("Finished");
         }
 
         public static string getVersion(string file)
@@ -95,6 +108,7 @@ namespace Portable_Badger
         public static void Compress(string outputFilename,List<string> files)
         {
             uint numFilesAdded = 0;
+            double totalNumFiles = (double) files.Count;
             using (FileStream zipToOpen = new FileStream(outputFilename, FileMode.Create))
             {
                 using (ZipArchive archive = new ZipArchive(zipToOpen, ZipArchiveMode.Update))
@@ -107,10 +121,12 @@ namespace Portable_Badger
                             numFilesAdded++;
                         }
                         else Console.WriteLine("Couldn't find file: {0}", file);
+
+                        Console.Write("\rProgress: {0:F2}%", 100.0*((double)numFilesAdded)/ totalNumFiles);
                     }
+                    Console.WriteLine("\nSaving {0} files in  {1}", numFilesAdded, Path.GetFullPath( outputFilename) );
                 }
             }
-            Console.WriteLine("Added {0} files to {1}", numFilesAdded, outputFilename);
         }
     }
 }

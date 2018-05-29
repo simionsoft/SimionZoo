@@ -121,12 +121,6 @@
     </Compile>
     <Compile Include="AppBootstrapper.cs" />
     <Compile Include="AppWindowManager.cs" />
-    <Compile Include="badgerInstaller.cs">
-      <SubType>Component</SubType>
-    </Compile>
-    <Compile Include="badgerInstaller.Designer.cs">
-      <DependentUpon>badgerInstaller.cs</DependentUpon>
-    </Compile>
     <Compile Include="Converters\EnumDescriptionConverter.cs" />
     <Compile Include="Converters\IntTupleConverter.cs" />
     <Compile Include="Converters\InvertedBooleanToVisibilityConverter.cs" />
@@ -344,7 +338,6 @@
       <DependentUpon>Settings.settings</DependentUpon>
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
     </Compile>
-    <None Include="NeuralNetworkClasses.cd" />
     <None Include="packages.config" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
@@ -612,9 +605,9 @@
     </BootstrapperPackage>
   </ItemGroup>
   <ItemGroup>
-    <Content Include="badger.ico">
+    <Resource Include="badger.ico">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
+    </Resource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

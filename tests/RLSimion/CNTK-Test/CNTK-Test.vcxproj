@@ -23,7 +23,7 @@
     <ProjectGuid>{F9AC2430-D1A0-4AE3-9AD9-77BDF172B6A7}</ProjectGuid>
     <Keyword>Win32Proj</Keyword>
     <RootNamespace>CNTKTest</RootNamespace>
-    <WindowsTargetPlatformVersion>10.0.16299.0</WindowsTargetPlatformVersion>
+    <WindowsTargetPlatformVersion>10.0.17134.0</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">

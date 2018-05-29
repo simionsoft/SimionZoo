@@ -103,14 +103,13 @@
                         <ColumnDefinition Width="Auto"/>
                         <ColumnDefinition Width="105"/>
                         <ColumnDefinition Width="60"/>
-                        <ColumnDefinition Width="40"/>
+                        <ColumnDefinition Width="30"/>
                     </Grid.ColumnDefinitions>
 
                     <CheckBox VerticalAlignment="Center" IsChecked="{Binding IsSelected, Mode=TwoWay}" Margin="5,8"/>
                     <TextBlock Grid.Column="1" Text="{Binding Path=IpAddressString}" FontWeight="Bold"  Margin="5,8"/>
                     <TextBlock Grid.Column="2" Text="{Binding Path=State}" HorizontalAlignment="Left"  Margin="3,8"/>
-                    <TextBlock Grid.Column="3" Text="{Binding Path=Version}" HorizontalAlignment="Left"
-                               Foreground="#FF616161" Margin="1,8"/>
+                    <TextBlock Grid.Column="3" Text="{Binding Path=Version}" HorizontalAlignment="Left" Foreground="#FF616161" Margin="1,8"/>
                 </Grid>
             </Expander.Header>
 

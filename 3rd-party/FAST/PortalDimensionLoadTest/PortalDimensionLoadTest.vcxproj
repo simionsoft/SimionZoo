@@ -22,7 +22,7 @@
     <ProjectGuid>{B7440D4E-C1F0-4780-8D7F-C05302F663A2}</ProjectGuid>
     <Keyword>Win32Proj</Keyword>
     <RootNamespace>PortalDimensionLoadTest</RootNamespace>
-    <WindowsTargetPlatformVersion>10.0.15063.0</WindowsTargetPlatformVersion>
+    <WindowsTargetPlatformVersion>10.0.17134.0</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
@@ -180,7 +180,7 @@
     <ClCompile Include="loadTest.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\FASTDimensionalPortalDLL\FASTDimensionalPortalDLL.vcxproj">
+    <ProjectReference Include="..\FASTDimensionalPortal\FASTDimensionalPortal.vcxproj">
       <Project>{53399a66-b859-4cb6-bcac-a9a15b80dfd4}</Project>
     </ProjectReference>
   </ItemGroup>
