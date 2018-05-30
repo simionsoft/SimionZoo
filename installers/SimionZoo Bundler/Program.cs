@@ -4,6 +4,7 @@ using System.IO;
 using System.IO.Compression;
 using System.Collections.Generic;
 using System.Diagnostics;
+using IWshRuntimeLibrary;
 
 namespace Portable_Badger
 {
@@ -24,6 +25,9 @@ namespace Portable_Badger
 
             //Badger
             files.Add(inBaseRelPath + @"bin\Badger.exe");
+
+            //Badger - SimionLogViewer
+            files.Add(inBaseRelPath + @"bin\SimionLogViewer.exe");
 
             List<string> dependencyList = new List<string>();
             getDependencies(inBaseRelPath + @"bin\", "Badger.exe", ref dependencyList);
@@ -85,7 +89,7 @@ namespace Portable_Badger
             {
                 modName = assemblyName.Name + ".dll";
                 depName = inFolder + modName;
-                if (File.Exists(depName) && !dependencyList.Exists( name =>  name == depName ))
+                if (System.IO.File.Exists(depName) && !dependencyList.Exists( name =>  name == depName ))
                 {
                     dependencyList.Add(depName);
                     if (bRecursive)
@@ -115,7 +119,7 @@ namespace Portable_Badger
                 {
                     foreach (string file in files)
                     {
-                        if (File.Exists(file))
+                        if (System.IO.File.Exists(file))
                         {
                             archive.CreateEntryFromFile(file, outBaseFolder + file.Substring(inBaseRelPath.Length));
                             numFilesAdded++;
