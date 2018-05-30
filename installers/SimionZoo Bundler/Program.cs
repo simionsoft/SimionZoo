@@ -17,7 +17,7 @@ namespace Portable_Badger
             List<string> files= new List<string>();
             string version;
 
-            version = getVersion(inBaseRelPath + @"bin\Badger.exe");
+            version = GetVersion(inBaseRelPath + @"bin\Badger.exe");
             outBaseFolder = @"SimionZoo-" + version + @"\";
 
             //Herd Agent
@@ -30,7 +30,7 @@ namespace Portable_Badger
             files.Add(inBaseRelPath + @"bin\SimionLogViewer.exe");
 
             List<string> dependencyList = new List<string>();
-            getDependencies(inBaseRelPath + @"bin\", "Badger.exe", ref dependencyList);
+            GetDependencies(inBaseRelPath + @"bin\", "Badger.exe", ref dependencyList);
             files.AddRange(dependencyList);
 
             //RLSimion
@@ -62,8 +62,11 @@ namespace Portable_Badger
             files.Add(inBaseRelPath + "bin\\nvml.dll");
 
             //Config files and example experiments
-            files.AddRange(getFilesInFolder(inBaseRelPath + @"config\", true));
-            files.AddRange(getFilesInFolder(inBaseRelPath + @"experiments\examples", true));
+            files.AddRange(GetFilesInFolder(inBaseRelPath + @"experiments\examples", true, @"*.simion.exp"));
+            files.AddRange(GetFilesInFolder(inBaseRelPath + @"experiments\examples", true, @"*.simion.proj"));
+
+            files.AddRange(GetFilesInFolder(inBaseRelPath + @"config\", true));
+
 
             string outputFile = inBaseRelPath + @"SimionZoo-" + version + ".gz";
 
@@ -72,14 +75,14 @@ namespace Portable_Badger
             Console.WriteLine("Finished");
         }
 
-        public static string getVersion(string file)
+        public static string GetVersion(string file)
         {
             FileVersionInfo fvi = FileVersionInfo.GetVersionInfo(file);
 
             return fvi.FileVersion;
         }
 
-        public static void getDependencies(string inFolder, string module, ref List<string> dependencyList, bool bRecursive= true)
+        public static void GetDependencies(string inFolder, string module, ref List<string> dependencyList, bool bRecursive= true)
         {
             string depName, modName;
 
@@ -93,17 +96,17 @@ namespace Portable_Badger
                 {
                     dependencyList.Add(depName);
                     if (bRecursive)
-                        getDependencies(inFolder, modName, ref dependencyList, false);
+                        GetDependencies(inFolder, modName, ref dependencyList, false);
                 }
             }
         }
 
-        public static List<string> getFilesInFolder(string folder, bool bRecursive)
+        public static List<string> GetFilesInFolder(string folder, bool bRecursive, string filter = "*.*")
         {
             List<string> files = new List<string>();
 
             if (bRecursive)
-                files.AddRange(Directory.EnumerateFiles(folder, "*.*", SearchOption.AllDirectories));
+                files.AddRange(Directory.EnumerateFiles(folder, filter, SearchOption.AllDirectories));
             else
                 files.AddRange(Directory.EnumerateFiles(folder));
             return files;
