@@ -32,7 +32,7 @@ namespace Badger.ViewModels
             return newInstance;
         }
 
-        public override bool validate()
+        public override bool Validate()
         {
             int parsedValue;
             if (int.TryParse(content, out parsedValue))

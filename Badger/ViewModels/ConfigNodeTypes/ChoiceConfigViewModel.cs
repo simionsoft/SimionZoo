@@ -79,7 +79,7 @@ namespace Badger.ViewModels
         }
 
 
-        public override bool validate()
+        public override bool Validate()
         {
             bool bChoiceNameIsValid = false;
             if (selectedChoiceName == null || selectedChoiceName == "")
@@ -88,7 +88,7 @@ namespace Badger.ViewModels
                 if (selectedChoiceName == choiceElement.Attributes[XMLConfig.nameAttribute].Value)
                     bChoiceNameIsValid = true;
 
-            return bChoiceNameIsValid && base.validate();
+            return bChoiceNameIsValid && base.Validate();
         }
 
         public override void outputXML(StreamWriter writer, SaveMode mode, string leftSpace)

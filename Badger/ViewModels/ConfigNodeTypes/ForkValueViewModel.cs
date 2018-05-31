@@ -60,9 +60,9 @@ namespace Badger.ViewModels
                 writer.WriteLine(leftSpace + "</" + XMLConfig.forkValueTag + ">");
         }
 
-        public override bool validate()
+        public override bool Validate()
         {
-            return configNode.validate();
+            return configNode.Validate();
         }
 
         public override ConfigNodeViewModel clone()

@@ -37,7 +37,7 @@ namespace Badger.ViewModels
             set
             {
                 m_content = value;
-                bIsValid = validate();
+                bIsValid = Validate();
                 NotifyOfPropertyChange(() => content);
                 // Reflect content change in linked nodes
                 foreach (var node in m_linkedNodes)
@@ -56,7 +56,7 @@ namespace Badger.ViewModels
         }
 
 
-        abstract public bool validate();
+        abstract public bool Validate();
 
         //Comment
         private string m_comment = "";

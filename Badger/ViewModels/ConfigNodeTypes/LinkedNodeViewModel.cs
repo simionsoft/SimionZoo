@@ -135,7 +135,7 @@ namespace Badger.ViewModels
             }
         }
 
-        public override bool validate()
+        public override bool Validate()
         {
             return true;
         }

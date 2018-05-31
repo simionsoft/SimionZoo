@@ -197,7 +197,7 @@ namespace Badger.ViewModels
 
         public void SaveSelectedExperiment()
         {
-            if (SelectedExperiment == null || !SelectedExperiment.validate())
+            if (SelectedExperiment == null || !SelectedExperiment.Validate())
             {
                 CaliburnUtility.ShowWarningDialog("The app can't be validated. See error log.", "Error");
                 return;

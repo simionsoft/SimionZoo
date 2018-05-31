@@ -183,7 +183,7 @@ namespace Badger.Simion
             //Validate the experiments
             foreach (ExperimentViewModel experiment in experiments)
             {
-                if (!experiment.validate())
+                if (!experiment.Validate())
                 {
                     CaliburnUtility.ShowWarningDialog("The configuration couldn't be validated in " + experiment.Name
                         + ". Please check it", "VALIDATION ERROR");
@@ -325,7 +325,7 @@ namespace Badger.Simion
         {
             foreach (ExperimentViewModel experiment in experiments)
             {
-                if (!experiment.validate())
+                if (!experiment.Validate())
                 {
                     CaliburnUtility.ShowWarningDialog("The configuration couldn't be validated in " + experiment.Name
                         + ". Please check it", "VALIDATION ERROR");
@@ -388,7 +388,7 @@ namespace Badger.Simion
 
         static public void SaveExperiment(ExperimentViewModel experiment)
         {
-            if (!experiment.validate())
+            if (!experiment.Validate())
             {
                 CaliburnUtility.ShowWarningDialog("The configuration couldn't be validated in " + experiment.Name
                     + ". Please check it", "VALIDATION ERROR");

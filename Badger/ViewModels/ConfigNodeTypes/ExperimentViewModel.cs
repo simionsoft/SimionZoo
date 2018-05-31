@@ -178,7 +178,7 @@ namespace Badger.ViewModels
             if (m_worldDefinitions.ContainsKey(worldName))
             {
                 m_selectedWorld = worldName;
-                updateWorldDefinition();
+                UpdateWorldReferences();
             }
             else CaliburnUtility.ShowWarningDialog("The world selected hasn't been defined. Check for missmatched names in the source code of the app", "ERROR");
         }
@@ -205,20 +205,25 @@ namespace Badger.ViewModels
             }
         }
 
-        public void getWorldVarNameList(WorldVarType varType, ref List<string> varNameList)
+        public void WorldVarNameList(WorldVarType varType, ref List<string> varNameList)
         {
-            if (varNameList != null && m_selectedWorld != "")
+            if (varNameList != null)
             {
                 switch (varType)
                 {
                     case WorldVarType.StateVar:
-                        m_worldDefinitions[m_selectedWorld].getStateVarNameList(ref varNameList);
+                        if (m_selectedWorld != "")
+                            m_worldDefinitions[m_selectedWorld].getStateVarNameList(ref varNameList);
+                        m_wiresViewModel.GetWireNames(ref varNameList);
                         break;
                     case WorldVarType.ActionVar:
-                        m_worldDefinitions[m_selectedWorld].getActionVarNameList(ref varNameList);
+                        if (m_selectedWorld != "")
+                            m_worldDefinitions[m_selectedWorld].getActionVarNameList(ref varNameList);
+                        m_wiresViewModel.GetWireNames(ref varNameList);
                         break;
                     case WorldVarType.Constant:
-                        m_worldDefinitions[m_selectedWorld].getConstantNameList(ref varNameList);
+                        if (m_selectedWorld != "")
+                            m_worldDefinitions[m_selectedWorld].getConstantNameList(ref varNameList);
                         break;
                 }
             }
@@ -227,10 +232,9 @@ namespace Badger.ViewModels
         //WorldVarRefs
         private List<deferredLoadStep> m_WorldVarRefListeners = new List<deferredLoadStep>();
 
-        public void registerWorldVarRef(deferredLoadStep func)
-        { m_WorldVarRefListeners.Add(func); }
+        public void RegisterWorldVarRef(deferredLoadStep func) { m_WorldVarRefListeners.Add(func); }
 
-        private void updateWorldDefinition()
+        public void UpdateWorldReferences()
         {
             foreach (deferredLoadStep func in m_WorldVarRefListeners)
                 func();
@@ -243,6 +247,9 @@ namespace Badger.ViewModels
 
         public void Initialize(string appDefinitionFileName, XmlNode configRootNode, string experimentName)
         {
+            //Create wires
+            m_wiresViewModel = new WiresViewModel(this);
+
             XmlDocument appDefinition = new XmlDocument();
             appDefinition.Load(appDefinitionFileName);
 
@@ -302,8 +309,9 @@ namespace Badger.ViewModels
                 configRootNode = configDoc.LastChild;
             }
 
-            Initialize(appDefinitionFileName, configRootNode, Utility.GetFilename(configFilename, true, 2));
-            //we remove the two extensions in "simion.exp"
+            //Remove the extensions of the experiment file to give name to the experiment
+            uint numExtensions = Utility.NumParts(SimionFileData.ProjectExtension, '.') - 1;
+            Initialize(appDefinitionFileName, configRootNode, Utility.GetFilename(configFilename, true, (int) numExtensions));
         }
 
         //This constructor is called when a badger file is loaded. Because all the experiments are embedded within a single
@@ -336,7 +344,7 @@ namespace Badger.ViewModels
             }
         }
 
-        WiresViewModel m_wiresViewModel = new WiresViewModel();
+        WiresViewModel m_wiresViewModel;
         /// <summary>
         /// Shows a new window with the wires used in the experiment
         /// </summary>
@@ -345,10 +353,10 @@ namespace Badger.ViewModels
             CaliburnUtility.ShowPopupWindow(m_wiresViewModel, "Wires");
         }
 
-        public bool validate()
+        public bool Validate()
         {
             foreach (ConfigNodeViewModel node in m_children)
-                if (!node.validate()) return false;
+                if (!node.Validate()) return false;
             return true;
         }
 

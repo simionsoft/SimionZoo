@@ -39,7 +39,7 @@ namespace Badger.ViewModels
         }
 
 
-        public override bool validate()
+        public override bool Validate()
         {
             if (m_problemViewModel == null || m_problemViewModel.NetworkArchitecture == null)
             {

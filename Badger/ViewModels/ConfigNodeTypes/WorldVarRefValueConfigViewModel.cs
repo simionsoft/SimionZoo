@@ -32,7 +32,7 @@ namespace Badger.ViewModels
             m_varType = varType;//definitionNode.Attributes[XMLConfig.hangingFromAttribute].Value;
 
             //the possible values taken by this world variable
-            m_parentExperiment.getWorldVarNameList(m_varType, ref m_varNames);
+            m_parentExperiment.WorldVarNameList(m_varType, ref m_varNames);
             NotifyOfPropertyChange(() => varNames);
 
             if (configNode != null)
@@ -48,14 +48,14 @@ namespace Badger.ViewModels
                 m_parentExperiment.RegisterDeferredLoadStep(updateValues);
             }
 
-            m_parentExperiment.registerWorldVarRef(updateValues);
+            m_parentExperiment.RegisterWorldVarRef(updateValues);
         }
 
         public override ConfigNodeViewModel clone()
         {
             WorldVarRefValueConfigViewModel newInstance=
                 new WorldVarRefValueConfigViewModel(m_parentExperiment, m_varType,m_parent, nodeDefinition, m_parent.xPath);
-            m_parentExperiment.registerWorldVarRef(newInstance.updateValues);
+            m_parentExperiment.RegisterWorldVarRef(newInstance.updateValues);
             newInstance.m_varType = m_varType;
             newInstance.varNames = varNames;
             newInstance.selectedEnumeratedName = selectedEnumeratedName;
@@ -64,14 +64,19 @@ namespace Badger.ViewModels
 
         public void updateValues()
         {
-            m_parentExperiment.getWorldVarNameList(m_varType, ref m_varNames);
+            m_parentExperiment.WorldVarNameList(m_varType, ref m_varNames);
             NotifyOfPropertyChange(() => varNames);
 
             //to force re-validation if the list of variables wasn't available at node creation time
-            selectedEnumeratedName = selectedEnumeratedName;
+            if (!varNames.Exists(id => (id == content)))
+            {
+                if (m_varNames.Count > 0)
+                    selectedEnumeratedName = varNames[0];
+                else selectedEnumeratedName = "";
+            }
         }
 
-        public override bool validate()
+        public override bool Validate()
         {
             return varNames.Exists(id => (id==content));
         }

@@ -55,10 +55,10 @@ namespace Badger.ViewModels
             children.Remove(child);
         }
 
-        public override bool validate()
+        public override bool Validate()
         {
             if (!m_bOptional && children.Count == 0) return false;
-            return base.validate();
+            return base.Validate();
         }
 
         //the base method is overriden because we don't want the MultiValuedConfigViewModel to add

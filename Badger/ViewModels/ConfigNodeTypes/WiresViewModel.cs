@@ -27,10 +27,17 @@ namespace Badger.ViewModels
         }
     }
 
-    class WiresViewModel : PropertyChangedBase
+    class WiresViewModel : Screen
     {
+        ExperimentViewModel m_parent;
+
         private ObservableCollection<WireViewModel> m_wires = new ObservableCollection<WireViewModel>();
         public ObservableCollection<WireViewModel> Wires { get { return m_wires; } set { m_wires = value; NotifyOfPropertyChange(() => Wires); } }
+
+        public WiresViewModel(ExperimentViewModel parent)
+        {
+            m_parent = parent;
+        }
 
         public void AddWire()
         {
@@ -41,6 +48,31 @@ namespace Badger.ViewModels
         public void RemoveWire(WireViewModel wire)
         {
             Wires.Remove(wire);
+        }
+
+        public void GetWireNames(ref List<string> outList)
+        {
+            if (outList!=null)
+            {
+                foreach (WireViewModel wire in m_wires)
+                    outList.Add(wire.Name);
+            }
+        }
+
+        void OnWiresChanged()
+        {
+            m_parent.UpdateWorldReferences();
+        }
+
+        /// <summary>
+        ///     Updates references to world references
+        /// </summary>
+        /// <param name="close"></param>
+        protected override void OnDeactivate(bool close)
+        {
+            if (close)
+                OnWiresChanged();
+            base.OnDeactivate(close);
         }
     }
 }

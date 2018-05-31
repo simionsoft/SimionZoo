@@ -57,7 +57,7 @@ namespace Badger.ViewModels
         }
 
 
-        public override bool validate()
+        public override bool Validate()
         {
             List<string> enumeration = m_parentExperiment.GetEnumeratedType(m_class);
             return enumeration.Exists(id => (id==content));

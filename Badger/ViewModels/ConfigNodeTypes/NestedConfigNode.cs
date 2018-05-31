@@ -123,12 +123,12 @@ namespace Badger.ViewModels
             return false;
         }
 
-        public override bool validate()
+        public override bool Validate()
         {
             bIsValid = true;
             foreach (ConfigNodeViewModel child in children)
             {
-                if (!child.validate())
+                if (!child.Validate())
                 {
                     bIsValid = false;
                 }

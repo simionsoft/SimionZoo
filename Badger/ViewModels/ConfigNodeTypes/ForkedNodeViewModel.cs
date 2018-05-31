@@ -161,13 +161,13 @@ namespace Badger.ViewModels
             return newForkedNode;
         }
 
-        public override bool validate()
+        public override bool Validate()
         {
             if (name == "" || !m_parentExperiment.forkRegistry.Validate(alias))
                 return false;
             foreach (ForkValueViewModel value in children)
             {
-                if (!value.configNode.validate()) return false;
+                if (!value.configNode.Validate()) return false;
             }
             return true;
         }

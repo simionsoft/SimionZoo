@@ -60,12 +60,12 @@ namespace Badger.ViewModels
                 childrenInit(parentExperiment, parentExperiment.GetClassDefinition(m_className), m_xPath, configNode);
         }
 
-        public override bool validate()
+        public override bool Validate()
         {
             if (bIsOptional && !bIsUsed) return true; // don't need to validate children if its optional and not used
 
             foreach (ConfigNodeViewModel child in children)
-                if (!child.validate())
+                if (!child.Validate())
                 {
                     //Console.WriteLine(child.name);
                     return false;
