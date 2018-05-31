@@ -173,7 +173,7 @@ namespace Badger.ViewModels
 
         private string m_selectedWorld = "";
 
-        public void selectWorld(string worldName)
+        public void SelectWorld(string worldName)
         {
             if (m_worldDefinitions.ContainsKey(worldName))
             {
@@ -183,7 +183,7 @@ namespace Badger.ViewModels
             else CaliburnUtility.ShowWarningDialog("The world selected hasn't been defined. Check for missmatched names in the source code of the app", "ERROR");
         }
 
-        private void parseClassDefinitionMetadata(XmlNode definition)
+        private void ParseClassDefinitionMetadata(XmlNode definition)
         {
             string worldName;
             WorldDefinition worldDefinition;
@@ -326,7 +326,7 @@ namespace Badger.ViewModels
                         string name = definition.Attributes[XMLConfig.nameAttribute].Value;
                         if (definition.Name == XMLConfig.classDefinitionNodeTag)
                         {
-                            parseClassDefinitionMetadata(definition);
+                            ParseClassDefinitionMetadata(definition);
                             m_classDefinitions.Add(name, definition);
                         }
                         else if (definition.Name == XMLConfig.enumDefinitionNodeTag)
@@ -334,6 +334,15 @@ namespace Badger.ViewModels
                     }
                 }
             }
+        }
+
+        WiresViewModel m_wiresViewModel = new WiresViewModel();
+        /// <summary>
+        /// Shows a new window with the wires used in the experiment
+        /// </summary>
+        public void ShowWires()
+        {
+            CaliburnUtility.ShowPopupWindow(m_wiresViewModel, "Wires");
         }
 
         public bool validate()
@@ -452,6 +461,9 @@ namespace Badger.ViewModels
             set { m_forkRegistry = value; NotifyOfPropertyChange(() => forkRegistry); }
         }
 
+
+
+        //Links
         private ConfigNodeViewModel m_linkOriginNode;
 
 

@@ -30,7 +30,7 @@ namespace Badger.ViewModels
                 if (metadata.StartsWith("World="))
                     m_selectWorld= metadata.Remove(0,"World=".Length);
 
-                m_parentExperiment.selectWorld(m_selectWorld);
+                m_parentExperiment.SelectWorld(m_selectWorld);
             }
 
 

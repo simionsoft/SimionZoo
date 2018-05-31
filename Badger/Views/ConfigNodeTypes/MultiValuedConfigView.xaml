@@ -6,7 +6,6 @@
              xmlns:cal="http://www.caliburnproject.org" x:Class="Badger.Views.MultiValuedConfigView"
              mc:Ignorable="d" 
                 d:DesignHeight="50" d:DesignWidth="300">
-    <!--Tag="{Binding DataContext, RelativeSource={RelativeSource AncestorType={x:Type UserControl}}}">-->
     <UserControl.Resources>
         <ResourceDictionary>
             <BooleanToVisibilityConverter x:Key="BoolToVis" />

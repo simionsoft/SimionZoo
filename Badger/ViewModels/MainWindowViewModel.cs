@@ -269,10 +269,19 @@ namespace Badger.ViewModels
         /// <summary>
         ///     Runs locally the experiment with its currently selected parameters
         /// </summary>
-        /// <param name="e">The experiment to be run</param>
-        public void RunExperimentalUnitLocallyWithCurrentParameters(ExperimentViewModel e)
+        /// <param name="experiment">The experiment to be run</param>
+        public void RunExperimentalUnitLocallyWithCurrentParameters(ExperimentViewModel experiment)
         {
-            e.RunLocallyCurrentConfiguration();
+            experiment.RunLocallyCurrentConfiguration();
+        }
+
+        /// <summary>
+        ///     Shows the wires defined in the current experiment
+        /// </summary>
+        /// <param name="experiment">The selected experiment</param>
+        public void ShowWires(ExperimentViewModel experiment)
+        {
+            experiment.ShowWires();
         }
 
 
