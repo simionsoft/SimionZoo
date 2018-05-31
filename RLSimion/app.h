@@ -45,7 +45,7 @@ private:
 	std::vector<const char*> m_outputFiles;
 
 	unordered_map<string, StateActionFunction*> m_pStateActionFunctions = {};
-
+	unordered_map<string, double> m_wires = {};
 
 	//is this app being run remotely?
 	//by default, we assume it is in Release mode
@@ -78,6 +78,10 @@ public:
 	//Drawable functions can be added in initialization and drawn if "-local" argument is set
 	void registerStateActionFunction(string name, StateActionFunction* pFunction);
 	const unordered_map<string, StateActionFunction*> getStateActionFunctions() const { return m_pStateActionFunctions; }
+
+	//Wires: connections between inputs/outputs
+	void setWireValue(string name, double value);
+	double getWireValue(string name);
 
 	//Input/Output file registering member functions
 	//Subclasses should call these methods to let know what input/output files will be required at run-time

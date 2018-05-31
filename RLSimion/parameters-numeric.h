@@ -63,3 +63,13 @@ public:
 	BhatnagarSchedule(double alpha_0, double alpha_c, double t_exp, double evaluationValue, TimeReference timeReference);
 	double get();
 };
+
+class WireConnection : public NumericValue
+{
+	WIRE_CONNECTION m_wire;
+public:
+	WireConnection(ConfigNode* pParameters);
+	WireConnection(string name);
+	double get();
+	void set(double value);
+};

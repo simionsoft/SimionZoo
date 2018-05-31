@@ -38,6 +38,27 @@ ACTION_VARIABLE::ACTION_VARIABLE(Descriptor& actionDescriptor, size_t varId)
 	m_comment = "Object created from code, not a data file";
 }
 
+#include "app.h"
+
+WIRE_CONNECTION::WIRE_CONNECTION(ConfigNode* pConfigNode, const char* name, const char* comment)
+{
+	//we most likely won't need to store the name or the comment, so we don't
+	m_name = pConfigNode->getConstString(name);
+}
+
+WIRE_CONNECTION::WIRE_CONNECTION(string name)
+{
+	m_name = name;
+}
+
+double WIRE_CONNECTION::get()
+{
+	return SimionApp::get()->getWireValue(m_name);
+}
+void WIRE_CONNECTION::set(double value)
+{
+	return SimionApp::get()->setWireValue(m_name, value);
+}
 
 #include "../tools/CNTKWrapper/CNTKWrapper.h"
 

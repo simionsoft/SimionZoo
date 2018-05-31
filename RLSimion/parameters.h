@@ -167,6 +167,20 @@ public:
 	NamedVarProperties* getProperties() const { return m_pProperties; }
 };
 
+
+
+class WIRE_CONNECTION
+{
+	string m_name;
+public:
+	WIRE_CONNECTION() = default;
+	WIRE_CONNECTION(ConfigNode* pConfigNode, const char* name, const char* comment);
+	WIRE_CONNECTION(string name);
+
+	double get();
+	void set(double value);
+};
+
 template<typename DataType>
 class CHILD_OBJECT
 {

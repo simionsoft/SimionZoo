@@ -172,6 +172,18 @@ void SimionApp::registerStateActionFunction(string name, StateActionFunction* pF
 	m_pStateActionFunctions[finalName] = pFunction;
 }
 
+void SimionApp::setWireValue(string name, double value)
+{
+	m_wires[name] = value;
+}
+
+double SimionApp::getWireValue(string name)
+{
+	if (m_wires.find(name) != m_wires.end())
+		return m_wires[name];
+	return 0.0;
+}
+
 void SimionApp::registerInputFile(const char* filepath, const char* rename)
 {
 	char* copy = new char[strlen(filepath) + 1];

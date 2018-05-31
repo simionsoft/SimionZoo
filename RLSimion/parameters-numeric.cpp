@@ -136,6 +136,25 @@ double BhatnagarSchedule::get()
 	return m_alpha_0.get()*m_alpha_c.get() / (m_alpha_c.get() + pow(t, m_t_exp.get()));
 }
 
+WireConnection::WireConnection(ConfigNode* pParameters)
+{
+	m_wire = WIRE_CONNECTION(pParameters, "Wire", "Wire connection from which the value comes");
+}
+
+WireConnection::WireConnection(string name)
+{
+	m_wire = WIRE_CONNECTION (name);
+}
+
+double WireConnection::get()
+{
+	return m_wire.get();
+}
+
+void WireConnection::set(double value)
+{
+	m_wire.set(value);
+}
 
 std::shared_ptr<NumericValue> NumericValue::getInstance(ConfigNode* pConfigNode)
 {
@@ -144,7 +163,7 @@ std::shared_ptr<NumericValue> NumericValue::getInstance(ConfigNode* pConfigNode)
 		{"Constant",CHOICE_ELEMENT_NEW<ConstantValue>},
 		{"Linear-Schedule",CHOICE_ELEMENT_NEW<InterpolatedValue>},
 		{"Simple-Linear-Decay",CHOICE_ELEMENT_NEW<SimpleEpisodeLinearSchedule>},
-		{"Bhatnagar-Schedule",CHOICE_ELEMENT_NEW<BhatnagarSchedule>}
+		{"Bhatnagar-Schedule",CHOICE_ELEMENT_NEW<BhatnagarSchedule>},
+		{"Wire-Connection",CHOICE_ELEMENT_NEW<WireConnection>}
 	});
-
 }
