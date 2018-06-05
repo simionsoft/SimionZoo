@@ -125,7 +125,7 @@ namespace SimionSrcParser
             bool bOptional = false; //default value
             string badgerInfo = "";
             if (parsedArguments.Count > 4)
-                bOptional = bool.Parse(parsedArguments[4]);
+                bool.TryParse(parsedArguments[4], out bOptional); //if it's not a boolean we just ignore it
             if (parsedArguments.Count > 5)
                 badgerInfo = parsedArguments[5];
             parent.addParameter(new ChildObjectParameter(parsedArguments[0], parsedArguments[2]
@@ -140,7 +140,7 @@ namespace SimionSrcParser
             bool bOptional = false; //default value
             string badgerInfo = "";
             if (parsedArguments.Count > 4)
-                bOptional = bool.Parse(parsedArguments[4]);
+                bool.TryParse(parsedArguments[4], out bOptional); //if it's not a boolean we just ignore it
             if (parsedArguments.Count > 5)
                 badgerInfo = parsedArguments[5];
             parent.addParameter(new ChildObjectFactoryParameter(parsedArguments[0], parsedArguments[2]

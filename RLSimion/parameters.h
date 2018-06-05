@@ -229,6 +229,23 @@ public:
 		if (!m_bOptional || pConfigNode->getChild(name))
 			m_pValue = DataType::getInstance(pConfigNode->getChild(name));
 	}
+	//An alternative constructor to provide a default value
+	CHILD_OBJECT_FACTORY(ConfigNode* pConfigNode, const char* name, const char* comment
+		, DataType* defaultValue)
+	{
+		m_name = name;
+		m_comment = comment;
+
+		if (pConfigNode->getChild(name))
+		{
+			//the initialization of the object should include the call to new() and we need to free it:
+			//m_parameter = CHILD_OBJECT_FACTORY<BaseClass> (..., new SubClass());
+			if (defaultValue) delete defaultValue;
+			m_pValue = DataType::getInstance(pConfigNode->getChild(name));
+		}
+		else
+			m_pValue = std::shared_ptr<DataType>(defaultValue);
+	}
 	void set(DataType* newValue)
 	{
 		m_pValue = std::shared_ptr<DataType>(newValue);
@@ -327,11 +344,6 @@ public:
 			m_values.push_back(shared_ptr<DataType>(new DataType(pChildParameters, name, comment)));
 			pChildParameters = pChildParameters->getNextSibling(name);
 		}
-	}
-	void toVector(vector<string>& outVector)
-	{
-		for (size_t i = 0; i < m_values.size(); i++)
-			outVector.push_back(m_values[i].get());
 	}
 };
 

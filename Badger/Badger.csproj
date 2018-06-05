@@ -193,6 +193,7 @@
     <Compile Include="ViewModels\ConfigNodeTypes\NestedConfigNode.cs" />
     <Compile Include="ViewModels\ConfigNodeTypes\NumericForkedNodeViewModel.cs" />
     <Compile Include="ViewModels\ConfigNodeTypes\StringValueConfigViewModel.cs" />
+    <Compile Include="ViewModels\ConfigNodeTypes\WireConnectionViewModel.cs" />
     <Compile Include="ViewModels\ConfigNodeTypes\WiresViewModel.cs" />
     <Compile Include="ViewModels\ConfigNodeTypes\WorldVarRefValueConfigViewModel.cs" />
     <Compile Include="ViewModels\MonitoredJobViewModel.cs" />
@@ -411,6 +412,10 @@
       <SubType>Designer</SubType>
     </Page>
     <Page Include="Views\ConfigNodeTypes\StringValueConfigView.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Views\ConfigNodeTypes\WireConnectionView.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>

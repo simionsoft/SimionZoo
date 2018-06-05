@@ -1,25 +1,23 @@
-﻿using Badger.Simion;
-using System.Xml;
-using System.Collections.Generic;
-using Caliburn.Micro;
+﻿using System.Xml;
+using System.Collections.ObjectModel;
 
 namespace Badger.ViewModels
 {
     class WorldVarRefValueConfigViewModel: ConfigNodeViewModel
     {
-        private List<string> m_varNames= new List<string>();
-        public List<string> varNames
+        private ObservableCollection<string> m_variables= new ObservableCollection<string>();
+        public ObservableCollection<string> Variables
         {
-            get { return m_varNames; }
-            set { m_varNames = value; NotifyOfPropertyChange(() => varNames); }
+            get { return m_variables; }
+            set { m_variables = value; NotifyOfPropertyChange(() => Variables); }
         }
 
-        public string selectedEnumeratedName
+        public string SelectedVariable
         {
             get { return content; }
             set {
                 content = value;
-                NotifyOfPropertyChange(() => selectedEnumeratedName);
+                NotifyOfPropertyChange(() => SelectedVariable);
             }
         }
         
@@ -27,58 +25,58 @@ namespace Badger.ViewModels
 
         public WorldVarRefValueConfigViewModel(ExperimentViewModel parentExperiment, WorldVarType varType, ConfigNodeViewModel parent, XmlNode definitionNode, string parentXPath, XmlNode configNode = null)
         {
-            commonInit(parentExperiment, parent, definitionNode, parentXPath);
+            CommonInitialization(parentExperiment, parent, definitionNode, parentXPath);
 
             m_varType = varType;//definitionNode.Attributes[XMLConfig.hangingFromAttribute].Value;
 
             //the possible values taken by this world variable
-            m_parentExperiment.WorldVarNameList(m_varType, ref m_varNames);
-            NotifyOfPropertyChange(() => varNames);
+            m_parentExperiment.GetWorldVarNameList(m_varType, ref m_variables);
+            NotifyOfPropertyChange(() => Variables);
 
             if (configNode != null)
             {
                 configNode = configNode[name];
-                selectedEnumeratedName = configNode.InnerText;
+                SelectedVariable = configNode.InnerText;
             }
 
-            if (m_varNames.Count==0)
+            if (m_variables.Count==0)
             {
                 //Either we have loaded the config but the list is of values has not yet been loaded
                 //or no config file has been loaded. In Either case, we register for a deferred load step
-                m_parentExperiment.RegisterDeferredLoadStep(updateValues);
+                m_parentExperiment.RegisterDeferredLoadStep(Update);
             }
 
-            m_parentExperiment.RegisterWorldVarRef(updateValues);
+            m_parentExperiment.RegisterWorldVarRef(Update);
         }
 
         public override ConfigNodeViewModel clone()
         {
             WorldVarRefValueConfigViewModel newInstance=
                 new WorldVarRefValueConfigViewModel(m_parentExperiment, m_varType,m_parent, nodeDefinition, m_parent.xPath);
-            m_parentExperiment.RegisterWorldVarRef(newInstance.updateValues);
+            m_parentExperiment.RegisterWorldVarRef(newInstance.Update);
             newInstance.m_varType = m_varType;
-            newInstance.varNames = varNames;
-            newInstance.selectedEnumeratedName = selectedEnumeratedName;
+            newInstance.Variables = Variables;
+            newInstance.SelectedVariable = SelectedVariable;
             return newInstance;
         }
 
-        public void updateValues()
+        public void Update()
         {
-            m_parentExperiment.WorldVarNameList(m_varType, ref m_varNames);
-            NotifyOfPropertyChange(() => varNames);
+            m_parentExperiment.GetWorldVarNameList(m_varType, ref m_variables);
+            NotifyOfPropertyChange(() => Variables);
 
             //to force re-validation if the list of variables wasn't available at node creation time
-            if (!varNames.Exists(id => (id == content)))
+            if (!Variables.Contains(content))
             {
-                if (m_varNames.Count > 0)
-                    selectedEnumeratedName = varNames[0];
-                else selectedEnumeratedName = "";
+                if (m_variables.Count > 0)
+                    SelectedVariable = Variables[0];
+                else SelectedVariable = "";
             }
         }
 
         public override bool Validate()
         {
-            return varNames.Exists(id => (id==content));
+            return Variables.Contains(content);
         }
     }
 }

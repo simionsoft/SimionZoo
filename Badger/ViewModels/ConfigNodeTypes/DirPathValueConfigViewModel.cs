@@ -10,7 +10,7 @@ namespace Badger.ViewModels
         public DirPathValueConfigViewModel(ExperimentViewModel parentExperiment, ConfigNodeViewModel parent,
             XmlNode definitionNode, string parentXPath, XmlNode configNode = null)
         {
-            commonInit(parentExperiment, parent, definitionNode, parentXPath);
+            CommonInitialization(parentExperiment, parent, definitionNode, parentXPath);
 
             if (configNode == null || configNode[name] == null)
             {

@@ -37,7 +37,7 @@ namespace Badger.ViewModels
         public BranchConfigViewModel(ExperimentViewModel parentExperiment, ConfigNodeViewModel parent
             , XmlNode definitionNode, string parentXPath, XmlNode configNode = null, bool initChildren = true)
         {
-            commonInit(parentExperiment, parent, definitionNode, parentXPath);
+            CommonInitialization(parentExperiment, parent, definitionNode, parentXPath);
 
             m_className = definitionNode.Attributes[XMLConfig.classAttribute].Value;
             if (definitionNode.Attributes.GetNamedItem(XMLConfig.windowAttribute) != null)

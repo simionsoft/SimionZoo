@@ -2,7 +2,7 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-             x:Class="Badger.Views.WorldVarRefValueConfigView"
+             x:Class="Badger.Views.WireConnectionView"
              mc:Ignorable="d" 
              d:DesignHeight="50" d:DesignWidth="300">
 
@@ -15,7 +15,7 @@
             <Label x:Name="name" Width="150" Foreground="{Binding textColor}" VerticalContentAlignment="Center"
                    HorizontalContentAlignment="Right" ContextMenu="{DynamicResource SharedContextMenu}"/>
 
-            <ComboBox Background="White" ItemsSource="{Binding Variables}" SelectedValue="{Binding SelectedVariable}"/>
+            <ComboBox Background="White" ItemsSource="{Binding WireNames}" SelectedValue="{Binding SelectedWire}"/>
         </StackPanel>
     </StackPanel>
 </UserControl>

@@ -26,7 +26,7 @@ namespace Badger.ViewModels
         public EnumeratedValueConfigViewModel(ExperimentViewModel parentExperiment, ConfigNodeViewModel parent,
             XmlNode definitionNode, string parentXPath, XmlNode configNode = null)
         {
-            commonInit(parentExperiment, parent, definitionNode, parentXPath);
+            CommonInitialization(parentExperiment, parent, definitionNode, parentXPath);
 
             m_class = definitionNode.Attributes[XMLConfig.classAttribute].Value;
             enumeratedNames = m_parentExperiment.GetEnumeratedType(m_class);

@@ -326,7 +326,7 @@ namespace Badger.ViewModels
         }
 
         //Initialization stuff common to all types of configuration nodes
-        protected void commonInit(ExperimentViewModel parentExperiment, ConfigNodeViewModel parent,
+        protected void CommonInitialization(ExperimentViewModel parentExperiment, ConfigNodeViewModel parent,
             XmlNode definitionNode, string parentXPath)
         {
             name = definitionNode.Attributes[XMLConfig.nameAttribute].Value;

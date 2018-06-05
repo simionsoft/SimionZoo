@@ -50,7 +50,7 @@ namespace Badger.ViewModels
             Wires.Remove(wire);
         }
 
-        public void GetWireNames(ref List<string> outList)
+        public void GetWireNames(ref ObservableCollection<string> outList)
         {
             if (outList!=null)
             {

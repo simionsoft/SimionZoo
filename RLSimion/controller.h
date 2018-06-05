@@ -85,7 +85,7 @@ protected:
 	double m_ratedPower;
 	double m_genElecEff;
 	double m_lastT_g = 0.0;
-	DOUBLE_PARAM m_pA, m_pK_alpha, m_pKP, m_pKI;
+	CHILD_OBJECT_FACTORY<NumericValue> m_pA, m_pK_alpha, m_pKP, m_pKI;
 public:
 	WindTurbineVidalController(ConfigNode* pConfigNode);
 	virtual ~WindTurbineVidalController();
@@ -108,7 +108,7 @@ protected:
 	//action variable indices
 	size_t m_a_beta, m_a_T_g;
 	
-	DOUBLE_PARAM m_pC_0, m_pKP, m_pKI;
+	CHILD_OBJECT_FACTORY<NumericValue> m_pC_0, m_pKP, m_pKI;
 	double m_K_t, m_J_t;
 	double m_lastT_g = 0.0;
 	double m_genElecEff;
@@ -140,7 +140,7 @@ protected:
 	double m_VS_SySp, m_VS_Slope15, m_VS_Slope25, m_VS_TrGnSp;
 	//pitch controller's parameters and variables
 	double m_IntSpdErr;
-	DOUBLE_PARAM m_PC_KK, m_PC_KP, m_PC_KI;
+	CHILD_OBJECT_FACTORY<NumericValue> m_PC_KK, m_PC_KP, m_PC_KI;
 	DOUBLE_PARAM m_PC_RefSpd;
 public:
 	WindTurbineJonkmanController(ConfigNode* pConfigNode);

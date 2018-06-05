@@ -58,7 +58,7 @@ namespace Badger.ViewModels
             XmlNode definitionNode, string parentXPath, XmlNode configNode = null, bool initChildren = true)
         {
             string choiceElementName;
-            commonInit(parentExperiment, parent, definitionNode, parentXPath);
+            CommonInitialization(parentExperiment, parent, definitionNode, parentXPath);
 
             if (configNode != null) configNode = configNode[name];
 

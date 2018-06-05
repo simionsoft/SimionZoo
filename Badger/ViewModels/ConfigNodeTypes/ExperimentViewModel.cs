@@ -8,6 +8,7 @@ using System.Linq;
 using System;
 using System.Diagnostics;
 using Herd;
+using System.Collections.ObjectModel;
 
 namespace Badger.ViewModels
 {
@@ -205,7 +206,7 @@ namespace Badger.ViewModels
             }
         }
 
-        public void WorldVarNameList(WorldVarType varType, ref List<string> varNameList)
+        public void GetWorldVarNameList(WorldVarType varType, ref ObservableCollection<string> varNameList)
         {
             if (varNameList != null)
             {
@@ -351,8 +352,28 @@ namespace Badger.ViewModels
         public void ShowWires()
         {
             CaliburnUtility.ShowPopupWindow(m_wiresViewModel, "Wires");
+            UpdateWireConnections();
+            UpdateWorldReferences(); //state and action variables may reference a wire too
         }
 
+        public void GetWireNames(ref List<string> wireNames)
+        {
+            foreach (WireViewModel wire in m_wiresViewModel.Wires)
+                wireNames.Add(wire.Name);
+        }
+
+        private List<deferredLoadStep> m_WireConnections = new List<deferredLoadStep>();
+
+        public void RegisterWireConnection(deferredLoadStep func) { m_WireConnections.Add(func); }
+
+        public void UpdateWireConnections()
+        {
+            foreach (deferredLoadStep func in m_WireConnections)
+                func();
+        }
+
+
+        //Validation
         public bool Validate()
         {
             foreach (ConfigNodeViewModel node in m_children)

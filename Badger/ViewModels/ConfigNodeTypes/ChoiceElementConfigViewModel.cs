@@ -14,7 +14,7 @@ namespace Badger.ViewModels
         public ChoiceElementConfigViewModel(ExperimentViewModel parentExperiment, ConfigNodeViewModel parent, XmlNode definitionNode
             , string parentXPath, XmlNode configNode= null)
         {
-            commonInit(parentExperiment,parent,definitionNode,parentXPath);
+            CommonInitialization(parentExperiment,parent,definitionNode,parentXPath);
 
             m_className = definitionNode.Attributes[XMLConfig.classAttribute].Value;
             if (definitionNode.Attributes.GetNamedItem(XMLConfig.windowAttribute) != null)

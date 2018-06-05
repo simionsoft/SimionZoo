@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Xml;
 using Badger.Simion;
 
@@ -46,25 +47,25 @@ namespace Badger.Data
     }
     class WorldDefinition
     {
-        List<StateVar> m_stateVars = new List<StateVar>();
-        List<ActionVar> m_actionVars = new List<ActionVar>();
-        List<string> m_constants = new List<string>();
+        ObservableCollection<StateVar> m_stateVars = new ObservableCollection<StateVar>();
+        ObservableCollection<ActionVar> m_actionVars = new ObservableCollection<ActionVar>();
+        ObservableCollection<string> m_constants = new ObservableCollection<string>();
 
         public void addStateVar(StateVar var) { m_stateVars.Add(var); }
         public void addActionVar(ActionVar var) { m_actionVars.Add(var); }
         public void addConstant(string name) { m_constants.Add(name); }
 
-        public void getStateVarNameList(ref List<string> varNameList)
+        public void getStateVarNameList(ref ObservableCollection<string> varNameList)
         {
             varNameList.Clear();
             foreach (StateVar var in m_stateVars) varNameList.Add(var.name);
         }
-        public void getActionVarNameList(ref List<string> varNameList)
+        public void getActionVarNameList(ref ObservableCollection<string> varNameList)
         {
             varNameList.Clear();
             foreach (ActionVar var in m_actionVars) varNameList.Add(var.name);
         }
-        public void getConstantNameList(ref List<string> varNameList)
+        public void getConstantNameList(ref ObservableCollection<string> varNameList)
         {
             varNameList.Clear();
             foreach (string name in m_constants) varNameList.Add(name);

@@ -11,7 +11,7 @@ namespace Badger.ViewModels
         public MultiValuedItemConfigViewModel(ExperimentViewModel parentExperiment,MultiValuedConfigViewModel parent
             ,XmlNode definitionNode, string parentXPath, XmlNode configNode=null)
         {
-            commonInit(parentExperiment,parent,definitionNode,parentXPath);
+            CommonInitialization(parentExperiment,parent,definitionNode,parentXPath);
 
             m_parent = parent;
             m_className = definitionNode.Attributes[XMLConfig.classAttribute].Value;

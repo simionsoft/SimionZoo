@@ -12,7 +12,7 @@ namespace Badger.ViewModels
         public MultiValuedConfigViewModel(ExperimentViewModel parentExperiment, ConfigNodeViewModel parent
             , XmlNode definitionNode, string parentXPath, XmlNode configNode= null, bool initChildren= true)
         {
-            commonInit(parentExperiment,parent, definitionNode,parentXPath);
+            CommonInitialization(parentExperiment,parent, definitionNode,parentXPath);
 
             m_className = definitionNode.Attributes[XMLConfig.classAttribute].Value;
             if (definitionNode.Attributes.GetNamedItem(XMLConfig.optionalAttribute) != null)
