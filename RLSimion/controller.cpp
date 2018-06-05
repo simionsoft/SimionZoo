@@ -16,11 +16,8 @@ std::shared_ptr<Controller> Controller::getInstance(ConfigNode* pConfigNode)
 		{"PID",CHOICE_ELEMENT_NEW<PIDController>},
 		{"LQR",CHOICE_ELEMENT_NEW<LQRController>},
 		{"Jonkman",CHOICE_ELEMENT_NEW<WindTurbineJonkmanController>},
-		{"Extended-Jonkman",CHOICE_ELEMENT_NEW<ExtendedWindTurbineJonkmanController>},
 		{"Vidal",CHOICE_ELEMENT_NEW<WindTurbineVidalController>},
-		{"Extended-Vidal",CHOICE_ELEMENT_NEW<ExtendedWindTurbineVidalController>},
 		{"Boukhezzar",CHOICE_ELEMENT_NEW<WindTurbineBoukhezzarController>},
-		{"Extended-Boukhezzar",CHOICE_ELEMENT_NEW<ExtendedWindTurbineBoukhezzarController>}
 	});
 }
 
@@ -61,7 +58,7 @@ size_t LQRController::getNumOutputs()
 {
 	return 1;
 }
-size_t LQRController::getOutputActionIndex(size_t output)
+const char* LQRController::getOutputAction(size_t output)
 {
 	if (output == 0)
 		return m_outputAction.get();
@@ -90,7 +87,7 @@ size_t PIDController::getNumOutputs()
 {
 	return 1;
 }
-size_t PIDController::getOutputActionIndex(size_t output)
+const char* PIDController::getOutputAction(size_t output)
 {
 	if (output == 0)
 		return m_outputAction.get();
@@ -152,12 +149,12 @@ size_t WindTurbineVidalController::getNumOutputs()
 {
 	return 2;
 }
-size_t WindTurbineVidalController::getOutputActionIndex(size_t output)
+const char* WindTurbineVidalController::getOutputAction(size_t output)
 {
 	switch (output)
 	{
-	case 0: return m_a_beta;
-	case 1: return m_a_T_g;
+	case 0: return "beta";
+	case 1: return "T_g";
 	}
 	throw std::exception("LQRController. Invalid action output given.");
 }
@@ -248,12 +245,12 @@ size_t WindTurbineBoukhezzarController::getNumOutputs()
 {
 	return 2;
 }
-size_t WindTurbineBoukhezzarController::getOutputActionIndex(size_t output)
+const char* WindTurbineBoukhezzarController::getOutputAction(size_t output)
 {
 	switch (output)
 	{
-	case 0: return m_a_beta;
-	case 1: return m_a_T_g;
+	case 0: return "beta";
+	case 1: return "T_g";
 	}
 	throw std::exception("LQRController. Invalid action output given.");
 }
@@ -351,12 +348,12 @@ size_t WindTurbineJonkmanController::getNumOutputs()
 {
 	return 2;
 }
-size_t WindTurbineJonkmanController::getOutputActionIndex(size_t output)
+const char* WindTurbineJonkmanController::getOutputAction(size_t output)
 {
 	switch (output)
 	{
-	case 0: return m_a_beta;
-	case 1: return m_a_T_g;
+	case 0: return "beta";
+	case 1: return "T_g";
 	}
 
 	throw std::exception("LQRController. Invalid action output given.");

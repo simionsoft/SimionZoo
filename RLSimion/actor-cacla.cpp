@@ -35,7 +35,7 @@ void CACLALearner::update(const State *s, const Action *a, const State *s_p, dou
 		{
 			m_pPolicy->getFeatures(s, m_pStateFeatures);
 
-			lastNoise = a->get(m_pPolicy->getOutputActionIndex()) - m_pPolicy->getDeterministicOutput(m_pStateFeatures);
+			lastNoise = a->get(m_pPolicy->getOutputAction()) - m_pPolicy->getDeterministicOutput(m_pStateFeatures);
 
 			m_pPolicy->addFeatures(m_pStateFeatures, alpha*lastNoise);
 		}

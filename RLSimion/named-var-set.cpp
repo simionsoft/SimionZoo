@@ -1,4 +1,5 @@
 #include "named-var-set.h"
+#include "app.h"
 #include <algorithm>
 using namespace std;
 
@@ -14,6 +15,12 @@ NamedVarProperties::NamedVarProperties(const char* name, const char* units, doub
 void NamedVarProperties::setName(const char* name)
 {
 	strcpy_s(m_name, VAR_NAME_MAX_LENGTH, name);
+}
+
+NamedVarProperties* Descriptor::getProperties(const char* name)
+{
+	size_t varIndex = getVarIndex(name);
+	return m_descriptor[varIndex];
 }
 
 size_t Descriptor::getVarIndex(const char* name)
@@ -104,7 +111,12 @@ void NamedVarSet::set(const char* varName, double value)
 		set(i, value);
 		return;
 	}
-	throw std::exception("Incorrect variable name in NamedVarSet::set()");
+	//check if a wire with that name exists
+	WireHandler* pWireHandler = m_descriptor.getWireHandler();
+	if (pWireHandler != nullptr && pWireHandler->wireExists(varName))
+		pWireHandler->wireSetValue(varName, value);
+	else
+		throw std::exception("Incorrect variable name in NamedVarSet::set()");
 }
 
 void NamedVarSet::set(size_t i, double value)
@@ -125,8 +137,7 @@ void NamedVarSet::set(size_t i, double value)
 			m_pValues[i] = value;
 		}
 	}
-	else
-		throw std::exception("Incorrect variable index in NamedVarSet::set()");
+	else throw std::exception("Incorrect variable index in NamedVarSet::set()");
 }
 
 double NamedVarSet::getNormalized(const char* varName) const
@@ -156,7 +167,12 @@ double NamedVarSet::get(const char* varName) const
 	size_t varIndex = m_descriptor.getVarIndex(varName);
 	if (varIndex >= 0)
 		return m_pValues[varIndex];
-	throw std::exception("Incorrect variable index in NamedVarSet::get()");
+
+	WireHandler* pWireHandler = m_descriptor.getWireHandler();
+	if (pWireHandler != nullptr && pWireHandler->wireExists(varName))
+		return pWireHandler->wireGetValue(varName);
+	else
+		throw std::exception("Incorrect variable name in NamedVarSet::get()");
 }
 
 

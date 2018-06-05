@@ -195,18 +195,18 @@ void Network::setOutputLayer(CNTK::FunctionPtr outputLayer)
 
 void Network::stateToVector(const State* s, vector<double>& stateVector)
 {
-	const vector<size_t>& stateVars = m_pNetworkDefinition->getInputStateVarIds();
+	const vector<string>& stateVars = m_pNetworkDefinition->getInputStateVariables();
 	stateVector = vector<double>(stateVars.size());
 	for (size_t i = 0; i< stateVars.size(); i++)
-		stateVector[i] = s->getNormalized((int)stateVars[i]);
+		stateVector[i] = s->getNormalized(stateVars[i].c_str());
 }
 
 void Network::actionToVector(const Action* a, vector<double>& actionVector)
 {
-	const vector<size_t>& actionVars = m_pNetworkDefinition->getInputActionVarIds();
+	const vector<string>& actionVars = m_pNetworkDefinition->getInputActionVariables();
 	actionVector = vector<double>(actionVars.size());
 	for (size_t i = 0; i < actionVars.size(); i++)
-		actionVector[i] = a->getNormalized((int)actionVars[i]);
+		actionVector[i] = a->getNormalized(actionVars[i].c_str());
 }
 
 vector<double>& Network::evaluate(const State* s, const Action* a)

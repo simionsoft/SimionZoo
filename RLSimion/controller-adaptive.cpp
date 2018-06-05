@@ -49,13 +49,13 @@ double ExtendedWindTurbineVidalController::selectAction(const State *s, Action *
 	//K_alpha= f_k_alpha(v)
 	//KP= f_kp(v)
 	m_pALearner->getPolicy()->selectAction(s, a);
-	m_pA.set(a->get(m_pALearner->getPolicy()->getOutputActionIndex()));
+	m_pA.set(a->get(m_pALearner->getPolicy()->getOutputAction()));
 
 	m_pKAlphaLearner->getPolicy()->selectAction(s, a);
-	m_pK_alpha.set(a->get(m_pKAlphaLearner->getPolicy()->getOutputActionIndex()));
+	m_pK_alpha.set(a->get(m_pKAlphaLearner->getPolicy()->getOutputAction()));
 
 	m_pKPLearner->getPolicy()->selectAction(s, a);
-	m_pKP.set(a->get(m_pKPLearner->getPolicy()->getOutputActionIndex()));
+	m_pKP.set(a->get(m_pKPLearner->getPolicy()->getOutputAction()));
 
 	WindTurbineVidalController::selectAction(s, a);
 
@@ -109,10 +109,10 @@ double ExtendedWindTurbineBoukhezzarController::selectAction(const State *s, Act
 	//K_alpha= f_k_alpha(v)
 	//KP= f_kp(v)
 	m_pC0Learner->getPolicy()->selectAction(s, a);
-	m_pC_0.set(a->get(m_pC0Learner->getPolicy()->getOutputActionIndex()));
+	m_pC_0.set(a->get(m_pC0Learner->getPolicy()->getOutputAction()));
 
 	m_pKPLearner->getPolicy()->selectAction(s, a);
-	m_pKP.set(a->get(m_pKPLearner->getPolicy()->getOutputActionIndex()));
+	m_pKP.set(a->get(m_pKPLearner->getPolicy()->getOutputAction()));
 
 	WindTurbineBoukhezzarController::selectAction(s, a);
 
@@ -155,7 +155,7 @@ double ExtendedWindTurbineJonkmanController::selectAction(const State *s, Action
 {
 	//KP= f_kp(v)
 	m_pPC_KP_Learner->getPolicy()->selectAction(s, a);
-	m_PC_KP.set(a->get(m_pPC_KP_Learner->getPolicy()->getOutputActionIndex()));
+	m_PC_KP.set(a->get(m_pPC_KP_Learner->getPolicy()->getOutputAction()));
 
 	WindTurbineJonkmanController::selectAction(s, a);
 

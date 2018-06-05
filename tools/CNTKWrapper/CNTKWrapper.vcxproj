@@ -153,7 +153,7 @@
     <ClInclude Include="CNTKWrapper.h" />
     <ClInclude Include="CNTKWrapperInternals.h" />
     <ClInclude Include="Exceptions.h" />
-    <ClInclude Include="Minibatch.h" />
+    <ClInclude Include="minibatch.h" />
     <ClInclude Include="OptimizerSetting.h" />
     <ClInclude Include="NetworkDefinition.h" />
     <ClInclude Include="InputData.h" />
@@ -170,7 +170,7 @@
     <ClCompile Include="Chain.cpp" />
     <ClCompile Include="CNTKWrapper.cpp" />
     <ClCompile Include="CNTKWrapperInternals.cpp" />
-    <ClCompile Include="Minibatch.cpp" />
+    <ClCompile Include="minibatch.cpp" />
     <ClCompile Include="OptimizerSetting.cpp" />
     <ClCompile Include="NetworkDefinition.cpp" />
     <ClCompile Include="InputData.cpp" />

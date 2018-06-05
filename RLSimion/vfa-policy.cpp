@@ -56,9 +56,8 @@ DeterministicPolicyGaussianNoise::DeterministicPolicyGaussianNoise(ConfigNode* p
 	m_pExpNoise = CHILD_OBJECT_FACTORY<Noise>(pConfigNode, "Exploration-Noise"
 		, "Parameters of the noise used as exploration");
 
-	Descriptor& pActionDescriptor = World::getDynamicModel()->getActionDescriptor();
-	m_pDeterministicVFA->saturateOutput(pActionDescriptor[m_outputAction.get()].getMin()
-		, pActionDescriptor[m_outputAction.get()].getMax());
+	NamedVarProperties* pProperties = World::getDynamicModel()->getActionDescriptor().getProperties(m_outputAction.get());
+	m_pDeterministicVFA->saturateOutput(pProperties->getMin(), pProperties->getMax());
 
 	m_lastNoise = 0.0;
 	SimionApp::get()->pLogger->addVarToStats<double>("Policy", "Noise", m_lastNoise);
@@ -134,8 +133,8 @@ StochasticGaussianPolicy::StochasticGaussianPolicy(ConfigNode* pConfigNode)
 	m_pMeanVFA = CHILD_OBJECT<LinearStateVFA>(pConfigNode, "Mean-VFA", "The parameterized VFA that approximates the function");
 	SimionApp::get()->registerStateActionFunction(string("Policy"), m_pMeanVFA.ptr());
 
-	Descriptor& pActionDescriptor = World::getDynamicModel()->getActionDescriptor();
-	m_pMeanVFA->saturateOutput(pActionDescriptor[m_outputAction.get()].getMin(), pActionDescriptor[m_outputAction.get()].getMax());
+	NamedVarProperties* pProperties= World::getDynamicModel()->getActionDescriptor().getProperties(m_outputAction.get());
+	m_pMeanVFA->saturateOutput(pProperties->getMin(), pProperties->getMax());
 
 	m_pSigmaVFA = CHILD_OBJECT<LinearStateVFA>(pConfigNode, "Sigma-VFA", "The parameterized VFA that approximates variance(s)");
 	SimionApp::get()->registerStateActionFunction(string("Policy"), m_pSigmaVFA.ptr());
@@ -174,7 +173,7 @@ double StochasticGaussianPolicy::selectAction(const State *s, Action *a)
 	}
 
 	//clip the output between the min and max value of the action space
-	size_t actionIndex = m_outputAction.get();
+	size_t actionIndex = a->getVarIndex( m_outputAction.get() );
 	output = clip(output, a->getProperties(actionIndex).getMin(), a->getProperties(actionIndex).getMax());
 
 	probability = GaussianNoise::getSampleProbability(mean, sigma, output);
@@ -196,8 +195,7 @@ double StochasticGaussianPolicy::getProbability(const State *s, const State *a, 
 
 	if (bStochastic && SimionApp::get()->pSimGod->useSampleImportanceWeights())
 	{
-		size_t actionIndex = m_outputAction.get();
-		double value = a->get(actionIndex);
+		double value = a->get(m_outputAction.get());
 
 		return GaussianNoise::getSampleProbability(mean, exp(m_pSigmaVFA->get(s)), value);
 	}

@@ -1,70 +1,62 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
-    <Filter Include="Headers">
-      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
-      <Extensions>h;hh;hpp;hxx;hm;inl;inc;xsd</Extensions>
-    </Filter>
     <Filter Include="Source">
       <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
       <Extensions>cpp;c;cc;cxx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
-    </Filter>
-    <Filter Include="Resources">
-      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
-      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
   </ItemGroup>
   <ItemGroup>
     <Text Include="ReadMe.txt" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="targetver.h">
-      <Filter>Headers</Filter>
-    </ClInclude>
     <ClInclude Include="Chain.h">
-      <Filter>Headers</Filter>
-    </ClInclude>
-    <ClInclude Include="Link.h">
-      <Filter>Headers</Filter>
-    </ClInclude>
-    <ClInclude Include="Parameter.h">
-      <Filter>Headers</Filter>
-    </ClInclude>
-    <ClInclude Include="ParameterValues.h">
-      <Filter>Headers</Filter>
-    </ClInclude>
-    <ClInclude Include="NetworkArchitecture.h">
-      <Filter>Headers</Filter>
-    </ClInclude>
-    <ClInclude Include="xmltags.h">
-      <Filter>Headers</Filter>
-    </ClInclude>
-    <ClInclude Include="InputData.h">
-      <Filter>Headers</Filter>
-    </ClInclude>
-    <ClInclude Include="OptimizerSetting.h">
-      <Filter>Headers</Filter>
-    </ClInclude>
-    <ClInclude Include="Exceptions.h">
-      <Filter>Headers</Filter>
-    </ClInclude>
-    <ClInclude Include="CNTKWrapperInternals.h">
-      <Filter>Headers</Filter>
-    </ClInclude>
-    <ClInclude Include="Minibatch.h">
-      <Filter>Headers</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\RLSimion\named-var-set.h">
-      <Filter>Headers</Filter>
-    </ClInclude>
-    <ClInclude Include="Network.h">
-      <Filter>Headers</Filter>
-    </ClInclude>
-    <ClInclude Include="NetworkDefinition.h">
-      <Filter>Headers</Filter>
+      <Filter>Source</Filter>
     </ClInclude>
     <ClInclude Include="CNTKWrapper.h">
-      <Filter>Headers</Filter>
+      <Filter>Source</Filter>
+    </ClInclude>
+    <ClInclude Include="CNTKWrapperInternals.h">
+      <Filter>Source</Filter>
+    </ClInclude>
+    <ClInclude Include="Exceptions.h">
+      <Filter>Source</Filter>
+    </ClInclude>
+    <ClInclude Include="InputData.h">
+      <Filter>Source</Filter>
+    </ClInclude>
+    <ClInclude Include="Link.h">
+      <Filter>Source</Filter>
+    </ClInclude>
+    <ClInclude Include="minibatch.h">
+      <Filter>Source</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\RLSimion\named-var-set.h">
+      <Filter>Source</Filter>
+    </ClInclude>
+    <ClInclude Include="Network.h">
+      <Filter>Source</Filter>
+    </ClInclude>
+    <ClInclude Include="NetworkArchitecture.h">
+      <Filter>Source</Filter>
+    </ClInclude>
+    <ClInclude Include="NetworkDefinition.h">
+      <Filter>Source</Filter>
+    </ClInclude>
+    <ClInclude Include="OptimizerSetting.h">
+      <Filter>Source</Filter>
+    </ClInclude>
+    <ClInclude Include="Parameter.h">
+      <Filter>Source</Filter>
+    </ClInclude>
+    <ClInclude Include="ParameterValues.h">
+      <Filter>Source</Filter>
+    </ClInclude>
+    <ClInclude Include="targetver.h">
+      <Filter>Source</Filter>
+    </ClInclude>
+    <ClInclude Include="xmltags.h">
+      <Filter>Source</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -98,13 +90,13 @@
     <ClCompile Include="CNTKWrapperInternals.cpp">
       <Filter>Source</Filter>
     </ClCompile>
-    <ClCompile Include="Minibatch.cpp">
-      <Filter>Source</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\RLSimion\named-var-set.cpp">
       <Filter>Source</Filter>
     </ClCompile>
     <ClCompile Include="NetworkDefinition.cpp">
+      <Filter>Source</Filter>
+    </ClCompile>
+    <ClCompile Include="minibatch.cpp">
       <Filter>Source</Filter>
     </ClCompile>
   </ItemGroup>

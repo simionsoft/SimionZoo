@@ -33,8 +33,8 @@ public:
 
 	virtual void getParameterGradient(const State* s, const Action* a, FeatureList* pOutGradient) = 0;
 
-	size_t getOutputActionIndex() { return m_outputAction.get(); }
-	void setOutputActionIndex(size_t outputActionIndex) { m_outputAction.set(outputActionIndex); }
+	const char* getOutputAction() { return m_outputAction.get(); }
+	void setOutputActionIndex(const char* outputAction) { m_outputAction.set(outputAction); }
 
 	static std::shared_ptr<Policy> getInstance(ConfigNode* pParameters);
 

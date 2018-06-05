@@ -105,8 +105,11 @@ DynamicModel::~DynamicModel()
 
 DynamicModel::DynamicModel()
 {
-	m_pStateDescriptor = new Descriptor();
-	m_pActionDescriptor = new Descriptor();
+	SimionApp* pSimionApp = SimionApp::get();
+
+	m_pStateDescriptor = new Descriptor(pSimionApp);	//the simion app is the default wire manager
+	m_pActionDescriptor = new Descriptor(pSimionApp);
+
 	m_pRewardFunction = new RewardFunction();
 }
 

@@ -28,12 +28,12 @@ CNTK::FunctionPtr CNTKWrapper::InputLayer(Link * pLink, vector<const Link*> depe
 	size_t numInputs;
 	if (inputID == L"state-input")
 	{
-		numInputs = pNetworkDefinition->getInputStateVarIds().size();
+		numInputs = pNetworkDefinition->getInputStateVariables().size();
 		pNetworkDefinition->setStateInputLayer(inputID);
 	}
 	else
 	{
-		numInputs = pNetworkDefinition->getInputActionVarIds().size();
+		numInputs = pNetworkDefinition->getInputActionVariables().size();
 		pNetworkDefinition->setActionInputLayer(inputID);
 	}
 

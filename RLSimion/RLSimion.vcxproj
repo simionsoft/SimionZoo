@@ -248,9 +248,8 @@
     <ClCompile Include="actor.cpp" />
     <ClCompile Include="app.cpp" />
     <ClCompile Include="async-deep-simion.cpp" />
-    <ClCompile Include="CNTKWrapperLoader.cpp" />
+    <ClCompile Include="CNTKWrapperClient.cpp" />
     <ClCompile Include="config.cpp" />
-    <ClCompile Include="controller-adaptive.cpp" />
     <ClCompile Include="controller.cpp" />
     <ClCompile Include="critic-td-lambda.cpp" />
     <ClCompile Include="critic-tdc-lambda.cpp" />
@@ -274,6 +273,7 @@
     <ClCompile Include="mem-buffer.cpp" />
     <ClCompile Include="mem-pool.cpp" />
     <ClCompile Include="named-var-set.cpp" />
+    <ClCompile Include="neural-network.cpp" />
     <ClCompile Include="noise.cpp" />
     <ClCompile Include="parameters-numeric.cpp" />
     <ClCompile Include="parameters.cpp" />
@@ -317,9 +317,8 @@
     <ClInclude Include="actor.h" />
     <ClInclude Include="app.h" />
     <ClInclude Include="async-deep-simion.h" />
-    <ClInclude Include="CNTKWrapperLoader.h" />
+    <ClInclude Include="CNTKWrapperClient.h" />
     <ClInclude Include="config.h" />
-    <ClInclude Include="controller-adaptive.h" />
     <ClInclude Include="controller.h" />
     <ClInclude Include="critic.h" />
     <ClInclude Include="DDPG.h" />
@@ -327,6 +326,7 @@
     <ClInclude Include="deferred-load.h" />
     <ClInclude Include="DQN.h" />
     <ClInclude Include="function-sampler.h" />
+    <ClInclude Include="neural-network.h" />
     <ClInclude Include="single-dimension-grid.h" />
     <ClInclude Include="state-action-function.h" />
     <ClInclude Include="etraces.h" />

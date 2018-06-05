@@ -25,15 +25,15 @@ class INetworkDefinition
 public:
 	virtual void destroy() = 0;
 
-	virtual void addInputStateVar(string name, size_t id)= 0;
-	virtual const vector<size_t>& getInputStateVarIds()= 0;
+	virtual void addInputStateVar(string name)= 0;
+	virtual const vector<string>& getInputStateVariables()= 0;
 
-	virtual void addInputActionVar(string name, size_t id)= 0;
-	virtual const vector<size_t>& getInputActionVarIds()= 0;
+	virtual void addInputActionVar(string name)= 0;
+	virtual const vector<string>& getInputActionVariables()= 0;
 
 	virtual void setScalarOutput() = 0;
 	virtual void setVectorOutput(size_t dimension) = 0;
-	virtual void setDiscretizedActionVectorOutput(size_t actionVarId, size_t numOutputs, double minvalue, double maxvalue) = 0;
+	virtual void setDiscretizedActionVectorOutput(size_t numOutputs, double minvalue, double maxvalue) = 0;
 	//These can only be used after calling setDiscretizedActionVectorOutput()
 	virtual size_t getClosestOutputIndex(double value)=  0;
 	virtual double getActionIndexOutput(size_t actionIndex) = 0;

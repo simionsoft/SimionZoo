@@ -13,7 +13,7 @@
 #include "simgod.h"
 #include "logger.h"
 #include <iostream>
-#include "CNTKWrapperLoader.h"
+#include "CNTKWrapperClient.h"
 
 IncrementalNaturalActorCritic::IncrementalNaturalActorCritic(ConfigNode* pConfigNode)
 {

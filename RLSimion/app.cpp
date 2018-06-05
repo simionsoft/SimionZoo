@@ -172,12 +172,24 @@ void SimionApp::registerStateActionFunction(string name, StateActionFunction* pF
 	m_pStateActionFunctions[finalName] = pFunction;
 }
 
-void SimionApp::setWireValue(string name, double value)
+void SimionApp::wireRegister(string name)
+{
+	m_wires[name] = 0.0;
+}
+
+bool SimionApp::wireExists(string name)
+{
+	if (m_wires.find(name) != m_wires.end())
+		return true;
+	return false;
+}
+
+void SimionApp::wireSetValue(string name, double value)
 {
 	m_wires[name] = value;
 }
 
-double SimionApp::getWireValue(string name)
+double SimionApp::wireGetValue(string name)
 {
 	if (m_wires.find(name) != m_wires.end())
 		return m_wires[name];
@@ -505,16 +517,16 @@ void SimionApp::update2DMeters(State* s, Action* a)
 		m_pActionUIMeters[i]->setValue(a->get(i));
 }
 
-#include "CNTKWrapperLoader.h"
+#include "CNTKWrapperClient.h"
 void SimionApp::setPreferredDevice(Device device)
 {
 	//need to check whether CNTK has been loaded. Might not be used
-	if (CNTKWrapperLoader::setDevice != nullptr)
+	if (CNTK::WrapperClient::setDevice != nullptr)
 	{
 		if (device==CPU)
 			Logger::logMessage(MessageType::Info, "Setting CPU as default device");
 		else
 			Logger::logMessage(MessageType::Info, "Setting GPU as default device");
-		CNTKWrapperLoader::setDevice(device == Device::GPU);
+		CNTK::WrapperClient::setDevice(device == Device::GPU);
 	}
 }

@@ -163,6 +163,14 @@ namespace SimionSrcParser
             parent.addParameter(new ActionVarRefParameter(parsedArguments[1], parsedArguments[2]));
         }
     }
+    public class WireConnectionParser : Parser
+    {
+        public WireConnectionParser() : base("WIRE_CONNECTION", false) {}
+        public override void processParameter(ParameterizedObject parent)
+        {
+            parent.addParameter(new ActionVarRefParameter(parsedArguments[1], parsedArguments[2]));
+        }
+    }
     public class MultiValueParameterParser : Parser
     {
         public MultiValueParameterParser() : base("MULTI_VALUE", true) { }

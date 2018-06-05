@@ -34,13 +34,7 @@
     <ClCompile Include="actor-regular.cpp">
       <Filter>learning</Filter>
     </ClCompile>
-    <ClCompile Include="CNTKWrapperLoader.cpp">
-      <Filter>learning</Filter>
-    </ClCompile>
     <ClCompile Include="controller.cpp">
-      <Filter>learning</Filter>
-    </ClCompile>
-    <ClCompile Include="controller-adaptive.cpp">
       <Filter>learning</Filter>
     </ClCompile>
     <ClCompile Include="critic.cpp">
@@ -59,9 +53,6 @@
       <Filter>learning</Filter>
     </ClCompile>
     <ClCompile Include="deferred-load.cpp">
-      <Filter>learning</Filter>
-    </ClCompile>
-    <ClCompile Include="DQN.cpp">
       <Filter>learning</Filter>
     </ClCompile>
     <ClCompile Include="etraces.cpp">
@@ -175,9 +166,6 @@
     <ClCompile Include="app-main.cpp">
       <Filter>app</Filter>
     </ClCompile>
-    <ClCompile Include="DDPG.cpp">
-      <Filter>learning</Filter>
-    </ClCompile>
     <ClCompile Include="function-sampler.cpp">
       <Filter>logging</Filter>
     </ClCompile>
@@ -217,6 +205,18 @@
     <ClCompile Include="worlds\raincar.cpp">
       <Filter>world</Filter>
     </ClCompile>
+    <ClCompile Include="DQN.cpp">
+      <Filter>neural-networks</Filter>
+    </ClCompile>
+    <ClCompile Include="DDPG.cpp">
+      <Filter>neural-networks</Filter>
+    </ClCompile>
+    <ClCompile Include="CNTKWrapperClient.cpp">
+      <Filter>neural-networks</Filter>
+    </ClCompile>
+    <ClCompile Include="neural-network.cpp">
+      <Filter>neural-networks</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="resource1.h" />
@@ -238,13 +238,7 @@
     <ClInclude Include="actor-critic.h">
       <Filter>learning</Filter>
     </ClInclude>
-    <ClInclude Include="CNTKWrapperLoader.h">
-      <Filter>learning</Filter>
-    </ClInclude>
     <ClInclude Include="controller.h">
-      <Filter>learning</Filter>
-    </ClInclude>
-    <ClInclude Include="controller-adaptive.h">
       <Filter>learning</Filter>
     </ClInclude>
     <ClInclude Include="critic.h">
@@ -254,9 +248,6 @@
       <Filter>learning</Filter>
     </ClInclude>
     <ClInclude Include="deferred-load.h">
-      <Filter>learning</Filter>
-    </ClInclude>
-    <ClInclude Include="DQN.h">
       <Filter>learning</Filter>
     </ClInclude>
     <ClInclude Include="etraces.h">
@@ -385,9 +376,6 @@
     <ClInclude Include="async-deep-simion.h">
       <Filter>learning</Filter>
     </ClInclude>
-    <ClInclude Include="DDPG.h">
-      <Filter>learning</Filter>
-    </ClInclude>
     <ClInclude Include="state-action-function.h">
       <Filter>learning</Filter>
     </ClInclude>
@@ -417,6 +405,18 @@
     </ClInclude>
     <ClInclude Include="worlds\raincar.h">
       <Filter>world</Filter>
+    </ClInclude>
+    <ClInclude Include="DQN.h">
+      <Filter>neural-networks</Filter>
+    </ClInclude>
+    <ClInclude Include="DDPG.h">
+      <Filter>neural-networks</Filter>
+    </ClInclude>
+    <ClInclude Include="CNTKWrapperClient.h">
+      <Filter>neural-networks</Filter>
+    </ClInclude>
+    <ClInclude Include="neural-network.h">
+      <Filter>neural-networks</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -452,6 +452,9 @@
     </Filter>
     <Filter Include="linear-vfa">
       <UniqueIdentifier>{a2ec0f8c-b5e8-495e-88ee-9c03cc168241}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="neural-networks">
+      <UniqueIdentifier>{c1354103-a63d-4262-b610-659536cd812a}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
 </Project>

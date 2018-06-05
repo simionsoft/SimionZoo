@@ -2,7 +2,8 @@
 #include "config.h"
 #include "named-var-set.h"
 #include "single-dimension-grid.h"
-
+#include "app.h"
+#include "worlds/world.h"
 
 /////////////////////////////////////////////////////////////////////////////////
 //FeatureMap: common functionality to State/ActionFeatureMap derived classes
@@ -82,10 +83,9 @@ StateFeatureMap::StateFeatureMap(ConfigNode* pConfigNode)
 	//add the names of the input state variables to the list
 	for (unsigned int i = 0; i < m_stateVariables.size(); i++)
 	{
-		m_stateVariableNames.push_back(m_stateVariables[i]->getName());
-		m_grids.push_back(new SingleDimensionGrid(getNumFeaturesPerVariable()
-			, m_stateVariables[i]->getProperties()->getMin(), m_stateVariables[i]->getProperties()->getMax()
-			, m_stateVariables[i]->getProperties()->isCircular()));
+		m_stateVariableNames.push_back(m_stateVariables[i]->get());
+		NamedVarProperties* pProp = SimionApp::get()->pWorld->getDynamicModel()->getStateDescriptor().getProperties(m_stateVariables[i]->get());
+		m_grids.push_back(new SingleDimensionGrid(getNumFeaturesPerVariable(), pProp->getMin(), pProp->getMax(), pProp->isCircular()));
 	}
 	m_variableValues = vector<double>(m_grids.size());
 
@@ -99,7 +99,7 @@ StateFeatureMap::StateFeatureMap(FeatureMapper* pFeatureMapper, Descriptor& stat
 	for each(size_t varid in variableIds)
 	{
 		m_stateVariableNames.push_back( stateDescriptor[varid].getName() );
-		m_stateVariables.add(new STATE_VARIABLE(stateDescriptor, varid));
+		m_stateVariables.add(new STATE_VARIABLE(stateDescriptor[varid].getName()));
 		m_grids.push_back(new SingleDimensionGrid(getNumFeaturesPerVariable(), stateDescriptor[varid].getMin(), stateDescriptor[varid].getMax(), stateDescriptor[varid].isCircular()));
 	}
 	m_variableValues = vector<double>(m_grids.size());
@@ -135,10 +135,9 @@ ActionFeatureMap::ActionFeatureMap(ConfigNode* pConfigNode)
 	//add the names of the input action variables to the list
 	for (unsigned int i = 0; i < m_actionVariables.size(); i++)
 	{
-		m_actionVariableNames.push_back(m_actionVariables[i]->getName());
-		m_grids.push_back(new SingleDimensionGrid(getNumFeaturesPerVariable()
-			, m_actionVariables[i]->getProperties()->getMin(), m_actionVariables[i]->getProperties()->getMax()
-			, m_actionVariables[i]->getProperties()->isCircular()));
+		m_actionVariableNames.push_back(m_actionVariables[i]->get());
+		NamedVarProperties* pProp = SimionApp::get()->pWorld->getDynamicModel()->getActionDescriptor().getProperties(m_actionVariables[i]->get());
+		m_grids.push_back(new SingleDimensionGrid(getNumFeaturesPerVariable(), pProp->getMin(), pProp->getMax(), pProp->isCircular()));
 	}
 	m_variableValues = vector<double>(m_grids.size());
 
@@ -152,7 +151,7 @@ ActionFeatureMap::ActionFeatureMap(FeatureMapper* pFeatureMapper, Descriptor& ac
 	for each(size_t varid in variableIds)
 	{
 		m_actionVariableNames.push_back(actionDescriptor[varid].getName());
-		m_actionVariables.add(new ACTION_VARIABLE(actionDescriptor, varid));
+		m_actionVariables.add(new ACTION_VARIABLE(actionDescriptor[varid].getName()));
 		m_grids.push_back(new SingleDimensionGrid(getNumFeaturesPerVariable(), actionDescriptor[varid].getMin(), actionDescriptor[varid].getMax(), actionDescriptor[varid].isCircular()));
 	}
 	m_variableValues = vector<double>(m_grids.size());

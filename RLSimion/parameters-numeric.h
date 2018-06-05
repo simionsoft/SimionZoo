@@ -69,7 +69,7 @@ class WireConnection : public NumericValue
 	WIRE_CONNECTION m_wire;
 public:
 	WireConnection(ConfigNode* pParameters);
-	WireConnection(string name);
+	WireConnection(const char* name);
 	double get();
 	void set(double value);
 };

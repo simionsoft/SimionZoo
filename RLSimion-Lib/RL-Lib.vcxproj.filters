@@ -11,13 +11,7 @@
     <ClInclude Include="..\RLSimion\actor-critic.h">
       <Filter>learning</Filter>
     </ClInclude>
-    <ClInclude Include="..\RLSimion\CNTKWrapperLoader.h">
-      <Filter>learning</Filter>
-    </ClInclude>
     <ClInclude Include="..\RLSimion\controller.h">
-      <Filter>learning</Filter>
-    </ClInclude>
-    <ClInclude Include="..\RLSimion\controller-adaptive.h">
       <Filter>learning</Filter>
     </ClInclude>
     <ClInclude Include="..\RLSimion\critic.h">
@@ -194,6 +188,9 @@
     <ClInclude Include="..\RLSimion\worlds\raincar.h">
       <Filter>world</Filter>
     </ClInclude>
+    <ClInclude Include="..\RLSimion\CNTKWrapperClient.h">
+      <Filter>learning</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="app">
@@ -243,13 +240,7 @@
     <ClCompile Include="..\RLSimion\actor-regular.cpp">
       <Filter>learning</Filter>
     </ClCompile>
-    <ClCompile Include="..\RLSimion\CNTKWrapperLoader.cpp">
-      <Filter>learning</Filter>
-    </ClCompile>
     <ClCompile Include="..\RLSimion\controller.cpp">
-      <Filter>learning</Filter>
-    </ClCompile>
-    <ClCompile Include="..\RLSimion\controller-adaptive.cpp">
       <Filter>learning</Filter>
     </ClCompile>
     <ClCompile Include="..\RLSimion\critic.cpp">
@@ -428,6 +419,9 @@
     </ClCompile>
     <ClCompile Include="..\RLSimion\worlds\raincar.cpp">
       <Filter>world</Filter>
+    </ClCompile>
+    <ClCompile Include="..\RLSimion\CNTKWrapperClient.cpp">
+      <Filter>learning</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

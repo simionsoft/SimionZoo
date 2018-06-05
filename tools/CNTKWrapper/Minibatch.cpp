@@ -6,8 +6,8 @@ Minibatch::Minibatch(size_t size, NetworkDefinition* pNetworkDefinition, size_t 
 {
 	m_pNetworkDefinition = pNetworkDefinition;
 	m_size = size;
-	m_inputState = vector<double>(size*pNetworkDefinition->getInputStateVarIds().size());
-	m_inputAction = vector<double>(size*pNetworkDefinition->getInputActionVarIds().size());
+	m_inputState = vector<double>(size*pNetworkDefinition->getInputStateVariables().size());
+	m_inputAction = vector<double>(size*pNetworkDefinition->getInputActionVariables().size());
 
 	if (outputSize == 0)
 		//if not overriden, use the network's output size. This is the general case
@@ -48,16 +48,16 @@ void Minibatch::addTuple(const State* s, const Action* a, const vector<double>& 
 		throw std::exception("Missmatched tuple output size and minibatch output size");
 
 	//copy state input
-	const vector<size_t>& stateVars= m_pNetworkDefinition->getInputStateVarIds();
+	const vector<string>& stateVars= m_pNetworkDefinition->getInputStateVariables();
 	size_t stateInputSize = stateVars.size();
 	for (size_t i= 0; i<stateInputSize; i++)
-		m_inputState[m_numTuples*stateInputSize + i] = s->getNormalized((int) stateVars[i]);
+		m_inputState[m_numTuples*stateInputSize + i] = s->getNormalized(stateVars[i].c_str());
 
 	//copy action input
-	const vector<size_t>& actionVars = m_pNetworkDefinition->getInputActionVarIds();
+	const vector<string>& actionVars = m_pNetworkDefinition->getInputActionVariables();
 	size_t actionInputSize = actionVars.size();
 	for (size_t i = 0; i<actionInputSize; i++)
-		m_inputAction[m_numTuples*actionInputSize + i] = a->getNormalized((int) actionVars[i]);
+		m_inputAction[m_numTuples*actionInputSize + i] = a->getNormalized(actionVars[i].c_str());
 
 	//copy target values
 	for (size_t i = 0; i < targetValues.size(); i++)

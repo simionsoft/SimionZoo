@@ -135,47 +135,37 @@ class STATE_VARIABLE
 protected:
 	const char* m_name = 0;
 	const char* m_comment = 0;
-	NamedVarProperties* m_pProperties;
-	size_t m_hVariable;
-	const char* m_variableName = 0;
+	const char* m_variableName;
 public:
 	STATE_VARIABLE() = default;
 	STATE_VARIABLE(ConfigNode* pConfigNode, const char* name, const char* comment);
-	STATE_VARIABLE(Descriptor& actionDescriptor, size_t varId);
+	STATE_VARIABLE(const char* variableName);
 
-	size_t get() { return m_hVariable; }
-	void set(size_t hVar) { m_hVariable = hVar; }
-	const char* getName() { return m_variableName; }
-	NamedVarProperties* getProperties() const { return m_pProperties; }
+	void set(const char* variableName) { m_variableName = variableName; }
+	const char* get() { return m_variableName; }
 };
 
 class ACTION_VARIABLE
 {
 	const char* m_name;
 	const char* m_comment;
-	NamedVarProperties* m_pProperties;
-	size_t m_hVariable;
-	const char* m_variableName = 0;
+	const char* m_variableName;
 public:
 	ACTION_VARIABLE() = default;
 	ACTION_VARIABLE(ConfigNode* pConfigNode, const char* name, const char* comment);
-	ACTION_VARIABLE(Descriptor& actionDescriptor, size_t varId);
+	ACTION_VARIABLE(const char* variableName);
 
-	size_t get() { return m_hVariable; }
-	void set(size_t index) { m_hVariable = index; }
-	const char* getName() { return m_variableName; }
-	NamedVarProperties* getProperties() const { return m_pProperties; }
+	void set(const char* variableName) { m_variableName = variableName; }
+	const char* get() { return m_variableName; }
 };
-
-
 
 class WIRE_CONNECTION
 {
-	string m_name;
+	const char* m_name;
 public:
 	WIRE_CONNECTION() = default;
 	WIRE_CONNECTION(ConfigNode* pConfigNode, const char* name, const char* comment);
-	WIRE_CONNECTION(string name);
+	WIRE_CONNECTION(const char* wireName);
 
 	double get();
 	void set(double value);
@@ -338,6 +328,11 @@ public:
 			pChildParameters = pChildParameters->getNextSibling(name);
 		}
 	}
+	void toVector(vector<string>& outVector)
+	{
+		for (size_t i = 0; i < m_values.size(); i++)
+			outVector.push_back(m_values[i].get());
+	}
 };
 
 template<typename Class>
@@ -399,7 +394,7 @@ shared_ptr<BaseClass> CHOICE(ConfigNode* pConfig, const char* choiceName, const 
 #define METADATA(name, value) m_name= value;
 
 
-#include "CNTKWrapperLoader.h"
+#include "CNTKWrapperClient.h"
 class INetwork;
 
 //Because NN objects are created from the CNTKWrapper DLL, this objects needs to be created using "new" and cannot

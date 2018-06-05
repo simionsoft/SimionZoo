@@ -32,7 +32,7 @@ void RegularPolicyGradientLearner::update(const State *s, const Action *a, const
 
 	m_pPolicy->getFeatures(s, m_pStateFeatures);
 
-	lastNoise = a->get(m_pPolicy->getOutputActionIndex()) - m_pPolicy->getDeterministicOutput(m_pStateFeatures);// m_pOutput->getSample(i);
+	lastNoise = a->get(m_pPolicy->getOutputAction()) - m_pPolicy->getDeterministicOutput(m_pStateFeatures);// m_pOutput->getSample(i);
 
 
 	if (alpha != 0.0)

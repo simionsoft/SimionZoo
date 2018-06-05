@@ -206,15 +206,9 @@ INetwork * NetworkDefinition::createNetwork(double learningRate, bool inputsNeed
 }
 
 
-void NetworkDefinition::addInputStateVar(string name, size_t id)
+void NetworkDefinition::addInputStateVar(string name)
 {
 	m_inputStateVariables.push_back(name);
-	m_inputStateVarIds.push_back(id);
-}
-
-const vector<size_t>& NetworkDefinition::getInputStateVarIds()
-{
-	return m_inputStateVarIds;
 }
 
 const vector<string>& NetworkDefinition::getInputStateVariables()
@@ -222,15 +216,9 @@ const vector<string>& NetworkDefinition::getInputStateVariables()
 	return m_inputStateVariables;
 }
 
-void NetworkDefinition::addInputActionVar(string name, size_t id)
+void NetworkDefinition::addInputActionVar(string name)
 {
 	m_inputActionVariables.push_back(name);
-	m_inputActionVarIds.push_back(id);
-}
-
-const vector<size_t>& NetworkDefinition::getInputActionVarIds()
-{
-	return m_inputActionVarIds;
 }
 
 const vector<string>& NetworkDefinition::getInputActionVariables()
@@ -241,11 +229,11 @@ const vector<string>& NetworkDefinition::getInputActionVariables()
 
 size_t NetworkDefinition::getInputSize()
 {
-	return m_inputStateVarIds.size() + m_inputActionVarIds.size();
+	return m_inputStateVariables.size() + m_inputActionVariables.size();
 }
 
 
-void NetworkDefinition::setDiscretizedActionVectorOutput(size_t actionVarId, size_t numOutputs, double minvalue, double maxvalue)
+void NetworkDefinition::setDiscretizedActionVectorOutput(size_t numOutputs, double minvalue, double maxvalue)
 {
 	double stepSize;
 

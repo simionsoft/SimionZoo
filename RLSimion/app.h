@@ -6,6 +6,7 @@ using namespace std;
 
 #include "parameters.h"
 #include "mem-manager.h"
+#include "named-var-set.h"
 
 #include "../tools/WindowsUtils/Timer.h"
 #define MAX_PATH_SIZE 1024
@@ -23,13 +24,10 @@ class World;
 class Experiment;
 class SimGod;
 class StateActionFunction;
-class NamedVarSet;
-using State = NamedVarSet;
-using Action = NamedVarSet;
 
 enum Device{ CPU, GPU };
 
-class SimionApp
+class SimionApp: public WireHandler
 {
 
 private:
@@ -80,8 +78,10 @@ public:
 	const unordered_map<string, StateActionFunction*> getStateActionFunctions() const { return m_pStateActionFunctions; }
 
 	//Wires: connections between inputs/outputs
-	void setWireValue(string name, double value);
-	double getWireValue(string name);
+	void wireRegister(string name);
+	bool wireExists(string name);
+	void wireSetValue(string name, double value);
+	double wireGetValue(string name);
 
 	//Input/Output file registering member functions
 	//Subclasses should call these methods to let know what input/output files will be required at run-time

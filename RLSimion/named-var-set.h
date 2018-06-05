@@ -2,6 +2,17 @@
 
 #define VAR_NAME_MAX_LENGTH 128
 #include <vector>
+#include <string>
+using namespace std;
+
+class WireHandler
+{
+public:
+	virtual void wireSetValue(string name, double value) = 0;
+	virtual double wireGetValue(string name) = 0;
+	virtual bool wireExists(string name) = 0;
+	virtual void wireRegister(string name) = 0;
+};
 
 class NamedVarProperties
 {
@@ -27,12 +38,16 @@ class NamedVarSet;
 
 class Descriptor
 {
+	WireHandler* m_pWireHandler = nullptr;
 	std::vector<NamedVarProperties*> m_descriptor;
 public:
 	Descriptor() = default;
+	Descriptor(WireHandler* pWireHandler) { m_pWireHandler = pWireHandler; }
 
 	NamedVarSet* getInstance();
+	WireHandler* getWireHandler() { return m_pWireHandler; }
 	size_t size() const { return m_descriptor.size(); }
+	NamedVarProperties* getProperties(const char* name);
 	NamedVarProperties& operator[](size_t idx) { return *m_descriptor[idx]; }
 	const NamedVarProperties& operator[](size_t idx) const { return *m_descriptor[idx]; }
 	size_t addVariable(const char* name, const char* units, double min, double max, bool bCircular= false);
@@ -83,7 +98,6 @@ public:
 	Descriptor& getDescriptor() { return m_descriptor; }
 	Descriptor* getDescriptorPtr() { return &m_descriptor; }
 
-public:
 	void addOffset(double offset);
 };
 

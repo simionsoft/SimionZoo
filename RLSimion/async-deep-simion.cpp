@@ -19,7 +19,7 @@
 /*
 AsyncQLearning::AsyncQLearning(ConfigNode* pConfigNode)
 {
-	CNTKWrapperLoader::Load();
+	CNTKWrapperClient::Load();
 	m_policy = CHILD_OBJECT_FACTORY<DiscreteDeepPolicy>(pConfigNode, "Policy", "The policy");
 	m_predictionQNetwork = NN_DEFINITION(pConfigNode, "neural-network", "Neural Network Architecture");
 	m_outputAction = ACTION_VARIABLE(pConfigNode, "Output-Action", "The output action variable");
@@ -54,13 +54,13 @@ AsyncQLearning::AsyncQLearning(ConfigNode* pConfigNode)
 	m_pMinibatchChosenActionTargetValues = new double[m_experienceReplay->getMaxUpdateBatchSize()];
 	m_pMinibatchActionId = new int[m_experienceReplay->getMaxUpdateBatchSize()];
 
-	CNTKWrapperLoader::Load();
+	CNTKWrapperClient::Load();
 	m_pTargetQNetwork = m_predictionQNetwork.getNetwork()->clone();
 }
 
 AsyncQLearning::~AsyncQLearning()
 {
-	CNTKWrapperLoader::UnLoad();
+	CNTKWrapperClient::UnLoad();
 }
 
 double AsyncQLearning::selectAction(const State * s, Action * a)

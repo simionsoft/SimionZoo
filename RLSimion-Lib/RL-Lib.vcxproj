@@ -232,9 +232,8 @@
     <ClInclude Include="..\RLSimion\actor-critic.h" />
     <ClInclude Include="..\RLSimion\actor.h" />
     <ClInclude Include="..\RLSimion\app.h" />
-    <ClInclude Include="..\RLSimion\CNTKWrapperLoader.h" />
+    <ClInclude Include="..\RLSimion\CNTKWrapperClient.h" />
     <ClInclude Include="..\RLSimion\config.h" />
-    <ClInclude Include="..\RLSimion\controller-adaptive.h" />
     <ClInclude Include="..\RLSimion\controller.h" />
     <ClInclude Include="..\RLSimion\critic.h" />
     <ClInclude Include="..\RLSimion\DDPG.h" />
@@ -339,9 +338,8 @@
     <ClCompile Include="..\RLSimion\actor-regular.cpp" />
     <ClCompile Include="..\RLSimion\actor.cpp" />
     <ClCompile Include="..\RLSimion\app.cpp" />
-    <ClCompile Include="..\RLSimion\CNTKWrapperLoader.cpp" />
+    <ClCompile Include="..\RLSimion\CNTKWrapperClient.cpp" />
     <ClCompile Include="..\RLSimion\config.cpp" />
-    <ClCompile Include="..\RLSimion\controller-adaptive.cpp" />
     <ClCompile Include="..\RLSimion\controller.cpp" />
     <ClCompile Include="..\RLSimion\critic-td-lambda.cpp" />
     <ClCompile Include="..\RLSimion\critic-tdc-lambda.cpp" />

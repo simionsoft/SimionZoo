@@ -26,7 +26,7 @@ DDPG::~DDPG()
 	if (m_pActorMinibatch!=nullptr)
 		m_pActorMinibatch->destroy();
 
-	CNTKWrapperLoader::UnLoad();
+	CNTK::WrapperClient::UnLoad();
 
 	if (m_pActorOutput != nullptr)
 		delete m_pActorOutput;
@@ -36,7 +36,7 @@ DDPG::~DDPG()
 DDPG::DDPG(ConfigNode * pConfigNode)
 {
 	//The wrapper must be initialized before loading the NN definition
-	CNTKWrapperLoader::Load();
+	CNTK::WrapperClient::Load();
 
 	m_CriticNetworkDefinition = NN_DEFINITION(pConfigNode, "Critic-Network", "Neural Network for the Critic -a Q function-");
 	m_ActorNetworkDefinition = NN_DEFINITION(pConfigNode, "Actor-Network", "Neural Network for the Actor -deterministic policy-");
@@ -59,14 +59,14 @@ void DDPG::deferredLoadStep()
 	//Set the state-input
 	for (size_t stateVarIndex = 0; stateVarIndex < m_inputState.size(); stateVarIndex++)
 	{
-		m_CriticNetworkDefinition->addInputStateVar(m_inputState[stateVarIndex]->getName(), m_inputState[stateVarIndex]->get());
-		m_ActorNetworkDefinition->addInputStateVar(m_inputState[stateVarIndex]->getName(), m_inputState[stateVarIndex]->get());
+		m_CriticNetworkDefinition->addInputStateVar(m_inputState[stateVarIndex]->get());
+		m_ActorNetworkDefinition->addInputStateVar(m_inputState[stateVarIndex]->get());
 	}
 
 	//Set the action-input: for now, only the one used as output of the policy
 	for (size_t actionVarIndex = 0; actionVarIndex < m_outputAction.size(); actionVarIndex++)
 	{
-		m_CriticNetworkDefinition->addInputActionVar(m_outputAction[actionVarIndex]->getName(), m_outputAction[actionVarIndex]->get());
+		m_CriticNetworkDefinition->addInputActionVar(m_outputAction[actionVarIndex]->get());
 	}
 	m_gradientWrtAction = vector<double>(m_outputAction.size());
 

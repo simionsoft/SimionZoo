@@ -141,7 +141,7 @@ WireConnection::WireConnection(ConfigNode* pParameters)
 	m_wire = WIRE_CONNECTION(pParameters, "Wire", "Wire connection from which the value comes");
 }
 
-WireConnection::WireConnection(string name)
+WireConnection::WireConnection(const char* name)
 {
 	m_wire = WIRE_CONNECTION (name);
 }

@@ -3,16 +3,16 @@
 #include "logger.h"
 #include "worlds\world.h"
 #include "app.h"
-#include "featuremap.h"
-#include "features.h"
 #include "noise.h"
 #include "deep-vfa-policy.h"
 #include "parameters-numeric.h"
 #include "parameters.h"
-#include "../tools/CNTKWrapper/CNTKWrapper.h"
 #include <algorithm>
 #include "deep-vfa-policy.h"
 #include "config.h"
+
+#include "../tools/CNTKWrapper/CNTKWrapper.h"
+
 
 DQN::~DQN()
 {
@@ -21,7 +21,7 @@ DQN::~DQN()
 	if (m_pTargetQNetwork) m_pTargetQNetwork->destroy();
 	if (m_pOnlineQNetwork) m_pOnlineQNetwork->destroy();
 	if (m_pMinibatch) m_pMinibatch->destroy();
-	CNTKWrapperLoader::UnLoad();
+	CNTK::WrapperClient::UnLoad();
 }
 
 DQN::DQN(ConfigNode* pConfigNode)
@@ -32,7 +32,7 @@ DQN::DQN(ConfigNode* pConfigNode)
 	m_learningRate = DOUBLE_PARAM(pConfigNode, "Learning-Rate", "The learning rate at which the agent learns", 0.000001);
 
 	//The wrapper must be initialized before loading the NN definition
-	CNTKWrapperLoader::Load();
+	CNTK::WrapperClient::Load();
 	m_policy = CHILD_OBJECT_FACTORY<DiscreteDeepPolicy>(pConfigNode, "Policy", "The policy");
 	m_pNNDefinition = NN_DEFINITION(pConfigNode, "neural-network", "Neural Network Architecture");
 }
@@ -41,13 +41,12 @@ void DQN::deferredLoadStep()
 {
 	//we defer all the heavy-weight initializing stuff and anything that depends on the SimGod
 
-	Descriptor& actionDescr = SimionApp::get()->pWorld->getDynamicModel()->getActionDescriptor();
+	NamedVarProperties* pProperties = SimionApp::get()->pWorld->getDynamicModel()->getActionDescriptor().getProperties(m_outputAction.get());
 	
 	//set the input-outputs
 	for (size_t i = 0; i < m_inputState.size(); ++i)
-		m_pNNDefinition->addInputStateVar(m_inputState[i]->getName(), m_inputState[i]->get());
-	m_pNNDefinition->setDiscretizedActionVectorOutput(m_outputAction.get(), m_numActionSteps.get()
-		, actionDescr[m_outputAction.get()].getMin(), actionDescr[m_outputAction.get()].getMax());
+		m_pNNDefinition->addInputStateVar(m_inputState[i]->get());
+	m_pNNDefinition->setDiscretizedActionVectorOutput(m_numActionSteps.get(), pProperties->getMin(), pProperties->getMax());
 
 	//create the networks
 	m_pOnlineQNetwork = m_pNNDefinition->createNetwork(m_learningRate.get());

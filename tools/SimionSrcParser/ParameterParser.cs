@@ -25,6 +25,7 @@ namespace SimionSrcParser
             m_parsers.Add(new ChildObjectFactoryParameterParser());
             m_parsers.Add(new StateVarRefParser());
             m_parsers.Add(new ActionVarRefParser());
+            m_parsers.Add(new WireConnectionParser());
             m_parsers.Add(new MultiValueParameterParser());
             m_parsers.Add(new MultiValueFactoryParameterParser());
             m_parsers.Add(new MultiValueSimpleParameterParser());

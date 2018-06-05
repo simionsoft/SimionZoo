@@ -37,10 +37,10 @@ void Actor::deferredLoadStep()
 		//initialize the weights using the controller's output at each center point in state space
 		for (size_t actionIndex = 0; actionIndex < numActionDims; actionIndex++)
 		{
-			controllerActionIndex = m_pInitController->getOutputActionIndex(actionIndex);
+			controllerActionIndex = a->getVarIndex( m_pInitController->getOutputAction(actionIndex));
 			for (size_t actorActionIndex = 0; actorActionIndex < m_policyLearners.size(); actorActionIndex++)
 			{
-				if (controllerActionIndex == m_policyLearners[actorActionIndex]->getPolicy()->getOutputActionIndex())
+				if (controllerActionIndex == s->getVarIndex( m_policyLearners[actorActionIndex]->getPolicy()->getOutputAction()))
 				{
 					//controller's output action index and actor's match, so we use it to initialize
 					numWeights = m_policyLearners[actorActionIndex]->getPolicy()->getDetPolicyStateVFA()->getNumWeights();
