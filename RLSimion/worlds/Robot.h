@@ -3,8 +3,8 @@
 
 class Robot : public BulletBody
 {
-	size_t m_vId;
-	size_t m_omegaId;
+	const char* m_vId;
+	const char* m_omegaId;
 
 	//in robots, this is calculated manually, so we must store it for a later call of updateYawState()
 	double m_theta= 0.0;
@@ -14,7 +14,7 @@ public:
 
 	virtual void updateBulletState(State *s, const Action *a, double dt);
 
-	void setActionIds(size_t v, size_t omega) { m_vId = v; m_omegaId = omega; }
+	void setActionIds(const char* v, const char* omega) { m_vId = v; m_omegaId = omega; }
 
 	virtual void updateYawState(State* s);
 };

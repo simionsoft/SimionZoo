@@ -440,6 +440,10 @@ namespace Badger.ViewModels
                 + "=\"" + XMLConfig.experimentConfigVersion + "\">");
             }
 
+            // Wires
+            foreach (WireViewModel wire in m_wiresViewModel.Wires)
+                wire.outputXML(writer, mode, leftSpace);
+
             // Body
             foreach (ConfigNodeViewModel node in m_children)
                 node.outputXML(writer, mode, leftSpace);

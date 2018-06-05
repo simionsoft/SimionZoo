@@ -3,6 +3,14 @@
 #include <algorithm>
 using namespace std;
 
+NamedVarProperties::NamedVarProperties()
+{
+	strcpy_s(m_name, VAR_NAME_MAX_LENGTH, "N/A");
+	strcpy_s(m_units, VAR_NAME_MAX_LENGTH, "N/A");
+	m_min = std::numeric_limits<double>::lowest();
+	m_max = std::numeric_limits<double>::max(); 
+}
+
 NamedVarProperties::NamedVarProperties(const char* name, const char* units, double min, double max, bool bCircular)
 {
 	sprintf_s(m_name, VAR_NAME_MAX_LENGTH, name);
@@ -19,18 +27,17 @@ void NamedVarProperties::setName(const char* name)
 
 NamedVarProperties* Descriptor::getProperties(const char* name)
 {
-	size_t varIndex = getVarIndex(name);
-	return m_descriptor[varIndex];
-}
-
-size_t Descriptor::getVarIndex(const char* name)
-{
 	for (size_t i = 0; i<m_descriptor.size(); i++)
 	{
 		if (strcmp(m_descriptor[i]->getName(), name) == 0)
-			return i;
+			return m_descriptor[i];
+
 	}
-	throw exception("Wrong variable name given to Descriptor::getVarIndex()");
+	//check if a wire with that name exists
+	if (m_pWireHandler != nullptr && m_pWireHandler->wireExists(name))
+		return &wireDummyProperties;
+	else
+		throw exception("Wrong variable name given to Descriptor::getVarIndex()");
 }
 
 size_t Descriptor::addVariable(const char* name, const char* units, double min, double max, bool bCircular)
@@ -62,55 +69,44 @@ NamedVarSet::~NamedVarSet()
 	if (m_pValues) delete [] m_pValues;
 }
 
-size_t NamedVarSet::getVarIndex(const char* varName) const
+
+NamedVarProperties* NamedVarSet::getProperties(const char* varName) const
 {
-	return m_descriptor.getVarIndex(varName);
+	return m_descriptor.getProperties(varName);
 }
 
-NamedVarProperties& NamedVarSet::getProperties(const char* varName) const
+double NamedVarSet::normalize(const char* varName, double value) const
 {
-	size_t varIndex = m_descriptor.getVarIndex(varName);
-	return m_descriptor[varIndex];
+	NamedVarProperties* pProperties = getProperties(varName);
+	double range = std::max(0.01, pProperties->getRangeWidth());
+	return (value - pProperties->getMin()) / range;
 }
 
-double NamedVarSet::normalize(size_t i, double value) const
+double NamedVarSet::denormalize(const char* varName, double value) const
 {
-	NamedVarProperties& properties = getProperties(i);
-	double range = std::max(0.01, properties.getRangeWidth());
-	return (value - properties.getMin()) / range;
-}
-
-double NamedVarSet::denormalize(size_t i, double value) const
-{
-	NamedVarProperties& properties = getProperties(i);
-	double range = properties.getRangeWidth();
-	return properties.getMin() + value * range;
+	NamedVarProperties* pProperties = getProperties(varName);
+	double range = pProperties->getRangeWidth();
+	return pProperties->getMin() + value * range;
 }
 
 void NamedVarSet::setNormalized(const char* varName, double value)
 {
-	size_t i = m_descriptor.getVarIndex(varName);
-	if (i >= 0)
-	{
-		setNormalized(i, value);
-		return;
-	}
-	throw std::exception("Incorrect variable name in NamedVarSet::set()");
+	double denormalizedValue = denormalize(varName, value);
+	set(varName, denormalizedValue);
 }
 
-void NamedVarSet::setNormalized(size_t i, double value)
-{
-	set(i, denormalize(i, value));
-}
 
 void NamedVarSet::set(const char* varName, double value)
 {
-	size_t i = m_descriptor.getVarIndex(varName);
-	if (i >= 0)
+	for (size_t i = 0; i < m_descriptor.size(); i++)
 	{
-		set(i, value);
-		return;
+		if (!strcmp(m_descriptor[i].getName(), varName))
+		{
+			set(i, value);
+			return;
+		}
 	}
+
 	//check if a wire with that name exists
 	WireHandler* pWireHandler = m_descriptor.getWireHandler();
 	if (pWireHandler != nullptr && pWireHandler->wireExists(varName))
@@ -142,17 +138,7 @@ void NamedVarSet::set(size_t i, double value)
 
 double NamedVarSet::getNormalized(const char* varName) const
 {
-	size_t varIndex = m_descriptor.getVarIndex(varName);
-	if (varIndex >= 0)
-		return normalize(varIndex, m_pValues[varIndex]);
-	throw std::exception("Incorrect variable index in NamedVarSet::getNormalized()");
-}
-
-double NamedVarSet::getNormalized(size_t i) const
-{
-	if (i >= 0 && i<m_numVars)
-		return normalize(i, m_pValues[i]);
-	throw std::exception("Incorrect variable index in NamedVarSet::getNormalized()");
+	return normalize(varName, get(varName));
 }
 
 double NamedVarSet::get(size_t i) const
@@ -164,9 +150,11 @@ double NamedVarSet::get(size_t i) const
 
 double NamedVarSet::get(const char* varName) const
 {
-	size_t varIndex = m_descriptor.getVarIndex(varName);
-	if (varIndex >= 0)
-		return m_pValues[varIndex];
+	for (size_t i = 0; i < m_descriptor.size(); i++)
+	{
+		if (!strcmp(m_descriptor[i].getName(), varName))
+			return m_pValues[i];
+	}
 
 	WireHandler* pWireHandler = m_descriptor.getWireHandler();
 	if (pWireHandler != nullptr && pWireHandler->wireExists(varName))

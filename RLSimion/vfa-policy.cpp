@@ -172,15 +172,13 @@ double StochasticGaussianPolicy::selectAction(const State *s, Action *a)
 		output = GaussianNoise::getNormalDistributionSample(mean, sigma);
 	}
 
-	//clip the output between the min and max value of the action space
-	size_t actionIndex = a->getVarIndex( m_outputAction.get() );
-	output = clip(output, a->getProperties(actionIndex).getMin(), a->getProperties(actionIndex).getMax());
+	output = clip(output, a->getProperties(m_outputAction.get())->getMin(), a->getProperties(m_outputAction.get())->getMax());
 
 	probability = GaussianNoise::getSampleProbability(mean, sigma, output);
 
 	m_lastNoise = output - mean;
 
-	a->set(actionIndex, output);
+	a->set(m_outputAction.get(), output);
 
 
 	//this is only an approximation as the PDF now looks differently because of the clipping

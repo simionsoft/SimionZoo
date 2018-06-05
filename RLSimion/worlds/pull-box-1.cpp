@@ -48,8 +48,7 @@ PullBox1::PullBox1(ConfigNode* pConfigNode)
 		KinematicObject* pTarget = new KinematicObject(BulletPhysics::MASS_TARGET
 			, btVector3(BulletPhysics::TargetX, BulletPhysics::TargetZ, BulletPhysics::TargetY)
 			, new btConeShape(btScalar(0.5), btScalar(0.001)));
-		pTarget->setAbsoluteStateVarIds(getStateDescriptor().getVarIndex("target-x")
-			, getStateDescriptor().getVarIndex("target-y"));
+		pTarget->setAbsoluteStateVarIds("target-x", "target-y");
 		m_pBulletPhysics->add(pTarget);
 	}
 
@@ -57,28 +56,17 @@ PullBox1::PullBox1(ConfigNode* pConfigNode)
 	BulletBox* pBox = new BulletBox(BulletPhysics::MASS_BOX
 		, btVector3(BulletPhysics::boxOrigin_x, BulletPhysics::boxOrigin_z, BulletPhysics::boxOrigin_y)
 		, new btBoxShape(btVector3(btScalar(0.6), btScalar(0.6), btScalar(0.6))));
-	pBox->setAbsoluteStateVarIds(getStateDescriptor().getVarIndex("box-x")
-		, getStateDescriptor().getVarIndex("box-y")
-		, getStateDescriptor().getVarIndex("box-theta"));
-	pBox->setRelativeStateVarIds(getStateDescriptor().getVarIndex("box-to-target-x")
-		, getStateDescriptor().getVarIndex("box-to-target-y")
-		, getStateDescriptor().getVarIndex("target-x")
-		, getStateDescriptor().getVarIndex("target-y"));
+	pBox->setAbsoluteStateVarIds("box-x", "box-y", "box-theta");
+	pBox->setRelativeStateVarIds("box-to-target-x", "box-to-target-y", "target-x", "target-y");
 	m_pBulletPhysics->add(pBox);
 	
 	///creating  dynamic robot one
 	Robot* pRobot1 = new Robot(BulletPhysics::MASS_ROBOT
 		, btVector3(BulletPhysics::r1origin_x, BulletPhysics::r1origin_z, BulletPhysics::r1origin_y)
 		, new btSphereShape(btScalar(0.5)));
-	pRobot1->setAbsoluteStateVarIds(getStateDescriptor().getVarIndex("robot1-x")
-		, getStateDescriptor().getVarIndex("robot1-y")
-		, getStateDescriptor().getVarIndex("robot1-theta"));
-	pRobot1->setActionIds(getActionDescriptor().getVarIndex("robot1-v")
-		, getActionDescriptor().getVarIndex("robot1-omega"));
-	pRobot1->setRelativeStateVarIds(getStateDescriptor().getVarIndex("robot1-to-box-x")
-		, getStateDescriptor().getVarIndex("robot1-to-box-y")
-		, getStateDescriptor().getVarIndex("box-x")
-		, getStateDescriptor().getVarIndex("box-y"));
+	pRobot1->setAbsoluteStateVarIds("robot1-x", "robot1-y", "robot1-theta");
+	pRobot1->setActionIds("robot1-v", "robot1-omega");
+	pRobot1->setRelativeStateVarIds("robot1-to-box-x", "robot1-to-box-y", "box-x", "box-y");
 	m_pBulletPhysics->add(pRobot1);
 
 	/// creating an union with rope between robot and box
@@ -87,7 +75,7 @@ PullBox1::PullBox1(ConfigNode* pConfigNode)
 	m_pBulletPhysics->add(pRope);
 
 	//the reward function
-	m_pRewardFunction->addRewardComponent(new DistanceReward2D(getStateDescriptor(),m_box_X, m_box_Y, m_target_X, m_target_Y));
+	m_pRewardFunction->addRewardComponent(new DistanceReward2D(getStateDescriptor(),"box-x", "box-y", "target-x", "target-y"));
 	m_pRewardFunction->initialize();
 }
 

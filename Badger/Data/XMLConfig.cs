@@ -49,6 +49,8 @@ namespace Badger.Simion
         public const string statVariableTag = "VARIABLE";
         public const string statVariableItemTag = "STATISTIC-ITEM";
         public const string PrerequisiteTag = "PREREQUISITE";
+        //Wires
+        public const string WireTag = "Wire";
         //Attributes
         public const string nameAttribute = "Name";
         public const string aliasAttribute = "Alias";

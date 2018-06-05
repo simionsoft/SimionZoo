@@ -75,7 +75,7 @@ PIDController::PIDController(ConfigNode* pConfigNode)
 	m_pKI = CHILD_OBJECT_FACTORY<NumericValue>(pConfigNode, "KI", "Integral gain");
 	m_pKD = CHILD_OBJECT_FACTORY<NumericValue>(pConfigNode, "KD", "Derivative gain");
 
-	m_errorVariableIndex = STATE_VARIABLE(pConfigNode, "Input-Variable", "The input state variable");
+	m_errorVariable = STATE_VARIABLE(pConfigNode, "Input-Variable", "The input state variable");
 
 	m_intError= 0.0;
 }
@@ -99,7 +99,7 @@ double PIDController::selectAction(const State *s, Action *a)
 	if (SimionApp::get()->pWorld->getEpisodeSimTime()== 0.0)
 		m_intError= 0.0;
 
-	double error= s->get(m_errorVariableIndex.get());
+	double error= s->get(m_errorVariable.get());
 	double dError = error*SimionApp::get()->pWorld->getDT();
 	m_intError += error*SimionApp::get()->pWorld->getDT();
 
@@ -124,21 +124,6 @@ WindTurbineVidalController::WindTurbineVidalController(ConfigNode* pConfigNode)
 	m_pK_alpha = CHILD_OBJECT_FACTORY<NumericValue>(pConfigNode,  "K_alpha", "K_alpha parameter of the torque controller", new ConstantValue(5000000));
 	m_pKP = CHILD_OBJECT_FACTORY<NumericValue>(pConfigNode, "KP", "Proportional gain of the pitch controller", new ConstantValue(1.0));
 	m_pKI = CHILD_OBJECT_FACTORY<NumericValue>(pConfigNode, "KI", "Integral gain of the pitch controller", new ConstantValue(0.0));
-
-	Descriptor& pStateDescriptor = World::getDynamicModel()->getStateDescriptor();
-	m_omega_r = pStateDescriptor.getVarIndex("omega_r");
-	m_d_omega_r = pStateDescriptor.getVarIndex("d_omega_r");
-	m_omega_g = pStateDescriptor.getVarIndex("omega_g");
-	m_d_omega_g = pStateDescriptor.getVarIndex("d_omega_g");
-	m_E_p = pStateDescriptor.getVarIndex("E_p");
-	m_T_g = pStateDescriptor.getVarIndex("T_g");
-	m_beta = pStateDescriptor.getVarIndex("beta");
-	m_E_int_omega_r = pStateDescriptor.getVarIndex("E_int_omega_r");
-
-	Descriptor& pActionDescriptor = World::getDynamicModel()->getActionDescriptor();
-
-	m_a_beta = pActionDescriptor.getVarIndex("beta");
-	m_a_T_g = pActionDescriptor.getVarIndex("T_g");
 
 	m_ratedPower = World::getDynamicModel()->getConstant("RatedPower")
 		/ World::getDynamicModel()->getConstant("ElectricalGeneratorEfficiency");
@@ -178,14 +163,14 @@ double WindTurbineVidalController::selectAction(const State *s,Action *a)
 	//d(Tg)/dt= (-1/omega_g)*(T_g*(a*omega_g-d_omega_g)-a*P_setpoint + K_alpha*sgn(P_a-P_setpoint))
 	//beta= K_p*(omega_ref - omega_g) + K_i*(error_integral)
 
-	double omega_r = s->get(m_omega_r);
-	double d_omega_r = s->get(m_d_omega_r);
-	double omega_g = s->get(m_omega_g);
-	double d_omega_g = s->get(m_d_omega_g);
+	double omega_r = s->get("omega_r");
+	double d_omega_r = s->get("d_omega_r");
+	double omega_g = s->get("omega_g");
+	double d_omega_g = s->get("d_omega_g");
 
-	double error_P= s->get(m_E_p);
+	double error_P= s->get("E_p");
 
-	double T_g= s->get(m_T_g);
+	double T_g= s->get("T_g");
 	
 	double d_T_g;
 	
@@ -197,11 +182,11 @@ double WindTurbineVidalController::selectAction(const State *s,Action *a)
 	double beta = 0.5*m_pKP->get()*e_omega_g*(1.0 + sgn(e_omega_g))
 				+ m_pKI->get()*s->get("E_int_omega_g");
 
-	beta = std::min(a->getProperties("beta").getMax(), std::max(beta, a->getProperties("beta").getMin()));
-	d_T_g = std::min(std::max(s->getProperties("d_T_g").getMin(), d_T_g), s->getProperties("d_T_g").getMax());
-	a->set(m_a_beta,beta);
+	beta = std::min(a->getProperties("beta")->getMax(), std::max(beta, a->getProperties("beta")->getMin()));
+	d_T_g = std::min(std::max(s->getProperties("d_T_g")->getMin(), d_T_g), s->getProperties("d_T_g")->getMax());
+	a->set("beta",beta);
 	double nextT_g = m_lastT_g + d_T_g* SimionApp::get()->pWorld->getDT();
-	a->set(m_a_T_g,nextT_g);
+	a->set("T_g",nextT_g);
 	m_lastT_g = nextT_g;
 
 	return 1.0;
@@ -224,21 +209,6 @@ WindTurbineBoukhezzarController::WindTurbineBoukhezzarController(ConfigNode* pCo
 	m_J_t = World::getDynamicModel()->getConstant("TotalTurbineInertia");
 	m_K_t = World::getDynamicModel()->getConstant("TotalTurbineTorsionalDamping");
 	m_genElecEff = World::getDynamicModel()->getConstant("ElectricalGeneratorEfficiency");
-
-	Descriptor& pStateDescriptor = World::getDynamicModel()->getStateDescriptor();
-	m_omega_g = pStateDescriptor.getVarIndex("omega_g");
-	m_d_omega_g = pStateDescriptor.getVarIndex("d_omega_g");
-	m_E_p = pStateDescriptor.getVarIndex("E_p");
-	m_T_g = pStateDescriptor.getVarIndex("T_g");
-	m_T_a_index = pStateDescriptor.getVarIndex("T_a");
-	m_beta = pStateDescriptor.getVarIndex("beta");
-	m_d_T_g = pStateDescriptor.getVarIndex("d_T_g");
-	m_E_int_omega_g = pStateDescriptor.getVarIndex("E_int_omega_g");
-
-	Descriptor& pActionDescriptor = World::getDynamicModel()->getActionDescriptor();
-
-	m_a_beta = pActionDescriptor.getVarIndex("beta");
-	m_a_T_g = pActionDescriptor.getVarIndex("T_g");
 }
 
 size_t WindTurbineBoukhezzarController::getNumOutputs()
@@ -268,25 +238,25 @@ double WindTurbineBoukhezzarController::selectAction(const State *s,Action *a)
 	//double d_T_g= (1.0/omega_g)*(m_pC_0.get()*error_P - (T_a*m_lastT_g - m_K_t*omega_g*m_lastT_g 
 	//	- m_lastT_g *m_lastT_g) / m_J_t );
 
-	double omega_g= s->get(m_omega_g);
-	double d_omega_g = s->get(m_d_omega_g);	
-	double T_a= s->get(m_T_a_index);		
+	double omega_g= s->get("omega_g");
+	double d_omega_g = s->get("d_omega_g");	
+	double T_a= s->get("T_a");		
 	
-	double beta= s->get(m_beta);
-	double E_p = s->get(m_E_p);
+	double beta= s->get("beta");
+	double E_p = s->get("E_p");
 	double P_e = s->get("P_e");
 	
 	//Boukhezzar controller without making substitution: d_T_g= (-1/omega_g)(d_omega_g*T_g+C_0*Ep)
-	double d_T_g = (-1.0/(omega_g*m_genElecEff))*(d_omega_g*m_lastT_g*m_genElecEff + m_pC_0->get()*s->get(m_E_p));
+	double d_T_g = (-1.0/(omega_g*m_genElecEff))*(d_omega_g*m_lastT_g*m_genElecEff + m_pC_0->get()*s->get("E_p"));
 
-	d_T_g = std::min(std::max(s->getProperties(m_d_T_g).getMin(), d_T_g), s->getProperties(m_d_T_g).getMax());
+	d_T_g = std::min(std::max(s->getProperties("d_T_g")->getMin(), d_T_g), s->getProperties("d_T_g")->getMax());
 
 	double e_omega_g = omega_g - World::getDynamicModel()->getConstant("RatedGeneratorSpeed");
-	double desiredBeta = m_pKP->get()*e_omega_g + m_pKI->get()*s->get(m_E_int_omega_g);
+	double desiredBeta = m_pKP->get()*e_omega_g + m_pKI->get()*s->get("E_int_omega_g");
 
-	a->set(m_a_beta,desiredBeta);
+	a->set("beta",desiredBeta);
 	double nextT_g = m_lastT_g + d_T_g*SimionApp::get()->pWorld->getDT();
-	a->set(m_a_T_g, nextT_g);
+	a->set("T_g", nextT_g);
 	m_lastT_g = nextT_g;
 
 	return 1.0;
@@ -330,18 +300,6 @@ WindTurbineJonkmanController::WindTurbineJonkmanController(ConfigNode* pConfigNo
 	m_PC_RefSpd= DOUBLE_PARAM(pConfigNode,"PC_RefSpd","Pitch control reference speed", 122.9096);
 
 	m_IntSpdErr= 0.0;
-
-	Descriptor& pStateDescriptor = World::getDynamicModel()->getStateDescriptor();
-	m_omega_g = pStateDescriptor.getVarIndex("omega_g");
-
-	m_E_p = pStateDescriptor.getVarIndex("E_p");
-	m_T_g = pStateDescriptor.getVarIndex("T_g");
-	m_beta = pStateDescriptor.getVarIndex("beta");
-
-	Descriptor& pActionDescriptor = World::getDynamicModel()->getActionDescriptor();
-
-	m_a_beta = pActionDescriptor.getVarIndex("beta");
-	m_a_T_g = pActionDescriptor.getVarIndex("T_g");
 }
 
 size_t WindTurbineJonkmanController::getNumOutputs()
@@ -369,17 +327,17 @@ double WindTurbineJonkmanController::selectAction(const State *s,Action *a)
 	if (SimionApp::get()->pWorld->getEpisodeSimTime() == 0.0)
 	{
 		lowPassFilterAlpha= 1.0;
-		m_GenSpeedF= s->get(m_omega_g);
+		m_GenSpeedF= s->get("omega_g");
 		m_IntSpdErr = 0.0;
 	}
 	else
 		lowPassFilterAlpha = exp(-SimionApp::get()->pWorld->getDT()*m_CornerFreq.get());
 
-	m_GenSpeedF = (1.0 - lowPassFilterAlpha)*s->get(m_omega_g) + lowPassFilterAlpha*m_GenSpeedF;
+	m_GenSpeedF = (1.0 - lowPassFilterAlpha)*s->get("omega_g") + lowPassFilterAlpha*m_GenSpeedF;
 
 	//TORQUE CONTROLLER
 	double DesiredGenTrq;
-	if ( (m_GenSpeedF >= m_ratedGenSpeed ) || (  s->get(m_beta) >= m_VS_Rgn3MP.get() ) )   //We are in region 3 - power is constant
+	if ( (m_GenSpeedF >= m_ratedGenSpeed ) || (  s->get("beta") >= m_VS_Rgn3MP.get() ) )   //We are in region 3 - power is constant
 		DesiredGenTrq = m_ratedPower/m_GenSpeedF;
 	else if ( m_GenSpeedF <= m_VS_CtInSp.get() )							//We are in region 1 - torque is zero
 		DesiredGenTrq = 0.0;
@@ -390,21 +348,21 @@ double WindTurbineJonkmanController::selectAction(const State *s,Action *a)
 	else                                                                       //We are in region 2 1/2 - simple induction generator transition region
 		DesiredGenTrq = m_VS_Slope25*( m_GenSpeedF - m_VS_SySp   );
 
-	DesiredGenTrq  = std::min( DesiredGenTrq, s->getProperties("T_g").getMax()  );   //Saturate the command using the maximum torque limit
+	DesiredGenTrq  = std::min( DesiredGenTrq, s->getProperties("T_g")->getMax()  );   //Saturate the command using the maximum torque limit
 
 	//we pass the desired generator torque instead of the rate
-	a->set(m_a_T_g, DesiredGenTrq);
+	a->set("T_g", DesiredGenTrq);
 
 	//PITCH CONTROLLER
-	double GK= 1.0 / (1.0 + s->get(m_beta) / m_PC_KK->get());
+	double GK= 1.0 / (1.0 + s->get("beta") / m_PC_KK->get());
 
 	//Compute the current speed error and its integral w.r.t. time; saturate the
 	//  integral term using the pitch angle limits:
 	double SpdErr= m_GenSpeedF - m_PC_RefSpd.get();                                 //Current speed error
 	m_IntSpdErr = m_IntSpdErr + SpdErr*SimionApp::get()->pWorld->getDT();                           //Current integral of speed error w.r.t. time
 	//Saturate the integral term using the pitch angle limits, converted to integral speed error limits
-	m_IntSpdErr = std::min( std::max( m_IntSpdErr, s->getProperties(m_beta).getMin()/( GK*m_PC_KI->get() ) )
-		, s->getProperties(m_beta).getMax()/( GK*m_PC_KI->get() ));
+	m_IntSpdErr = std::min( std::max( m_IntSpdErr, s->getProperties("beta")->getMin()/( GK*m_PC_KI->get() ) )
+		, s->getProperties("beta")->getMax()/( GK*m_PC_KI->get() ));
   
 	//Compute the pitch commands associated with the proportional and integral  gains:
 	double PitComP   = GK* m_PC_KP->get() * SpdErr; //Proportional term
@@ -413,11 +371,11 @@ double WindTurbineJonkmanController::selectAction(const State *s,Action *a)
 	//Superimpose the individual commands to getSample the total pitch command;
 	//  saturate the overall command using the pitch angle limits:
 	double PitComT   = PitComP + PitComI;                                     //Overall command (unsaturated)
-	PitComT   = std::min( std::max( PitComT, s->getProperties(m_beta).getMin() )
-		, s->getProperties(m_beta).getMax() );           //Saturate the overall command using the pitch angle limits
+	PitComT   = std::min( std::max( PitComT, s->getProperties("beta")->getMin() )
+		, s->getProperties("beta")->getMax() );           //Saturate the overall command using the pitch angle limits
 
 	//we pass the desired blade pitch angle to the world
-	a->set(m_a_beta,PitComT);
+	a->set("beta",PitComT);
 
 	return 1.0;
 }

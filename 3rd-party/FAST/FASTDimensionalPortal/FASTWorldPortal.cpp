@@ -125,7 +125,7 @@ void FASTWorldPortal::setActionVariables(float* FASTdata, bool bFirstTime)
 	{
 		s->set("d_T_g",(demanded_T_g - m_prevGenTorque) / m_elapsedTime);
 		demanded_T_g = s->get("T_g") + s->get("d_T_g")*m_elapsedTime;
-		demanded_T_g = std::min(std::max(demanded_T_g, s->getProperties("T_g").getMin()), s->getProperties("T_g").getMax());
+		demanded_T_g = std::min(std::max(demanded_T_g, s->getProperties("T_g")->getMin()), s->getProperties("T_g")->getMax());
 		s->set("T_g", demanded_T_g);
 	}
 	FASTdata[46] = (float)demanded_T_g;// (float)m_last_T_g;   //Demanded generator torque
@@ -136,7 +136,7 @@ void FASTWorldPortal::setActionVariables(float* FASTdata, bool bFirstTime)
 	{
 		s->set("d_beta",(demanded_beta - m_prevPitch) / m_elapsedTime);
 		demanded_beta = s->get("beta") + s->get("d_beta")*m_elapsedTime;
-		demanded_beta = std::min(std::max(demanded_beta, s->getProperties("beta").getMin()), s->getProperties("beta").getMax());
+		demanded_beta = std::min(std::max(demanded_beta, s->getProperties("beta")->getMin()), s->getProperties("beta")->getMax());
 		s->set("beta", demanded_beta);
 	}
 	FASTdata[54] = 0.0;       //Pitch override: 0=yes

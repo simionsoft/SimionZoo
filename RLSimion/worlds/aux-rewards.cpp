@@ -11,27 +11,16 @@ double static getDistanceBetweenPoints(double x1, double y1, double x2, double y
 
 DistanceReward2D::DistanceReward2D(Descriptor& stateDescr, const char* var1xName, const char* var1yName, const char* var2xName, const char* var2yName)
 {
-	m_var1xId = stateDescr.getVarIndex(var1xName);
-	m_var1yId = stateDescr.getVarIndex(var1yName);
-	m_var2xId = stateDescr.getVarIndex(var2xName);
-	m_var2yId = stateDescr.getVarIndex(var2yName);
+	m_var1xId = var1xName;
+	m_var1yId = var1yName;
+	m_var2xId = var2xName;
+	m_var2yId = var2yName;
 
 	//here we assume both variables have the same value range
-	m_maxDist = sqrt(stateDescr[m_var1xId].getRangeWidth()*stateDescr[m_var1xId].getRangeWidth()
-		+ stateDescr[m_var1yId].getRangeWidth()*stateDescr[m_var1yId].getRangeWidth());
-}
-
-DistanceReward2D::DistanceReward2D(Descriptor& stateDescr, size_t var1xId, size_t var1yId, size_t var2xId, size_t var2yId)
-{
-	m_var1xId = var1xId;
-	m_var1yId = var1yId;
-	m_var2xId = var2xId;
-	m_var2yId = var2yId;
-
-	//here we assume both variables have the same value range
-	m_maxDist = sqrt(stateDescr[m_var1xId].getRangeWidth()*stateDescr[m_var1xId].getRangeWidth()
-		+ stateDescr[m_var1yId].getRangeWidth()*stateDescr[m_var1yId].getRangeWidth());
-
+	m_maxDist = sqrt(stateDescr.getProperties(m_var1xId)->getRangeWidth()
+		* stateDescr.getProperties(m_var1xId)->getRangeWidth()
+		+ stateDescr.getProperties(m_var1yId)->getRangeWidth()
+		* stateDescr.getProperties(m_var1yId)->getRangeWidth());
 }
 
 double DistanceReward2D::getReward(const State* s, const Action* a, const State* s_p)

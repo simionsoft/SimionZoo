@@ -8,11 +8,10 @@ class Descriptor;
 
 class DistanceReward2D : public IRewardComponent
 {
-	size_t m_var1xId, m_var1yId, m_var2xId, m_var2yId;
+	const char *m_var1xId = nullptr, *m_var1yId = nullptr, *m_var2xId = nullptr, *m_var2yId = nullptr;
 	double m_maxDist= 1.0;
 public:
 	DistanceReward2D(Descriptor& stateDescr, const char* var1xName, const char* var1yName, const char* var2xName, const char* var2yName);
-	DistanceReward2D(Descriptor& stateDescr, size_t var1xId, size_t var1yId, size_t var2xId, size_t var2yId);
 	double getReward(const State *s, const Action *a, const State *s_p);
 	const char* getName() { return "reward"; }
 	double getMin();

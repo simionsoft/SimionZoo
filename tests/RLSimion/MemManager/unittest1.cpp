@@ -5,6 +5,11 @@
 #define BLOCK_SIZE 512 * 1024
 #define BLOCK_SIZE_IN_BYTES (BLOCK_SIZE*8)
 
+#define SMALL_BUFER_SIZE 1024
+#define MAX_NUM_ELEMENTS 3000
+#define MAX_MEMORY (MAX_NUM_ELEMENTS*sizeof(double))
+#define SMALL_BLOCK_SIZE 100
+
 using namespace Microsoft::VisualStudio::CppUnitTestFramework;
 
 namespace MemManagerTest
@@ -68,33 +73,31 @@ namespace MemManagerTest
 		{
 			// TODO: Your test code here
 			MemManager<SimionMemPool>* pMemManager = new MemManager<SimionMemPool>();
-			IMemBuffer* pBuffer1 = pMemManager->getMemBuffer(BUFFER_SIZE);
+			IMemBuffer* pBuffer1 = pMemManager->getMemBuffer(SMALL_BUFER_SIZE);
 			pBuffer1->setInitValue(1.0);
-			IMemBuffer* pBuffer2 = pMemManager->getMemBuffer(BUFFER_SIZE);
+			IMemBuffer* pBuffer2 = pMemManager->getMemBuffer(SMALL_BUFER_SIZE);
 			pBuffer2->setInitValue(2.0);
-			IMemBuffer* pBuffer3 = pMemManager->getMemBuffer(BUFFER_SIZE);
+			IMemBuffer* pBuffer3 = pMemManager->getMemBuffer(SMALL_BUFER_SIZE);
 			pBuffer3->setInitValue(3.0);
-			IMemBuffer* pBuffer4 = pMemManager->getMemBuffer(BUFFER_SIZE);
+			IMemBuffer* pBuffer4 = pMemManager->getMemBuffer(SMALL_BUFER_SIZE);
 			pBuffer4->setInitValue(4.0);
-			IMemBuffer* pBuffer5 = pMemManager->getMemBuffer(BUFFER_SIZE);
+			IMemBuffer* pBuffer5 = pMemManager->getMemBuffer(SMALL_BUFER_SIZE);
 			pBuffer5->setInitValue(5.0);
 
-			pMemManager->init(BLOCK_SIZE);
+			pMemManager->init(SMALL_BLOCK_SIZE);
 
-			Assert::AreEqual(1.0, (*pBuffer1)[0]);
-			Assert::AreEqual(2.0, (*pBuffer2)[1000]);
-			Assert::AreEqual(3.0, (*pBuffer3)[20]);
-			Assert::AreEqual(4.0, (*pBuffer4)[210390]);
-			Assert::AreEqual(5.0, (*pBuffer5)[12310]);
-			
+			for (int i = 0; i < SMALL_BUFER_SIZE; i++)
+			{
+				Assert::AreEqual(1.0, (*pBuffer1)[i]);
+				Assert::AreEqual(2.0, (*pBuffer2)[i]);
+				Assert::AreEqual(3.0, (*pBuffer3)[i]);
+				Assert::AreEqual(4.0, (*pBuffer4)[i]);
+				Assert::AreEqual(5.0, (*pBuffer5)[i]);
+			}
 			delete pMemManager;
 		}
 
 		//Check that buffer copies work properly
-#define SMALL_BUFER_SIZE 1024
-#define MAX_NUM_ELEMENTS 3000
-#define MAX_MEMORY (MAX_NUM_ELEMENTS*sizeof(double))
-#define SMALL_BLOCK_SIZE 100
 		TEST_METHOD(MemManager_Copy)
 		{
 			MemManager<SimionMemPool>* pMemManager = new MemManager<SimionMemPool>();

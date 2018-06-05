@@ -23,6 +23,7 @@ class NamedVarProperties
 	bool m_bCircular;
 public:
 	//bCircular must be true for variables holding angles
+	NamedVarProperties();
 	NamedVarProperties(const char* name, const char* units, double min, double max, bool bCircular= false);
 	const char* getName() const { return m_name; }
 	void setName(const char* name);
@@ -39,6 +40,7 @@ class NamedVarSet;
 class Descriptor
 {
 	WireHandler* m_pWireHandler = nullptr;
+	NamedVarProperties wireDummyProperties;
 	std::vector<NamedVarProperties*> m_descriptor;
 public:
 	Descriptor() = default;
@@ -51,7 +53,6 @@ public:
 	NamedVarProperties& operator[](size_t idx) { return *m_descriptor[idx]; }
 	const NamedVarProperties& operator[](size_t idx) const { return *m_descriptor[idx]; }
 	size_t addVariable(const char* name, const char* units, double min, double max, bool bCircular= false);
-	size_t getVarIndex (const char* name);
 };
 
 class NamedVarSet
@@ -60,15 +61,13 @@ class NamedVarSet
 	double *m_pValues;
 	size_t m_numVars;
 
-	double normalize(size_t i, double value) const;
-	double denormalize(size_t i, double value) const;
+	double normalize(const char* varName, double value) const;
+	double denormalize(const char*, double value) const;
 public:
 	NamedVarSet(Descriptor& descriptor);
 	virtual ~NamedVarSet();
 
 	size_t getNumVars() const{ return m_numVars; }
-
-	size_t getVarIndex(const char* name) const;
 
 	double* getValueVector(){return m_pValues;}
 
@@ -76,7 +75,6 @@ public:
 	double get(size_t i) const;
 	double get(const char* varName) const;
 	//these two methods return the value normalized in its value range
-	double getNormalized(size_t i) const;
 	double getNormalized(const char* varName) const;
 
 	double* getValuePtr(size_t i);
@@ -87,14 +85,13 @@ public:
 	void set(size_t i, double value);
 	//these two methods accept normalized values that are de-normalized before storing them
 	void setNormalized(const char* varName, double value);
-	void setNormalized(size_t i, double value);
 
 	//returns the sum of all the values, i.e. used to scalarise a reward vector
 	double getSumValue() const;
 
 	void copy(const NamedVarSet* nvs);
-	NamedVarProperties& getProperties(size_t i) const { return m_descriptor[i]; }
-	NamedVarProperties& getProperties(const char* varName) const;
+	NamedVarProperties* getProperties(size_t i) const { return &m_descriptor[i]; }
+	NamedVarProperties* getProperties(const char* varName) const;
 	Descriptor& getDescriptor() { return m_descriptor; }
 	Descriptor* getDescriptorPtr() { return &m_descriptor; }
 

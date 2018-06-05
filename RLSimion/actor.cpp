@@ -24,7 +24,7 @@ Actor::~Actor() {}
 
 void Actor::deferredLoadStep()
 {
-	size_t controllerActionIndex, actorActionIndex;
+	size_t controllerActionIndex;
 	size_t numWeights;
 	IMemBuffer *pWeights;
 	State* s= SimionApp::get()->pWorld->getDynamicModel()->getStateInstance();
@@ -37,10 +37,9 @@ void Actor::deferredLoadStep()
 		//initialize the weights using the controller's output at each center point in state space
 		for (size_t actionIndex = 0; actionIndex < numActionDims; actionIndex++)
 		{
-			controllerActionIndex = a->getVarIndex( m_pInitController->getOutputAction(actionIndex));
 			for (size_t actorActionIndex = 0; actorActionIndex < m_policyLearners.size(); actorActionIndex++)
 			{
-				if (controllerActionIndex == s->getVarIndex( m_policyLearners[actorActionIndex]->getPolicy()->getOutputAction()))
+				if (!strcmp(m_pInitController->getOutputAction(actionIndex), m_policyLearners[actorActionIndex]->getPolicy()->getOutputAction()))
 				{
 					//controller's output action index and actor's match, so we use it to initialize
 					numWeights = m_policyLearners[actorActionIndex]->getPolicy()->getDetPolicyStateVFA()->getNumWeights();
@@ -56,16 +55,7 @@ void Actor::deferredLoadStep()
 		}
 		Logger::logMessage(MessageType::Info, "Initialization done");
 	}
-	else
-	{
-		Logger::logMessage(MessageType::Info, "Initializing policy weights with null values");
-		for (actorActionIndex = 0; actorActionIndex < m_policyLearners.size(); actorActionIndex++)
-		{
-			m_policyLearners[actorActionIndex]->getPolicy()->getDetPolicyStateVFA()->getWeights()->setInitValue(0.0);
-			m_policyLearners[actorActionIndex]->getPolicy()->getDetPolicyStateVFA()->getWeights()->setInitValue(0.0);
-		}
-		Logger::logMessage(MessageType::Info, "Initialization done");
-	}
+
 	delete s;
 	delete a;
 }

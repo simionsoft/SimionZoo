@@ -36,8 +36,7 @@ RobotControl::RobotControl(ConfigNode* pConfigNode)
 		KinematicObject* pTarget = new KinematicObject(MASS_TARGET
 			, btVector3(BulletPhysics::TargetX, 0, BulletPhysics::TargetY)
 			, new btConeShape(btScalar(0.5), btScalar(0.001)));
-		pTarget->setAbsoluteStateVarIds(getStateDescriptor().getVarIndex("target-x")
-			, getStateDescriptor().getVarIndex("target-y"));
+		pTarget->setAbsoluteStateVarIds("target-x", "target-y");
 		m_pBulletPhysics->add(pTarget);
 	}
 
@@ -46,17 +45,14 @@ RobotControl::RobotControl(ConfigNode* pConfigNode)
 		Robot* pRobot1 = new Robot(MASS_ROBOT
 			, btVector3(BulletPhysics::r1origin_x, 0, BulletPhysics::r1origin_y)
 			, new btSphereShape(0.5));
-		pRobot1->setAbsoluteStateVarIds(getStateDescriptor().getVarIndex("robot1-x")
-			, getStateDescriptor().getVarIndex("robot1-y")
-			, getStateDescriptor().getVarIndex("robot1-theta"));
-		pRobot1->setActionIds(getActionDescriptor().getVarIndex("robot1-v")
-			, getActionDescriptor().getVarIndex("robot1-omega"));
+		pRobot1->setAbsoluteStateVarIds("robot1-x", "robot1-y", "robot1-theta");
+		pRobot1->setActionIds("robot1-v", "robot1-omega");
 		m_pBulletPhysics->add(pRobot1);
 	}
 
 
 	//the reward function
-	m_pRewardFunction->addRewardComponent(new DistanceReward2D(getStateDescriptor(),m_rob1_X,m_rob1_Y,m_target_X,m_target_Y));
+	m_pRewardFunction->addRewardComponent(new DistanceReward2D(getStateDescriptor(),"robot1-x","robot1-y","target-x","target-y"));
 	m_pRewardFunction->initialize();
 }
 

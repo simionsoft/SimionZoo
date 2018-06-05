@@ -57,7 +57,7 @@ class PIDController : public Controller
 	CHILD_OBJECT_FACTORY<NumericValue> m_pKD;
 	ACTION_VARIABLE m_outputAction;
 	double m_intError;
-	STATE_VARIABLE m_errorVariableIndex;
+	STATE_VARIABLE m_errorVariable;
 public:
 	PIDController(ConfigNode* pConfigNode);
 	virtual ~PIDController();
@@ -75,13 +75,6 @@ protected:
 	//aux function
 	double sgn(double value);
 
-	//state variable indices
-	size_t m_omega_g, m_d_omega_g;
-	size_t m_omega_r, m_d_omega_r;
-	size_t m_E_p, m_T_g, m_beta;
-	size_t m_E_int_omega_r;
-	//action variable indices
-	size_t m_a_beta, m_a_T_g;
 	double m_ratedPower;
 	double m_genElecEff;
 	double m_lastT_g = 0.0;
@@ -100,14 +93,6 @@ public:
 class WindTurbineBoukhezzarController : public Controller
 {
 protected:
-	//state variable indices
-	size_t m_omega_g, m_d_omega_g;
-	size_t m_E_p, m_T_a_index, m_T_g, m_d_T_g;
-	size_t m_beta, m_E_int_omega_g;
-
-	//action variable indices
-	size_t m_a_beta, m_a_T_g;
-	
 	CHILD_OBJECT_FACTORY<NumericValue> m_pC_0, m_pKP, m_pKI;
 	double m_K_t, m_J_t;
 	double m_lastT_g = 0.0;
@@ -126,10 +111,6 @@ public:
 class WindTurbineJonkmanController : public Controller
 {
 protected:
-	size_t m_omega_g, m_d_omega_g;
-	size_t m_E_p, m_T_g, m_beta;
-	size_t m_a_beta, m_a_T_g;
-
 	//generator speed filter's parameters and variables
 	DOUBLE_PARAM m_CornerFreq;
 	double m_GenSpeedF;

@@ -1,6 +1,7 @@
-﻿using Caliburn.Micro;
-using System.Collections.Generic;
+﻿using Badger.Simion;
+using Caliburn.Micro;
 using System.Collections.ObjectModel;
+using System.IO;
 
 namespace Badger.ViewModels
 {
@@ -13,6 +14,11 @@ namespace Badger.ViewModels
         {
             get { return m_name; }
             set { m_name = value; NotifyOfPropertyChange(() => Name); }
+        }
+
+        public void outputXML(StreamWriter writer, SaveMode mode, string leftSpace)
+        {
+            writer.WriteLine(leftSpace + "<" + XMLConfig.WireTag + ">" + Name + "</" + XMLConfig.WireTag + ">");
         }
 
         public WireViewModel(string name, WiresViewModel parent)
@@ -43,6 +49,11 @@ namespace Badger.ViewModels
         {
             int numWires = m_wires.Count;
             Wires.Add(new WireViewModel("Wire-" + numWires.ToString(), this));
+        }
+
+        public void AddWire(string name)
+        {
+            Wires.Add(new WireViewModel(name, this));
         }
 
         public void RemoveWire(WireViewModel wire)

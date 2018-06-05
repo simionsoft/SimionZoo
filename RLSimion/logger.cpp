@@ -409,7 +409,7 @@ void Logger::addVarSetToStats(const char* key, NamedVarSet* varset)
 {
 	for (int i = 0; i < varset->getNumVars(); i++)
 	{
-		m_stats.push_back(new Stats<double>(key, varset->getProperties(i).getName(), varset->getRef(i)));
+		m_stats.push_back(new Stats<double>(key, varset->getProperties(i)->getName(), varset->getRef(i)));
 	}
 }
 

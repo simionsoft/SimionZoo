@@ -35,6 +35,15 @@ SimionApp::SimionApp(ConfigNode* pConfigNode)
 
 	pMemManager = new MemManager<SimionMemPool>();
 
+	//Wires: hard to fit them in the hierarchical structure. This seems the least bad place
+	MULTI_VALUE_SIMPLE_PARAM<STRING_PARAM, const char*> wires 
+		= MULTI_VALUE_SIMPLE_PARAM<STRING_PARAM, const char*>(pConfigNode, "Wire", "Wires used in the experiment to connect inputs and outputs", "");
+	for (size_t wire = 0; wire< wires.size(); ++wire)
+	{
+		wireRegister(wires[wire]->get());
+	}
+
+
 	//In the beginning, a logger was created so that we could tell about creation itself
 	pLogger = CHILD_OBJECT<Logger>(pConfigNode, "Log", "The logger class");
 
@@ -168,7 +177,10 @@ void SimionApp::registerStateActionFunction(string name, StateActionFunction* pF
 	string finalName = name;
 	size_t index = 0;
 	while (m_pStateActionFunctions.find(finalName) != m_pStateActionFunctions.end())
+	{
 		finalName = name + "_" + to_string(index);
+		index++;
+	}
 	m_pStateActionFunctions[finalName] = pFunction;
 }
 

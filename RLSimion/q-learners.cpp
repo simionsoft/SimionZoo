@@ -129,9 +129,7 @@ double GreedyQPlusNoisePolicy::selectAction(LinearStateActionVFA* pQFunction, co
 		size_t action = 0;
 		for each(string outputAction in pQFunction->getInputActionVariables())
 		{
-			NamedVarProperties& prop = a->getProperties(outputAction.c_str());
-			
-			a->set(outputAction.c_str(), 0.5*a->get(outputAction.c_str()) + /*prop.getMin() + prop.getRangeWidth() **/ 0.5*m_noise[action]->getSample() );
+			a->set(outputAction.c_str(), 0.5*a->get(outputAction.c_str()) + 0.5*m_noise[action]->getSample() );
 			action++;
 		}
 	}

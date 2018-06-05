@@ -71,7 +71,7 @@ void MountainCar::executeAction(State *s, const Action *a, double dt)
 	double velocity = s->get(m_sVelocity);
 	double pedal = a->get(m_aPedal);
 
-	if (position <= s->getProperties(m_sPosition).getMin() && velocity < 0)
+	if (position <= s->getProperties(m_sPosition)->getMin() && velocity < 0)
 		velocity = 0;
 
 	if (m_sPosition!=-0.5 && pedal!=0.0)
@@ -88,14 +88,14 @@ double MountainCarReward::getReward(const State* s, const Action* a, const State
 	double position = s_p->get("position");
 
 	//reached the goal?
-	if (position == s_p->getProperties("position").getMax())
+	if (position == s_p->getProperties("position")->getMax())
 	{
 		SimionApp::get()->pExperiment->setTerminalState();
 		return 1.0;
 	}
 
 	//reached the minimum position to the left?
-	if (position == s_p->getProperties("position").getMin())
+	if (position == s_p->getProperties("position")->getMin())
 	{
 		//in Sutton's description the experiment would now be terminated.
 		//In the Degris' the experiment is only terminated at the right side of the world.

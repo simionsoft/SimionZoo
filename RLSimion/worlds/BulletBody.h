@@ -14,14 +14,14 @@ class BulletBody
 	double m_originZ = 0.0;
 	double m_originTheta = 0.0;
 protected:
-	size_t m_xId;
-	size_t m_yId;
-	size_t m_thetaId;
+	const char* m_xId;
+	const char* m_yId;
+	const char* m_thetaId;
 
-	size_t m_relXId;
-	size_t m_relYId;
-	size_t m_refXId;
-	size_t m_refYId;
+	const char* m_relXId;
+	const char* m_relYId;
+	const char* m_refXId;
+	const char* m_refYId;
 
 	bool areAbsVariablesSet() { return m_bAbsVariablesSet; }
 	bool areRelVariablesSet() { return m_bRelVariablesSet; }
@@ -35,9 +35,9 @@ protected:
 public:
 	virtual ~BulletBody() { }
 
-	void setAbsoluteStateVarIds(size_t xId, size_t yId, size_t thetaId);
-	void setAbsoluteStateVarIds(size_t xId, size_t yId);
-	void setRelativeStateVarIds(size_t relXId, size_t relYId, size_t refXId, size_t refYId);
+	void setAbsoluteStateVarIds(const char* xId, const char* yId, const char* thetaId);
+	void setAbsoluteStateVarIds(const char* xId, const char* yId);
+	void setRelativeStateVarIds(const char* relXId, const char* relYId, const char* refXId, const char* refYId);
 	void setOrigin(double x, double y, double theta);
 
 	virtual void reset(State* s);

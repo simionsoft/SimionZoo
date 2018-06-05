@@ -1,5 +1,4 @@
 #include "parameters.h"
-#include "worlds/world.h"
 #include "named-var-set.h"
 
 STATE_VARIABLE::STATE_VARIABLE(ConfigNode* pConfigNode, const char* name, const char* comment)
@@ -34,13 +33,12 @@ ACTION_VARIABLE::ACTION_VARIABLE(const char* variableName)
 
 WIRE_CONNECTION::WIRE_CONNECTION(ConfigNode* pConfigNode, const char* name, const char* comment)
 {
-	//we most likely won't need to store the name or the comment, so we don't
 	m_name = pConfigNode->getConstString(name);
+	m_comment = comment;
 }
 
 WIRE_CONNECTION::WIRE_CONNECTION(const char* wireName)
 {
-	SimionApp::get()->wireRegister(wireName);
 	m_name = wireName;
 }
 

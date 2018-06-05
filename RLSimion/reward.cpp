@@ -87,7 +87,7 @@ void RewardFunction::initialize()
 		m_pRewardVector = rewardDescriptor.getInstance();
 		for (unsigned int i= 0; i<numComponents; ++i)
 		{
-			m_pRewardVector->getProperties(i).setName(m_rewardComponents[i]->getName());
+			m_pRewardVector->getProperties(i)->setName(m_rewardComponents[i]->getName());
 		}
 		
 		m_bInitialized = true;

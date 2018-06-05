@@ -32,10 +32,10 @@ FunctionSampler::FunctionSampler(string functionId, StateActionFunction* pFuncti
 
 	//set all state/action variables to the its value range center
 	for (int i = 0; i < m_pState->getNumVars(); ++i)
-		m_pState->set(i, m_pState->getProperties(i).getMin() + m_pState->getProperties(i).getRangeWidth()*0.5);
+		m_pState->set(i, m_pState->getDescriptor()[i].getMin() + m_pState->getDescriptor()[i].getRangeWidth()*0.5);
 
 	for (int i = 0; i < m_pAction->getNumVars(); ++i)
-		m_pAction->set(i, m_pAction->getProperties(i).getMin() + m_pAction->getProperties(i).getRangeWidth()*0.5);
+		m_pAction->set(i, m_pAction->getDescriptor()[i].getMin() + m_pAction->getDescriptor()[i].getRangeWidth()*0.5);
 }
 
 string FunctionSampler3D::getFunctionId() const
@@ -74,14 +74,14 @@ const vector<double>& FunctionSampler3D::sample(unsigned int outputIndex)
 
 	double xValue, yValue;
 	double xMinValue, xRangeStep, xRange;
-	NamedVarProperties& xVarProperties = m_xVarSource->getProperties(m_xVarName.c_str());// m_sampledVariableSources[0]->getProperties(m_sampledVariableNames[0].c_str());
-	xMinValue = xVarProperties.getMin();
-	xRange = xVarProperties.getRangeWidth();
+	NamedVarProperties* pXProperties = m_xVarSource->getProperties(m_xVarName.c_str());// m_sampledVariableSources[0]->getProperties(m_sampledVariableNames[0].c_str());
+	xMinValue = pXProperties->getMin();
+	xRange = pXProperties->getRangeWidth();
 	xRangeStep = xRange / (double)(m_samplesPerDimension - 1);
 	double yMinValue, yRangeStep, yRange;
-	NamedVarProperties& yVarProperties = m_yVarSource->getProperties(m_yVarName.c_str());// m_sampledVariableSources[1]->getProperties(m_sampledVariableNames[1].c_str());
-	yMinValue = yVarProperties.getMin();
-	yRange = yVarProperties.getRangeWidth();
+	NamedVarProperties* pYProperties = m_yVarSource->getProperties(m_yVarName.c_str());// m_sampledVariableSources[1]->getProperties(m_sampledVariableNames[1].c_str());
+	yMinValue = pYProperties->getMin();
+	yRange = pYProperties->getRangeWidth();
 	yRangeStep = yRange / (double)(m_samplesPerDimension - 1);
 	
 	unsigned int i = 0;
@@ -117,9 +117,9 @@ const vector<double>& FunctionSampler2D::sample(unsigned int outputIndex)
 		throw exception("FunctionSampler2D::sample() was given an incorrect output index");
 
 	double xValue, xMinValue, xRangeStep, xRange;
-	NamedVarProperties& xVarProperties = m_xVarSource->getProperties(m_xVarName.c_str());// m_sampledVariableSources[0]->getProperties(m_sampledVariableNames[0].c_str());
-	xMinValue = xVarProperties.getMin();
-	xRange = xVarProperties.getRangeWidth();
+	NamedVarProperties* pXProperties = m_xVarSource->getProperties(m_xVarName.c_str());// m_sampledVariableSources[0]->getProperties(m_sampledVariableNames[0].c_str());
+	xMinValue = pXProperties->getMin();
+	xRange = pXProperties->getRangeWidth();
 	xRangeStep = xRange / (double)(m_samplesPerDimension - 1);
 
 

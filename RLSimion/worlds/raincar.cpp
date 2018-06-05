@@ -41,7 +41,7 @@ void RainCar::executeAction(State *s, const Action *a, double dt)
 	double velocity = s->get(m_sVelocity);
 	double acceleration = a->get(m_aAcceleration);
 
-	if (position <= s->getProperties(m_sPosition).getMin() && velocity < 0 || position >= s->getProperties(m_sPosition).getMax() && velocity > 0)
+	if (position <= s->getProperties(m_sPosition)->getMin() && velocity < 0 || position >= s->getProperties(m_sPosition)->getMax() && velocity > 0)
 	{
 		velocity = 0;
 	}
@@ -55,8 +55,8 @@ void RainCar::executeAction(State *s, const Action *a, double dt)
 double RainCarReward::getReward(const State* s, const Action* a, const State* s_p)
 {
 	double position = s_p->get("position");
-	if ((position == s->getProperties("position").getMin() && a->get((size_t)0) < 0.0)
-		|| (position == s->getProperties("position").getMax() && a->get((size_t)0) > 0.0))
+	if ((position == s->getProperties("position")->getMin() && a->get((size_t)0) < 0.0)
+		|| (position == s->getProperties("position")->getMax() && a->get((size_t)0) > 0.0))
 		return -10;
 	double targetPosition = 24.0;
 

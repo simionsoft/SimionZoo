@@ -162,6 +162,7 @@ public:
 class WIRE_CONNECTION
 {
 	const char* m_name;
+	const char* m_comment;
 public:
 	WIRE_CONNECTION() = default;
 	WIRE_CONNECTION(ConfigNode* pConfigNode, const char* name, const char* comment);

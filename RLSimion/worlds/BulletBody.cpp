@@ -45,20 +45,20 @@ btCollisionShape* BulletBody::getShape()
 	return m_shape;
 }
 
-void BulletBody::setAbsoluteStateVarIds(size_t xId, size_t yId, size_t thetaId)
+void BulletBody::setAbsoluteStateVarIds(const char* xId, const char* yId, const char* thetaId)
 {
 	m_xId = xId; m_yId = yId; m_thetaId = thetaId;
 	m_bAbsVariablesSet = true;
 	m_bAngleSet = true;
 }
-void BulletBody::setAbsoluteStateVarIds(size_t xId, size_t yId)
+void BulletBody::setAbsoluteStateVarIds(const char* xId, const char* yId)
 {
 	m_xId = xId; m_yId = yId;
 	m_bAbsVariablesSet = true;
 	m_bAngleSet = false;
 }
 
-void BulletBody::setRelativeStateVarIds(size_t relXId, size_t relYId, size_t refXId, size_t refYId)
+void BulletBody::setRelativeStateVarIds(const char* relXId, const char* relYId, const char* refXId, const char* refYId)
 {
 	m_relXId = relXId; m_relYId = relYId; m_refXId = refXId; m_refYId = refYId;
 	m_bRelVariablesSet = true;

@@ -15,7 +15,7 @@ TDLambdaCritic::TDLambdaCritic(ConfigNode* pConfigNode)
 	m_z = CHILD_OBJECT<ETraces>(pConfigNode, "E-Traces", "Eligibility traces of the critic", true);
 	m_z->setName("Critic/E-Traces" );
 	m_aux= new FeatureList("Critic/aux");
-	m_pAlpha= CHILD_OBJECT_FACTORY<NumericValue>(pConfigNode,"Alpha","Learning gain");
+	m_pAlpha= CHILD_OBJECT_FACTORY<NumericValue>(pConfigNode,"Alpha","Learning gain", new SimpleEpisodeLinearSchedule(0.1, 0.0));
 }
 
 TDLambdaCritic::~TDLambdaCritic()
