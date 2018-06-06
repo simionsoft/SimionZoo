@@ -8,6 +8,23 @@
 #include "experiment.h"
 #include <algorithm>
 
+vector<double>& Controller::evaluate(const State* s, const Action* a)
+{
+	for (unsigned int output = 0; output < getNumOutputs(); ++output)
+	{
+		m_output[output] = evaluate(s, a, output);
+	}
+	return m_output;
+}
+
+double Controller::selectAction(const State *s, Action *a)
+{
+	for (unsigned int output = 0; output < getNumOutputs(); ++output)
+	{
+		a->set( getOutputAction(output), evaluate(s, a, output));
+	}
+	return 1.0;
+}
 
 std::shared_ptr<Controller> Controller::getInstance(ConfigNode* pConfigNode)
 {
@@ -27,7 +44,7 @@ std::shared_ptr<Controller> Controller::getInstance(ConfigNode* pConfigNode)
 ///////////////////////////////////////////////////////////////////////////////
 LQRGain::LQRGain(ConfigNode* pConfigNode)
 {
-	m_variableIndex = STATE_VARIABLE(pConfigNode, "Variable", "The input state variable");
+	m_variable = STATE_VARIABLE(pConfigNode, "Variable", "The input state variable");
 	m_gain = DOUBLE_PARAM(pConfigNode, "Gain", "The gain applied to the input state variable", 0.1);
 }
 
@@ -36,28 +53,32 @@ LQRController::LQRController(ConfigNode* pConfigNode)
 	m_outputAction = ACTION_VARIABLE(pConfigNode, "Output-Action", "The output action");
 	m_gains = MULTI_VALUE<LQRGain>(pConfigNode, "LQR-Gain", "An LQR gain on an input state variable");
 
+	m_inputStateVariables.push_back( m_outputAction.get() );
+	m_output = vector<double> (1);
+
+	SimionApp::get()->registerStateActionFunction("LQR", this);
 }
 
 LQRController::~LQRController(){}
 
-double LQRController::selectAction(const State *s, Action *a)
+double LQRController::evaluate(const State* s, const Action* a, unsigned int index)
 {
-	double output= 0.0; // only 1-dimension so far
+	//ignore index
+	double output= 0.0;
 
 	for (unsigned int i= 0; i<m_gains.size(); i++)
 	{
-		output+= s->get(m_gains[i]->m_variableIndex.get())*m_gains[i]->m_gain.get();
+		output+= s->get(m_gains[i]->m_variable.get())*m_gains[i]->m_gain.get();
 	}
 	// delta= -K*x
-	a->set(m_outputAction.get(), -output);
-
-	return 1.0;
+	return -output;
 }
 
-size_t LQRController::getNumOutputs()
+unsigned int LQRController::getNumOutputs()
 {
 	return 1;
 }
+
 const char* LQRController::getOutputAction(size_t output)
 {
 	if (output == 0)
@@ -76,14 +97,18 @@ PIDController::PIDController(ConfigNode* pConfigNode)
 	m_pKD = CHILD_OBJECT_FACTORY<NumericValue>(pConfigNode, "KD", "Derivative gain");
 
 	m_errorVariable = STATE_VARIABLE(pConfigNode, "Input-Variable", "The input state variable");
+	m_intError = 0.0;
 
-	m_intError= 0.0;
+	m_inputStateVariables.push_back(m_outputAction.get());
+	m_output = vector<double>(1);
+
+	SimionApp::get()->registerStateActionFunction("PID", this);
 }
 
 PIDController::~PIDController()
 {}
 
-size_t PIDController::getNumOutputs()
+unsigned int PIDController::getNumOutputs()
 {
 	return 1;
 }
@@ -94,7 +119,7 @@ const char* PIDController::getOutputAction(size_t output)
 	throw std::exception("LQRController. Invalid action output given.");
 }
 
-double PIDController::selectAction(const State *s, Action *a)
+double PIDController::evaluate(const State* s, const Action* a, unsigned int output)
 {
 	if (SimionApp::get()->pWorld->getEpisodeSimTime()== 0.0)
 		m_intError= 0.0;
@@ -103,10 +128,7 @@ double PIDController::selectAction(const State *s, Action *a)
 	double dError = error*SimionApp::get()->pWorld->getDT();
 	m_intError += error*SimionApp::get()->pWorld->getDT();
 
-	a->set(m_outputAction.get()
-		,error*m_pKP->get() + m_intError*m_pKI->get() + dError*m_pKD->get());
-
-	return 1.0;
+	return error * m_pKP->get() + m_intError * m_pKI->get() + dError * m_pKD->get();
 }
 
 
@@ -128,9 +150,15 @@ WindTurbineVidalController::WindTurbineVidalController(ConfigNode* pConfigNode)
 	m_ratedPower = World::getDynamicModel()->getConstant("RatedPower")
 		/ World::getDynamicModel()->getConstant("ElectricalGeneratorEfficiency");
 	m_genElecEff = World::getDynamicModel()->getConstant("ElectricalGeneratorEfficiency");
+
+	m_inputStateVariables.push_back("beta");
+	m_inputStateVariables.push_back("T_g");
+	m_output = vector<double>(2);
+
+	SimionApp::get()->registerStateActionFunction("Vidal", this);
 }
 
-size_t WindTurbineVidalController::getNumOutputs()
+unsigned int WindTurbineVidalController::getNumOutputs()
 {
 	return 2;
 }
@@ -153,11 +181,10 @@ double WindTurbineVidalController::sgn(double value)
 	return 0.0;
 }
 
-double WindTurbineVidalController::selectAction(const State *s,Action *a)
+double WindTurbineVidalController::evaluate(const State* s, const Action* a, unsigned int output)
 {
-	bool evaluation = SimionApp::get()->pExperiment->isEvaluationEpisode();
 	//initialise m_lastT_g if we have to, controllers don't implement reset()
-	if (SimionApp::get()->pWorld->getEpisodeSimTime() == 0)
+	if (SimionApp::get() && SimionApp::get()->pWorld->getEpisodeSimTime() == 0)
 		m_lastT_g = 0.0;
 
 	//d(Tg)/dt= (-1/omega_g)*(T_g*(a*omega_g-d_omega_g)-a*P_setpoint + K_alpha*sgn(P_a-P_setpoint))
@@ -182,14 +209,21 @@ double WindTurbineVidalController::selectAction(const State *s,Action *a)
 	double beta = 0.5*m_pKP->get()*e_omega_g*(1.0 + sgn(e_omega_g))
 				+ m_pKI->get()*s->get("E_int_omega_g");
 
-	beta = std::min(a->getProperties("beta")->getMax(), std::max(beta, a->getProperties("beta")->getMin()));
-	d_T_g = std::min(std::max(s->getProperties("d_T_g")->getMin(), d_T_g), s->getProperties("d_T_g")->getMax());
-	a->set("beta",beta);
-	double nextT_g = m_lastT_g + d_T_g* SimionApp::get()->pWorld->getDT();
-	a->set("T_g",nextT_g);
-	m_lastT_g = nextT_g;
+	switch (output)
+	{
+	case 0:
+		beta = std::min(a->getProperties("beta")->getMax(), std::max(beta, a->getProperties("beta")->getMin()));
+		return beta;
+		break;
+	case 1:
+		d_T_g = std::min(std::max(s->getProperties("d_T_g")->getMin(), d_T_g), s->getProperties("d_T_g")->getMax());
+		double nextT_g = m_lastT_g + d_T_g * SimionApp::get()->pWorld->getDT();
+		m_lastT_g = nextT_g;
+		return nextT_g;
 
-	return 1.0;
+		break;
+	}
+	return 0.0;
 }
 
 //BOUKHEZZAR CONTROLLER////////////////////////////////////////////////
@@ -209,9 +243,15 @@ WindTurbineBoukhezzarController::WindTurbineBoukhezzarController(ConfigNode* pCo
 	m_J_t = World::getDynamicModel()->getConstant("TotalTurbineInertia");
 	m_K_t = World::getDynamicModel()->getConstant("TotalTurbineTorsionalDamping");
 	m_genElecEff = World::getDynamicModel()->getConstant("ElectricalGeneratorEfficiency");
+
+	m_inputStateVariables.push_back("beta");
+	m_inputStateVariables.push_back("T_g");
+	m_output = vector<double>(2);
+
+	SimionApp::get()->registerStateActionFunction("Boukhezzar", this);
 }
 
-size_t WindTurbineBoukhezzarController::getNumOutputs()
+unsigned int WindTurbineBoukhezzarController::getNumOutputs()
 {
 	return 2;
 }
@@ -226,7 +266,7 @@ const char* WindTurbineBoukhezzarController::getOutputAction(size_t output)
 }
 
 
-double WindTurbineBoukhezzarController::selectAction(const State *s,Action *a)
+double WindTurbineBoukhezzarController::evaluate(const State *s,const Action *a, unsigned int output)
 {
 	//initialise m_lastT_g if we have to, controllers don't implement reset()
 	if (SimionApp::get()->pWorld->getEpisodeSimTime() == 0)
@@ -254,12 +294,18 @@ double WindTurbineBoukhezzarController::selectAction(const State *s,Action *a)
 	double e_omega_g = omega_g - World::getDynamicModel()->getConstant("RatedGeneratorSpeed");
 	double desiredBeta = m_pKP->get()*e_omega_g + m_pKI->get()*s->get("E_int_omega_g");
 
-	a->set("beta",desiredBeta);
-	double nextT_g = m_lastT_g + d_T_g*SimionApp::get()->pWorld->getDT();
-	a->set("T_g", nextT_g);
-	m_lastT_g = nextT_g;
+	switch (output)
+	{
+	case 0:
+		return desiredBeta;
+	case 1:
 
-	return 1.0;
+		double nextT_g = m_lastT_g + d_T_g * SimionApp::get()->pWorld->getDT();
+		m_lastT_g = nextT_g;
+		return nextT_g;
+	}
+
+	return 0.0;
 }
 
 //JONKMAN//////////////////////////////////////////////////////////////////////////
@@ -300,9 +346,15 @@ WindTurbineJonkmanController::WindTurbineJonkmanController(ConfigNode* pConfigNo
 	m_PC_RefSpd= DOUBLE_PARAM(pConfigNode,"PC_RefSpd","Pitch control reference speed", 122.9096);
 
 	m_IntSpdErr= 0.0;
+
+	m_inputStateVariables.push_back("beta");
+	m_inputStateVariables.push_back("T_g");
+	m_output = vector<double>(2);
+
+	SimionApp::get()->registerStateActionFunction("Jonkman", this);
 }
 
-size_t WindTurbineJonkmanController::getNumOutputs()
+unsigned int WindTurbineJonkmanController::getNumOutputs()
 {
 	return 2;
 }
@@ -317,65 +369,69 @@ const char* WindTurbineJonkmanController::getOutputAction(size_t output)
 	throw std::exception("LQRController. Invalid action output given.");
 }
 
-double WindTurbineJonkmanController::selectAction(const State *s,Action *a)
+double WindTurbineJonkmanController::evaluate(const State *s,const Action *a, unsigned int output)
 {
-	//Filter the generator speed
-	double lowPassFilterAlpha;
-
-	double time = SimionApp::get()->pWorld->getEpisodeSimTime();
-
-	if (SimionApp::get()->pWorld->getEpisodeSimTime() == 0.0)
+	switch (output)
 	{
-		lowPassFilterAlpha= 1.0;
-		m_GenSpeedF= s->get("omega_g");
-		m_IntSpdErr = 0.0;
+	case 0:
+
+		//Filter the generator speed
+		double lowPassFilterAlpha;
+
+		if (SimionApp::get()->pWorld->getEpisodeSimTime() == 0.0)
+		{
+			lowPassFilterAlpha = 1.0;
+			m_GenSpeedF = s->get("omega_g");
+			m_IntSpdErr = 0.0;
+		}
+		else
+			lowPassFilterAlpha = exp(-SimionApp::get()->pWorld->getDT()*m_CornerFreq.get());
+
+		m_GenSpeedF = (1.0 - lowPassFilterAlpha)*s->get("omega_g") + lowPassFilterAlpha * m_GenSpeedF;
+
+		//TORQUE CONTROLLER
+		double DesiredGenTrq;
+		if ((m_GenSpeedF >= m_ratedGenSpeed) || (s->get("beta") >= m_VS_Rgn3MP.get()))   //We are in region 3 - power is constant
+			DesiredGenTrq = m_ratedPower / m_GenSpeedF;
+		else if (m_GenSpeedF <= m_VS_CtInSp.get())							//We are in region 1 - torque is zero
+			DesiredGenTrq = 0.0;
+		else if (m_GenSpeedF < m_VS_Rgn2Sp.get())                          //We are in region 1 1/2 - linear ramp in torque from zero to optimal
+			DesiredGenTrq = m_VS_Slope15 * (m_GenSpeedF - m_VS_CtInSp.get());
+		else if (m_GenSpeedF < m_VS_TrGnSp)                                      //We are in region 2 - optimal torque is proportional to the square of the generator speed
+			DesiredGenTrq = m_VS_Rgn2K.get()*m_GenSpeedF*m_GenSpeedF;
+		else                                                                       //We are in region 2 1/2 - simple induction generator transition region
+			DesiredGenTrq = m_VS_Slope25 * (m_GenSpeedF - m_VS_SySp);
+
+		DesiredGenTrq = std::min(DesiredGenTrq, s->getProperties("T_g")->getMax());   //Saturate the command using the maximum torque limit
+
+		//we pass the desired generator torque instead of the rate
+		return DesiredGenTrq;
+	case 1:
+
+		//PITCH CONTROLLER
+		double GK = 1.0 / (1.0 + s->get("beta") / m_PC_KK->get());
+
+		//Compute the current speed error and its integral w.r.t. time; saturate the
+		//  integral term using the pitch angle limits:
+		double SpdErr = m_GenSpeedF - m_PC_RefSpd.get();                                 //Current speed error
+		m_IntSpdErr = m_IntSpdErr + SpdErr * SimionApp::get()->pWorld->getDT();                           //Current integral of speed error w.r.t. time
+		//Saturate the integral term using the pitch angle limits, converted to integral speed error limits
+		m_IntSpdErr = std::min(std::max(m_IntSpdErr, s->getProperties("beta")->getMin() / (GK*m_PC_KI->get()))
+			, s->getProperties("beta")->getMax() / (GK*m_PC_KI->get()));
+
+		//Compute the pitch commands associated with the proportional and integral  gains:
+		double PitComP = GK * m_PC_KP->get() * SpdErr; //Proportional term
+		double PitComI = GK * m_PC_KI->get() * m_IntSpdErr; //Integral term (saturated)
+
+		//Superimpose the individual commands to getSample the total pitch command;
+		//  saturate the overall command using the pitch angle limits:
+		double PitComT = PitComP + PitComI;                                     //Overall command (unsaturated)
+		PitComT = std::min(std::max(PitComT, s->getProperties("beta")->getMin())
+			, s->getProperties("beta")->getMax());           //Saturate the overall command using the pitch angle limits
+
+		//we pass the desired blade pitch angle to the world
+		return PitComT;
 	}
-	else
-		lowPassFilterAlpha = exp(-SimionApp::get()->pWorld->getDT()*m_CornerFreq.get());
 
-	m_GenSpeedF = (1.0 - lowPassFilterAlpha)*s->get("omega_g") + lowPassFilterAlpha*m_GenSpeedF;
-
-	//TORQUE CONTROLLER
-	double DesiredGenTrq;
-	if ( (m_GenSpeedF >= m_ratedGenSpeed ) || (  s->get("beta") >= m_VS_Rgn3MP.get() ) )   //We are in region 3 - power is constant
-		DesiredGenTrq = m_ratedPower/m_GenSpeedF;
-	else if ( m_GenSpeedF <= m_VS_CtInSp.get() )							//We are in region 1 - torque is zero
-		DesiredGenTrq = 0.0;
-	else if ( m_GenSpeedF <  m_VS_Rgn2Sp.get() )                          //We are in region 1 1/2 - linear ramp in torque from zero to optimal
-		DesiredGenTrq = m_VS_Slope15*( m_GenSpeedF - m_VS_CtInSp.get() );
-	else if ( m_GenSpeedF <  m_VS_TrGnSp )                                      //We are in region 2 - optimal torque is proportional to the square of the generator speed
-		DesiredGenTrq = m_VS_Rgn2K.get()*m_GenSpeedF*m_GenSpeedF;
-	else                                                                       //We are in region 2 1/2 - simple induction generator transition region
-		DesiredGenTrq = m_VS_Slope25*( m_GenSpeedF - m_VS_SySp   );
-
-	DesiredGenTrq  = std::min( DesiredGenTrq, s->getProperties("T_g")->getMax()  );   //Saturate the command using the maximum torque limit
-
-	//we pass the desired generator torque instead of the rate
-	a->set("T_g", DesiredGenTrq);
-
-	//PITCH CONTROLLER
-	double GK= 1.0 / (1.0 + s->get("beta") / m_PC_KK->get());
-
-	//Compute the current speed error and its integral w.r.t. time; saturate the
-	//  integral term using the pitch angle limits:
-	double SpdErr= m_GenSpeedF - m_PC_RefSpd.get();                                 //Current speed error
-	m_IntSpdErr = m_IntSpdErr + SpdErr*SimionApp::get()->pWorld->getDT();                           //Current integral of speed error w.r.t. time
-	//Saturate the integral term using the pitch angle limits, converted to integral speed error limits
-	m_IntSpdErr = std::min( std::max( m_IntSpdErr, s->getProperties("beta")->getMin()/( GK*m_PC_KI->get() ) )
-		, s->getProperties("beta")->getMax()/( GK*m_PC_KI->get() ));
-  
-	//Compute the pitch commands associated with the proportional and integral  gains:
-	double PitComP   = GK* m_PC_KP->get() * SpdErr; //Proportional term
-	double PitComI   = GK* m_PC_KI->get() * m_IntSpdErr; //Integral term (saturated)
-
-	//Superimpose the individual commands to getSample the total pitch command;
-	//  saturate the overall command using the pitch angle limits:
-	double PitComT   = PitComP + PitComI;                                     //Overall command (unsaturated)
-	PitComT   = std::min( std::max( PitComT, s->getProperties("beta")->getMin() )
-		, s->getProperties("beta")->getMax() );           //Saturate the overall command using the pitch angle limits
-
-	//we pass the desired blade pitch angle to the world
-	a->set("beta",PitComT);
-
-	return 1.0;
+	return 0.0;
 }

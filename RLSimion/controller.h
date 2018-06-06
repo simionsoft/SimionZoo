@@ -9,21 +9,26 @@ typedef NamedVarSet Action;
 class ConfigNode;
 class NumericValue;
 
-class Controller : public Simion
+class Controller : public Simion, public StateActionFunction
 {
-
+protected:
+	vector<string> m_inputStateVariables;
+	vector<string> m_inputActionVariables;
+	vector<double> m_output;
 public:
 	virtual ~Controller(){}
-	virtual size_t getNumOutputs()= 0;
-	virtual const char* getOutputAction(size_t output)= 0;
+
+	virtual unsigned int getNumOutputs() = 0;
+	virtual vector<double>& evaluate(const State* s, const Action* a);
+	const vector<string>& getInputStateVariables() { return m_inputStateVariables; }
+	const vector<string>& getInputActionVariables() { return m_inputActionVariables; }
+
+	virtual const char* getOutputAction(size_t output) = 0;
+	virtual double evaluate(const State* s, const Action *a, unsigned int output) = 0;
+	double selectAction(const State *s, Action *a);
 
 	static std::shared_ptr<Controller> getInstance(ConfigNode* pConfigNode);
-
-	//regular controllers need not update. Default implementation does nothing but it can be overriden
-	//by adaptive controllers if need to
-	virtual double update(const State *s, const Action *a, const State *s_p, double r, double behaviorProb) = 0;
-
-	virtual double selectAction(const State *s, Action *a)= 0;
+	double update(const State* s, const Action* a, const State* s_p, double r, double probability) { return 1.0; }
 };
 
 class LQRGain
@@ -31,7 +36,7 @@ class LQRGain
 public:
 	LQRGain(ConfigNode* pConfigNode);
 	virtual ~LQRGain(){}
-	STATE_VARIABLE m_variableIndex;
+	STATE_VARIABLE m_variable;
 	DOUBLE_PARAM m_gain;
 };
 
@@ -43,11 +48,10 @@ public:
 	LQRController(ConfigNode* pConfigNode);
 	virtual ~LQRController();
 
-	size_t getNumOutputs();
+	unsigned int getNumOutputs();
 	const char* getOutputAction(size_t output);
 
-	double selectAction(const State *s,Action *a);
-	virtual double update(const State *s, const Action *a, const State *s_p, double r, double behaviorProb) { return 1.0; }
+	double evaluate(const State* s, const Action *a, unsigned int output);
 };
 
 class PIDController : public Controller
@@ -62,11 +66,10 @@ public:
 	PIDController(ConfigNode* pConfigNode);
 	virtual ~PIDController();
 
-	size_t getNumOutputs();
+	unsigned int getNumOutputs();
 	const char* getOutputAction(size_t output);
 
-	double selectAction(const State *s,Action *a);
-	virtual double update(const State *s, const Action *a, const State *s_p, double r, double behaviorProb) { return 1.0; }
+	double evaluate(const State* s, const Action *a, unsigned int output);
 };
 
 class WindTurbineVidalController : public Controller
@@ -83,11 +86,10 @@ public:
 	WindTurbineVidalController(ConfigNode* pConfigNode);
 	virtual ~WindTurbineVidalController();
 
-	size_t getNumOutputs();
+	unsigned int getNumOutputs();
 	const char* getOutputAction(size_t output);
 
-	virtual double selectAction(const State *s,Action *a);
-	virtual double update(const State *s, const Action *a, const State *s_p, double r, double behaviorProb) { return 1.0; }
+	double evaluate(const State* s, const Action *a, unsigned int output);
 };
 
 class WindTurbineBoukhezzarController : public Controller
@@ -101,11 +103,10 @@ public:
 	WindTurbineBoukhezzarController(ConfigNode* pConfigNode);
 	virtual ~WindTurbineBoukhezzarController();
 
-	size_t getNumOutputs();
+	unsigned getNumOutputs();
 	const char* getOutputAction(size_t output);
 
-	virtual double selectAction(const State *s,Action *a);
-	virtual double update(const State *s, const Action *a, const State *s_p, double r, double behaviorProb) { return 1.0; }
+	double evaluate(const State* s, const Action *a, unsigned int output);
 };
 
 class WindTurbineJonkmanController : public Controller
@@ -127,9 +128,8 @@ public:
 	WindTurbineJonkmanController(ConfigNode* pConfigNode);
 	virtual ~WindTurbineJonkmanController();
 
-	size_t getNumOutputs();
+	unsigned int getNumOutputs();
 	const char* getOutputAction(size_t output);
 
-	virtual double selectAction(const State *s,Action *a);
-	virtual double update(const State *s, const Action *a, const State *s_p, double r, double behaviorProb) { return 1.0; }
+	double evaluate(const State* s, const Action *a, unsigned int output);
 };
