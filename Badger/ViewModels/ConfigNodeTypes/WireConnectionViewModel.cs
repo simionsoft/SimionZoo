@@ -30,10 +30,6 @@ namespace Badger.ViewModels
         {
             CommonInitialization(parentExperiment, parent, definitionNode, parentXPath);
 
-            //the possible values taken by this world variable
-            m_parentExperiment.GetWireNames(ref m_wireNames);
-            NotifyOfPropertyChange(() => WireNames);
-
             if (configNode != null)
             {
                 configNode = configNode[name];
@@ -41,13 +37,7 @@ namespace Badger.ViewModels
                 parentExperiment.AddWire(SelectedWire);
             }
 
-            if (m_wireNames.Count == 0)
-            {
-                //Either we have loaded the config but the list is of values has not yet been loaded
-                //or no config file has been loaded. In Either case, we register for a deferred load step
-                m_parentExperiment.RegisterDeferredLoadStep(Update);
-            }
-
+            m_parentExperiment.RegisterDeferredLoadStep(Update);
             m_parentExperiment.RegisterWireConnection(Update);
         }
 

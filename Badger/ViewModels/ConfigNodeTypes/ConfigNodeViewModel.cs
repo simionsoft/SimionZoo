@@ -353,6 +353,9 @@ namespace Badger.ViewModels
         {
             switch (definitionNode.Name)
             {
+                case XMLConfig.WireTag:
+                    return new WireConnectionViewModel(parentExperiment, parent, definitionNode, parentXPath, configNode);
+
                 case XMLConfig.neuralNetworkNodeTag:
                     return new NeuralNetworkProblemDescriptionConfigViewModel(parentExperiment, parent, definitionNode,
                         parentXPath, configNode);

@@ -32,12 +32,6 @@ namespace Badger.ViewModels
 
             m_varType = varType;
 
-            //the possible values taken by this world variable
-            m_variables.Clear();
-            foreach (string var in m_parentExperiment.GetWorldVarNameList(m_varType))
-                m_variables.Add(var);
-            NotifyOfPropertyChange(() => Variables);
-
             if (configNode != null)
             {
                 configNode = configNode[name];
@@ -50,13 +44,6 @@ namespace Badger.ViewModels
                 else
                     content = configNode.InnerText;
             }
-
-            //if (m_variables.Count==0)
-            //{
-            //    //Either we have loaded the config but the list is of values has not yet been loaded
-            //    //or no config file has been loaded. In Either case, we register for a deferred load step
-            //    m_parentExperiment.RegisterDeferredLoadStep(Update);
-            //}
 
             m_parentExperiment.RegisterWorldVarRef(Update);
             m_parentExperiment.RegisterDeferredLoadStep(Update);

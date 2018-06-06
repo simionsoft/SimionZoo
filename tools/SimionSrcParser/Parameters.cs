@@ -207,7 +207,7 @@ namespace SimionSrcParser
         protected string m_name;
         protected string m_comment;
         protected VarType m_type;
-        public enum VarType { StateVariable, ActionVariable };
+        public enum VarType { StateVariable, ActionVariable, WireConnection };
         public VarRefParameter(VarType type, string name, string comment)
         {
             m_type = type;
@@ -225,7 +225,9 @@ namespace SimionSrcParser
             string output = "";
             SimionSrcParser.addIndentation(ref output, level);
             if (m_type == VarType.StateVariable) output += "<" + XMLConfig.stateVarRefTag;
-            else output += "<" + XMLConfig.actionVarRefTag;
+            else if (m_type == VarType.ActionVariable) output += "<" + XMLConfig.actionVarRefTag;
+            else
+                output += "<" + XMLConfig.WireTag;
             output += " " + XMLConfig.nameAttribute + "=\"" + m_name + "\" " + XMLConfig.commentAttribute + "=\""
                 + m_comment + "\"/>\n";
             return output;
@@ -238,6 +240,10 @@ namespace SimionSrcParser
     public class ActionVarRefParameter : VarRefParameter
     {
         public ActionVarRefParameter(string name, string comment) : base(VarType.ActionVariable, name, comment) { }
+    }
+    public class WireConnectionParameter : VarRefParameter
+    {
+        public WireConnectionParameter(string name, string comment) : base(VarType.WireConnection, name, comment) { }
     }
     public class MultiValueParameter : IParameter
     {
