@@ -240,7 +240,7 @@ namespace Badger.Simion
                     }
 
                     // Save the fork hierarchy and values. This helps to generate reports easier
-                    experimentViewModel.saveToStream(batchFileWriter, SaveMode.ForkHierarchy, "  ");
+                    experimentViewModel.SaveToStream(batchFileWriter, SaveMode.ForkHierarchy, "  ");
 
                     int numCombinations = experimentViewModel.getNumForkCombinations();
                     for (int i = 0; i < numCombinations; i++)
@@ -251,7 +251,7 @@ namespace Badger.Simion
                         string folderPath = batchFileDir + "\\" + experimentName;
                         Directory.CreateDirectory(folderPath);
                         string filePath = folderPath + "\\" + experimentName + ExperimentExtension;
-                        experimentViewModel.save(filePath, SaveMode.AsExperimentalUnit);
+                        experimentViewModel.Save(filePath, SaveMode.AsExperimentalUnit);
                         string relativePathToExperimentalUnit = batchFileName + "\\" + experimentName + "\\" + experimentName + ExperimentExtension;
 
                         // Save the experiment reference in the root batch file. Open 'EXPERIMENTAL-UNIT' tag
@@ -260,7 +260,7 @@ namespace Badger.Simion
                             + XMLConfig.nameAttribute + "=\"" + experimentName + "\" "
                             + XMLConfig.pathAttribute + "=\"" + relativePathToExperimentalUnit + "\">");
                         // Write fork values in between
-                        experimentViewModel.saveToStream(batchFileWriter, SaveMode.ForkValues, "\t");
+                        experimentViewModel.SaveToStream(batchFileWriter, SaveMode.ForkValues, "\t");
                         // Close 'EXPERIMENTAL-UNIT' tag
                         batchFileWriter.WriteLine("    </" + XMLConfig.experimentalUnitNodeTag + ">");
                     }
@@ -321,7 +321,7 @@ namespace Badger.Simion
         ///     of experiments later.
         /// </summary>
         /// <param name="experiments"></param>
-        static public void SaveExperiments(BindableCollection<ExperimentViewModel> experiments, string outputFile = null)
+        static public string SaveExperiments(BindableCollection<ExperimentViewModel> experiments, string outputFile = null)
         {
             foreach (ExperimentViewModel experiment in experiments)
             {
@@ -329,7 +329,7 @@ namespace Badger.Simion
                 {
                     CaliburnUtility.ShowWarningDialog("The configuration couldn't be validated in " + experiment.Name
                         + ". Please check it", "VALIDATION ERROR");
-                    return;
+                    return null;
                 }
             }
 
@@ -353,13 +353,14 @@ namespace Badger.Simion
                     {
                         writer.WriteLine(leftSpace + "<" + XMLConfig.experimentNodeTag
                             + " Name=\"" + experiment.Name + "\">");
-                        experiment.saveToStream(writer, SaveMode.AsExperiment, leftSpace + "  ");
+                        experiment.SaveToStream(writer, SaveMode.AsExperiment, leftSpace + "  ");
                         writer.WriteLine(leftSpace + "</" + XMLConfig.experimentNodeTag + ">");
                     }
 
                     writer.WriteLine("</" + XMLConfig.badgerNodeTag + ">");
                 }
             }
+            return outputFile;
         }
 
         //EXPERIMENT file: LOAD
@@ -386,18 +387,23 @@ namespace Badger.Simion
         }
 
 
-        static public void SaveExperiment(ExperimentViewModel experiment)
+        static public string SaveExperiment(ExperimentViewModel experiment)
         {
             if (!experiment.Validate())
             {
                 CaliburnUtility.ShowWarningDialog("The configuration couldn't be validated in " + experiment.Name
                     + ". Please check it", "VALIDATION ERROR");
-                return;
+                return null;
             }
 
             var sfd = SaveFileDialog(ExperimentDescription, ExperimentFilter);
             if (sfd.ShowDialog() == DialogResult.OK)
-                experiment.save(sfd.FileName, SaveMode.AsExperiment);
+            {
+                experiment.Save(sfd.FileName, SaveMode.AsExperiment);
+                return sfd.FileName;
+            }
+
+            return null;
         }
 
 

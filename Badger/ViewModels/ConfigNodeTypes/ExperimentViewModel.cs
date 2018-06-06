@@ -397,7 +397,7 @@ namespace Badger.ViewModels
             if (!Directory.Exists(SimionFileData.tempRelativeDir))
                 Directory.CreateDirectory(SimionFileData.tempRelativeDir);
 
-            save(filename, SaveMode.AsExperimentalUnit);
+            Save(filename, SaveMode.AsExperimentalUnit);
             AppVersion bestMatch = AppVersion.BestMatch(m_appVersions);
 
             if (bestMatch != null)
@@ -425,15 +425,15 @@ namespace Badger.ViewModels
         //in the config file
         //  -SaveMode.AsExperimentBatch -> this method is called from SaveExperimentBatchFile and saves only the information related to forks
         //   We need this to know later which value were given to each fork
-        public void save(string filename, SaveMode mode, string leftSpace = "")
+        public void Save(string filename, SaveMode mode, string leftSpace = "")
         {
             using (StreamWriter writer = new StreamWriter(filename))
             {
-                saveToStream(writer, mode, leftSpace);
+                SaveToStream(writer, mode, leftSpace);
             }
         }
 
-        public void saveToStream(StreamWriter writer, SaveMode mode, string leftSpace)
+        public void SaveToStream(StreamWriter writer, SaveMode mode, string leftSpace)
         {
             saveMode = mode;
             // Header for experiments and experiment units

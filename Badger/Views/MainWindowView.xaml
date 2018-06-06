@@ -73,7 +73,7 @@
                 </Button>
                 <Button Margin="0,0,0,0" Style="{StaticResource BadgerButtonStyle}" ToolTip="Save Experiment"
                         Height="40" Width="40" IsEnabled="{Binding Path=IsExperimentListNotEmpty}"
-                        cal:Message.Attach="[Event Click]=[Action SaveSelectedExperiment()]">
+                        cal:Message.Attach="[Event Click]=[Action SaveSelectedExperimentOrProject()]">
                     <Path Data="{StaticResource Save}" Width="24" Height="24" Fill="#89000000" />
                 </Button>
                 <Button Style="{StaticResource BadgerButtonStyle}" ToolTip="Open an experiment or project"

@@ -195,7 +195,7 @@ namespace Badger.ViewModels
             NotifyOfPropertyChange(() => AppNames);
         }
 
-        public void SaveSelectedExperiment()
+        public void SaveSelectedExperimentOrProject()
         {
             if (SelectedExperiment == null || !SelectedExperiment.Validate())
             {
@@ -203,10 +203,14 @@ namespace Badger.ViewModels
                 return;
             }
 
+            string savedFilename = null;
             if (SelectedExperiment.getNumForkCombinations() > 1)
                 SimionFileData.SaveExperiments(m_experimentViewModels);
             else
-                SimionFileData.SaveExperiment(SelectedExperiment);
+                savedFilename= SimionFileData.SaveExperiment(SelectedExperiment);
+
+            if (savedFilename != null)
+                SelectedExperiment.Name = Utility.GetFilename(savedFilename, true, 2);
         }
 
 
