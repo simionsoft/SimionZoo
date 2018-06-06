@@ -195,21 +195,21 @@ namespace Badger.ViewModels
                     + "=\"" + alias + "\">");
                 // Fork values inside. 
                 foreach (ForkValueViewModel child in children)
-                    child.outputXML(writer, mode, leftSpace + "\t");
+                    child.outputXML(writer, mode, leftSpace + "  ");
                 // Close 'FORK' tag
                 writer.WriteLine(leftSpace + "</" + XMLConfig.forkTag + ">");
             }
             else if (mode == SaveMode.ForkValues)
             {
                 // Open 'FORK' tag inside experimental unit
-                writer.WriteLine(leftSpace + "\t<" + XMLConfig.forkTag + " " + XMLConfig.nameAttribute
+                writer.WriteLine(leftSpace + "<" + XMLConfig.forkTag + " " + XMLConfig.nameAttribute
                     + "=\"" + name.TrimEnd(' ') + "\" " + XMLConfig.aliasAttribute + "=\"" + alias + "\">");
                 // We take this nasty shortcut to allow children to be exported, while keeping
                 // each fork value as an element in a list instead of nested values
-                writer.WriteLine(leftSpace + "\t\t<" + XMLConfig.forkValueTag + " "
+                writer.WriteLine(leftSpace + "<" + XMLConfig.forkValueTag + " "
                     + XMLConfig.valueAttribute + "=\"" + selectedForkValue.configNode.content + "\"/>");
                 // Close 'FORK' tag inside experimental unit
-                writer.WriteLine(leftSpace + "\t</" + XMLConfig.forkTag + ">");
+                writer.WriteLine(leftSpace + "</" + XMLConfig.forkTag + ">");
 
                 selectedForkValue.outputXML(writer, mode, leftSpace);
             }

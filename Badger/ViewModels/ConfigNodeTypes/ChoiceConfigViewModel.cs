@@ -97,7 +97,7 @@ namespace Badger.ViewModels
                 writer.Write(leftSpace + getXMLHeader());
             // If we don't do this and just take leftSpace value passed as parameter the behaviour
             // of this variable is a litle bit odd.
-            leftSpace = "\t\t";
+            leftSpace += "  ";
             selectedChoice.outputXML(writer, mode,  leftSpace);
 
             if (mode == SaveMode.AsExperiment || mode == SaveMode.AsExperimentalUnit)

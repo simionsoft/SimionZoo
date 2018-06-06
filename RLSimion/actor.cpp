@@ -24,7 +24,6 @@ Actor::~Actor() {}
 
 void Actor::deferredLoadStep()
 {
-	size_t controllerActionIndex;
 	size_t numWeights;
 	IMemBuffer *pWeights;
 	State* s= SimionApp::get()->pWorld->getDynamicModel()->getStateInstance();
@@ -48,7 +47,7 @@ void Actor::deferredLoadStep()
 					{
 						m_policyLearners[actorActionIndex]->getPolicy()->getDetPolicyStateVFA()->getStateFeatureMap()->getFeatureStateAction(i, s, a);
 						m_pInitController->selectAction(s, a);
-						(*pWeights)[i] = a->get(controllerActionIndex);
+						(*pWeights)[i] = a->get(m_pInitController->getOutputAction(actionIndex));
 					}
 				}
 			}

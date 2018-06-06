@@ -1,5 +1,6 @@
 ﻿using Badger.Simion;
 using Caliburn.Micro;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.IO;
 
@@ -14,11 +15,6 @@ namespace Badger.ViewModels
         {
             get { return m_name; }
             set { m_name = value; NotifyOfPropertyChange(() => Name); }
-        }
-
-        public void outputXML(StreamWriter writer, SaveMode mode, string leftSpace)
-        {
-            writer.WriteLine(leftSpace + "<" + XMLConfig.WireTag + ">" + Name + "</" + XMLConfig.WireTag + ">");
         }
 
         public WireViewModel(string name, WiresViewModel parent)
@@ -53,6 +49,11 @@ namespace Badger.ViewModels
 
         public void AddWire(string name)
         {
+            foreach (WireViewModel wire in Wires)
+            {
+                if (wire.Name == name)
+                    return;
+            }
             Wires.Add(new WireViewModel(name, this));
         }
 
@@ -61,13 +62,12 @@ namespace Badger.ViewModels
             Wires.Remove(wire);
         }
 
-        public void GetWireNames(ref ObservableCollection<string> outList)
+        public List<string> GetWireNames()
         {
-            if (outList!=null)
-            {
-                foreach (WireViewModel wire in m_wires)
-                    outList.Add(wire.Name);
-            }
+            List<string> outList = new List<string>();
+            foreach (WireViewModel wire in m_wires)
+                outList.Add(wire.Name);
+            return outList;
         }
 
         void OnWiresChanged()

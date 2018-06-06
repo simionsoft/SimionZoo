@@ -231,7 +231,7 @@ namespace Badger.Simion
 
                 foreach (ExperimentViewModel experimentViewModel in experiments)
                 {
-                    batchFileWriter.WriteLine("\t<" + XMLConfig.experimentNodeTag + " "
+                    batchFileWriter.WriteLine("  <" + XMLConfig.experimentNodeTag + " "
                         + XMLConfig.nameAttribute + "=\"" + experimentViewModel.Name + "\">");
 
                     foreach (AppVersion appVersion in experimentViewModel.AppVersions)
@@ -240,7 +240,7 @@ namespace Badger.Simion
                     }
 
                     // Save the fork hierarchy and values. This helps to generate reports easier
-                    experimentViewModel.saveToStream(batchFileWriter, SaveMode.ForkHierarchy, "\t");
+                    experimentViewModel.saveToStream(batchFileWriter, SaveMode.ForkHierarchy, "  ");
 
                     int numCombinations = experimentViewModel.getNumForkCombinations();
                     for (int i = 0; i < numCombinations; i++)
@@ -256,18 +256,18 @@ namespace Badger.Simion
 
                         // Save the experiment reference in the root batch file. Open 'EXPERIMENTAL-UNIT' tag
                         // with its corresponding attributes.
-                        batchFileWriter.WriteLine("\t\t<" + XMLConfig.experimentalUnitNodeTag + " "
+                        batchFileWriter.WriteLine("    <" + XMLConfig.experimentalUnitNodeTag + " "
                             + XMLConfig.nameAttribute + "=\"" + experimentName + "\" "
                             + XMLConfig.pathAttribute + "=\"" + relativePathToExperimentalUnit + "\">");
                         // Write fork values in between
                         experimentViewModel.saveToStream(batchFileWriter, SaveMode.ForkValues, "\t");
                         // Close 'EXPERIMENTAL-UNIT' tag
-                        batchFileWriter.WriteLine("\t\t</" + XMLConfig.experimentalUnitNodeTag + ">");
+                        batchFileWriter.WriteLine("    </" + XMLConfig.experimentalUnitNodeTag + ">");
                     }
 
                     experimentalUnitsCount += numCombinations;
                     // Close 'EXPERIMENT' tag
-                    batchFileWriter.WriteLine("\t</" + XMLConfig.experimentNodeTag + ">");
+                    batchFileWriter.WriteLine("  </" + XMLConfig.experimentNodeTag + ">");
                 }
                 // Write batch file footer (i.e. close 'EXPERIMENT-BATCH' tag)
                 batchFileWriter.WriteLine("</" + XMLConfig.experimentBatchNodeTag + ">");

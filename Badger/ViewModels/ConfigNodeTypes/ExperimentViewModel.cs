@@ -195,39 +195,38 @@ namespace Badger.ViewModels
                 foreach (XmlNode child in definition.ChildNodes)
                 {
                     if (child.Name == XMLConfig.stateVarTag)
-                        worldDefinition.addStateVar(new StateVar(child));
+                        worldDefinition.AddStateVar(new StateVar(child));
                     else if (child.Name == XMLConfig.actionVarTag)
-                        worldDefinition.addActionVar(new ActionVar(child));
+                        worldDefinition.AddActionVar(new ActionVar(child));
                     else if (child.Name == XMLConfig.constantTag)
-                        worldDefinition.addConstant(child.Attributes[XMLConfig.nameAttribute].Value);
+                        worldDefinition.AddConstant(child.Attributes[XMLConfig.nameAttribute].Value);
                 }
 
                 m_worldDefinitions.Add(worldName, worldDefinition);
             }
         }
 
-        public void GetWorldVarNameList(WorldVarType varType, ref ObservableCollection<string> varNameList)
+        public List<string> GetWorldVarNameList(WorldVarType varType)
         {
-            if (varNameList != null)
+            List<string> outList = new List<string>();
+            switch (varType)
             {
-                switch (varType)
-                {
-                    case WorldVarType.StateVar:
-                        if (m_selectedWorld != "")
-                            m_worldDefinitions[m_selectedWorld].getStateVarNameList(ref varNameList);
-                        m_wiresViewModel.GetWireNames(ref varNameList);
-                        break;
-                    case WorldVarType.ActionVar:
-                        if (m_selectedWorld != "")
-                            m_worldDefinitions[m_selectedWorld].getActionVarNameList(ref varNameList);
-                        m_wiresViewModel.GetWireNames(ref varNameList);
-                        break;
-                    case WorldVarType.Constant:
-                        if (m_selectedWorld != "")
-                            m_worldDefinitions[m_selectedWorld].getConstantNameList(ref varNameList);
-                        break;
-                }
+                case WorldVarType.StateVar:
+                    if (m_selectedWorld != "")
+                        outList.AddRange(m_worldDefinitions[m_selectedWorld].GetStateVarNameList());
+                    outList.AddRange(m_wiresViewModel.GetWireNames());
+                    break;
+                case WorldVarType.ActionVar:
+                    if (m_selectedWorld != "")
+                        outList.AddRange(m_worldDefinitions[m_selectedWorld].GetActionVarNameList());
+                    outList.AddRange(m_wiresViewModel.GetWireNames());
+                    break;
+                case WorldVarType.Constant:
+                    if (m_selectedWorld != "")
+                        outList.AddRange(m_worldDefinitions[m_selectedWorld].GetConstantNameList());
+                    break;
             }
+            return outList;
         }
 
         //WorldVarRefs
@@ -362,6 +361,11 @@ namespace Badger.ViewModels
                 wireNames.Add(wire.Name);
         }
 
+        public void AddWire(string name)
+        {
+            m_wiresViewModel.AddWire(name);
+        }
+
         private List<deferredLoadStep> m_WireConnections = new List<deferredLoadStep>();
 
         public void RegisterWireConnection(deferredLoadStep func) { m_WireConnections.Add(func); }
@@ -439,10 +443,6 @@ namespace Badger.ViewModels
                 writer.WriteLine(leftSpace + "<" + AppName + " " + XMLConfig.versionAttribute
                 + "=\"" + XMLConfig.experimentConfigVersion + "\">");
             }
-
-            // Wires
-            foreach (WireViewModel wire in m_wiresViewModel.Wires)
-                wire.outputXML(writer, mode, leftSpace);
 
             // Body
             foreach (ConfigNodeViewModel node in m_children)

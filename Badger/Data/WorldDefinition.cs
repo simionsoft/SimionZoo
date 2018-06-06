@@ -51,24 +51,27 @@ namespace Badger.Data
         ObservableCollection<ActionVar> m_actionVars = new ObservableCollection<ActionVar>();
         ObservableCollection<string> m_constants = new ObservableCollection<string>();
 
-        public void addStateVar(StateVar var) { m_stateVars.Add(var); }
-        public void addActionVar(ActionVar var) { m_actionVars.Add(var); }
-        public void addConstant(string name) { m_constants.Add(name); }
+        public void AddStateVar(StateVar var) { m_stateVars.Add(var); }
+        public void AddActionVar(ActionVar var) { m_actionVars.Add(var); }
+        public void AddConstant(string name) { m_constants.Add(name); }
 
-        public void getStateVarNameList(ref ObservableCollection<string> varNameList)
+        public List<string> GetStateVarNameList()
         {
-            varNameList.Clear();
-            foreach (StateVar var in m_stateVars) varNameList.Add(var.name);
+            List<string> outList = new List<string>();
+            foreach (StateVar var in m_stateVars) outList.Add(var.name);
+            return outList;
         }
-        public void getActionVarNameList(ref ObservableCollection<string> varNameList)
+        public List<string> GetActionVarNameList()
         {
-            varNameList.Clear();
-            foreach (ActionVar var in m_actionVars) varNameList.Add(var.name);
+            List<string> outList = new List<string>();
+            foreach (ActionVar var in m_actionVars) outList.Add(var.name);
+            return outList;
         }
-        public void getConstantNameList(ref ObservableCollection<string> varNameList)
+        public List<string> GetConstantNameList()
         {
-            varNameList.Clear();
-            foreach (string name in m_constants) varNameList.Add(name);
+            List<string> outList = new List<string>();
+            foreach (string name in m_constants) outList.Add(name);
+            return outList;
         }
     }
 }

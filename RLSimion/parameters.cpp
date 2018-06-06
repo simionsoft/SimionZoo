@@ -1,11 +1,24 @@
 #include "parameters.h"
 #include "named-var-set.h"
+#include "app.h"
+#define WIRE_XML_TAG "Wire"
 
 STATE_VARIABLE::STATE_VARIABLE(ConfigNode* pConfigNode, const char* name, const char* comment)
 {
-	m_variableName = pConfigNode->getConstString(name);
-	m_name = name;
-	m_comment = comment;
+	ConfigNode* pWiredChild = pConfigNode->getChild(name)->getChild(WIRE_XML_TAG);
+	if (pWiredChild == nullptr)
+	{
+		m_variableName = pConfigNode->getConstString(name);
+		m_name = name;
+		m_comment = comment;
+	}
+	else
+	{
+		m_variableName = pWiredChild->GetText();
+		SimionApp::get()->wireRegister(m_variableName);
+		m_name = name;
+		m_comment = comment;
+	}
 }
 
 STATE_VARIABLE::STATE_VARIABLE(const char* variableName)
@@ -17,9 +30,20 @@ STATE_VARIABLE::STATE_VARIABLE(const char* variableName)
 
 ACTION_VARIABLE::ACTION_VARIABLE(ConfigNode* pConfigNode, const char* name, const char* comment)
 {
-	m_variableName = pConfigNode->getConstString(name);
-	m_name = name;
-	m_comment = comment;
+	ConfigNode* pWiredChild = pConfigNode->getChild(name)->getChild(WIRE_XML_TAG);
+	if (pWiredChild == nullptr)
+	{
+		m_variableName = pConfigNode->getConstString(name);
+		m_name = name;
+		m_comment = comment;
+	}
+	else
+	{
+		m_variableName = pWiredChild->GetText();
+		SimionApp::get()->wireRegister(m_variableName);
+		m_name = name;
+		m_comment = comment;
+	}
 }
 
 ACTION_VARIABLE::ACTION_VARIABLE(const char* variableName)

@@ -27,7 +27,7 @@ namespace Badger.ViewModels
             if (mode == SaveMode.ForkHierarchy || mode == SaveMode.ForkValues)
                 outputChildrenXML(writer, mode, leftSpace);
             else
-                outputChildrenXML(writer, mode, leftSpace + "\t");
+                outputChildrenXML(writer, mode, leftSpace + "  "); //It seems to me that a double-space is more "standard" than a TAB
 
             if (mode == SaveMode.AsExperiment || mode == SaveMode.AsExperimentalUnit)
                 writer.Write(leftSpace + getXMLFooter());

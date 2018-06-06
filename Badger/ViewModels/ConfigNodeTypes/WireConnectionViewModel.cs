@@ -38,6 +38,7 @@ namespace Badger.ViewModels
             {
                 configNode = configNode[name];
                 SelectedWire = configNode.InnerText;
+                parentExperiment.AddWire(SelectedWire);
             }
 
             if (m_wireNames.Count == 0)
@@ -62,16 +63,12 @@ namespace Badger.ViewModels
 
         public void Update()
         {
+            string oldSelectedWire = SelectedWire; //need to save it before it gets invalidated on updating the list
+
             m_parentExperiment.GetWireNames(ref m_wireNames);
             NotifyOfPropertyChange(() => WireNames);
 
-            //to force re-validation if the list of variables wasn't available at node creation time
-            if (!WireNames.Exists(id => (id == content)))
-            {
-                if (m_wireNames.Count > 0)
-                    SelectedWire = WireNames[0];
-                else SelectedWire = "";
-            }
+            SelectedWire = oldSelectedWire;
         }
 
         public override bool Validate()
