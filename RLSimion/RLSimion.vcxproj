@@ -229,7 +229,7 @@
       <UseLibraryDependencyInputs>false</UseLibraryDependencyInputs>
     </ProjectReference>
     <PreBuildEvent>
-      <Command>xcopy /y /d "..\packages\CNTK.Deps.MKL.2.5.1\support\x64\Dependency\*.dll" "$(OutDir)" &amp;&amp; xcopy /y /d "..\packages\CNTK.Deps.cuDNN.2.5.1\support\x64\Dependency\*.dll" "$(OutDir)" &amp;&amp; xcopy /y /d "..\packages\CNTK.Deps.Cuda.2.5.1\support\x64\Dependency\*.dll" "$(OutDir)" &amp;&amp; xcopy /y /d "..\packages\CNTK.GPU.2.5.1\support\x64\Release\*.dll" "$(OutDir)"</Command>
+      <Command>xcopy /y /d "..\packages\CNTK.Deps.cuDNN.2.5.1\support\x64\Dependency\*.dll" "$(OutDir)" &amp;&amp; xcopy /y /d "..\packages\CNTK.Deps.Cuda.2.5.1\support\x64\Dependency\*.dll" "$(OutDir)" &amp;&amp; xcopy /y /d "..\packages\CNTK.GPU.2.5.1\support\x64\Release\*.dll" "$(OutDir)" &amp;&amp; xcopy /y /d "..\packages\CNTK.Deps.MKL.2.5.1\support\x64\Dependency\*.dll" "$(OutDir)"</Command>
     </PreBuildEvent>
     <PreBuildEvent>
       <Message>Copy CNTK libraries to the output directory</Message>
@@ -423,13 +423,5 @@
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
-  <ImportGroup Label="ExtensionTargets">
-    <Import Project="..\packages\CNTK.CPUOnly.2.1.0\build\native\CNTK.CPUOnly.targets" Condition="Exists('..\packages\CNTK.CPUOnly.2.1.0\build\native\CNTK.CPUOnly.targets')" />
-  </ImportGroup>
-  <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
-    <PropertyGroup>
-      <ErrorText>This project references NuGet package(s) that are missing on this computer. Use NuGet Package Restore to download them.  For more information, see http://go.microsoft.com/fwlink/?LinkID=322105. The missing file is {0}.</ErrorText>
-    </PropertyGroup>
-    <Error Condition="!Exists('..\packages\CNTK.CPUOnly.2.1.0\build\native\CNTK.CPUOnly.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\CNTK.CPUOnly.2.1.0\build\native\CNTK.CPUOnly.targets'))" />
-  </Target>
+
 </Project>
