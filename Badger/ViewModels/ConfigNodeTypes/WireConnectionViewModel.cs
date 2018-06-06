@@ -30,6 +30,10 @@ namespace Badger.ViewModels
         {
             CommonInitialization(parentExperiment, parent, definitionNode, parentXPath);
 
+            //the possible values taken by this world variable
+            m_parentExperiment.GetWireNames(ref m_wireNames);
+            NotifyOfPropertyChange(() => WireNames);
+
             if (configNode != null)
             {
                 configNode = configNode[name];

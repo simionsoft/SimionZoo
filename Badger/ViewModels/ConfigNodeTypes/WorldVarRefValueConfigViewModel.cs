@@ -32,6 +32,12 @@ namespace Badger.ViewModels
 
             m_varType = varType;
 
+            //if the list is already loaded, get it
+            m_variables.Clear();
+            foreach (string var in m_parentExperiment.GetWorldVarNameList(m_varType))
+                m_variables.Add(var);
+            NotifyOfPropertyChange(() => Variables);
+
             if (configNode != null)
             {
                 configNode = configNode[name];
