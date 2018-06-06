@@ -96,14 +96,14 @@
     </UserControl.Resources>
 
     <Border BorderThickness="1" BorderBrush="LightGray">
-        <Expander Template="{StaticResource HerdAgentExpander}" MinWidth="250">
+        <Expander Template="{StaticResource HerdAgentExpander}" MinWidth="280">
             <Expander.Header>
                 <Grid>
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="Auto"/>
                         <ColumnDefinition Width="105"/>
                         <ColumnDefinition Width="60"/>
-                        <ColumnDefinition Width="30"/>
+                        <ColumnDefinition Width="*"/>
                     </Grid.ColumnDefinitions>
 
                     <CheckBox VerticalAlignment="Center" IsChecked="{Binding IsSelected, Mode=TwoWay}" Margin="5,8"/>

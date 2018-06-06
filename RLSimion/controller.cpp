@@ -12,7 +12,9 @@ vector<double>& Controller::evaluate(const State* s, const Action* a)
 {
 	for (unsigned int output = 0; output < getNumOutputs(); ++output)
 	{
-		m_output[output] = evaluate(s, a, output);
+		//we have to saturate the output of evaluate()
+		NamedVarProperties* pProperties = a->getProperties(getOutputAction(output));
+		m_output[output] = std::min(pProperties->getMax(), std::max(pProperties->getMin(), evaluate(s, a, output)));
 	}
 	return m_output;
 }
@@ -53,7 +55,8 @@ LQRController::LQRController(ConfigNode* pConfigNode)
 	m_outputAction = ACTION_VARIABLE(pConfigNode, "Output-Action", "The output action");
 	m_gains = MULTI_VALUE<LQRGain>(pConfigNode, "LQR-Gain", "An LQR gain on an input state variable");
 
-	m_inputStateVariables.push_back( m_outputAction.get() );
+	for (size_t i = 0; i < m_gains.size(); ++i)
+		m_inputStateVariables.push_back( m_gains[i]->m_variable.get() );
 	m_output = vector<double> (1);
 
 	SimionApp::get()->registerStateActionFunction("LQR", this);
@@ -99,7 +102,7 @@ PIDController::PIDController(ConfigNode* pConfigNode)
 	m_errorVariable = STATE_VARIABLE(pConfigNode, "Input-Variable", "The input state variable");
 	m_intError = 0.0;
 
-	m_inputStateVariables.push_back(m_outputAction.get());
+	m_inputStateVariables.push_back(m_errorVariable.get());
 	m_output = vector<double>(1);
 
 	SimionApp::get()->registerStateActionFunction("PID", this);

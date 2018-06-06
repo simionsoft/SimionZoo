@@ -31,7 +31,6 @@ NamedVarProperties* Descriptor::getProperties(const char* name)
 	{
 		if (strcmp(m_descriptor[i]->getName(), name) == 0)
 			return m_descriptor[i];
-
 	}
 	//check if a wire with that name exists
 	if (m_pWireHandler != nullptr && m_pWireHandler->wireExists(name))

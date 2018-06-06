@@ -117,7 +117,7 @@ const vector<double>& FunctionSampler2D::sample(unsigned int outputIndex)
 		throw exception("FunctionSampler2D::sample() was given an incorrect output index");
 
 	double xValue, xMinValue, xRangeStep, xRange;
-	NamedVarProperties* pXProperties = m_xVarSource->getProperties(m_xVarName.c_str());// m_sampledVariableSources[0]->getProperties(m_sampledVariableNames[0].c_str());
+	NamedVarProperties* pXProperties = m_xVarSource->getProperties(m_xVarName.c_str());
 	xMinValue = pXProperties->getMin();
 	xRange = pXProperties->getRangeWidth();
 	xRangeStep = xRange / (double)(m_samplesPerDimension - 1);
@@ -127,7 +127,7 @@ const vector<double>& FunctionSampler2D::sample(unsigned int outputIndex)
 	for (unsigned int x = 0; x < m_samplesPerDimension; ++x)
 	{
 		xValue = xMinValue + xRangeStep * (double)x;
-		m_xVarSource->set(m_xVarName.c_str(), xValue);// m_sampledVariableSources[0]->set(m_sampledVariableNames[0].c_str(), xValue);
+		m_xVarSource->set(m_xVarName.c_str(), xValue);
 
 		vector<double>& output = m_pFunction->evaluate(m_pState, m_pAction);
 
