@@ -308,11 +308,21 @@ namespace Badger.ViewModels
 
         
         /// <summary>
-        ///     Pass data to experiment monitor and run experiments defined so far.
-        ///     Used from MainWindowView when the launch button is clicked.
+        ///     Runs all the experiments open in the editor. Saves a batch file read by the experiment monitor, and also a project to be
+        ///     able to modify the experiment and rerun it later
         /// </summary>
         public void RunExperimentsInEditor()
         {
+            //Validate all the experiments
+            foreach (ExperimentViewModel experiment in m_experimentViewModels)
+            {
+                if (!experiment.Validate())
+                {
+                    CaliburnUtility.ShowWarningDialog("The app can't be validated. See error log.", "Error");
+                    return;
+                }
+            }
+
             string batchFileName = "";
 
             //Save the experiment batch, read by the Experiment Monitor

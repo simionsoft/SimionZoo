@@ -31,7 +31,7 @@ namespace Utilities
             Assert.AreEqual(result, "");
         }
         [TestMethod]
-        public void Badger_Utility_removeExtension()
+        public void Badger_Utility_RemoveExtension()
         {
             string filename= "C:/jander\\clander/more.simion.exp";
             Assert.AreEqual("C:/jander\\clander/more.simion", Utility.RemoveExtension(filename, 1));
@@ -42,6 +42,14 @@ namespace Utilities
             Assert.AreEqual("jander/clander.exp/more", Utility.RemoveExtension(filename, 2));
             Assert.AreEqual(filename, Utility.RemoveExtension(filename, 0));
             Assert.AreEqual(filename, Utility.RemoveExtension(filename,3));
+        }
+        [TestMethod]
+        public void Badger_Utility_NumParts()
+        {
+            string s = ".simion.proj";
+            Assert.AreEqual(2, Utility.NumParts(s, '.'));
+            s = "a.simion.proj";
+            Assert.AreEqual(3, Utility.NumParts(s, '.'));
         }
         [TestMethod]
         public void Badger_Utility_OxyplotMathNotation()

@@ -152,9 +152,12 @@ namespace Badger.Data
         //Returns the number of parts in a string, using separator as delimiter of the parts
         //For example, NumParts("harl.demore.pitikan",'.') should return 3
         //For simplicity, we assume the separator is neither the first nor the last char in the string
-        public static uint NumParts(string filename, char separator)
+        public static int NumParts(string filename, char separator)
         {
-            uint numSeparators = (uint) filename.Count(c => c == separator);
+            int numSeparators = filename.Count(c => c == separator);
+
+            if (filename[0] == separator) //to avoid returning 3 parts with ".simion.batch"
+                return numSeparators;
             return numSeparators + 1;
         }
 
@@ -181,7 +184,7 @@ namespace Badger.Data
 
         //given the path to a file, this function removes [numExtensions] extensions of the file
         //if not enough extensions are found, nothing is changed from the input path
-        public static string RemoveExtension(string filename, uint numExtensions= 1)
+        public static string RemoveExtension(string filename, int numExtensions= 1)
         {
             string result = filename;
             int lastExt, lastBar;

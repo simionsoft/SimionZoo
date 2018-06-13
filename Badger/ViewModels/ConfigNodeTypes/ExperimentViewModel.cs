@@ -310,8 +310,8 @@ namespace Badger.ViewModels
             }
 
             //Remove the extensions of the experiment file to give name to the experiment
-            uint numExtensions = Utility.NumParts(SimionFileData.ProjectExtension, '.') - 1;
-            Initialize(appDefinitionFileName, configRootNode, Utility.GetFilename(configFilename, true, (int) numExtensions));
+            int numExtensions = Utility.NumParts(SimionFileData.ProjectExtension, '.') - 1;
+            Initialize(appDefinitionFileName, configRootNode, Utility.GetFilename(configFilename, true, numExtensions));
         }
 
         //This constructor is called when a badger file is loaded. Because all the experiments are embedded within a single
