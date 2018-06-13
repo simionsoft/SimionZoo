@@ -310,7 +310,7 @@ namespace Badger.ViewModels
             }
 
             //Remove the extensions of the experiment file to give name to the experiment
-            int numExtensions = Utility.NumParts(SimionFileData.ProjectExtension, '.') - 1;
+            int numExtensions = Utility.NumParts(SimionFileData.ProjectExtension, '.');
             Initialize(appDefinitionFileName, configRootNode, Utility.GetFilename(configFilename, true, numExtensions));
         }
 

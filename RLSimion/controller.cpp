@@ -154,7 +154,8 @@ WindTurbineVidalController::WindTurbineVidalController(ConfigNode* pConfigNode)
 		/ World::getDynamicModel()->getConstant("ElectricalGeneratorEfficiency");
 	m_genElecEff = World::getDynamicModel()->getConstant("ElectricalGeneratorEfficiency");
 
-	m_inputStateVariables.push_back("beta");
+	m_inputStateVariables.push_back("omega_g");
+	m_inputStateVariables.push_back("E_p");
 	m_inputStateVariables.push_back("T_g");
 	m_output = vector<double>(2);
 
@@ -203,7 +204,7 @@ double WindTurbineVidalController::evaluate(const State* s, const Action* a, uns
 	double T_g= s->get("T_g");
 	
 	double d_T_g;
-	
+
 	if (omega_g != 0.0) d_T_g = (-1 / (omega_g*m_genElecEff))*(m_lastT_g*m_genElecEff*(m_pA->get() *omega_g + d_omega_g)
 		- m_pA->get()*m_ratedPower + m_pK_alpha->get()*sgn(error_P));
 	else d_T_g= 0.0;
@@ -247,7 +248,8 @@ WindTurbineBoukhezzarController::WindTurbineBoukhezzarController(ConfigNode* pCo
 	m_K_t = World::getDynamicModel()->getConstant("TotalTurbineTorsionalDamping");
 	m_genElecEff = World::getDynamicModel()->getConstant("ElectricalGeneratorEfficiency");
 
-	m_inputStateVariables.push_back("beta");
+	m_inputStateVariables.push_back("omega_g");
+	m_inputStateVariables.push_back("E_p");
 	m_inputStateVariables.push_back("T_g");
 	m_output = vector<double>(2);
 
@@ -350,8 +352,9 @@ WindTurbineJonkmanController::WindTurbineJonkmanController(ConfigNode* pConfigNo
 
 	m_IntSpdErr= 0.0;
 
-	m_inputStateVariables.push_back("beta");
+	m_inputStateVariables.push_back("omega_g");
 	m_inputStateVariables.push_back("T_g");
+	m_inputStateVariables.push_back("beta");
 	m_output = vector<double>(2);
 
 	SimionApp::get()->registerStateActionFunction("Jonkman", this);

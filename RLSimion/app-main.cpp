@@ -41,6 +41,7 @@ int main(int argc, char* argv[])
 			//if running locally, we show the graphical window
 			if (SimionApp::flagPassed(argc, argv, "local"))
 				pApp->setExecutedRemotely(false);
+			else pApp->setExecutedRemotely(true);
 
 			//CPU is used by default.
 			//tests so far seem to run faster on multi-core cpus than using gpus O_o

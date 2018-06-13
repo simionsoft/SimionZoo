@@ -14,6 +14,7 @@ enum VariableSource {StateSource, ActionSource};
 class FunctionSampler
 {
 protected:
+	size_t m_outputIndex = 0;
 	size_t m_numInputs = 2;
 	State* m_pState = nullptr;
 	Action* m_pAction = nullptr;
@@ -27,7 +28,7 @@ protected:
 
 	NamedVarSet* Source(VariableSource source);
 public:
-	FunctionSampler(string functionId, StateActionFunction* pFunction, size_t samplesPerDimension, size_t numDimensions
+	FunctionSampler(string functionId, StateActionFunction* pFunction, size_t outputIndex, size_t samplesPerDimension, size_t numDimensions
 		, Descriptor& stateDescriptor, Descriptor& actionDescriptor);
 	virtual ~FunctionSampler();
 
@@ -46,7 +47,7 @@ class FunctionSampler3D : public FunctionSampler
 	NamedVarSet* m_yVarSource;
 	string m_yVarName;
 public:
-	FunctionSampler3D(string functionId, StateActionFunction* pFunction, size_t samplesPerDimension
+	FunctionSampler3D(string functionId, StateActionFunction* pFunction, size_t outputIndex, size_t samplesPerDimension
 		, Descriptor& stateDescriptor, Descriptor& actionDescriptor
 		, VariableSource xVarSource, string xVarName, VariableSource yVarSource, string yVarName);
 	
@@ -62,7 +63,7 @@ class FunctionSampler2D : public FunctionSampler
 	NamedVarSet* m_xVarSource;
 	string m_xVarName;
 public:
-	FunctionSampler2D(string functionId, StateActionFunction* pFunction, size_t samplesPerDimension
+	FunctionSampler2D(string functionId, StateActionFunction* pFunction, size_t outputIndex, size_t samplesPerDimension
 		, Descriptor& stateDescriptor, Descriptor& actionDescriptor, VariableSource xVarSource, string xVarName);
 
 	const vector<double>& sample(unsigned int outputIndex = 0);

@@ -15,7 +15,7 @@ NamedVarSet* FunctionSampler::Source(VariableSource source)
 	return m_pAction;
 }
 
-FunctionSampler::FunctionSampler(string functionId, StateActionFunction* pFunction, size_t samplesPerDimension
+FunctionSampler::FunctionSampler(string functionId, StateActionFunction* pFunction, size_t outputIndex, size_t samplesPerDimension
 	, size_t numDimensions, Descriptor& stateDescriptor, Descriptor& actionDescriptor)
 	: m_pFunction(pFunction), m_samplesPerDimension(samplesPerDimension)
 
@@ -23,6 +23,7 @@ FunctionSampler::FunctionSampler(string functionId, StateActionFunction* pFuncti
 	m_pState = stateDescriptor.getInstance();
 	m_pAction = actionDescriptor.getInstance();
 
+	m_outputIndex = outputIndex;
 	m_numOutputs = pFunction->getNumOutputs();
 
 	m_numSamples = (size_t) pow(m_samplesPerDimension,numDimensions);
@@ -57,10 +58,10 @@ size_t FunctionSampler::getNumOutputs() const
 	return m_numOutputs;
 }
 
-FunctionSampler3D::FunctionSampler3D(string functionId, StateActionFunction* pFunction, size_t samplesPerDimension
+FunctionSampler3D::FunctionSampler3D(string functionId, StateActionFunction* pFunction, size_t outputIndex, size_t samplesPerDimension
 	, Descriptor& stateDescriptor, Descriptor& actionDescriptor
 	, VariableSource xVarSource, string xVarName, VariableSource yVarSource, string yVarName)
-	:FunctionSampler(functionId, pFunction, samplesPerDimension, 2, stateDescriptor, actionDescriptor)
+	:FunctionSampler(functionId, pFunction, outputIndex, samplesPerDimension, 2, stateDescriptor, actionDescriptor)
 	, m_xVarName(xVarName), m_yVarName(yVarName)
 {
 	m_xVarSource = Source(xVarSource);
@@ -95,17 +96,17 @@ const vector<double>& FunctionSampler3D::sample(unsigned int outputIndex)
 			m_xVarSource->set(m_xVarName.c_str(), xValue);// m_sampledVariableSources[0]->set(m_sampledVariableNames[0].c_str(), xValue);
 			vector<double>& output= m_pFunction->evaluate(m_pState, m_pAction);
 
-			m_sampledValues[i] = output[0];
+			m_sampledValues[i] = output[outputIndex];
 			++i;
 		}
 	}
 	return m_sampledValues;
 }
 
-FunctionSampler2D::FunctionSampler2D(string functionId, StateActionFunction* pFunction, size_t samplesPerDimension
+FunctionSampler2D::FunctionSampler2D(string functionId, StateActionFunction* pFunction, size_t outputIndex, size_t samplesPerDimension
 	, Descriptor& stateDescriptor, Descriptor& actionDescriptor
 	, VariableSource xVarSource, string xVarName)
-	:FunctionSampler(functionId, pFunction, samplesPerDimension, 1, stateDescriptor, actionDescriptor)
+	:FunctionSampler(functionId, pFunction, outputIndex, samplesPerDimension, 1, stateDescriptor, actionDescriptor)
 	, m_xVarName(xVarName)
 {
 	m_xVarSource = Source(xVarSource);
@@ -131,7 +132,7 @@ const vector<double>& FunctionSampler2D::sample(unsigned int outputIndex)
 
 		vector<double>& output = m_pFunction->evaluate(m_pState, m_pAction);
 
-		m_sampledValues[i] = output[0];
+		m_sampledValues[i] = output[outputIndex];
 		++i;
 	}
 	return m_sampledValues;
