@@ -185,6 +185,7 @@ OrnsteinUhlenbeckNoise::OrnsteinUhlenbeckNoise(ConfigNode* pConfigNode)
 
 OrnsteinUhlenbeckNoise::OrnsteinUhlenbeckNoise(double theta, double sigma, double mu, double dt)
 {
+	m_lastValue = 0.0;
 	m_theta.set(theta);
 	m_sigma.set(sigma);
 	m_mu.set(mu);
@@ -209,10 +210,13 @@ double OrnsteinUhlenbeckNoise::getSample()
 	//http://math.stackexchange.com/questions/1287634/implementing-ornstein-uhlenbeck-in-matlab
 	//x(i + 1) = x(i) + th*(mean - x(i))*dt + sig*sqrt(dt)*randn;
 
+	double normalDistSample = GaussianNoise::getNormalDistributionSample(0.0, 1);
+
 	double newNoise = m_lastValue + m_theta.get()*(m_mu.get() - m_lastValue)*m_dt
-		+ m_sigma.get()*sqrt(m_dt)*GaussianNoise::getNormalDistributionSample(0.0, 1);
-	newNoise *= m_scale->get();
+		+ m_sigma.get()*sqrt(m_dt) * normalDistSample;
 	m_lastValue = newNoise;
+	newNoise *= m_scale->get();
+
 	return newNoise;
 }
 

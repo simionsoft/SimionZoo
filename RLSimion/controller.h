@@ -9,7 +9,7 @@ typedef NamedVarSet Action;
 class ConfigNode;
 class NumericValue;
 
-class Controller : public Simion, public StateActionFunction
+class Controller : public Simion//, public StateActionFunction
 {
 protected:
 	vector<string> m_inputStateVariables;

@@ -59,7 +59,7 @@ LQRController::LQRController(ConfigNode* pConfigNode)
 		m_inputStateVariables.push_back( m_gains[i]->m_variable.get() );
 	m_output = vector<double> (1);
 
-	SimionApp::get()->registerStateActionFunction("LQR", this);
+	//SimionApp::get()->registerStateActionFunction("LQR", this);
 }
 
 LQRController::~LQRController(){}
@@ -105,7 +105,7 @@ PIDController::PIDController(ConfigNode* pConfigNode)
 	m_inputStateVariables.push_back(m_errorVariable.get());
 	m_output = vector<double>(1);
 
-	SimionApp::get()->registerStateActionFunction("PID", this);
+	//SimionApp::get()->registerStateActionFunction("PID", this);
 }
 
 PIDController::~PIDController()
@@ -159,7 +159,7 @@ WindTurbineVidalController::WindTurbineVidalController(ConfigNode* pConfigNode)
 	m_inputStateVariables.push_back("T_g");
 	m_output = vector<double>(2);
 
-	SimionApp::get()->registerStateActionFunction("Vidal", this);
+	//SimionApp::get()->registerStateActionFunction("Vidal", this);
 }
 
 unsigned int WindTurbineVidalController::getNumOutputs()
@@ -202,30 +202,25 @@ double WindTurbineVidalController::evaluate(const State* s, const Action* a, uns
 	double error_P= s->get("E_p");
 
 	double T_g= s->get("T_g");
-	
-	double d_T_g;
 
-	if (omega_g != 0.0) d_T_g = (-1 / (omega_g*m_genElecEff))*(m_lastT_g*m_genElecEff*(m_pA->get() *omega_g + d_omega_g)
-		- m_pA->get()*m_ratedPower + m_pK_alpha->get()*sgn(error_P));
-	else d_T_g= 0.0;
-
-	double e_omega_g = omega_g - World::getDynamicModel()->getConstant("RatedGeneratorSpeed");
-	double beta = 0.5*m_pKP->get()*e_omega_g*(1.0 + sgn(e_omega_g))
-				+ m_pKI->get()*s->get("E_int_omega_g");
+	double e_omega_g, beta, d_T_g;
 
 	switch (output)
 	{
 	case 0:
+		e_omega_g = omega_g - World::getDynamicModel()->getConstant("RatedGeneratorSpeed");
+		beta = 0.5*m_pKP->get()*e_omega_g*(1.0 + sgn(e_omega_g))
+			+ m_pKI->get()*s->get("E_int_omega_g");
 		beta = std::min(a->getProperties("beta")->getMax(), std::max(beta, a->getProperties("beta")->getMin()));
 		return beta;
-		break;
 	case 1:
+		if (omega_g != 0.0) d_T_g = (-1 / (omega_g*m_genElecEff))*(m_lastT_g*m_genElecEff*(m_pA->get() *omega_g + d_omega_g)
+			- m_pA->get()*m_ratedPower + m_pK_alpha->get()*sgn(error_P));
+		else d_T_g = 0.0;
 		d_T_g = std::min(std::max(s->getProperties("d_T_g")->getMin(), d_T_g), s->getProperties("d_T_g")->getMax());
 		double nextT_g = m_lastT_g + d_T_g * SimionApp::get()->pWorld->getDT();
 		m_lastT_g = nextT_g;
 		return nextT_g;
-
-		break;
 	}
 	return 0.0;
 }
@@ -253,7 +248,7 @@ WindTurbineBoukhezzarController::WindTurbineBoukhezzarController(ConfigNode* pCo
 	m_inputStateVariables.push_back("T_g");
 	m_output = vector<double>(2);
 
-	SimionApp::get()->registerStateActionFunction("Boukhezzar", this);
+	//SimionApp::get()->registerStateActionFunction("Boukhezzar", this);
 }
 
 unsigned int WindTurbineBoukhezzarController::getNumOutputs()
@@ -357,7 +352,7 @@ WindTurbineJonkmanController::WindTurbineJonkmanController(ConfigNode* pConfigNo
 	m_inputStateVariables.push_back("beta");
 	m_output = vector<double>(2);
 
-	SimionApp::get()->registerStateActionFunction("Jonkman", this);
+	//SimionApp::get()->registerStateActionFunction("Jonkman", this);
 }
 
 unsigned int WindTurbineJonkmanController::getNumOutputs()

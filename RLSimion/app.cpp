@@ -189,6 +189,8 @@ bool SimionApp::wireExists(string name)
 
 void SimionApp::wireSetValue(string name, double value)
 {
+	if (isnan(value))
+		printf("error");
 	m_wires[name] = value;
 }
 
