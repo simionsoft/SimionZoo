@@ -1,0 +1,345 @@
+<BADGER-PROJECT FileVersion="1.0.0.0">
+  <EXPERIMENT Name="controllers-param-sweep-fast">
+    <RLSimion FileVersion="1.0.0.0">
+    <RLSimion>
+      <Log>
+        <Num-Functions-Logged>10</Num-Functions-Logged>
+        <Log-Freq>0.25</Log-Freq>
+        <Log-Eval-Episodes>true</Log-Eval-Episodes>
+        <Log-Training-Episodes>false</Log-Training-Episodes>
+        <Log-Functions>false</Log-Functions>
+      </Log>
+      <World>
+        <Num-Integration-Steps>1</Num-Integration-Steps>
+        <Delta-T>0.00125</Delta-T>
+        <Dynamic-Model>
+          <Model>
+            <FAST-Wind-turbine>
+              <Training-Mean-Wind-Speeds>
+                <Training-Mean-Wind-Speeds>12.5</Training-Mean-Wind-Speeds>
+              </Training-Mean-Wind-Speeds>
+              <Evaluation-Mean-Wind-Speeds>
+                <Evaluation-Mean-Wind-Speeds>17</Evaluation-Mean-Wind-Speeds>
+              </Evaluation-Mean-Wind-Speeds>
+            </FAST-Wind-turbine>
+            </Model>
+        </Dynamic-Model>
+      </World>
+      <Experiment>
+        <Random-Seed>1</Random-Seed>
+        <Num-Episodes>1</Num-Episodes>
+        <Eval-Freq>1</Eval-Freq>
+        <Progress-Update-Freq>1.0</Progress-Update-Freq>
+        <Episode-Length>150</Episode-Length>
+      </Experiment>
+      <SimGod>
+        <Target-Function-Update-Freq>100</Target-Function-Update-Freq>
+        <Gamma>0.9</Gamma>
+        <Freeze-Target-Function>false</Freeze-Target-Function>
+        <Use-Importance-Weights>false</Use-Importance-Weights>
+        <Simion>
+          <Type>
+            <Controller>
+              <FORKED-NODE Name="Controller" Alias="Controller">
+                <FORK-VALUE Name="Value-0">
+                	<Controller>
+                	  <Vidal>
+                	    <A>
+                	      <Schedule>
+                	        <Constant>
+                	          <FORKED-NODE Name="Value" Alias="A">
+                	            <FORK-VALUE Name="Value-0">
+                	            	<Value>0.01</Value>
+                	            </FORK-VALUE>
+                	            <FORK-VALUE Name="Value-1">
+                	            	<Value>0.025</Value>
+                	            </FORK-VALUE>
+                	            <FORK-VALUE Name="Value-2">
+                	            	<Value>0.05</Value>
+                	            </FORK-VALUE>
+                	            <FORK-VALUE Name="Value-3">
+                	            	<Value>0.075</Value>
+                	            </FORK-VALUE>
+                	            <FORK-VALUE Name="Value-4">
+                	            	<Value>0.1</Value>
+                	            </FORK-VALUE>
+                	            <FORK-VALUE Name="Value-5">
+                	            	<Value>0.25</Value>
+                	            </FORK-VALUE>
+                	            <FORK-VALUE Name="Value-6">
+                	            	<Value>0.5</Value>
+                	            </FORK-VALUE>
+                	            <FORK-VALUE Name="Value-7">
+                	            	<Value>0.75</Value>
+                	            </FORK-VALUE>
+                	            <FORK-VALUE Name="Value-8">
+                	            	<Value>1</Value>
+                	            </FORK-VALUE>
+                	          </FORKED-NODE>
+                	        </Constant>
+                	        </Schedule>
+                	    </A>
+                	    <K_alpha>
+                	      <Schedule>
+                	        <Constant>
+                	          <FORKED-NODE Name="Value" Alias="K_alpha">
+                	            <FORK-VALUE Name="Value-0">
+                	            	<Value>5000</Value>
+                	            </FORK-VALUE>
+                	            <FORK-VALUE Name="Value-1">
+                	            	<Value>10000</Value>
+                	            </FORK-VALUE>
+                	            <FORK-VALUE Name="Value-2">
+                	            	<Value>50000</Value>
+                	            </FORK-VALUE>
+                	            <FORK-VALUE Name="Value-3">
+                	            	<Value>100000</Value>
+                	            </FORK-VALUE>
+                	            <FORK-VALUE Name="Value-4">
+                	            	<Value>500000</Value>
+                	            </FORK-VALUE>
+                	            <FORK-VALUE Name="Value-5">
+                	            	<Value>1000000</Value>
+                	            </FORK-VALUE>
+                	            <FORK-VALUE Name="Value-6">
+                	            	<Value>5000000</Value>
+                	            </FORK-VALUE>
+                	          </FORKED-NODE>
+                	        </Constant>
+                	        </Schedule>
+                	    </K_alpha>
+                	    <KP>
+                	      <Schedule>
+                	        <Constant>
+                	          <FORKED-NODE Name="Value" Alias="K_p">
+                	            <FORK-VALUE Name="Value-0">
+                	            	<Value>0.01</Value>
+                	            </FORK-VALUE>
+                	            <FORK-VALUE Name="Value-1">
+                	            	<Value>0.025</Value>
+                	            </FORK-VALUE>
+                	            <FORK-VALUE Name="Value-2">
+                	            	<Value>0.05</Value>
+                	            </FORK-VALUE>
+                	            <FORK-VALUE Name="Value-3">
+                	            	<Value>0.075</Value>
+                	            </FORK-VALUE>
+                	            <FORK-VALUE Name="Value-4">
+                	            	<Value>0.1</Value>
+                	            </FORK-VALUE>
+                	            <FORK-VALUE Name="Value-5">
+                	            	<Value>0.25</Value>
+                	            </FORK-VALUE>
+                	            <FORK-VALUE Name="Value-6">
+                	            	<Value>0.5</Value>
+                	            </FORK-VALUE>
+                	            <FORK-VALUE Name="Value-7">
+                	            	<Value>0.75</Value>
+                	            </FORK-VALUE>
+                	            <FORK-VALUE Name="Value-8">
+                	            	<Value>1.0</Value>
+                	            </FORK-VALUE>
+                	          </FORKED-NODE>
+                	        </Constant>
+                	        </Schedule>
+                	    </KP>
+                	    <KI>
+                	      <Schedule>
+                	        <Constant>
+                	          <FORKED-NODE Name="Value" Alias="K_i">
+                	            <FORK-VALUE Name="Value-0">
+                	            	<Value>0.01</Value>
+                	            </FORK-VALUE>
+                	            <FORK-VALUE Name="Value-1">
+                	            	<Value>0.025</Value>
+                	            </FORK-VALUE>
+                	            <FORK-VALUE Name="Value-2">
+                	            	<Value>0.05</Value>
+                	            </FORK-VALUE>
+                	          </FORKED-NODE>
+                	        </Constant>
+                	        </Schedule>
+                	    </KI>
+                	  </Vidal>
+                	  </Controller>
+                </FORK-VALUE>
+                <FORK-VALUE Name="Value-1">
+                	<Controller>
+                	  <Boukhezzar>
+                	    <C_0>
+                	      <Schedule>
+                	        <Constant>
+                	          <FORKED-NODE Name="Value" Alias="C_0">
+                	            <FORK-VALUE Name="Value-0">
+                	            	<Value>0.01</Value>
+                	            </FORK-VALUE>
+                	            <FORK-VALUE Name="Value-1">
+                	            	<Value>0.025</Value>
+                	            </FORK-VALUE>
+                	            <FORK-VALUE Name="Value-2">
+                	            	<Value>0.05</Value>
+                	            </FORK-VALUE>
+                	            <FORK-VALUE Name="Value-3">
+                	            	<Value>0.075</Value>
+                	            </FORK-VALUE>
+                	            <FORK-VALUE Name="Value-4">
+                	            	<Value>0.1</Value>
+                	            </FORK-VALUE>
+                	            <FORK-VALUE Name="Value-5">
+                	            	<Value>0.25</Value>
+                	            </FORK-VALUE>
+                	            <FORK-VALUE Name="Value-6">
+                	            	<Value>0.5</Value>
+                	            </FORK-VALUE>
+                	            <FORK-VALUE Name="Value-7">
+                	            	<Value>0.75</Value>
+                	            </FORK-VALUE>
+                	            <FORK-VALUE Name="Value-8">
+                	            	<Value>1</Value>
+                	            </FORK-VALUE>
+                	          </FORKED-NODE>
+                	        </Constant>
+                	        </Schedule>
+                	    </C_0>
+                	    <KP>
+                	      <Schedule>
+                	        <Constant>
+                	          <FORKED-NODE Name="Value" Alias="K_p_2">
+                	            <FORK-VALUE Name="Value-0">
+                	            	<Value>0.01</Value>
+                	            </FORK-VALUE>
+                	            <FORK-VALUE Name="Value-1">
+                	            	<Value>0.025</Value>
+                	            </FORK-VALUE>
+                	            <FORK-VALUE Name="Value-2">
+                	            	<Value>0.05</Value>
+                	            </FORK-VALUE>
+                	            <FORK-VALUE Name="Value-3">
+                	            	<Value>0.075</Value>
+                	            </FORK-VALUE>
+                	            <FORK-VALUE Name="Value-4">
+                	            	<Value>0.1</Value>
+                	            </FORK-VALUE>
+                	            <FORK-VALUE Name="Value-5">
+                	            	<Value>0.25</Value>
+                	            </FORK-VALUE>
+                	            <FORK-VALUE Name="Value-6">
+                	            	<Value>0.5</Value>
+                	            </FORK-VALUE>
+                	            <FORK-VALUE Name="Value-7">
+                	            	<Value>0.75</Value>
+                	            </FORK-VALUE>
+                	            <FORK-VALUE Name="Value-8">
+                	            	<Value>1</Value>
+                	            </FORK-VALUE>
+                	          </FORKED-NODE>
+                	        </Constant>
+                	        </Schedule>
+                	    </KP>
+                	    <KI>
+                	      <Schedule>
+                	        <Constant>
+                	          <FORKED-NODE Name="Value" Alias="K_i_2">
+                	            <FORK-VALUE Name="Value-0">
+                	            	<Value>0.01</Value>
+                	            </FORK-VALUE>
+                	            <FORK-VALUE Name="Value-1">
+                	            	<Value>0.025</Value>
+                	            </FORK-VALUE>
+                	            <FORK-VALUE Name="Value-2">
+                	            	<Value>0.05</Value>
+                	            </FORK-VALUE>
+                	            <FORK-VALUE Name="Value-3">
+                	            	<Value>0.0</Value>
+                	            </FORK-VALUE>
+                	          </FORKED-NODE>
+                	        </Constant>
+                	        </Schedule>
+                	    </KI>
+                	  </Boukhezzar>
+                	  </Controller>
+                </FORK-VALUE>
+                <FORK-VALUE Name="Value-2">
+                	<Controller>
+                	  <Jonkman>
+                	    <CornerFreq>1.570796</CornerFreq>
+                	    <VS_SlPc>10.0</VS_SlPc>
+                	    <VS_Rgn2K>2.332287</VS_Rgn2K>
+                	    <VS_Rgn2Sp>91.21091</VS_Rgn2Sp>
+                	    <VS_CtInSp>70.16224</VS_CtInSp>
+                	    <VS_Rgn3MP>0.01745329</VS_Rgn3MP>
+                	    <PC_RefSpd>122.9096</PC_RefSpd>
+                	    <PC_KK>
+                	      <Schedule>
+                	        <Constant>
+                	          <Value>0.1099965</Value>
+                	        </Constant>
+                	        </Schedule>
+                	    </PC_KK>
+                	    <PC_KP>
+                	      <Schedule>
+                	        <Constant>
+                	          <FORKED-NODE Name="Value" Alias="PC_K_p">
+                	            <FORK-VALUE Name="Value-0">
+                	            	<Value>0.001</Value>
+                	            </FORK-VALUE>
+                	            <FORK-VALUE Name="Value-1">
+                	            	<Value>0.005</Value>
+                	            </FORK-VALUE>
+                	            <FORK-VALUE Name="Value-2">
+                	            	<Value>0.0075</Value>
+                	            </FORK-VALUE>
+                	            <FORK-VALUE Name="Value-3">
+                	            	<Value>0.01</Value>
+                	            </FORK-VALUE>
+                	            <FORK-VALUE Name="Value-4">
+                	            	<Value>0.015</Value>
+                	            </FORK-VALUE>
+                	            <FORK-VALUE Name="Value-5">
+                	            	<Value>0.01882681</Value>
+                	            </FORK-VALUE>
+                	            <FORK-VALUE Name="Value-6">
+                	            	<Value>0.025</Value>
+                	            </FORK-VALUE>
+                	            <FORK-VALUE Name="Value-7">
+                	            	<Value>0.05</Value>
+                	            </FORK-VALUE>
+                	            <FORK-VALUE Name="Value-8">
+                	            	<Value>0.075</Value>
+                	            </FORK-VALUE>
+                	            <FORK-VALUE Name="Value-9">
+                	            	<Value>0.1</Value>
+                	            </FORK-VALUE>
+                	          </FORKED-NODE>
+                	        </Constant>
+                	        </Schedule>
+                	    </PC_KP>
+                	    <PC_KI>
+                	      <Schedule>
+                	        <Constant>
+                	          <FORKED-NODE Name="Value" Alias="PC_K_i">
+                	            <FORK-VALUE Name="Value-0">
+                	            	<Value>0.001</Value>
+                	            </FORK-VALUE>
+                	            <FORK-VALUE Name="Value-1">
+                	            	<Value>0.008068634</Value>
+                	            </FORK-VALUE>
+                	            <FORK-VALUE Name="Value-2">
+                	            	<Value>0.01</Value>
+                	            </FORK-VALUE>
+                	          </FORKED-NODE>
+                	        </Constant>
+                	        </Schedule>
+                	    </PC_KI>
+                	  </Jonkman>
+                	  </Controller>
+                </FORK-VALUE>
+              </FORKED-NODE>
+            </Controller>
+            </Type>
+        </Simion>
+      </SimGod>
+    </RLSimion>
+    </RLSimion>
+  </EXPERIMENT>
+</BADGER-PROJECT>
