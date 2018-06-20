@@ -212,7 +212,8 @@ void Logger::firstEpisode()
 	writeExperimentHeader();
 
 	//write the function log header
-	openFunctionLogFile(m_outputFunctionLogBinary.c_str());
+	if (areFunctionsLogged())
+		openFunctionLogFile(m_outputFunctionLogBinary.c_str());
 }
 
 void Logger::lastEpisode()
@@ -239,7 +240,7 @@ void Logger::firstStep()
 		writeEpisodeHeader();
 
 	//log all the functions if need to
-	if (m_bLogFunctions.get())
+	if (areFunctionsLogged())
 	{
 		size_t functionLogFreq = 1;
 		if (m_numFunctionLogPoints.get() > 0)

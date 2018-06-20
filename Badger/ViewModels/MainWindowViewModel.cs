@@ -171,6 +171,8 @@ namespace Badger.ViewModels
         public MainWindowViewModel()
         {
             m_shepherdViewModel = new ShepherdViewModel();
+            m_shepherdViewModel.SetLogFunction(logToFile);
+
             LoadAppDefinitions();
 
             // Check for aditional required configuration files

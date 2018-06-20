@@ -51,8 +51,8 @@ namespace Badger.ViewModels
                     int len = m_herdAgentList.Count;
                     int lenOrdered = orderedHerdAgentList.Count;
 
-                    // This condition and all the code inside it makes a temporal fix to avoid
-                    // to have inactive agents in list due to IP address changing at runtime.
+                    // This condition and all the code inside is a temporal fix to avoid
+                    // having inactive agents in list due to IP address changing at runtime.
                     if (len > lenOrdered)
                     {
                         for (int i = len - 1; i >= 0; i--)
@@ -82,7 +82,10 @@ namespace Badger.ViewModels
                         {
                             if (agent.ProcessorId.Equals(m_herdAgentList[index].ProcessorId))
                             {
-                                m_herdAgentList[index].IpAddress = agent.ipAddress; // The we can change IP at runtime
+                                if (!m_herdAgentList[index].IpAddress.Equals(agent.ipAddress))
+                                    m_logFunction?.Invoke("Shepherd: Agent with Processor Id " + agent.ProcessorId + " changed IP: " + m_herdAgentList[index].IpAddress + " -> " + agent.ipAddressString);
+
+                                m_herdAgentList[index].IpAddress = agent.ipAddress; // The IP address can change at runtime
                                 m_herdAgentList[index].ProcessorLoad = agent.ProcessorLoad.ToString("0.") + "%";
                                 m_herdAgentList[index].State = agent.State;
                                 found = true;
@@ -92,7 +95,10 @@ namespace Badger.ViewModels
                         }
 
                         if (!found)
+                        {
                             m_herdAgentList.Add(new HerdAgentViewModel(agent));
+                            m_logFunction?.Invoke("Shepherd: Agent discovered with Processor Id " + agent.ProcessorId + " and IP address " + agent.ipAddressString);
+                        }
                     }
                 }
 
@@ -120,27 +126,35 @@ namespace Badger.ViewModels
             return numAvailableCores;
         }
 
-        private void notifyHerdAgentChanged()
+        private void NotifyHerdAgentChanged()
         {
             NotifyOfPropertyChange(() => HerdAgentList);
         }
 
-        private void resendBroadcast(object sender, System.Timers.ElapsedEventArgs e)
+        private void ResendBroadcast(object sender, System.Timers.ElapsedEventArgs e)
         {
             m_shepherd.sendBroadcastHerdAgentQuery();
+        }
+
+        public delegate void LogFunction(string message);
+
+        LogFunction m_logFunction = null;
+        public void SetLogFunction(LogFunction function)
+        {
+            m_logFunction = function;
         }
 
         public ShepherdViewModel()
         {
             m_shepherd = new Shepherd();
-            m_shepherd.setNotifyAgentListChangedFunc(notifyHerdAgentChanged);
+            m_shepherd.setNotifyAgentListChangedFunc(NotifyHerdAgentChanged);
 
             m_timer = new System.Timers.Timer(m_updateTimeSeconds * 1000);
             m_shepherd.sendBroadcastHerdAgentQuery();
             m_shepherd.beginListeningHerdAgentQueryResponses();
 
             m_timer.AutoReset = true;
-            m_timer.Elapsed += new System.Timers.ElapsedEventHandler(resendBroadcast);
+            m_timer.Elapsed += new System.Timers.ElapsedEventHandler(ResendBroadcast);
             m_timer.Start();
         }
     }
