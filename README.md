@@ -1,6 +1,26 @@
-# License
+# SimionZoo
 
-## SimionZoo
+This project is mantained by the Group of Computational Intelligence (University of the Basque Country - UPV/EHU): http://www.ehu.eus/ccwintco
+
+Our goal is to build a Reinforcement Learning experimenting environment in which the user can conduct experiments using a GUI without needing to code, install any dependecies, or run a configuration process.
+
+The scope of the project is limited to:
+
+- Control problems with continuous action and states
+- State variables are numerical values
+
+The main features of the project can be summarized:
+
+- Parameter sweeps using 'forks' on the parameters
+- Real-time and off-line experiment visualization
+- Built-in result analysis tools
+- Distributed execution of experiments (distribution is done via the 'forks')
+
+## Acknowledgements
+
+This project has been mainly contributed by Unai Tercero, Asier Rodriguez, Roland Zimmermann, José Alejandro Guerra Denis and Borja Fernández Gauna.
+
+## License
 
 Copyright (c) SimionSoft - Group of Computational Intelligence (UPV/EHU). http://www.ehu.eus/ccwintco
 
