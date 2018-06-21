@@ -130,6 +130,8 @@ namespace Badger.ViewModels
                             if (agentInList.IpAddressString==newAgent.ipAddressString)
                             {
                                 found = true;
+                                agentInList.State = newAgent.State;
+                                agentInList.ProcessorLoad = newAgent.ProcessorLoad.ToString("0.") + "%";
                                 break;
                             }
                         }
