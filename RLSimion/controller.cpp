@@ -363,8 +363,8 @@ const char* WindTurbineJonkmanController::getOutputAction(size_t output)
 {
 	switch (output)
 	{
-	case 0: return "beta";
-	case 1: return "T_g";
+	case 1: return "beta";
+	case 0: return "T_g";
 	}
 
 	throw std::exception("LQRController. Invalid action output given.");
