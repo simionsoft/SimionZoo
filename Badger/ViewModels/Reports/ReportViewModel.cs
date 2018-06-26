@@ -76,29 +76,32 @@ namespace Badger.ViewModels
             foreach (TrackGroup group in query.ResultTracks)
             {
                 //plot data
-                SeriesGroup seriesGroup = group.ConsolidatedTrack.SeriesGroups[report];
-
-                foreach (Series series in seriesGroup.SeriesList)
+                if (group.ConsolidatedTrack != null)
                 {
-                    string seriesName;
-                    if (seriesGroup.SeriesList.Count == 1)
+                    SeriesGroup seriesGroup = group.ConsolidatedTrack.SeriesGroups[report];
+
+                    foreach (Series series in seriesGroup.SeriesList)
                     {
-                        //only one series per track group, no multi-series track group
-                        seriesName = group.ConsolidatedTrack.TrackId;
+                        string seriesName;
+                        if (seriesGroup.SeriesList.Count == 1)
+                        {
+                            //only one series per track group, no multi-series track group
+                            seriesName = group.ConsolidatedTrack.TrackId;
+                        }
+                        else seriesName = group.ConsolidatedTrack.TrackId + "-" + series.Id;
+
+                        //add data to the plot
+                        int lineSeriesId = newPlot.AddLineSeries(seriesName);
+                        foreach (XYValue value in series.Values)
+                            newPlot.AddLineSeriesValue(lineSeriesId, value.X, value.Y);
+
+                        StatViewModel newStat =
+                            new StatViewModel(group.ExperimentId, seriesName, series.Stats
+                                , group.ConsolidatedTrack.LogBinaryFile
+                                , group.ConsolidatedTrack.LogDescriptorFile);
+
+                        newStatGroup.addStat(newStat);
                     }
-                    else seriesName = group.ConsolidatedTrack.TrackId + "-" + series.Id;
-
-                    //add data to the plot
-                    int lineSeriesId = newPlot.AddLineSeries(seriesName);
-                    foreach (XYValue value in series.Values)
-                        newPlot.AddLineSeriesValue(lineSeriesId, value.X, value.Y);
-
-                    StatViewModel newStat =
-                        new StatViewModel(group.ExperimentId, seriesName, series.Stats
-                            ,group.ConsolidatedTrack.LogBinaryFile
-                            ,group.ConsolidatedTrack.LogDescriptorFile);
-
-                    newStatGroup.addStat(newStat);
                 }
             }
             Plot = newPlot;
