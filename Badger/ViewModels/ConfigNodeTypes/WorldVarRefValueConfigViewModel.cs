@@ -42,10 +42,20 @@ namespace Badger.ViewModels
             {
                 configNode = configNode[name];
                 //is the world variable wired?
-                if (configNode.FirstChild != null && configNode.FirstChild.Name == XMLConfig.WireTag)
+                XmlNode wireConfigNode = configNode.FirstChild;
+                if (wireConfigNode != null && wireConfigNode.Name == XMLConfig.WireTag)
                 {
-                    content = configNode.FirstChild.InnerText;
-                    m_parentExperiment.AddWire(content);
+                    content = wireConfigNode.InnerText;
+
+                    if (wireConfigNode.Attributes[XMLConfig.minValueAttribute] != null
+                        && wireConfigNode.Attributes[XMLConfig.maxValueAttribute] != null)
+                    {
+                        double min = double.Parse(wireConfigNode.Attributes[XMLConfig.minValueAttribute].Value);
+                        double max = double.Parse(wireConfigNode.Attributes[XMLConfig.maxValueAttribute].Value);
+                        m_parentExperiment.AddWire(content, min, max);
+                    }
+                    else
+                        m_parentExperiment.AddWire(content);
                 }
                 else
                     content = configNode.InnerText;
@@ -90,18 +100,21 @@ namespace Badger.ViewModels
         {
             if (mode == SaveMode.AsExperiment || mode == SaveMode.AsExperimentalUnit)
             {
-                List<string> wireNames = new List<string>();
-                m_parentExperiment.GetWireNames(ref wireNames);
-                if (!wireNames.Contains(content))
+                WireViewModel wire = m_parentExperiment.GetWire(content);
+                if (wire!=null)
                 {
-                    //unwired
-                    writer.Write(leftSpace + "<" + name + ">" + content + "</" + name + ">\n");
+                    //wired
+                    if (!wire.Limit)
+                        writer.Write(leftSpace + "<" + name + "><" + XMLConfig.WireTag + ">"
+                            + content + "</" + XMLConfig.WireTag + "></" + name + ">\n");
+                    else
+                        writer.WriteLine(leftSpace + "<" + name + "><" + XMLConfig.WireTag + " " + XMLConfig.minValueAttribute + "=\"" + wire.Minimum
+                            + "\" " + XMLConfig.maxValueAttribute + "=\"" + wire.Maximum + "\">" + content + "</" + XMLConfig.WireTag + "></" + name + ">");
                 }
                 else
                 {
-                    //wired
-                    writer.Write(leftSpace + "<" + name + "><" + XMLConfig.WireTag + ">"
-                        + content + "</" + XMLConfig.WireTag + "></" + name + ">\n");
+                    //unwired
+                    writer.WriteLine(leftSpace + "<" + name + ">" + content + "</" + name + ">");
                 }
             }
         }

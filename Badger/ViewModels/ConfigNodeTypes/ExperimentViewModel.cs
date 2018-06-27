@@ -345,6 +345,7 @@ namespace Badger.ViewModels
         }
 
         WiresViewModel m_wiresViewModel;
+        
         /// <summary>
         /// Shows a new window with the wires used in the experiment
         /// </summary>
@@ -354,13 +355,23 @@ namespace Badger.ViewModels
             UpdateWireConnections();
             UpdateWorldReferences(); //state and action variables may reference a wire too
         }
-
+        public WireViewModel GetWire(string name)
+        {
+            foreach (WireViewModel wire in m_wiresViewModel.Wires)
+                if (name == wire.Name)
+                    return wire;
+            return null;
+        }
         public void GetWireNames(ref List<string> wireNames)
         {
             foreach (WireViewModel wire in m_wiresViewModel.Wires)
                 wireNames.Add(wire.Name);
         }
 
+        public void AddWire(string name, double minimum, double maximum)
+        {
+            m_wiresViewModel.AddWire(name, minimum, maximum);
+        }
         public void AddWire(string name)
         {
             m_wiresViewModel.AddWire(name);

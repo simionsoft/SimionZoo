@@ -6,7 +6,7 @@ using System.IO;
 
 namespace Badger.ViewModels
 {
-    class WireViewModel : PropertyChangedBase
+    public class WireViewModel : PropertyChangedBase
     {
         WiresViewModel m_parent;
 
@@ -17,10 +17,26 @@ namespace Badger.ViewModels
             set { m_name = value; NotifyOfPropertyChange(() => Name); }
         }
 
+        double m_minimum = 0.0;
+        double m_maximum = 0.0;
+        public double Minimum {get{return m_minimum;} set{m_minimum= value;NotifyOfPropertyChange(() => Minimum); } }
+        public double Maximum { get { return m_maximum; } set { m_maximum = value; NotifyOfPropertyChange(() => Maximum); } }
+
+        bool m_bLimit = false;
+        public bool Limit { get { return m_bLimit; } set { m_bLimit = value;NotifyOfPropertyChange(() => Limit); } }
+
         public WireViewModel(string name, WiresViewModel parent)
         {
             m_parent = parent;
             Name = name;
+        }
+        public WireViewModel(string name, WiresViewModel parent, double minimum, double maximum)
+        {
+            m_parent = parent;
+            Name = name;
+            Minimum = minimum;
+            Maximum = maximum;
+            Limit = true;
         }
 
         public void Remove()
@@ -29,7 +45,7 @@ namespace Badger.ViewModels
         }
     }
 
-    class WiresViewModel : Screen
+    public class WiresViewModel : Screen
     {
         ExperimentViewModel m_parent;
 
@@ -55,6 +71,22 @@ namespace Badger.ViewModels
                     return;
             }
             Wires.Add(new WireViewModel(name, this));
+        }
+
+        public void AddWire(string name, double minimum, double maximum)
+        {
+            foreach (WireViewModel wire in Wires)
+            {
+                if (wire.Name == name)
+                {
+                    //set the limits regardless of the previous limits
+                    wire.Minimum = minimum;
+                    wire.Maximum = maximum;
+                    wire.Limit = true;
+                    return;
+                }
+            }
+            Wires.Add(new WireViewModel(name, this, minimum, maximum));
         }
 
         public void RemoveWire(WireViewModel wire)

@@ -16,17 +16,25 @@ namespace Badger.ViewModels
             if (configNode == null || configNode[name] == null)
             {
                 //default init
-                content = definitionNode.Attributes[XMLConfig.defaultAttribute].Value;
-                textColor = XMLConfig.colorDefaultValue;
+
+                //Using default attribute makes no sense here I think
+                //content = definitionNode.Attributes[XMLConfig.defaultAttribute].Value;
+                textColor = XMLConfig.colorInvalidValue;
             }
             else
             {
                 //init from config file
-                content = configNode[name].InnerXml;
+                if (configNode[name].InnerXml != "")
+                {
+                    var mwvm = new NeuralNetwork.Windows.MainWindowViewModel();
+                    mwvm.Import(configNode[name].InnerXml);
+                    m_problemViewModel = mwvm.Problem;
+                    content = configNode[name].InnerXml;
+                }
             }
         }
-
-        private Badger.ViewModels.NeuralNetwork.ProblemViewModel m_problemViewModel = null;
+        
+        private NeuralNetwork.ProblemViewModel m_problemViewModel = null;
 
         public override ConfigNodeViewModel clone()
         {
@@ -41,12 +49,8 @@ namespace Badger.ViewModels
 
         public override bool Validate()
         {
-            if (m_problemViewModel == null || m_problemViewModel.NetworkArchitecture == null)
-            {
-                var mwvm = new NeuralNetwork.Windows.MainWindowViewModel();
-                mwvm.Import(content);
-                m_problemViewModel = mwvm.Problem;
-            }
+            if (content == "" || content == null || m_problemViewModel==null)
+                return false;
 
             foreach (var chain in m_problemViewModel.NetworkArchitecture.Chains)
                 foreach (var link in chain.ChainLinks)
