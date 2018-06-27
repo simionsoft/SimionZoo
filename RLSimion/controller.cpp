@@ -377,10 +377,11 @@ double WindTurbineJonkmanController::evaluate(const State *s,const Action *a, un
 	case 0:
 
 		//Filter the generator speed
-		double lowPassFilterAlpha;
+		double lowPassFilterAlpha, d_T_g;
 
 		if (SimionApp::get()->pWorld->getEpisodeSimTime() == 0.0)
 		{
+			m_lastT_g = 0.0;
 			lowPassFilterAlpha = 1.0;
 			m_GenSpeedF = s->get("omega_g");
 			m_IntSpdErr = 0.0;
@@ -405,8 +406,16 @@ double WindTurbineJonkmanController::evaluate(const State *s,const Action *a, un
 
 		DesiredGenTrq = std::min(DesiredGenTrq, s->getProperties("T_g")->getMax());   //Saturate the command using the maximum torque limit
 
+		//we limit the torque change rate
+		d_T_g = (DesiredGenTrq - m_lastT_g) / SimionApp::get()->pWorld->getDT();
+		d_T_g = std::min(std::max(s->getProperties("d_T_g")->getMin(), d_T_g), s->getProperties("d_T_g")->getMax());
+
+		m_lastT_g = m_lastT_g + d_T_g * SimionApp::get()->pWorld->getDT();
+
+		return m_lastT_g;
+
 		//we pass the desired generator torque instead of the rate
-		return DesiredGenTrq;
+		//return DesiredGenTrq;
 	case 1:
 
 		//PITCH CONTROLLER

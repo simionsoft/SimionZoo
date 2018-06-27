@@ -112,6 +112,7 @@ public:
 class WindTurbineJonkmanController : public Controller
 {
 protected:
+	double m_lastT_g = 0.0;
 	//generator speed filter's parameters and variables
 	DOUBLE_PARAM m_CornerFreq;
 	double m_GenSpeedF;
