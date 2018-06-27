@@ -289,6 +289,7 @@
     <ClCompile Include="utils.cpp" />
     <ClCompile Include="vfa-policy.cpp" />
     <ClCompile Include="vfa.cpp" />
+    <ClCompile Include="wire.cpp" />
     <ClCompile Include="worlds\aux-rewards.cpp" />
     <ClCompile Include="worlds\balancingpole.cpp" />
     <ClCompile Include="worlds\BulletBody.cpp" />
@@ -355,6 +356,8 @@
     <ClInclude Include="utils.h" />
     <ClInclude Include="vfa-critic.h" />
     <ClInclude Include="vfa.h" />
+    <ClInclude Include="wire-handler.h" />
+    <ClInclude Include="wire.h" />
     <ClInclude Include="worlds\aux-rewards.h" />
     <ClInclude Include="worlds\balancingpole.h" />
     <ClInclude Include="worlds\Box.h" />
@@ -423,5 +426,4 @@
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
-
 </Project>

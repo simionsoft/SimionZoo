@@ -217,6 +217,9 @@
     <ClCompile Include="named-var-set.cpp">
       <Filter>common</Filter>
     </ClCompile>
+    <ClCompile Include="wire.cpp">
+      <Filter>wires</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="resource1.h" />
@@ -418,6 +421,12 @@
     <ClInclude Include="named-var-set.h">
       <Filter>common</Filter>
     </ClInclude>
+    <ClInclude Include="wire.h">
+      <Filter>wires</Filter>
+    </ClInclude>
+    <ClInclude Include="wire-handler.h">
+      <Filter>wires</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Text Include="ReadMe.txt" />
@@ -458,6 +467,9 @@
     </Filter>
     <Filter Include="common">
       <UniqueIdentifier>{7628fd4c-3e09-4c7b-9df7-5f3f3bcb3d6b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="wires">
+      <UniqueIdentifier>{c6fac51a-9fe0-407c-af69-2156d6456e0b}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
 </Project>

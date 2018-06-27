@@ -7,6 +7,7 @@ using namespace std;
 #include "parameters.h"
 #include "mem-manager.h"
 #include "named-var-set.h"
+#include "wire-handler.h"
 
 #include "../tools/WindowsUtils/Timer.h"
 #define MAX_PATH_SIZE 1024
@@ -24,8 +25,10 @@ class World;
 class Experiment;
 class SimGod;
 class StateActionFunction;
+class Wire;
 
 enum Device{ CPU, GPU };
+
 
 class SimionApp: public WireHandler
 {
@@ -43,7 +46,7 @@ private:
 	std::vector<const char*> m_outputFiles;
 
 	unordered_map<string, StateActionFunction*> m_pStateActionFunctions = {};
-	unordered_map<string, double> m_wires = {};
+	unordered_map<string, Wire*> m_wires = {};
 
 	//is this app being run remotely?
 	//by default, we assume it is in Release mode
@@ -79,9 +82,8 @@ public:
 
 	//Wires: connections between inputs/outputs
 	void wireRegister(string name);
-	bool wireExists(string name);
-	void wireSetValue(string name, double value);
-	double wireGetValue(string name);
+	void wireRegister(string name, double minimum, double maximum);
+	Wire* wireGet(string name);
 
 	//Input/Output file registering member functions
 	//Subclasses should call these methods to let know what input/output files will be required at run-time

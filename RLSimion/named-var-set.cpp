@@ -1,5 +1,6 @@
 #include "named-var-set.h"
 #include "app.h"
+#include "wire.h"
 #include <algorithm>
 using namespace std;
 
@@ -33,8 +34,14 @@ NamedVarProperties* Descriptor::getProperties(const char* name)
 			return m_descriptor[i];
 	}
 	//check if a wire with that name exists
-	if (m_pWireHandler != nullptr && m_pWireHandler->wireExists(name))
-		return &wireDummyProperties;
+	Wire* pWire = m_pWireHandler->wireGet(name);
+	if (pWire != nullptr)
+	{
+		NamedVarProperties* pProperties = pWire->getProperties();
+		if (pProperties==nullptr)
+			return &wireDummyProperties;
+		return pProperties;
+	}
 	else
 		throw exception("Wrong variable name given to Descriptor::getVarIndex()");
 }
@@ -108,8 +115,14 @@ void NamedVarSet::set(const char* varName, double value)
 
 	//check if a wire with that name exists
 	WireHandler* pWireHandler = m_descriptor.getWireHandler();
-	if (pWireHandler != nullptr && pWireHandler->wireExists(varName))
-		pWireHandler->wireSetValue(varName, value);
+	if (pWireHandler != nullptr)
+	{
+		Wire* pWire = pWireHandler->wireGet(varName);
+		if (pWire != nullptr)
+			pWire->setValue(value);
+		else
+			throw std::exception("Incorrect variable name in NamedVarSet::set()");
+	}
 	else
 		throw std::exception("Incorrect variable name in NamedVarSet::set()");
 }
@@ -156,8 +169,14 @@ double NamedVarSet::get(const char* varName) const
 	}
 
 	WireHandler* pWireHandler = m_descriptor.getWireHandler();
-	if (pWireHandler != nullptr && pWireHandler->wireExists(varName))
-		return pWireHandler->wireGetValue(varName);
+	if (pWireHandler != nullptr)
+	{
+		Wire* pWire= pWireHandler->wireGet(varName);
+		if (pWire != nullptr)
+			return pWire->getValue();
+		else
+			throw std::exception("Incorrect variable name in NamedVarSet::get()");
+	}
 	else
 		throw std::exception("Incorrect variable name in NamedVarSet::get()");
 }

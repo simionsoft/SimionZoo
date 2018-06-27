@@ -2,6 +2,8 @@
 #include "named-var-set.h"
 #include "app.h"
 #define WIRE_XML_TAG "Wire"
+#define WIRE_XML_MAX_ATTRIBUTE "Max"
+#define WIRE_XML_MIN_ATTRIBUTE "Min"
 
 STATE_VARIABLE::STATE_VARIABLE(ConfigNode* pConfigNode, const char* name, const char* comment)
 {
@@ -15,7 +17,15 @@ STATE_VARIABLE::STATE_VARIABLE(ConfigNode* pConfigNode, const char* name, const 
 	else
 	{
 		m_variableName = pWiredChild->GetText();
-		SimionApp::get()->wireRegister(m_variableName);
+		if (pWiredChild->Attribute(WIRE_XML_MIN_ATTRIBUTE) == nullptr
+			|| pWiredChild->Attribute(WIRE_XML_MAX_ATTRIBUTE) == nullptr)
+			SimionApp::get()->wireRegister(m_variableName);
+		else
+		{
+			double minimum = atof(pWiredChild->Attribute(WIRE_XML_MIN_ATTRIBUTE));
+			double maximum = atof(pWiredChild->Attribute(WIRE_XML_MAX_ATTRIBUTE));
+			SimionApp::get()->wireRegister(m_variableName, minimum, maximum);
+		}
 		m_name = name;
 		m_comment = comment;
 	}
@@ -40,7 +50,15 @@ ACTION_VARIABLE::ACTION_VARIABLE(ConfigNode* pConfigNode, const char* name, cons
 	else
 	{
 		m_variableName = pWiredChild->GetText();
-		SimionApp::get()->wireRegister(m_variableName);
+		if (pWiredChild->Attribute(WIRE_XML_MIN_ATTRIBUTE) == nullptr
+			|| pWiredChild->Attribute(WIRE_XML_MAX_ATTRIBUTE) == nullptr)
+			SimionApp::get()->wireRegister(m_variableName);
+		else
+		{
+			double minimum = atof(pWiredChild->Attribute(WIRE_XML_MIN_ATTRIBUTE));
+			double maximum = atof(pWiredChild->Attribute(WIRE_XML_MAX_ATTRIBUTE));
+			SimionApp::get()->wireRegister(m_variableName, minimum, maximum);
+		}
 		m_name = name;
 		m_comment = comment;
 	}
@@ -54,6 +72,7 @@ ACTION_VARIABLE::ACTION_VARIABLE(const char* variableName)
 }
 
 #include "app.h"
+#include "wire.h"
 
 WIRE_CONNECTION::WIRE_CONNECTION(ConfigNode* pConfigNode, const char* name, const char* comment)
 {
@@ -68,11 +87,13 @@ WIRE_CONNECTION::WIRE_CONNECTION(const char* wireName)
 
 double WIRE_CONNECTION::get()
 {
-	return SimionApp::get()->wireGetValue(m_name);
+	Wire* pWire = SimionApp::get()->wireGet(m_name);
+	return pWire->getValue();
 }
 void WIRE_CONNECTION::set(double value)
 {
-	return SimionApp::get()->wireSetValue(m_name, value);
+	Wire* pWire = SimionApp::get()->wireGet(m_name);
+	pWire->setValue(value);
 }
 
 #include "../tools/CNTKWrapper/CNTKWrapper.h"

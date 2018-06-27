@@ -2,17 +2,9 @@
 
 #define VAR_NAME_MAX_LENGTH 128
 #include <vector>
-#include <string>
+#include "wire-handler.h"
 using namespace std;
 
-class WireHandler
-{
-public:
-	virtual void wireSetValue(string name, double value) = 0;
-	virtual double wireGetValue(string name) = 0;
-	virtual bool wireExists(string name) = 0;
-	virtual void wireRegister(string name) = 0;
-};
 
 class NamedVarProperties
 {
@@ -29,6 +21,8 @@ public:
 	void setName(const char* name);
 	double getMin() const { return m_min; }
 	double getMax() const { return m_max; }
+	void setMin(double minimum) { m_min = minimum; }
+	void setMax(double maximum) { m_max = maximum; }
 	double getRangeWidth() const { return m_max - m_min; }
 	void setCircular(bool bCircular) { m_bCircular = bCircular; }
 	bool isCircular() const { return m_bCircular; }

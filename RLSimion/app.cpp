@@ -8,6 +8,7 @@
 #include "utils.h"
 #include "function-sampler.h"
 #include "state-action-function.h"
+#include "wire.h"
 #include "../tools/OpenGLRenderer/basic-shapes-2d.h"
 #include "../tools/OpenGLRenderer/renderer.h"
 #include "../tools/OpenGLRenderer/text.h"
@@ -56,6 +57,7 @@ SimionApp::~SimionApp()
 	if (m_pRenderer != nullptr) delete m_pRenderer;
 
 	for each (FunctionSampler* sampler in m_pFunctionSamplers) delete sampler;
+	for each (pair<string, Wire*> p in m_wires) delete p.second;
 
 	m_pAppInstance = 0;
 	for (auto it = m_inputFiles.begin(); it != m_inputFiles.end(); it++) delete (*it);
@@ -177,29 +179,30 @@ void SimionApp::registerStateActionFunction(string name, StateActionFunction* pF
 
 void SimionApp::wireRegister(string name)
 {
-	m_wires[name] = 0.0;
+	if (m_wires.find(name) == m_wires.end())
+		m_wires[name] = new Wire(name);
 }
 
-bool SimionApp::wireExists(string name)
+void SimionApp::wireRegister(string name, double minimum, double maximum)
 {
-	if (m_wires.find(name) != m_wires.end())
-		return true;
-	return false;
+	auto wire = m_wires.find(name);
+	if (wire == m_wires.end())
+		m_wires[name] = new Wire(name, minimum, maximum);
+	else
+	{
+		//we set the limits because they might not have any limits in another instance of the Wire
+		m_wires[name]->setLimits(minimum, maximum);
+	}
 }
 
-void SimionApp::wireSetValue(string name, double value)
+Wire* SimionApp::wireGet(string name)
 {
-	if (isnan(value))
-		printf("error");
-	m_wires[name] = value;
+	auto wire = m_wires.find(name);
+	if (wire != m_wires.end())
+		return wire->second;
+	return nullptr;
 }
 
-double SimionApp::wireGetValue(string name)
-{
-	if (m_wires.find(name) != m_wires.end())
-		return m_wires[name];
-	return 0.0;
-}
 
 void SimionApp::registerInputFile(const char* filepath, const char* rename)
 {
