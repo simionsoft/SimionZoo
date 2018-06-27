@@ -8,9 +8,9 @@
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800">
 
-    <Border BorderThickness="1" BorderBrush="LightGray">
+    <Border BorderThickness="1" BorderBrush="LightGray" Width="280">
         <StackPanel Orientation="Vertical">
-            <StackPanel Orientation="Horizontal">
+            <StackPanel Orientation="Horizontal" Background="LightGray">
                 <Button VerticalAlignment="Center" Background="{x:Null}" BorderBrush="{x:Null}" cal:Message.Attach="[Event Click]=[Action Remove()]"
                             ToolTip="Remove this value" Width="16">
                     <Path Data="{StaticResource Close}" Stretch="Uniform" Fill="#89000000" />
@@ -19,7 +19,7 @@
                 <TextBox Text="{Binding Name}"  MaxWidth="120" Width="120"
                                 VerticalAlignment="Center" Background="Transparent" Margin="4,5"/>
             </StackPanel>
-            <GroupBox  Margin="30 0 0 0">
+            <GroupBox  Margin="20 0 0 0" Width="180" HorizontalAlignment="Left">
                 <GroupBox.Header>
                     <CheckBox IsChecked="{Binding Limit}" FontWeight="Light">Limit</CheckBox>
                 </GroupBox.Header>
