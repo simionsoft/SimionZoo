@@ -47,5 +47,8 @@
     <ClCompile Include="..\..\RLSimion\named-var-set.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\RLSimion\wire.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
 </Project>

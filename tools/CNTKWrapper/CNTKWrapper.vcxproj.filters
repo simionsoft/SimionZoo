@@ -58,6 +58,12 @@
     <ClInclude Include="xmltags.h">
       <Filter>Source</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\RLSimion\wire.h">
+      <Filter>Source</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\RLSimion\wire-handler.h">
+      <Filter>Source</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Chain.cpp">
@@ -97,6 +103,9 @@
       <Filter>Source</Filter>
     </ClCompile>
     <ClCompile Include="minibatch.cpp">
+      <Filter>Source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\RLSimion\wire.cpp">
       <Filter>Source</Filter>
     </ClCompile>
   </ItemGroup>

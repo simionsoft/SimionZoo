@@ -191,6 +191,12 @@
     <ClInclude Include="..\RLSimion\CNTKWrapperClient.h">
       <Filter>learning</Filter>
     </ClInclude>
+    <ClInclude Include="..\RLSimion\wire.h">
+      <Filter>wires</Filter>
+    </ClInclude>
+    <ClInclude Include="..\RLSimion\wire-handler.h">
+      <Filter>wires</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="app">
@@ -213,6 +219,9 @@
     </Filter>
     <Filter Include="graphics">
       <UniqueIdentifier>{0725c52a-30e6-4c43-b68c-c5e5f0c5795c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="wires">
+      <UniqueIdentifier>{cf3a5ff1-3332-4056-b44d-a404a285313c}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -422,6 +431,9 @@
     </ClCompile>
     <ClCompile Include="..\RLSimion\CNTKWrapperClient.cpp">
       <Filter>learning</Filter>
+    </ClCompile>
+    <ClCompile Include="..\RLSimion\wire.cpp">
+      <Filter>wires</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

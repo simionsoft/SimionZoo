@@ -267,6 +267,8 @@
     <ClInclude Include="..\RLSimion\utils.h" />
     <ClInclude Include="..\RLSimion\vfa-critic.h" />
     <ClInclude Include="..\RLSimion\vfa.h" />
+    <ClInclude Include="..\RLSimion\wire-handler.h" />
+    <ClInclude Include="..\RLSimion\wire.h" />
     <ClInclude Include="..\RLSimion\worlds\aux-rewards.h" />
     <ClInclude Include="..\RLSimion\worlds\balancingpole.h" />
     <ClInclude Include="..\RLSimion\worlds\Box.h" />
@@ -377,6 +379,7 @@
     <ClCompile Include="..\RLSimion\utils.cpp" />
     <ClCompile Include="..\RLSimion\vfa-policy.cpp" />
     <ClCompile Include="..\RLSimion\vfa.cpp" />
+    <ClCompile Include="..\RLSimion\wire.cpp" />
     <ClCompile Include="..\RLSimion\worlds\aux-rewards.cpp" />
     <ClCompile Include="..\RLSimion\worlds\balancingpole.cpp" />
     <ClCompile Include="..\RLSimion\worlds\BulletBody.cpp" />

@@ -169,6 +169,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\RLSimion\named-var-set.cpp" />
+    <ClCompile Include="..\..\RLSimion\wire.cpp" />
     <ClCompile Include="LogLoader.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="SimionLogViewer.cpp" />

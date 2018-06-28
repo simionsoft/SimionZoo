@@ -149,6 +149,8 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\RLSimion\named-var-set.h" />
+    <ClInclude Include="..\..\RLSimion\wire-handler.h" />
+    <ClInclude Include="..\..\RLSimion\wire.h" />
     <ClInclude Include="Chain.h" />
     <ClInclude Include="CNTKWrapper.h" />
     <ClInclude Include="CNTKWrapperInternals.h" />
@@ -167,6 +169,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\RLSimion\named-var-set.cpp" />
+    <ClCompile Include="..\..\RLSimion\wire.cpp" />
     <ClCompile Include="Chain.cpp" />
     <ClCompile Include="CNTKWrapper.cpp" />
     <ClCompile Include="CNTKWrapperInternals.cpp" />
