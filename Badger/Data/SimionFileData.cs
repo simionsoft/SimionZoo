@@ -40,6 +40,7 @@ namespace Badger.Simion
 
         public delegate void LogFunction(string message);
         public delegate void LoadUpdateFunction();
+        public delegate void ProgressUpdateFunction(double progress);
 
 
         //baseDirectory: directory where the batch file is located. Included to allow using paths
@@ -173,7 +174,7 @@ namespace Badger.Simion
         /// <param name="log"></param>
         /// <returns></returns>
         public static int SaveExperimentBatchFile(BindableCollection<ExperimentViewModel> experiments,
-            ref string batchFilename, LogFunction log)
+            string batchFilename, LogFunction log, ProgressUpdateFunction progressUpdateFunction)
         {
             int experimentalUnitsCount = 0;
 
@@ -187,8 +188,10 @@ namespace Badger.Simion
                 {
                     CaliburnUtility.ShowWarningDialog("The configuration couldn't be validated in " + experiment.Name
                         + ". Please check it", "VALIDATION ERROR");
+
                     return -1;
                 }
+                experimentalUnitsCount += experiment.getNumForkCombinations();
             }
 
             //Dialog window asking for an output name
@@ -223,7 +226,9 @@ namespace Badger.Simion
             }
             string fullBatchFileName = batchFileDir + ExperimentBatchExtension;
 
-            
+            progressUpdateFunction?.Invoke(0.0);
+            int numExperimentalUnitsSaved = 0;
+
             using (StreamWriter batchFileWriter = new StreamWriter(fullBatchFileName))
             {
                 // Write batch file header (i.e. open 'EXPERIMENT-BATCH' tag)
@@ -263,9 +268,11 @@ namespace Badger.Simion
                         experimentViewModel.SaveToStream(batchFileWriter, SaveMode.ForkValues, "\t");
                         // Close 'EXPERIMENTAL-UNIT' tag
                         batchFileWriter.WriteLine("    </" + XMLConfig.experimentalUnitNodeTag + ">");
+
+                        numExperimentalUnitsSaved++;
+                        progressUpdateFunction?.Invoke(numExperimentalUnitsSaved / (double)experimentalUnitsCount);
                     }
 
-                    experimentalUnitsCount += numCombinations;
                     // Close 'EXPERIMENT' tag
                     batchFileWriter.WriteLine("  </" + XMLConfig.experimentNodeTag + ">");
                 }
@@ -279,7 +286,7 @@ namespace Badger.Simion
 
 
         //BADGER project: LOAD
-        static public void loadExperiments(ref BindableCollection<ExperimentViewModel> experiments,
+        static public void LoadExperiments(ref BindableCollection<ExperimentViewModel> experiments,
             Dictionary<string, string> appDefinitions, LogFunction log, string filename= null)
         {
             if (filename == null)
@@ -437,9 +444,10 @@ namespace Badger.Simion
         /// <param name="description">The description of the file type</param>
         /// <param name="extension">The extension of the file</param>
         /// <returns></returns>
-        private static SaveFileDialog SaveFileDialog(string description, string filter)
+        public static SaveFileDialog SaveFileDialog(string description, string filter, string suggestedFileName= null)
         {
             SaveFileDialog sfd = new SaveFileDialog();
+
             sfd.Filter = description + "|" + filter;
             sfd.SupportMultiDottedExtensions = true;
             string combinedPath = Path.Combine(Directory.GetCurrentDirectory(), experimentRelativeDir);
@@ -448,6 +456,9 @@ namespace Badger.Simion
                 Directory.CreateDirectory(combinedPath);
 
             sfd.InitialDirectory = Path.GetFullPath(combinedPath);
+
+            if (suggestedFileName != null)
+                sfd.FileName = suggestedFileName;
             return sfd;
         }
 

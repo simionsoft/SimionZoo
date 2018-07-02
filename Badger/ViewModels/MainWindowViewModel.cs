@@ -8,6 +8,9 @@ using System;
 using System.Linq;
 using System.Text;
 using Badger.Simion;
+using System.Threading.Tasks;
+using System.Threading;
+using System.Windows.Forms;
 
 namespace Badger.ViewModels
 {
@@ -240,7 +243,7 @@ namespace Badger.ViewModels
                 }
                 else if (fileExtension == SimionFileData.ProjectExtension)
                 {
-                    SimionFileData.loadExperiments(ref m_experimentViewModels, appDefinitions, logToFile
+                    SimionFileData.LoadExperiments(ref m_experimentViewModels, appDefinitions, logToFile
                         ,filename);
                     NotifyOfPropertyChange(() => ExperimentViewModels);
 
@@ -325,16 +328,47 @@ namespace Badger.ViewModels
                 }
             }
 
-            string batchFileName = "";
+            //Ask the user where to save the batch
+            string batchFileName;
+            //Save dialog -> returns the experiment batch file
+            string suggestedBatchFileName = SelectedExperiment.Name + SimionFileData.ExperimentBatchExtension;
+            var sfd = SimionFileData.SaveFileDialog(SimionFileData.ExperimentBatchDescription, SimionFileData.ExperimentBatchFilter, suggestedBatchFileName);
+            if (sfd.ShowDialog() == DialogResult.OK)
+            {
+                batchFileName = sfd.FileName;
+            }
+            else
+            {
+                logToFile("Error saving the experiment queue");
+                return;
+            }
 
-            //Save the experiment batch, read by the Experiment Monitor
-            int experimentalUnitsCount = SimionFileData.SaveExperimentBatchFile(ExperimentViewModels,
-                ref batchFileName, logToFile);
+            //Save the experiment batch while showing a progress bar dialog window
+            ProgressBarDialogViewModel progressBarDialogVM = new ProgressBarDialogViewModel("Saving", "Saving the experiment batch");
+            
+            CancellationTokenSource cancellation = new CancellationTokenSource();
+            Task.Run(() =>
+            {
+                //Save the experiment batch, read by the Experiment Monitor
+                int experimentalUnitsCount = SimionFileData.SaveExperimentBatchFile(ExperimentViewModels,
+                    batchFileName, logToFile, progressBarDialogVM.UpdateProgressBar);
 
-            //Save the badger project to allow later changes and re-runs of the experiment
-            string badgerProjFileName = Utility.RemoveExtension(batchFileName, Utility.NumParts(SimionFileData.ProjectExtension, '.'))
-                + SimionFileData.ProjectExtension;
-            SimionFileData.SaveExperiments(m_experimentViewModels, badgerProjFileName);
+                //Save the badger project to allow later changes and re-runs of the experiment
+                string badgerProjFileName = Utility.RemoveExtension(batchFileName, Utility.NumParts(SimionFileData.ProjectExtension, '.'))
+                    + SimionFileData.ProjectExtension;
+                SimionFileData.SaveExperiments(m_experimentViewModels, badgerProjFileName);
+
+                progressBarDialogVM.TryClose();
+            }, cancellation.Token);
+
+            CaliburnUtility.ShowPopupWindow(progressBarDialogVM, "Saving");
+
+            if (progressBarDialogVM.Cancelled)
+            {
+                logToFile("Experiment batch saving operation was cancelled by the user");
+                cancellation.Cancel();
+                return;
+            }
 
             //Experiments are sent and executed remotely
             logToFile("Running experiment queue remotely");
@@ -344,7 +378,6 @@ namespace Badger.ViewModels
             CaliburnUtility.ShowPopupWindow(m_monitorWindowViewModel, "Experiment Monitor", false);
 
             m_monitorWindowViewModel.LoadExperimentBatch(batchFileName);
-            m_monitorWindowViewModel.RunExperimentBatch();
         }
 
         /// <summary>

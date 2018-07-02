@@ -196,6 +196,7 @@
     <Compile Include="ViewModels\ConfigNodeTypes\WireConnectionViewModel.cs" />
     <Compile Include="ViewModels\ConfigNodeTypes\WiresViewModel.cs" />
     <Compile Include="ViewModels\ConfigNodeTypes\WorldVarRefValueConfigViewModel.cs" />
+    <Compile Include="ViewModels\DialogViewModel.cs" />
     <Compile Include="ViewModels\MonitoredJobViewModel.cs" />
     <Compile Include="ViewModels\MultiStateButtonViewModel.cs" />
     <Compile Include="ViewModels\NeuralNetwork\ChainViewModel.cs" />
@@ -218,6 +219,7 @@
     <Compile Include="ViewModels\NeuralNetwork\ProblemViewModel.cs" />
     <Compile Include="ViewModels\NeuralNetwork\Windows\AddLinkWindowViewModel.cs" />
     <Compile Include="ViewModels\NeuralNetwork\Windows\MainWindowViewModel.cs" />
+    <Compile Include="ViewModels\ProgressBarDialogViewModel.cs" />
     <Compile Include="ViewModels\Reports\LoggedExperimentalUnitViewModel.cs" />
     <Compile Include="ViewModels\Reports\LoggedForkViewModel.cs" />
     <Compile Include="ViewModels\Reports\LoggedForkValueViewModel.cs" />
@@ -232,9 +234,7 @@
     <Compile Include="ViewModels\Reports\ReportViewModel.cs" />
     <Compile Include="ViewModels\Reports\StatsViewModel.cs" />
     <Compile Include="ViewModels\MonitoredExperimentalUnitViewModel.cs" />
-    <Compile Include="ViewModels\DialogViewModel.cs" />
     <Compile Include="ViewModels\HerdAgentViewModel.cs" />
-    <Compile Include="ViewModels\LoadDialogViewModel.cs" />
     <Compile Include="ViewModels\ExperimentMonitorWindowViewModel.cs" />
     <Compile Include="ViewModels\Reports\ReportsWindowViewModel.cs" />
     <Compile Include="ViewModels\Reports\StatViewModel.cs" />
@@ -435,6 +435,10 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
+    <Page Include="Views\DialogView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>XamlIntelliSenseFileGenerator</Generator>
+    </Page>
     <Page Include="Views\HerdAgentView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -531,6 +535,10 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
+    <Page Include="Views\ProgressBarDialogView.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
     <Page Include="Views\Reports\LoggedExperimentalUnitView.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -574,10 +582,6 @@
     <Page Include="Views\ExperimentMonitorWindowView.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
-    </Page>
-    <Page Include="Views\DialogView.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Views\Reports\ReportsWindowView.xaml">
       <Generator>MSBuild:Compile</Generator>
