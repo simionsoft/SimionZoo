@@ -56,7 +56,7 @@ namespace Badger.Data
 
             settings.WindowState = WindowState.Normal;
             settings.ResizeMode = ResizeMode.CanResize;
-            settings.SizeToContent = SizeToContent.WidthAndHeight;
+            settings.SizeToContent = SizeToContent.Manual;
 
             if (isDialog)
                 windowManager.ShowDialog(viewModel, null, settings);
