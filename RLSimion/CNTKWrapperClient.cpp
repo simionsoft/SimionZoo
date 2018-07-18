@@ -11,7 +11,7 @@
 
 namespace CNTK
 {
-
+	int NumNetworkInstances = 0;
 	HMODULE hCNTKWrapperDLL = 0;
 
 	WrapperClient::getNetworkDefinitionDLL WrapperClient::getNetworkDefinition = 0;
@@ -22,7 +22,7 @@ namespace CNTK
 
 	void WrapperClient::Load()
 	{
-
+		NumNetworkInstances++;
 		if (hCNTKWrapperDLL == 0)
 		{
 			//Set the number of CPU threads to "all"
@@ -76,7 +76,8 @@ namespace CNTK
 	void WrapperClient::UnLoad()
 	{
 #ifdef _WIN64
-		if (hCNTKWrapperDLL)
+		NumNetworkInstances--;
+		if (hCNTKWrapperDLL && NumNetworkInstances==0)
 		{
 			FreeLibrary(hCNTKWrapperDLL);
 			hCNTKWrapperDLL = 0;
