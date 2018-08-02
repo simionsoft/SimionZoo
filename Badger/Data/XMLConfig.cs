@@ -91,6 +91,9 @@ namespace Badger.Simion
 
         //Log descriptors/files
         public const string descriptorRootNodeName = "ExperimentLogDescriptor";
+        public const string descriptorBinaryDataFile = "BinaryDataFile";
+        public const string descriptorFunctionsDataFile = "FunctionsDataFile";
+        public const string descriptorSceneFile = "SceneFile";
         public const string descriptorStateVarNodeName = "State-variable";
         public const string descriptorActionVarNodeName = "Action-variable";
         public const string descriptorRewardVarNodeName = "Reward-variable";

@@ -98,7 +98,7 @@ namespace Badger.ViewModels
         //We need to override this method. If the action/state is wired, the output should include the appropriate tag
         public override void outputXML(StreamWriter writer, SaveMode mode, string leftSpace)
         {
-            if (mode == SaveMode.AsExperiment || mode == SaveMode.AsExperimentalUnit)
+            if (mode == SaveMode.AsExperiment || mode == SaveMode.AsExperimentalUnit || mode==SaveMode.AsProject)
             {
                 WireViewModel wire = m_parentExperiment.GetWire(content);
                 if (wire!=null)

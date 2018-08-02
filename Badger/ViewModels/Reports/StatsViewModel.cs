@@ -4,6 +4,7 @@ using System.IO;
 using Caliburn.Micro;
 using Badger.Simion;
 using System.Diagnostics;
+using Badger.Data;
 
 namespace Badger.ViewModels
 {
@@ -32,7 +33,7 @@ namespace Badger.ViewModels
             stats.Add(newStat);
         }
 
-        public void export(StreamWriter fileWriter, string leftSpace)
+        public void Export(StreamWriter fileWriter, string leftSpace)
         {
             fileWriter.WriteLine(leftSpace + "<" + XMLConfig.statVariableTag 
                 + " " + XMLConfig.nameAttribute + "=\"" + variable + "\">");
@@ -47,7 +48,7 @@ namespace Badger.ViewModels
             fileWriter.WriteLine(leftSpace + "</" + XMLConfig.statVariableTag + ">");
         }
 
-        public void Visualize()
+        public void VisualizeExperiment()
         {
             Process proc = new Process()
             {
@@ -61,6 +62,11 @@ namespace Badger.ViewModels
                 }
             };
             proc.Start();
+        }
+
+        public void VisualizeFunctions()
+        {
+            CaliburnUtility.ShowPopupWindow(new FunctionLogViewModel(SelectedStat.LogDescriptorFile), "Function Log Viewer");
         }
     }
 }

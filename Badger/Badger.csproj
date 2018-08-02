@@ -77,6 +77,7 @@
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Configuration.Install" />
+    <Reference Include="System.Drawing" />
     <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Windows.Interactivity, Version=4.5.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <HintPath>..\packages\Caliburn.Micro.3.2.0\lib\net45\System.Windows.Interactivity.dll</HintPath>
@@ -130,6 +131,7 @@
     <Compile Include="Data\DataTrackUtilities.cs" />
     <Compile Include="Data\EnumDescriptionConverter.cs" />
     <Compile Include="Data\EnumerationManager.cs" />
+    <Compile Include="Data\FunctionLog.cs" />
     <Compile Include="Data\NeuralNetwork\Chain.cs" />
     <Compile Include="Data\NeuralNetwork\InputData.cs" />
     <Compile Include="Data\NeuralNetwork\Links\ActivationLayer.cs" />
@@ -220,6 +222,7 @@
     <Compile Include="ViewModels\NeuralNetwork\Windows\AddLinkWindowViewModel.cs" />
     <Compile Include="ViewModels\NeuralNetwork\Windows\MainWindowViewModel.cs" />
     <Compile Include="ViewModels\ProgressBarDialogViewModel.cs" />
+    <Compile Include="ViewModels\Reports\FunctionLogViewModel.cs" />
     <Compile Include="ViewModels\Reports\LoggedExperimentalUnitViewModel.cs" />
     <Compile Include="ViewModels\Reports\LoggedForkViewModel.cs" />
     <Compile Include="ViewModels\Reports\LoggedForkValueViewModel.cs" />
@@ -538,6 +541,10 @@
     <Page Include="Views\ProgressBarDialogView.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Views\Reports\FunctionLogView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Views\Reports\LoggedExperimentalUnitView.xaml">
       <Generator>MSBuild:Compile</Generator>

@@ -21,9 +21,15 @@
             </DataGrid.Columns>
             <DataGrid.ContextMenu>
                 <ContextMenu>
-                    <MenuItem Header="Visualize" cal:Message.Attach="Visualize()">
+                    <MenuItem Header="Visualize Experiment" cal:Message.Attach="VisualizeExperiment()">
                         <MenuItem.Icon>
                             <Path Data="{StaticResource Film}" Width="16" Height="16" 
+                                  Stretch="Uniform" Margin="-4,-4,0,0" Fill="#B2000000" />
+                        </MenuItem.Icon>
+                    </MenuItem>
+                    <MenuItem Header="Visualize Functions" cal:Message.Attach="VisualizeFunctions()">
+                        <MenuItem.Icon>
+                            <Path Data="{StaticResource Plot}" Width="16" Height="16" 
                                   Stretch="Uniform" Margin="-4,-4,0,0" Fill="#B2000000" />
                         </MenuItem.Icon>
                     </MenuItem>

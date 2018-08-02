@@ -41,7 +41,7 @@ namespace Badger.ViewModels
                 using (StreamWriter fileWriter = File.CreateText(statsFile))
                 {
                     fileWriter.WriteLine("<" + XMLConfig.statisticsFileTag + ">");
-                    Stats.export(fileWriter, "  ");
+                    Stats.Export(fileWriter, "  ");
                     fileWriter.WriteLine("</" + XMLConfig.statisticsFileTag + ">");
                 }
             }

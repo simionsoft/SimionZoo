@@ -463,6 +463,27 @@ namespace Badger.Simion
         }
 
         /// <summary>
+        ///     Show a dialog used to select a directory where files are to be saved. If something goes wrong, null is returned
+        /// </summary>
+        /// <param name="description">The description of the file type</param>
+        /// <param name="extension">The extension of the file</param>
+        /// <returns></returns>
+        public static string SelectOutputDirectoryDialog(string initialDirectory= null)
+        {
+            var folderBrowserDialog = new FolderBrowserDialog();
+
+            folderBrowserDialog.SelectedPath = initialDirectory;
+
+            // Show the FolderBrowserDialog.
+            DialogResult result = folderBrowserDialog.ShowDialog();
+            if (result == DialogResult.OK)
+            {
+                return folderBrowserDialog.SelectedPath;
+            }
+            return null;
+        }
+
+        /// <summary>
         ///     Open a file that fulfills the requirements passed as parameters.
         /// </summary>
         /// <param name="fileName">The name of the file</param>
