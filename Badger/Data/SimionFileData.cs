@@ -438,6 +438,9 @@ namespace Badger.Simion
             return "";
         }
 
+        static string globalOutputDirectory = null;
+        static string globalInputDirectory = null;
+
         /// <summary>
         ///     Show a dialog used to save a file with an specific extension.
         /// </summary>
@@ -450,15 +453,24 @@ namespace Badger.Simion
 
             sfd.Filter = description + "|" + filter;
             sfd.SupportMultiDottedExtensions = true;
-            string combinedPath = Path.Combine(Directory.GetCurrentDirectory(), experimentRelativeDir);
 
-            if (!Directory.Exists(combinedPath))
-                Directory.CreateDirectory(combinedPath);
+            if (globalInputDirectory == null)
+            {
+                string initialDirectory = Path.Combine(Directory.GetCurrentDirectory(), experimentRelativeDir);
 
-            sfd.InitialDirectory = Path.GetFullPath(combinedPath);
+                if (!Directory.Exists(initialDirectory))
+                    Directory.CreateDirectory(initialDirectory);
+
+                sfd.InitialDirectory = Path.GetFullPath(initialDirectory);
+            }
+            else
+                sfd.InitialDirectory = globalInputDirectory;
 
             if (suggestedFileName != null)
+            {
+                globalInputDirectory = Utility.GetDirectory(sfd.FileName);
                 sfd.FileName = suggestedFileName;
+            }
             return sfd;
         }
 
@@ -470,14 +482,21 @@ namespace Badger.Simion
         /// <returns></returns>
         public static string SelectOutputDirectoryDialog(string initialDirectory= null)
         {
+            
             var folderBrowserDialog = new FolderBrowserDialog();
 
-            folderBrowserDialog.SelectedPath = initialDirectory;
+            folderBrowserDialog.RootFolder = Environment.SpecialFolder.Desktop;
+
+            if (globalOutputDirectory == null)
+                folderBrowserDialog.SelectedPath = initialDirectory;
+            else
+                folderBrowserDialog.SelectedPath = globalOutputDirectory;
 
             // Show the FolderBrowserDialog.
             DialogResult result = folderBrowserDialog.ShowDialog();
             if (result == DialogResult.OK)
             {
+                globalOutputDirectory = folderBrowserDialog.SelectedPath;
                 return folderBrowserDialog.SelectedPath;
             }
             return null;
@@ -494,10 +513,15 @@ namespace Badger.Simion
         {
             OpenFileDialog ofd = new OpenFileDialog();
             ofd.Filter = description + "|" + extension;
-            ofd.InitialDirectory = Path.Combine(Path.GetDirectoryName(Directory.GetCurrentDirectory()), SimionFileData.experimentDir);
+
+            if (globalInputDirectory == null)
+                ofd.InitialDirectory = Path.Combine(Path.GetDirectoryName(Directory.GetCurrentDirectory()), SimionFileData.experimentDir);
+            else
+                ofd.InitialDirectory = globalInputDirectory;
 
             if (ofd.ShowDialog() == DialogResult.OK)
             {
+                globalInputDirectory = Utility.GetDirectory(ofd.FileName);
                 fileName = ofd.FileName;
                 return true;
             }
@@ -519,8 +543,13 @@ namespace Badger.Simion
             ofd.SupportMultiDottedExtensions = true;
             ofd.Filter = extension + "|" + filter;
 
-            ofd.InitialDirectory = Path.Combine(Path.GetDirectoryName(Directory.GetCurrentDirectory())
-                , SimionFileData.experimentDir);
+            if (globalInputDirectory == null)
+            {
+                ofd.InitialDirectory = Path.Combine(Path.GetDirectoryName(Directory.GetCurrentDirectory())
+                    , SimionFileData.experimentDir);
+            }
+            else
+                ofd.InitialDirectory = globalInputDirectory;
 
             if (ofd.ShowDialog() == DialogResult.OK)
             {

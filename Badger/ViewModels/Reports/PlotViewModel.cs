@@ -276,13 +276,11 @@ namespace Badger.ViewModels
 
         public void SaveImage()
         {
-            FolderBrowserDialog sfd = new FolderBrowserDialog();
+            string outputFolder = Simion.SimionFileData.SelectOutputDirectoryDialog();
 
-            sfd.ShowNewFolderButton = true;
-            //sfd.RootFolder = new Environment.SpecialFolder(Path.Combine(Directory.GetCurrentDirectory(), SimionFileData.experimentRelativeDir));
-            if (sfd.ShowDialog() == DialogResult.OK)
+            if (outputFolder!=null)
             {
-                Export(sfd.SelectedPath);
+                Export(outputFolder);
             }
         }
 
