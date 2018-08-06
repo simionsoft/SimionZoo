@@ -279,8 +279,7 @@ double WindTurbineBoukhezzarController::evaluate(const State *s,const Action *a,
 	//	- m_lastT_g *m_lastT_g) / m_J_t );
 
 	double omega_g= s->get("omega_g");
-	double d_omega_g = s->get("d_omega_g");	
-	double T_a= s->get("T_a");		
+	double d_omega_g = s->get("d_omega_g");		
 	
 	double beta= s->get("beta");
 	double E_p = s->get("E_p");
