@@ -173,6 +173,9 @@ namespace Badger.ViewModels
         /// </summary>
         public MainWindowViewModel()
         {
+            //set culture as invariant to write numbers as in english
+            System.Threading.Thread.CurrentThread.CurrentCulture = System.Globalization.CultureInfo.InvariantCulture;
+
             m_shepherdViewModel = new ShepherdViewModel();
             m_shepherdViewModel.SetLogFunction(logToFile);
 

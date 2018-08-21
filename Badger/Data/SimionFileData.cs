@@ -176,6 +176,9 @@ namespace Badger.Simion
         public static int SaveExperimentBatchFile(BindableCollection<ExperimentViewModel> experiments,
             string batchFilename, LogFunction log, ProgressUpdateFunction progressUpdateFunction)
         {
+            //set culture as invariant to write numbers as in english
+            System.Threading.Thread.CurrentThread.CurrentCulture = System.Globalization.CultureInfo.InvariantCulture;
+
             int experimentalUnitsCount = 0;
 
             if (experiments.Count == 0)
@@ -330,6 +333,9 @@ namespace Badger.Simion
         /// <param name="experiments"></param>
         static public string SaveExperiments(BindableCollection<ExperimentViewModel> experiments, string outputFile = null)
         {
+            //set culture as invariant to write numbers as in english
+            System.Threading.Thread.CurrentThread.CurrentCulture = System.Globalization.CultureInfo.InvariantCulture;
+
             foreach (ExperimentViewModel experiment in experiments)
             {
                 if (!experiment.Validate())
@@ -378,6 +384,9 @@ namespace Badger.Simion
         /// <returns></returns>
         static public ExperimentViewModel LoadExperiment(Dictionary<string, string> appDefinitions, string filename= null)
         {
+            //set culture as invariant to write numbers as in english
+            System.Threading.Thread.CurrentThread.CurrentCulture = System.Globalization.CultureInfo.InvariantCulture;
+
             if (filename == null)
             {
                 bool isOpen = OpenFileDialog(ref filename, ExperimentDescription, ExperimentFilter);
@@ -396,6 +405,9 @@ namespace Badger.Simion
 
         static public string SaveExperiment(ExperimentViewModel experiment)
         {
+            //set culture as invariant to write numbers as in english
+            System.Threading.Thread.CurrentThread.CurrentCulture = System.Globalization.CultureInfo.InvariantCulture;
+
             if (!experiment.Validate())
             {
                 CaliburnUtility.ShowWarningDialog("The configuration couldn't be validated in " + experiment.Name
