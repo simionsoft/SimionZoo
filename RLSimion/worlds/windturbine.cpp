@@ -162,8 +162,8 @@ WindTurbine::WindTurbine(ConfigNode* pConfigNode)
 	addActionVariable("beta", "rad", 0.0, 1.570796);
 	addActionVariable("T_g", "N/m", 0.0, 47402.91);
 	
-	ToleranceRegionReward* pToleranceReward = new ToleranceRegionReward("E_p", 1000.0, 1.0);
-	pToleranceReward->setMin(-1000.0);
+	ToleranceRegionReward* pToleranceReward = new ToleranceRegionReward("E_p", 500000.0, 1.0);
+	//pToleranceReward->setMin(-1000.0);
 	m_pRewardFunction->addRewardComponent(pToleranceReward);
 	m_pRewardFunction->initialize();
 }

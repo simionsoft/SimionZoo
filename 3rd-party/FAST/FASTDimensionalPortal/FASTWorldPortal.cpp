@@ -124,8 +124,8 @@ void FASTWorldPortal::setActionVariables(float* FASTdata, bool bFirstTime)
 	if (!bFirstTime)
 	{
 		s->set("d_T_g",(demanded_T_g - m_prevGenTorque) / m_elapsedTime);
-		//demanded_T_g = s->get("T_g") + s->get("d_T_g")*m_elapsedTime;
-		//demanded_T_g = std::min(std::max(demanded_T_g, s->getProperties("T_g")->getMin()), s->getProperties("T_g")->getMax());
+		demanded_T_g = s->get("T_g") + s->get("d_T_g")*m_elapsedTime;
+		demanded_T_g = std::min(std::max(demanded_T_g, s->getProperties("T_g")->getMin()), s->getProperties("T_g")->getMax());
 		s->set("T_g", demanded_T_g);
 	}
 	FASTdata[46] = (float)demanded_T_g;// (float)m_last_T_g;   //Demanded generator torque
