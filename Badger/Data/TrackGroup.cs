@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using Badger.Simion;
 using Badger.ViewModels;
 using System;
+using System.Windows.Data;
+using System.Globalization;
 
 namespace Badger.Data
 {
@@ -54,19 +56,23 @@ namespace Badger.Data
         /// <param name="inGroupSelectionFunction">The function used to compare tracks inside the group</param>
         /// <param name="inGroupSelectionVariable">The variable used to evaluate tracks</param>
         /// <param name="groupBy">The list of forks used to group tracks</param>
-        public void Consolidate(string inGroupSelectionFunction, string inGroupSelectionVariable
+        public void Consolidate(string inGroupSelectionFunction, string inGroupSelectionVariable, string inGroupSelectionReportType
             , BindableCollection<string> groupBy)
         {
             //Consolidation makes only sense if were are using groups
             if (groupBy.Count == 0) return;
 
+            EnumDescriptionConverter conv = new EnumDescriptionConverter();
+            ReportType orderByReportType = (ReportType)((IValueConverter)conv).ConvertBack(inGroupSelectionReportType, typeof(ReportType), null, CultureInfo.CurrentCulture);
+
             if (m_tracks.Count > 1)
             {
                 Track selectedTrack = null;
                 double min = double.MaxValue, max = double.MinValue;
+                double maxAscBeauty = double.MinValue, minDscBeauty = double.MaxValue;
                 foreach (Track track in m_tracks)
                 {
-                    SeriesGroup variableData = track.GetDataSeries(inGroupSelectionVariable);
+                    SeriesGroup variableData = track.GetDataSeries(inGroupSelectionVariable, orderByReportType);
                     if (variableData != null)
                     {
                         double sortValue = variableData.MainSeries.Stats.avg;
@@ -78,6 +84,18 @@ namespace Badger.Data
                         else if (inGroupSelectionFunction == LogQueryViewModel.FunctionMin && sortValue < min)
                         {
                             min = sortValue;
+                            selectedTrack = track;
+                        }
+                        else if (inGroupSelectionFunction == LogQueryViewModel.FunctionAscBeauty 
+                            && variableData.MainSeries.Stats.ascBeauty > maxAscBeauty)
+                        {
+                            maxAscBeauty= variableData.MainSeries.Stats.ascBeauty;
+                            selectedTrack = track;
+                        }
+                        else if (inGroupSelectionFunction == LogQueryViewModel.FunctionDscBeauty
+                             && variableData.MainSeries.Stats.dscBeauty < minDscBeauty)
+                        {
+                            minDscBeauty = variableData.MainSeries.Stats.dscBeauty;
                             selectedTrack = track;
                         }
                     }

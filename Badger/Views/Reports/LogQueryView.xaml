@@ -70,6 +70,10 @@
                         <ComboBox x:Name="InGroupSelectionVariables" SelectedValue="{Binding InGroupSelectionVariable}"
                                         Width="80" HorizontalAlignment="Center"/>
                     </StackPanel>
+                    <StackPanel>
+                        <ComboBox x:Name="InGroupSelectionReportTypes" SelectedValue="{Binding InGroupSelectionReportType}"
+                                           Margin="110,0,0,0" Width="80" HorizontalAlignment="Left"/>
+                    </StackPanel>
                 </StackPanel>
             </GroupBox>
 
@@ -86,6 +90,10 @@
                                             Width="80" Margin="0,0,4,0" HorizontalAlignment="Center"/>
                         <ComboBox x:Name="OrderByVariables" SelectedValue="{Binding OrderByVariable}"
                                             Width="80" HorizontalAlignment="Center"/>
+                    </StackPanel>
+                    <StackPanel>
+                        <ComboBox x:Name="OrderByReportTypes" SelectedValue="{Binding OrderByReportType}"
+                                           Margin="110,0,0,0" Width="80" HorizontalAlignment="Left"/>
                     </StackPanel>
                 </StackPanel>
             </GroupBox>

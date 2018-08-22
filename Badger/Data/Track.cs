@@ -25,6 +25,9 @@ namespace Badger.Simion
         public double max { get; set; }
         public double avg { get; set; }
         public double stdDev { get; set; }
+        //"beauty": heuristic method that tells how nice a curve looks (ascending or descending)
+        public double ascBeauty { get; set; }
+        public double dscBeauty { get; set; }
     }
     public class Report
     {
@@ -80,14 +83,46 @@ namespace Badger.Simion
 
             Stats.min = double.MaxValue;
             Stats.max = double.MinValue;
+
+            //curve "beauty"
+            double prevY= Values[0].Y;
+            double prevX = Values[0].X;
+            double ascBeauty = 0.0;
+            double dscBeauty = 0.0;
+            double sumSlopes = 0.0;
+            double slope;
+
             foreach (XYValue val in Values)
             {
                 if (val.Y > Stats.max) Stats.max = val.Y;
                 if (val.Y < Stats.min) Stats.min = val.Y;
-                
+
+                if (val.X - prevX != 0.0)
+                {
+                    slope = (ProcessFunc.Get(trackParameters.ProcessFunc, val.Y)
+                        - prevY) / (val.X - prevX);
+
+
+                    if (slope > 0.0)
+                    {
+                        ascBeauty += slope;
+                        dscBeauty -= slope * 10.0;
+                    }
+                    else if (slope < 0.0)
+                    {
+                        ascBeauty += slope * 10.0;
+                        dscBeauty -= slope;
+                    }
+                    sumSlopes += slope;
+                }
+                prevY = val.Y;
+                prevX = val.X;
                 sum += ProcessFunc.Get(trackParameters.ProcessFunc,val.Y);
             }
+            double avgSlope = sumSlopes / Values.Count;
 
+            Stats.ascBeauty = ascBeauty / Values.Count;
+            Stats.dscBeauty = dscBeauty / Values.Count;
             Stats.avg = sum / Values.Count;
 
             //calculate std. deviation
@@ -179,11 +214,11 @@ namespace Badger.Simion
             SeriesGroups.Add(variable, variableData);
         }
 
-        public SeriesGroup GetDataSeries(string variable)
+        public SeriesGroup GetDataSeries(string variable, ReportType type)
         {
             foreach (Report track in SeriesGroups.Keys)
             {
-                if (track.Variable == variable) return SeriesGroups[track];
+                if (track.Variable == variable && track.Type == type) return SeriesGroups[track];
             }
             return null;
         }

@@ -4,6 +4,8 @@ using Caliburn.Micro;
 using Badger.Simion;
 using Badger.Data;
 using System.ComponentModel;
+using System.Windows.Data;
+using System.Globalization;
 
 namespace Badger.ViewModels
 {
@@ -43,21 +45,37 @@ namespace Badger.ViewModels
     {
         string m_varName;
         bool m_bAsc;
-        public TrackGroupComparer(bool asc, string varName)
+        bool m_bUseBeauty;
+        ReportType m_orderByReportType;
+        public TrackGroupComparer(bool asc, bool bUseBeauty, string varName, string orderByReportType)
         {
             m_bAsc = asc;
             m_varName = varName;
+            m_bUseBeauty = bUseBeauty;
+
+            EnumDescriptionConverter conv = new EnumDescriptionConverter();
+            m_orderByReportType = (ReportType)((IValueConverter)conv).ConvertBack(orderByReportType, typeof(ReportType), null, CultureInfo.CurrentCulture);
         }
         public int Compare(TrackGroup x, TrackGroup y)
         {
-            SeriesGroup variableDataX = x.ConsolidatedTrack.GetDataSeries(m_varName);
+            SeriesGroup variableDataX = x.ConsolidatedTrack.GetDataSeries(m_varName, m_orderByReportType);
             if (variableDataX == null) return -1;
-            SeriesGroup variableDataY = y.ConsolidatedTrack.GetDataSeries(m_varName);
+            SeriesGroup variableDataY = y.ConsolidatedTrack.GetDataSeries(m_varName, m_orderByReportType);
             if (variableDataY == null) return 1;
-            if ((m_bAsc && variableDataX.MainSeries.Stats.avg >= variableDataY.MainSeries.Stats.avg)
-                || (!m_bAsc && variableDataX.MainSeries.Stats.avg <= variableDataY.MainSeries.Stats.avg))
-                return 1;
-            return -1;
+            if (!m_bUseBeauty)
+            {
+                if ((m_bAsc && variableDataX.MainSeries.Stats.avg >= variableDataY.MainSeries.Stats.avg)
+                    || (!m_bAsc && variableDataX.MainSeries.Stats.avg <= variableDataY.MainSeries.Stats.avg))
+                    return 1;
+                return -1;
+            }
+            else
+            {
+                if ((m_bAsc && variableDataX.MainSeries.Stats.ascBeauty >= variableDataY.MainSeries.Stats.ascBeauty)
+                    || (!m_bAsc && variableDataX.MainSeries.Stats.dscBeauty >= variableDataY.MainSeries.Stats.dscBeauty))
+                    return 1;
+                return -1;
+            }
         }
     }
     public class LogQueryViewModel : PropertyChangedBase
@@ -67,6 +85,8 @@ namespace Badger.ViewModels
         public int ResamplingNumPoints { get; set; } = 100;
         public const string FunctionMax = "Max";
         public const string FunctionMin = "Min";
+        public const string FunctionAscBeauty = "AscBeauty";
+        public const string FunctionDscBeauty = "DscBeauty";
 
         public double TimeOffset { get; set; } = 0.0;
 
@@ -81,6 +101,17 @@ namespace Badger.ViewModels
         {
             get { return m_inGroupSelectionVariable; }
             set { m_inGroupSelectionVariable = value; NotifyOfPropertyChange(() => InGroupSelectionVariable); }
+        }
+        private BindableCollection<string> m_inGroupSelectionReportTypes = new BindableCollection<string>();
+        public BindableCollection<string> InGroupSelectionReportTypes
+        {
+            get { return m_inGroupSelectionReportTypes; }
+        }
+        private string m_inGroupSelectionReportType;
+        public string InGroupSelectionReportType
+        {
+            get { return m_inGroupSelectionReportType; }
+            set { m_inGroupSelectionReportType = value; NotifyOfPropertyChange(() => InGroupSelectionReportType); }
         }
 
         // Limit to
@@ -99,6 +130,17 @@ namespace Badger.ViewModels
 
 
         //Order by
+        private BindableCollection<string> m_orderByReportTypes = new BindableCollection<string>();
+        public BindableCollection<string> OrderByReportTypes
+        {
+            get { return m_orderByReportTypes; }
+        }
+        private string m_orderByReportType;
+        public string OrderByReportType
+        {
+            get { return m_orderByReportType; }
+            set { m_orderByReportType = value; NotifyOfPropertyChange(() => OrderByReportType); }
+        }
         private string m_orderByFunction;
         public string OrderByFunction
         {
@@ -112,7 +154,7 @@ namespace Badger.ViewModels
             set { m_orderByVariable = value; NotifyOfPropertyChange(() => OrderByVariable); }
         }
         private BindableCollection<string> m_orderByFunctions 
-            = new BindableCollection<string>() { FunctionMax, FunctionMin};
+            = new BindableCollection<string>() { FunctionMax, FunctionMin, FunctionAscBeauty, FunctionDscBeauty};
         public BindableCollection<string> OrderByFunctions
         {
             get { return m_orderByFunctions; }
@@ -150,6 +192,7 @@ namespace Badger.ViewModels
             this.GroupsEnabled = false;
             this.InGroupSelectionFunction = FunctionMax;
             this.InGroupSelectionVariable = null;
+            
             this.MaxNumTracks = DefaultMaxNumTracks;
         }
 
@@ -160,7 +203,7 @@ namespace Badger.ViewModels
         }
 
         private BindableCollection<string> m_inGroupSelectionFunctions 
-            = new BindableCollection<string>() { FunctionMax, FunctionMin };
+            = new BindableCollection<string>() { FunctionMax, FunctionMin, FunctionAscBeauty, FunctionDscBeauty };
         public BindableCollection<string> InGroupSelectionFunctions
         {
             get { return m_inGroupSelectionFunctions; }
@@ -184,7 +227,13 @@ namespace Badger.ViewModels
 
         public LogQueryViewModel()
         {
-
+            EnumDescriptionConverter conv = new EnumDescriptionConverter();
+            InGroupSelectionReportTypes.Add((string)((IValueConverter)conv).Convert(ReportType.LastEvaluation, typeof(ReportType), null, CultureInfo.CurrentCulture));
+            InGroupSelectionReportTypes.Add((string)((IValueConverter)conv).Convert(ReportType.EvaluationAverages, typeof(ReportType), null, CultureInfo.CurrentCulture));
+            InGroupSelectionReportType = (string)((IValueConverter)conv).Convert(ReportType.LastEvaluation, typeof(ReportType), null, CultureInfo.CurrentCulture);
+            OrderByReportTypes.Add((string)((IValueConverter)conv).Convert(ReportType.LastEvaluation, typeof(ReportType), null, CultureInfo.CurrentCulture));
+            OrderByReportTypes.Add((string)((IValueConverter)conv).Convert(ReportType.EvaluationAverages, typeof(ReportType), null, CultureInfo.CurrentCulture));
+            OrderByReportType = (string)((IValueConverter)conv).Convert(ReportType.LastEvaluation, typeof(ReportType), null, CultureInfo.CurrentCulture);
         }
 
         private List<TrackGroup> m_resultTracks
@@ -237,13 +286,33 @@ namespace Badger.ViewModels
         public BindableCollection<LoggedVariableViewModel> VariablesVM { get; }
             = new BindableCollection<LoggedVariableViewModel>();
 
-        bool IsVariableSelected(string variable)
+        string GetVariableProcessFunc(string variable)
         {
             foreach (LoggedVariableViewModel variableVM in VariablesVM)
             {
                 if (variableVM.name == variable)
                 {
-                    return variableVM.IsSelected;
+                    return variableVM.SelectedProcessFunc;
+                }
+            }
+            return null;
+        }
+        bool IsVariableSelected(string variable, string reportType)
+        {
+            foreach (LoggedVariableViewModel variableVM in VariablesVM)
+            {
+                if (variableVM.name == variable)
+                {
+                    if (variableVM.IsSelected)
+                    {
+                        foreach (string selectedType in variableVM.SelectedPlotTypes)
+                        {
+                            if (selectedType == reportType)
+                                return true;
+                        }
+                    }
+                    //either the variable was not selected or the requested report type wasn't
+                    return false;
                 }
             }
             return false;
@@ -283,6 +352,7 @@ namespace Badger.ViewModels
         public void OnExperimentBatchLoaded()
         {
             // Add the limit to options
+            MaxNumTracksOptions.Clear();
             for (int i = 0; i <= 10; i++) MaxNumTracksOptions.Add(i);
             MaxNumTracks = DefaultMaxNumTracks;
 
@@ -337,14 +407,23 @@ namespace Badger.ViewModels
             //if the in-group selection function requires a variable not selected for the report
             //we add it too to the list of variables read from the log
             if (InGroupSelectionVariable != null && InGroupSelectionVariable != ""
-                && !IsVariableSelected(InGroupSelectionVariable))
-                Reports.Add(new Report(InGroupSelectionVariable, ReportType.LastEvaluation
-                    , ProcessFunc.None));
+                && !IsVariableSelected(InGroupSelectionVariable,InGroupSelectionReportType))
+            {
+                EnumDescriptionConverter conv = new EnumDescriptionConverter();
+                ReportType reportType = (ReportType)((IValueConverter)conv).ConvertBack(InGroupSelectionReportType, typeof(ReportType), null, CultureInfo.CurrentCulture);
+
+                Reports.Add(new Report(InGroupSelectionVariable, reportType, GetVariableProcessFunc(InGroupSelectionVariable)));
+            }
 
             //if we use some sorting function to select only some tracks, we need to add the variable
             // to the list too
-            if (MaxNumTracks != 0 && !IsVariableSelected(OrderByVariable))
-                Reports.Add(new Report(OrderByVariable, ReportType.LastEvaluation, ProcessFunc.None));
+            if (MaxNumTracks != 0 && !IsVariableSelected(OrderByVariable, OrderByReportType))
+            {
+                EnumDescriptionConverter conv = new EnumDescriptionConverter();
+                ReportType reportType = (ReportType)((IValueConverter)conv).ConvertBack(OrderByReportType, typeof(ReportType), null, CultureInfo.CurrentCulture);
+
+                Reports.Add(new Report(OrderByVariable, reportType, GetVariableProcessFunc(OrderByVariable)));
+            }
 
             //set the data resampling options
             foreach (Report report in Reports)
@@ -380,7 +459,8 @@ namespace Badger.ViewModels
                                 //Consolidate selects a single track in each group using the in-group selection function
                                 //-max(avg(inGroupSelectionVariable)) or min(avg(inGroupSelectionVariable))
                                 //and also names groups depending on the number of tracks in the group
-                                resultTrackGroup.Consolidate(InGroupSelectionFunction, InGroupSelectionVariable, GroupByForks);
+                                resultTrackGroup.Consolidate(InGroupSelectionFunction, InGroupSelectionVariable
+                                    , InGroupSelectionReportType,GroupByForks);
                             }
                         }
                         if (resultTrackGroup == null && expUnitContainsGroupByForks) //New track group
@@ -420,7 +500,9 @@ namespace Badger.ViewModels
                         {
                             if (ResultTracks.Count > MaxNumTracks)
                             {
-                                m_resultTracks.Sort(new TrackGroupComparer(OrderByFunction == FunctionMin, OrderByVariable));
+                                bool asc = (OrderByFunction == FunctionMin) || (OrderByFunction == FunctionDscBeauty);
+                                bool useBeauty = (OrderByFunction == FunctionDscBeauty) || (OrderByFunction == FunctionAscBeauty);
+                                m_resultTracks.Sort(new TrackGroupComparer(asc, useBeauty, OrderByVariable, OrderByReportType));
                                 ResultTracks.RemoveRange(MaxNumTracks, m_resultTracks.Count - MaxNumTracks);
                             }
                         }
