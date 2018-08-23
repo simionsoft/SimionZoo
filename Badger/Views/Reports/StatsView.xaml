@@ -18,6 +18,8 @@
                 <DataGridTextColumn Header="Std.Dev." Binding="{Binding Path=Stats.stdDev, StringFormat=\{0:#\,#0.000000\}}" Width="Auto"/>
                 <DataGridTextColumn Header="Minimum" Binding="{Binding Path=Stats.min, StringFormat=\{0:#\,#0.000000\}}" Width="Auto"/>
                 <DataGridTextColumn Header="Maximum" Binding="{Binding Path=Stats.max, StringFormat=\{0:#\,#0.000000\}}" Width="Auto"/>
+                <DataGridTextColumn Header="Beauty (Asc)" Binding="{Binding Path=Stats.ascBeauty, StringFormat=\{0:#\,#0.000000\}}" Width="Auto"/>
+                <DataGridTextColumn Header="Beauty (Dsc)" Binding="{Binding Path=Stats.dscBeauty, StringFormat=\{0:#\,#0.000000\}}" Width="Auto"/>
             </DataGrid.Columns>
             <DataGrid.ContextMenu>
                 <ContextMenu>

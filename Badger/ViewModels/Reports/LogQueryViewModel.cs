@@ -71,8 +71,8 @@ namespace Badger.ViewModels
             }
             else
             {
-                if ((m_bAsc && variableDataX.MainSeries.Stats.ascBeauty >= variableDataY.MainSeries.Stats.ascBeauty)
-                    || (!m_bAsc && variableDataX.MainSeries.Stats.dscBeauty >= variableDataY.MainSeries.Stats.dscBeauty))
+                if ((m_bAsc && variableDataX.MainSeries.Stats.ascBeauty <= variableDataY.MainSeries.Stats.ascBeauty)
+                    || (!m_bAsc && variableDataX.MainSeries.Stats.dscBeauty <= variableDataY.MainSeries.Stats.dscBeauty))
                     return 1;
                 return -1;
             }
@@ -500,7 +500,7 @@ namespace Badger.ViewModels
                         {
                             if (ResultTracks.Count > MaxNumTracks)
                             {
-                                bool asc = (OrderByFunction == FunctionMin) || (OrderByFunction == FunctionDscBeauty);
+                                bool asc = (OrderByFunction == FunctionMin) || (OrderByFunction == FunctionAscBeauty);
                                 bool useBeauty = (OrderByFunction == FunctionDscBeauty) || (OrderByFunction == FunctionAscBeauty);
                                 m_resultTracks.Sort(new TrackGroupComparer(asc, useBeauty, OrderByVariable, OrderByReportType));
                                 ResultTracks.RemoveRange(MaxNumTracks, m_resultTracks.Count - MaxNumTracks);

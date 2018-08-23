@@ -93,7 +93,7 @@ namespace Badger.Data
                             selectedTrack = track;
                         }
                         else if (inGroupSelectionFunction == LogQueryViewModel.FunctionDscBeauty
-                             && variableData.MainSeries.Stats.dscBeauty < minDscBeauty)
+                             && variableData.MainSeries.Stats.dscBeauty > minDscBeauty)
                         {
                             minDscBeauty = variableData.MainSeries.Stats.dscBeauty;
                             selectedTrack = track;

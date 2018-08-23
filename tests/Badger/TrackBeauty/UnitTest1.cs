@@ -118,6 +118,45 @@ namespace TrackBeauty
             Assert.IsTrue(aSeries.Stats.ascBeauty > cSeries.Stats.ascBeauty);
         }
         [TestMethod]
+        public void AscBeauty3()
+        {
+            Report report = new Report("test", Badger.Data.ReportType.EvaluationAverages, "None");
+
+            Series aSeries = new Series();
+            Series bSeries = new Series();
+            Series cSeries = new Series();
+
+            aSeries.AddValue(0.0, 0.0);
+            aSeries.AddValue(1.0, 2.0);
+            aSeries.AddValue(2.0, 4.0);
+            aSeries.AddValue(3.0, 5.0);
+            aSeries.AddValue(4.0, 5.0);
+            aSeries.AddValue(5.0, 5.0);
+            aSeries.AddValue(6.0, 5.0);
+            aSeries.CalculateStats(report);
+
+            bSeries.AddValue(0.0, 0.0);
+            bSeries.AddValue(1.0, 2.0);
+            bSeries.AddValue(2.0, 4.0);
+            bSeries.AddValue(3.0, 6.0);
+            bSeries.AddValue(4.0, 5.0);
+            bSeries.AddValue(5.0, 6.0);
+            bSeries.AddValue(6.0, 7.0);
+            bSeries.CalculateStats(report);
+
+            cSeries.AddValue(0.0, 0.0);
+            cSeries.AddValue(1.0, 5.0);
+            cSeries.AddValue(2.0, 8.0);
+            cSeries.AddValue(3.0, 4.0);
+            cSeries.AddValue(4.0, 8.0);
+            cSeries.AddValue(5.0, 4.0);
+            cSeries.AddValue(6.0, 9.0);
+            cSeries.CalculateStats(report);
+
+            Assert.IsTrue(aSeries.Stats.ascBeauty > bSeries.Stats.ascBeauty);
+            Assert.IsTrue(aSeries.Stats.ascBeauty > cSeries.Stats.ascBeauty);
+        }
+        [TestMethod]
         public void AscBeautySorting()
         {
             Report report = new Report("test", Badger.Data.ReportType.EvaluationAverages, "None");
@@ -201,6 +240,44 @@ namespace TrackBeauty
             Assert.IsTrue(aSeries.Stats.dscBeauty > bSeries.Stats.dscBeauty);
             Assert.IsTrue(bSeries.Stats.dscBeauty > cSeries.Stats.dscBeauty);
         }
+        [TestMethod]
+        public void DscBeauty2()
+        {
+            Report report = new Report("test", Badger.Data.ReportType.EvaluationAverages, "None");
 
+            Series aSeries = new Series();
+            Series bSeries = new Series();
+            Series cSeries = new Series();
+
+            aSeries.AddValue(0.0, 10.0);
+            aSeries.AddValue(1.0, 6.0);
+            aSeries.AddValue(2.0, 4.0);
+            aSeries.AddValue(3.0, 3.0);
+            aSeries.AddValue(4.0, 4.0);
+            aSeries.AddValue(5.0, 5.0);
+            aSeries.AddValue(6.0, 4.0);
+            aSeries.CalculateStats(report);
+
+            bSeries.AddValue(0.0, 10.0);
+            bSeries.AddValue(1.0, 3.0);
+            bSeries.AddValue(2.0, 4.0);
+            bSeries.AddValue(3.0, 1.0);
+            bSeries.AddValue(4.0, 4.0);
+            bSeries.AddValue(5.0, 6.0);
+            bSeries.AddValue(6.0, 5.0);
+            bSeries.CalculateStats(report);
+
+            cSeries.AddValue(0.0, 0.0);
+            cSeries.AddValue(1.0, -13.0);
+            cSeries.AddValue(2.0, 14.0);
+            cSeries.AddValue(3.0, -1.0);
+            cSeries.AddValue(4.0, -24.0);
+            cSeries.AddValue(5.0, 6.0);
+            cSeries.AddValue(6.0, -35.0);
+            cSeries.CalculateStats(report);
+
+            Assert.IsTrue(aSeries.Stats.dscBeauty > bSeries.Stats.dscBeauty);
+            Assert.IsTrue(bSeries.Stats.dscBeauty > cSeries.Stats.dscBeauty);
+        }
     }
 }
