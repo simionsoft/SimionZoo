@@ -69,7 +69,7 @@ namespace Badger.Data
             {
                 Track selectedTrack = null;
                 double min = double.MaxValue, max = double.MinValue;
-                double maxAscBeauty = double.MinValue, minDscBeauty = double.MaxValue;
+                double maxAscBeauty = double.MinValue, maxDscBeauty = double.MaxValue;
                 foreach (Track track in m_tracks)
                 {
                     SeriesGroup variableData = track.GetDataSeries(inGroupSelectionVariable, orderByReportType);
@@ -93,9 +93,9 @@ namespace Badger.Data
                             selectedTrack = track;
                         }
                         else if (inGroupSelectionFunction == LogQueryViewModel.FunctionDscBeauty
-                             && variableData.MainSeries.Stats.dscBeauty > minDscBeauty)
+                             && variableData.MainSeries.Stats.dscBeauty > maxDscBeauty)
                         {
-                            minDscBeauty = variableData.MainSeries.Stats.dscBeauty;
+                            maxDscBeauty = variableData.MainSeries.Stats.dscBeauty;
                             selectedTrack = track;
                         }
                     }
