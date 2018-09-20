@@ -35,6 +35,12 @@
                                   Stretch="Uniform" Margin="-4,-4,0,0" Fill="#B2000000" />
                         </MenuItem.Icon>
                     </MenuItem>
+                    <MenuItem Header="Open in Editor" cal:Message.Attach="OpenInEditor()">
+                        <MenuItem.Icon>
+                            <Path Data="{StaticResource Edit}" Width="16" Height="16" 
+                                  Stretch="Uniform" Margin="-4,-4,0,0" Fill="#B2000000" />
+                        </MenuItem.Icon>
+                    </MenuItem>
                 </ContextMenu>
             </DataGrid.ContextMenu>
         </DataGrid>

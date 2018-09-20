@@ -19,6 +19,8 @@ namespace Badger.ViewModels
     /// </summary>
     public class MainWindowViewModel : PropertyChangedBase
     {
+        static public MainWindowViewModel m_mainWindowInstance { get; set; }
+
         static private BindableCollection<ExperimentViewModel> m_experimentViewModels
             = new BindableCollection<ExperimentViewModel>();
         //these two properties interface to the same hidden attribute
@@ -173,6 +175,9 @@ namespace Badger.ViewModels
         /// </summary>
         public MainWindowViewModel()
         {
+            //Save the instance
+            m_mainWindowInstance = this;
+
             //set culture as invariant to write numbers as in english
             System.Threading.Thread.CurrentThread.CurrentCulture = System.Globalization.CultureInfo.InvariantCulture;
 
@@ -221,6 +226,19 @@ namespace Badger.ViewModels
                 SelectedExperiment.Name = Utility.GetFilename(savedFilename, true, 2);
         }
 
+        //This method can be used from any child window to load experimental units (i.e, from the ReportViewer)
+        public void LoadExperimentalUnit(string experimentalUnitConfigFile)
+        {
+            ExperimentViewModel newExperiment =
+                        SimionFileData.LoadExperiment(appDefinitions, experimentalUnitConfigFile);
+
+            if (newExperiment != null)
+            {
+                ExperimentViewModels.Add(newExperiment);
+
+                SelectedExperiment = newExperiment;
+            }
+        }
 
         public void LoadExperimentOrProject()
         {

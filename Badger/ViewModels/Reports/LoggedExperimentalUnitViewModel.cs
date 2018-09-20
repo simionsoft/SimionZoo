@@ -141,7 +141,7 @@ namespace Badger.ViewModels
 
             if (!Log.SuccessfulLoad || Log.TotalNumEpisodes == 0) return null;
 
-            Track track = new Track(forkValues,LogFileName,LogDescriptorFileName);
+            Track track = new Track(forkValues,LogFileName,LogDescriptorFileName,ExperimentFileName);
             SeriesGroup dataSeries;
             int variableIndex;
             foreach (Report report in reports)

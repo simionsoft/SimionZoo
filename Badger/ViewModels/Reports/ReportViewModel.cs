@@ -98,7 +98,8 @@ namespace Badger.ViewModels
                         StatViewModel newStat =
                             new StatViewModel(group.ExperimentId, seriesName, series.Stats
                                 , group.ConsolidatedTrack.LogBinaryFile
-                                , group.ConsolidatedTrack.LogDescriptorFile);
+                                , group.ConsolidatedTrack.LogDescriptorFile
+                                , group.ConsolidatedTrack.ExperimentalUnitConfigFile);
 
                         newStatGroup.addStat(newStat);
                     }

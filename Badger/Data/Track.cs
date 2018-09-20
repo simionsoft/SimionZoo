@@ -196,17 +196,19 @@ namespace Badger.Simion
     /// </summary>
     public class Track
     {
+        public string ExperimentalUnitConfigFile { get; }
         public string LogBinaryFile { get; set; }
         public string LogDescriptorFile { get; set; }
         public Dictionary<string, string> ForkValues;
         public Dictionary<Report, SeriesGroup> SeriesGroups { get; }
             = new Dictionary<Report, SeriesGroup>();
 
-        public Track(Dictionary<string, string> forkValues,string logBinaryFile, string logDescriptorFile)
+        public Track(Dictionary<string, string> forkValues,string logBinaryFile, string logDescriptorFile, string experimentalUnitConfigFile)
         {
             ForkValues = forkValues;
             LogBinaryFile = logBinaryFile;
             LogDescriptorFile = logDescriptorFile;
+            ExperimentalUnitConfigFile = experimentalUnitConfigFile;
         }
 
         public void AddVariableData(Report variable, SeriesGroup variableData)

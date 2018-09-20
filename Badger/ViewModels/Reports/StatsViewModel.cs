@@ -42,7 +42,7 @@ namespace Badger.ViewModels
                 fileWriter.WriteLine(leftSpace + "  <" + XMLConfig.statVariableItemTag 
                     + " " + XMLConfig.groupIdAttribute + "=\"" + stat.ExperimentId + "\" "
                     + XMLConfig.trackIdAttribute + "=\"" + stat.TrackId + "\">");
-                stat.export(fileWriter, leftSpace + "    ");
+                stat.Export(fileWriter, leftSpace + "    ");
                 fileWriter.WriteLine(leftSpace + "  </" + XMLConfig.statVariableItemTag + ">");
             }
             fileWriter.WriteLine(leftSpace + "</" + XMLConfig.statVariableTag + ">");
@@ -67,6 +67,11 @@ namespace Badger.ViewModels
         public void VisualizeFunctions()
         {
             CaliburnUtility.ShowPopupWindow(new FunctionLogViewModel(SelectedStat.LogDescriptorFile), "Function Log Viewer");
+        }
+
+        public void OpenInEditor()
+        {
+            MainWindowViewModel.m_mainWindowInstance.LoadExperimentalUnit(SelectedStat.ExperimentalUnitConfigFile);
         }
     }
 }

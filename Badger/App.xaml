@@ -98,6 +98,9 @@
             <Geometry x:Key="Plug">
                 M16,7V3H14V7H10V3H8V7H8C7,7 6,8 6,9V14.5L9.5,18V21H14.5V18L18,14.5V9C18,8 17,7 16,7Z
             </Geometry>
+            <Geometry x:Key="Edit">
+                F1 M 53.2929,21.2929L 54.7071,22.7071C 56.4645,24.4645 56.4645,27.3137 54.7071,29.0711L 52.2323,31.5459L 44.4541,23.7677L 46.9289,21.2929C 48.6863,19.5355 51.5355,19.5355 53.2929,21.2929 Z M 31.7262,52.052L 23.948,44.2738L 43.0399,25.182L 50.818,32.9601L 31.7262,52.052 Z M 23.2409,47.1023L 28.8977,52.7591L 21.0463,54.9537L 23.2409,47.1023 Z
+            </Geometry>
             <cv:NullToVisibilityConverter x:Key="NullToVisibilityConverter" />
             <cv:StringToVisibilityConverter x:Key="StringToVisibilityConverter" />
             <cv:InvertedBooleanToVisibilityConverter x:Key="InvertedBooleanToVisibilityConverter" />

@@ -111,7 +111,7 @@ namespace Badger.Data
             double maxColorB = 1.0;
             double u;
 
-            double range = Math.Max(maxValue - minValue, 0.001);
+            double range = Math.Max(maxValue - minValue, 0.0000001);
             for (int y = 0; y < sizeY; y++)
             {
                 for (int x = 0; x < sizeX; x++)
