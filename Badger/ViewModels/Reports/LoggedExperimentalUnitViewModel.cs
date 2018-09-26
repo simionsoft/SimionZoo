@@ -152,8 +152,12 @@ namespace Badger.ViewModels
                     case ReportType.LastEvaluation:
                         EpisodesData lastEpisode = Log.EvaluationEpisodes[Log.EvaluationEpisodes.Count - 1];
                         dataSeries = new SeriesGroup(report);
-                        dataSeries.AddSeries(Log.GetEpisodeData(lastEpisode, report,variableIndex));
-                        track.AddVariableData(report, dataSeries);
+                        Series series = Log.GetEpisodeData(lastEpisode, report, variableIndex);
+                        if (series != null)
+                        {
+                            dataSeries.AddSeries(series);
+                            track.AddVariableData(report, dataSeries);
+                        }
                         break;
                     case ReportType.EvaluationAverages:
                         track.AddVariableData(report
@@ -169,8 +173,11 @@ namespace Badger.ViewModels
                         foreach(EpisodesData episode in episodes)
                         {
                             Series subSeries = Log.GetEpisodeData(episode, report, variableIndex);
-                            subSeries.Id = episode.index.ToString();
-                            dataSeries.AddSeries(subSeries);
+                            if (subSeries != null)
+                            {
+                                subSeries.Id = episode.index.ToString();
+                                dataSeries.AddSeries(subSeries);
+                            }
                         }
                         track.AddVariableData(report, dataSeries);
                         break;

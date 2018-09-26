@@ -63,6 +63,10 @@ namespace Badger.Simion
                     data.AddValue(step.episodeSimTime
                      , ProcessFunc.Get(trackParameters.ProcessFunc, step.data[variableIndex]));
             }
+
+            if (data.Values.Count == 0)
+                return null;
+
             data.CalculateStats(trackParameters);
 
             if (trackParameters.Resample)
