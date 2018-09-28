@@ -67,9 +67,7 @@ void FASTWorldPortal::retrieveStateVariables(float* FASTdata, bool bFirstTime)
 	s->set("v", (double)FASTdata[26]);
 
 	//Measured electrical power: P_e
-	//Fix to an error preventing the correct measured power to be sent to the controller
-	//s->set("P_e", s->get("T_g")*s->get("omega_g")*m_constants["ElectricalGeneratorEfficiency"];
-	s->set("P_e", (double)FASTdata[13]);
+	s->set("P_e", (double)FASTdata[14]);
 
 	//Power error: E_p
 	s->set("E_p", s->get("P_e") - m_constants["RatedPower"]);
@@ -130,15 +128,17 @@ void FASTWorldPortal::setActionVariables(float* FASTdata, bool bFirstTime)
 	}
 	FASTdata[46] = (float)demanded_T_g;// (float)m_last_T_g;   //Demanded generator torque
 
-	//beta
+	//beta: first iteration we don't update it to make sure elapsedTime is properly calculated
 	double demanded_beta = a->get("beta");
 	if (!bFirstTime)
-	{
-		s->set("d_beta",(demanded_beta - m_prevPitch) / m_elapsedTime);
-		demanded_beta = s->get("beta") + s->get("d_beta")*m_elapsedTime;
-		demanded_beta = std::min(std::max(demanded_beta, s->getProperties("beta")->getMin()), s->getProperties("beta")->getMax());
-		s->set("beta", demanded_beta);
-	}
+		s->set("d_beta", (demanded_beta - m_prevPitch) / m_elapsedTime);
+	else
+		s->set("d_beta", 0.0);
+
+	demanded_beta = s->get("beta") + s->get("d_beta")*m_elapsedTime;
+	demanded_beta = std::min(std::max(demanded_beta, s->getProperties("beta")->getMin()), s->getProperties("beta")->getMax());
+	s->set("beta", demanded_beta);
+	
 	FASTdata[54] = 0.0;       //Pitch override: 0=yes
 
 	FASTdata[41] = (float)demanded_beta; //Use the command angles of all blades if using individual pitch
