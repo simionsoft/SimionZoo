@@ -275,10 +275,8 @@ $RECYCLE.BIN/
 !bin/x64/msvcp140.dll
 !bin/x64/vcruntime140.dll
 !bin/MAP_Win32.dll
-!bin/FAST_Win32.exe
+!bin/openfast_Win32.exe
 !bin/TurbSim.exe
-!bin/msvcp120.dll
-!bin/msvcr120.dll
 !bin/msvcp140.dll
 !bin/vcruntime140.dll
 

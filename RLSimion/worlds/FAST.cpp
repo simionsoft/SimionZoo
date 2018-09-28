@@ -95,7 +95,7 @@ FASTWindTurbine::FASTWindTurbine(ConfigNode* pConfigNode)
 	{
 		//input/output files
 		SimionApp::get()->registerInputFile("..\\bin\\FASTDimensionalPortal.dll");
-		SimionApp::get()->registerInputFile("..\\bin\\FAST_win32.exe");
+		SimionApp::get()->registerInputFile("..\\bin\\openfast_Win32.exe");
 		SimionApp::get()->registerInputFile("..\\bin\\MAP_win32.dll");
 		SimionApp::get()->registerInputFile("..\\bin\\TurbSim.exe");
 
@@ -109,6 +109,22 @@ FASTWindTurbine::FASTWindTurbine(ConfigNode* pConfigNode)
 		SimionApp::get()->registerInputFile("..\\config\\world\\FAST\\DU35_A17.dat");
 		SimionApp::get()->registerInputFile("..\\config\\world\\FAST\\DU40_A17.dat");
 		SimionApp::get()->registerInputFile("..\\config\\world\\FAST\\NACA64_A17.dat");
+		SimionApp::get()->registerInputFile("..\\config\\world\\FAST\\Cylinder1_coords.txt");
+		SimionApp::get()->registerInputFile("..\\config\\world\\FAST\\Cylinder2_coords.txt");
+		SimionApp::get()->registerInputFile("..\\config\\world\\FAST\\DU21_A17_coords.txt");
+		SimionApp::get()->registerInputFile("..\\config\\world\\FAST\\DU25_A17_coords.txt");
+		SimionApp::get()->registerInputFile("..\\config\\world\\FAST\\DU30_A17_coords.txt");
+		SimionApp::get()->registerInputFile("..\\config\\world\\FAST\\DU35_A17_coords.txt");
+		SimionApp::get()->registerInputFile("..\\config\\world\\FAST\\DU40_A17_coords.txt");
+		SimionApp::get()->registerInputFile("..\\config\\world\\FAST\\NACA64_A17_coords.txt");
+		SimionApp::get()->registerInputFile("..\\config\\world\\FAST\\AeroData_Cylinder1.dat");
+		SimionApp::get()->registerInputFile("..\\config\\world\\FAST\\AeroData_Cylinder2.dat");
+		SimionApp::get()->registerInputFile("..\\config\\world\\FAST\\AeroData_DU21_A17.dat");
+		SimionApp::get()->registerInputFile("..\\config\\world\\FAST\\AeroData_DU25_A17.dat");
+		SimionApp::get()->registerInputFile("..\\config\\world\\FAST\\AeroData_DU30_A17.dat");
+		SimionApp::get()->registerInputFile("..\\config\\world\\FAST\\AeroData_DU35_A17.dat");
+		SimionApp::get()->registerInputFile("..\\config\\world\\FAST\\AeroData_DU40_A17.dat");
+		SimionApp::get()->registerInputFile("..\\config\\world\\FAST\\AeroData_NACA64_A17.dat");
 		SimionApp::get()->registerInputFile("..\\config\\world\\FAST\\NRELOffshrBsline5MW_AeroDyn_blade.dat");
 		SimionApp::get()->registerInputFile("..\\config\\world\\FAST\\NRELOffshrBsline5MW_BeamDyn.dat");
 		SimionApp::get()->registerInputFile("..\\config\\world\\FAST\\NRELOffshrBsline5MW_BeamDyn_Blade.dat");
@@ -190,8 +206,13 @@ void FASTWindTurbine::deferredLoadStep()
 	//Load the template used to tell FAST which wind file to use
 	m_FASTWindConfigTemplate.load(FAST_WIND_CONFIG_TEMPLATE_FILE);
 	
-	//copy input files to experiment directory to avoid problems with FAST adding base config file's directory
+	//copy input .dat files to experiment directory to avoid problems with FAST adding base config file's directory
 	commandLine= string("copy ..\\config\\world\\FAST\\*.dat ") + string(SimionApp::get()->getOutputDirectory());
+	replace(commandLine.begin(), commandLine.end(), '/', '\\');
+	system(commandLine.c_str());
+
+	//copy input .txt files to experiment directory to avoid problems with FAST adding base config file's directory
+	commandLine = string("copy ..\\config\\world\\FAST\\*.txt ") + string(SimionApp::get()->getOutputDirectory());
 	replace(commandLine.begin(), commandLine.end(), '/', '\\');
 	system(commandLine.c_str());
 
@@ -283,7 +304,7 @@ void FASTWindTurbine::reset(State *s)
 	//spawn the FAST exe file
 	string commandLine;
 
-	commandLine= string("..\\bin\\fast_win32.exe");
+	commandLine= string("..\\bin\\openfast_Win32.exe");
 
 	commandLine+= string(" ") + string(SimionApp::get()->getOutputDirectory())+ string("\\")
 		+ string(FAST_CONFIG_FILE);

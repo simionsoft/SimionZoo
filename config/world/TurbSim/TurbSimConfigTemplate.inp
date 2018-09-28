@@ -8,7 +8,7 @@ False               WrFHHTP         - Output hub-height turbulence parameters in
 False               WrADHH          - Output hub-height time-series data in AeroDyn form?  (Generates RootName.hh)
 True                WrADFF          - Output full-field time-series data in TurbSim/AeroDyn form? (Generates Rootname.bts)
 False               WrBLFF          - Output full-field time-series data in BLADED/AeroDyn form?  (Generates RootName.wnd)
-False               WrADTWR         - Output tower time-series data? (Generates RootName.twr)
+True                WrADTWR         - Output tower time-series data? (Generates RootName.twr)
 False               WrFMTFF         - Output full-field time-series data in formatted (readable) form?  (Generates RootName.u, RootName.v, RootName.w)
 False               WrACT           - Output coherent turbulence time steps in AeroDyn form? (Generates RootName.cts)
 True                Clockwise       - Clockwise rotation looking downwind? (used only for full-field binary files - not necessary for AeroDyn)

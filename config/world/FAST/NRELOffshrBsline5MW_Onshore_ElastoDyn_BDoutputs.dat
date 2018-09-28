@@ -109,7 +109,7 @@ False         Furling     - Read in additional model properties for furling turb
          20   TwrNodes    - Number of tower nodes used for analysis (-)
 "NRELOffshrBsline5MW_Onshore_ElastoDyn_Tower.dat"    TwrFile     - Name of file containing tower properties (quoted string)
 ---------------------- OUTPUT --------------------------------------------------
-False         SumPrint    - Print summary data to "<RootName>.sum" (flag)
+True          SumPrint    - Print summary data to "<RootName>.sum" (flag)
           1   OutFile     - Switch to determine where output will be placed: {1: in module output file only; 2: in glue code output file only; 3: both} (currently unused)
 True          TabDelim    - Use tab delimiters in text tabular output file? (flag) (currently unused)
 "ES10.3E2"    OutFmt      - Format used for text tabular output (except time).  Resulting field should be 10 characters. (quoted string) (currently unused)
@@ -121,9 +121,27 @@ True          TabDelim    - Use tab delimiters in text tabular output file? (fla
           0   BldGagNd    - List of blade nodes that have strain gages [1 to BldNodes] (-) [unused if NBlGages=0]
               OutList     - The next line(s) contains a list of output parameters.  See OutListParameters.xlsx for a listing of available output channels, (-)
 "BldPitch1"               - Blade 1 pitch angle
+"Azimuth"                 - Blade 1 azimuth angle
 "RotSpeed"                - Low-speed shaft and high-speed shaft speeds
 "GenSpeed"                - Low-speed shaft and high-speed shaft speeds
+"TTDspFA"                 - Tower fore-aft and side-to-side displacements and top twist
+"TTDspSS"                 - Tower fore-aft and side-to-side displacements and top twist
+"TTDspTwst"               - Tower fore-aft and side-to-side displacements and top twist
 "RotTorq"                 - Rotor torque and low-speed shaft 0- and 90-bending moments at the main bearing
+"LSSGagMya"               - Rotor torque and low-speed shaft 0- and 90-bending moments at the main bearing
+"LSSGagMza"               - Rotor torque and low-speed shaft 0- and 90-bending moments at the main bearing
+"YawBrFxp"                - Fore-aft shear, side-to-side shear, and vertical forces at the top of the tower (not rotating with nacelle yaw)
+"YawBrFyp"                - Fore-aft shear, side-to-side shear, and vertical forces at the top of the tower (not rotating with nacelle yaw)
+"YawBrFzp"                - Fore-aft shear, side-to-side shear, and vertical forces at the top of the tower (not rotating with nacelle yaw)
+"YawBrMxp"                - Side-to-side bending, fore-aft bending, and yaw moments at the top of the tower (not rotating with nacelle yaw)
+"YawBrMyp"                - Side-to-side bending, fore-aft bending, and yaw moments at the top of the tower (not rotating with nacelle yaw)
+"YawBrMzp"                - Side-to-side bending, fore-aft bending, and yaw moments at the top of the tower (not rotating with nacelle yaw)
+"TwrBsFxt"                - Fore-aft shear, side-to-side shear, and vertical forces at the base of the tower (mudline)
+"TwrBsFyt"                - Fore-aft shear, side-to-side shear, and vertical forces at the base of the tower (mudline)
+"TwrBsFzt"                - Fore-aft shear, side-to-side shear, and vertical forces at the base of the tower (mudline)
+"TwrBsMxt"                - Side-to-side bending, fore-aft bending, and yaw moments at the base of the tower (mudline)
+"TwrBsMyt"                - Side-to-side bending, fore-aft bending, and yaw moments at the base of the tower (mudline)
+"TwrBsMzt"                - Side-to-side bending, fore-aft bending, and yaw moments at the base of the tower (mudline)
 END of input file (the word "END" must appear in the first 3 columns of this last OutList line)
 ---------------------------------------------------------------------------------------
 
