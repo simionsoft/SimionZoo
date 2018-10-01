@@ -352,7 +352,7 @@ namespace Badger.ViewModels
             //Ask the user where to save the batch
             string batchFileName;
             //Save dialog -> returns the experiment batch file
-            string suggestedBatchFileName = SelectedExperiment.Name + SimionFileData.ExperimentBatchExtension;
+            string suggestedBatchFileName = SelectedExperiment.Name;
             var sfd = SimionFileData.SaveFileDialog(SimionFileData.ExperimentBatchDescription, SimionFileData.ExperimentBatchFilter, suggestedBatchFileName);
             if (sfd.ShowDialog() == DialogResult.OK)
             {
