@@ -55,6 +55,10 @@ namespace Badger.Simion
         }
         public Series GetVariableData(int variableIndex, Report trackParameters)
         {
+
+            if (steps[steps.Count - 1].episodeSimTime < trackParameters.MinEpisodeLength)
+                return null;
+
             Series data = new Series();
 
             foreach (StepData step in steps)

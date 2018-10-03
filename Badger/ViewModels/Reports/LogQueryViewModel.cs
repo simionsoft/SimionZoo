@@ -89,6 +89,7 @@ namespace Badger.ViewModels
         public const string FunctionDscBeauty = "DscBeauty";
 
         public double TimeOffset { get; set; } = 0.0;
+        public double MinEpisodeLength { get; set; } = 0.0;
 
         string m_inGroupSelectionFunction;
         public string InGroupSelectionFunction
@@ -431,6 +432,7 @@ namespace Badger.ViewModels
                 report.Resample = ResampleData;
                 report.NumSamples = ResamplingNumPoints;
                 report.TimeOffset = TimeOffset;
+                report.MinEpisodeLength = MinEpisodeLength;
             }
 
             //traverse the experimental units within each experiment
