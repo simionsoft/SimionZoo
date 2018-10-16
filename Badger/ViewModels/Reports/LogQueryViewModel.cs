@@ -187,20 +187,26 @@ namespace Badger.ViewModels
 
         public void Reset()
         {
-            this.CanGenerateReports = false;
-            this.GroupByForks.Clear();
-            this.GroupByForksList.Clear();
-            this.GroupsEnabled = false;
-            this.InGroupSelectionFunction = FunctionMax;
-            this.InGroupSelectionVariable = null;
+            CanGenerateReports = false;
+            GroupByForks.Clear();
+            GroupByForksList.Clear();
+            GroupsEnabled = false;
+            InGroupSelectionFunction = FunctionMax;
+            InGroupSelectionVariable = null;
             
-            this.MaxNumTracks = DefaultMaxNumTracks;
+            MaxNumTracks = DefaultMaxNumTracks;
         }
 
         public void ResetGroupBy()
         {
+            //If several experiments have been loaded we do not remove the experiment-id from the list
+            bool bGroupByExperiment = GroupByForks.Contains(ReportsWindowViewModel.GroupByExperimentId);
             GroupsEnabled = false;
             GroupByForks.Clear();
+            if (bGroupByExperiment)
+                GroupByForks.Add(ReportsWindowViewModel.GroupByExperimentId);
+            else
+                GroupsEnabled = false;
         }
 
         private BindableCollection<string> m_inGroupSelectionFunctions 
@@ -225,6 +231,28 @@ namespace Badger.ViewModels
         }
         private List<string> m_groupByForksList = new List<string>();
         public List<string> GroupByForksList { get { return m_groupByForksList; } }
+
+        private bool m_bGroupByExperiment = false;
+        public bool GroupByExperiment
+        {
+            get { return m_bGroupByExperiment; }
+            set
+            {
+                //If there is more than one experiment, use it to group tracks
+                if (value)
+                {
+                    AddGroupByFork(ReportsWindowViewModel.GroupByExperimentId);
+                }
+                else
+                {
+                    if (GroupByForks.Count == 1)
+                        GroupsEnabled = false;
+                    GroupByForks.Remove(ReportsWindowViewModel.GroupByExperimentId);
+                    GroupByForksList.Remove(ReportsWindowViewModel.GroupByExperimentId);
+                }
+                m_bGroupByExperiment = value;
+            }
+        }
 
         public LogQueryViewModel()
         {
@@ -258,18 +286,29 @@ namespace Badger.ViewModels
             return list;
         }
 
-        private TrackGroup GetTrackGroup(Dictionary<string, string> forkValues)
+        private TrackGroup GetTrackGroup(Dictionary<string, string> forkValues, string experimentId)
         {
             uint numMatchedForks;
             foreach (TrackGroup resultTrack in ResultTracks)
             {
                 numMatchedForks = 0;
+
+                //same experiment id??
+                if (resultTrack.ForkValues.ContainsKey(ReportsWindowViewModel.GroupByExperimentId)
+                    && resultTrack.ExperimentId == experimentId)
+                        numMatchedForks++;
+                
+                //match regular forks
                 foreach (string forkName in forkValues.Keys)
                 {
-                    if (resultTrack.ForkValues.ContainsKey(forkName)
+                    if (resultTrack.ForkValues.ContainsKey(forkName) 
                         && forkValues[forkName] == resultTrack.ForkValues[forkName])
+                    { 
                         numMatchedForks++;
+                    }
                 }
+
+                //all forks have been matched?
                 if (numMatchedForks == GroupByForks.Count)
                     return resultTrack;
 
@@ -448,7 +487,7 @@ namespace Badger.ViewModels
                         resultTrackGroup = null;
                         if (GroupByForks.Count != 0)
                         {
-                            resultTrackGroup = GetTrackGroup(expUnit.forkValues);
+                            resultTrackGroup = GetTrackGroup(expUnit.forkValues, exp.Name);
                             if (resultTrackGroup != null)
                             {
                                 //the track exists and we are using forks to group results
@@ -476,9 +515,11 @@ namespace Badger.ViewModels
                             else
                                 foreach (string forkName in GroupByForks)
                             {
-                                //an experimental unit may not have a fork used to group
-                                if (expUnit.forkValues.ContainsKey(forkName))
-                                    newResultTrackGroup.ForkValues[forkName] = expUnit.forkValues[forkName];
+                                    //an experimental unit may not have a fork used to group
+                                    if (expUnit.forkValues.ContainsKey(forkName))
+                                        newResultTrackGroup.ForkValues[forkName] = expUnit.forkValues[forkName];
+                                    else if (forkName == ReportsWindowViewModel.GroupByExperimentId)
+                                        newResultTrackGroup.ForkValues[forkName] = exp.Name;
                             }
 
                             //load data from the log file

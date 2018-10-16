@@ -46,6 +46,11 @@
                     <TextBox Text="{Binding Path=MinEpisodeLength, Mode=TwoWay, StringFormat='N1'}" FontSize="10" Width="30"
                              VerticalAlignment="Center"/>
                 </StackPanel>
+
+            </StackPanel>
+            <StackPanel Orientation="Horizontal">
+                <CheckBox VerticalAlignment="Center" IsChecked="{Binding Path=GroupByExperiment}"/>
+                <Label  FontSize="10" Margin="0,0,7,0" Content="Group tracks by experiment" HorizontalContentAlignment="Left"/>
             </StackPanel>
 
             <GroupBox Header="Track groups" Visibility="{Binding GroupsEnabled,Converter={StaticResource BoolToVis}}">

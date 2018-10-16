@@ -1,4 +1,4 @@
-﻿<UserControl x:Class="Badger.Views.ProgressBarDialogView"
+﻿<Window x:Class="Badger.Views.ProgressBarDialogView"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
@@ -9,9 +9,9 @@
              d:DesignHeight="150" d:DesignWidth="300"
              Background="#EEEEEE">
 
-    <UserControl.Resources>
+    <Window.Resources>
         <BooleanToVisibilityConverter x:Key="BoolToVis" />
-    </UserControl.Resources>
+    </Window.Resources>
 
     <ScrollViewer VerticalScrollBarVisibility="Auto">
         <StackPanel>
@@ -23,4 +23,4 @@
             </StackPanel>
         </StackPanel>
     </ScrollViewer>
-</UserControl>
+</Window>

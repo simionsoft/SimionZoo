@@ -289,6 +289,8 @@ namespace Badger.ViewModels
             });
         }
 
+        public const string GroupByExperimentId = "Experiment-Id";
+
         /// <summary>
         ///     Close a tab (report view) and remove it from the list of reports.
         /// </summary>

@@ -7,7 +7,7 @@ using System.IO;
 using Badger.Simion;
 using System.Windows.Media.Imaging;
 using System.Windows.Media;
-using Badger.Data;
+
 
 namespace Badger.ViewModels
 {

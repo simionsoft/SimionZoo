@@ -109,7 +109,7 @@ namespace Badger.ViewModels
             }
         }
 
-        private bool IsLinked(string nodeName, XmlNode configNode)
+        new private bool IsLinked(string nodeName, XmlNode configNode)
         {
             if (configNode == null) return false;
 

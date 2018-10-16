@@ -36,7 +36,7 @@ namespace Badger.ViewModels
         {
             foreach (string fork in forks)
             {
-                if (!forkValues.ContainsKey(fork))
+                if (fork!=ReportsWindowViewModel.GroupByExperimentId && !forkValues.ContainsKey(fork))
                     return false;
             }
             return true;
