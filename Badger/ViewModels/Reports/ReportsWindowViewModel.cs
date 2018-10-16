@@ -110,26 +110,11 @@ namespace Badger.ViewModels
                     Reports.Add(newReport);
                 }
                 if (Reports.Count > 0)
-                {
                     SelectedReport = Reports[0];
-                    CanSaveReports = true;
-                }
+
                 LoadedBatch = batchFilename;
                 EndLongOperation();
             });
-        }
-
-
-        private bool m_bCanSaveReports;
-
-        public bool CanSaveReports
-        {
-            get { return m_bCanSaveReports; }
-            set
-            {
-                m_bCanSaveReports = value;
-                NotifyOfPropertyChange(() => CanSaveReports);
-            }
         }
 
         /// <summary>
@@ -261,9 +246,9 @@ namespace Badger.ViewModels
                     return;
             }
 
-            //reset the view and the query if a batch was succesfully selected
+            //reset the view if a batch was succesfully selected
             ClearReportViewer();
-            Query.OnExperimentBatchLoaded();
+            Query.BeforeExperimentBatchLoad();
 
             //Inefficient but not so much as to care
             //First we load the batch file to cout how many experimental units we have
@@ -277,6 +262,9 @@ namespace Badger.ViewModels
                 //load the batch
                 LoadedBatch = "Reading experiment files";
                 SimionFileData.LoadExperimentBatchFile(batchFileName, LoadLoggedExperiment, OnExperimentalUnitProcessed);
+            
+                //Do whatever needs to be done when a new batch is loaded (i.e., validate the query)
+                Query.AfterExperimentBatchLoad();
 
                 //Update flags use to enable/disable parts of the report generation menu
                 NotifyOfPropertyChange(() => ForksLoaded);
@@ -319,7 +307,6 @@ namespace Badger.ViewModels
 
             Query.Reset();
 
-            CanSaveReports = false;
             LogsLoaded = false;
             ForksLoaded = false;
         }

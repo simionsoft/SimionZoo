@@ -190,6 +190,11 @@ namespace Badger.ViewModels
             CanGenerateReports = false;
             GroupByForks.Clear();
             GroupByForksList.Clear();
+
+            OrderByVariables.Clear();
+            VariablesVM.Clear();
+            InGroupSelectionVariables.Clear();
+           
             GroupsEnabled = false;
             InGroupSelectionFunction = FunctionMax;
             InGroupSelectionVariable = null;
@@ -263,6 +268,20 @@ namespace Badger.ViewModels
             OrderByReportTypes.Add((string)((IValueConverter)conv).Convert(ReportType.LastEvaluation, typeof(ReportType), null, CultureInfo.CurrentCulture));
             OrderByReportTypes.Add((string)((IValueConverter)conv).Convert(ReportType.EvaluationAverages, typeof(ReportType), null, CultureInfo.CurrentCulture));
             OrderByReportType = (string)((IValueConverter)conv).Convert(ReportType.LastEvaluation, typeof(ReportType), null, CultureInfo.CurrentCulture);
+
+            // Add the limit to options
+            MaxNumTracksOptions.Clear();
+            for (int i = 0; i <= 10; i++) MaxNumTracksOptions.Add(i);
+            MaxNumTracks = DefaultMaxNumTracks;
+
+            OrderByFunction = FunctionMax;
+            NotifyOfPropertyChange(() => OrderByFunctions);
+
+            if (InGroupSelectionVariables.Count > 0) InGroupSelectionVariable = InGroupSelectionVariables[0];
+            NotifyOfPropertyChange(() => InGroupSelectionVariables);
+
+            if (OrderByVariables.Count > 0) OrderByVariable = OrderByVariables[0];
+            NotifyOfPropertyChange(() => OrderByVariables);
         }
 
         private List<TrackGroup> m_resultTracks
@@ -389,21 +408,32 @@ namespace Badger.ViewModels
             }
         }
 
-        public void OnExperimentBatchLoaded()
+        public void BeforeExperimentBatchLoad()
         {
-            // Add the limit to options
-            MaxNumTracksOptions.Clear();
-            for (int i = 0; i <= 10; i++) MaxNumTracksOptions.Add(i);
-            MaxNumTracks = DefaultMaxNumTracks;
+            OrderByVariables.Clear();
+            VariablesVM.Clear();
+            InGroupSelectionVariables.Clear();
+        }
 
-            OrderByFunction = FunctionMax;
-            NotifyOfPropertyChange(() => OrderByFunctions);
+        public void AfterExperimentBatchLoad()
+        {
+            if (!IsVariableValid(InGroupSelectionVariable))
+            {
+                if (InGroupSelectionVariables.Count > 0)
+                    InGroupSelectionVariable = InGroupSelectionVariables[0];
+                else
+                    InGroupSelectionVariable = null;
+            }
 
-            if (InGroupSelectionVariables.Count > 0) InGroupSelectionVariable = InGroupSelectionVariables[0];
-            NotifyOfPropertyChange(() => InGroupSelectionVariables);
+            if (!IsVariableValid(OrderByVariable))
+            {
+                if (OrderByVariables.Count > 0)
+                    OrderByVariable = OrderByVariables[0];
+                else
+                    OrderByVariable = null;
+            }
 
-            if (OrderByVariables.Count > 0) OrderByVariable = OrderByVariables[0];
-            NotifyOfPropertyChange(() => OrderByVariables);
+            ValidateQuery();
         }
 
         public List<Report> Reports = new List<Report>();
@@ -436,6 +466,16 @@ namespace Badger.ViewModels
             GroupsEnabled = GroupByForks.Count > 0;
         }
 
+        bool IsVariableValid(string variable)
+        {
+            foreach (LoggedVariableViewModel var in VariablesVM)
+            {
+                if (var.name == variable)
+                    return true;
+            }
+            return false;
+        }
+
         public void Execute(BindableCollection<LoggedExperimentViewModel> experiments
             ,SimionFileData.LoadUpdateFunction loadUpdateFunction)
         {
@@ -446,7 +486,7 @@ namespace Badger.ViewModels
 
             //if the in-group selection function requires a variable not selected for the report
             //we add it too to the list of variables read from the log
-            if (InGroupSelectionVariable != null && InGroupSelectionVariable != ""
+            if (GroupsEnabled && InGroupSelectionVariable != null && InGroupSelectionVariable != ""
                 && !IsVariableSelected(InGroupSelectionVariable,InGroupSelectionReportType))
             {
                 EnumDescriptionConverter conv = new EnumDescriptionConverter();
