@@ -44,7 +44,7 @@
               <Base-Controller>
                 <Controller>
                   <LQR>
-                    <Output-Actionn>pitch</Output-Actionn>
+                    <Output-Action>pitch</Output-Action>
                     <LQR-Gain>
                       <Gain>-7.0711</Gain>
                       <Variable>control-deviation</Variable>
