@@ -116,6 +116,16 @@ namespace Badger.ViewModels
         }
 
         // Limit to
+        bool m_bLimitTracks = false;
+        public bool LimitTracks
+        {
+            get { return m_bLimitTracks; }
+            set
+            {
+                m_bLimitTracks = value;
+                NotifyOfPropertyChange(() => LimitTracks);
+            }
+        }
         private BindableCollection<int> m_maxNumTrackOptions = new BindableCollection<int>();
         public BindableCollection<int> MaxNumTracksOptions
         {
@@ -497,7 +507,7 @@ namespace Badger.ViewModels
 
             //if we use some sorting function to select only some tracks, we need to add the variable
             // to the list too
-            if (MaxNumTracks != 0 && !IsVariableSelected(OrderByVariable, OrderByReportType))
+            if (LimitTracks && !IsVariableSelected(OrderByVariable, OrderByReportType))
             {
                 EnumDescriptionConverter conv = new EnumDescriptionConverter();
                 ReportType reportType = (ReportType)((IValueConverter)conv).ConvertBack(OrderByReportType, typeof(ReportType), null, CultureInfo.CurrentCulture);
@@ -579,7 +589,7 @@ namespace Badger.ViewModels
                         }
                         //Limit the number of tracks asap
                         //if we are using limitTo/orderBy, we have to select the best tracks/groups according to the given criteria
-                        if (MaxNumTracks != 0)
+                        if (LimitTracks)
                         {
                             if (ResultTracks.Count > MaxNumTracks)
                             {

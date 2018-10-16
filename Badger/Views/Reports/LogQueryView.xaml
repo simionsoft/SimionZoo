@@ -22,7 +22,13 @@
                     <ItemsControl x:Name="VariablesVM"/>
                 </ScrollViewer>
             </GroupBox>
+            <StackPanel Orientation="Horizontal">
+                <CheckBox VerticalAlignment="Center" IsChecked="{Binding Path=GroupByExperiment}"/>
+                <Label  FontSize="10" Margin="0,0,30,0" Content="Group by experiment" HorizontalContentAlignment="Left"/>
 
+                <CheckBox VerticalAlignment="Center" IsChecked="{Binding Path=LimitTracks}"/>
+                <Label  FontSize="10" Margin="0" Content="Limit Tracks" HorizontalContentAlignment="Left"/>
+            </StackPanel>
             <StackPanel Orientation="Horizontal" ToolTip="Sets whether all variations of the experiments will be considered or just selected ones">
                 <StackPanel Orientation="Horizontal" ToolTip="Check if you want to consider only a subset of the forks in your queries">
                     <CheckBox VerticalAlignment="Center" IsChecked="{Binding Path=UseForkSelection}"/>
@@ -46,11 +52,6 @@
                     <TextBox Text="{Binding Path=MinEpisodeLength, Mode=TwoWay, StringFormat='N1'}" FontSize="10" Width="30"
                              VerticalAlignment="Center"/>
                 </StackPanel>
-
-            </StackPanel>
-            <StackPanel Orientation="Horizontal">
-                <CheckBox VerticalAlignment="Center" IsChecked="{Binding Path=GroupByExperiment}"/>
-                <Label  FontSize="10" Margin="0,0,7,0" Content="Group tracks by experiment" HorizontalContentAlignment="Left"/>
             </StackPanel>
 
             <GroupBox Header="Track groups" Visibility="{Binding GroupsEnabled,Converter={StaticResource BoolToVis}}">
@@ -87,7 +88,7 @@
                 </StackPanel>
             </GroupBox>
 
-            <GroupBox Header="Tracks">
+            <GroupBox Header="Track Selection" Visibility="{Binding LimitTracks,Converter={StaticResource BoolToVis}}">
                 <StackPanel Orientation="Vertical">
                     <StackPanel Margin="0,2,0,2" Orientation="Horizontal" ToolTip="This limits the maximum number of tracks to be displayed">
                         <Label FontSize="10" Width="100" Margin="0,0,10,0" Content="Maximum Number" HorizontalContentAlignment="Right"/>
