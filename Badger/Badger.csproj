@@ -226,6 +226,7 @@
     <Compile Include="ViewModels\Reports\LoggedExperimentalUnitViewModel.cs" />
     <Compile Include="ViewModels\Reports\LoggedForkViewModel.cs" />
     <Compile Include="ViewModels\Reports\LoggedForkValueViewModel.cs" />
+    <Compile Include="ViewModels\Reports\LogQueryResultViewModel.cs" />
     <Compile Include="ViewModels\Reports\LogQueryViewModel.cs" />
     <Compile Include="Data\TrackGroup.cs" />
     <Compile Include="ViewModels\Reports\PlotPropertiesViewModel.cs" />
@@ -559,6 +560,10 @@
       <SubType>Designer</SubType>
     </Page>
     <Page Include="Views\Reports\LoggedForkView.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Views\Reports\LogQueryResultView.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>

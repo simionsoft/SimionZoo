@@ -10,7 +10,7 @@ namespace Badger.ViewModels
     public class ReportViewModel : Screen
     {
         private string m_name = "Unnamed";
-        public string name { get { return m_name; } set { m_name = value; NotifyOfPropertyChange(() => name); } }
+        public string Name { get { return m_name; } set { m_name = value; NotifyOfPropertyChange(() => Name); } }
 
         //plots
         private PlotViewModel m_plot= null;
@@ -30,12 +30,10 @@ namespace Badger.ViewModels
 
         public void Export(string outputFolder)
         {
-            //set culture as invariant to write numbers as in english
-            System.Threading.Thread.CurrentThread.CurrentCulture = System.Globalization.CultureInfo.InvariantCulture;
             //export plots
             if (Plot!=null) Plot.Export(outputFolder);
             //export stats
-            string statsFile = outputFolder + "\\" + name + ".xml";
+            string statsFile = outputFolder + "\\" + Name + ".xml";
             try
             {
                 using (StreamWriter fileWriter = File.CreateText(statsFile))
@@ -66,7 +64,7 @@ namespace Badger.ViewModels
 
         public ReportViewModel(LogQueryViewModel query, Report report)
         {
-            name = report.Name;
+            Name = report.Name;
 
             //Create the plot
             PlotViewModel newPlot = new PlotViewModel(report.Name, 0, "Time (s)", report.Name, false, true);

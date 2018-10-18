@@ -24,29 +24,26 @@ namespace Badger.ViewModels
             get { return m_loadedBatch; }
             set { m_loadedBatch = value; NotifyOfPropertyChange(() => LoadedBatch); }
         }
+                
+        public BindableCollection<ReportViewModel> Reports
+        { get; } = new BindableCollection<ReportViewModel>();
 
-        //experimental units
         public BindableCollection<LoggedExperimentalUnitViewModel> ExperimentalUnits
         { get; } = new BindableCollection<LoggedExperimentalUnitViewModel>();
 
 
-        //log query results
-        public BindableCollection<LogQueryResultViewModel> LogQueryResults
-        { get; } = new BindableCollection<LogQueryResultViewModel>();
- 
-
         //plot selection in tab control
-        private LogQueryResultViewModel m_selectedLogQueryResult;
+        private ReportViewModel m_selectedReport;
 
-        public LogQueryResultViewModel SelectedLogQueryResult
+        public ReportViewModel SelectedReport
         {
-            get { return m_selectedLogQueryResult; }
+            get { return m_selectedReport; }
             set
             {
-                m_selectedLogQueryResult = value;
-                NotifyOfPropertyChange(() => SelectedLogQueryResult);
+                m_selectedReport = value;
+                NotifyOfPropertyChange(() => SelectedReport);
             }
-        }
+        }  
 
         /// <summary>
         ///     Add a fork to the "GroupByFork" list when a property of a LoggedForkValues changes.
@@ -106,16 +103,33 @@ namespace Badger.ViewModels
                 LoadedBatch = "Running query";
                 Query.Execute(LoggedExperiments, OnExperimentalUnitProcessed);
 
-                //Create and add to list the result of the query
-                LogQueryResultViewModel result = new LogQueryResultViewModel(Query);
-                LogQueryResults.Add(result);
-                //set this last result as selected
-                SelectedLogQueryResult = LogQueryResults[LogQueryResults.Count-1];
-
-
+                // Display the reports
+                foreach (Report report in Query.Reports)
+                {
+                    ReportViewModel newReport = new ReportViewModel(Query, report);
+                    Reports.Add(newReport);
+                }
+                if (Reports.Count > 0)
+                {
+                    SelectedReport = Reports[0];
+                    CanSaveReports = true;
+                }
                 LoadedBatch = batchFilename;
                 EndLongOperation();
             });
+        }
+
+
+        private bool m_bCanSaveReports;
+
+        public bool CanSaveReports
+        {
+            get { return m_bCanSaveReports; }
+            set
+            {
+                m_bCanSaveReports = value;
+                NotifyOfPropertyChange(() => CanSaveReports);
+            }
         }
 
         /// <summary>
@@ -142,22 +156,26 @@ namespace Badger.ViewModels
         /// </summary>
         public void SaveReports()
         {
-            if (LogQueryResults.Count == 0) return;
+            if (Reports.Count == 0) return;
 
             string outputBaseFolder =
                 CaliburnUtility.SelectFolder(SimionFileData.imageRelativeDir);
 
             if (outputBaseFolder != "")
             {
-                foreach (LogQueryResultViewModel logQueryResult in LogQueryResults)
+                foreach (ReportViewModel report in Reports)
                 {
                     // If there is more than one report, we store each one in a subfolder
-                    string outputFolder = outputBaseFolder + "\\" + Utility.RemoveSpecialCharacters(logQueryResult.Name);
-
-                    if (!Directory.Exists(outputFolder))
+                    string outputFolder;
+                    if (Reports.Count > 1)
+                    {
+                        outputFolder = outputBaseFolder + "\\" + Utility.RemoveSpecialCharacters(report.name);
                         Directory.CreateDirectory(outputFolder);
+                    }
+                    else
+                        outputFolder = outputBaseFolder;
 
-                    logQueryResult.Export(outputFolder);
+                    report.Export(outputFolder);
                 }
             }
         }
@@ -243,9 +261,9 @@ namespace Badger.ViewModels
                     return;
             }
 
-            //reset the view if a batch was succesfully selected
+            //reset the view and the query if a batch was succesfully selected
             ClearReportViewer();
-            Query.BeforeExperimentBatchLoad();
+            Query.OnExperimentBatchLoaded();
 
             //Inefficient but not so much as to care
             //First we load the batch file to cout how many experimental units we have
@@ -259,9 +277,6 @@ namespace Badger.ViewModels
                 //load the batch
                 LoadedBatch = "Reading experiment files";
                 SimionFileData.LoadExperimentBatchFile(batchFileName, LoadLoggedExperiment, OnExperimentalUnitProcessed);
-            
-                //Do whatever needs to be done when a new batch is loaded (i.e., validate the query)
-                Query.AfterExperimentBatchLoad();
 
                 //Update flags use to enable/disable parts of the report generation menu
                 NotifyOfPropertyChange(() => ForksLoaded);
@@ -274,18 +289,16 @@ namespace Badger.ViewModels
             });
         }
 
-        public const string GroupByExperimentId = "Experiment-Id";
-
         /// <summary>
         ///     Close a tab (report view) and remove it from the list of reports.
         /// </summary>
-        /// <param name="result">The report to be removed</param>
-        public void Close(LogQueryResultViewModel result)
+        /// <param name="report">The report to be removed</param>
+        public void Close(ReportViewModel report)
         {
-            LogQueryResults.Remove(result);
-            if (LogQueryResults.Count > 0)
-                SelectedLogQueryResult = LogQueryResults[0];
-            else SelectedLogQueryResult = null;
+            Reports.Remove(report);
+            if (Reports.Count > 0)
+                SelectedReport = Reports[0];
+            else SelectedReport = null;
         }
 
         /// <summary>
@@ -297,13 +310,14 @@ namespace Badger.ViewModels
         {
             ExperimentalUnits.Clear();
             LoggedExperiments.Clear();
-            LogQueryResults.Clear();
+            Reports.Clear();
 
             NotifyOfPropertyChange(() => VariablesLoaded);
             NotifyOfPropertyChange(() => ForksLoaded);
 
             Query.Reset();
 
+            CanSaveReports = false;
             LogsLoaded = false;
             ForksLoaded = false;
         }

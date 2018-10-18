@@ -98,12 +98,12 @@
                           x:Name="GridSplitter" HorizontalAlignment="Stretch" />
 
             <Border Grid.Row="0" Grid.Column="2" BorderBrush="DarkGray" BorderThickness="1" Margin="0,5,5,5">
-                <TabControl Margin="0" Padding="0"  x:Name="Reports"
-                            SelectedItem="{Binding SelectedReport}">
+                <TabControl Margin="0" Padding="0"  x:Name="LogQueryResults"
+                            SelectedItem="{Binding SelectedLogQueryResult}">
                     <TabControl.ItemTemplate>
                         <DataTemplate>
                             <StackPanel Orientation="Horizontal">
-                                <Label Content="{Binding name}" VerticalAlignment="Center" BorderBrush="Transparent"/>
+                                <Label Content="{Binding Name}" VerticalAlignment="Center" BorderBrush="Transparent"/>
                                 <Button Style="{StaticResource BadgerButtonStyle}" Width="18" Height="18">
                                     <i:Interaction.Triggers>
                                         <i:EventTrigger EventName="Click">
