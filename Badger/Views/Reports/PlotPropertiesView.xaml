@@ -11,7 +11,7 @@
     <Grid>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="220"/>
-            <ColumnDefinition Width="200"/>
+            <ColumnDefinition Width="*"/>
         </Grid.ColumnDefinitions>
 
         <Grid Grid.Column="0">
@@ -76,7 +76,7 @@
                     <CheckBox x:Name="AllTracksSelected" VerticalAlignment="Center"/>
                 </StackPanel>
             </GroupBox.Header>
-            <ScrollViewer VerticalScrollBarVisibility="Auto">
+            <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Auto">
                 <ItemsControl x:Name="LineSeriesProperties"/>
             </ScrollViewer>
         </GroupBox>

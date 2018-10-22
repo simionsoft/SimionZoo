@@ -67,7 +67,7 @@ namespace Badger.Data
 
             if (m_tracks.Count > 1)
             {
-                Track selectedTrack = null;
+                Track selectedTrack = m_tracks[0];
                 double min = double.MaxValue, max = double.MinValue;
                 double maxAscBeauty = double.MinValue, maxDscBeauty = double.MaxValue;
                 foreach (Track track in m_tracks)

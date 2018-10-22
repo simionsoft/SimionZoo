@@ -41,10 +41,10 @@ namespace Badger.ViewModels
         //public Dictionary<string,PlotLineSeriesPropertiesViewModel> LineSeriesPropertiesDic=
         //    new Dictionary<string,PlotLineSeriesPropertiesViewModel>();
 
-        public void AddLineSeries(string name, OxyPlot.Series.LineSeries series)
+        public void AddLineSeries(string name, string description, OxyPlot.Series.LineSeries series)
         {
             PlotLineSeriesPropertiesViewModel newLineProperties 
-                = new PlotLineSeriesPropertiesViewModel(name, series);
+                = new PlotLineSeriesPropertiesViewModel(name, description, series);
             LineSeriesProperties.Add(newLineProperties);
             newLineProperties.PropertyChanged += RaisePropertiesChangedEvent;
         }

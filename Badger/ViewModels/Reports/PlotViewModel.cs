@@ -172,7 +172,7 @@ namespace Badger.ViewModels
 
         private object m_lineSeriesLock = new object();
 
-        public int AddLineSeries(string title, bool isVisible = true)
+        public int AddLineSeries(string title, string description ="", bool isVisible = true)
         {
             //TODO: improve how to limit the number of plots
             //For now, we just ignore series after the max number has been reached
@@ -183,7 +183,7 @@ namespace Badger.ViewModels
                     newSeries.IsVisible = isVisible;
                     m_plot.Series.Add(newSeries);
 
-                    Properties.AddLineSeries(title, newSeries);
+                    Properties.AddLineSeries(title, description, newSeries);
 
                     return m_plot.Series.Count - 1; ;
                 }

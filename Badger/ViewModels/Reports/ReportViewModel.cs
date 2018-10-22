@@ -81,15 +81,21 @@ namespace Badger.ViewModels
                     foreach (Series series in seriesGroup.SeriesList)
                     {
                         string seriesName;
+                        string description;
                         if (seriesGroup.SeriesList.Count == 1)
                         {
                             //only one series per track group, no multi-series track group
                             seriesName = group.ConsolidatedTrack.TrackId;
+                            description = group.ConsolidatedTrack.FullTrackId;
                         }
-                        else seriesName = group.ConsolidatedTrack.TrackId + "-" + series.Id;
+                        else
+                        {
+                            seriesName = group.ConsolidatedTrack.TrackId + "-" + series.Id;
+                            description = group.ConsolidatedTrack.FullTrackId + "-" + series.Id;
+                        }
 
                         //add data to the plot
-                        int lineSeriesId = newPlot.AddLineSeries(seriesName);
+                        int lineSeriesId = newPlot.AddLineSeries(seriesName, description);
                         foreach (XYValue value in series.Values)
                             newPlot.AddLineSeriesValue(lineSeriesId, value.X, value.Y);
 

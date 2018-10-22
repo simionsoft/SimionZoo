@@ -247,5 +247,23 @@ namespace Badger.Simion
                 return id;
             }
         }
+        public string FullTrackId
+        {
+            get
+            {
+                if (ForkValues.Count == 0)
+                    return "N/A";
+                string id = "";
+                double value;
+                foreach (KeyValuePair<string, string> entry in ForkValues)
+                {
+                    //we leave the keys of numeric values and remove the keys of alphanumeric ones
+                    if (double.TryParse(entry.Value, out value))
+                        id += entry.Key + "=" + entry.Value + ",";
+                }
+                id = id.TrimEnd(',');
+                return id;
+            }
+        }
     }
 }

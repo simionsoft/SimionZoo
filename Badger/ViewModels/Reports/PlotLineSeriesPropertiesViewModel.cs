@@ -28,16 +28,27 @@ namespace Badger.ViewModels
                 m_lineSeries.Title = value;
             }
         }
+        private string m_description = "N/A";
+        public string Description
+        {
+            get { return m_description; }
+            set
+            {
+                m_description = value;
+                NotifyOfPropertyChange(() => Description);
+            }
+        }
 
         OxyPlot.Series.LineSeries m_lineSeries;
 
         public OxyPlot.Series.LineSeries LineSeries { get { return m_lineSeries; } }
 
-        public PlotLineSeriesPropertiesViewModel(string name, OxyPlot.Series.LineSeries lineSeries)
+        public PlotLineSeriesPropertiesViewModel(string name, string description, OxyPlot.Series.LineSeries lineSeries)
         {
             m_lineSeries = lineSeries;
             Visible = true;
             Name = Utility.OxyPlotMathNotation(name);
+            Description = description;
         }
     }
 }
