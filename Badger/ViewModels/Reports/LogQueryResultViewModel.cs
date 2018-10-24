@@ -20,7 +20,7 @@ namespace Badger.ViewModels
             return "Query-" + numQueryResults;
         }
 
-        LogQueryViewModel m_query= new LogQueryViewModel();
+        public LogQueryViewModel Query { get; set; } = new LogQueryViewModel();
 
         string m_name = "Unnamed";
         public string Name
@@ -49,7 +49,7 @@ namespace Badger.ViewModels
         public LogQueryResultViewModel(LogQueryViewModel query)
         {
             Name = getDefaultQueryResultName();
-            m_query = query;
+            Query.DeepCopy(query);
 
             // Display the reports
             foreach (Report report in query.Reports)

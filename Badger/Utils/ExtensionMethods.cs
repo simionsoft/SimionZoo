@@ -7,20 +7,6 @@ namespace Badger.Data
 {
     public static class ExtensionMethods
     {
-        public static void CopyProperties<T>(this T source, T destination)
-        {
-            // Iterate the Properties of the destination instance and  
-            // populate them from their source counterparts  
-            PropertyInfo[] destinationProperties = destination.GetType().GetProperties();
-            foreach (PropertyInfo destinationPi in destinationProperties)
-            {
-                PropertyInfo sourcePi = source.GetType().GetProperty(destinationPi.Name);
-                if (destinationPi.CanWrite)
-                    destinationPi.SetValue(destination, sourcePi.GetValue(source, null), null);
-            }
-        }
-
-
         public static int CountListType<T>(this IEnumerable<T> list, Type type)
         {
             return list.Where(x => x.GetType() == type).Count();

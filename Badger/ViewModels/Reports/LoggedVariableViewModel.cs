@@ -60,14 +60,13 @@ namespace Badger.ViewModels
         }
 
         private string m_name;
-
-        public string name
+        public string Name
         {
             get { return m_name; }
             set
             {
                 m_name = value;
-                NotifyOfPropertyChange(() => name);
+                NotifyOfPropertyChange(() => Name);
             }
         }
 
@@ -107,5 +106,18 @@ namespace Badger.ViewModels
             set { m_processFuncs = value; NotifyOfPropertyChange(() => ProcessFuncs); }
         }
         public string SelectedProcessFunc { get; set; } = ProcessFunc.None;
+
+        public LoggedVariableViewModel DeepClone()
+        {
+            LoggedVariableViewModel newVar = new LoggedVariableViewModel(Name);
+
+            newVar.IsCheckVisible = IsCheckVisible;
+            newVar.IsSelected = IsSelected;
+            newVar.SelectedPlotTypes = SelectedPlotTypes;
+            newVar.m_parent = m_parent;
+            newVar.SelectedProcessFunc = SelectedProcessFunc;
+
+            return newVar;
+        }
     }
 }

@@ -44,6 +44,7 @@ namespace Badger.ViewModels
             set
             {
                 m_selectedLogQueryResult = value;
+                Query.DeepCopy(value.Query);
                 NotifyOfPropertyChange(() => SelectedLogQueryResult);
             }
         }

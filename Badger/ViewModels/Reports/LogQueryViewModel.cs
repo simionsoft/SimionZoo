@@ -80,6 +80,9 @@ namespace Badger.ViewModels
     }
     public class LogQueryViewModel : PropertyChangedBase
     {
+        static int m_numInstances= 0;
+        public int QueryId { get; set; }
+
         const int DefaultMaxNumTracks = 10;
         public bool ResampleData { get; set; } = false;
         public int ResamplingNumPoints { get; set; } = 100;
@@ -103,11 +106,9 @@ namespace Badger.ViewModels
             get { return m_inGroupSelectionVariable; }
             set { m_inGroupSelectionVariable = value; NotifyOfPropertyChange(() => InGroupSelectionVariable); }
         }
-        private BindableCollection<string> m_inGroupSelectionReportTypes = new BindableCollection<string>();
-        public BindableCollection<string> InGroupSelectionReportTypes
-        {
-            get { return m_inGroupSelectionReportTypes; }
-        }
+
+        public BindableCollection<string> InGroupSelectionReportTypes { get; } = new BindableCollection<string>();
+
         private string m_inGroupSelectionReportType;
         public string InGroupSelectionReportType
         {
@@ -141,11 +142,8 @@ namespace Badger.ViewModels
 
 
         //Order by
-        private BindableCollection<string> m_orderByReportTypes = new BindableCollection<string>();
-        public BindableCollection<string> OrderByReportTypes
-        {
-            get { return m_orderByReportTypes; }
-        }
+        public BindableCollection<string> OrderByReportTypes { get; } = new BindableCollection<string>();
+
         private string m_orderByReportType;
         public string OrderByReportType
         {
@@ -193,6 +191,11 @@ namespace Badger.ViewModels
                 NotifyOfPropertyChange(() => GroupByForks);
             }
             GroupsEnabled = true;
+        }
+
+        public bool IsForkUsedToGroup(string forkName)
+        {
+            return GroupByForks.Contains(forkName);
         }
 
         public void Reset()
@@ -244,8 +247,8 @@ namespace Badger.ViewModels
             get { return m_useForkSelection; }
             set { m_useForkSelection = value; NotifyOfPropertyChange(() => UseForkSelection); }
         }
-        private List<string> m_groupByForksList = new List<string>();
-        public List<string> GroupByForksList { get { return m_groupByForksList; } }
+ 
+        public List<string> GroupByForksList { get; } = new List<string>();
 
         private bool m_bGroupByExperiment = false;
         public bool GroupByExperiment
@@ -271,6 +274,9 @@ namespace Badger.ViewModels
 
         public LogQueryViewModel()
         {
+            m_numInstances++;
+            QueryId = m_numInstances;
+
             EnumDescriptionConverter conv = new EnumDescriptionConverter();
             InGroupSelectionReportTypes.Add((string)((IValueConverter)conv).Convert(ReportType.LastEvaluation, typeof(ReportType), null, CultureInfo.CurrentCulture));
             InGroupSelectionReportTypes.Add((string)((IValueConverter)conv).Convert(ReportType.EvaluationAverages, typeof(ReportType), null, CultureInfo.CurrentCulture));
@@ -359,7 +365,7 @@ namespace Badger.ViewModels
         {
             foreach (LoggedVariableViewModel variableVM in VariablesVM)
             {
-                if (variableVM.name == variable)
+                if (variableVM.Name == variable)
                 {
                     return variableVM.SelectedProcessFunc;
                 }
@@ -370,7 +376,7 @@ namespace Badger.ViewModels
         {
             foreach (LoggedVariableViewModel variableVM in VariablesVM)
             {
-                if (variableVM.name == variable)
+                if (variableVM.Name == variable)
                 {
                     if (variableVM.IsSelected)
                     {
@@ -399,15 +405,7 @@ namespace Badger.ViewModels
         {
             foreach (string variable in variables)
             {
-                bool bFound = false;
-                foreach (LoggedVariableViewModel variableVM in VariablesVM)
-                {
-                    if (variableVM.name == variable)
-                    {
-                        bFound = true;
-                        break;
-                    }
-                }
+                bool bFound = LogVariableExists(variable);
                 if (!bFound)
                 {
                     LoggedVariableViewModel newVariableVM= new LoggedVariableViewModel(variable);
@@ -416,6 +414,16 @@ namespace Badger.ViewModels
                     InGroupSelectionVariables.Add(variable);
                 }
             }
+        }
+
+        public bool LogVariableExists(string variable)
+        {
+            foreach (LoggedVariableViewModel variableVM in VariablesVM)
+            {
+                if (variableVM.Name == variable)
+                    return true;
+            }
+            return false;
         }
 
         public void BeforeExperimentBatchLoad()
@@ -427,7 +435,7 @@ namespace Badger.ViewModels
 
         public void AfterExperimentBatchLoad()
         {
-            if (!IsVariableValid(InGroupSelectionVariable))
+            if (!LogVariableExists(InGroupSelectionVariable))
             {
                 if (InGroupSelectionVariables.Count > 0)
                     InGroupSelectionVariable = InGroupSelectionVariables[0];
@@ -435,7 +443,7 @@ namespace Badger.ViewModels
                     InGroupSelectionVariable = null;
             }
 
-            if (!IsVariableValid(OrderByVariable))
+            if (!LogVariableExists(OrderByVariable))
             {
                 if (OrderByVariables.Count > 0)
                     OrderByVariable = OrderByVariables[0];
@@ -474,16 +482,6 @@ namespace Badger.ViewModels
 
             // Update the "enabled" property of the variable used to select a group
             GroupsEnabled = GroupByForks.Count > 0;
-        }
-
-        bool IsVariableValid(string variable)
-        {
-            foreach (LoggedVariableViewModel var in VariablesVM)
-            {
-                if (var.name == variable)
-                    return true;
-            }
-            return false;
         }
 
         public void Execute(BindableCollection<LoggedExperimentViewModel> experiments
@@ -603,6 +601,39 @@ namespace Badger.ViewModels
                     loadUpdateFunction?.Invoke();
                 }
             }
+        }
+
+        public void DeepCopy(LogQueryViewModel src)
+        {
+            VariablesVM.Clear();
+            foreach (LoggedVariableViewModel var in src.VariablesVM)
+                VariablesVM.Add(var.DeepClone());
+
+            //in-group selection
+            InGroupSelectionFunction = src.InGroupSelectionFunction;
+            InGroupSelectionVariable = src.InGroupSelectionVariable;
+            InGroupSelectionReportType = src.InGroupSelectionReportType;
+
+            //track limit
+            LimitTracks = src.LimitTracks;
+            MaxNumTracks = src.MaxNumTracks;
+
+            //order by
+            OrderByReportType = src.OrderByReportType;
+            OrderByFunction = src.OrderByFunction;
+            OrderByVariable = src.OrderByVariable;
+
+            //group by forks
+            foreach (string fork in src.GroupByForks)
+                AddGroupByFork(fork);
+       
+            ResampleData = src.ResampleData;
+            ResamplingNumPoints = src.ResamplingNumPoints;
+            TimeOffset = src.TimeOffset;
+            MinEpisodeLength = src.MinEpisodeLength;
+
+            //finish initialization
+            AfterExperimentBatchLoad();
         }
     }
 }

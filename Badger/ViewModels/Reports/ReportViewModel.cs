@@ -56,7 +56,7 @@ namespace Badger.ViewModels
             //This should be improved
             foreach (LoggedVariableViewModel var in query.VariablesVM)
             {
-                if (var.name == variable)
+                if (var.Name == variable)
                     return var.SelectedPlotType;
             }
             return ReportType.Undefined;
