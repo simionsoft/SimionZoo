@@ -5,19 +5,17 @@ using System.Collections.ObjectModel;
 using System.Globalization;
 using System.Windows.Data;
 using Badger.Simion;
+using System.Runtime.Serialization;
 
 namespace Badger.ViewModels
 {
+    [DataContract]
     public class LoggedVariableViewModel : PropertyChangedBase
     {
         public LoggedVariableViewModel(string name)
         {
             m_name = name;
 
-            ProcessFuncs.Add(ProcessFunc.None);
-            ProcessFuncs.Add(ProcessFunc.Abs);
-
-            m_selectedPlotTypes = new ObservableCollection<string>();
             m_selectedPlotTypes.CollectionChanged += M_selectedPlotTypes_CollectionChanged;
 
             EnumDescriptionConverter conv = new EnumDescriptionConverter();
@@ -37,6 +35,7 @@ namespace Badger.ViewModels
         }
 
         private bool m_bIsSelected;
+        [DataMember]
         public bool IsSelected
         {
             get { return m_bIsSelected; }
@@ -48,7 +47,7 @@ namespace Badger.ViewModels
         }
 
         private bool m_bIsCheckVisible = true;
-
+        [DataMember]
         public bool IsCheckVisible
         {
             get { return m_bIsCheckVisible; }
@@ -60,6 +59,7 @@ namespace Badger.ViewModels
         }
 
         private string m_name;
+        [DataMember]
         public string Name
         {
             get { return m_name; }
@@ -71,6 +71,7 @@ namespace Badger.ViewModels
         }
 
         private ReportType m_selectedPlotType;
+        [DataMember]
         public ReportType SelectedPlotType
         {
             get { return m_selectedPlotType; }
@@ -81,7 +82,8 @@ namespace Badger.ViewModels
             }
         }
 
-        private ObservableCollection<string> m_selectedPlotTypes;
+        private ObservableCollection<string> m_selectedPlotTypes = new ObservableCollection<string>();
+        [DataMember]
         public ObservableCollection<string> SelectedPlotTypes
         {
             get { return m_selectedPlotTypes; }
@@ -99,25 +101,10 @@ namespace Badger.ViewModels
 
         public void setParent(ReportsWindowViewModel parent) { m_parent = parent; }
 
-        private BindableCollection<string> m_processFuncs = new BindableCollection<string>();
-        public BindableCollection<string> ProcessFuncs
-        {
-            get { return m_processFuncs; }
-            set { m_processFuncs = value; NotifyOfPropertyChange(() => ProcessFuncs); }
-        }
+        [DataMember]
+        public BindableCollection<string> ProcessFuncs { get; set;} = new BindableCollection<string>() { ProcessFunc.None, ProcessFunc.Abs };
+
+        [DataMember]
         public string SelectedProcessFunc { get; set; } = ProcessFunc.None;
-
-        public LoggedVariableViewModel DeepClone()
-        {
-            LoggedVariableViewModel newVar = new LoggedVariableViewModel(Name);
-
-            newVar.IsCheckVisible = IsCheckVisible;
-            newVar.IsSelected = IsSelected;
-            newVar.SelectedPlotTypes = SelectedPlotTypes;
-            newVar.m_parent = m_parent;
-            newVar.SelectedProcessFunc = SelectedProcessFunc;
-
-            return newVar;
-        }
     }
 }

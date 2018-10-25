@@ -20,7 +20,7 @@ namespace Badger.ViewModels
             return "Query-" + numQueryResults;
         }
 
-        public LogQueryViewModel Query { get; set; } = new LogQueryViewModel();
+        public LogQueryViewModel Query { get; set; }
 
         string m_name = "Unnamed";
         public string Name
@@ -46,15 +46,16 @@ namespace Badger.ViewModels
             }
         }
 
-        public LogQueryResultViewModel(LogQueryViewModel query)
+        public LogQueryResultViewModel(List<TrackGroup> queryResultTracks, List<Report> reports, LogQueryViewModel query)
         {
             Name = getDefaultQueryResultName();
-            Query.DeepCopy(query);
+
+            Query = query;
 
             // Display the reports
-            foreach (Report report in query.Reports)
+            foreach (Report report in reports)
             {
-                ReportViewModel newReport = new ReportViewModel(query, report);
+                ReportViewModel newReport = new ReportViewModel(queryResultTracks, query, report);
                 Reports.Add(newReport);
             }
 

@@ -6,6 +6,7 @@ using Badger.Data;
 using System.ComponentModel;
 using System.Windows.Data;
 using System.Globalization;
+using System.Runtime.Serialization;
 
 namespace Badger.ViewModels
 {
@@ -78,28 +79,40 @@ namespace Badger.ViewModels
             }
         }
     }
+    [DataContract]
     public class LogQueryViewModel : PropertyChangedBase
     {
-        static int m_numInstances= 0;
-        public int QueryId { get; set; }
 
-        const int DefaultMaxNumTracks = 10;
-        public bool ResampleData { get; set; } = false;
-        public int ResamplingNumPoints { get; set; } = 100;
         public const string FunctionMax = "Max";
         public const string FunctionMin = "Min";
         public const string FunctionAscBeauty = "AscBeauty";
         public const string FunctionDscBeauty = "DscBeauty";
 
+        [DataMember]
+        static int m_numInstances = 0;
+
+        public int QueryId { get; set; }
+
+        const int DefaultMaxNumTracks = 10;
+
+        [DataMember]
+        public bool ResampleData { get; set; } = false;
+        [DataMember]
+        public int ResamplingNumPoints { get; set; } = 100;
+
+        [DataMember]
         public double TimeOffset { get; set; } = 0.0;
+        [DataMember]
         public double MinEpisodeLength { get; set; } = 0.0;
 
         string m_inGroupSelectionFunction;
+        [DataMember]
         public string InGroupSelectionFunction
         {
             get { return m_inGroupSelectionFunction; }
             set { m_inGroupSelectionFunction = value; NotifyOfPropertyChange(() => InGroupSelectionFunction); }
         }
+        [DataMember]
         string m_inGroupSelectionVariable;
         public string InGroupSelectionVariable
         {
@@ -107,9 +120,11 @@ namespace Badger.ViewModels
             set { m_inGroupSelectionVariable = value; NotifyOfPropertyChange(() => InGroupSelectionVariable); }
         }
 
-        public BindableCollection<string> InGroupSelectionReportTypes { get; } = new BindableCollection<string>();
+        [DataMember]
+        public BindableCollection<string> InGroupSelectionReportTypes { get; set; } = new BindableCollection<string>();
 
         private string m_inGroupSelectionReportType;
+        [DataMember]
         public string InGroupSelectionReportType
         {
             get { return m_inGroupSelectionReportType; }
@@ -118,6 +133,7 @@ namespace Badger.ViewModels
 
         // Limit to
         bool m_bLimitTracks = false;
+        [DataMember]
         public bool LimitTracks
         {
             get { return m_bLimitTracks; }
@@ -128,67 +144,66 @@ namespace Badger.ViewModels
             }
         }
         private BindableCollection<int> m_maxNumTrackOptions = new BindableCollection<int>();
+        [DataMember]
         public BindableCollection<int> MaxNumTracksOptions
         {
             get { return m_maxNumTrackOptions; }
             set { m_maxNumTrackOptions = value; NotifyOfPropertyChange(() => MaxNumTracksOptions); }
         }
         private int m_maxNumTracks;
+        [DataMember]
         public int MaxNumTracks
         {
             get { return m_maxNumTracks; }
-            set { m_maxNumTracks = value;NotifyOfPropertyChange(() => MaxNumTracks); }
+            set { m_maxNumTracks = value; NotifyOfPropertyChange(() => MaxNumTracks); }
         }
 
 
         //Order by
-        public BindableCollection<string> OrderByReportTypes { get; } = new BindableCollection<string>();
+        [DataMember]
+        public BindableCollection<string> OrderByReportTypes { get; set; } = new BindableCollection<string>();
 
         private string m_orderByReportType;
+        [DataMember]
         public string OrderByReportType
         {
             get { return m_orderByReportType; }
             set { m_orderByReportType = value; NotifyOfPropertyChange(() => OrderByReportType); }
         }
         private string m_orderByFunction;
+        [DataMember]
         public string OrderByFunction
         {
             get { return m_orderByFunction; }
-            set { m_orderByFunction = value;NotifyOfPropertyChange(() => OrderByFunction); }
+            set { m_orderByFunction = value; NotifyOfPropertyChange(() => OrderByFunction); }
         }
         private string m_orderByVariable;
+        [DataMember]
         public string OrderByVariable
         {
             get { return m_orderByVariable; }
             set { m_orderByVariable = value; NotifyOfPropertyChange(() => OrderByVariable); }
         }
-        private BindableCollection<string> m_orderByFunctions 
-            = new BindableCollection<string>() { FunctionMax, FunctionMin, FunctionAscBeauty, FunctionDscBeauty};
-        public BindableCollection<string> OrderByFunctions
-        {
-            get { return m_orderByFunctions; }
-            set { m_orderByFunctions = value; NotifyOfPropertyChange(() => OrderByFunctions); }
-        }
+
+        [DataMember]
+        public BindableCollection<string> OrderByFunctions { get; set; }
+            = new BindableCollection<string>() { FunctionMax, FunctionMin, FunctionAscBeauty, FunctionDscBeauty };
+        [DataMember]
         public BindableCollection<string> OrderByVariables
         {
-            get { return m_variables; }
-            set { m_variables = value; NotifyOfPropertyChange(() => OrderByVariables); }
+            get { return Variables; }
+            set { Variables = value; NotifyOfPropertyChange(() => OrderByVariables); }
         }
 
         // Group By
-        private BindableCollection<string> m_groupByForks = new BindableCollection<string>();
-        public BindableCollection<string> GroupByForks
-        {
-            get { return m_groupByForks; }
-            set { m_groupByForks = value; NotifyOfPropertyChange(() => GroupByForks); }
-        }
+        [DataMember]
+        public BindableCollection<string> GroupByForks { get; set; } = new BindableCollection<string>();
 
         public void AddGroupByFork(string forkName)
         {
             if (!GroupByForks.Contains(forkName))
             {
-                m_groupByForks.Add(forkName);
-                NotifyOfPropertyChange(() => GroupByForks);
+                GroupByForks.Add(forkName);
             }
             GroupsEnabled = true;
         }
@@ -198,22 +213,21 @@ namespace Badger.ViewModels
             return GroupByForks.Contains(forkName);
         }
 
-        public void Reset()
-        {
-            CanGenerateReports = false;
-            GroupByForks.Clear();
-            GroupByForksList.Clear();
+        //public void Reset()
+        //{
+        //    CanGenerateReports = false;
+        //    GroupByForks.Clear();
 
-            OrderByVariables.Clear();
-            VariablesVM.Clear();
-            InGroupSelectionVariables.Clear();
-           
-            GroupsEnabled = false;
-            InGroupSelectionFunction = FunctionMax;
-            InGroupSelectionVariable = null;
-            
-            MaxNumTracks = DefaultMaxNumTracks;
-        }
+        //    OrderByVariables.Clear();
+        //    VariablesVM.Clear();
+        //    InGroupSelectionVariables.Clear();
+
+        //    GroupsEnabled = false;
+        //    InGroupSelectionFunction = FunctionMax;
+        //    InGroupSelectionVariable = null;
+
+        //    MaxNumTracks = DefaultMaxNumTracks;
+        //}
 
         public void ResetGroupBy()
         {
@@ -227,14 +241,13 @@ namespace Badger.ViewModels
                 GroupsEnabled = false;
         }
 
-        private BindableCollection<string> m_inGroupSelectionFunctions 
+           
+        [DataMember]
+        public BindableCollection<string> InGroupSelectionFunctions { get; set; }
             = new BindableCollection<string>() { FunctionMax, FunctionMin, FunctionAscBeauty, FunctionDscBeauty };
-        public BindableCollection<string> InGroupSelectionFunctions
-        {
-            get { return m_inGroupSelectionFunctions; }
-            set { m_inGroupSelectionFunctions = value; NotifyOfPropertyChange(() => InGroupSelectionFunctions); }
-        }
+
         private bool m_bGroupsEnabled; // no groups by default
+        [DataMember]
         public bool GroupsEnabled
         {
             get { return m_bGroupsEnabled; }
@@ -242,13 +255,12 @@ namespace Badger.ViewModels
         }
 
         bool m_useForkSelection = false;
+        [DataMember]
         public bool UseForkSelection
         {
             get { return m_useForkSelection; }
             set { m_useForkSelection = value; NotifyOfPropertyChange(() => UseForkSelection); }
         }
- 
-        public List<string> GroupByForksList { get; } = new List<string>();
 
         private bool m_bGroupByExperiment = false;
         public bool GroupByExperiment
@@ -266,7 +278,6 @@ namespace Badger.ViewModels
                     if (GroupByForks.Count == 1)
                         GroupsEnabled = false;
                     GroupByForks.Remove(ReportsWindowViewModel.GroupByExperimentId);
-                    GroupByForksList.Remove(ReportsWindowViewModel.GroupByExperimentId);
                 }
                 m_bGroupByExperiment = value;
             }
@@ -298,20 +309,15 @@ namespace Badger.ViewModels
 
             if (OrderByVariables.Count > 0) OrderByVariable = OrderByVariables[0];
             NotifyOfPropertyChange(() => OrderByVariables);
+
+            //Add the listening function to the LogQuery object with all the parameters
+            PropertyChanged += OnChildPropertyChanged;
         }
 
-        private List<TrackGroup> m_resultTracks
-            = new List<TrackGroup>();
-        public List<TrackGroup> ResultTracks
-        {
-            get { return m_resultTracks; }
-            set { m_resultTracks = value; NotifyOfPropertyChange(() => ResultTracks); }
-        }
-
-        public List<Report> GetTracksParameters()
+        public List<Report> GetTracksParameters(List<TrackGroup> resultTracks)
         {
             List<Report> list = new List<Report>();
-            foreach(TrackGroup group in ResultTracks)
+            foreach(TrackGroup group in resultTracks)
             {
                 //we iterate over the TrackParameters of the result track
                 foreach (Report parameters in group.ConsolidatedTrack.SeriesGroups.Keys)
@@ -321,10 +327,11 @@ namespace Badger.ViewModels
             return list;
         }
 
-        private TrackGroup GetTrackGroup(Dictionary<string, string> forkValues, string experimentId)
+        private TrackGroup GetTrackGroup(List<TrackGroup> resultTracks, Dictionary<string, string> forkValues
+            , string experimentId)
         {
             uint numMatchedForks;
-            foreach (TrackGroup resultTrack in ResultTracks)
+            foreach (TrackGroup resultTrack in resultTracks)
             {
                 numMatchedForks = 0;
 
@@ -350,15 +357,17 @@ namespace Badger.ViewModels
             }
             return null;
         }
-
-        private BindableCollection<string> m_variables = new BindableCollection<string>();
+        [DataMember]
+        private BindableCollection<string> Variables = new BindableCollection<string>();
+        [DataMember]
         public BindableCollection<string> InGroupSelectionVariables
         {
-            get { return m_variables; }
-            set { m_variables = value; NotifyOfPropertyChange(() => InGroupSelectionVariables); }
+            get { return Variables; }
+            set { Variables = value; NotifyOfPropertyChange(() => InGroupSelectionVariables); }
         }
-            
-        public BindableCollection<LoggedVariableViewModel> VariablesVM { get; }
+
+        [DataMember]
+        public BindableCollection<LoggedVariableViewModel> VariablesVM { get; set; }
             = new BindableCollection<LoggedVariableViewModel>();
 
         string GetVariableProcessFunc(string variable)
@@ -397,7 +406,7 @@ namespace Badger.ViewModels
         {
             if (e.PropertyName == "IsSelected")
             {
-                ValidateQuery();
+                Validate();
             }
         }
 
@@ -426,15 +435,26 @@ namespace Badger.ViewModels
             return false;
         }
 
-        public void BeforeExperimentBatchLoad()
+        private bool m_bCanGenerateReports = false;
+        [DataMember]
+        public bool CanGenerateReports
         {
-            OrderByVariables.Clear();
-            VariablesVM.Clear();
-            InGroupSelectionVariables.Clear();
+            get { return m_bCanGenerateReports; }
+            set { m_bCanGenerateReports = value; NotifyOfPropertyChange(() => CanGenerateReports); }
         }
 
-        public void AfterExperimentBatchLoad()
+        /// <summary>
+        /// This function validates the current query and sets CanGenerateReports accordingly
+        /// </summary>
+        public void Validate()
         {
+            // Make sure at least one variable is selected
+            int numSelectedVars = 0;
+
+            foreach (LoggedVariableViewModel variable in VariablesVM)
+                if (variable.IsSelected) ++numSelectedVars;
+
+            //check selected items are valid
             if (!LogVariableExists(InGroupSelectionVariable))
             {
                 if (InGroupSelectionVariables.Count > 0)
@@ -451,30 +471,6 @@ namespace Badger.ViewModels
                     OrderByVariable = null;
             }
 
-            ValidateQuery();
-        }
-
-        public List<Report> Reports = new List<Report>();
-
-        private bool m_bCanGenerateReports = false;
-
-        public bool CanGenerateReports
-        {
-            get { return m_bCanGenerateReports; }
-            set { m_bCanGenerateReports = value; NotifyOfPropertyChange(() => CanGenerateReports); }
-        }
-
-        /// <summary>
-        /// This function validates the current query and sets CanGenerateReports accordingly
-        /// </summary>
-        public void ValidateQuery()
-        {
-            // Validate the current query
-            int numSelectedVars = 0;
-
-            foreach (LoggedVariableViewModel variable in VariablesVM)
-                if (variable.IsSelected) ++numSelectedVars;
-
             if (numSelectedVars == 0 || (GroupsEnabled && (InGroupSelectionVariable == null || InGroupSelectionVariable == "")))
                 CanGenerateReports = false;
             else
@@ -482,15 +478,17 @@ namespace Badger.ViewModels
 
             // Update the "enabled" property of the variable used to select a group
             GroupsEnabled = GroupByForks.Count > 0;
+
         }
 
         public void Execute(BindableCollection<LoggedExperimentViewModel> experiments
-            ,SimionFileData.LoadUpdateFunction loadUpdateFunction)
+            ,SimionFileData.LoadUpdateFunction loadUpdateFunction, out List<TrackGroup> resultTracks, out List<Report> reports)
         {
             TrackGroup resultTrackGroup = null;
-            ResultTracks.Clear();
 
-            Reports = DataTrackUtilities.FromLoggedVariables(VariablesVM);
+            //initialize the output lists
+            resultTracks = new List<TrackGroup>();
+            reports = DataTrackUtilities.FromLoggedVariables(VariablesVM);
 
             //if the in-group selection function requires a variable not selected for the report
             //we add it too to the list of variables read from the log
@@ -500,7 +498,7 @@ namespace Badger.ViewModels
                 EnumDescriptionConverter conv = new EnumDescriptionConverter();
                 ReportType reportType = (ReportType)((IValueConverter)conv).ConvertBack(InGroupSelectionReportType, typeof(ReportType), null, CultureInfo.CurrentCulture);
 
-                Reports.Add(new Report(InGroupSelectionVariable, reportType, GetVariableProcessFunc(InGroupSelectionVariable)));
+                reports.Add(new Report(InGroupSelectionVariable, reportType, GetVariableProcessFunc(InGroupSelectionVariable)));
             }
 
             //if we use some sorting function to select only some tracks, we need to add the variable
@@ -510,11 +508,11 @@ namespace Badger.ViewModels
                 EnumDescriptionConverter conv = new EnumDescriptionConverter();
                 ReportType reportType = (ReportType)((IValueConverter)conv).ConvertBack(OrderByReportType, typeof(ReportType), null, CultureInfo.CurrentCulture);
 
-                Reports.Add(new Report(OrderByVariable, reportType, GetVariableProcessFunc(OrderByVariable)));
+                reports.Add(new Report(OrderByVariable, reportType, GetVariableProcessFunc(OrderByVariable)));
             }
 
             //set the data resampling options
-            foreach (Report report in Reports)
+            foreach (Report report in reports)
             {
                 report.Resample = ResampleData;
                 report.NumSamples = ResamplingNumPoints;
@@ -535,11 +533,11 @@ namespace Badger.ViewModels
                         resultTrackGroup = null;
                         if (GroupByForks.Count != 0)
                         {
-                            resultTrackGroup = GetTrackGroup(expUnit.forkValues, exp.Name);
+                            resultTrackGroup = GetTrackGroup(resultTracks, expUnit.forkValues, exp.Name);
                             if (resultTrackGroup != null)
                             {
                                 //the track exists and we are using forks to group results
-                                Track trackData = expUnit.LoadTrackData(Reports);
+                                Track trackData = expUnit.LoadTrackData(reports);
                                 if (trackData!=null)
                                     resultTrackGroup.AddTrackData(trackData);
 
@@ -571,7 +569,7 @@ namespace Badger.ViewModels
                             }
 
                             //load data from the log file
-                            Track trackData = expUnit.LoadTrackData(Reports);
+                            Track trackData = expUnit.LoadTrackData(reports);
 
                             if (trackData != null)
                             {
@@ -582,58 +580,25 @@ namespace Badger.ViewModels
 
                                 //we only consider those tracks with data loaded
                                 if (newResultTrackGroup.HasData)
-                                    ResultTracks.Add(newResultTrackGroup);
+                                    resultTracks.Add(newResultTrackGroup);
                             }
                         }
                         //Limit the number of tracks asap
                         //if we are using limitTo/orderBy, we have to select the best tracks/groups according to the given criteria
                         if (LimitTracks)
                         {
-                            if (ResultTracks.Count > MaxNumTracks)
+                            if (resultTracks.Count > MaxNumTracks)
                             {
                                 bool asc = (OrderByFunction == FunctionMin) || (OrderByFunction == FunctionAscBeauty);
                                 bool useBeauty = (OrderByFunction == FunctionDscBeauty) || (OrderByFunction == FunctionAscBeauty);
-                                m_resultTracks.Sort(new TrackGroupComparer(asc, useBeauty, OrderByVariable, OrderByReportType));
-                                ResultTracks.RemoveRange(MaxNumTracks, m_resultTracks.Count - MaxNumTracks);
+                                resultTracks.Sort(new TrackGroupComparer(asc, useBeauty, OrderByVariable, OrderByReportType));
+                                resultTracks.RemoveRange(MaxNumTracks, resultTracks.Count - MaxNumTracks);
                             }
                         }
                     }
                     loadUpdateFunction?.Invoke();
                 }
             }
-        }
-
-        public void DeepCopy(LogQueryViewModel src)
-        {
-            VariablesVM.Clear();
-            foreach (LoggedVariableViewModel var in src.VariablesVM)
-                VariablesVM.Add(var.DeepClone());
-
-            //in-group selection
-            InGroupSelectionFunction = src.InGroupSelectionFunction;
-            InGroupSelectionVariable = src.InGroupSelectionVariable;
-            InGroupSelectionReportType = src.InGroupSelectionReportType;
-
-            //track limit
-            LimitTracks = src.LimitTracks;
-            MaxNumTracks = src.MaxNumTracks;
-
-            //order by
-            OrderByReportType = src.OrderByReportType;
-            OrderByFunction = src.OrderByFunction;
-            OrderByVariable = src.OrderByVariable;
-
-            //group by forks
-            foreach (string fork in src.GroupByForks)
-                AddGroupByFork(fork);
-       
-            ResampleData = src.ResampleData;
-            ResamplingNumPoints = src.ResamplingNumPoints;
-            TimeOffset = src.TimeOffset;
-            MinEpisodeLength = src.MinEpisodeLength;
-
-            //finish initialization
-            AfterExperimentBatchLoad();
         }
     }
 }

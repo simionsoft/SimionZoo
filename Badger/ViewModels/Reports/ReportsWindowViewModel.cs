@@ -6,12 +6,13 @@ using Badger.Data;
 using Caliburn.Micro;
 using Badger.Simion;
 using System.Threading.Tasks;
+using System.Collections.Generic;
 
 namespace Badger.ViewModels
 {
     public class ReportsWindowViewModel : Conductor<Screen>.Collection.OneActive
     {
-        LogQueryViewModel m_query = new LogQueryViewModel();
+        LogQueryViewModel m_query = null;
         public LogQueryViewModel Query
         {
             get { return m_query; }
@@ -44,7 +45,13 @@ namespace Badger.ViewModels
             set
             {
                 m_selectedLogQueryResult = value;
-                Query.DeepCopy(value.Query);
+                //avoid cloning the first query when it is selected
+                if (value != null && !ReferenceEquals(value.Query, Query))
+                {
+                    Query = Serialiazer.Clone(value.Query);
+                    //This property is not set because the constructor of PropertyChangedBase is not called when we clone the object
+                    Query.IsNotifying= true;
+                }
                 NotifyOfPropertyChange(() => SelectedLogQueryResult);
             }
         }
@@ -67,7 +74,7 @@ namespace Badger.ViewModels
                 foreach (LoggedExperimentViewModel exp in LoggedExperiments)
                     exp.IsCheckVisible = Query.UseForkSelection;
 
-                Query.ValidateQuery();
+                Query.Validate();
             }
         }
 
@@ -88,9 +95,8 @@ namespace Badger.ViewModels
         /// </summary>
         public ReportsWindowViewModel()
         {
-            //Add the listening function to the LogQuery object with all the parameters
-            Query.PropertyChanged += OnChildPropertyChanged;
         }
+
 
         /// <summary>
         ///     Method called from the view. Generate a report from a set of selected configurations once
@@ -105,14 +111,17 @@ namespace Badger.ViewModels
                 string batchFilename = LoadedBatch;
 
                 LoadedBatch = "Running query";
-                Query.Execute(LoggedExperiments, OnExperimentalUnitProcessed);
+
+                Query.Execute(LoggedExperiments, OnExperimentalUnitProcessed, out List<TrackGroup> queryResultTracks, out List<Report> queryReports);
+
+                //Clone the query
+                LogQueryViewModel clonedQuery = Serialiazer.Clone(Query);
 
                 //Create and add to list the result of the query
-                LogQueryResultViewModel result = new LogQueryResultViewModel(Query);
+                LogQueryResultViewModel result = new LogQueryResultViewModel(queryResultTracks, queryReports, clonedQuery);
                 LogQueryResults.Add(result);
                 //set this last result as selected
                 SelectedLogQueryResult = LogQueryResults[LogQueryResults.Count-1];
-
 
                 LoadedBatch = batchFilename;
                 EndLongOperation();
@@ -246,7 +255,6 @@ namespace Badger.ViewModels
 
             //reset the view if a batch was succesfully selected
             ClearReportViewer();
-            Query.BeforeExperimentBatchLoad();
 
             //Inefficient but not so much as to care
             //First we load the batch file to cout how many experimental units we have
@@ -261,9 +269,6 @@ namespace Badger.ViewModels
                 LoadedBatch = "Reading experiment files";
                 SimionFileData.LoadExperimentBatchFile(batchFileName, LoadLoggedExperiment, OnExperimentalUnitProcessed);
             
-                //Do whatever needs to be done when a new batch is loaded (i.e., validate the query)
-                Query.AfterExperimentBatchLoad();
-
                 //Update flags use to enable/disable parts of the report generation menu
                 NotifyOfPropertyChange(() => ForksLoaded);
                 NotifyOfPropertyChange(() => VariablesLoaded);
@@ -303,7 +308,9 @@ namespace Badger.ViewModels
             NotifyOfPropertyChange(() => VariablesLoaded);
             NotifyOfPropertyChange(() => ForksLoaded);
 
-            Query.Reset();
+            Query = new LogQueryViewModel();
+            //Add the listening function to the LogQuery object with all the parameters
+            Query.PropertyChanged += OnChildPropertyChanged;
 
             LogsLoaded = false;
             ForksLoaded = false;

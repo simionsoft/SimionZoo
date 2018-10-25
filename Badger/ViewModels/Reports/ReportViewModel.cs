@@ -3,7 +3,7 @@ using Caliburn.Micro;
 using System.IO;
 using Badger.Simion;
 using Badger.Data;
-
+using System.Collections.Generic;
 
 namespace Badger.ViewModels
 {
@@ -62,7 +62,7 @@ namespace Badger.ViewModels
             return ReportType.Undefined;
         }
 
-        public ReportViewModel(LogQueryViewModel query, Report report)
+        public ReportViewModel(List<TrackGroup> queryResultTracks, LogQueryViewModel query, Report report)
         {
             Name = report.Name;
 
@@ -71,7 +71,7 @@ namespace Badger.ViewModels
             //Create the stats
             StatsViewModel newStatGroup = new StatsViewModel(report.Name);
 
-            foreach (TrackGroup group in query.ResultTracks)
+            foreach (TrackGroup group in queryResultTracks)
             {
                 //plot data
                 if (group.ConsolidatedTrack != null)

@@ -1,23 +1,21 @@
-﻿using System.ComponentModel;
-
+﻿using System;
+using System.ComponentModel;
+using System.Runtime.Serialization;
 
 namespace Badger.Data
 {
+    [DataContract][Flags]
     public enum ReportType
     {
-        [Browsable(false)]
+        [Browsable(false),EnumMember]
         Undefined = 0,
-        [Description("Last evaluation")]
+        [Description("Last evaluation"),EnumMember]
         LastEvaluation = 1,
-        [Description("All evaluations")]
+        [Description("All evaluations"),EnumMember]
         AllEvaluationEpisodes = 2,
-        //[Description("Average of each evaluation episode")]
-        //AverageOfEachEvaluationEpisode = 4,
-        [Description("All training")]
-        AllTrainingEpisodes = 8,
-        //[Description("Training averages")]
-        //AverageOfEachTrainingEpisode = 16,
-        [Description("Evaluation averages")]
+        [Description("All training"),EnumMember]
+        AllTrainingEpisodes = 4,
+        [Description("Evaluation averages"),EnumMember]
         EvaluationAverages = 32
     };
 }
