@@ -5,22 +5,24 @@ using Caliburn.Micro;
 using Badger.Simion;
 using System.Diagnostics;
 using Badger.Data;
+using System.Runtime.Serialization;
 
 namespace Badger.ViewModels
 {
-
+    [DataContract]
     public class StatsViewModel : PropertyChangedBase
     {
-
-        private ObservableCollection<StatViewModel> m_stats = new ObservableCollection<StatViewModel>();
-        public ObservableCollection<StatViewModel> stats { get { return m_stats; } set { } }
-        public StatViewModel SelectedStat{get;set;} = null;
+        [DataMember]
+        public ObservableCollection<StatViewModel> Stats { get; set; }= new ObservableCollection<StatViewModel>();
+        [DataMember]
+        public StatViewModel SelectedStat { get; set; } = null;
 
         private string m_variable;
-        public string variable
+        [DataMember]
+        public string Variable
         {
             get { return m_variable; }
-            set { m_variable = value;  NotifyOfPropertyChange(() => variable); }
+            set { m_variable = value;  NotifyOfPropertyChange(() => Variable); }
         }
 
         public StatsViewModel(string variableName)
@@ -30,14 +32,14 @@ namespace Badger.ViewModels
 
         public void addStat(StatViewModel newStat)
         {
-            stats.Add(newStat);
+            Stats.Add(newStat);
         }
 
         public void Export(StreamWriter fileWriter, string leftSpace)
         {
             fileWriter.WriteLine(leftSpace + "<" + XMLConfig.statVariableTag 
-                + " " + XMLConfig.nameAttribute + "=\"" + variable + "\">");
-            foreach(StatViewModel stat in stats)
+                + " " + XMLConfig.nameAttribute + "=\"" + Variable + "\">");
+            foreach(StatViewModel stat in Stats)
             {
                 fileWriter.WriteLine(leftSpace + "  <" + XMLConfig.statVariableItemTag 
                     + " " + XMLConfig.groupIdAttribute + "=\"" + stat.ExperimentId + "\" "

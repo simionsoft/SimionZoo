@@ -147,8 +147,8 @@ namespace Badger.ViewModels
         { get { return m_bForksLoaded; } set { m_bForksLoaded = value; NotifyOfPropertyChange(() => ForksLoaded); } }
 
         /// <summary>
-        ///     Method called from the view. When the report is generated it can be saved in a folder 
-        ///     as a set of separated files containing the report data for further analysis.
+        ///     Method called from the view. When the report is generated it can be saved in a folder.
+        ///     Each LogQueryResults object is saved in a different subfolder
         /// </summary>
         public void SaveReports()
         {
@@ -167,7 +167,11 @@ namespace Badger.ViewModels
                     if (!Directory.Exists(outputFolder))
                         Directory.CreateDirectory(outputFolder);
 
-                    logQueryResult.Export(outputFolder);
+
+                    Serialiazer.WriteObject(outputBaseFolder + "\\" + Utility.RemoveSpecialCharacters(logQueryResult.Name) + ".xml", logQueryResult);
+                    //logQueryResult.Export(outputFolder);
+
+                    //Serialiazer.WriteObject(outputFolder + "\\query.xml", logQueryResult.Query);
                 }
             }
         }

@@ -2,13 +2,14 @@
 using OxyPlot.Axes;
 using OxyPlot.Wpf;
 using Caliburn.Micro;
-using System.Windows.Forms;
+using System.Runtime.Serialization;
 using Badger.Data;
 using System;
 using System.ComponentModel;
 
 namespace Badger.ViewModels
 {
+    [DataContract]
     public class PlotViewModel : PropertyChangedBase, IDisposable
     {
         protected virtual void Dispose(bool disposing)
@@ -27,6 +28,7 @@ namespace Badger.ViewModels
 
         string m_name = "";
 
+        [DataMember]
         public string name
         {
             get { return m_name; }
@@ -35,20 +37,26 @@ namespace Badger.ViewModels
         private const int m_updateFreq = 1000; //plot refresh freq in millseconds
         private System.Threading.Timer m_timer;
 
+        [DataMember]
         double m_minX = double.MaxValue;
+        [DataMember]
         double m_maxX = double.MinValue;
+        [DataMember]
         double m_minY = double.MaxValue;
+        [DataMember]
         double m_maxY = double.MinValue;
+        [DataMember]
         double m_maxNumSeries = 20;
 
         private PlotModel m_plot;
+        [DataMember]
         public PlotModel Plot { get { return m_plot; } set { } }
 
-        private PlotPropertiesViewModel m_properties = new PlotPropertiesViewModel();
+        [DataMember]
         public PlotPropertiesViewModel Properties
         {
-            get { return m_properties; }
-        }
+            get; set;
+        } = new PlotPropertiesViewModel();
 
         public bool LineSeriesSelectionVisible
         {
@@ -303,6 +311,7 @@ namespace Badger.ViewModels
         }
 
         private bool m_bShowOptions = false;
+        [DataMember]
         public bool bShowOptions { get { return m_bShowOptions; } set { m_bShowOptions = value; NotifyOfPropertyChange(() => bShowOptions); } }
 
 

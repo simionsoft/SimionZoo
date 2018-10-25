@@ -1,23 +1,26 @@
 ﻿using Badger.Data;
 using Caliburn.Micro;
+using System.Runtime.Serialization;
 
 namespace Badger.ViewModels
 {
+    [DataContract]
     public class PlotLineSeriesPropertiesViewModel : PropertyChangedBase
     {
         private bool m_bVisible;
-
+        [DataMember]
         public bool Visible
         {
             get { return m_bVisible; }
             set
             {
                 m_bVisible = value;
-                m_lineSeries.IsVisible = Visible;
+                LineSeries.IsVisible = Visible;
                 NotifyOfPropertyChange(() => Visible);
             }
         }
         private string m_name = "N/A";
+        [DataMember]
         public string Name
         {
             get { return m_name; }
@@ -25,10 +28,11 @@ namespace Badger.ViewModels
             {
                 m_name = value;
                 NotifyOfPropertyChange(() => Name);
-                m_lineSeries.Title = value;
+                LineSeries.Title = value;
             }
         }
         private string m_description = "N/A";
+        [DataMember]
         public string Description
         {
             get { return m_description; }
@@ -39,13 +43,12 @@ namespace Badger.ViewModels
             }
         }
 
-        OxyPlot.Series.LineSeries m_lineSeries;
-
-        public OxyPlot.Series.LineSeries LineSeries { get { return m_lineSeries; } }
+        [DataMember]
+        public OxyPlot.Series.LineSeries LineSeries { get; set; }
 
         public PlotLineSeriesPropertiesViewModel(string name, string description, OxyPlot.Series.LineSeries lineSeries)
         {
-            m_lineSeries = lineSeries;
+            LineSeries = lineSeries;
             Visible = true;
             Name = Utility.OxyPlotMathNotation(name);
             Description = description;

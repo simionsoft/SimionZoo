@@ -4,16 +4,20 @@ using System.IO;
 using Badger.Simion;
 using Badger.Data;
 using System.Collections.Generic;
+using System.Runtime.Serialization;
 
 namespace Badger.ViewModels
 {
-    public class ReportViewModel : Screen
+    [DataContract]
+    public class ReportViewModel : PropertyChangedBase
     {
         private string m_name = "Unnamed";
+        [DataMember]
         public string Name { get { return m_name; } set { m_name = value; NotifyOfPropertyChange(() => Name); } }
 
         //plots
         private PlotViewModel m_plot= null;
+        [DataMember]
         public PlotViewModel Plot
         {
             get { return m_plot; }
@@ -22,6 +26,7 @@ namespace Badger.ViewModels
  
         //stats
         private StatsViewModel m_stats;
+        [DataMember]
         public StatsViewModel Stats
         {
             get { return m_stats; }

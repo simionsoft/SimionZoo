@@ -1,17 +1,25 @@
 ﻿using Caliburn.Micro;
 using System.IO;
 using Badger.Simion;
+using System.Runtime.Serialization;
 
 namespace Badger.ViewModels
 {
+    [DataContract]
     public class StatViewModel : PropertyChangedBase
     {
-        public string ExperimentalUnitConfigFile { get; }
-        public string LogBinaryFile { get; }
-        public string LogDescriptorFile { get; }
-        public string ExperimentId { get; }
-        public string TrackId { get; }
-        public Stats Stats { get; }
+        [DataMember]
+        public string ExperimentalUnitConfigFile { get; set; }
+        [DataMember]
+        public string LogBinaryFile { get; set; }
+        [DataMember]
+        public string LogDescriptorFile { get; set; }
+        [DataMember]
+        public string ExperimentId { get; set; }
+        [DataMember]
+        public string TrackId { get; set; }
+        [DataMember]
+        public Stats Stats { get; set; }
 
         public StatViewModel(string experimentId, string trackId, Stats stats
             , string logBinaryFile, string logDescriptorFile, string experimentalUnitConfigFile)

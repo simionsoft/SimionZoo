@@ -112,8 +112,9 @@ namespace Badger.ViewModels
             get { return m_inGroupSelectionFunction; }
             set { m_inGroupSelectionFunction = value; NotifyOfPropertyChange(() => InGroupSelectionFunction); }
         }
-        [DataMember]
+
         string m_inGroupSelectionVariable;
+        [DataMember]
         public string InGroupSelectionVariable
         {
             get { return m_inGroupSelectionVariable; }
@@ -212,22 +213,6 @@ namespace Badger.ViewModels
         {
             return GroupByForks.Contains(forkName);
         }
-
-        //public void Reset()
-        //{
-        //    CanGenerateReports = false;
-        //    GroupByForks.Clear();
-
-        //    OrderByVariables.Clear();
-        //    VariablesVM.Clear();
-        //    InGroupSelectionVariables.Clear();
-
-        //    GroupsEnabled = false;
-        //    InGroupSelectionFunction = FunctionMax;
-        //    InGroupSelectionVariable = null;
-
-        //    MaxNumTracks = DefaultMaxNumTracks;
-        //}
 
         public void ResetGroupBy()
         {

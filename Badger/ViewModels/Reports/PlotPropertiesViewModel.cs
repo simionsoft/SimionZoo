@@ -1,9 +1,11 @@
 ﻿using System.ComponentModel;
 using Caliburn.Micro;
 using OxyPlot;
+using System.Runtime.Serialization;
 
 namespace Badger.ViewModels
 {
+    [DataContract]
     public class PlotPropertiesViewModel : PropertyChangedBase
     {
         /*
@@ -18,6 +20,7 @@ namespace Badger.ViewModels
 
         //all-track selection 
         private bool m_bAllTracksSelected = true;
+        [DataMember]
         public bool AllTracksSelected
         {
             get { return m_bAllTracksSelected; }
@@ -25,21 +28,14 @@ namespace Badger.ViewModels
             {
                 m_bAllTracksSelected = value;
                 NotifyOfPropertyChange(() => AllTracksSelected);
-                foreach (PlotLineSeriesPropertiesViewModel trackProperties in m_lineSeriesProperties)
+                foreach (PlotLineSeriesPropertiesViewModel trackProperties in LineSeriesProperties)
                     trackProperties.Visible = value;
             }
         }
         //per-track series properties
-        private BindableCollection<PlotLineSeriesPropertiesViewModel> m_lineSeriesProperties
-            = new BindableCollection<PlotLineSeriesPropertiesViewModel>();
 
-        public BindableCollection<PlotLineSeriesPropertiesViewModel> LineSeriesProperties
-        {
-            get { return m_lineSeriesProperties; }
-            set { m_lineSeriesProperties = value; NotifyOfPropertyChange(() => LineSeriesProperties); }
-        }
-        //public Dictionary<string,PlotLineSeriesPropertiesViewModel> LineSeriesPropertiesDic=
-        //    new Dictionary<string,PlotLineSeriesPropertiesViewModel>();
+        [DataMember]
+        public BindableCollection<PlotLineSeriesPropertiesViewModel> LineSeriesProperties { get; set; } = new BindableCollection<PlotLineSeriesPropertiesViewModel>();
 
         public void AddLineSeries(string name, string description, OxyPlot.Series.LineSeries series)
         {
@@ -57,39 +53,31 @@ namespace Badger.ViewModels
 
         //LEGEND
         //Position
-        private BindableCollection<string> m_legendPositions = new BindableCollection<string>();
-        public BindableCollection<string> LegendPositions
-        {
-            get { return m_legendPositions; }
-            set { m_legendPositions = value; NotifyOfPropertyChange(() => LegendPositions); }
-        }
+        [DataMember]
+        public BindableCollection<string> LegendPositions { get; set; }= new BindableCollection<string>();
         private string m_selectedLegendPosition;
+        [DataMember]
         public string SelectedLegendPosition
         {
             get { return m_selectedLegendPosition; }
             set { m_selectedLegendPosition = value; NotifyOfPropertyChange(() => SelectedLegendPosition); }
         }
         //Placement
-        private BindableCollection<string> m_legendPlacements = new BindableCollection<string>();
-        public BindableCollection<string> LegendPlacements
-        {
-            get { return m_legendPlacements; }
-            set { m_legendPlacements = value; NotifyOfPropertyChange(() => LegendPlacements); }
-        }
+        public BindableCollection<string> LegendPlacements { get; set; }= new BindableCollection<string>();
+
         private string m_selectedLegendPlacement;
+        [DataMember]
         public string SelectedLegendPlacement
         {
             get { return m_selectedLegendPlacement; }
             set { m_selectedLegendPlacement = value; NotifyOfPropertyChange(() => SelectedLegendPlacement); }
         }
         //Orientation
-        private BindableCollection<string> m_legendOrientations = new BindableCollection<string>();
-        public BindableCollection<string> LegendOrientations
-        {
-            get { return m_legendOrientations; }
-            set { m_legendOrientations = value; NotifyOfPropertyChange(() => LegendOrientations); }
-        }
+        [DataMember]
+        public BindableCollection<string> LegendOrientations { get; set; }= new BindableCollection<string>();
+
         private string m_selectedLegendOrientation;
+        [DataMember]
         public string SelectedLegendOrientation
         {
             get { return m_selectedLegendOrientation; }
@@ -97,31 +85,32 @@ namespace Badger.ViewModels
         }
         //Visibility
         private bool m_bLegendVisible = true;
+        [DataMember]
         public bool LegendVisible
         {
             get { return m_bLegendVisible; }
             set { m_bLegendVisible = value; NotifyOfPropertyChange(() => LegendVisible); }
         }
         private bool m_bLegendBorder = true;
+        [DataMember]
         public bool LegendBorder
         {
             get { return m_bLegendBorder; }
             set { m_bLegendBorder = value; NotifyOfPropertyChange(() => LegendBorder); }
         }
         private bool m_bLegendSolidBackground = true;
+        [DataMember]
         public bool LegendSolidBackground
         {
             get { return m_bLegendSolidBackground; }
             set { m_bLegendSolidBackground = value; NotifyOfPropertyChange(() => LegendSolidBackground); }
         }
         //Font
-        private BindableCollection<string> m_fonts = new BindableCollection<string>();
-        public BindableCollection<string> Fonts
-        {
-            get { return m_fonts; }
-            set { m_fonts = value; NotifyOfPropertyChange(() => Fonts); }
-        }
+        [DataMember]
+        public BindableCollection<string> Fonts { get; set; } = new BindableCollection<string>();
+
         private string m_selectedFont;
+        [DataMember]
         public string SelectedFont
         {
             get { return m_selectedFont; }
@@ -129,18 +118,21 @@ namespace Badger.ViewModels
         }
         //Texts
         private string m_title = "N/A";
+        [DataMember]
         public string Title
         {
             get { return m_title; }
             set { m_title = value; NotifyOfPropertyChange(() => Title); }
         }
         private string m_xAxisName = "N/A";
+        [DataMember]
         public string XAxisName
         {
             get { return m_xAxisName; }
             set { m_xAxisName = value; NotifyOfPropertyChange(() => XAxisName); }
         }
         private string m_yAxisName = "N/A";
+        [DataMember]
         public string YAxisName
         {
             get { return m_yAxisName; }
@@ -149,24 +141,24 @@ namespace Badger.ViewModels
 
         public PlotPropertiesViewModel()
         {
-            m_legendPositions.Add(LegendPosition.BottomLeft.ToString());
-            m_legendPositions.Add(LegendPosition.BottomRight.ToString());
-            m_legendPositions.Add(LegendPosition.TopLeft.ToString());
-            m_legendPositions.Add(LegendPosition.TopRight.ToString());
+            LegendPositions.Add(LegendPosition.BottomLeft.ToString());
+            LegendPositions.Add(LegendPosition.BottomRight.ToString());
+            LegendPositions.Add(LegendPosition.TopLeft.ToString());
+            LegendPositions.Add(LegendPosition.TopRight.ToString());
             SelectedLegendPosition = LegendPosition.TopRight.ToString();
 
-            m_legendPlacements.Add(LegendPlacement.Inside.ToString());
-            m_legendPlacements.Add(LegendPlacement.Outside.ToString());
+            LegendPlacements.Add(LegendPlacement.Inside.ToString());
+            LegendPlacements.Add(LegendPlacement.Outside.ToString());
             SelectedLegendPlacement = LegendPlacement.Inside.ToString();
 
-            m_legendOrientations.Add(LegendOrientation.Horizontal.ToString());
-            m_legendOrientations.Add(LegendOrientation.Vertical.ToString());
+            LegendOrientations.Add(LegendOrientation.Horizontal.ToString());
+            LegendOrientations.Add(LegendOrientation.Vertical.ToString());
             SelectedLegendOrientation = LegendOrientation.Vertical.ToString();
 
-            m_fonts.Add("Arial");
-            m_fonts.Add("Segoe UI");
-            m_fonts.Add("Times New Roman");
-            m_fonts.Add("Verdana");
+            Fonts.Add("Arial");
+            Fonts.Add("Segoe UI");
+            Fonts.Add("Times New Roman");
+            Fonts.Add("Verdana");
             SelectedFont = "Segoe UI";
         }
         /// <summary>
