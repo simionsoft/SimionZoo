@@ -48,9 +48,8 @@ namespace Badger.ViewModels
         [DataMember]
         double m_maxNumSeries = 20;
 
-        private PlotModel m_plot;
         [DataMember]
-        public PlotModel Plot { get { return m_plot; } set { } }
+        public SafePlotModel Plot { get; set; } = new SafePlotModel();
 
         [DataMember]
         public PlotPropertiesViewModel Properties
@@ -66,7 +65,7 @@ namespace Badger.ViewModels
         public PlotViewModel(string title, double xMax = 0, string xName = "", string yName = "", bool bRefresh = true, bool bShowOptions = false)
         {
             name = title;
-            m_plot = new PlotModel();
+            
             var xAxis = new OxyPlot.Axes.LinearAxis();
             xAxis.Position = AxisPosition.Bottom;
             xAxis.MajorGridlineStyle = LineStyle.Solid;
@@ -78,7 +77,7 @@ namespace Badger.ViewModels
                 xAxis.AbsoluteMaximum = xMax;
             xAxis.AbsoluteMinimum = 0.0;
 
-            m_plot.Axes.Add(xAxis);
+            Plot.Axes.Add(xAxis);
 
             var yAxis = new OxyPlot.Axes.LinearAxis();
             yAxis.Position = AxisPosition.Left;
@@ -86,10 +85,10 @@ namespace Badger.ViewModels
             yAxis.Minimum = 0.0;
             yAxis.Maximum = 1.0;
 
-            m_plot.Axes.Add(yAxis);
+            Plot.Axes.Add(yAxis);
             //default properties
-            m_plot.LegendBorder = OxyColors.Black;
-            m_plot.LegendBackground = OxyColors.White;
+            Plot.LegendBorder = OxyColors.Black;
+            Plot.LegendBackground = OxyColors.White;
 
             Properties.Title = Utility.OxyPlotMathNotation(title);
             Properties.XAxisName = Utility.OxyPlotMathNotation(xName);
@@ -121,10 +120,10 @@ namespace Badger.ViewModels
         private void UpdatePlotProperties()
         {
             //Boundaries
-            if (m_plot.Axes.Count == 2)
+            if (Plot.Axes.Count == 2)
             {
                 double minY= double.MaxValue, maxY= double.MinValue;
-                foreach(OxyPlot.Series.LineSeries series in m_plot.Series)
+                foreach(OxyPlot.Series.LineSeries series in Plot.Series)
                 {
                     if (series.IsVisible && series.MinY < minY)
                         minY = series.MinY;
@@ -133,22 +132,22 @@ namespace Badger.ViewModels
                 }
                 if (maxY - minY > 0)
                 {
-                    m_plot.Axes[1].Maximum = maxY;
-                    m_plot.Axes[1].Minimum = minY;
+                    Plot.Axes[1].Maximum = maxY;
+                    Plot.Axes[1].Minimum = minY;
                 }
                 else
                 {
-                    m_plot.Axes[1].Maximum = 1.0;
-                    m_plot.Axes[1].Minimum = 0.0;
+                    Plot.Axes[1].Maximum = 1.0;
+                    Plot.Axes[1].Minimum = 0.0;
                 }
             }
             //Texts
-            if (m_plot.Axes.Count == 2)
+            if (Plot.Axes.Count == 2)
             {
-                m_plot.Axes[0].Title = Properties.XAxisName;
-                m_plot.Axes[1].Title = Properties.YAxisName;
+                Plot.Axes[0].Title = Properties.XAxisName;
+                Plot.Axes[1].Title = Properties.YAxisName;
             }
-            m_plot.Title = Properties.Title;
+            Plot.Title = Properties.Title;
             //font
             Plot.DefaultFont = Properties.SelectedFont;
 
@@ -170,12 +169,12 @@ namespace Badger.ViewModels
 
         private void updatePlot(object state)
         {
-            m_plot.InvalidatePlot(true);
+            Plot.InvalidatePlot(true);
         }
 
         public void UpdateView()
         {
-            m_plot.InvalidatePlot(true);
+            Plot.InvalidatePlot(true);
         }
 
         private object m_lineSeriesLock = new object();
@@ -184,36 +183,36 @@ namespace Badger.ViewModels
         {
             //TODO: improve how to limit the number of plots
             //For now, we just ignore series after the max number has been reached
-            if (m_plot.Series.Count<m_maxNumSeries)
+            if (Plot.Series.Count<m_maxNumSeries)
                 lock (m_lineSeriesLock)
                 {
                     OxyPlot.Series.LineSeries newSeries = new OxyPlot.Series.LineSeries { Title = title, MarkerType = MarkerType.None };
                     newSeries.IsVisible = isVisible;
-                    m_plot.Series.Add(newSeries);
+                    Plot.Series.Add(newSeries);
 
                     Properties.AddLineSeries(title, description, newSeries);
 
-                    return m_plot.Series.Count - 1; ;
+                    return Plot.Series.Count - 1; ;
                 }
             return -1;
         }
 
         public void AddLineSeriesValue(int seriesIndex, double xValue, double yValue)
         {
-            if (seriesIndex < 0 || seriesIndex >= m_plot.Series.Count)
+            if (seriesIndex < 0 || seriesIndex >= Plot.Series.Count)
             {
                 //TODO: at least, we should log the error
                 return;
             }
 
-            OxyPlot.Series.LineSeries series = (OxyPlot.Series.LineSeries)m_plot.Series[seriesIndex];
+            OxyPlot.Series.LineSeries series = (OxyPlot.Series.LineSeries)Plot.Series[seriesIndex];
             UpdatePlotBounds(xValue, yValue);
             series.Points.Add(new DataPoint(xValue, yValue));
         }
 
         public void ClearLineSeries()
         {
-            m_plot.Series.Clear();
+            Plot.Series.Clear();
             UpdateView();
             NotifyOfPropertyChange("Series");
         }
@@ -275,10 +274,10 @@ namespace Badger.ViewModels
                 double minY = m_minY;
                 if (maxX - minX == 0.0) { minX -= 0.01; maxX += 0.01; }
                 if (maxY - minY == 0.0) { minY -= 0.01; maxY += 0.01; }
-                m_plot.Axes[0].Maximum = maxX;
-                m_plot.Axes[0].Minimum = minX;
-                m_plot.Axes[1].Maximum = maxY;
-                m_plot.Axes[1].Minimum = minY;
+                Plot.Axes[0].Maximum = maxX;
+                Plot.Axes[0].Minimum = minX;
+                Plot.Axes[1].Maximum = maxY;
+                Plot.Axes[1].Minimum = minY;
             }
         }
 
@@ -303,11 +302,11 @@ namespace Badger.ViewModels
             //as png
             fileName = outputFolder + "\\" + Utility.RemoveSpecialCharacters(name) + ".png";
             var pngExporter = new PngExporter { Width = 600, Height = 400, Background = OxyColors.Transparent };
-            pngExporter.ExportToFile(m_plot, fileName);
+            pngExporter.ExportToFile(Plot, fileName);
             //as svg
             fileName = outputFolder + "\\" + Utility.RemoveSpecialCharacters(name) + ".svg";
             var svgExporter = new OxyPlot.Wpf.SvgExporter { Width = 600, Height = 400 };
-            svgExporter.ExportToFile(m_plot, fileName);
+            svgExporter.ExportToFile(Plot, fileName);
         }
 
         private bool m_bShowOptions = false;

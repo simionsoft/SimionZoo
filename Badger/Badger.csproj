@@ -231,6 +231,7 @@
     <Compile Include="ViewModels\Reports\LogQueryViewModel.cs" />
     <Compile Include="Data\TrackGroup.cs" />
     <Compile Include="ViewModels\Reports\PlotPropertiesViewModel.cs" />
+    <Compile Include="ViewModels\Reports\SafePlotModel.cs" />
     <Compile Include="ViewModels\Reports\SelectableTreeItem.cs" />
     <Compile Include="ViewModels\Reports\PlotLineSeriesPropertiesViewModel.cs" />
     <Compile Include="ViewModels\Reports\PlotViewModel.cs" />

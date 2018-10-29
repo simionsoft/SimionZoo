@@ -585,5 +585,11 @@ namespace Badger.ViewModels
                 }
             }
         }
+        public void SetNotifying(bool notifying)
+        {
+            IsNotifying = notifying;
+            foreach (LoggedVariableViewModel variable in VariablesVM)
+                variable.IsNotifying = notifying;
+        }
     }
 }

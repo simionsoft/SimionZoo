@@ -49,8 +49,9 @@ namespace Badger.ViewModels
                 if (value != null && !ReferenceEquals(value.Query, Query))
                 {
                     Query = Serialiazer.Clone(value.Query);
-                    //This property is not set because the constructor of PropertyChangedBase is not called when we clone the object
-                    Query.IsNotifying= true;
+
+                    //IsNotifying property must be manually set because the constructor of PropertyChangedBase is not called when we clone the object
+                    Query.SetNotifying(true);
                 }
                 NotifyOfPropertyChange(() => SelectedLogQueryResult);
             }
