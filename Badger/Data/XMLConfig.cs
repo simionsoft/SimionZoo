@@ -18,6 +18,8 @@ namespace Badger.Simion
         public const string experimentNodeTag = "EXPERIMENT"; //a experiment which can have forks within
         public const string experimentalUnitNodeTag = "EXPERIMENTAL-UNIT"; //an experiment within a batch without any forks
         public const string experimentBatchNodeTag = "EXPERIMENT-BATCH";
+        public const string reportNodeTag = "REPORT";
+        public const string queryNodeTag = "QUERY";
         public const string appNodeTag = "App";
         public const string statisticsFileTag = "STATISTICS";
 
@@ -72,6 +74,7 @@ namespace Badger.Simion
         public const string trackIdAttribute = "Track";
         public const string originNodeAttribute = "LinkOriginNode"; // name of the origin node in the link target node tag
         public const string ExeFileNameAttr = "ExeFile";
+        public const string BatchFilenameAttr = "Batch";
         //Attribute special values
         public const string newWindowValue = "New";
 

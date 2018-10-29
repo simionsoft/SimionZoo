@@ -28,12 +28,12 @@ namespace Badger.ViewModels
 
         //experimental units
         public BindableCollection<LoggedExperimentalUnitViewModel> ExperimentalUnits
-        { get; } = new BindableCollection<LoggedExperimentalUnitViewModel>();
+        { get; set; } = new BindableCollection<LoggedExperimentalUnitViewModel>();
 
 
         //log query results
         public BindableCollection<LogQueryResultViewModel> LogQueryResults
-        { get; } = new BindableCollection<LogQueryResultViewModel>();
+        { get; set; } = new BindableCollection<LogQueryResultViewModel>();
  
 
         //plot selection in tab control
@@ -147,35 +147,7 @@ namespace Badger.ViewModels
         public bool ForksLoaded
         { get { return m_bForksLoaded; } set { m_bForksLoaded = value; NotifyOfPropertyChange(() => ForksLoaded); } }
 
-        /// <summary>
-        ///     Method called from the view. When the report is generated it can be saved in a folder.
-        ///     Each LogQueryResults object is saved in a different subfolder
-        /// </summary>
-        public void SaveReports()
-        {
-            if (LogQueryResults.Count == 0) return;
 
-            string outputBaseFolder =
-                CaliburnUtility.SelectFolder(SimionFileData.imageRelativeDir);
-
-            if (outputBaseFolder != "")
-            {
-                foreach (LogQueryResultViewModel logQueryResult in LogQueryResults)
-                {
-                    // If there is more than one report, we store each one in a subfolder
-                    string outputFolder = outputBaseFolder + "\\" + Utility.RemoveSpecialCharacters(logQueryResult.Name);
-
-                    if (!Directory.Exists(outputFolder))
-                        Directory.CreateDirectory(outputFolder);
-
-
-                    Serialiazer.WriteObject(outputBaseFolder + "\\" + Utility.RemoveSpecialCharacters(logQueryResult.Name) + ".xml", logQueryResult);
-                    //logQueryResult.Export(outputFolder);
-
-                    //Serialiazer.WriteObject(outputFolder + "\\query.xml", logQueryResult.Query);
-                }
-            }
-        }
 
 
         private BindableCollection<LoggedExperimentViewModel> m_loggedExperiments
@@ -242,6 +214,65 @@ namespace Badger.ViewModels
             LoadProgress = 1;
             Loading = false;
         }
+
+        /// <summary>
+        /// Show a dialog window to select the experiment batch or report to load. Depending on the type of input file selected
+        /// , a different load function will be called: either LoadExperimentBatch or LoadReports
+        /// </summary>
+        public void LoadExperimentBatchOrReport()
+        {
+            string filter = SimionFileData.ExperimentBatchOrReportFilter;
+            string filetype = SimionFileData.ExperimentBatchOrReportFileTypeDescription;
+
+            List<string> filenames = SimionFileData.OpenFileDialogMultipleFiles(filetype, filter, false);
+
+            if (filenames.Count>0)
+            {
+                string filename = filenames[0];
+                string fileExtension = Utility.GetExtension(filename, 2);
+                if (fileExtension == SimionFileData.ExperimentBatchExtension)
+                    LoadExperimentBatch(filename);
+                else if (fileExtension == SimionFileData.ReportExtension)
+                    LoadReport(filename);
+            }
+        }
+
+        /// <summary>
+        /// Loads a report previously saved from the Reports window
+        /// </summary>
+        /// <param name="reportFileName">File where the report was saved using SaveReports()</param>
+        public void LoadReport(string reportFileName)
+        {
+            string readBatchFilename;
+            BindableCollection<LogQueryResultViewModel> readQueries;
+            int numQueriesRead= SimionFileData.LoadReport(reportFileName, out readBatchFilename, out readQueries);
+
+            if (numQueriesRead>0)
+            {
+                ClearReportViewer();
+
+                LoadExperimentBatch(readBatchFilename);
+                LoadedBatch = readBatchFilename;
+                LogQueryResults.AddRange(readQueries);
+                SelectedLogQueryResult = LogQueryResults[0];
+            }
+        }
+
+        /// <summary>
+        ///     Method called from the view. When the report is generated it can be saved in a folder.
+        ///     Each LogQueryResults object is saved in a different subfolder
+        /// </summary>
+        public void SaveReport()
+        {
+            if (LogQueryResults.Count == 0) return;
+
+            string outputBaseFolder =
+                CaliburnUtility.SelectFolder(SimionFileData.imageRelativeDir);
+
+            if (outputBaseFolder != "")
+                SimionFileData.SaveReport(LoadedBatch, LogQueryResults, outputBaseFolder);
+        }
+
         /// <summary>
         ///     Load an experiment from a batch file. If <paramref name="batchFileName"/> is either
         ///     null or empty, a dialog window will be opened to let the user select a batch file.

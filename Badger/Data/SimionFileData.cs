@@ -27,16 +27,21 @@ namespace Badger.Simion
         public const string ExperimentExtension = ".simion.exp";
         public const string ExperimentBatchExtension = ".simion.batch";
         public const string ProjectExtension = ".simion.proj";
+        public const string ReportExtension = ".simion.report";
 
         public const string ExperimentBatchFilter = "*" + ExperimentBatchExtension;
         public const string ProjectFilter = "*" + ProjectExtension;
         public const string ExperimentFilter = "*" + ExperimentExtension;
+        public const string ReportFilter = "*" + ReportExtension;
 
-        public const string ExperimentDescription = "Experiment";
+        public const string ExperimentFileTypeDescription = "Experiment";
         public const string ExperimentBatchDescription = "Batch";
         public const string ProjectDescription = "Project";
+        public const string ReportDescription = "Report";
+        public const string ExperimentBatchOrReportFileTypeDescription = "File";
 
         public const string ExperimentOrProjectFilter = ExperimentFilter + ";" + ProjectFilter;
+        public const string ExperimentBatchOrReportFilter= ExperimentBatchFilter + ";" + ReportFilter;
 
         public delegate void LogFunction(string message);
         public delegate void LoadUpdateFunction();
@@ -389,7 +394,7 @@ namespace Badger.Simion
 
             if (filename == null)
             {
-                bool isOpen = OpenFileDialog(ref filename, ExperimentDescription, ExperimentFilter);
+                bool isOpen = OpenFileDialog(ref filename, ExperimentFileTypeDescription, ExperimentFilter);
                 if (!isOpen)
                     return null;
             }
@@ -415,7 +420,7 @@ namespace Badger.Simion
                 return null;
             }
 
-            var sfd = SaveFileDialog(ExperimentDescription, ExperimentFilter);
+            var sfd = SaveFileDialog(ExperimentFileTypeDescription, ExperimentFilter);
             if (sfd.ShowDialog() == DialogResult.OK)
             {
                 experiment.Save(sfd.FileName, SaveMode.AsExperiment);
@@ -542,18 +547,19 @@ namespace Badger.Simion
         }
 
         /// <summary>
-        /// Opens a dialog window to select files of a type in the dictionary and returns the list with the files selected
-        /// as absolute paths
+        /// Opens a dialog window to select files of different types
         /// </summary>
-        /// <param name="filetypes">Dictionary where the key is the extension, and the value is the filter</param>
+        /// <param name="extensions">Extensions (separated by a semicolon</param>
+        /// <param name="descriptions">Description for each extension (separated by a semicolon)</param>
+        /// <param name="multiSelect">Allow the user to select more than one file?</param>
         /// <returns>A list of the selected files</returns>
-        public static List<string> OpenFileDialogMultipleFiles(string extension, string filter)
+        public static List<string> OpenFileDialogMultipleFiles(string extensions, string descriptions, bool multiSelect= true)
         {
             List<string> filenames = new List<string>();
             OpenFileDialog ofd = new OpenFileDialog();
-            ofd.Multiselect = true;
+            ofd.Multiselect = multiSelect;
             ofd.SupportMultiDottedExtensions = true;
-            ofd.Filter = extension + "|" + filter;
+            ofd.Filter = extensions + "|" + descriptions;
 
             if (globalInputDirectory == null)
             {
@@ -572,6 +578,76 @@ namespace Badger.Simion
             return filenames;
         }
 
+        /// <summary>
+        /// This method saves a set of queries on a experiment batch and their results to some output folder
+        /// </summary>
+        /// <param name="absBatchFilename">The absolute path to the experiment batch to which the query belongs</param>
+        /// <param name="logQueryResults">The set of queries to be saved</param>
+        /// <param name="absOutputFolder">Absolute path to the output folder, the name of the output report is taken from the input batch file</param>
+        static public void SaveReport(string absBatchFilename, BindableCollection<LogQueryResultViewModel> logQueryResults, string absOutputFolder)
+        {
+            //save the queries and the report (a set of log query results referencing the queries and the experiment batch)
+            string nakedBatchFilename = Utility.RemoveDirectories(Utility.RemoveExtension(absBatchFilename, 2));
+            string reportFilename = absOutputFolder + "\\" + nakedBatchFilename + SimionFileData.ReportExtension;
+            using (TextWriter writer = File.CreateText(reportFilename))
+            {
+                //open the root node in the report
+                writer.WriteLine("<" + XMLConfig.reportNodeTag + " " + XMLConfig.BatchFilenameAttr + "=\"" + absBatchFilename + "\">");
+
+                foreach (LogQueryResultViewModel logQueryResult in logQueryResults)
+                {
+                    string nakedLogQueryName = Utility.RemoveSpecialCharacters(logQueryResult.Name);
+                    //Save the reports, each one in a different subfolder
+                    string absQueryOutputFolder = absOutputFolder + "\\" + nakedLogQueryName;
+                    string relOutputFolder = nakedLogQueryName;
+
+                    if (!Directory.Exists(absQueryOutputFolder))
+                        Directory.CreateDirectory(absQueryOutputFolder);
+
+                    string relLogQueryResultFilename = nakedLogQueryName + "\\" + nakedLogQueryName + ".xml";
+                    string absLogQueryResultFilename = absOutputFolder + "\\" + relLogQueryResultFilename;
+                    Serialiazer.WriteObject(absLogQueryResultFilename, logQueryResult);
+
+                    //the reference to the query
+                    writer.WriteLine("  <" + XMLConfig.queryNodeTag + ">" + relLogQueryResultFilename + "</" + XMLConfig.queryNodeTag + ">");
+                }
+
+                //close the root node in the report
+                writer.WriteLine("</" + XMLConfig.reportNodeTag + ">");
+            }
+        }
+
+        static public int LoadReport(string reportFilename, out string batchFilename, out BindableCollection<LogQueryResultViewModel> logQueryResults)
+        {
+            logQueryResults = new BindableCollection<LogQueryResultViewModel>();
+            XmlDocument reportDoc= new XmlDocument();
+            reportDoc.Load(reportFilename);
+            XmlNode root= reportDoc.FirstChild;
+            batchFilename = null;
+            string inputBaseFolder = Utility.GetDirectory(reportFilename);
+
+            if (root.Name==XMLConfig.reportNodeTag)
+            {
+                batchFilename = root.Attributes[XMLConfig.BatchFilenameAttr].Value;
+                
+                foreach(XmlNode child in root.ChildNodes)
+                {
+                    if (child.Name==XMLConfig.queryNodeTag)
+                    {
+                        LogQueryResultViewModel logQueryResult;
+                        string queryFilename = inputBaseFolder + "\\" + child.InnerText;
+                        if (File.Exists(queryFilename))
+                        {
+                            logQueryResult = Serialiazer.ReadObject<LogQueryResultViewModel>(queryFilename);
+                            logQueryResult.IsNotifying = true;
+                            logQueryResults.Add(logQueryResult);
+                        }
+                    }
+                }
+            }
+
+            return logQueryResults.Count;
+        }
     }
 }
 

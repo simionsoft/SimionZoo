@@ -28,8 +28,13 @@ namespace Badger.ViewModels
             {
                 m_bAllTracksSelected = value;
                 NotifyOfPropertyChange(() => AllTracksSelected);
-                foreach (PlotLineSeriesPropertiesViewModel trackProperties in LineSeriesProperties)
-                    trackProperties.Visible = value;
+
+                //we must check this because when loaded from a file, might not yet have been read line properties
+                if (LineSeriesProperties != null)
+                {
+                    foreach (PlotLineSeriesPropertiesViewModel trackProperties in LineSeriesProperties)
+                        trackProperties.Visible = value;
+                }
             }
         }
         //per-track series properties

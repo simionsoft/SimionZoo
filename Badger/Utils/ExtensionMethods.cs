@@ -43,6 +43,15 @@ namespace Badger.Data
             ser.WriteObject(writer, src);
             writer.Close();
         }
+        public static T ReadObject<T>(string filename)
+        {
+            FileStream reader = new FileStream(filename, FileMode.Open);
+            DataContractSerializer ser =
+                new DataContractSerializer(typeof(T));
+            T result= (T) ser.ReadObject(reader);
+            reader.Close();
+            return result;
+        }
     }
     public static class ExtensionMethods
     {

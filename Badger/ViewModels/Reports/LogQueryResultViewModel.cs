@@ -22,6 +22,7 @@ namespace Badger.ViewModels
         public LogQueryViewModel Query { get; set; }
 
         string m_name = "Unnamed";
+        [DataMember]
         public string Name
         {
             get { return m_name; }
@@ -80,5 +81,12 @@ namespace Badger.ViewModels
         //        }
         //    }
         //}
+
+        public void SetNotifying(bool notifying)
+        {
+            IsNotifying = notifying;
+            foreach (ReportViewModel report in Reports)
+                report.IsNotifying = notifying;
+        }
     }
 }

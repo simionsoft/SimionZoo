@@ -33,12 +33,11 @@
     <DockPanel>
         <StackPanel DockPanel.Dock="Top" Orientation="Horizontal" Height="48" Width="Auto" Background="#EEEEEE" Margin="4,0">
             <Button Style="{StaticResource BadgerButtonStyle}" ToolTip="Load a batch: results from an experiment execution"
-                    Width="40" Height="40" x:Name="LoadExperimentBatch">
+                    Width="40" Height="40" x:Name="LoadExperimentBatchOrReport">
                 <Path Data="{StaticResource Open}" Width="24" Height="24" Fill="#89000000" />
             </Button>
             <Button Style="{StaticResource BadgerButtonStyle}" ToolTip="Save Report"
-                            Width="40" Height="40" cal:Message.Attach="[Event Click]=[Action SaveReports()]"
-                            IsEnabled="{Binding CanSaveReports}">
+                            Width="40" Height="40" cal:Message.Attach="[Event Click]=[Action SaveReport()]">
                 <Path Data="{StaticResource Save}" Width="24" Height="24" Fill="#89000000" />
             </Button>
             <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
