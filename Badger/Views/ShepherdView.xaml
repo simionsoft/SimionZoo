@@ -17,20 +17,35 @@
         </DataTemplate>
     </UserControl.Resources>
 
-    <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Auto">
-        <ListView ItemsSource="{Binding Path = HerdAgentList}" BorderThickness="0" HorizontalContentAlignment="Stretch"
-                  dd:DragDrop.IsDragSource="True" dd:DragDrop.IsDropTarget="True"
-                  dd:DragDrop.DragAdornerTemplate="{StaticResource HerdAgent}">
-            <ListView.ItemContainerStyle>
-                <Style TargetType="ListViewItem">
-                    <Setter Property="Padding" Value="0"/>
-                </Style>
-            </ListView.ItemContainerStyle>
-            <ListView.Resources>
-                <DataTemplate DataType="{x:Type vm:HerdAgentViewModel}">
-                    <views:HerdAgentView />
-                </DataTemplate>
-            </ListView.Resources>
-        </ListView>
-    </ScrollViewer>
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="40"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+        <StackPanel Grid.Row="0" HorizontalAlignment="Center">
+            <Button x:Name="ResendBroadcast" Style="{StaticResource BadgerButtonStyle}" HorizontalAlignment="Center" BorderBrush="SlateGray"
+                                                        Height="30" ToolTip="Refresh the list of herd agents">
+                <StackPanel Orientation="Horizontal">
+                    <Path Data="{StaticResource Refresh}" Stretch="Fill" Width="24" Height="24" Fill="#89000000" />
+                </StackPanel>
+            </Button>
+
+        </StackPanel>
+        <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Auto">
+            <ListView ItemsSource="{Binding Path = HerdAgentList}" BorderThickness="0" HorizontalContentAlignment="Stretch"
+                      dd:DragDrop.IsDragSource="True" dd:DragDrop.IsDropTarget="True"
+                      dd:DragDrop.DragAdornerTemplate="{StaticResource HerdAgent}">
+                <ListView.ItemContainerStyle>
+                    <Style TargetType="ListViewItem">
+                        <Setter Property="Padding" Value="0"/>
+                    </Style>
+                </ListView.ItemContainerStyle>
+                <ListView.Resources>
+                    <DataTemplate DataType="{x:Type vm:HerdAgentViewModel}">
+                        <views:HerdAgentView />
+                    </DataTemplate>
+                </ListView.Resources>
+            </ListView>
+        </ScrollViewer>
+    </Grid>
 </UserControl>

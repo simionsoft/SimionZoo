@@ -25,7 +25,7 @@
             <TabItem>
                 <TabItem.Header>
                     <StackPanel Orientation="Horizontal">
-                        <Path Data="{StaticResource Edit}" Width="24" Height="24" Fill="#89000000" />
+                        <Path Data="{StaticResource Edit}" Stretch="Fill" Width="24" Height="24" Fill="#89000000" />
                         <Label>Editor</Label>
                     </StackPanel>
                 </TabItem.Header>
@@ -36,7 +36,7 @@
             <TabItem>
                 <TabItem.Header>
                     <StackPanel Orientation="Horizontal">
-                        <Path Data="{StaticResource Edit}" Width="24" Height="24" Fill="#89000000" />
+                        <Path Data="{StaticResource Monitor}" Stretch="Fill" Width="24" Height="24" Fill="#89000000" />
                         <Label>Monitor</Label>
                     </StackPanel>
                 </TabItem.Header>

@@ -25,7 +25,6 @@ namespace Badger.ViewModels
         /// <param name="batchFileName"></param>
         public ExperimentMonitorWindowViewModel()
         {
-            ShepherdViewModel.SetLogFunction(MainWindowViewModel.Instance.LogToFile);
             Plot = new PlotViewModel("Evaluation Episodes", 1.0, "Normalized Evaluation Episode", "Average Reward")
             { bShowOptions = false };
             Plot.Plot.TitleFontSize = 14;

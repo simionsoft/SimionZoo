@@ -6,25 +6,25 @@ using System;
 
 namespace Badger.ViewModels
 {
-    public class ShepherdViewModel : PropertyChangedBase, IDisposable
+    public class ShepherdViewModel : PropertyChangedBase//, IDisposable
     {
-        protected virtual void Dispose(bool disposing)
-        {
-            if (disposing)
-            {
-                // dispose managed resources
-                m_timer.Dispose();
-            }
-        }
-        public void Dispose()
-        {
-            Dispose(true);
-            GC.SuppressFinalize(this);
-        }
+        //protected virtual void Dispose(bool disposing)
+        //{
+        //    if (disposing)
+        //    {
+        //        // dispose managed resources
+        //        m_timer.Dispose();
+        //    }
+        //}
+        //public void Dispose()
+        //{
+        //    Dispose(true);
+        //    GC.SuppressFinalize(this);
+        //}
 
         // const int m_agentTimeoutSeconds = 10;
-        const int m_updateTimeSeconds = 3;
-        System.Timers.Timer m_timer;
+        //const int m_updateTimeSeconds = 3;
+        //System.Timers.Timer m_timer;
 
         private Shepherd m_shepherd;
         public Shepherd shepherd { get { return m_shepherd; } set { } }
@@ -64,7 +64,7 @@ namespace Badger.ViewModels
                             if (!found)
                             {
                                 m_herdAgentList.Remove(agentInList);
-                                m_logFunction?.Invoke("Shepherd: Removed agent from list with Ip address " + agentInList.IpAddressString);
+                                MainWindowViewModel.Instance.LogToFile("Shepherd: Removed agent from list with Ip address " + agentInList.IpAddressString);
                             }
                         }
                     }
@@ -84,7 +84,7 @@ namespace Badger.ViewModels
                         if (!found)
                         { 
                             m_herdAgentList.Add(new HerdAgentViewModel(newAgent));
-                            m_logFunction?.Invoke("Shepherd: Agent discovered with Processor Id " + newAgent.ProcessorId + " and IP address " + newAgent.ipAddressString);
+                            MainWindowViewModel.Instance.LogToFile("Shepherd: Agent discovered with Processor Id " + newAgent.ProcessorId + " and IP address " + newAgent.ipAddressString);
                         }
                     }
                 }
@@ -122,26 +122,19 @@ namespace Badger.ViewModels
             m_shepherd.sendBroadcastHerdAgentQuery();
         }
 
-        public delegate void LogFunction(string message);
-
-        LogFunction m_logFunction = null;
-        public void SetLogFunction(LogFunction function)
-        {
-            m_logFunction = function;
-        }
 
         public ShepherdViewModel()
         {
             m_shepherd = new Shepherd();
             m_shepherd.setNotifyAgentListChangedFunc(NotifyHerdAgentChanged);
 
-            m_timer = new System.Timers.Timer(m_updateTimeSeconds * 1000);
+           // m_timer = new System.Timers.Timer(m_updateTimeSeconds * 1000);
             m_shepherd.sendBroadcastHerdAgentQuery();
             m_shepherd.beginListeningHerdAgentQueryResponses();
 
-            m_timer.AutoReset = true;
-            m_timer.Elapsed += new System.Timers.ElapsedEventHandler(ResendBroadcast);
-            m_timer.Start();
+            //m_timer.AutoReset = true;
+            //m_timer.Elapsed += new System.Timers.ElapsedEventHandler(ResendBroadcast);
+            //m_timer.Start();
         }
     }
 }
