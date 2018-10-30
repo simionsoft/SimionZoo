@@ -17,22 +17,19 @@ namespace Badger.ViewModels
     {
         public PlotViewModel Plot { get; set; }
 
-        public Logger.LogFunction LogFunction { get; set; }
-
-        ShepherdViewModel m_shepherd;
+        public ShepherdViewModel ShepherdViewModel { get; } = new ShepherdViewModel();
         /// <summary>
         ///     Constructor.
         /// </summary>
-        /// <param name="logFunction"></param>
+        /// <param name="MainWindowViewModel.Instance.LogToFile"></param>
         /// <param name="batchFileName"></param>
-        public ExperimentMonitorWindowViewModel(ShepherdViewModel shepherd, Logger.LogFunction logFunction)
+        public ExperimentMonitorWindowViewModel()
         {
-            m_shepherd = shepherd;
-            Plot = new PlotViewModel("Evaluation Episodes", 1.0, "Normalized Evaluation Episode", "Average Reward") { bShowOptions = false };
+            ShepherdViewModel.SetLogFunction(MainWindowViewModel.Instance.LogToFile);
+            Plot = new PlotViewModel("Evaluation Episodes", 1.0, "Normalized Evaluation Episode", "Average Reward")
+            { bShowOptions = false };
             Plot.Plot.TitleFontSize = 14;
             Plot.Properties.LegendVisible = false;
-
-            LogFunction = logFunction;
         }
 
         ///<summary>
@@ -49,13 +46,13 @@ namespace Badger.ViewModels
 
         List<HerdAgentViewModel> getFreeHerdAgentList()
         {
-            if (m_shepherd.HerdAgentList.Count == 0)
+            if (ShepherdViewModel.HerdAgentList.Count == 0)
                 return null;
 
             List<HerdAgentViewModel> freeHerdAgents = new List<HerdAgentViewModel>();
 
             // Get available herd agents list. Inside the loop to update the list
-            m_shepherd.getAvailableHerdAgents(ref freeHerdAgents);
+            ShepherdViewModel.getAvailableHerdAgents(ref freeHerdAgents);
 
             if (freeHerdAgents.Count == 0)
             {
@@ -418,7 +415,7 @@ namespace Badger.ViewModels
                 = new List<Task<MonitoredJobViewModel>>();
 
             // Assign experiments to free agents
-            AssignExperiments(ref m_pendingExperiments, ref freeHerdAgents, ref assignedJobs, m_cancelTokenSource.Token, Plot, LogFunction);
+            AssignExperiments(ref m_pendingExperiments, ref freeHerdAgents, ref assignedJobs, m_cancelTokenSource.Token, Plot);
 
             //update the history of monitored jobs
             foreach (MonitoredJobViewModel job in assignedJobs) AllMonitoredJobs.Insert(0, job);
@@ -435,14 +432,14 @@ namespace Badger.ViewModels
                     if (m_pendingExperiments.Count == 0)
                     {
                         Task.WhenAll(monitoredJobTasks).Wait();
-                        LogFunction("All the experiments have finished");
+                        MainWindowViewModel.Instance.LogToFile("All the experiments have finished");
                         break;
                     }
 
                     // Wait for the first agent to finish and give it something to do
                     Task<MonitoredJobViewModel> finishedTask = await Task.WhenAny(monitoredJobTasks);
                     MonitoredJobViewModel finishedTaskResult = await finishedTask;
-                    LogFunction("Job finished: " + finishedTaskResult.ToString());
+                    MainWindowViewModel.Instance.LogToFile("Job finished: " + finishedTaskResult.ToString());
                     NumFinishedExperimentalUnitsAfterStart += finishedTaskResult.MonitoredExperimentalUnits.Count;
                     monitoredJobTasks.Remove(finishedTask);
 
@@ -450,7 +447,7 @@ namespace Badger.ViewModels
                     {
                         foreach (MonitoredExperimentalUnitViewModel exp in finishedTaskResult.FailedExperiments)
                             m_pendingExperiments.Add(exp);
-                        LogFunction(finishedTaskResult.FailedExperiments.Count + " failed experiments enqueued again for further trials");
+                        MainWindowViewModel.Instance.LogToFile(finishedTaskResult.FailedExperiments.Count + " failed experiments enqueued again for further trials");
                     }
 
                     // Add the herd agent to the free agent list
@@ -458,7 +455,7 @@ namespace Badger.ViewModels
                         freeHerdAgents.Add(finishedTaskResult.HerdAgent);
 
                     // Assign experiments to free agents
-                    AssignExperiments(ref m_pendingExperiments, ref freeHerdAgents, ref assignedJobs, m_cancelTokenSource.Token, Plot, LogFunction);
+                    AssignExperiments(ref m_pendingExperiments, ref freeHerdAgents, ref assignedJobs, m_cancelTokenSource.Token, Plot);
                     
                     //update the history of monitored jobs
                     foreach (MonitoredJobViewModel job in assignedJobs) AllMonitoredJobs.Insert(0, job);
@@ -466,8 +463,8 @@ namespace Badger.ViewModels
             }
             catch (Exception ex)
             {
-                LogFunction("Exception in runExperimentQueueRemotely()");
-                LogFunction(ex.StackTrace);
+                MainWindowViewModel.Instance.LogToFile("Exception in runExperimentQueueRemotely()");
+                MainWindowViewModel.Instance.LogToFile(ex.StackTrace);
             }
             finally
             {
@@ -512,7 +509,7 @@ namespace Badger.ViewModels
         /// 
         public static void AssignExperiments(ref List<MonitoredExperimentalUnitViewModel> pendingExperiments
             , ref List<HerdAgentViewModel> freeHerdAgents, ref List<MonitoredJobViewModel> assignedJobs
-            , CancellationToken cancelToken, PlotViewModel plot = null, Logger.LogFunction logFunction = null)
+            , CancellationToken cancelToken, PlotViewModel plot = null)
         {
             //Clear the list: these are jobs which have to be sent
             assignedJobs.Clear();
@@ -553,7 +550,7 @@ namespace Badger.ViewModels
                 if (bAgentUsed)
                 {
                     MonitoredJobViewModel newJob = new MonitoredJobViewModel("Job #" + jobId, experiments,
-                        agent, plot, cancelToken, logFunction);
+                        agent, plot, cancelToken, MainWindowViewModel.Instance.LogToFile);
                     assignedJobs.Add(newJob);
                     usedHerdAgents.Add(agent);
                     

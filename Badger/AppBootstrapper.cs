@@ -24,7 +24,7 @@ namespace Badger
                 e.Handled = true;
             else e.Handled = true;
             
-            CaliburnUtility.ShowWarningDialog(e.Exception.GetBaseException().ToString(), "ERROR: Badger crashed");
+            CaliburnUtility.ShowWarningDialog(e.Exception.GetBaseException().ToString(), "ERROR");
 
             base.OnUnhandledException(sender, e);
            

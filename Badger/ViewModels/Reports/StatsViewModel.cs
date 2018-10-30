@@ -71,7 +71,7 @@ namespace Badger.ViewModels
 
         public void OpenInEditor()
         {
-            MainWindowViewModel.m_mainWindowInstance.LoadExperimentalUnit(SelectedStat.ExperimentalUnitConfigFile);
+            MainWindowViewModel.Instance.EditorWindowVM.LoadExperimentalUnit(SelectedStat.ExperimentalUnitConfigFile);
         }
     }
 }

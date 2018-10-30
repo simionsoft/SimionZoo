@@ -148,7 +148,8 @@ namespace Badger.ViewModels
         public string Name
         {
             get { return m_name; }
-            set { m_name = MainWindowViewModel.getValidAppName(value); NotifyOfPropertyChange(() => Name); }
+            set { m_name = MainWindowViewModel.Instance.EditorWindowVM.getValidAppName(value);
+                NotifyOfPropertyChange(() => Name); }
         }
 
         //file name (not null if it has been saved)

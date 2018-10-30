@@ -199,6 +199,7 @@
     <Compile Include="ViewModels\ConfigNodeTypes\WiresViewModel.cs" />
     <Compile Include="ViewModels\ConfigNodeTypes\WorldVarRefValueConfigViewModel.cs" />
     <Compile Include="ViewModels\DialogViewModel.cs" />
+    <Compile Include="ViewModels\ExperimentEditorWindowViewModel.cs" />
     <Compile Include="ViewModels\MonitoredJobViewModel.cs" />
     <Compile Include="ViewModels\MultiStateButtonViewModel.cs" />
     <Compile Include="ViewModels\NeuralNetwork\ChainViewModel.cs" />
@@ -325,12 +326,6 @@
     <Compile Include="Views\Reports\LoggedVariableView.xaml.cs">
       <DependentUpon>LoggedVariableView.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Views\ExperimentMonitorWindowView.xaml.cs">
-      <DependentUpon>ExperimentMonitorWindowView.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Views\Reports\ReportsWindowView.xaml.cs">
-      <DependentUpon>ReportsWindowView.xaml</DependentUpon>
-    </Compile>
     <Compile Include="Views\MainWindowView.xaml.cs">
       <DependentUpon>MainWindowView.xaml</DependentUpon>
     </Compile>
@@ -442,6 +437,10 @@
     <Page Include="Views\DialogView.xaml">
       <SubType>Designer</SubType>
       <Generator>XamlIntelliSenseFileGenerator</Generator>
+    </Page>
+    <Page Include="Views\ExperimentEditorWindowView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Views\HerdAgentView.xaml">
       <SubType>Designer</SubType>

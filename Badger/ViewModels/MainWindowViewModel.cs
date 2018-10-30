@@ -1,16 +1,8 @@
-﻿using Badger.Data;
-using System.Collections.ObjectModel;
-using System.Xml;
+﻿using Badger.Simion;
 using Caliburn.Micro;
-using System.IO;
-using System.Collections.Generic;
 using System;
-using System.Linq;
+using System.IO;
 using System.Text;
-using Badger.Simion;
-using System.Threading.Tasks;
-using System.Threading;
-using System.Windows.Forms;
 
 namespace Badger.ViewModels
 {
@@ -19,135 +11,67 @@ namespace Badger.ViewModels
     /// </summary>
     public class MainWindowViewModel : PropertyChangedBase
     {
-        static public MainWindowViewModel m_mainWindowInstance { get; set; }
+        static public MainWindowViewModel Instance { get; set; }
 
-        static private BindableCollection<ExperimentViewModel> m_experimentViewModels
-            = new BindableCollection<ExperimentViewModel>();
-        //these two properties interface to the same hidden attribute
-        public BindableCollection<ExperimentViewModel> ExperimentViewModels
+        public ExperimentMonitorWindowViewModel MonitorWindowVM { get; }
+
+        public ExperimentEditorWindowViewModel EditorWindowVM { get; }
+
+        public ReportsWindowViewModel ReportWindowVM { get; }
+
+        private int m_selectedScreenIndex = 0;
+        public int SelectedScreenIndex
         {
-            get { return m_experimentViewModels; }
-            set { m_experimentViewModels = value; NotifyOfPropertyChange(() => ExperimentViewModels); }
+            get { return m_selectedScreenIndex; }
+            set { m_selectedScreenIndex = value; NotifyOfPropertyChange(() => SelectedScreenIndex); }
         }
 
-        private ExperimentViewModel m_selectedExperiment;
-
-        public ExperimentViewModel SelectedExperiment
+        /// <summary>
+        ///     Class constructor.
+        /// </summary>
+        public MainWindowViewModel()
         {
-            get { return m_selectedExperiment; }
-            set
-            {
-                m_selectedExperiment = value;
-                NotifyOfPropertyChange(() => SelectedExperiment);
-            }
+            //Save the instance
+            Instance = this;
+
+            EditorWindowVM = new ExperimentEditorWindowViewModel();
+            MonitorWindowVM = new ExperimentMonitorWindowViewModel();
+            ReportWindowVM = new ReportsWindowViewModel();
+
+            //set culture as invariant to write numbers as in english
+            System.Threading.Thread.CurrentThread.CurrentCulture = System.Globalization.CultureInfo.InvariantCulture;
+
         }
 
-        static private bool appNameExists(string name)
+        public void ShowReportWindow()
         {
-            return m_experimentViewModels.Any(app => app.Name == name);
+            SelectedScreenIndex = 2;
         }
 
-        static public string getValidAppName(string originalName)
+        /// <summary>
+        /// Shows the experiment monitor in a new window
+        /// </summary>
+        public void ShowExperimentMonitor()
         {
-            int id = 1;
-            string newName = originalName;
-            bool bNameExists = appNameExists(newName);
-            while (bNameExists)
-            {
-                newName = originalName + "-" + id;
-                id++;
-                bNameExists = appNameExists(newName);
-            }
-            return newName;
+            SelectedScreenIndex= 1;
         }
 
-        private ExperimentMonitorWindowViewModel m_monitorWindowViewModel;
-
-        public ExperimentMonitorWindowViewModel monitorWindowViewModel { get { return m_monitorWindowViewModel; } }
-
-        private ShepherdViewModel m_shepherdViewModel;
-
-        public ShepherdViewModel ShepherdViewModel { get { return m_shepherdViewModel; } set { } }
-
-        private bool m_bCanLaunchExperiment;
-
-        public bool CanLaunchExperiment
+        /// <summary>
+        ///     Shows the report viewer
+        /// </summary>
+        public void ShowReportViewer()
         {
-            get { return m_bCanLaunchExperiment; }
-            set
-            {
-                m_bCanLaunchExperiment = value;
-                NotifyOfPropertyChange(() => CanLaunchExperiment);
-            }
+            SelectedScreenIndex= 0;
         }
 
-        private bool m_bIsExperimentListNotEmpty;
-
-        public bool IsExperimentListNotEmpty
-        {
-            get { return m_bIsExperimentListNotEmpty; }
-            set
-            {
-                m_bIsExperimentListNotEmpty = value;
-                NotifyOfPropertyChange(() => IsExperimentListNotEmpty);
-            }
-        }
-
-        private void CheckEmptyExperimentList()
-        {
-            bool wasEmpty = !m_bIsExperimentListNotEmpty;
-            if (wasEmpty != (m_experimentViewModels.Count == 0))
-            {
-                m_bIsExperimentListNotEmpty = m_experimentViewModels.Count != 0;
-                NotifyOfPropertyChange(() => IsExperimentListNotEmpty);
-            }
-        }
-
-        private ObservableCollection<string> m_appNames = new ObservableCollection<string>();
-
-        public ObservableCollection<string> AppNames { get { return m_appNames; } set { m_appNames = value; } }
-
-
-        // Key element is the apps name, and the value is the .xml definition file
-        private Dictionary<string, string> appDefinitions = new Dictionary<string, string>();
-
-        private string m_selectedAppName;
-
-        public string selectedAppName
-        {
-            get { return m_selectedAppName; }
-            set
-            {
-                int index = m_appNames.IndexOf(value);
-                if (index == -1)
-                    return;
-                m_selectedAppName = value;
-                NotifyOfPropertyChange(() => selectedAppName);
-            }
-        }
-
-        public void NewExperiment()
-        {
-            if (m_selectedAppName == null) return;
-
-            string xmlDefinitionFile = appDefinitions[m_selectedAppName];
-            ExperimentViewModel newExperiment = new ExperimentViewModel(xmlDefinitionFile, null, "New");
-            ExperimentViewModels.Add(newExperiment);
-            NotifyOfPropertyChange(() => ExperimentViewModels);
-            CheckEmptyExperimentList();
-
-            CanLaunchExperiment = m_bIsExperimentListNotEmpty;
-
-            SelectedExperiment = newExperiment;
-        }
-
+        //logging functions used from all the screens in the tab control
         private object m_logFileLock = new object();
 
         public const string logFilename = SimionFileData.badgerLogFile;
 
         private bool m_bFirstLog = true;
 
-        public void logToFile(string logMessage)
+        public void LogToFile(string logMessage)
         {
             lock (m_logFileLock)
             {
@@ -168,256 +92,6 @@ namespace Badger.ViewModels
 
                 Console.WriteLine(text);
             }
-        }
-
-        /// <summary>
-        ///     Class constructor.
-        /// </summary>
-        public MainWindowViewModel()
-        {
-            //Save the instance
-            m_mainWindowInstance = this;
-
-            //set culture as invariant to write numbers as in english
-            System.Threading.Thread.CurrentThread.CurrentCulture = System.Globalization.CultureInfo.InvariantCulture;
-
-            m_shepherdViewModel = new ShepherdViewModel();
-            m_shepherdViewModel.SetLogFunction(logToFile);
-
-            LoadAppDefinitions();
-
-            // Check for aditional required configuration files
-            if (!File.Exists("..\\config\\definitions.xml"))
-                CaliburnUtility.ShowWarningDialog("Unable to find required configuration file.", "Fatal Error");
-        }
-
-
-        private void LoadAppDefinitions()
-        {
-            foreach (string app in Directory.GetFiles(SimionFileData.appConfigRelativeDir))
-            {
-                char[] spliter = "\\".ToCharArray();
-                string[] tmp = app.Split(spliter);
-                tmp = tmp[tmp.Length - 1].Split('.');
-                string name = tmp[0];
-                appDefinitions.Add(name, app);
-                m_appNames.Add(name);
-            }
-
-            selectedAppName = m_appNames[0];
-            NotifyOfPropertyChange(() => AppNames);
-        }
-
-        public void SaveSelectedExperimentOrProject()
-        {
-            if (SelectedExperiment == null || !SelectedExperiment.Validate())
-            {
-                CaliburnUtility.ShowWarningDialog("The app can't be validated. See error log.", "Error");
-                return;
-            }
-
-            string savedFilename = null;
-            if (SelectedExperiment.getNumForkCombinations() > 1)
-                SimionFileData.SaveExperiments(m_experimentViewModels);
-            else
-                savedFilename= SimionFileData.SaveExperiment(SelectedExperiment);
-
-            if (savedFilename != null)
-                SelectedExperiment.Name = Utility.GetFilename(savedFilename, true, 2);
-        }
-
-        //This method can be used from any child window to load experimental units (i.e, from the ReportViewer)
-        public void LoadExperimentalUnit(string experimentalUnitConfigFile)
-        {
-            ExperimentViewModel newExperiment =
-                        SimionFileData.LoadExperiment(appDefinitions, experimentalUnitConfigFile);
-
-            if (newExperiment != null)
-            {
-                ExperimentViewModels.Add(newExperiment);
-
-                SelectedExperiment = newExperiment;
-            }
-        }
-
-        public void LoadExperimentOrProject()
-        {
-            string extension = SimionFileData.ExperimentDescription;
-            string filter = SimionFileData.ExperimentOrProjectFilter;
-
-            List<string> filenames = SimionFileData.OpenFileDialogMultipleFiles(extension, filter);
-            foreach(string filename in filenames)
-            {
-                string fileExtension = Utility.GetExtension(filename, 2);
-                if (fileExtension== SimionFileData.ExperimentExtension)
-                {
-                    ExperimentViewModel newExperiment = 
-                        SimionFileData.LoadExperiment(appDefinitions, filename);
-
-                    if (newExperiment != null)
-                    {
-                        ExperimentViewModels.Add(newExperiment);
-
-                        SelectedExperiment = newExperiment;
-                    }
-
-                }
-                else if (fileExtension == SimionFileData.ProjectExtension)
-                {
-                    SimionFileData.LoadExperiments(ref m_experimentViewModels, appDefinitions, logToFile
-                        ,filename);
-                    NotifyOfPropertyChange(() => ExperimentViewModels);
-
-                    if (m_experimentViewModels.Count > 0)
-                        SelectedExperiment = m_experimentViewModels[0];
-                }
-            }
-
-            CheckEmptyExperimentList();
-
-            CanLaunchExperiment = m_bIsExperimentListNotEmpty;
-        }
-
-        public void ClearExperiments()
-        {
-            SelectedExperiment = null;
-            if (ExperimentViewModels != null) ExperimentViewModels.Clear();
-        }
-
-        /// <summary>
-        ///     Close a tab (experiment view) and remove it from experiments list.
-        /// </summary>
-        /// <param name="e">The experiment to be removed</param>
-        public void Close(ExperimentViewModel e)
-        {
-            ExperimentViewModels.Remove(e);
-            CheckEmptyExperimentList();
-
-            CanLaunchExperiment = (m_bIsExperimentListNotEmpty);
-        }
-
-        /// <summary>
-        ///     Runs locally the experiment with its currently selected parameters
-        /// </summary>
-        /// <param name="experiment">The experiment to be run</param>
-        public void RunExperimentalUnitLocallyWithCurrentParameters(ExperimentViewModel experiment)
-        {
-            experiment.RunLocallyCurrentConfiguration();
-        }
-
-        /// <summary>
-        ///     Shows the wires defined in the current experiment
-        /// </summary>
-        /// <param name="experiment">The selected experiment</param>
-        public void ShowWires(ExperimentViewModel experiment)
-        {
-            experiment.ShowWires();
-        }
-
-
-        private List<LoggedExperimentViewModel> m_loggedExperiments = new List<LoggedExperimentViewModel>();
-
-        public List<LoggedExperimentViewModel> LoggedExperiments
-        {
-            get { return m_loggedExperiments; }
-            set { m_loggedExperiments = value; NotifyOfPropertyChange(() => LoggedExperiments); }
-        }
-
-        private int LoadLoggedExperiment(XmlNode node, string baseDirectory
-            , SimionFileData.LoadUpdateFunction updateFunction)
-        {
-            LoggedExperimentViewModel newExperiment
-                = new LoggedExperimentViewModel(node, baseDirectory, false, false, updateFunction);
-            LoggedExperiments.Add(newExperiment);
-            return newExperiment.ExperimentalUnits.Count;
-        }
-
-        
-        /// <summary>
-        ///     Runs all the experiments open in the editor. Saves a batch file read by the experiment monitor, and also a project to be
-        ///     able to modify the experiment and rerun it later
-        /// </summary>
-        public void RunExperimentsInEditor()
-        {
-            //Validate all the experiments
-            foreach (ExperimentViewModel experiment in m_experimentViewModels)
-            {
-                if (!experiment.Validate())
-                {
-                    CaliburnUtility.ShowWarningDialog("The app can't be validated. See error log.", "Error");
-                    return;
-                }
-            }
-
-            //Ask the user where to save the batch
-            string batchFileName;
-            //Save dialog -> returns the experiment batch file
-            string suggestedBatchFileName = SelectedExperiment.Name;
-            var sfd = SimionFileData.SaveFileDialog(SimionFileData.ExperimentBatchDescription, SimionFileData.ExperimentBatchFilter, suggestedBatchFileName);
-            if (sfd.ShowDialog() == DialogResult.OK)
-            {
-                batchFileName = sfd.FileName;
-            }
-            else
-            {
-                logToFile("Error saving the experiment queue");
-                return;
-            }
-
-            //Save the experiment batch while showing a progress bar dialog window
-            ProgressBarDialogViewModel progressBarDialogVM = new ProgressBarDialogViewModel("Saving", "Saving the experiment batch");
-            
-            CancellationTokenSource cancellation = new CancellationTokenSource();
-            Task.Run(() =>
-            {
-                //Save the experiment batch, read by the Experiment Monitor
-                int experimentalUnitsCount = SimionFileData.SaveExperimentBatchFile(ExperimentViewModels,
-                    batchFileName, logToFile, progressBarDialogVM.UpdateProgressBar);
-
-                //Save the badger project to allow later changes and re-runs of the experiment
-                string badgerProjFileName = Utility.RemoveExtension(batchFileName, Utility.NumParts(SimionFileData.ProjectExtension, '.'))
-                    + SimionFileData.ProjectExtension;
-                SimionFileData.SaveExperiments(m_experimentViewModels, badgerProjFileName);
-
-                progressBarDialogVM.TryClose();
-            }, cancellation.Token);
-
-            CaliburnUtility.ShowPopupWindow(progressBarDialogVM, "Saving");
-
-            if (progressBarDialogVM.Cancelled)
-            {
-                logToFile("Experiment batch saving operation was cancelled by the user");
-                cancellation.Cancel();
-                return;
-            }
-
-            //Experiments are sent and executed remotely
-            logToFile("Running experiment queue remotely");
-
-            m_monitorWindowViewModel = new ExperimentMonitorWindowViewModel(ShepherdViewModel, logToFile);
-
-            CaliburnUtility.ShowPopupWindow(m_monitorWindowViewModel, "Experiment Monitor", false);
-
-            m_monitorWindowViewModel.LoadExperimentBatch(batchFileName);
-        }
-
-        /// <summary>
-        /// Shows the experiment monitor in a new window
-        /// </summary>
-        public void ShowExperimentMonitor()
-        {
-            ExperimentMonitorWindowViewModel experimentMonitor
-                = new ExperimentMonitorWindowViewModel(ShepherdViewModel, logToFile);
-            CaliburnUtility.ShowPopupWindow(experimentMonitor, "Experiment Monitor");
-        }
-
-        /// <summary>
-        ///     Shows the report viewer
-        /// </summary>
-        public void ShowReportViewer()
-        {
-            ReportsWindowViewModel plotEditor = new ReportsWindowViewModel();
-            CaliburnUtility.ShowPopupWindow(plotEditor, "Report Viewer");
         }
     }
 }

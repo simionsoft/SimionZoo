@@ -10,20 +10,62 @@
         Icon="../badger.ico">
 
     <Window.Resources>
-        <DataTemplate DataType="{x:Type vm:ExperimentViewModel}">
-            <v:ExperimentView/>
+        <DataTemplate DataType="{x:Type vm:ExperimentEditorWindowViewModel}">
+            <v:ExperimentEditorWindowView/>
         </DataTemplate>
-        <DataTemplate DataType="{x:Type vm:StatsViewModel}">
-            <v:StatsView/>
+        <DataTemplate DataType="{x:Type vm:ReportsWindowViewModel}">
+            <v:ReportsWindowView/>
+        </DataTemplate>
+        <DataTemplate DataType="{x:Type vm:ExperimentMonitorWindowViewModel}">
+            <v:ExperimentEditorWindowView/>
         </DataTemplate>
     </Window.Resources>
+    <Grid>
+        <TabControl Margin="0" Padding="0" SelectedIndex="{Binding SelectedScreenIndex}">
+            <TabItem>
+                <TabItem.Header>
+                    <StackPanel Orientation="Horizontal">
+                        <Path Data="{StaticResource Edit}" Width="24" Height="24" Fill="#89000000" />
+                        <Label>Editor</Label>
+                    </StackPanel>
+                </TabItem.Header>
+                <TabItem.Content>
+                    <ContentControl x:Name="EditorWindowVM"/>
+                </TabItem.Content>
+            </TabItem>
+            <TabItem>
+                <TabItem.Header>
+                    <StackPanel Orientation="Horizontal">
+                        <Path Data="{StaticResource Edit}" Width="24" Height="24" Fill="#89000000" />
+                        <Label>Monitor</Label>
+                    </StackPanel>
+                </TabItem.Header>
+                <TabItem.Content>
+                    <ContentControl x:Name="MonitorWindowVM"/>
+                </TabItem.Content>
+            </TabItem>
+            <TabItem>
+                <TabItem.Header>
+                    <StackPanel Orientation="Horizontal">
+                        <Path Data="{StaticResource Plot}" Width="24" Height="24" Fill="#89000000" />
+                        <Label>Reports</Label>
+                    </StackPanel>
+                </TabItem.Header>
+                <TabItem.Content>
+                    <ContentControl x:Name="ReportWindowVM"/>
+                </TabItem.Content>
+            </TabItem>
+            <!--<TabControl.ItemTemplate>
+                <DataTemplate>
+                    <StackPanel Orientation="Horizontal">
+                        <Label Content="{Binding Name}" VerticalAlignment="Center" BorderBrush="Transparent"/>
+                    </StackPanel>
+                </DataTemplate>
+            </TabControl.ItemTemplate>-->
+        </TabControl>
+    </Grid>
+    <!--<DockPanel>
 
-    <DockPanel>
-        <!--<WrapPanel DockPanel.Dock="Top" MinHeight="48" Width="Auto" Background="#EEEEEE">
-            <WrapPanel Margin="5,4">
-                
-            </WrapPanel>
-        </WrapPanel>-->
 
         <Grid Background="#FAFAFA">
             <Grid.RowDefinitions>
@@ -62,41 +104,7 @@
                         <Label>Report Viewer</Label>
                     </StackPanel>
                 </Button>
-                <!--<Separator Style="{StaticResource {x:Static ToolBar.SeparatorStyleKey}}" Margin="10,0" />-->
-                <!--<Label Content="Experiments" FontWeight="Medium" Margin="0,0,300,0"
-                        VerticalContentAlignment="Center" HorizontalAlignment="Center" />-->
-                <ComboBox x:Name="AppNames" MinWidth="120" Margin="2,0" HorizontalAlignment="Center" VerticalAlignment="Center"
-                      ToolTip="Apps" Height="26" SelectedItem="{Binding selectedAppName}" />
-                <Button Style="{StaticResource BadgerButtonStyle}" Margin="2,0" ToolTip="New Experiment"
-                        Width="40" Height="40" cal:Message.Attach="[Event Click]=[Action NewExperiment()]">
-                    <Path Data="{StaticResource New}" Width="24" Height="24" Fill="#89000000" />
-                </Button>
-                <Button Margin="0,0,0,0" Style="{StaticResource BadgerButtonStyle}" ToolTip="Save Experiment"
-                        Height="40" Width="40" IsEnabled="{Binding Path=IsExperimentListNotEmpty}"
-                        cal:Message.Attach="[Event Click]=[Action SaveSelectedExperimentOrProject()]">
-                    <Path Data="{StaticResource Save}" Width="24" Height="24" Fill="#89000000" />
-                </Button>
-                <Button Style="{StaticResource BadgerButtonStyle}" ToolTip="Open an experiment or project"
-                        Width="40" Height="40" cal:Message.Attach="[Event Click]=[Action LoadExperimentOrProject()]">
-                    <Path Data="{StaticResource Open}" Width="24" Height="24" Fill="#89000000" />
-                </Button>
-                <Button Style="{StaticResource BadgerButtonStyle}"  ToolTip="Erase all open experiments"
-                        Width="40" Height="40" cal:Message.Attach="[Event Click]=[Action ClearExperiments()]">
-                    <Path Data="{StaticResource Delete}" Width="24" Height="24" Fill="#89000000" />
-                </Button>
 
-                <!--<Separator Style="{StaticResource {x:Static ToolBar.SeparatorStyleKey}}" Margin="4" />-->
-
-                <!--Label VerticalAlignment="Center">App</-->
-
-                <Button Style="{StaticResource BadgerButtonStyle}" Margin="30 0 0 0" Width="Auto" Height="40"
-                        IsEnabled="{Binding Path = CanLaunchExperiment}" ToolTip="Run Experiments"
-                        cal:Message.Attach="[Event Click]=[Action RunExperimentsInEditor()]">
-                    <StackPanel Orientation="Horizontal">
-                        <Path Data="{StaticResource Play}" Width="24" Height="24" Fill="#89000000" />
-                        <Label>Launch</Label>
-                    </StackPanel>
-                </Button>
             </StackPanel>
             <TabControl Grid.Row="1" Grid.Column="2" x:Name="ExperimentViewModels" Margin="0,0,5,5"
                         Padding="0" SelectedItem="{Binding Path = SelectedExperiment}">
@@ -145,5 +153,5 @@
                 </TabControl.ItemTemplate>
             </TabControl>
         </Grid>
-    </DockPanel>
+    </DockPanel>-->
 </Window>

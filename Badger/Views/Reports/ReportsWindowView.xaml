@@ -1,17 +1,13 @@
-﻿<Window x:Class="Badger.Views.ReportsWindowView"
+﻿<UserControl x:Class="Badger.Views.ReportsWindowView"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:vm="clr-namespace:Badger.ViewModels"
         xmlns:cal="http://www.caliburnproject.org"
         xmlns:v="clr-namespace:Badger.Views"
         xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
-        WindowStyle="ThreeDBorderWindow"
-        Title="Report Viewer" Width="1100" Height="800"
-        Background="#eeeeee"
-        WindowState="Normal"
-        Icon="../../badger.ico">
+        Background="#eeeeee">
 
-    <Window.Resources>
+    <UserControl.Resources>
         <BooleanToVisibilityConverter x:Key="BoolToVis" />
         <DataTemplate DataType="{x:Type vm:LoggedExperimentViewModel}">
             <v:LoggedExperimentView/>
@@ -28,7 +24,7 @@
         <DataTemplate DataType="{x:Type vm:ReportViewModel}">
             <v:ReportView/>
         </DataTemplate>
-    </Window.Resources>
+    </UserControl.Resources>
 
     <DockPanel>
         <StackPanel DockPanel.Dock="Top" Orientation="Horizontal" Height="48" Width="Auto" Background="#EEEEEE" Margin="4,0">
@@ -122,4 +118,4 @@
             </Border>
         </Grid>
     </DockPanel>
-</Window>
+</UserControl>
