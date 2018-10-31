@@ -28,6 +28,7 @@ namespace Badger.Simion
         public const string ExperimentBatchExtension = ".simion.batch";
         public const string ProjectExtension = ".simion.proj";
         public const string ReportExtension = ".simion.report";
+        public const string PlotDataExtension = ".simion.plot";
 
         public const string ExperimentBatchFilter = "*" + ExperimentBatchExtension;
         public const string ProjectFilter = "*" + ProjectExtension;
@@ -604,12 +605,22 @@ namespace Badger.Simion
                     if (!Directory.Exists(absQueryOutputFolder))
                         Directory.CreateDirectory(absQueryOutputFolder);
 
+                    //Save serializable data
                     string relLogQueryResultFilename = nakedLogQueryName + "\\" + nakedLogQueryName + ".xml";
                     string absLogQueryResultFilename = absOutputFolder + "\\" + relLogQueryResultFilename;
                     Serialiazer.WriteObject(absLogQueryResultFilename, logQueryResult);
 
-                    //the reference to the query
-                    writer.WriteLine("  <" + XMLConfig.queryNodeTag + ">" + relLogQueryResultFilename + "</" + XMLConfig.queryNodeTag + ">");
+                    //Save non-serializable data
+                    Dictionary<string,string> additionalOutputFiles= logQueryResult.ExportNonSerializable(absQueryOutputFolder);
+
+                    //the reference to the query and non-serializable data files
+                    writer.WriteLine("  <" + XMLConfig.queryNodeTag + " " + XMLConfig.nameAttribute + "=\"" + relLogQueryResultFilename + "\">");
+
+                    foreach(string file in additionalOutputFiles.Keys)
+                    {
+                        writer.WriteLine("    <" + additionalOutputFiles[file] + ">" + file + "</" + additionalOutputFiles[file] + ">");
+                    }
+                    writer.WriteLine("  </" + XMLConfig.queryNodeTag + ">");
                 }
 
                 //close the root node in the report
@@ -635,10 +646,12 @@ namespace Badger.Simion
                     if (child.Name==XMLConfig.queryNodeTag)
                     {
                         LogQueryResultViewModel logQueryResult;
-                        string queryFilename = inputBaseFolder + "\\" + child.InnerText;
+                        string queryFilename = inputBaseFolder + child.Attributes[XMLConfig.nameAttribute].Value;
+                        
                         if (File.Exists(queryFilename))
                         {
                             logQueryResult = Serialiazer.ReadObject<LogQueryResultViewModel>(queryFilename);
+                            logQueryResult.ImportNonSerializable(Utility.GetDirectory(queryFilename));
                             logQueryResult.IsNotifying = true;
                             logQueryResults.Add(logQueryResult);
                         }

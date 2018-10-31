@@ -20,6 +20,7 @@ namespace Badger.Simion
         public const string experimentBatchNodeTag = "EXPERIMENT-BATCH";
         public const string reportNodeTag = "REPORT";
         public const string queryNodeTag = "QUERY";
+        public const string plotNodeTag = "PLOT";
         public const string appNodeTag = "App";
         public const string statisticsFileTag = "STATISTICS";
 
@@ -51,6 +52,10 @@ namespace Badger.Simion
         public const string statVariableTag = "VARIABLE";
         public const string statVariableItemTag = "STATISTIC-ITEM";
         public const string PrerequisiteTag = "PREREQUISITE";
+        public const string LineSeriesTag = "LINE-SERIES";
+        public const string DataPointTag = "DATA-POINT";
+        public const string DataPointXTag = "X";
+        public const string DataPointYTag = "Y";
         //Wires
         public const string WireTag = "Wire";
         //Attributes

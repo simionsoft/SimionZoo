@@ -28,7 +28,7 @@ namespace Badger.ViewModels
         public ExperimentMonitorWindowViewModel(ShepherdViewModel shepherd, Logger.LogFunction logFunction)
         {
             m_shepherd = shepherd;
-            Plot = new PlotViewModel("Evaluation Episodes", 1.0, "Normalized Evaluation Episode", "Average Reward") { bShowOptions = false };
+            Plot = new PlotViewModel("Evaluation Episodes", "Normalized Evaluation Episode", "Average Reward") { bShowOptions = false };
             Plot.Plot.TitleFontSize = 14;
             Plot.Properties.LegendVisible = false;
 

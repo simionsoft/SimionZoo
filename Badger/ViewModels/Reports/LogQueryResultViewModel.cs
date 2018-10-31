@@ -64,23 +64,24 @@ namespace Badger.ViewModels
                 SelectedReport = Reports[Reports.Count-1];
         }
 
-        //public void Export(string outputBaseFolder)
-        //{
-        //    if (outputBaseFolder != "")
-        //    {
-        //        Serialiazer.WriteObject(outputBaseFolder + "\\" + Utility.RemoveSpecialCharacters(Name), this);
-        //        //foreach (ReportViewModel report in Reports)
-        //        //{
-        //        //    // If there is more than one report, we store each one in a subfolder
-        //        //    string outputFolder = outputBaseFolder + "\\" + Utility.RemoveSpecialCharacters(report.Name);
+        public Dictionary<string,string> ExportNonSerializable(string outputBaseFolder)
+        {
+            Dictionary<string, string> outputFiles = new Dictionary<string, string>();
+            foreach (ReportViewModel report in Reports)
+            {
+                report.ExportNonSerializable(outputBaseFolder, ref outputFiles);
+            }
+            return outputFiles;
+        }
 
-        //        //    if (!Directory.Exists(outputFolder))
-        //        //        Directory.CreateDirectory(outputFolder);
+        public void ImportNonSerializable(string inputBaseFolder)
+        {
+            foreach (ReportViewModel report in Reports)
+            {
+                report.ImportNonSerializable(inputBaseFolder);
+            }
+        }
 
-        //        //    report.Export(outputFolder);
-        //        }
-        //    }
-        //}
 
         public void SetNotifying(bool notifying)
         {

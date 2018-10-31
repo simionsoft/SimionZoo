@@ -15,7 +15,8 @@ namespace Badger.ViewModels
             set
             {
                 m_bVisible = value;
-                LineSeries.IsVisible = Visible;
+                if (LineSeries!=null)
+                    LineSeries.IsVisible = Visible;
                 NotifyOfPropertyChange(() => Visible);
             }
         }
@@ -28,7 +29,8 @@ namespace Badger.ViewModels
             {
                 m_name = value;
                 NotifyOfPropertyChange(() => Name);
-                LineSeries.Title = value;
+                if (LineSeries!=null)
+                    LineSeries.Title = value;
             }
         }
         private string m_description = "N/A";
@@ -43,8 +45,18 @@ namespace Badger.ViewModels
             }
         }
 
-        [DataMember]
-        public OxyPlot.Series.LineSeries LineSeries { get; set; }
+        OxyPlot.Series.LineSeries m_lineSeries = null;
+        public OxyPlot.Series.LineSeries LineSeries
+        {
+            get { return m_lineSeries; }
+            set
+            {
+                m_lineSeries = value;
+                NotifyOfPropertyChange(() => Visible);
+                NotifyOfPropertyChange(() => Description);
+                NotifyOfPropertyChange(() => Name);
+            }
+        }
 
         public PlotLineSeriesPropertiesViewModel(string name, string description, OxyPlot.Series.LineSeries lineSeries)
         {

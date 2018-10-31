@@ -33,25 +33,18 @@ namespace Badger.ViewModels
             set { m_stats = value; NotifyOfPropertyChange(() => Stats); }
         }
 
-        public void Export(string outputFolder)
+        public void ExportNonSerializable(string outputFolder, ref Dictionary<string, string> outputFiles)
         {
             //export plots
-            if (Plot!=null) Plot.Export(outputFolder);
-            //export stats
-            string statsFile = outputFolder + "\\" + Name + ".xml";
-            try
+            if (Plot!=null) Plot.Export(outputFolder, ref outputFiles);
+        }
+
+        public void ImportNonSerializable(string inputFolder)
+        {
+            if (Plot != null)
             {
-                using (StreamWriter fileWriter = File.CreateText(statsFile))
-                {
-                    fileWriter.WriteLine("<" + XMLConfig.statisticsFileTag + ">");
-                    Stats.Export(fileWriter, "  ");
-                    fileWriter.WriteLine("</" + XMLConfig.statisticsFileTag + ">");
-                }
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine("Error exporting stats file: " + statsFile);
-                Console.Write(ex.ToString());
+                Plot.IsNotifying = true;
+                Plot.Import(inputFolder);
             }
         }
 
@@ -72,7 +65,7 @@ namespace Badger.ViewModels
             Name = report.Name;
 
             //Create the plot
-            PlotViewModel newPlot = new PlotViewModel(report.Name, 0, "Time (s)", report.Name, false, true);
+            PlotViewModel newPlot = new PlotViewModel(report.Name, "Time (s)", report.Name, false, true);
             //Create the stats
             StatsViewModel newStatGroup = new StatsViewModel(report.Name);
 

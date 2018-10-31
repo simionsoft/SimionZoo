@@ -38,7 +38,6 @@ namespace Badger.ViewModels
             }
         }
         //per-track series properties
-
         [DataMember]
         public BindableCollection<PlotLineSeriesPropertiesViewModel> LineSeriesProperties { get; set; } = new BindableCollection<PlotLineSeriesPropertiesViewModel>();
 
@@ -48,6 +47,14 @@ namespace Badger.ViewModels
                 = new PlotLineSeriesPropertiesViewModel(name, description, series);
             LineSeriesProperties.Add(newLineProperties);
             newLineProperties.PropertyChanged += RaisePropertiesChangedEvent;
+        }
+
+        public bool LineSeriesExists(string name)
+        {
+            foreach (PlotLineSeriesPropertiesViewModel lineSeriesProperties in LineSeriesProperties)
+                if (lineSeriesProperties.Name == name)
+                    return true;
+            return false;
         }
 
         public bool PropertiesChanged { get; set; }
@@ -68,6 +75,7 @@ namespace Badger.ViewModels
             set { m_selectedLegendPosition = value; NotifyOfPropertyChange(() => SelectedLegendPosition); }
         }
         //Placement
+        [DataMember]
         public BindableCollection<string> LegendPlacements { get; set; }= new BindableCollection<string>();
 
         private string m_selectedLegendPlacement;
@@ -198,6 +206,16 @@ namespace Badger.ViewModels
         {
             OxyColor color = lineSeriesProperties.LineSeries.ActualColor;
             lineSeriesProperties.LineSeries.Color = OxyColor.FromRgb(color.R, color.G, color.B);
+        }
+
+        public void SetNotifying(bool notifying)
+        {
+            IsNotifying = notifying;
+            foreach(PlotLineSeriesPropertiesViewModel properties in LineSeriesProperties)
+            {
+                properties.IsNotifying = notifying;
+                properties.PropertyChanged += RaisePropertiesChangedEvent;
+            }
         }
     }
 }
