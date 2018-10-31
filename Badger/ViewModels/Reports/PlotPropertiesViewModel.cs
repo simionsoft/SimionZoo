@@ -49,12 +49,12 @@ namespace Badger.ViewModels
             newLineProperties.PropertyChanged += RaisePropertiesChangedEvent;
         }
 
-        public bool LineSeriesExists(string name)
+        public PlotLineSeriesPropertiesViewModel LineSeriesByName(string name)
         {
             foreach (PlotLineSeriesPropertiesViewModel lineSeriesProperties in LineSeriesProperties)
                 if (lineSeriesProperties.Name == name)
-                    return true;
-            return false;
+                    return lineSeriesProperties;
+            return null;
         }
 
         public bool PropertiesChanged { get; set; }

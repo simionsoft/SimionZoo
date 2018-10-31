@@ -86,10 +86,10 @@ namespace Badger.ViewModels
             xAxis.Position = AxisPosition.Bottom;
             xAxis.MajorGridlineStyle = LineStyle.Solid;
             xAxis.Minimum = 0.0;
-            xAxis.Maximum = 1.0;
-
-            xAxis.AbsoluteMaximum = 1.0;
             xAxis.AbsoluteMinimum = 0.0;
+            xAxis.Maximum = 1.0;
+            xAxis.AbsoluteMaximum = 1.0;
+
 
             Plot.Axes.Add(xAxis);
 
@@ -97,7 +97,9 @@ namespace Badger.ViewModels
             yAxis.Position = AxisPosition.Left;
             yAxis.MajorGridlineStyle = LineStyle.Solid;
             yAxis.Minimum = 0.0;
+            yAxis.AbsoluteMinimum = 0.0;
             yAxis.Maximum = 1.0;
+            yAxis.AbsoluteMaximum = 1.0;
 
             Plot.Axes.Add(yAxis);
             //default properties
@@ -132,59 +134,7 @@ namespace Badger.ViewModels
                 Plot.Axes.Add(new OxyPlot.Axes.LinearAxis());
             }
 
-            double minY= double.MaxValue, maxY= double.MinValue;
-            double minX = double.MaxValue, maxX = double.MinValue;
-            bool atLeastOneLineSeries = false;
-            foreach (OxyPlot.Series.LineSeries series in Plot.Series)
-            {
-                if (series.IsVisible)
-                {
-                    atLeastOneLineSeries = true;
-                    if (series.MinY < minY)
-                        minY = series.MinY;
-                    if (series.MaxY > maxY)
-                        maxY = series.MaxY;
-                    if (series.MinX < minX)
-                        minX = series.MinX;
-                    if (series.MaxX > maxX)
-                        maxX = series.MaxX;
-                }
-            }
-            if (!atLeastOneLineSeries)
-            {
-                minX = 0.0;
-                maxX = 1.0;
-                minY = 0.0;
-                minY = 1.0;
-            }
-            if (maxY - minY > 0)
-            {
-                Plot.Axes[1].Maximum = maxY;
-                Plot.Axes[1].Minimum = minY;
-                Plot.Axes[1].AbsoluteMaximum = maxY;
-                Plot.Axes[1].AbsoluteMinimum = minY;
-            }
-            else
-            {
-                Plot.Axes[1].Maximum = minY + 0.001;
-                Plot.Axes[1].Minimum = minY;
-                Plot.Axes[1].AbsoluteMaximum = minY + 0.001;
-                Plot.Axes[1].AbsoluteMinimum = minY;
-            }
-            if (maxX - minX > 0)
-            {
-                Plot.Axes[0].Maximum = maxX;
-                Plot.Axes[0].Minimum = minX;
-                Plot.Axes[0].AbsoluteMaximum = maxX;
-                Plot.Axes[0].AbsoluteMinimum = minX;
-            }
-            else
-            {
-                Plot.Axes[0].Maximum = minX + 0.001;
-                Plot.Axes[0].Minimum = minX;
-                Plot.Axes[0].AbsoluteMaximum = minX + 0.001;
-                Plot.Axes[0].AbsoluteMinimum = minX;
-            }
+            UpdatePlotBoundsFromScratch();
 
             //Texts
             Plot.Axes[0].Title = Properties.XAxisName;
@@ -238,8 +188,12 @@ namespace Badger.ViewModels
                     newSeries.IsVisible = isVisible;
                     Plot.Series.Add(newSeries);
 
-                    if (!Properties.LineSeriesExists(title))
+                    PlotLineSeriesPropertiesViewModel lineProps = Properties.LineSeriesByName(title);
+
+                    if (lineProps == null)
                         Properties.AddLineSeries(title, description, newSeries);
+                    else
+                        lineProps.LineSeries = newSeries;
 
                     return Plot.Series.Count - 1; ;
                 }
@@ -291,6 +245,65 @@ namespace Badger.ViewModels
                 Properties.ResetLineSeriesOpacity(p);
         }
 
+        private void UpdatePlotBoundsFromScratch()
+        {
+            double minY = double.MaxValue, maxY = double.MinValue;
+            double minX = double.MaxValue, maxX = double.MinValue;
+            bool atLeastOneLineSeries = false;
+            foreach (OxyPlot.Series.LineSeries series in Plot.Series)
+            {
+                if (series.IsVisible && series.Points.Count>0)
+                {
+                    atLeastOneLineSeries = true;
+                    foreach (DataPoint dataPoint in series.Points)
+                    {
+                        if (dataPoint.Y < minY)
+                            minY = dataPoint.Y;
+                        if (dataPoint.Y > maxY)
+                            maxY = dataPoint.Y;
+                        if (dataPoint.X < minX)
+                            minX = dataPoint.X;
+                        if (dataPoint.X > maxX)
+                            maxX = dataPoint.X;
+                    }
+                }
+            }
+            if (!atLeastOneLineSeries)
+            {
+                minX = 0.0;
+                maxX = 1.0;
+                minY = 0.0;
+                minY = 1.0;
+            }
+            if (maxY - minY > 0)
+            {
+                Plot.Axes[1].Maximum = maxY;
+                Plot.Axes[1].Minimum = minY;
+                Plot.Axes[1].AbsoluteMaximum = maxY;
+                Plot.Axes[1].AbsoluteMinimum = minY;
+            }
+            else
+            {
+                Plot.Axes[1].Maximum = minY + 0.001;
+                Plot.Axes[1].Minimum = minY;
+                Plot.Axes[1].AbsoluteMaximum = minY + 0.001;
+                Plot.Axes[1].AbsoluteMinimum = minY;
+            }
+            if (maxX - minX > 0)
+            {
+                Plot.Axes[0].Maximum = maxX;
+                Plot.Axes[0].Minimum = minX;
+                Plot.Axes[0].AbsoluteMaximum = maxX;
+                Plot.Axes[0].AbsoluteMinimum = minX;
+            }
+            else
+            {
+                Plot.Axes[0].Maximum = minX + 0.001;
+                Plot.Axes[0].Minimum = minX;
+                Plot.Axes[0].AbsoluteMaximum = minX + 0.001;
+                Plot.Axes[0].AbsoluteMinimum = minX;
+            }
+        }
 
         private void UpdatePlotBounds(double x, double y)
         {
@@ -318,16 +331,7 @@ namespace Badger.ViewModels
 
             if (bMustUpdate)
             {
-                double maxX = m_maxX;
-                double minX = m_minX;
-                double maxY = m_maxY;
-                double minY = m_minY;
-                if (maxX - minX == 0.0) { minX -= 0.01; maxX += 0.01; }
-                if (maxY - minY == 0.0) { minY -= 0.01; maxY += 0.01; }
-                Plot.Axes[0].AbsoluteMaximum = maxX;
-                Plot.Axes[0].AbsoluteMinimum = minX;
-                Plot.Axes[1].AbsoluteMaximum = maxY;
-                Plot.Axes[1].AbsoluteMinimum = minY;
+                UpdatePlotBoundsFromScratch();
 
                 //to update the boundaries in the view
                 UpdateView();

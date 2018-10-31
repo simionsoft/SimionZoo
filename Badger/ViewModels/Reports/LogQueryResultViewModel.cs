@@ -80,6 +80,7 @@ namespace Badger.ViewModels
             {
                 report.ImportNonSerializable(inputBaseFolder);
             }
+            if (Reports.Count > 0) SelectedReport = Reports[0];
         }
 
 

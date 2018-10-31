@@ -254,7 +254,8 @@ namespace Badger.ViewModels
                 LoadExperimentBatch(readBatchFilename);
                 LoadedBatch = readBatchFilename;
                 LogQueryResults.AddRange(readQueries);
-                SelectedLogQueryResult = LogQueryResults[0];
+                if (LogQueryResults.Count>0)
+                    SelectedLogQueryResult = LogQueryResults[0];
             }
         }
 
