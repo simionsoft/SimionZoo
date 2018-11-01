@@ -19,10 +19,10 @@
             <RowDefinition Height="*" />
         </Grid.RowDefinitions>
 
-        <oxy:PlotView Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2" Model="{Binding Plot.Plot}" 
+        <oxy:PlotView Grid.Row="0" Grid.Column="1" Model="{Binding Plot.Plot}" 
                       Margin="10,10,20,0" Background="#FAFAFA" />
 
-        <Grid>
+        <Grid Grid.Column="0" Grid.Row="0">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="*" />
             </Grid.ColumnDefinitions>
@@ -63,25 +63,25 @@
                     </Button>
                 </StackPanel>
             </StackPanel>
-            <Border BorderThickness="1" BorderBrush="LightGray" Grid.Column="0" Grid.Row="1" 
-                    Background="WhiteSmoke" Margin="4">
+            <Border BorderThickness="1" BorderBrush="Transparent" Grid.Column="0" Grid.Row="1" 
+                    Background="Transparent" Margin="4">
                 <StackPanel Orientation="Vertical" >
                     <StackPanel Orientation="Horizontal" IsEnabled="{Binding IsBatchLoaded}">
-                        <Label VerticalAlignment="Center" HorizontalContentAlignment="Right" Foreground="Gray" Width="110" FontSize="8">Batch file:</Label>
+                        <Label VerticalAlignment="Center" HorizontalContentAlignment="Right" Foreground="Black" Width="110" FontSize="8">Batch file:</Label>
                         <TextBlock x:Name="BatchFileName" TextAlignment="Center" FontSize="8" VerticalAlignment="Center" Foreground="Black"/>
                     </StackPanel>
                     <StackPanel Orientation="Horizontal" IsEnabled="{Binding IsBatchLoaded}">
-                        <Label VerticalAlignment="Center" HorizontalContentAlignment="Right" Foreground="Gray" Width="110" FontSize="8">Num.Experimental Units:</Label>
+                        <Label VerticalAlignment="Center" HorizontalContentAlignment="Right" Foreground="Black" Width="110" FontSize="8">Num.Experimental Units:</Label>
                         <TextBlock x:Name="NumExperimentalUnits"  FontSize="8" TextAlignment="Center" Foreground="#424242" 
                         Margin="5,5,5,0" />
                     </StackPanel>
                     <StackPanel Orientation="Horizontal" IsEnabled="{Binding IsBatchLoaded}">
-                        <Label VerticalAlignment="Center" HorizontalContentAlignment="Right" Foreground="Gray" Width="110" FontSize="8">Finished Experimental Units:</Label>
+                        <Label VerticalAlignment="Center" HorizontalContentAlignment="Right" Foreground="Black" Width="110" FontSize="8">Finished Experimental Units:</Label>
                         <TextBlock x:Name="NumFinishedExperimentalUnits"  FontSize="8" TextAlignment="Center" Foreground="#424242" 
                         Margin="5,5,5,0" />
                     </StackPanel>
                     <StackPanel Orientation="Horizontal" IsEnabled="{Binding IsBatchLoaded}">
-                        <Label VerticalAlignment="Center" HorizontalContentAlignment="Right" Foreground="Gray" Width="110" FontSize="8">Time to finish:</Label>
+                        <Label VerticalAlignment="Center" HorizontalContentAlignment="Right" Foreground="Black" Width="110" FontSize="8">Time to finish:</Label>
                         <TextBlock x:Name="EstimatedEndTime" TextAlignment="Center" FontSize="8" VerticalAlignment="Center" Foreground="Black"/>
                     </StackPanel>
                     <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" IsEnabled="{Binding IsBatchLoaded}">
@@ -91,7 +91,7 @@
                 </StackPanel>
             </Border>
         </Grid>
-        <ListView Grid.Column="1" Grid.Row="0" Grid.RowSpan="1" 
+        <ListView Grid.Column="1" Grid.Row="1"
                   Background="Transparent" BorderThickness="0"
                   ItemsSource="{Binding Path = AllMonitoredJobs}" HorizontalContentAlignment="Stretch">
             <ListView.ItemContainerStyle>
@@ -105,5 +105,8 @@
                 </DataTemplate>
             </ListBox.Resources>
         </ListView>
+        <Border Grid.Row="1" Grid.Column="0" BorderThickness="1" Margin="5,0,0,5" BorderBrush="#BDBDBD" >
+            <ContentControl x:Name="ShepherdViewModel" />
+        </Border>
     </Grid>
 </UserControl>

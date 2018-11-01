@@ -6,7 +6,7 @@
         xmlns:v="clr-namespace:Badger.Views"
         xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
         WindowStyle="ThreeDBorderWindow"
-        Title="Badger" Width="960" Height="600"
+        Title="Badger" Width="1024" Height="768"
         Icon="../badger.ico">
 
     <Window.Resources>
@@ -25,7 +25,7 @@
             <TabItem>
                 <TabItem.Header>
                     <StackPanel Orientation="Horizontal">
-                        <Path Data="{StaticResource Edit}" Stretch="Fill" Width="24" Height="24" Fill="#89000000" />
+                        <Path Data="{StaticResource Edit}" Stretch="Fill" Width="20" Height="20" Fill="#89000000" />
                         <Label>Editor</Label>
                     </StackPanel>
                 </TabItem.Header>
@@ -36,7 +36,7 @@
             <TabItem>
                 <TabItem.Header>
                     <StackPanel Orientation="Horizontal">
-                        <Path Data="{StaticResource Monitor}" Stretch="Fill" Width="24" Height="24" Fill="#89000000" />
+                        <Path Data="{StaticResource Monitor}" Stretch="Fill" Width="20" Height="20" Fill="#89000000" />
                         <Label>Monitor</Label>
                     </StackPanel>
                 </TabItem.Header>
@@ -55,103 +55,6 @@
                     <ContentControl x:Name="ReportWindowVM"/>
                 </TabItem.Content>
             </TabItem>
-            <!--<TabControl.ItemTemplate>
-                <DataTemplate>
-                    <StackPanel Orientation="Horizontal">
-                        <Label Content="{Binding Name}" VerticalAlignment="Center" BorderBrush="Transparent"/>
-                    </StackPanel>
-                </DataTemplate>
-            </TabControl.ItemTemplate>-->
         </TabControl>
     </Grid>
-    <!--<DockPanel>
-
-
-        <Grid Background="#FAFAFA">
-            <Grid.RowDefinitions>
-                <RowDefinition Height="Auto" />
-                <RowDefinition Height="*" />
-            </Grid.RowDefinitions>
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="310"/>
-                <ColumnDefinition Width="4"/>
-                <ColumnDefinition Width="*"/>
-            </Grid.ColumnDefinitions>
-
-
-            <Border Grid.Row="1" Grid.Column="0" BorderThickness="1" Margin="5,0,0,5" BorderBrush="#BDBDBD" >
-                <ContentControl x:Name="ShepherdViewModel" />
-            </Border>
-
-            <GridSplitter Grid.Row="0" Grid.Column="1" Grid.RowSpan="2" Width="4" Background="#FAFAFA"
-                          x:Name="GridSplitter" HorizontalAlignment="Stretch" />
-
-            <StackPanel Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="3" HorizontalAlignment="Center"
-                        VerticalAlignment="Center" Orientation="Horizontal">
-                <Button Style="{StaticResource BadgerButtonStyle}" Width="Auto" Height="40" Margin="10,0"
-                        ToolTip="Open the experiment monitor"
-                        cal:Message.Attach="[Event Click]=[Action ShowExperimentMonitor()]">
-                    <StackPanel Orientation="Horizontal">
-                        <Path Data="{StaticResource Play}" Width="24" Height="24" Fill="#89000000" />
-                        <Label>Experiment Monitor</Label>
-                    </StackPanel>
-                </Button>
-                <Button Style="{StaticResource BadgerButtonStyle}" Width="Auto" Height="40" Margin="10,0,180,0"
-                        cal:Message.Attach="[Event Click]=[Action ShowReportViewer()]"
-                        ToolTip="Generate reports from stored experiment results">
-                    <StackPanel Orientation="Horizontal">
-                        <Path Data="{StaticResource Plot}" Width="24" Height="24" Fill="#89000000" />
-                        <Label>Report Viewer</Label>
-                    </StackPanel>
-                </Button>
-
-            </StackPanel>
-            <TabControl Grid.Row="1" Grid.Column="2" x:Name="ExperimentViewModels" Margin="0,0,5,5"
-                        Padding="0" SelectedItem="{Binding Path = SelectedExperiment}">
-                <TabControl.ItemTemplate>
-                    <DataTemplate>
-                        <StackPanel Orientation="Horizontal" >
-                            <TextBox Text="{Binding Path=Name,Mode=TwoWay}" BorderBrush="Transparent"
-                                   VerticalAlignment="Center"/>
-                            <Label Content="{Binding Path=NumForkCombinations}" VerticalAlignment="Center"/>
-                            <Button Style="{StaticResource BadgerButtonStyle}" Width="18" Height="18">
-                                <i:Interaction.Triggers>
-                                    <i:EventTrigger EventName="Click">
-                                        <cal:ActionMessage MethodName="ShowWires" >
-                                            <cal:Parameter Value="{Binding BindsDirectlyToSource=True}" />
-                                        </cal:ActionMessage>
-                                    </i:EventTrigger>
-                                </i:Interaction.Triggers>
-                                <Path Data="{StaticResource Plug}" Width="18" Height="18" Fill="#89000000"
-                                      HorizontalAlignment="Center" VerticalAlignment="Center" Margin="0"/>
-                            </Button>
-                            <Button Style="{StaticResource BadgerButtonStyle}" Width="18" Height="18">
-                                <i:Interaction.Triggers>
-                                    <i:EventTrigger EventName="Click">
-                                        <cal:ActionMessage MethodName="RunExperimentalUnitLocallyWithCurrentParameters" >
-                                            <cal:Parameter Value="{Binding BindsDirectlyToSource=True}" />
-                                        </cal:ActionMessage>
-                                    </i:EventTrigger>
-                                </i:Interaction.Triggers>
-                                <Path Data="{StaticResource Play}" Width="24" Height="24" Fill="#89000000"
-                                      HorizontalAlignment="Center" VerticalAlignment="Center" Margin="3"/>
-                            </Button>
-                            <Button Style="{StaticResource BadgerButtonStyle}" Width="18" Height="18">
-                                <i:Interaction.Triggers>
-                                    <i:EventTrigger EventName="Click">
-                                        <cal:ActionMessage MethodName="Close" >
-                                            <cal:Parameter Value="{Binding BindsDirectlyToSource=True}" />
-                                        </cal:ActionMessage>
-                                    </i:EventTrigger>
-                                </i:Interaction.Triggers>
-
-                                <Path Data="{StaticResource Close}" Width="24" Height="24" Fill="#89000000"
-                                      HorizontalAlignment="Center" VerticalAlignment="Center" Margin="3" />
-                            </Button>
-                        </StackPanel>
-                    </DataTemplate>
-                </TabControl.ItemTemplate>
-            </TabControl>
-        </Grid>
-    </DockPanel>-->
 </Window>

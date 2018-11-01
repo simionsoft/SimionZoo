@@ -43,13 +43,17 @@ namespace Badger.ViewModels
 
         }
 
+
+        /// <summary>
+        /// Show the report viewer tab
+        /// </summary>
         public void ShowReportWindow()
         {
             SelectedScreenIndex = 2;
         }
 
         /// <summary>
-        /// Shows the experiment monitor in a new window
+        /// Shows the experiment monitor tab
         /// </summary>
         public void ShowExperimentMonitor()
         {
@@ -57,9 +61,9 @@ namespace Badger.ViewModels
         }
 
         /// <summary>
-        ///     Shows the report viewer
+        ///     Shows the editor tab
         /// </summary>
-        public void ShowReportViewer()
+        public void ShowEditorWindow()
         {
             SelectedScreenIndex= 0;
         }

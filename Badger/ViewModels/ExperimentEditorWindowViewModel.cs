@@ -177,7 +177,7 @@ namespace Badger.ViewModels
 
         public void LoadExperimentOrProject()
         {
-            string extension = SimionFileData.ExperimentDescription;
+            string extension = SimionFileData.ProjectDescription;
             string filter = SimionFileData.ExperimentOrProjectFilter;
 
             List<string> filenames = SimionFileData.OpenFileDialogMultipleFiles(extension, filter);

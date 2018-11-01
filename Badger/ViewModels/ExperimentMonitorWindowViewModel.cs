@@ -25,7 +25,7 @@ namespace Badger.ViewModels
         /// <param name="batchFileName"></param>
         public ExperimentMonitorWindowViewModel()
         {
-            Plot = new PlotViewModel("Evaluation Episodes", 1.0, "Normalized Evaluation Episode", "Average Reward")
+            Plot = new PlotViewModel("Evaluation Episodes", "Normalized Evaluation Episode", "Average Reward")
             { bShowOptions = false };
             Plot.Plot.TitleFontSize = 14;
             Plot.Properties.LegendVisible = false;
@@ -89,9 +89,8 @@ namespace Badger.ViewModels
         /// </summary>
         public void ShowReports()
         {
-            ReportsWindowViewModel reportsWindow = new ReportsWindowViewModel();
-            reportsWindow.LoadExperimentBatch(BatchFileName);
-            CaliburnUtility.ShowPopupWindow(reportsWindow, "Plot editor");
+            MainWindowViewModel.Instance.ShowReportWindow();
+            MainWindowViewModel.Instance.ReportWindowVM.LoadExperimentBatch(BatchFileName);
         }
 
         /// <summary>
