@@ -24,9 +24,9 @@
         <TabControl Margin="0" Padding="0" SelectedIndex="{Binding SelectedScreenIndex}">
             <TabItem>
                 <TabItem.Header>
-                    <StackPanel Orientation="Horizontal">
+                    <StackPanel Orientation="Horizontal" Margin="20,0,20,0">
                         <Path Data="{StaticResource Edit}" Stretch="Fill" Width="20" Height="20" Fill="#89000000" />
-                        <Label>Editor</Label>
+                        <Label Margin="10,0,0,0">Editor</Label>
                     </StackPanel>
                 </TabItem.Header>
                 <TabItem.Content>
@@ -35,9 +35,9 @@
             </TabItem>
             <TabItem>
                 <TabItem.Header>
-                    <StackPanel Orientation="Horizontal">
+                    <StackPanel Orientation="Horizontal" Margin="20,0,20,0">
                         <Path Data="{StaticResource Monitor}" Stretch="Fill" Width="20" Height="20" Fill="#89000000" />
-                        <Label>Monitor</Label>
+                        <Label Margin="10,0,0,0">Monitor</Label>
                     </StackPanel>
                 </TabItem.Header>
                 <TabItem.Content>
@@ -46,9 +46,9 @@
             </TabItem>
             <TabItem>
                 <TabItem.Header>
-                    <StackPanel Orientation="Horizontal">
+                    <StackPanel Orientation="Horizontal" Margin="20,0,20,0">
                         <Path Data="{StaticResource Plot}" Width="24" Height="24" Fill="#89000000" />
-                        <Label>Reports</Label>
+                        <Label Margin="10,0,0,0">Reports</Label>
                     </StackPanel>
                 </TabItem.Header>
                 <TabItem.Content>

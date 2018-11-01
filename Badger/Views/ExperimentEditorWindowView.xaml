@@ -17,6 +17,7 @@
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="40"/>
+            <RowDefinition Height="Auto"/>
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
         <StackPanel Orientation="Horizontal" Grid.Row="0" Margin="10 0 0 0">
@@ -40,8 +41,6 @@
                 <Path Data="{StaticResource Delete}" Width="24" Height="24" Fill="#89000000" />
             </Button>
 
-            <!--<Separator Style="{StaticResource {x:Static ToolBar.SeparatorStyleKey}}" Margin="4" />-->
-
             <Button Style="{StaticResource BadgerButtonStyle}" Margin="30 0 0 0" Width="Auto" Height="40"
                             IsEnabled="{Binding Path = CanLaunchExperiment}" ToolTip="Run Experiments"
                             cal:Message.Attach="[Event Click]=[Action RunExperimentsInEditor()]">
@@ -51,7 +50,9 @@
                 </StackPanel>
             </Button>
         </StackPanel>
-        <TabControl Grid.Row="1" x:Name="ExperimentViewModels" Margin="0,0,5,5"
+        <Separator Style="{StaticResource {x:Static ToolBar.SeparatorStyleKey}}" Grid.Row="1"
+                   BorderBrush="LightGray" BorderThickness="1" />
+        <TabControl Grid.Row="2" x:Name="ExperimentViewModels" Margin="0,0,5,5" BorderThickness="0"
                         Padding="0" SelectedItem="{Binding Path = SelectedExperiment}">
             <TabControl.ItemTemplate>
                 <DataTemplate>
@@ -60,24 +61,10 @@
                                    VerticalAlignment="Center"/>
                         <Label Content="{Binding Path=NumForkCombinations}" VerticalAlignment="Center"/>
                         <Button Style="{StaticResource BadgerButtonStyle}" Width="18" Height="18">
-                            <!--<i:Interaction.Triggers>
-                                <i:EventTrigger EventName="Click">
-                                    <cal:ActionMessage MethodName="ShowWires" >
-                                        <cal:Parameter Value="{Binding BindsDirectlyToSource=True}" />
-                                    </cal:ActionMessage>
-                                </i:EventTrigger>
-                            </i:Interaction.Triggers>-->
                             <Path Data="{StaticResource Plug}" Width="18" Height="18" Fill="#89000000"
                                       HorizontalAlignment="Center" VerticalAlignment="Center" Margin="0"/>
                         </Button>
                         <Button Style="{StaticResource BadgerButtonStyle}" Width="18" Height="18">
-                            <!--<i:Interaction.Triggers>
-                                <i:EventTrigger EventName="Click">
-                                    <cal:ActionMessage MethodName="RunExperimentalUnitLocallyWithCurrentParameters" >
-                                        <cal:Parameter Value="{Binding BindsDirectlyToSource=True}" />
-                                    </cal:ActionMessage>
-                                </i:EventTrigger>
-                            </i:Interaction.Triggers>-->
                             <Path Data="{StaticResource Play}" Width="24" Height="24" Fill="#89000000"
                                       HorizontalAlignment="Center" VerticalAlignment="Center" Margin="3"/>
                         </Button>

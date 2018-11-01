@@ -25,9 +25,8 @@ namespace Badger.ViewModels
         /// <param name="batchFileName"></param>
         public ExperimentMonitorWindowViewModel()
         {
-            Plot = new PlotViewModel("Evaluation Episodes", "Normalized Evaluation Episode", "Average Reward")
+            Plot = new PlotViewModel("", "", "")
             { bShowOptions = false };
-            Plot.Plot.TitleFontSize = 14;
             Plot.Properties.LegendVisible = false;
         }
 
