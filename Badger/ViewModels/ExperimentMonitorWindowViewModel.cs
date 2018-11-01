@@ -89,9 +89,9 @@ namespace Badger.ViewModels
         /// </summary>
         public void ShowReports()
         {
-            ReportsWindowViewModel plotEditor = new ReportsWindowViewModel();
-            plotEditor.LoadExperimentBatch(BatchFileName);
-            CaliburnUtility.ShowPopupWindow(plotEditor, "Plot editor");
+            ReportsWindowViewModel reportsWindow = new ReportsWindowViewModel();
+            reportsWindow.LoadExperimentBatch(BatchFileName);
+            CaliburnUtility.ShowPopupWindow(reportsWindow, "Plot editor");
         }
 
         /// <summary>

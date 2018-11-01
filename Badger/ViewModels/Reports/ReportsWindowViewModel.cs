@@ -6,12 +6,13 @@ using Badger.Data;
 using Caliburn.Micro;
 using Badger.Simion;
 using System.Threading.Tasks;
+using System.Collections.Generic;
 
 namespace Badger.ViewModels
 {
     public class ReportsWindowViewModel : Conductor<Screen>.Collection.OneActive
     {
-        LogQueryViewModel m_query = new LogQueryViewModel();
+        LogQueryViewModel m_query = null;
         public LogQueryViewModel Query
         {
             get { return m_query; }
@@ -27,12 +28,12 @@ namespace Badger.ViewModels
 
         //experimental units
         public BindableCollection<LoggedExperimentalUnitViewModel> ExperimentalUnits
-        { get; } = new BindableCollection<LoggedExperimentalUnitViewModel>();
+        { get; set; } = new BindableCollection<LoggedExperimentalUnitViewModel>();
 
 
         //log query results
         public BindableCollection<LogQueryResultViewModel> LogQueryResults
-        { get; } = new BindableCollection<LogQueryResultViewModel>();
+        { get; set; } = new BindableCollection<LogQueryResultViewModel>();
  
 
         //plot selection in tab control
@@ -44,7 +45,14 @@ namespace Badger.ViewModels
             set
             {
                 m_selectedLogQueryResult = value;
-                Query.DeepCopy(value.Query);
+                //avoid cloning the first query when it is selected
+                if (value != null && !ReferenceEquals(value.Query, Query))
+                {
+                    Query = Serialiazer.Clone(value.Query);
+
+                    //IsNotifying property must be manually set because the constructor of PropertyChangedBase is not called when we clone the object
+                    Query.SetNotifying(true);
+                }
                 NotifyOfPropertyChange(() => SelectedLogQueryResult);
             }
         }
@@ -67,7 +75,7 @@ namespace Badger.ViewModels
                 foreach (LoggedExperimentViewModel exp in LoggedExperiments)
                     exp.IsCheckVisible = Query.UseForkSelection;
 
-                Query.ValidateQuery();
+                Query.Validate();
             }
         }
 
@@ -88,9 +96,8 @@ namespace Badger.ViewModels
         /// </summary>
         public ReportsWindowViewModel()
         {
-            //Add the listening function to the LogQuery object with all the parameters
-            Query.PropertyChanged += OnChildPropertyChanged;
         }
+
 
         /// <summary>
         ///     Method called from the view. Generate a report from a set of selected configurations once
@@ -105,14 +112,17 @@ namespace Badger.ViewModels
                 string batchFilename = LoadedBatch;
 
                 LoadedBatch = "Running query";
-                Query.Execute(LoggedExperiments, OnExperimentalUnitProcessed);
+
+                Query.Execute(LoggedExperiments, OnExperimentalUnitProcessed, out List<TrackGroup> queryResultTracks, out List<Report> queryReports);
+
+                //Clone the query
+                LogQueryViewModel clonedQuery = Serialiazer.Clone(Query);
 
                 //Create and add to list the result of the query
-                LogQueryResultViewModel result = new LogQueryResultViewModel(Query);
+                LogQueryResultViewModel result = new LogQueryResultViewModel(queryResultTracks, queryReports, clonedQuery);
                 LogQueryResults.Add(result);
                 //set this last result as selected
                 SelectedLogQueryResult = LogQueryResults[LogQueryResults.Count-1];
-
 
                 LoadedBatch = batchFilename;
                 EndLongOperation();
@@ -137,31 +147,7 @@ namespace Badger.ViewModels
         public bool ForksLoaded
         { get { return m_bForksLoaded; } set { m_bForksLoaded = value; NotifyOfPropertyChange(() => ForksLoaded); } }
 
-        /// <summary>
-        ///     Method called from the view. When the report is generated it can be saved in a folder 
-        ///     as a set of separated files containing the report data for further analysis.
-        /// </summary>
-        public void SaveReports()
-        {
-            if (LogQueryResults.Count == 0) return;
 
-            string outputBaseFolder =
-                CaliburnUtility.SelectFolder(SimionFileData.imageRelativeDir);
-
-            if (outputBaseFolder != "")
-            {
-                foreach (LogQueryResultViewModel logQueryResult in LogQueryResults)
-                {
-                    // If there is more than one report, we store each one in a subfolder
-                    string outputFolder = outputBaseFolder + "\\" + Utility.RemoveSpecialCharacters(logQueryResult.Name);
-
-                    if (!Directory.Exists(outputFolder))
-                        Directory.CreateDirectory(outputFolder);
-
-                    logQueryResult.Export(outputFolder);
-                }
-            }
-        }
 
 
         private BindableCollection<LoggedExperimentViewModel> m_loggedExperiments
@@ -228,6 +214,66 @@ namespace Badger.ViewModels
             LoadProgress = 1;
             Loading = false;
         }
+
+        /// <summary>
+        /// Show a dialog window to select the experiment batch or report to load. Depending on the type of input file selected
+        /// , a different load function will be called: either LoadExperimentBatch or LoadReports
+        /// </summary>
+        public void LoadExperimentBatchOrReport()
+        {
+            string filter = SimionFileData.ExperimentBatchOrReportFilter;
+            string filetype = SimionFileData.ExperimentBatchOrReportFileTypeDescription;
+
+            List<string> filenames = SimionFileData.OpenFileDialogMultipleFiles(filetype, filter, false);
+
+            if (filenames.Count>0)
+            {
+                string filename = filenames[0];
+                string fileExtension = Utility.GetExtension(filename, 2);
+                if (fileExtension == SimionFileData.ExperimentBatchExtension)
+                    LoadExperimentBatch(filename);
+                else if (fileExtension == SimionFileData.ReportExtension)
+                    LoadReport(filename);
+            }
+        }
+
+        /// <summary>
+        /// Loads a report previously saved from the Reports window
+        /// </summary>
+        /// <param name="reportFileName">File where the report was saved using SaveReports()</param>
+        public void LoadReport(string reportFileName)
+        {
+            string readBatchFilename;
+            BindableCollection<LogQueryResultViewModel> readQueries;
+            int numQueriesRead= SimionFileData.LoadReport(reportFileName, out readBatchFilename, out readQueries);
+
+            if (numQueriesRead>0)
+            {
+                ClearReportViewer();
+
+                LoadExperimentBatch(readBatchFilename);
+                LoadedBatch = readBatchFilename;
+                LogQueryResults.AddRange(readQueries);
+                if (LogQueryResults.Count>0)
+                    SelectedLogQueryResult = LogQueryResults[0];
+            }
+        }
+
+        /// <summary>
+        ///     Method called from the view. When the report is generated it can be saved in a folder.
+        ///     Each LogQueryResults object is saved in a different subfolder
+        /// </summary>
+        public void SaveReport()
+        {
+            if (LogQueryResults.Count == 0) return;
+
+            string outputBaseFolder =
+                CaliburnUtility.SelectFolder(SimionFileData.imageRelativeDir);
+
+            if (outputBaseFolder != "")
+                SimionFileData.SaveReport(LoadedBatch, LogQueryResults, outputBaseFolder);
+        }
+
         /// <summary>
         ///     Load an experiment from a batch file. If <paramref name="batchFileName"/> is either
         ///     null or empty, a dialog window will be opened to let the user select a batch file.
@@ -246,7 +292,6 @@ namespace Badger.ViewModels
 
             //reset the view if a batch was succesfully selected
             ClearReportViewer();
-            Query.BeforeExperimentBatchLoad();
 
             //Inefficient but not so much as to care
             //First we load the batch file to cout how many experimental units we have
@@ -261,9 +306,6 @@ namespace Badger.ViewModels
                 LoadedBatch = "Reading experiment files";
                 SimionFileData.LoadExperimentBatchFile(batchFileName, LoadLoggedExperiment, OnExperimentalUnitProcessed);
             
-                //Do whatever needs to be done when a new batch is loaded (i.e., validate the query)
-                Query.AfterExperimentBatchLoad();
-
                 //Update flags use to enable/disable parts of the report generation menu
                 NotifyOfPropertyChange(() => ForksLoaded);
                 NotifyOfPropertyChange(() => VariablesLoaded);
@@ -303,7 +345,9 @@ namespace Badger.ViewModels
             NotifyOfPropertyChange(() => VariablesLoaded);
             NotifyOfPropertyChange(() => ForksLoaded);
 
-            Query.Reset();
+            Query = new LogQueryViewModel();
+            //Add the listening function to the LogQuery object with all the parameters
+            Query.PropertyChanged += OnChildPropertyChanged;
 
             LogsLoaded = false;
             ForksLoaded = false;

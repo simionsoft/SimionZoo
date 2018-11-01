@@ -3,17 +3,21 @@ using Caliburn.Micro;
 using System.IO;
 using Badger.Simion;
 using Badger.Data;
-
+using System.Collections.Generic;
+using System.Runtime.Serialization;
 
 namespace Badger.ViewModels
 {
-    public class ReportViewModel : Screen
+    [DataContract]
+    public class ReportViewModel : PropertyChangedBase
     {
         private string m_name = "Unnamed";
+        [DataMember]
         public string Name { get { return m_name; } set { m_name = value; NotifyOfPropertyChange(() => Name); } }
 
         //plots
         private PlotViewModel m_plot= null;
+        [DataMember]
         public PlotViewModel Plot
         {
             get { return m_plot; }
@@ -22,31 +26,25 @@ namespace Badger.ViewModels
  
         //stats
         private StatsViewModel m_stats;
+        [DataMember]
         public StatsViewModel Stats
         {
             get { return m_stats; }
             set { m_stats = value; NotifyOfPropertyChange(() => Stats); }
         }
 
-        public void Export(string outputFolder)
+        public void ExportNonSerializable(string outputFolder, ref Dictionary<string, string> outputFiles)
         {
             //export plots
-            if (Plot!=null) Plot.Export(outputFolder);
-            //export stats
-            string statsFile = outputFolder + "\\" + Name + ".xml";
-            try
+            if (Plot!=null) Plot.Export(outputFolder, ref outputFiles);
+        }
+
+        public void ImportNonSerializable(string inputFolder)
+        {
+            if (Plot != null)
             {
-                using (StreamWriter fileWriter = File.CreateText(statsFile))
-                {
-                    fileWriter.WriteLine("<" + XMLConfig.statisticsFileTag + ">");
-                    Stats.Export(fileWriter, "  ");
-                    fileWriter.WriteLine("</" + XMLConfig.statisticsFileTag + ">");
-                }
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine("Error exporting stats file: " + statsFile);
-                Console.Write(ex.ToString());
+                Plot.IsNotifying = true;
+                Plot.Import(inputFolder);
             }
         }
 
@@ -62,16 +60,16 @@ namespace Badger.ViewModels
             return ReportType.Undefined;
         }
 
-        public ReportViewModel(LogQueryViewModel query, Report report)
+        public ReportViewModel(List<TrackGroup> queryResultTracks, LogQueryViewModel query, Report report)
         {
             Name = report.Name;
 
             //Create the plot
-            PlotViewModel newPlot = new PlotViewModel(report.Name, 0, "Time (s)", report.Name, false, true);
+            PlotViewModel newPlot = new PlotViewModel(report.Name, "Time (s)", report.Name, false, true);
             //Create the stats
             StatsViewModel newStatGroup = new StatsViewModel(report.Name);
 
-            foreach (TrackGroup group in query.ResultTracks)
+            foreach (TrackGroup group in queryResultTracks)
             {
                 //plot data
                 if (group.ConsolidatedTrack != null)

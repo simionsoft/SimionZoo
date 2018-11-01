@@ -7,7 +7,7 @@ using namespace Microsoft::VisualStudio::CppUnitTestFramework;
 #include "../../../tools/GeometryLib/matrix44.h"
 
 
-namespace insideFrustum
+namespace InsideFrustum
 {		
 	TEST_CLASS(UnitTest1)
 	{

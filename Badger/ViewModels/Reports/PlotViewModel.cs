@@ -2,13 +2,18 @@
 using OxyPlot.Axes;
 using OxyPlot.Wpf;
 using Caliburn.Micro;
-using System.Windows.Forms;
+using System.Runtime.Serialization;
 using Badger.Data;
 using System;
 using System.ComponentModel;
+using Badger.Simion;
+using System.Collections.Generic;
+using System.IO;
+using System.Xml;
 
 namespace Badger.ViewModels
 {
+    [DataContract]
     public class PlotViewModel : PropertyChangedBase, IDisposable
     {
         protected virtual void Dispose(bool disposing)
@@ -27,6 +32,7 @@ namespace Badger.ViewModels
 
         string m_name = "";
 
+        [DataMember]
         public string name
         {
             get { return m_name; }
@@ -35,69 +41,79 @@ namespace Badger.ViewModels
         private const int m_updateFreq = 1000; //plot refresh freq in millseconds
         private System.Threading.Timer m_timer;
 
+        [DataMember]
         double m_minX = double.MaxValue;
+        [DataMember]
         double m_maxX = double.MinValue;
+        [DataMember]
         double m_minY = double.MaxValue;
+        [DataMember]
         double m_maxY = double.MinValue;
+        [DataMember]
         double m_maxNumSeries = 20;
 
-        private PlotModel m_plot;
-        public PlotModel Plot { get { return m_plot; } set { } }
+        public SafePlotModel Plot { get; set; } = new SafePlotModel();
 
-        private PlotPropertiesViewModel m_properties = new PlotPropertiesViewModel();
+        [DataMember]
         public PlotPropertiesViewModel Properties
         {
-            get { return m_properties; }
-        }
+            get; set;
+        } = new PlotPropertiesViewModel();
 
+        [DataMember]
         public bool LineSeriesSelectionVisible
         {
             get { return Properties.LineSeriesProperties.Count > 1; }
+            set { }
         }
 
-        public PlotViewModel(string title, double xMax = 0, string xName = "", string yName = "", bool bRefresh = true, bool bShowOptions = false)
+        public PlotViewModel(string title, string xAxisName = "", string yAxisName = "", bool bRefresh = true, bool bShowOptions = false)
         {
             name = title;
-            m_plot = new PlotModel();
+            m_bShowOptions = bShowOptions;
+            if (bRefresh)
+            {
+                m_timer = new System.Threading.Timer(UpdatePlot);
+                m_timer.Change(m_updateFreq, m_updateFreq);
+            }
+
+            InitPlot(title, xAxisName, yAxisName);
+        }
+
+        void InitPlot(string title, string xAxisName, string yAxisName)
+        {
             var xAxis = new OxyPlot.Axes.LinearAxis();
             xAxis.Position = AxisPosition.Bottom;
             xAxis.MajorGridlineStyle = LineStyle.Solid;
             xAxis.Minimum = 0.0;
-            xAxis.Maximum = 1.0;
-
-            //If no absolute maximum x is provided, we don't set it and it will take the default value double.MaxValue
-            if (xMax>0)
-                xAxis.AbsoluteMaximum = xMax;
             xAxis.AbsoluteMinimum = 0.0;
+            xAxis.Maximum = 1.0;
+            xAxis.AbsoluteMaximum = 1.0;
 
-            m_plot.Axes.Add(xAxis);
+
+            Plot.Axes.Add(xAxis);
 
             var yAxis = new OxyPlot.Axes.LinearAxis();
             yAxis.Position = AxisPosition.Left;
             yAxis.MajorGridlineStyle = LineStyle.Solid;
             yAxis.Minimum = 0.0;
+            yAxis.AbsoluteMinimum = 0.0;
             yAxis.Maximum = 1.0;
+            yAxis.AbsoluteMaximum = 1.0;
 
-            m_plot.Axes.Add(yAxis);
+            Plot.Axes.Add(yAxis);
             //default properties
-            m_plot.LegendBorder = OxyColors.Black;
-            m_plot.LegendBackground = OxyColors.White;
+            Plot.LegendBorder = OxyColors.Black;
+            Plot.LegendBackground = OxyColors.White;
 
             Properties.Title = Utility.OxyPlotMathNotation(title);
-            Properties.XAxisName = Utility.OxyPlotMathNotation(xName);
-            Properties.YAxisName = Utility.OxyPlotMathNotation(yName);
+            Properties.XAxisName = Utility.OxyPlotMathNotation(xAxisName);
+            Properties.YAxisName = Utility.OxyPlotMathNotation(yAxisName);
 
             UpdatePlotProperties();
 
             //Add a listener to "PropertiesChanged" event from Properties
             Properties.PropertyChanged += PropertiesChanged;
-
-            if (bRefresh)
-            {
-                m_timer = new System.Threading.Timer(updatePlot);
-                m_timer.Change(m_updateFreq, m_updateFreq);
-            }
-            m_bShowOptions = bShowOptions;
         }
 
         public void PropertiesChanged(object sender, PropertyChangedEventArgs e)
@@ -113,34 +129,18 @@ namespace Badger.ViewModels
         private void UpdatePlotProperties()
         {
             //Boundaries
-            if (m_plot.Axes.Count == 2)
+            while (Plot.Axes.Count<2)
             {
-                double minY= double.MaxValue, maxY= double.MinValue;
-                foreach(OxyPlot.Series.LineSeries series in m_plot.Series)
-                {
-                    if (series.IsVisible && series.MinY < minY)
-                        minY = series.MinY;
-                    if (series.IsVisible && series.MaxY > maxY)
-                        maxY = series.MaxY;
-                }
-                if (maxY - minY > 0)
-                {
-                    m_plot.Axes[1].Maximum = maxY;
-                    m_plot.Axes[1].Minimum = minY;
-                }
-                else
-                {
-                    m_plot.Axes[1].Maximum = 1.0;
-                    m_plot.Axes[1].Minimum = 0.0;
-                }
+                Plot.Axes.Add(new OxyPlot.Axes.LinearAxis());
             }
+
+            UpdatePlotBoundsFromScratch();
+
             //Texts
-            if (m_plot.Axes.Count == 2)
-            {
-                m_plot.Axes[0].Title = Properties.XAxisName;
-                m_plot.Axes[1].Title = Properties.YAxisName;
-            }
-            m_plot.Title = Properties.Title;
+            Plot.Axes[0].Title = Properties.XAxisName;
+            Plot.Axes[1].Title = Properties.YAxisName;
+
+            Plot.Title = Properties.Title;
             //font
             Plot.DefaultFont = Properties.SelectedFont;
 
@@ -160,14 +160,16 @@ namespace Badger.ViewModels
             UpdateView();
         }
 
-        private void updatePlot(object state)
+        private void UpdatePlot(object state)
         {
-            m_plot.InvalidatePlot(true);
+            if (Plot!=null)
+                Plot.InvalidatePlot(true);
         }
 
         public void UpdateView()
         {
-            m_plot.InvalidatePlot(true);
+            if (Plot!=null)
+                Plot.InvalidatePlot(true);
         }
 
         private object m_lineSeriesLock = new object();
@@ -176,36 +178,45 @@ namespace Badger.ViewModels
         {
             //TODO: improve how to limit the number of plots
             //For now, we just ignore series after the max number has been reached
-            if (m_plot.Series.Count<m_maxNumSeries)
+            if (Plot.Series.Count < m_maxNumSeries)
+            {
+                if (m_lineSeriesLock == null) //might be null if loaded from file
+                    m_lineSeriesLock = new object();
                 lock (m_lineSeriesLock)
                 {
                     OxyPlot.Series.LineSeries newSeries = new OxyPlot.Series.LineSeries { Title = title, MarkerType = MarkerType.None };
                     newSeries.IsVisible = isVisible;
-                    m_plot.Series.Add(newSeries);
+                    Plot.Series.Add(newSeries);
 
-                    Properties.AddLineSeries(title, description, newSeries);
+                    PlotLineSeriesPropertiesViewModel lineProps = Properties.LineSeriesByName(title);
 
-                    return m_plot.Series.Count - 1; ;
+                    if (lineProps == null)
+                        Properties.AddLineSeries(title, description, newSeries);
+                    else
+                        lineProps.LineSeries = newSeries;
+
+                    return Plot.Series.Count - 1; ;
                 }
+            }
             return -1;
         }
 
         public void AddLineSeriesValue(int seriesIndex, double xValue, double yValue)
         {
-            if (seriesIndex < 0 || seriesIndex >= m_plot.Series.Count)
+            if (seriesIndex < 0 || seriesIndex >= Plot.Series.Count)
             {
                 //TODO: at least, we should log the error
                 return;
             }
 
-            OxyPlot.Series.LineSeries series = (OxyPlot.Series.LineSeries)m_plot.Series[seriesIndex];
+            OxyPlot.Series.LineSeries series = (OxyPlot.Series.LineSeries)Plot.Series[seriesIndex];
             UpdatePlotBounds(xValue, yValue);
             series.Points.Add(new DataPoint(xValue, yValue));
         }
 
         public void ClearLineSeries()
         {
-            m_plot.Series.Clear();
+            Plot.Series.Clear();
             UpdateView();
             NotifyOfPropertyChange("Series");
         }
@@ -234,6 +245,65 @@ namespace Badger.ViewModels
                 Properties.ResetLineSeriesOpacity(p);
         }
 
+        private void UpdatePlotBoundsFromScratch()
+        {
+            double minY = double.MaxValue, maxY = double.MinValue;
+            double minX = double.MaxValue, maxX = double.MinValue;
+            bool atLeastOneLineSeries = false;
+            foreach (OxyPlot.Series.LineSeries series in Plot.Series)
+            {
+                if (series.IsVisible && series.Points.Count>0)
+                {
+                    atLeastOneLineSeries = true;
+                    foreach (DataPoint dataPoint in series.Points)
+                    {
+                        if (dataPoint.Y < minY)
+                            minY = dataPoint.Y;
+                        if (dataPoint.Y > maxY)
+                            maxY = dataPoint.Y;
+                        if (dataPoint.X < minX)
+                            minX = dataPoint.X;
+                        if (dataPoint.X > maxX)
+                            maxX = dataPoint.X;
+                    }
+                }
+            }
+            if (!atLeastOneLineSeries)
+            {
+                minX = 0.0;
+                maxX = 1.0;
+                minY = 0.0;
+                minY = 1.0;
+            }
+            if (maxY - minY > 0)
+            {
+                Plot.Axes[1].Maximum = maxY;
+                Plot.Axes[1].Minimum = minY;
+                Plot.Axes[1].AbsoluteMaximum = maxY;
+                Plot.Axes[1].AbsoluteMinimum = minY;
+            }
+            else
+            {
+                Plot.Axes[1].Maximum = minY + 0.001;
+                Plot.Axes[1].Minimum = minY;
+                Plot.Axes[1].AbsoluteMaximum = minY + 0.001;
+                Plot.Axes[1].AbsoluteMinimum = minY;
+            }
+            if (maxX - minX > 0)
+            {
+                Plot.Axes[0].Maximum = maxX;
+                Plot.Axes[0].Minimum = minX;
+                Plot.Axes[0].AbsoluteMaximum = maxX;
+                Plot.Axes[0].AbsoluteMinimum = minX;
+            }
+            else
+            {
+                Plot.Axes[0].Maximum = minX + 0.001;
+                Plot.Axes[0].Minimum = minX;
+                Plot.Axes[0].AbsoluteMaximum = minX + 0.001;
+                Plot.Axes[0].AbsoluteMinimum = minX;
+            }
+        }
 
         private void UpdatePlotBounds(double x, double y)
         {
@@ -261,26 +331,20 @@ namespace Badger.ViewModels
 
             if (bMustUpdate)
             {
-                double maxX = m_maxX;
-                double minX = m_minX;
-                double maxY = m_maxY;
-                double minY = m_minY;
-                if (maxX - minX == 0.0) { minX -= 0.01; maxX += 0.01; }
-                if (maxY - minY == 0.0) { minY -= 0.01; maxY += 0.01; }
-                m_plot.Axes[0].Maximum = maxX;
-                m_plot.Axes[0].Minimum = minX;
-                m_plot.Axes[1].Maximum = maxY;
-                m_plot.Axes[1].Minimum = minY;
+                UpdatePlotBoundsFromScratch();
+
+                //to update the boundaries in the view
+                UpdateView();
             }
         }
 
         public void SaveImage()
         {
             string outputFolder = Simion.SimionFileData.SelectOutputDirectoryDialog();
-
+            Dictionary<string, string> outputFiles = new Dictionary<string, string>();
             if (outputFolder!=null)
             {
-                Export(outputFolder);
+                Export(outputFolder, ref outputFiles); //we do nothing with the list of output files
             }
         }
 
@@ -289,20 +353,97 @@ namespace Badger.ViewModels
             CaliburnUtility.ShowPopupWindow(Properties, "Plot properties");
         }
 
-        public void Export(string outputFolder)
+        public void Export(string outputFolder, ref Dictionary<string, string> outputFiles)
         {
+            string baseFilename = outputFolder + "\\" + Utility.RemoveSpecialCharacters(name);
+
+            //1st save in common formats: png and svg
             string fileName;
             //as png
-            fileName = outputFolder + "\\" + Utility.RemoveSpecialCharacters(name) + ".png";
+            fileName = baseFilename + ".png";
             var pngExporter = new PngExporter { Width = 600, Height = 400, Background = OxyColors.Transparent };
-            pngExporter.ExportToFile(m_plot, fileName);
+            pngExporter.ExportToFile(Plot, fileName);
             //as svg
-            fileName = outputFolder + "\\" + Utility.RemoveSpecialCharacters(name) + ".svg";
+            fileName = baseFilename + ".svg";
             var svgExporter = new OxyPlot.Wpf.SvgExporter { Width = 600, Height = 400 };
-            svgExporter.ExportToFile(m_plot, fileName);
+            svgExporter.ExportToFile(Plot, fileName);
+
+            //2nd save data from the model for importing
+            fileName = baseFilename + SimionFileData.PlotDataExtension;
+
+            using (TextWriter writer = File.CreateText(fileName))
+            {
+                writer.WriteLine("<" + XMLConfig.plotNodeTag + " " 
+                    + XMLConfig.nameAttribute + "=\"" + Utility.RemoveSpecialCharacters(name) + "\">");
+                foreach(OxyPlot.Series.LineSeries lineSeries in Plot.Series)
+                {
+                    writer.WriteLine("  <" + XMLConfig.LineSeriesTag + " " + XMLConfig.nameAttribute + "=\"" + lineSeries.Title + "\">");
+
+                    foreach(DataPoint dataPoint in lineSeries.Points)
+                    {
+                        writer.WriteLine("    <" + XMLConfig.DataPointTag + ">");
+                        writer.WriteLine("      <" + XMLConfig.DataPointXTag + ">" + dataPoint.X + "</" + XMLConfig.DataPointXTag + ">");
+                        writer.WriteLine("      <" + XMLConfig.DataPointYTag + ">" + dataPoint.Y + "</" + XMLConfig.DataPointYTag + ">");
+                        writer.WriteLine("    </" + XMLConfig.DataPointTag + ">");
+                    }
+
+                    writer.WriteLine("  </" + XMLConfig.LineSeriesTag + ">");
+                }
+                writer.WriteLine("</" + XMLConfig.plotNodeTag + ">");
+
+                string relPlotFilename = Utility.RemoveSpecialCharacters(name) + SimionFileData.PlotDataExtension;
+                outputFiles[relPlotFilename] = XMLConfig.plotNodeTag;
+            }
+        }
+
+        public void Import(string inputFolder)
+        {
+            XmlDocument xmlDoc = new XmlDocument();
+            xmlDoc.Load(inputFolder + Utility.RemoveSpecialCharacters(name) + SimionFileData.PlotDataExtension);
+
+            XmlNode root = xmlDoc.FirstChild;
+            string plotName = root.Attributes[XMLConfig.nameAttribute].Value;
+
+            if (plotName == Utility.RemoveSpecialCharacters(name))
+            {
+                Plot = new SafePlotModel();
+
+                InitPlot(plotName, Properties.XAxisName, Properties.YAxisName);
+
+                foreach (XmlNode lineSeries in root.ChildNodes)
+                {
+                    if (lineSeries.Name == XMLConfig.LineSeriesTag)
+                    {
+                        string lineSeriesTitle = lineSeries.Attributes[XMLConfig.nameAttribute].Value;
+
+                        int lineSeriesId = AddLineSeries(lineSeriesTitle);
+                        foreach (XmlNode dataPoint in lineSeries.ChildNodes)
+                        {
+                            if (dataPoint.Name == XMLConfig.DataPointTag)
+                            {
+                                double x = 0.0, y = 0.0;
+                                foreach (XmlNode coord in dataPoint.ChildNodes)
+                                {
+                                    if (coord.Name == XMLConfig.DataPointXTag) x = Convert.ToDouble(coord.InnerText);
+                                    if (coord.Name == XMLConfig.DataPointYTag) y = Convert.ToDouble(coord.InnerText);
+                                }
+                                AddLineSeriesValue(lineSeriesId, x, y);
+                            }
+                        }
+                    }
+                }
+
+                //Set Properties as Notifying. Deserializing doesn't do it
+                Properties.SetNotifying(true);
+                //Add a listener to "PropertiesChanged" event from Properties
+                Properties.PropertyChanged += PropertiesChanged;
+
+                UpdatePlotProperties();
+            }
         }
 
         private bool m_bShowOptions = false;
+        [DataMember]
         public bool bShowOptions { get { return m_bShowOptions; } set { m_bShowOptions = value; NotifyOfPropertyChange(() => bShowOptions); } }
 
 

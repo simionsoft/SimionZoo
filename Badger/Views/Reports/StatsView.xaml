@@ -8,7 +8,7 @@
              d:DesignHeight="300" d:DesignWidth="600">
 
     <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Auto" Padding="15">
-        <DataGrid Name="StatsDataGrid" ItemsSource="{Binding stats}" CanUserAddRows="False"
+        <DataGrid Name="StatsDataGrid" ItemsSource="{Binding Stats}" CanUserAddRows="False"
                   AutoGenerateColumns="False" CanUserResizeColumns="False" BorderBrush="LightGray"
                   CanUserSortColumns="True" IsReadOnly="True" Width="Auto" SelectedItem="{Binding SelectedStat, Mode=TwoWay}">
             <DataGrid.Columns>
