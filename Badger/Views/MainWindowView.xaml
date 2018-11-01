@@ -6,7 +6,7 @@
         xmlns:v="clr-namespace:Badger.Views"
         xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
         WindowStyle="ThreeDBorderWindow"
-        Title="Badger" Width="1024" Height="768"
+        Title="Badger" Width="1024" Height="680"
         Icon="../badger.ico">
 
     <Window.Resources>

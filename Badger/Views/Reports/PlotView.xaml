@@ -17,7 +17,7 @@
                 <ColumnDefinition Width="560"/>
                 <ColumnDefinition Width="*"/>
             </Grid.ColumnDefinitions>
-            <oxy:PlotView Grid.Column="0" Model="{Binding Plot}" Width="556" Height="400" Margin="0"/>
+            <oxy:PlotView Grid.Column="0" Model="{Binding Plot}" Width="560" Height="300" Margin="0"/>
             <StackPanel Grid.Column="1" Orientation="Vertical" VerticalAlignment="Top" Visibility="{Binding Path=bShowOptions,Converter={StaticResource BoolToVis}}">
                 <Button Style="{StaticResource BadgerButtonStyle}" x:Name="ShowProperties" Width="32" Height="32">
                     <Path Data="{StaticResource Settings}" Width="24" Height="24" Fill="#89000000"

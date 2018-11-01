@@ -30,6 +30,8 @@
         <Grid.RowDefinitions>
             <RowDefinition Height="40"/>
             <RowDefinition Height="Auto"/>
+            <RowDefinition Height="150"/>
+            <RowDefinition Height="Auto"/>
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
         <Grid.ColumnDefinitions>
@@ -47,86 +49,57 @@
             </Button>
         </StackPanel>
         <StackPanel Orientation="Horizontal" VerticalAlignment="Center" Grid.Column="1" Grid.Row="0">
-            <Label Width="200" HorizontalContentAlignment="Right" Content="{Binding LoadedBatch}"/>
+            <Label Width="300" HorizontalContentAlignment="Right" Content="{Binding LoadedBatch}"/>
             <ProgressBar x:Name="LoadProgress" Minimum="0" Maximum="1" Height="10" Width="200" Margin="20,0,20,0"
                              Visibility="{Binding Loading,Converter={StaticResource BoolToVis}}"/>
         </StackPanel>
         <Separator Style="{StaticResource {x:Static ToolBar.SeparatorStyleKey}}" 
                    BorderBrush="LightGray" BorderThickness="1" Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2"/>
-        <Grid Background="Transparent" Grid.Row="2" Visibility="{Binding LogsLoaded,Converter={StaticResource BoolToVis}}">
-            <Grid.RowDefinitions>
-                <RowDefinition Height="*" />
-            </Grid.RowDefinitions>
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="300"/>
-                <ColumnDefinition Width="5" />
-                <ColumnDefinition Width="780" />
-            </Grid.ColumnDefinitions>
-
-            <Grid Grid.Row="0" Grid.Column="0" Margin="5,5,0,5">
-                <Grid.RowDefinitions>
-                    <RowDefinition Height="150" />
-                    <RowDefinition Height="Auto" />
-                    <RowDefinition Height="Auto" MinHeight="30" />
-                </Grid.RowDefinitions>
-
-                <Border Grid.Row="0" BorderBrush="DarkGray" BorderThickness="0">
-
-                    <StackPanel Background="Transparent">
-                        <StackPanel>
-                            <Label>Experiments</Label>
-                        </StackPanel>
-                        <ScrollViewer Height="120" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Auto">
-                            <ItemsControl x:Name="LoggedExperiments"/>
-                        </ScrollViewer>
+        <Separator Style="{StaticResource {x:Static ToolBar.SeparatorStyleKey}}" 
+                   Visibility="{Binding LogsLoaded,Converter={StaticResource BoolToVis}}"
+                   BorderBrush="LightGray" BorderThickness="1" Grid.Row="3" Grid.Column="0"/>
+ 
+        <StackPanel Background="Transparent" Grid.Row="2" Visibility="{Binding LogsLoaded,Converter={StaticResource BoolToVis}}">
+            <StackPanel>
+                <Label>Experiments</Label>
+            </StackPanel>
+            <ScrollViewer Height="120" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Auto">
+                <ItemsControl x:Name="LoggedExperiments"/>
+            </ScrollViewer>
+        </StackPanel>
+    
+        <StackPanel Orientation="Vertical" Grid.Row="4" Grid.Column="0" Visibility="{Binding LogsLoaded,Converter={StaticResource BoolToVis}}">
+            <ContentControl x:Name="Query"/>
+            <StackPanel Grid.Row="2" Orientation="Horizontal" HorizontalAlignment="Center">
+                <Button x:Name="MakeReport"  HorizontalAlignment="Center" BorderBrush="SlateGray"
+                                                    Height="30" IsEnabled="{Binding Path=Query.CanGenerateReports}" >
+                    <StackPanel Orientation="Horizontal">
+                        <TextBlock VerticalAlignment="Center" Margin="4"><Run Text="Generate Reports"/></TextBlock>
                     </StackPanel>
-                </Border>
-                <Separator Style="{StaticResource {x:Static ToolBar.SeparatorStyleKey}}" Grid.Row="1"
-                   BorderBrush="LightGray" BorderThickness="1" />
-
-                <Border Grid.Row="2" BorderBrush="DarkGray" BorderThickness="0">
-                    <StackPanel Orientation="Vertical">
-                    <ContentControl x:Name="Query"/>
-                        <StackPanel Grid.Row="2" Orientation="Horizontal" HorizontalAlignment="Center">
-                            <Button x:Name="MakeReport"  HorizontalAlignment="Center" BorderBrush="SlateGray"
-                                                        Height="30" IsEnabled="{Binding Path=Query.CanGenerateReports}" >
-                                <StackPanel Orientation="Horizontal">
-                                    <TextBlock VerticalAlignment="Center" Margin="4"><Run Text="Generate Reports"/></TextBlock>
-                                </StackPanel>
-                            </Button>
-                        </StackPanel>
+                </Button>
+            </StackPanel>
+        </StackPanel>
+  
+        <TabControl Grid.Row="2" Grid.Column="1" Grid.RowSpan="3" Margin="0" Padding="0"  x:Name="LogQueryResults" BorderThickness="0"
+                        SelectedItem="{Binding SelectedLogQueryResult}">
+            <TabControl.ItemTemplate>
+                <DataTemplate>
+                    <StackPanel Orientation="Horizontal">
+                        <Label Content="{Binding Name}" VerticalAlignment="Center" BorderBrush="Transparent"/>
+                        <Button Style="{StaticResource BadgerButtonStyle}" Width="18" Height="18">
+                            <i:Interaction.Triggers>
+                                <i:EventTrigger EventName="Click">
+                                    <cal:ActionMessage MethodName="Close" >
+                                        <cal:Parameter Value="{Binding BindsDirectlyToSource=True}" />
+                                    </cal:ActionMessage>
+                                </i:EventTrigger>
+                            </i:Interaction.Triggers>
+                            <Path Data="{StaticResource Close}" Width="24" Height="24" Fill="#89000000"
+                                        HorizontalAlignment="Center" VerticalAlignment="Center" Margin="3" />
+                        </Button>
                     </StackPanel>
-                </Border>
-               
-            </Grid>
-
-            <Separator Style="{StaticResource {x:Static ToolBar.SeparatorStyleKey}}" Grid.Row="1"
-                       Grid.Column="1" Grid.RowSpan="2"
-                   BorderBrush="LightGray" BorderThickness="1" />
-
-            <Border Grid.Row="0" Grid.Column="2" BorderBrush="DarkGray" BorderThickness="0" Margin="0,5,5,5">
-                <TabControl Margin="0" Padding="0"  x:Name="LogQueryResults" BorderThickness="0"
-                            SelectedItem="{Binding SelectedLogQueryResult}">
-                    <TabControl.ItemTemplate>
-                        <DataTemplate>
-                            <StackPanel Orientation="Horizontal">
-                                <Label Content="{Binding Name}" VerticalAlignment="Center" BorderBrush="Transparent"/>
-                                <Button Style="{StaticResource BadgerButtonStyle}" Width="18" Height="18">
-                                    <i:Interaction.Triggers>
-                                        <i:EventTrigger EventName="Click">
-                                            <cal:ActionMessage MethodName="Close" >
-                                                <cal:Parameter Value="{Binding BindsDirectlyToSource=True}" />
-                                            </cal:ActionMessage>
-                                        </i:EventTrigger>
-                                    </i:Interaction.Triggers>
-                                    <Path Data="{StaticResource Close}" Width="24" Height="24" Fill="#89000000"
-                                            HorizontalAlignment="Center" VerticalAlignment="Center" Margin="3" />
-                                </Button>
-                            </StackPanel>
-                        </DataTemplate>
-                    </TabControl.ItemTemplate>
-                </TabControl>
-            </Border>
-        </Grid>
+                </DataTemplate>
+            </TabControl.ItemTemplate>
+        </TabControl>
     </Grid>
 </UserControl>
