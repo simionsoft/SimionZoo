@@ -12,14 +12,14 @@
 
     <Grid Background="White">
         <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="400"/>
+            <ColumnDefinition Width="300"/>
             <ColumnDefinition Width="Auto"/>
             <ColumnDefinition Width="*"/>
         </Grid.ColumnDefinitions>
         <Grid.RowDefinitions>
             <RowDefinition Height="40" />
             <RowDefinition Height="Auto"/>
-            <RowDefinition Height="200"/>
+            <RowDefinition Height="300" />
             <RowDefinition Height="40"/>
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
@@ -32,62 +32,57 @@
             <Button ToolTip="Run the experiment" Width="40"
             cal:Message.Attach="[Event Click]=[Action SelectExperimentBatchFile()]"
                     IsEnabled="{Binding IsNotRunning}" Style="{StaticResource BadgerButtonStyle}">
-                    <Path Data="{StaticResource Open}" Width="24" Height="24" Fill="#89000000" />
-                </Button>
+                <Path Data="{StaticResource Open}" Width="24" Height="24" Fill="#89000000" />
+            </Button>
 
-                <Button ToolTip="Run the experiment" Width="40" Style="{StaticResource BadgerButtonStyle}" 
-                    cal:Message.Attach="[Event Click]=[Action RunExperimentBatch()]" 
-                    IsEnabled="{Binding IsBatchLoadedAndNotRunning}">
-                    <Path Data="{StaticResource Play}" Width="24" Height="24" Fill="#89000000" />
-                </Button>
-                <Button ToolTip="Stop the experiment" Width="40" Style="{StaticResource BadgerButtonStyle}" 
-                    cal:Message.Attach="[Event Click]=[Action StopExperiments()]" 
-                    IsEnabled="{Binding IsRunning}">
-                    <Path Data="{StaticResource Stop}" Width="24" Height="24" Fill="#89000000" />
-                </Button>
-                <Button ToolTip="Clean up log files" Width="40"
-                    cal:Message.Attach="[Event Click]=[Action CleanExperimentBatch()]" Style="{StaticResource BadgerButtonStyle}" 
-                    IsEnabled="{Binding IsBatchLoadedAndNotRunning}">
-                    <Path Data="{StaticResource Delete}" Width="24" Height="24" Fill="#89000000" />
-                </Button>
-                <Button ToolTip="Create reports for this experiment batch" Width="40"
-                    cal:Message.Attach="[Event Click]=[Action ShowReports()]" Style="{StaticResource BadgerButtonStyle}"
-                    IsEnabled="{Binding IsBatchLoadedAndNotRunning}">
-                    <Path Data="{StaticResource Plot}" Width="24" Height="24" Fill="#89000000" />
-                </Button>
-            </StackPanel>
-
-        <StackPanel Orientation="Horizontal" IsEnabled="{Binding IsBatchLoaded}" Grid.Column="2" Grid.Row="0" Background="#FAFAFA">
-            <TextBlock x:Name="BatchFileName" TextAlignment="Center" FontSize="8" VerticalAlignment="Center" Foreground="Black"/>
+            <Button ToolTip="Run the experiment" Width="40" Style="{StaticResource BadgerButtonStyle}" 
+                cal:Message.Attach="[Event Click]=[Action RunExperimentBatch()]" 
+                IsEnabled="{Binding IsBatchLoadedAndNotRunning}">
+                <Path Data="{StaticResource Play}" Width="24" Height="24" Fill="#89000000" />
+            </Button>
+            <Button ToolTip="Stop the experiment" Width="40" Style="{StaticResource BadgerButtonStyle}" 
+                cal:Message.Attach="[Event Click]=[Action StopExperiments()]" 
+                IsEnabled="{Binding IsRunning}">
+                <Path Data="{StaticResource Stop}" Width="24" Height="24" Fill="#89000000" />
+            </Button>
+            <Button ToolTip="Clean up log files" Width="40"
+                cal:Message.Attach="[Event Click]=[Action CleanExperimentBatch()]" Style="{StaticResource BadgerButtonStyle}" 
+                IsEnabled="{Binding IsBatchLoadedAndNotRunning}">
+                <Path Data="{StaticResource Delete}" Width="24" Height="24" Fill="#89000000" />
+            </Button>
+            <Button ToolTip="Create reports for this experiment batch" Width="40"
+                cal:Message.Attach="[Event Click]=[Action ShowReports()]" Style="{StaticResource BadgerButtonStyle}"
+                IsEnabled="{Binding IsBatchLoadedAndNotRunning}">
+                <Path Data="{StaticResource Plot}" Width="24" Height="24" Fill="#89000000" />
+            </Button>
         </StackPanel>
+
         <oxy:PlotView Grid.Row="2" Grid.Column="2" Model="{Binding Plot.Plot}"
-                      Margin="10,10,20,0" Background="White" />
+                      Margin="0" Background="White" />
 
-        <StackPanel Orientation="Vertical" Grid.Column="0" Grid.Row="2" 
-                    HorizontalAlignment="Center" VerticalAlignment="Center">
-            <StackPanel Orientation="Horizontal" IsEnabled="{Binding IsBatchLoaded}">
-                <Label VerticalAlignment="Center" HorizontalContentAlignment="Right" Foreground="Black" Width="110" FontSize="8">Total:</Label>
-                <TextBlock x:Name="NumExperimentalUnits"  FontSize="8" TextAlignment="Center" Foreground="#424242" 
-                Margin="5,5,5,0" />
-            </StackPanel>
-            <StackPanel Orientation="Horizontal" IsEnabled="{Binding IsBatchLoaded}">
-                <Label VerticalAlignment="Center" HorizontalContentAlignment="Right" Foreground="Black" Width="110" FontSize="8">Finished:</Label>
-                <TextBlock x:Name="NumFinishedExperimentalUnits"  FontSize="8" TextAlignment="Center" Foreground="#424242" 
-                Margin="5,5,5,0" />
-            </StackPanel>
-            <StackPanel Orientation="Horizontal" IsEnabled="{Binding IsBatchLoaded}">
-                <Label VerticalAlignment="Center" HorizontalContentAlignment="Right" Foreground="Black" Width="110" FontSize="8">Time to finish:</Label>
-                <TextBlock x:Name="EstimatedEndTime" TextAlignment="Center" FontSize="8" VerticalAlignment="Center" Foreground="Black"/>
-            </StackPanel>
-            <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" IsEnabled="{Binding IsBatchLoaded}">
-                <ProgressBar x:Name="GlobalProgress" Height="10" Minimum="0" Maximum="1"
-                    Width="320" Margin="5" />
+        <StackPanel Grid.Column="2" Grid.Row="0" Background="#FAFAFA">
+            <StackPanel Orientation="Vertical" Visibility="{Binding IsBatchLoaded,Converter={StaticResource BoolToVis}}">
+                <Label x:Name="BatchFileName" Margin="4,0,0,0" FontSize="8" Foreground="Black"/>
+                <StackPanel Orientation="Horizontal" Margin="4,0,0,0">
+                    <Label Margin="0" VerticalAlignment="Center" HorizontalAlignment="Left" Foreground="Black" FontSize="8">Time to finish:</Label>
+                    <TextBlock Margin="0" x:Name="EstimatedEndTime" Width="60" FontSize="8" VerticalAlignment="Center" Foreground="Black"/>
+                    <Label Margin="0" FontSize="8" VerticalAlignment="Center">(</Label>
+                    <TextBlock Margin="0" x:Name="NumFinishedExperimentalUnits" VerticalAlignment="Center" FontSize="8" TextAlignment="Center" Foreground="#424242" />
+                    <Label Margin="0" FontSize="8" VerticalAlignment="Center">/</Label>
+                    <TextBlock Margin="0" x:Name="NumExperimentalUnits" VerticalAlignment="Center" FontSize="8" TextAlignment="Center" Foreground="#424242" />
+                    <Label FontSize="8" VerticalAlignment="Center">)</Label>
+                    <ProgressBar x:Name="GlobalProgress" Height="10" Minimum="0" Maximum="1" Width="200" Margin="10,0,0,0"/>
+                </StackPanel>
             </StackPanel>
         </StackPanel>
-        <Border Grid.Row="3" Grid.Column="2" BorderBrush="Gray" BorderThickness="0,1,0,1" Background="#FAFAFA">
+
+        <Border Grid.Row="3" Grid.Column="2" BorderBrush="Gray" BorderThickness="0,1,0,1" Background="#FAFAFA" Visibility="{Binding IsRunning,Converter={StaticResource BoolToVis}}">
             <Label HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="14" FontWeight="Normal" Margin="10,0,20,0">Monitored jobs</Label>
         </Border>
-        <ListView Grid.Column="1" Grid.Row="4" Background="White"
+
+        <ContentControl x:Name="ShepherdViewModel" Grid.Column="0" Grid.Row="2" Grid.RowSpan="3" Background="White"/>
+
+        <ListView Grid.Column="2" Grid.Row="4" Background="White"
                   BorderThickness="0"
                   ItemsSource="{Binding Path = AllMonitoredJobs}" HorizontalContentAlignment="Stretch">
             <ListView.ItemContainerStyle>
@@ -101,6 +96,5 @@
                 </DataTemplate>
             </ListBox.Resources>
         </ListView>
-        <ContentControl x:Name="ShepherdViewModel" Grid.Column="0" Grid.Row="3" Grid.RowSpan="2"/>
     </Grid>
 </UserControl>
