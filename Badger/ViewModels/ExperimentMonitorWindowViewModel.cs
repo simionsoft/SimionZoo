@@ -147,11 +147,10 @@ namespace Badger.ViewModels
         }
 
         private List<MonitoredExperimentalUnitViewModel> m_pendingExperiments = new List<MonitoredExperimentalUnitViewModel>();
-
         private CancellationTokenSource m_cancelTokenSource;
 
 
-        private string m_estimatedEndTimeText = "";
+        private string m_estimatedEndTimeText = "N/A";
         public string EstimatedEndTime
         {
             get { return m_estimatedEndTimeText; }
@@ -163,7 +162,6 @@ namespace Badger.ViewModels
         }
 
         private int m_timeRemaining;
-
         public int TimeRemaining
         {
             get { return m_timeRemaining; }
@@ -253,7 +251,7 @@ namespace Badger.ViewModels
             {
                 m_numFinishedExperimentalUnitsAfterStart = value;
                 NotifyOfPropertyChange(() => NumFinishedExperimentalUnitsAfterStart);
-
+                NotifyOfPropertyChange(() => NumFinishedExperimentalUnits);
                 GlobalProgress = CalculateGlobalProgress();
             }
         }
@@ -381,7 +379,7 @@ namespace Badger.ViewModels
                   * ((1 - m_globalProgress) / m_globalProgress));
                 EstimatedEndTime = TimeSpan.FromSeconds(m_timeRemaining).ToString(@"hh\:mm\:ss");
             }
-            else EstimatedEndTime = "";
+            else EstimatedEndTime = "N/A";
         }
 
         BindableCollection<MonitoredJobViewModel> m_allMonitoredJobs
@@ -437,7 +435,9 @@ namespace Badger.ViewModels
                     Task<MonitoredJobViewModel> finishedTask = await Task.WhenAny(monitoredJobTasks);
                     MonitoredJobViewModel finishedTaskResult = await finishedTask;
                     MainWindowViewModel.Instance.LogToFile("Job finished: " + finishedTaskResult.ToString());
-                    NumFinishedExperimentalUnitsAfterStart += finishedTaskResult.MonitoredExperimentalUnits.Count;
+                    NumFinishedExperimentalUnitsAfterStart += finishedTaskResult.MonitoredExperimentalUnits.Count
+                        - finishedTaskResult.FailedExperiments.Count;
+
                     monitoredJobTasks.Remove(finishedTask);
 
                     if (finishedTaskResult.FailedExperiments.Count > 0)
@@ -470,6 +470,15 @@ namespace Badger.ViewModels
                     //the user cancelled, need to add unfinished experimental units to the pending list
                     foreach (MonitoredJobViewModel job in assignedJobs)
                         m_pendingExperiments.AddRange(job.MonitoredExperimentalUnits);
+                }
+                else
+                {
+                    foreach (Task<MonitoredJobViewModel> job in monitoredJobTasks)
+                    {
+                        NumFinishedExperimentalUnitsAfterStart += job.Result.MonitoredExperimentalUnits.Count
+                            - job.Result.FailedExperiments.Count;
+                        CalculateGlobalProgress();
+                    }
                 }
                 AllMonitoredJobs.Clear();
                 int finishedThisRun = NumFinishedExperimentalUnitsAfterStart;
