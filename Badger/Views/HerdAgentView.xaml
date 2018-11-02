@@ -10,7 +10,7 @@
 
     <UserControl.Resources>
         <ControlTemplate x:Key="HerdAgentExpanderButton" TargetType="{x:Type ToggleButton}">
-            <Grid Background="#FAFAFA" Cursor="Hand">
+            <Grid Background="#FEFEFE" Cursor="Hand">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="*"/>
                     <ColumnDefinition Width="Auto"/>

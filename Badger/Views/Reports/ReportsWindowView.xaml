@@ -60,9 +60,9 @@
                    BorderBrush="LightGray" BorderThickness="1" Grid.Row="3" Grid.Column="0"/>
  
         <StackPanel Background="Transparent" Grid.Row="2" Visibility="{Binding LogsLoaded,Converter={StaticResource BoolToVis}}">
-            <StackPanel>
+            <!--<StackPanel>
                 <Label>Experiments</Label>
-            </StackPanel>
+            </StackPanel>-->
             <ScrollViewer Height="120" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Auto">
                 <ItemsControl x:Name="LoggedExperiments"/>
             </ScrollViewer>
@@ -71,11 +71,9 @@
         <StackPanel Orientation="Vertical" Grid.Row="4" Grid.Column="0" Visibility="{Binding LogsLoaded,Converter={StaticResource BoolToVis}}">
             <ContentControl x:Name="Query"/>
             <StackPanel Grid.Row="2" Orientation="Horizontal" HorizontalAlignment="Center">
-                <Button x:Name="MakeReport"  HorizontalAlignment="Center" BorderBrush="SlateGray"
+                <Button x:Name="MakeReport" Style="{StaticResource BadgerButtonStyle}" BorderBrush="SlateGray"
                                                     Height="30" IsEnabled="{Binding Path=Query.CanGenerateReports}" >
-                    <StackPanel Orientation="Horizontal">
-                        <TextBlock VerticalAlignment="Center" Margin="4"><Run Text="Generate Reports"/></TextBlock>
-                    </StackPanel>
+                    <Path Data="{StaticResource GenerateReport}" Width="24" Height="24" Fill="#89000000" />
                 </Button>
             </StackPanel>
         </StackPanel>

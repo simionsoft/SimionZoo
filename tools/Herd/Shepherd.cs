@@ -31,14 +31,14 @@ namespace Herd
 
         UdpClient m_discoverySocket;
 
-        public delegate void NotifyAgentListChanged();
+        public delegate void NotifyAgentListChanged(HerdAgentInfo newAgent);
         private NotifyAgentListChanged m_notifyAgentListChanged;
 
         private DateTime m_lastHerdAgentListUpdate = DateTime.Now;
         private double m_herdAgentListUpdateTime = 1.0; //update freq. of the herd-agent list (seconds)
 
 
-        public void setNotifyAgentListChangedFunc(NotifyAgentListChanged func)
+        public void SetOnHerdAgentDiscoveryFunc(NotifyAgentListChanged func)
         {
             m_notifyAgentListChanged = func;
         }
@@ -89,7 +89,6 @@ namespace Herd
             try
             {
                 Byte[] receiveBytes = u.EndReceive(ar, ref ip);
-                //if (!IsLocalIpAddress(ip.Address.ToString()))
                 {
                     herdAgentXMLDescription = Encoding.ASCII.GetString(receiveBytes);
                     xmlDescription = XElement.Parse(herdAgentXMLDescription);
@@ -111,10 +110,8 @@ namespace Herd
                     if (lastUpdateElapsedTime > m_herdAgentListUpdateTime)
                     {
                         m_lastHerdAgentListUpdate = now;
-
-                        if (m_notifyAgentListChanged != null)
-                            m_notifyAgentListChanged();
                     }
+                    m_notifyAgentListChanged?.Invoke(herdAgentInfo);
                 }
 
                 u.BeginReceive(new AsyncCallback(DiscoveryCallback), ar.AsyncState);
@@ -132,7 +129,7 @@ namespace Herd
         }
 
 
-        public void sendBroadcastHerdAgentQuery()
+        public void SendBroadcastHerdAgentQuery()
         {
             var RequestData = Encoding.ASCII.GetBytes(m_discoveryMessage);
             m_discoverySocket.Send(RequestData, RequestData.Length,
@@ -140,7 +137,7 @@ namespace Herd
         }
 
 
-        public void beginListeningHerdAgentQueryResponses()
+        public void BeginListeningHerdAgentQueryResponses()
         {
             ShepherdUdpState u = new ShepherdUdpState();
             IPEndPoint xxx = new IPEndPoint(0, CJobDispatcher.m_discoveryPortHerd);
@@ -150,7 +147,7 @@ namespace Herd
         }
 
 
-        public bool connectToHerdAgent(IPEndPoint endPoint)
+        public bool ConnectToHerdAgent(IPEndPoint endPoint)
         {
             try
             {
@@ -169,7 +166,7 @@ namespace Herd
         }
 
 
-        public void disconnect()
+        public void Disconnect()
         {
             if (m_netStream != null) m_netStream.Dispose();
             if (m_tcpClient != null) m_tcpClient.Close();
@@ -177,20 +174,20 @@ namespace Herd
         }
 
 
-        public void getHerdAgentList(ref List<HerdAgentInfo> outHerdAgentList, int timeoutSeconds = 10)
+        public void GetHerdAgentList(ref List<HerdAgentInfo> outHerdAgentList, int timeoutSeconds = 10)
         {
             lock (m_listLock)
             {
                 outHerdAgentList.Clear();
 
                 foreach (var agent in m_herdAgentList)
-                    if (System.DateTime.Now.Subtract(agent.Value.lastACK).TotalSeconds < timeoutSeconds)
+                    if (DateTime.Now.Subtract(agent.Value.lastACK).TotalSeconds < timeoutSeconds)
                         outHerdAgentList.Add(agent.Value);
             }
         }
 
 
-        public void getHerdAgentList(ref Dictionary<IPEndPoint, HerdAgentInfo> outDictionary)
+        public void GetHerdAgentList(ref Dictionary<IPEndPoint, HerdAgentInfo> outDictionary)
         {
             lock (m_listLock)
             {

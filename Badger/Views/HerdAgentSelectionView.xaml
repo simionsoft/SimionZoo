@@ -1,0 +1,70 @@
+﻿<Window x:Class="Badger.Views.HerdAgentSelectionView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:Badger.Views"
+             mc:Ignorable="d" 
+            Icon="../Badger.ico"
+            Title="Herd Agent selection tool"
+             Width="320" Height="240">
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="100"/>
+            <ColumnDefinition Width="*"/>
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="50"/>
+            <RowDefinition Height="50"/>
+            <RowDefinition Height="50"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+        <StackPanel Orientation="Vertical" HorizontalAlignment="Right" VerticalAlignment="Center"
+                    Grid.Column="0" Grid.Row="0">
+            <Label Foreground="Gray">Version</Label>
+        </StackPanel>
+        <StackPanel Orientation="Vertical" Grid.Column="1" Grid.Row="0">
+            <StackPanel Orientation="Horizontal">
+                <Label Width="50" Foreground="LightGray">Min.</Label>
+                <ComboBox ItemsSource="{Binding VersionList}" SelectedItem="{Binding MinVersion}" Width="150"/>
+            </StackPanel>
+            <StackPanel Orientation="Horizontal">
+                <Label Width="50" Foreground="LightGray">Max.</Label>
+                <ComboBox ItemsSource="{Binding VersionList}" SelectedItem="{Binding MaxVersion}" Width="150"/>
+            </StackPanel>
+        </StackPanel>
+        <StackPanel Orientation="Vertical" HorizontalAlignment="Right" VerticalAlignment="Center"
+                    Grid.Column="0" Grid.Row="1">
+            <Label Foreground="Gray">IP address</Label>
+        </StackPanel>
+        <StackPanel Orientation="Vertical" Grid.Column="1" Grid.Row="1">
+            <StackPanel Orientation="Horizontal">
+                <Label Width="50" Foreground="LightGray">Min.</Label>
+                <ComboBox ItemsSource="{Binding IPAddressList}" SelectedItem="{Binding MinIPAddress}" Width="150"/>
+            </StackPanel>
+            <StackPanel Orientation="Horizontal">
+                <Label Width="50" Foreground="LightGray">Max.</Label>
+                <ComboBox ItemsSource="{Binding IPAddressList}" SelectedItem="{Binding MaxIPAddress}" Width="150"/>
+            </StackPanel>
+        </StackPanel>
+        <StackPanel Orientation="Vertical" HorizontalAlignment="Right" VerticalAlignment="Center"
+                    Grid.Column="0" Grid.Row="2">
+            <Label Foreground="Gray">Num.Processors</Label>
+        </StackPanel>
+        <StackPanel Orientation="Vertical" Grid.Column="1" Grid.Row="2">
+            <StackPanel Orientation="Horizontal">
+                <Label Width="50" Foreground="LightGray">Min.</Label>
+                <ComboBox ItemsSource="{Binding NumProcessorsList}" SelectedItem="{Binding MinNumProcessors}" Width="150"/>
+            </StackPanel>
+            <StackPanel Orientation="Horizontal">
+                <Label Width="50" Foreground="LightGray">Max.</Label>
+                <ComboBox ItemsSource="{Binding NumProcessorsList}" SelectedItem="{Binding MaxNumProcessors}" Width="150"/>
+            </StackPanel>
+        </StackPanel>
+        <Button x:Name="Select" Grid.Column="0" Grid.Row="3" Grid.ColumnSpan="2" Style="{StaticResource BadgerButtonStyle}"
+                    HorizontalAlignment="Center" BorderBrush="SlateGray"
+                                                        Width="40" Height="40" ToolTip="Herd agent selection tool">
+            <Path Data="{StaticResource Select}" Stretch="Fill" Width="20" Height="20" Fill="#89000000" />
+        </Button>
+    </Grid>
+</Window>

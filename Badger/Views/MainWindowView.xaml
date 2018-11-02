@@ -21,7 +21,11 @@
         </DataTemplate>
     </Window.Resources>
     <Grid>
-        <TabControl Margin="0" Padding="0" SelectedIndex="{Binding SelectedScreenIndex}">
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="11*"/>
+            <ColumnDefinition Width="243*"/>
+        </Grid.ColumnDefinitions>
+        <TabControl Margin="0" Padding="0" SelectedIndex="{Binding SelectedScreenIndex}" Grid.ColumnSpan="2">
             <TabItem>
                 <TabItem.Header>
                     <StackPanel Orientation="Horizontal" Margin="20,0,20,0">

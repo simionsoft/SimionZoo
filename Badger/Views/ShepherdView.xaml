@@ -22,15 +22,29 @@
             <RowDefinition Height="40"/>
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
-        <StackPanel Grid.Row="0" HorizontalAlignment="Center">
-            <Button x:Name="ResendBroadcast" Style="{StaticResource BadgerButtonStyle}" HorizontalAlignment="Center" BorderBrush="SlateGray"
-                                                        Height="30" ToolTip="Refresh the list of herd agents">
-                <StackPanel Orientation="Horizontal">
-                    <Path Data="{StaticResource Refresh}" Stretch="Fill" Width="24" Height="24" Fill="#89000000" />
+        <Border Grid.Row="0" BorderBrush="Gray" BorderThickness="0,1,0,1" >
+            <Grid Background="#FAFAFA">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="180"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+            <StackPanel Orientation="Horizontal" Grid.Column="0" Grid.ColumnSpan="2" HorizontalAlignment="Center" VerticalAlignment="Center">
+                <Label VerticalAlignment="Center" FontSize="14" FontWeight="Normal" Margin="10,0,20,0">Herd Agents</Label>
+            </StackPanel>
+                <StackPanel Grid.Column="1" Orientation="Horizontal" HorizontalAlignment="Right">
+                    <Button x:Name="SendAgentDiscoveryBroadcast" Style="{StaticResource BadgerButtonStyle}"
+                HorizontalAlignment="Center" BorderBrush="SlateGray"
+                                                    Width="40" Height="40" ToolTip="Refresh the list of herd agents">
+                        <Path Data="{StaticResource Refresh}" Stretch="Fill" Width="20" Height="20" Fill="#89000000" />
+                    </Button>
+                    <Button x:Name="SelectHerdAgents" Margin="4,0,0,0" Style="{StaticResource BadgerButtonStyle}"
+                HorizontalAlignment="Center" BorderBrush="SlateGray"
+                                                    Width="40" Height="40" ToolTip="Herd agent selection tool">
+                        <Path Data="{StaticResource Select}" Stretch="Fill" Width="20" Height="20" Fill="#89000000" />
+                    </Button>
                 </StackPanel>
-            </Button>
-
-        </StackPanel>
+            </Grid>
+        </Border>
         <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Auto">
             <ListView ItemsSource="{Binding Path = HerdAgentList}" BorderThickness="0" HorizontalContentAlignment="Stretch"
                       dd:DragDrop.IsDragSource="True" dd:DragDrop.IsDropTarget="True"

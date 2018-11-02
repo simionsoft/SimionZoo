@@ -46,13 +46,16 @@ namespace Badger.ViewModels
             return false;
         }
 
-
-        public bool IsSelected { get; set; }
+        private bool m_isSelected = false;
+        public bool IsSelected
+        {
+            get { return m_isSelected; }
+            set { m_isSelected = value; NotifyOfPropertyChange(() => IsSelected); }
+        }
 
         //Interfaces to HerdAgentInfo object's properties. This avoids references to Caliburn from the Herd
 
         private IPEndPoint m_ipAddress;
-
         public IPEndPoint IpAddress
         {
             get { return m_ipAddress; }

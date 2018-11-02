@@ -156,7 +156,7 @@ namespace Badger.ViewModels
                     expUnit.State= MonitoredExperimentalUnitViewModel.ExperimentState.WAITING_EXECUTION;
                 HerdJob job = AsHerdJob();
 
-                bool bConnected = m_shepherd.connectToHerdAgent(m_herdAgent.IpAddress);
+                bool bConnected = m_shepherd.ConnectToHerdAgent(m_herdAgent.IpAddress);
                 if (bConnected)
                 {
                     logMessage("Sending job to herd agent " + m_herdAgent.IpAddress);
@@ -290,7 +290,7 @@ namespace Badger.ViewModels
             finally
             {
                 logMessage("Disconnected from herd agent " + m_herdAgent.IpAddress);
-                m_shepherd.disconnect();
+                m_shepherd.Disconnect();
             }
             return this;
         }
