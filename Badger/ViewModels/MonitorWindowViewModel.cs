@@ -435,8 +435,10 @@ namespace Badger.ViewModels
                     Task<MonitoredJobViewModel> finishedTask = await Task.WhenAny(monitoredJobTasks);
                     MonitoredJobViewModel finishedTaskResult = await finishedTask;
                     MainWindowViewModel.Instance.LogToFile("Job finished: " + finishedTaskResult.ToString());
-                    NumFinishedExperimentalUnitsAfterStart += finishedTaskResult.MonitoredExperimentalUnits.Count
-                        - finishedTaskResult.FailedExperiments.Count;
+
+                    if (!m_cancelTokenSource.IsCancellationRequested)
+                        NumFinishedExperimentalUnitsAfterStart += finishedTaskResult.MonitoredExperimentalUnits.Count
+                            - finishedTaskResult.FailedExperiments.Count;
 
                     monitoredJobTasks.Remove(finishedTask);
 
@@ -452,10 +454,13 @@ namespace Badger.ViewModels
                         freeHerdAgents.Add(finishedTaskResult.HerdAgent);
 
                     // Assign experiments to free agents
-                    AssignExperiments(ref m_pendingExperiments, ref freeHerdAgents, ref assignedJobs, m_cancelTokenSource.Token, Plot);
-                    
-                    //update the history of monitored jobs
-                    foreach (MonitoredJobViewModel job in assignedJobs) AllMonitoredJobs.Insert(0, job);
+                    if (!m_cancelTokenSource.IsCancellationRequested)
+                    {
+                        AssignExperiments(ref m_pendingExperiments, ref freeHerdAgents, ref assignedJobs, m_cancelTokenSource.Token, Plot);
+
+                        //update the history of monitored jobs
+                        foreach (MonitoredJobViewModel job in assignedJobs) AllMonitoredJobs.Insert(0, job);
+                    }
                 }
             }
             catch (Exception ex)
@@ -470,6 +475,7 @@ namespace Badger.ViewModels
                     //the user cancelled, need to add unfinished experimental units to the pending list
                     foreach (MonitoredJobViewModel job in assignedJobs)
                         m_pendingExperiments.AddRange(job.MonitoredExperimentalUnits);
+                    CalculateGlobalProgress();
                 }
                 else
                 {
