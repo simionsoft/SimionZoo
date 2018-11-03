@@ -13,7 +13,7 @@ using Caliburn.Micro;
 
 namespace Badger.ViewModels
 {
-    public class ExperimentEditorWindowViewModel: Caliburn.Micro.Screen
+    public class EditorWindowViewModel: Caliburn.Micro.Screen
     {
         public BindableCollection<ExperimentViewModel> ExperimentViewModels
         { get; set; } = new BindableCollection<ExperimentViewModel>();
@@ -117,7 +117,7 @@ namespace Badger.ViewModels
             SelectedExperiment = newExperiment;
         }
 
-        public ExperimentEditorWindowViewModel()
+        public EditorWindowViewModel()
         {
             LoadAppDefinitions();
 

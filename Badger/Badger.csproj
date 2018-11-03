@@ -200,7 +200,7 @@
     <Compile Include="ViewModels\ConfigNodeTypes\WiresViewModel.cs" />
     <Compile Include="ViewModels\ConfigNodeTypes\WorldVarRefValueConfigViewModel.cs" />
     <Compile Include="ViewModels\DialogViewModel.cs" />
-    <Compile Include="ViewModels\ExperimentEditorWindowViewModel.cs" />
+    <Compile Include="ViewModels\EditorWindowViewModel.cs" />
     <Compile Include="ViewModels\HerdAgentSelectionViewModel.cs" />
     <Compile Include="ViewModels\MonitoredJobViewModel.cs" />
     <Compile Include="ViewModels\MultiStateButtonViewModel.cs" />
@@ -243,7 +243,7 @@
     <Compile Include="ViewModels\Reports\StatsViewModel.cs" />
     <Compile Include="ViewModels\MonitoredExperimentalUnitViewModel.cs" />
     <Compile Include="ViewModels\HerdAgentViewModel.cs" />
-    <Compile Include="ViewModels\ExperimentMonitorWindowViewModel.cs" />
+    <Compile Include="ViewModels\MonitorWindowViewModel.cs" />
     <Compile Include="ViewModels\Reports\ReportsWindowViewModel.cs" />
     <Compile Include="ViewModels\Reports\StatViewModel.cs" />
     <Compile Include="ViewModels\ShepherdViewModel.cs" />
@@ -441,7 +441,7 @@
       <SubType>Designer</SubType>
       <Generator>XamlIntelliSenseFileGenerator</Generator>
     </Page>
-    <Page Include="Views\ExperimentEditorWindowView.xaml">
+    <Page Include="Views\EditorWindowView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -597,7 +597,7 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="Views\ExperimentMonitorWindowView.xaml">
+    <Page Include="Views\MonitorWindowView.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>

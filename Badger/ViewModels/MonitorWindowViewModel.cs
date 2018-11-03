@@ -13,7 +13,7 @@ using System.Timers;
 
 namespace Badger.ViewModels
 {
-    public class ExperimentMonitorWindowViewModel : Screen
+    public class MonitorWindowViewModel : Screen
     {
         public PlotViewModel Plot { get; set; }
 
@@ -23,7 +23,7 @@ namespace Badger.ViewModels
         /// </summary>
         /// <param name="MainWindowViewModel.Instance.LogToFile"></param>
         /// <param name="batchFileName"></param>
-        public ExperimentMonitorWindowViewModel()
+        public MonitorWindowViewModel()
         {
             Plot = new PlotViewModel("", "", "")
             { bShowOptions = false };

@@ -10,14 +10,14 @@
         Icon="../badger.ico">
 
     <Window.Resources>
-        <DataTemplate DataType="{x:Type vm:ExperimentEditorWindowViewModel}">
-            <v:ExperimentEditorWindowView/>
+        <DataTemplate DataType="{x:Type vm:EditorWindowViewModel}">
+            <v:EditorWindowView/>
         </DataTemplate>
         <DataTemplate DataType="{x:Type vm:ReportsWindowViewModel}">
             <v:ReportsWindowView/>
         </DataTemplate>
-        <DataTemplate DataType="{x:Type vm:ExperimentMonitorWindowViewModel}">
-            <v:ExperimentEditorWindowView/>
+        <DataTemplate DataType="{x:Type vm:MonitorWindowViewModel}">
+            <v:EditorWindowView/>
         </DataTemplate>
     </Window.Resources>
     <Grid>

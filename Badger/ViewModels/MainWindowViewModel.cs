@@ -13,9 +13,9 @@ namespace Badger.ViewModels
     {
         static public MainWindowViewModel Instance { get; set; }
 
-        public ExperimentMonitorWindowViewModel MonitorWindowVM { get; }
+        public MonitorWindowViewModel MonitorWindowVM { get; }
 
-        public ExperimentEditorWindowViewModel EditorWindowVM { get; }
+        public EditorWindowViewModel EditorWindowVM { get; }
 
         public ReportsWindowViewModel ReportWindowVM { get; }
 
@@ -34,8 +34,8 @@ namespace Badger.ViewModels
             //Save the instance
             Instance = this;
 
-            EditorWindowVM = new ExperimentEditorWindowViewModel();
-            MonitorWindowVM = new ExperimentMonitorWindowViewModel();
+            EditorWindowVM = new EditorWindowViewModel();
+            MonitorWindowVM = new MonitorWindowViewModel();
             ReportWindowVM = new ReportsWindowViewModel();
 
             //set culture as invariant to write numbers as in english
