@@ -34,7 +34,6 @@
                     IsEnabled="{Binding IsNotRunning}" Style="{StaticResource BadgerButtonStyle}">
                 <Path Data="{StaticResource Open}" Width="24" Height="24" Fill="#89000000" />
             </Button>
-
             <Button ToolTip="Run the experiment" Width="40" Style="{StaticResource BadgerButtonStyle}" 
                 cal:Message.Attach="[Event Click]=[Action RunExperimentBatch()]" 
                 IsEnabled="{Binding IsBatchLoadedAndNotRunning}">
