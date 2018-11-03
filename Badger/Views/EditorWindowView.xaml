@@ -4,8 +4,9 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:vm="clr-namespace:Badger.ViewModels"
-        xmlns:cal="http://www.caliburnproject.org"
-        xmlns:v="clr-namespace:Badger.Views"
+             xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
+            xmlns:cal="http://www.caliburnproject.org"
+            xmlns:v="clr-namespace:Badger.Views"
              xmlns:local="clr-namespace:Badger.Views"
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800">
@@ -61,21 +62,35 @@
                                    VerticalAlignment="Center"/>
                         <Label Content="{Binding Path=NumForkCombinations}" VerticalAlignment="Center"/>
                         <Button Style="{StaticResource BadgerButtonStyle}" Width="18" Height="18">
-                            <Path Data="{StaticResource Plug}" Width="18" Height="18" Fill="#89000000"
-                                      HorizontalAlignment="Center" VerticalAlignment="Center" Margin="0"/>
-                        </Button>
+                            <i:Interaction.Triggers>
+                                <i:EventTrigger EventName="Click">
+                                    <cal:ActionMessage MethodName="ShowWires" >
+                                        <cal:Parameter Value="{Binding BindsDirectlyToSource=True}" />
+                                    </cal:ActionMessage>
+                                </i:EventTrigger>
+                            </i:Interaction.Triggers>
+                            <Path Data="{StaticResource Plug}" Width="24" Height="24" Fill="#89000000"
+                                    HorizontalAlignment="Center" VerticalAlignment="Center" Margin="3"/>
+                            </Button>
                         <Button Style="{StaticResource BadgerButtonStyle}" Width="18" Height="18">
+                            <i:Interaction.Triggers>
+                                <i:EventTrigger EventName="Click">
+                                    <cal:ActionMessage MethodName="RunExperimentalUnitLocallyWithCurrentParameters" >
+                                        <cal:Parameter Value="{Binding BindsDirectlyToSource=True}" />
+                                    </cal:ActionMessage>
+                                </i:EventTrigger>
+                            </i:Interaction.Triggers>
                             <Path Data="{StaticResource Play}" Width="24" Height="24" Fill="#89000000"
                                       HorizontalAlignment="Center" VerticalAlignment="Center" Margin="3"/>
                         </Button>
                         <Button Style="{StaticResource BadgerButtonStyle}" Width="18" Height="18">
-                            <!--<i:Interaction.Triggers>
+                            <i:Interaction.Triggers>
                                 <i:EventTrigger EventName="Click">
                                     <cal:ActionMessage MethodName="Close" >
                                         <cal:Parameter Value="{Binding BindsDirectlyToSource=True}" />
                                     </cal:ActionMessage>
                                 </i:EventTrigger>
-                            </i:Interaction.Triggers>-->
+                            </i:Interaction.Triggers>
 
                             <Path Data="{StaticResource Close}" Width="24" Height="24" Fill="#89000000"
                                       HorizontalAlignment="Center" VerticalAlignment="Center" Margin="3" />
