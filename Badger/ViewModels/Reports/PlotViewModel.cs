@@ -80,28 +80,30 @@ namespace Badger.ViewModels
             InitPlot(title, xAxisName, yAxisName);
         }
 
+        void ResetAxes()
+        {
+            foreach (OxyPlot.Axes.Axis axis in Plot.Axes)
+            {
+                axis.Minimum = 0.0;
+                axis.AbsoluteMinimum = 0.0;
+                axis.Maximum = 1.0;
+                axis.AbsoluteMaximum = 1.0;
+            }
+        }
+
         void InitPlot(string title, string xAxisName, string yAxisName)
         {
             var xAxis = new OxyPlot.Axes.LinearAxis();
             xAxis.Position = AxisPosition.Bottom;
             xAxis.MajorGridlineStyle = LineStyle.Solid;
-            xAxis.Minimum = 0.0;
-            xAxis.AbsoluteMinimum = 0.0;
-            xAxis.Maximum = 1.0;
-            xAxis.AbsoluteMaximum = 1.0;
-
-
             Plot.Axes.Add(xAxis);
 
             var yAxis = new OxyPlot.Axes.LinearAxis();
             yAxis.Position = AxisPosition.Left;
             yAxis.MajorGridlineStyle = LineStyle.Solid;
-            yAxis.Minimum = 0.0;
-            yAxis.AbsoluteMinimum = 0.0;
-            yAxis.Maximum = 1.0;
-            yAxis.AbsoluteMaximum = 1.0;
-
             Plot.Axes.Add(yAxis);
+
+            ResetAxes();
             //default properties
             Plot.LegendBorder = OxyColors.Black;
             Plot.LegendBackground = OxyColors.White;
@@ -217,6 +219,7 @@ namespace Badger.ViewModels
         public void ClearLineSeries()
         {
             Plot.Series.Clear();
+            ResetAxes();
             UpdateView();
             NotifyOfPropertyChange("Series");
         }

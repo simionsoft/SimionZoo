@@ -30,14 +30,21 @@ namespace Badger.ViewModels
             Plot.Properties.LegendVisible = false;
         }
 
+        private void ResetPlot()
+        {
+            Plot.ClearLineSeries();
+            LoggedExperiments.Clear();
+        }
+
         ///<summary>
         ///Deletes all the log files in the batch
         ///</summary>
         public void CleanExperimentBatch()
         {
             int numFilesDeleted= SimionFileData.LoadExperimentBatchFile(BatchFileName, SimionFileData.CleanExperimentalUnitLogFiles);
-            NumFinishedExperimentalUnitsBeforeStart=
-                SimionFileData.LoadExperimentBatchFile(BatchFileName, SimionFileData.CountFinishedExperimentalUnitsInBatch);
+            NumFinishedExperimentalUnitsBeforeStart = 0;
+            ResetPlot();
+
             //prepare the batch for a new execution
             InitializeExperimentBatchForExecution();
         }
@@ -266,8 +273,7 @@ namespace Badger.ViewModels
         public bool LoadExperimentBatch(string batchFileName)
         {
             BatchFileName = batchFileName;
-            // Clear old LineSeries to avoid confusion on visualization
-            Plot.ClearLineSeries();
+            ResetPlot();
 
             //Load the experiments
             int numUnfinishedExperimentalUnits = SimionFileData.LoadExperimentBatchFile(batchFileName, LoadLoggedExperiment);
