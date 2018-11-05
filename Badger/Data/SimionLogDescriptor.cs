@@ -39,6 +39,9 @@ namespace Badger.Data
                                 variableList.Add(variableName);
                             }
                         }
+                        //Add manually a variable representing the real time
+                        variableList.Add(SimionLog.ExperimentRealTimeVariable);
+                        variableList.Add(SimionLog.EpisodeRealTimeVariable);
                     }
                 }
                 catch (Exception ex)

@@ -28,8 +28,10 @@ namespace Badger.Simion
             byte[] buffer = logReader.ReadBytes(sizeof(double) * (int)numLoggedVariables);
             if (buffer.Length == 0)
                 return true;
-            data = new double[numLoggedVariables];
+            data = new double[numLoggedVariables + 2]; //room for the variables and also the experiment real time/ episode real time
             Buffer.BlockCopy(buffer, 0, data, 0, numLoggedVariables * sizeof(double));
+            data[numLoggedVariables] = expRealTime;
+            data[numLoggedVariables + 1] = episodeRealTime;
             return false;
         }
     }
@@ -95,6 +97,9 @@ namespace Badger.Simion
     }
     public class SimionLog
     {
+        public const string ExperimentRealTimeVariable = "Experiment-RealTime";
+        public const string EpisodeRealTimeVariable = "Episode-RealTime";
+
         //BINARY LOG FILE STUFF: constants, reading methods, etc...
         public const int HEADER_MAX_SIZE = 16;
 
