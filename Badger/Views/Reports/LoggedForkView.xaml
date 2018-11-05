@@ -12,9 +12,11 @@
         <BooleanToVisibilityConverter x:Key="BoolToVis" />
     </UserControl.Resources>
 
-    <StackPanel Orientation="Vertical">
+    <StackPanel Orientation="Vertical" Visibility="{Binding IsVisible,Converter={StaticResource BoolToVis}}">
         <StackPanel Margin="0,0,0,0"  Orientation="Horizontal" Background="#f0f0f0">
-            <Path Data="{StaticResource Fork}" Width="16" Height="16" Stretch="Uniform" Fill="#89000000" />
+            <Button x:Name="ToggleIsExpanded" Style="{StaticResource BadgerButtonStyle}" Width="16" Height="16">
+                <Path Data="{StaticResource Fork}" Width="12" Height="12" Stretch="Uniform" Fill="#89000000"/>
+            </Button>
             <Label x:Name="Name" FontWeight="Medium" FontSize="10" Padding="0" VerticalAlignment="Center">
                 <Label.ContextMenu>
                     <ContextMenu>

@@ -29,6 +29,13 @@ namespace Badger.ViewModels
             }
         }
 
+        private bool m_bIsVisible = true;
+        public bool IsVisible
+        {
+            get { return m_bIsVisible; }
+            set { m_bIsVisible = value; NotifyOfPropertyChange(() => IsVisible); }
+        }
+
         public void LocalTraverseAction(System.Action<SelectableTreeItem> action) { action(this); }
 
         public virtual void TraverseAction(bool doActionLocally, System.Action<SelectableTreeItem> action) { }

@@ -7,7 +7,7 @@
     <UserControl.Resources>
         <BooleanToVisibilityConverter x:Key="BoolToVis" />
     </UserControl.Resources>
-    <StackPanel Orientation="Vertical">
+    <StackPanel Orientation="Vertical" Visibility="{Binding IsVisible,Converter={StaticResource BoolToVis}}">
         <StackPanel Margin="0" Orientation="Horizontal">
             <CheckBox IsChecked="{Binding IsSelected}" VerticalAlignment="Center"
                           Visibility="{Binding Path=IsCheckVisible,Converter={StaticResource BoolToVis}}"

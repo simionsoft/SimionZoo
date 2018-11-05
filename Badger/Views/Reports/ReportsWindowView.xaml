@@ -36,6 +36,7 @@
         </Grid.RowDefinitions>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="300"/>
+            <ColumnDefinition Width="Auto"/>
             <ColumnDefinition Width="*"/>
         </Grid.ColumnDefinitions>
         <StackPanel Grid.Row="0" Orientation="Horizontal" Width="Auto" Background="Transparent" Margin="4,0">
@@ -47,38 +48,36 @@
                             Width="40" Height="40" cal:Message.Attach="[Event Click]=[Action SaveReport()]">
                 <Path Data="{StaticResource Save}" Width="24" Height="24" Fill="#89000000" />
             </Button>
+            <Button x:Name="MakeReport" Style="{StaticResource BadgerButtonStyle}" BorderBrush="SlateGray"
+                            Width="40" Height="40" IsEnabled="{Binding Path=CanGenerateReports}" >
+                <Path Data="{StaticResource GenerateReport}" Width="24" Height="24" Fill="#89000000" />
+            </Button>
+
         </StackPanel>
-        <StackPanel Orientation="Horizontal" VerticalAlignment="Center" Grid.Column="1" Grid.Row="0">
-            <Label Width="300" HorizontalContentAlignment="Right" Content="{Binding LoadedBatch}"/>
+        <StackPanel Orientation="Horizontal" VerticalAlignment="Center" Grid.Column="2" Grid.Row="0">
+            <Label Width="400" HorizontalContentAlignment="Right" Content="{Binding LoadedBatch}"/>
             <ProgressBar x:Name="LoadProgress" Minimum="0" Maximum="1" Height="10" Width="200" Margin="20,0,20,0"
                              Visibility="{Binding Loading,Converter={StaticResource BoolToVis}}"/>
         </StackPanel>
         <Separator Style="{StaticResource {x:Static ToolBar.SeparatorStyleKey}}" 
-                   BorderBrush="LightGray" BorderThickness="1" Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2"/>
+                   BorderBrush="LightGray" BorderThickness="1" Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="3"/>
         <Separator Style="{StaticResource {x:Static ToolBar.SeparatorStyleKey}}" 
                    Visibility="{Binding LogsLoaded,Converter={StaticResource BoolToVis}}"
                    BorderBrush="LightGray" BorderThickness="1" Grid.Row="3" Grid.Column="0"/>
- 
+        <Separator Style="{StaticResource {x:Static ToolBar.SeparatorStyleKey}}" 
+                   BorderBrush="LightGray" BorderThickness="1" Grid.Column="1" Grid.Row="2" Grid.RowSpan="3"/>
+
         <StackPanel Background="Transparent" Grid.Row="2" Visibility="{Binding LogsLoaded,Converter={StaticResource BoolToVis}}">
-            <!--<StackPanel>
-                <Label>Experiments</Label>
-            </StackPanel>-->
-            <ScrollViewer Height="120" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Auto">
+            <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Auto">
                 <ItemsControl x:Name="LoggedExperiments"/>
             </ScrollViewer>
         </StackPanel>
     
         <StackPanel Orientation="Vertical" Grid.Row="4" Grid.Column="0" Visibility="{Binding LogsLoaded,Converter={StaticResource BoolToVis}}">
             <ContentControl x:Name="Query"/>
-            <StackPanel Grid.Row="2" Orientation="Horizontal" HorizontalAlignment="Center">
-                <Button x:Name="MakeReport" Style="{StaticResource BadgerButtonStyle}" BorderBrush="SlateGray"
-                                                    Height="30" IsEnabled="{Binding Path=Query.CanGenerateReports}" >
-                    <Path Data="{StaticResource GenerateReport}" Width="24" Height="24" Fill="#89000000" />
-                </Button>
-            </StackPanel>
         </StackPanel>
   
-        <TabControl Grid.Row="2" Grid.Column="1" Grid.RowSpan="3" Margin="0" Padding="0"  x:Name="LogQueryResults" BorderThickness="0"
+        <TabControl Grid.Row="2" Grid.Column="2" Grid.RowSpan="3" Margin="0" Padding="0"  x:Name="LogQueryResults" BorderThickness="0"
                         SelectedItem="{Binding SelectedLogQueryResult}">
             <TabControl.ItemTemplate>
                 <DataTemplate>

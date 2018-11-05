@@ -77,6 +77,10 @@ namespace Badger.ViewModels
 
                 Query.Validate();
             }
+            else if (e.PropertyName=="CanGenerateReports")
+            {
+                NotifyOfPropertyChange(() => CanGenerateReports);
+            }
         }
 
 
@@ -243,9 +247,7 @@ namespace Badger.ViewModels
         /// <param name="reportFileName">File where the report was saved using SaveReports()</param>
         public void LoadReport(string reportFileName)
         {
-            string readBatchFilename;
-            BindableCollection<LogQueryResultViewModel> readQueries;
-            int numQueriesRead= SimionFileData.LoadReport(reportFileName, out readBatchFilename, out readQueries);
+            int numQueriesRead= SimionFileData.LoadReport(reportFileName, out string readBatchFilename, out BindableCollection<LogQueryResultViewModel> readQueries);
 
             if (numQueriesRead>0)
             {
@@ -351,6 +353,11 @@ namespace Badger.ViewModels
 
             LogsLoaded = false;
             ForksLoaded = false;
+        }
+
+        public bool CanGenerateReports
+        {
+            get { if (Query == null) return false; return Query.CanGenerateReports; }
         }
     }
 }

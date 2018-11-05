@@ -22,6 +22,11 @@ namespace Badger.ViewModels
             foreach (LoggedForkViewModel fork in Forks) fork.TraverseAction(true, action);
         }
 
+        public void ToggleIsExpanded()
+        {
+            TraverseAction(false, (SelectableTreeItem item)=> item.IsVisible = !item.IsVisible);
+        }
+
         /// <summary>
         ///     Class constructor.
         /// </summary>

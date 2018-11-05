@@ -90,6 +90,11 @@ namespace Badger.ViewModels
             foreach (LoggedForkViewModel fork in m_forks) fork.TraverseAction(true, action);
         }
 
+        public void ToggleIsExpanded()
+        {
+            TraverseAction(false, (SelectableTreeItem item) => item.IsVisible = !item.IsVisible);
+        }
+
         /// <summary>
         ///     Method is called from the context menu informs the parent window that results should be
         ///     grouped by this fork.
