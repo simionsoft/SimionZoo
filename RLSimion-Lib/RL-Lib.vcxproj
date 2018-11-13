@@ -303,9 +303,6 @@
     <ProjectReference Include="..\3rd-party\freeglut3\freeglut3.vcxproj">
       <Project>{5a98782e-7027-46f9-91e1-e1ede1e14bf4}</Project>
     </ProjectReference>
-    <ProjectReference Include="..\3rd-party\SOIL\projects\VC9\SOIL.vcxproj">
-      <Project>{c32fb2b4-500c-43cd-a099-eecce079d3f1}</Project>
-    </ProjectReference>
     <ProjectReference Include="..\3rd-party\tinyxml2\tinyxml2.vcxproj">
       <Project>{d1c528b6-aa02-4d29-9d61-dc08e317a70d}</Project>
     </ProjectReference>
