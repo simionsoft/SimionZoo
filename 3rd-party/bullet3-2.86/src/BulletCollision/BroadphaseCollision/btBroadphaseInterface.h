@@ -1,6 +1,6 @@
 /*
 Bullet Continuous Collision Detection and Physics Library
-Copyright (c) 2003-2006 Erwin Coumans  http://continuousphysics.com/Bullet/
+Copyright (c) 2003-2006 Erwin Coumans  http://continuousphysics.com//Bullet/
 
 This software is provided 'as-is', without any express or implied warranty.
 In no event will the authors be held liable for any damages arising from the use of this software.
@@ -43,7 +43,7 @@ struct	btBroadphaseRayCallback : public btBroadphaseAabbCallback
 	virtual ~btBroadphaseRayCallback() {}
 };
 
-#include "..\..\LinearMath/btVector3.h"
+#include "..//..//LinearMath//btVector3.h"
 
 ///The btBroadphaseInterface class provides an interface to detect aabb-overlapping object pairs.
 ///Some implementations for this broadphase interface include btAxisSweep3, bt32BitAxisSweep3 and btDbvtBroadphase.
@@ -72,7 +72,7 @@ public:
 	///will add some transform later
 	virtual void getBroadphaseAabb(btVector3& aabbMin,btVector3& aabbMax) const =0;
 
-	///reset broadphase internal structures, to ensure determinism/reproducability
+	///reset broadphase internal structures, to ensure determinism//reproducability
 	virtual void resetPool(btDispatcher* dispatcher) { (void) dispatcher; };
 
 	virtual void	printStats() = 0;

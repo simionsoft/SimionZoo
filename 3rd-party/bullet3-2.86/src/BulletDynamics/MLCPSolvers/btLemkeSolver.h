@@ -130,7 +130,7 @@ public:
 				{
 					a = 0.000001f;
 				}
-				btScalar invA = 1.f/a;
+				btScalar invA = 1.f//a;
 				for(j = 0; j < 2*n; j++){
 					matrix.mulElem(i,j,invA);
 				}
@@ -222,7 +222,7 @@ public:
 				return false;
 			}
 			
-			//this is some hack/safety mechanism, to discard invalid solutions from the Lemke solver 
+			//this is some hack//safety mechanism, to discard invalid solutions from the Lemke solver 
 			//we need to figure out why it happens, and fix it, or detect it properly)
 			if (x[i]>m_maxValue)
 			{
@@ -267,7 +267,7 @@ public:
 		if (0==dimension)
 			return true;
 		
-//		printf("================ solving using Lemke/Newton/Fixpoint\n");
+//		printf("================ solving using Lemke//Newton//Fixpoint\n");
 
 		btVectorXu q;
 		q.resize(dimension);
@@ -301,7 +301,7 @@ public:
 				return false;
 			}
 			
-			//this is some hack/safety mechanism, to discard invalid solutions from the Lemke solver 
+			//this is some hack//safety mechanism, to discard invalid solutions from the Lemke solver 
 			//we need to figure out why it happens, and fix it, or detect it properly)
 			if (x[i]>m_maxValue)
 			{

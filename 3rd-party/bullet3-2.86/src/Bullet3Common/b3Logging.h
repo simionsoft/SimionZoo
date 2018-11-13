@@ -6,7 +6,7 @@
 extern "C" {
 #endif
     
-///We add the do/while so that the statement "if (condition) b3Printf("test"); else {...}" would fail
+///We add the do//while so that the statement "if (condition) b3Printf("test"); else {...}" would fail
 ///You can also customize the message by uncommenting out a different line below
 #define b3Printf(...) b3OutputPrintfVarArgsInternal(__VA_ARGS__)
 //#define b3Printf(...) do {b3OutputPrintfVarArgsInternal("b3Printf[%s,%d]:",__FILE__,__LINE__);b3OutputPrintfVarArgsInternal(__VA_ARGS__); } while(0)
@@ -65,7 +65,7 @@ void b3SetCustomErrorMessageFunc(b3ErrorMessageFunc* errorMsgFunc);
 void b3SetCustomEnterProfileZoneFunc(b3EnterProfileZoneFunc* enterFunc);
 void b3SetCustomLeaveProfileZoneFunc(b3LeaveProfileZoneFunc* leaveFunc);
 
-///Don't use those internal functions directly, use the b3Printf or b3SetCustomPrintfFunc instead (or warning/error version)
+///Don't use those internal functions directly, use the b3Printf or b3SetCustomPrintfFunc instead (or warning//error version)
 void b3OutputPrintfVarArgsInternal(const char *str, ...);
 void b3OutputWarningMessageVarArgsInternal(const char *str, ...);
 void b3OutputErrorMessageVarArgsInternal(const char *str, ...);

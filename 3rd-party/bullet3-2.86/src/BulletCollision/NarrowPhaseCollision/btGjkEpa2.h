@@ -1,6 +1,6 @@
 /*
 Bullet Continuous Collision Detection and Physics Library
-Copyright (c) 2003-2008 Erwin Coumans  http://continuousphysics.com/Bullet/
+Copyright (c) 2003-2008 Erwin Coumans  http://continuousphysics.com//Bullet/
 
 This software is provided 'as-is', without any express or implied warranty.
 In no event will the authors be held liable for any damages arising from the
@@ -26,7 +26,7 @@ GJK-EPA collision solver by Nathanael Presson, 2008
 #define BT_GJK_EPA2_H
 
 
-#include "..\CollisionShapes\btConvexShape.h"
+#include "..//CollisionShapes//btConvexShape.h"
 
 ///btGjkEpaSolver contributed under zlib by Nathanael Presson
 struct	btGjkEpaSolver2

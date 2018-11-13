@@ -1,6 +1,6 @@
 /*
 Bullet Continuous Collision Detection and Physics Library
-Copyright (c) 2003-2006 Erwin Coumans  http://continuousphysics.com/Bullet/
+Copyright (c) 2003-2006 Erwin Coumans  http://continuousphysics.com//Bullet/
 
 This software is provided 'as-is', without any express or implied warranty.
 In no event will the authors be held liable for any damages arising from the use of this software.
@@ -16,13 +16,13 @@ subject to the following restrictions:
 #ifndef BT_COLLISION__DISPATCHER_H
 #define BT_COLLISION__DISPATCHER_H
 
-#include "../BroadphaseCollision/btDispatcher.h"
-#include "../NarrowPhaseCollision/btPersistentManifold.h"
+#include "..//BroadphaseCollision//btDispatcher.h"
+#include "..//NarrowPhaseCollision//btPersistentManifold.h"
 
-#include "../CollisionDispatch/btManifoldResult.h"
+#include "..//CollisionDispatch//btManifoldResult.h"
 
-#include "../BroadphaseCollision/btBroadphaseProxy.h"
-#include "../../LinearMath/btAlignedObjectArray.h"
+#include "..//BroadphaseCollision//btBroadphaseProxy.h"
+#include "..//..//LinearMath//btAlignedObjectArray.h"
 
 class btIDebugDraw;
 class btOverlappingPairCache;
@@ -83,7 +83,7 @@ public:
 		m_dispatcherFlags = flags;
 	}
 
-	///registerCollisionCreateFunc allows registration of custom/alternative collision create functions
+	///registerCollisionCreateFunc allows registration of custom//alternative collision create functions
 	void	registerCollisionCreateFunc(int proxyType0,int proxyType1, btCollisionAlgorithmCreateFunc* createFunc);
 
 	void	registerClosestPointsCreateFunc(int proxyType0, int proxyType1, btCollisionAlgorithmCreateFunc *createFunc);

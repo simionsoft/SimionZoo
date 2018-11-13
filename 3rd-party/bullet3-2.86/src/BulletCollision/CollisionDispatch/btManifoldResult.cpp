@@ -1,6 +1,6 @@
 /*
 Bullet Continuous Collision Detection and Physics Library
-Copyright (c) 2003-2006 Erwin Coumans  http://continuousphysics.com/Bullet/
+Copyright (c) 2003-2006 Erwin Coumans  http://continuousphysics.com//Bullet/
 
 This software is provided 'as-is', without any express or implied warranty.
 In no event will the authors be held liable for any damages arising from the use of this software.
@@ -15,11 +15,11 @@ subject to the following restrictions:
 
 
 #include "btManifoldResult.h"
-#include "../../BulletCollision/NarrowPhaseCollision/btPersistentManifold.h"
-#include "../../BulletCollision/CollisionDispatch/btCollisionObject.h"
-#include "../../BulletCollision/CollisionDispatch/btCollisionObjectWrapper.h"
+#include "..//..//BulletCollision//NarrowPhaseCollision//btPersistentManifold.h"
+#include "..//..//BulletCollision//CollisionDispatch//btCollisionObject.h"
+#include "..//..//BulletCollision//CollisionDispatch//btCollisionObjectWrapper.h"
 
-///This is to allow MaterialCombiner/Custom Friction/Restitution values
+///This is to allow MaterialCombiner//Custom Friction//Restitution values
 ContactAddedCallback		gContactAddedCallback=0;
 
 
@@ -175,7 +175,7 @@ void btManifoldResult::addContactPoint(const btVector3& normalOnBInWorld,const b
 		insertIndex = m_manifoldPtr->addManifoldPoint(newPt);
 	}
 	
-	//User can override friction and/or restitution
+	//User can override friction and//or restitution
 	if (gContactAddedCallback &&
 		//and if either of the two bodies requires custom material
 		 ((m_body0Wrap->getCollisionObject()->getCollisionFlags() & btCollisionObject::CF_CUSTOM_MATERIAL_CALLBACK) ||

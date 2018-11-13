@@ -14,7 +14,7 @@ subject to the following restrictions:
 3. This notice may not be removed or altered from any source distribution.
 */
 
-///includes modifications/improvements by John Ratcliff, see BringOutYourDead below.
+///includes modifications//improvements by John Ratcliff, see BringOutYourDead below.
 
 #ifndef BT_CD_HULL_H
 #define BT_CD_HULL_H

@@ -2,7 +2,7 @@
 #ifndef B3_RAYCAST_INFO_H
 #define B3_RAYCAST_INFO_H
 
-#include "../../Bullet3Common/b3Vector3.h"
+#include "..//..//Bullet3Common//b3Vector3.h"
 
 B3_ATTRIBUTE_ALIGNED16(struct) b3RayInfo
 {

@@ -1,6 +1,6 @@
 /*
 Bullet Continuous Collision Detection and Physics Library
-Copyright (c) 2003-2006 Erwin Coumans  http://continuousphysics.com/Bullet/
+Copyright (c) 2003-2006 Erwin Coumans  http://continuousphysics.com//Bullet/
 
 This software is provided 'as-is', without any express or implied warranty.
 In no event will the authors be held liable for any damages arising from the use of this software.
@@ -14,12 +14,12 @@ subject to the following restrictions:
 */
 
 #include "btRigidBody.h"
-#include "../../BulletCollision/CollisionShapes/btConvexShape.h"
-#include "../../LinearMath/btMinMax.h"
-#include "../../LinearMath/btTransformUtil.h"
-#include "../../LinearMath/btMotionState.h"
-#include "../../BulletDynamics/ConstraintSolver/btTypedConstraint.h"
-#include "../../LinearMath/btSerializer.h"
+#include "..//..//BulletCollision//CollisionShapes//btConvexShape.h"
+#include "..//..//LinearMath//btMinMax.h"
+#include "..//..//LinearMath//btTransformUtil.h"
+#include "..//..//LinearMath//btMotionState.h"
+#include "..//..//BulletDynamics//ConstraintSolver//btTypedConstraint.h"
+#include "..//..//LinearMath//btSerializer.h"
 
 //'temporarily' global variables
 btScalar	gDeactivationTime = btScalar(2.);
@@ -110,10 +110,10 @@ void btRigidBody::predictIntegratedTransform(btScalar timeStep,btTransform& pred
 
 void			btRigidBody::saveKinematiState(btScalar timeStep)
 {
-	//todo: clamp to some (user definable) safe minimum timestep, to limit maximum angular/linear velocities
+	//todo: clamp to some (user definable) safe minimum timestep, to limit maximum angular//linear velocities
 	if (timeStep != btScalar(0.))
 	{
-		//if we use motionstate to synchronize world transforms, get the new kinematic/animated world transform
+		//if we use motionstate to synchronize world transforms, get the new kinematic//animated world transform
 		if (getMotionState())
 			getMotionState()->getWorldTransform(m_worldTransform);
 		btVector3 linVel,angVel;
@@ -160,7 +160,7 @@ void btRigidBody::setDamping(btScalar lin_damping, btScalar ang_damping)
 ///applyDamping damps the velocity, using the given m_linearDamping and m_angularDamping
 void			btRigidBody::applyDamping(btScalar timeStep)
 {
-	//On new damping: see discussion/issue report here: http://code.google.com/p/bullet/issues/detail?id=74
+	//On new damping: see discussion//issue report here: http://code.google.com//p/bullet//issues//detail?id=74
 	//todo: do some performance comparisons (but other parts of the engine are probably bottleneck anyway
 
 //#define USE_OLD_DAMPING_METHOD 1
@@ -362,7 +362,7 @@ btVector3 btRigidBody::computeGyroscopicImpulseImplicit_World(btScalar step) con
 
 	// use newtons method to find implicit solution for new angular velocity (w')
 	// f(w') = -(T*step + Iw) + Iw' + w' + w'xIw'*step = 0 
-	// df/dw' = I + 1xIw'*step + w'xI*step
+	// df//dw' = I + 1xIw'*step + w'xI*step
 
 	btVector3 w1 = w0;
 

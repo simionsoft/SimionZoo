@@ -18,7 +18,7 @@ subject to the following restrictions:
 #ifndef BT_GEAR_CONSTRAINT_H
 #define BT_GEAR_CONSTRAINT_H
 
-#include "../../BulletDynamics/ConstraintSolver/btTypedConstraint.h"
+#include "..//..//BulletDynamics//ConstraintSolver//btTypedConstraint.h"
 
 
 #ifdef BT_USE_DOUBLE_PRECISION
@@ -32,7 +32,7 @@ subject to the following restrictions:
 
 
 ///The btGeatConstraint will couple the angular velocity for two bodies around given local axis and ratio.
-///See Bullet/Demos/ConstraintDemo for an example use.
+///See Bullet//Demos//ConstraintDemo for an example use.
 class btGearConstraint : public btTypedConstraint
 {
 protected:
@@ -103,7 +103,7 @@ public:
 
 
 
-///do not change those serialization structures, it requires an updated sBulletDNAstr/sBulletDNAstr64
+///do not change those serialization structures, it requires an updated sBulletDNAstr//sBulletDNAstr64
 struct btGearConstraintFloatData
 {
 	btTypedConstraintFloatData	m_typeConstraintData;

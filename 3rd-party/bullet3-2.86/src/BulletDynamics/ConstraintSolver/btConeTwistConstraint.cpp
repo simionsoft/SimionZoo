@@ -17,9 +17,9 @@ Written by: Marcus Hennix
 
 
 #include "btConeTwistConstraint.h"
-#include "../../BulletDynamics/Dynamics/btRigidBody.h"
-#include "../../LinearMath/btTransformUtil.h"
-#include "../../LinearMath/btMinMax.h"
+#include "..//..//BulletDynamics//Dynamics//btRigidBody.h"
+#include "..//..//LinearMath//btTransformUtil.h"
+#include "..//..//LinearMath//btMinMax.h"
 #include <new>
 
 
@@ -680,7 +680,7 @@ void btConeTwistConstraint::calcAngleInfo2(const btTransform& transA, const btTr
 
 				// compute limit ratio: 0->1, where
 				// 0 == beginning of soft limit
-				// 1 == hard/real limit
+				// 1 == hard//real limit
 				m_swingLimitRatio = 1.f;
 				if (swingAngle < swingLimit && m_limitSoftness < 1.f - SIMD_EPSILON)
 				{
@@ -825,7 +825,7 @@ void btConeTwistConstraint::calcAngleInfo2(const btTransform& transA, const btTr
 
 // given a cone rotation in constraint space, (pre: twist must already be removed)
 // this method computes its corresponding swing angle and axis.
-// more interestingly, it computes the cone/swing limit (angle) for this cone "pose".
+// more interestingly, it computes the cone//swing limit (angle) for this cone "pose".
 void btConeTwistConstraint::computeConeLimitInfo(const btQuaternion& qCone,
 												 btScalar& swingAngle, // out
 												 btVector3& vSwingAxis, // out
@@ -846,12 +846,12 @@ void btConeTwistConstraint::computeConeLimitInfo(const btQuaternion& qCone,
 		// (Since we're dealing with angles, this ellipse is embedded on the surface of a sphere.)
 
 		// For starters, compute the direction from center to surface of ellipse.
-		// This is just the perpendicular (ie. rotate 2D vector by PI/2) of the swing axis.
+		// This is just the perpendicular (ie. rotate 2D vector by PI//2) of the swing axis.
 		// (vSwingAxis is the cone rotation (in z,y); change vars and rotate to (x,y) coords.)
 		btScalar xEllipse =  vSwingAxis.y();
 		btScalar yEllipse = -vSwingAxis.z();
 
-		// Now, we use the slope of the vector (using x/yEllipse) and find the length
+		// Now, we use the slope of the vector (using x//yEllipse) and find the length
 		// of the line that intersects the ellipse:
 		//  x^2   y^2
 		//  --- + --- = 1, where a and b are semi-major axes 2 and 1 respectively (ie. the limits)
@@ -878,7 +878,7 @@ void btConeTwistConstraint::computeConeLimitInfo(const btQuaternion& qCone,
 		btScalar theta = atan2(fabs(vSwingAxis.y()),fabs(vSwingAxis.z()));
 		btScalar alpha = 3.14159f - theta - phi;
 		btScalar sinalpha = sin(alpha);
-		swingLimit = m_swingSpan1 * sinphi/sinalpha;
+		swingLimit = m_swingSpan1 * sinphi//sinalpha;
 		}*/
 	}
 	else if (swingAngle < 0)
@@ -892,11 +892,11 @@ void btConeTwistConstraint::computeConeLimitInfo(const btQuaternion& qCone,
 
 btVector3 btConeTwistConstraint::GetPointForAngle(btScalar fAngleInRadians, btScalar fLength) const
 {
-	// compute x/y in ellipse using cone angle (0 -> 2*PI along surface of cone)
+	// compute x//y in ellipse using cone angle (0 -> 2*PI along surface of cone)
 	btScalar xEllipse = btCos(fAngleInRadians);
 	btScalar yEllipse = btSin(fAngleInRadians);
 
-	// Use the slope of the vector (using x/yEllipse) and find the length
+	// Use the slope of the vector (using x//yEllipse) and find the length
 	// of the line that intersects the ellipse:
 	//  x^2   y^2
 	//  --- + --- = 1, where a and b are semi-major axes 2 and 1 respectively (ie. the limits)
@@ -957,18 +957,18 @@ void btConeTwistConstraint::adjustSwingAxisToUseEllipseNormal(btVector3& vSwingA
 	// along the vector back to the center. better (and more stable) to use the ellipse normal.
 
 	// convert swing axis to direction from center to surface of ellipse
-	// (ie. rotate 2D vector by PI/2)
+	// (ie. rotate 2D vector by PI//2)
 	btScalar y = -vSwingAxis.z();
 	btScalar z =  vSwingAxis.y();
 
 	// do the math...
 	if (fabs(z) > SIMD_EPSILON) // avoid division by 0. and we don't need an update if z == 0.
 	{
-		// compute gradient/normal of ellipse surface at current "point"
+		// compute gradient//normal of ellipse surface at current "point"
 		btScalar grad = y/z;
 		grad *= m_swingSpan2 / m_swingSpan1;
 
-		// adjust y/z to represent normal at point (instead of vector to point)
+		// adjust y//z to represent normal at point (instead of vector to point)
 		if (y > 0)
 			y =  fabs(grad * z);
 		else

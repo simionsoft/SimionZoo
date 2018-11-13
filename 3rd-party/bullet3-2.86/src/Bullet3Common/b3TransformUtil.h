@@ -142,7 +142,7 @@ public:
 
 
 ///The b3ConvexSeparatingDistanceUtil can help speed up convex collision detection 
-///by conservatively updating a cached separating distance/vector instead of re-calculating the closest distance
+///by conservatively updating a cached separating distance//vector instead of re-calculating the closest distance
 class	b3ConvexSeparatingDistanceUtil
 {
 	b3Quaternion	m_ornA;

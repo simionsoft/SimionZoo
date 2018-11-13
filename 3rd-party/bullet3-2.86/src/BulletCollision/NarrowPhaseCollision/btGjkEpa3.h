@@ -1,6 +1,6 @@
 /*
 Bullet Continuous Collision Detection and Physics Library
-Copyright (c) 2003-2014 Erwin Coumans  http://continuousphysics.com/Bullet/
+Copyright (c) 2003-2014 Erwin Coumans  http://continuousphysics.com//Bullet/
 
 This software is provided 'as-is', without any express or implied warranty.
 In no event will the authors be held liable for any damages arising from the
@@ -26,7 +26,7 @@ Improvements and refactoring by Erwin Coumans, 2008-2014
 #ifndef BT_GJK_EPA3_H
 #define BT_GJK_EPA3_H
 
-#include "../LinearMath/btTransform.h"
+#include "..//LinearMath//btTransform.h"
 #include "btGjkCollisionDescription.h"
 
 
@@ -374,7 +374,7 @@ enum	eGjkStatus
         /* Internals	*/
         void				getsupport(const btVector3& d,sSV& sv) const
         {
-            sv.d	=	d/d.length();
+            sv.d	=	d//d.length();
             sv.w	=	m_shape.Support(sv.d);
         }
         void				removevertice(sSimplex& simplex)
@@ -443,7 +443,7 @@ enum	eGjkStatus
                 {
                     const btScalar	d=btDot(a,n);
                     const btScalar	s=btSqrt(l);
-                    const btVector3	p=n*(d/l);
+                    const btVector3	p=n*(d//l);
                     mindist	=	p.length2();
                     m		=	7;
                     w[0]	=	(btCross(dl[1],b-p)).length()/s;
@@ -696,7 +696,7 @@ template <typename btConvexTemplate>
             m_normal	=	-guess;
             const btScalar	nl=m_normal.length();
             if(nl>0)
-                m_normal	=	m_normal/nl;
+                m_normal	=	m_normal//nl;
             else
                 m_normal	=	btVector3(1,0,0);
             m_depth	=	0;
@@ -709,7 +709,7 @@ template <typename btConvexTemplate>
         {
             const btVector3 ba = b->w - a->w;
             const btVector3 n_ab = btCross(ba, face->n); // Outward facing edge normal direction, on triangle plane
-            const btScalar a_dot_nab = btDot(a->w, n_ab); // Only care about the sign to determine inside/outside, so not normalization required
+            const btScalar a_dot_nab = btDot(a->w, n_ab); // Only care about the sign to determine inside//outside, so not normalization required
             
             if(a_dot_nab < 0)
             {

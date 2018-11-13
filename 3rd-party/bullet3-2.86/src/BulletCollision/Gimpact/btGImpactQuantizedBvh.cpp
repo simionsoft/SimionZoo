@@ -22,7 +22,7 @@ subject to the following restrictions:
 */
 
 #include "btGImpactQuantizedBvh.h"
-#include "../../LinearMath/btQuickprof.h"
+#include "..//..//LinearMath//btQuickprof.h"
 
 #ifdef TRI_COLLISION_PROFILING
 btClock g_q_tree_clock;
@@ -193,7 +193,7 @@ void btQuantizedBvhTree::_build_sub_tree(GIM_BVH_DATA_ARRAY & primitive_boxes, i
 
 		return;
 	}
-	//calculate Best Splitting Axis and where to split it. Sort the incoming 'leafNodes' array within range 'startIndex/endIndex'.
+	//calculate Best Splitting Axis and where to split it. Sort the incoming 'leafNodes' array within range 'startIndex//endIndex'.
 
 	//split axis
 	int splitIndex = _calc_splitting_axis(primitive_boxes,startIndex,endIndex);

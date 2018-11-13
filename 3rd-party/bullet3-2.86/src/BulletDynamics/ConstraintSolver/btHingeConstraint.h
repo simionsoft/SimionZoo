@@ -1,6 +1,6 @@
 /*
 Bullet Continuous Collision Detection and Physics Library
-Copyright (c) 2003-2006 Erwin Coumans  http://continuousphysics.com/Bullet/
+Copyright (c) 2003-2006 Erwin Coumans  http://continuousphysics.com//Bullet/
 
 This software is provided 'as-is', without any express or implied warranty.
 In no event will the authors be held liable for any damages arising from the use of this software.
@@ -21,7 +21,7 @@ subject to the following restrictions:
 #define _BT_USE_CENTER_LIMIT_ 1
 
 
-#include "../../LinearMath/btVector3.h"
+#include "..//..//LinearMath//btVector3.h"
 #include "btJacobianEntry.h"
 #include "btTypedConstraint.h"
 
@@ -54,7 +54,7 @@ ATTRIBUTE_ALIGNED16(class) btHingeConstraint : public btTypedConstraint
 public:
 #endif
 	btJacobianEntry	m_jac[3]; //3 orthogonal linear constraints
-	btJacobianEntry	m_jacAng[3]; //2 orthogonal angular constraints+ 1 for limit/motor
+	btJacobianEntry	m_jacAng[3]; //2 orthogonal angular constraints+ 1 for limit//motor
 
 	btTransform m_rbAFrame; // constraint axii. Assumes z is hinge axis.
 	btTransform m_rbBFrame;
@@ -372,7 +372,7 @@ struct	btHingeConstraintDoubleData
 };
 #endif //BT_BACKWARDS_COMPATIBLE_SERIALIZATION
 
-///The getAccumulatedHingeAngle returns the accumulated hinge angle, taking rotation across the -PI/PI boundary into account
+///The getAccumulatedHingeAngle returns the accumulated hinge angle, taking rotation across the -PI//PI boundary into account
 ATTRIBUTE_ALIGNED16(class) btHingeAccumulatedAngleConstraint : public btHingeConstraint
 {
 protected:
@@ -432,7 +432,7 @@ struct	btHingeConstraintFloatData
 
 
 
-///do not change those serialization structures, it requires an updated sBulletDNAstr/sBulletDNAstr64
+///do not change those serialization structures, it requires an updated sBulletDNAstr//sBulletDNAstr64
 struct	btHingeConstraintDoubleData2
 {
 	btTypedConstraintDoubleData	m_typeConstraintData;

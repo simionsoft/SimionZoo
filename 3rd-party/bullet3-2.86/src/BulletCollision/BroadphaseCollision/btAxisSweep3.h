@@ -1,5 +1,5 @@
 //Bullet Continuous Collision Detection and Physics Library
-//Copyright (c) 2003-2006 Erwin Coumans  http://continuousphysics.com/Bullet/
+//Copyright (c) 2003-2006 Erwin Coumans  http://continuousphysics.com//Bullet/
 
 //
 // btAxisSweep3.h
@@ -19,7 +19,7 @@
 #ifndef BT_AXIS_SWEEP_3_H
 #define BT_AXIS_SWEEP_3_H
 
-#include "../../LinearMath/btVector3.h"
+#include "..//..//LinearMath//btVector3.h"
 #include "btOverlappingPairCache.h"
 #include "btBroadphaseInterface.h"
 #include "btBroadphaseProxy.h"
@@ -87,7 +87,7 @@ protected:
 
 	btOverlappingPairCache* m_pairCache;
 
-	///btOverlappingPairCallback is an additional optional user callback for adding/removing overlapping pairs, similar interface to btOverlappingPairCache.
+	///btOverlappingPairCallback is an additional optional user callback for adding//removing overlapping pairs, similar interface to btOverlappingPairCache.
 	btOverlappingPairCallback* m_userPairCallback;
 	
 	bool	m_ownsPairCache;
@@ -100,7 +100,7 @@ protected:
 	btOverlappingPairCache*	m_nullPairCache;
 
 
-	// allocation/deallocation
+	// allocation//deallocation
 	BP_FP_INT_TYPE allocHandle();
 	void freeHandle(BP_FP_INT_TYPE handle);
 	
@@ -154,7 +154,7 @@ public:
 
 	
 	void quantize(BP_FP_INT_TYPE* out, const btVector3& point, int isMax) const;
-	///unQuantize should be conservative: aabbMin/aabbMax should be larger then 'getAabb' result
+	///unQuantize should be conservative: aabbMin//aabbMax should be larger then 'getAabb' result
 	void unQuantize(btBroadphaseProxy* proxy,btVector3& aabbMin, btVector3& aabbMax ) const;
 	
 	bool	testAabbOverlap(btBroadphaseProxy* proxy0,btBroadphaseProxy* proxy1);
@@ -371,7 +371,7 @@ m_raycastAccelerator(0)
 	{
 		m_nullPairCache = new (btAlignedAlloc(sizeof(btNullPairCache),16)) btNullPairCache();
 		m_raycastAccelerator = new (btAlignedAlloc(sizeof(btDbvtBroadphase),16)) btDbvtBroadphase(m_nullPairCache);//m_pairCache);
-		m_raycastAccelerator->m_deferedcollide = true;//don't add/remove pairs
+		m_raycastAccelerator->m_deferedcollide = true;//don't add//remove pairs
 	}
 
 	//btAssert(bounds.HasVolume());
@@ -460,7 +460,7 @@ void btAxisSweep3Internal<BP_FP_INT_TYPE>::quantize(BP_FP_INT_TYPE* out, const b
 {
 #ifdef OLD_CLAMPING_METHOD
 	///problem with this clamping method is that the floating point during quantization might still go outside the range [(0|isMax) .. (m_handleSentinel&m_bpHandleMask]|isMax]
-	///see http://code.google.com/p/bullet/issues/detail?id=87
+	///see http://code.google.com//p/bullet//issues//detail?id=87
 	btVector3 clampedPoint(point);
 	clampedPoint.setMax(m_worldAabbMin);
 	clampedPoint.setMin(m_worldAabbMax);
@@ -936,7 +936,7 @@ void btAxisSweep3Internal<BP_FP_INT_TYPE>::sortMaxDown(int axis, BP_FP_INT_TYPE 
 #endif //USE_OVERLAP_TEST_ON_REMOVES
 				)
 			{
-				//this is done during the overlappingpairarray iteration/narrowphase collision
+				//this is done during the overlappingpairarray iteration//narrowphase collision
 
 				
 				m_pairCache->removeOverlappingPair(handle0,handle1,dispatcher);

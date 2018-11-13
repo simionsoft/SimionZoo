@@ -1,7 +1,7 @@
 #ifndef B3_CONTACT_CONSTRAINT5_H
 #define B3_CONTACT_CONSTRAINT5_H
 
-#include "../../Bullet3Common/shared/b3Float4.h"
+#include "..//..//Bullet3Common//shared//b3Float4.h"
 
 typedef struct b3ContactConstraint4 b3ContactConstraint4_t;
 

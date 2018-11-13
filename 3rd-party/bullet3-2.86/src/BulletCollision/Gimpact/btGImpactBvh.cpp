@@ -21,7 +21,7 @@ subject to the following restrictions:
 3. This notice may not be removed or altered from any source distribution.
 */
 #include "btGImpactBvh.h"
-#include "../../LinearMath/btQuickprof.h"
+#include "..//..//LinearMath//btQuickprof.h"
 
 #ifdef TRI_COLLISION_PROFILING
 
@@ -172,7 +172,7 @@ void btBvhTree::_build_sub_tree(GIM_BVH_DATA_ARRAY & primitive_boxes, int startI
 
 		return;
 	}
-	//calculate Best Splitting Axis and where to split it. Sort the incoming 'leafNodes' array within range 'startIndex/endIndex'.
+	//calculate Best Splitting Axis and where to split it. Sort the incoming 'leafNodes' array within range 'startIndex//endIndex'.
 
 	//split axis
 	int splitIndex = _calc_splitting_axis(primitive_boxes,startIndex,endIndex);

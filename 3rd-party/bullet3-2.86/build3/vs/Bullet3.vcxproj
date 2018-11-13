@@ -215,6 +215,8 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="..\..\src\btBulletCollisionCommon.h" />
+    <ClInclude Include="..\..\src\btBulletDynamicsCommon.h" />
     <ClInclude Include="..\..\src\Bullet3Common\b3AlignedAllocator.h" />
     <ClInclude Include="..\..\src\Bullet3Common\b3AlignedObjectArray.h" />
     <ClInclude Include="..\..\src\Bullet3Common\b3CommandLineArgs.h" />
@@ -232,6 +234,12 @@
     <ClInclude Include="..\..\src\Bullet3Common\b3Transform.h" />
     <ClInclude Include="..\..\src\Bullet3Common\b3TransformUtil.h" />
     <ClInclude Include="..\..\src\Bullet3Common\b3Vector3.h" />
+    <ClInclude Include="..\..\src\Bullet3Common\shared\b3Float4.h" />
+    <ClInclude Include="..\..\src\Bullet3Common\shared\b3Int2.h" />
+    <ClInclude Include="..\..\src\Bullet3Common\shared\b3Int4.h" />
+    <ClInclude Include="..\..\src\Bullet3Common\shared\b3Mat3x3.h" />
+    <ClInclude Include="..\..\src\Bullet3Common\shared\b3PlatformDefinitions.h" />
+    <ClInclude Include="..\..\src\Bullet3Common\shared\b3Quat.h" />
     <ClInclude Include="..\..\src\Bullet3Geometry\b3AabbUtil.h" />
     <ClInclude Include="..\..\src\Bullet3Geometry\b3ConvexHullComputer.h" />
     <ClInclude Include="..\..\src\Bullet3Geometry\b3GeometryUtil.h" />

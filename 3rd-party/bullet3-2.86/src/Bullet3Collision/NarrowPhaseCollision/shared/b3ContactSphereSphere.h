@@ -44,7 +44,7 @@ void	computeContactSphereConvex(int pairIndex,
 	int numFaces = convexShapes[shapeIndex].m_numFaces;
 	float4 closestPnt = b3MakeVector3(0, 0, 0, 0);
 	float4 hitNormalWorld = b3MakeVector3(0, 0, 0, 0);
-	float minDist = -1000000.f; // TODO: What is the largest/smallest float?
+	float minDist = -1000000.f; // TODO: What is the largest//smallest float?
 	bool bCollide = true;
 	int region = -1;
 	float4 localHitNormal;

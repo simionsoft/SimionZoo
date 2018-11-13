@@ -21,20 +21,20 @@ subject to the following restrictions:
 //#define DISABLE_JOINTS
 
 #include "b3PgsJacobiSolver.h"
-#include "../../Bullet3Common/b3MinMax.h"
+#include "..//..//Bullet3Common//b3MinMax.h"
 #include "b3TypedConstraint.h"
 #include <new>
-#include "../../Bullet3Common/b3StackAlloc.h"
+#include "..//..//Bullet3Common//b3StackAlloc.h"
 
 //#include "b3SolverBody.h"
 //#include "b3SolverConstraint.h"
-#include "../../Bullet3Common/b3AlignedObjectArray.h"
+#include "..//..//Bullet3Common//b3AlignedObjectArray.h"
 #include <string.h> //for memset
-//#include "../../dynamics/basic_demo/Stubs/AdlContact4.h"
-#include "../../Bullet3Collision/NarrowPhaseCollision/b3Contact4.h"
+//#include "..//..//dynamics//basic_demo//Stubs//AdlContact4.h"
+#include "..//..//Bullet3Collision//NarrowPhaseCollision//b3Contact4.h"
 
 
-#include "../../Bullet3Collision/NarrowPhaseCollision/shared/b3RigidBodyData.h"
+#include "..//..//Bullet3Collision//NarrowPhaseCollision//shared//b3RigidBodyData.h"
 
 static b3Transform	getWorldTransform(b3RigidBodyData* rb)
 {
@@ -63,7 +63,7 @@ static const b3Vector3&	getAngularVelocity(b3RigidBodyData* rb)
 
 static b3Vector3 getVelocityInLocalPoint(b3RigidBodyData* rb, const b3Vector3& rel_pos)
 {
-	//we also calculate lin/ang velocity for kinematic objects
+	//we also calculate lin//ang velocity for kinematic objects
 	return getLinearVelocity(rb) + getAngularVelocity(rb).cross(rel_pos);
 	
 }
@@ -1307,7 +1307,7 @@ b3Scalar b3PgsJacobiSolver::solveGroupCacheFriendlySetup(b3RigidBodyData* bodies
 
 
 						///fix rhs
-						///todo: add force/torque accelerators
+						///todo: add force//torque accelerators
 						{
 							b3Scalar rel_vel;
 							b3Scalar vel1Dotn = solverConstraint.m_contactNormal.dot(rbA.m_linVel) + solverConstraint.m_relpos1CrossNormal.dot(rbA.m_angVel);
@@ -1350,7 +1350,7 @@ b3Scalar b3PgsJacobiSolver::solveGroupCacheFriendlySetup(b3RigidBodyData* bodies
 	int numConstraintPool = m_tmpSolverContactConstraintPool.size();
 	int numFrictionPool = m_tmpSolverContactFrictionConstraintPool.size();
 
-	///@todo: use stack allocator for such temporarily memory, same for solver bodies/constraints
+	///@todo: use stack allocator for such temporarily memory, same for solver bodies//constraints
 	m_orderNonContactConstraintPool.resizeNoInitialize(numNonContactPool);
 	if ((infoGlobal.m_solverMode & B3_SOLVER_USE_2_FRICTION_DIRECTIONS))
 		m_orderTmpConstraintPool.resizeNoInitialize(numConstraintPool*2);
@@ -1398,7 +1398,7 @@ b3Scalar b3PgsJacobiSolver::solveSingleIteration(int iteration,b3TypedConstraint
 				m_orderNonContactConstraintPool[swapi] = tmp;
 			}
 
-			//contact/friction constraints are not solved more than 
+			//contact//friction constraints are not solved more than 
 			if (iteration< infoGlobal.m_numIterations)
 			{
 				for (int j=0; j<numConstraintPool; ++j) {

@@ -17,11 +17,11 @@ subject to the following restrictions:
 #include "btMultiBodyConstraintSolver.h"
 #include "btMultiBody.h"
 #include "btMultiBodyLinkCollider.h"
-#include "../../BulletCollision/CollisionDispatch/btSimulationIslandManager.h"
-#include "../../LinearMath/btQuickprof.h"
+#include "..//..//BulletCollision//CollisionDispatch//btSimulationIslandManager.h"
+#include "..//..//LinearMath//btQuickprof.h"
 #include "btMultiBodyConstraint.h"
-#include "../../LinearMath/btIDebugDraw.h"
-#include "../../LinearMath/btSerializer.h"
+#include "..//..//LinearMath//btIDebugDraw.h"
+#include "..//..//LinearMath//btSerializer.h"
 
 
 void	btMultiBodyDynamicsWorld::addMultiBody(btMultiBody* body, int group, int mask)
@@ -282,11 +282,11 @@ struct MultiBodyInplaceSolverIslandCallback : public btSimulationIslandManager::
 	{
 		if (islandId<0)
 		{
-			///we don't split islands, so all constraints/contact manifolds/bodies are passed into the solver regardless the island id
+			///we don't split islands, so all constraints//contact manifolds//bodies are passed into the solver regardless the island id
 			m_solver->solveMultiBodyGroup( bodies,numBodies,manifolds, numManifolds,m_sortedConstraints, m_numConstraints, &m_multiBodySortedConstraints[0],m_numConstraints,*m_solverInfo,m_debugDrawer,m_dispatcher);
 		} else
 		{
-				//also add all non-contact constraints/joints for this island
+				//also add all non-contact constraints//joints for this island
 			btTypedConstraint** startConstraint = 0;
 			btMultiBodyConstraint** startMultiBodyConstraint = 0;
 

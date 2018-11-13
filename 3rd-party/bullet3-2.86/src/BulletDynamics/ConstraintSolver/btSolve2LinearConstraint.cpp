@@ -1,6 +1,6 @@
 /*
 Bullet Continuous Collision Detection and Physics Library
-Copyright (c) 2003-2006 Erwin Coumans  http://continuousphysics.com/Bullet/
+Copyright (c) 2003-2006 Erwin Coumans  http://continuousphysics.com//Bullet/
 
 This software is provided 'as-is', without any express or implied warranty.
 In no event will the authors be held liable for any damages arising from the use of this software.
@@ -17,8 +17,8 @@ subject to the following restrictions:
 
 #include "btSolve2LinearConstraint.h"
 
-#include "../../BulletDynamics/Dynamics/btRigidBody.h"
-#include "../../LinearMath/btVector3.h"
+#include "..//..//BulletDynamics//Dynamics//btRigidBody.h"
+#include "..//..//LinearMath//btVector3.h"
 #include "btJacobianEntry.h"
 
 
@@ -81,7 +81,7 @@ void btSolve2LinearConstraint::resolveUnilateralPairConstraint(
 	const btScalar dv1 = depthB  * m_tau * massTerm - vel1 * m_damping;
 
 
-	// dC/dv * dv = -C
+	// dC//dv * dv = -C
 	
 	// jacobian * impulse = -error
 	//
@@ -165,7 +165,7 @@ void btSolve2LinearConstraint::resolveBilateralPairConstraint(
 	const btScalar dv0 = depthA  * m_tau - vel0 * m_damping;
 	const btScalar dv1 = depthB  * m_tau - vel1 * m_damping;
 
-	// dC/dv * dv = -C
+	// dC//dv * dv = -C
 	
 	// jacobian * impulse = -error
 	//

@@ -1,6 +1,6 @@
 /*
 Bullet Continuous Collision Detection and Physics Library
-Copyright (c) 2003-2006 Erwin Coumans  http://continuousphysics.com/Bullet/
+Copyright (c) 2003-2006 Erwin Coumans  http://continuousphysics.com//Bullet/
 
 This software is provided 'as-is', without any express or implied warranty.
 In no event will the authors be held liable for any damages arising from the use of this software.
@@ -16,10 +16,10 @@ subject to the following restrictions:
 #ifndef BT_RIGIDBODY_H
 #define BT_RIGIDBODY_H
 
-#include "..\..\LinearMath\btAlignedObjectArray.h"
-#include "..\..\LinearMath\btTransform.h"
-#include "..\..\BulletCollision\BroadphaseCollision\btBroadphaseProxy.h"
-#include "..\..\BulletCollision\CollisionDispatch\btCollisionObject.h"
+#include "..//..//LinearMath//btAlignedObjectArray.h"
+#include "..//..//LinearMath//btTransform.h"
+#include "..//..//BulletCollision//BroadphaseCollision//btBroadphaseProxy.h"
+#include "..//..//BulletCollision//CollisionDispatch//btCollisionObject.h"
 
 class btCollisionShape;
 class btMotionState;
@@ -43,7 +43,7 @@ enum	btRigidBodyFlags
 	BT_DISABLE_WORLD_GRAVITY = 1,
 	///BT_ENABLE_GYROPSCOPIC_FORCE flags is enabled by default in Bullet 2.83 and onwards.
 	///and it BT_ENABLE_GYROPSCOPIC_FORCE becomes equivalent to BT_ENABLE_GYROSCOPIC_FORCE_IMPLICIT_BODY
-	///See Demos/GyroscopicDemo and computeGyroscopicImpulseImplicit
+	///See Demos//GyroscopicDemo and computeGyroscopicImpulseImplicit
 	BT_ENABLE_GYROSCOPIC_FORCE_EXPLICIT = 2,
 	BT_ENABLE_GYROSCOPIC_FORCE_IMPLICIT_WORLD=4,
 	BT_ENABLE_GYROSCOPIC_FORCE_IMPLICIT_BODY=8,
@@ -58,7 +58,7 @@ enum	btRigidBodyFlags
 ///- B) Fixed objects with zero mass. They are not moving (basically collision objects)
 ///- C) Kinematic objects, which are objects without mass, but the user can move them. There is on-way interaction, and Bullet calculates a velocity based on the timestep and previous and current world transform.
 ///Bullet automatically deactivates dynamic rigid bodies, when the velocity is below a threshold for a given time.
-///Deactivated (sleeping) rigid bodies don't take any processing time, except a minor broadphase collision detection impact (to allow active objects to activate/wake up sleeping objects)
+///Deactivated (sleeping) rigid bodies don't take any processing time, except a minor broadphase collision detection impact (to allow active objects to activate//wake up sleeping objects)
 class btRigidBody  : public btCollisionObject
 {
 
@@ -133,7 +133,7 @@ public:
 		///best simulation results when friction is non-zero
 		btScalar			m_friction;
 		///the m_rollingFriction prevents rounded shapes, such as spheres, cylinders and capsules from rolling forever.
-		///See Bullet/Demos/RollingFrictionDemo for usage
+		///See Bullet//Demos//RollingFrictionDemo for usage
 		btScalar			m_rollingFriction;
         btScalar			m_spinningFriction;//torsional friction around contact normal
         
@@ -381,7 +381,7 @@ public:
 
 	btVector3 getVelocityInLocalPoint(const btVector3& rel_pos) const
 	{
-		//we also calculate lin/ang velocity for kinematic objects
+		//we also calculate lin//ang velocity for kinematic objects
 		return m_linearVelocity + m_angularVelocity.cross(rel_pos);
 
 		//for kinematic objects, we could also use use:
@@ -486,7 +486,7 @@ public:
 			motionState->getWorldTransform(m_worldTransform);
 	}
 
-	//for experimental overriding of friction/contact solver func
+	//for experimental overriding of friction//contact solver func
 	int	m_contactSolverType;
 	int	m_frictionSolverType;
 
@@ -506,7 +506,7 @@ public:
 		return m_angularFactor;
 	}
 
-	//is this rigidbody added to a btCollisionWorld/btDynamicsWorld/btBroadphase?
+	//is this rigidbody added to a btCollisionWorld//btDynamicsWorld//btBroadphase?
 	bool	isInWorld() const
 	{
 		return (getBroadphaseProxy() != 0);
@@ -560,7 +560,7 @@ public:
 };
 
 //@todo add m_optionalMotionState and m_constraintRefs to btRigidBodyData
-///do not change those serialization structures, it requires an updated sBulletDNAstr/sBulletDNAstr64
+///do not change those serialization structures, it requires an updated sBulletDNAstr//sBulletDNAstr64
 struct	btRigidBodyFloatData
 {
 	btCollisionObjectFloatData	m_collisionObjectData;
@@ -586,7 +586,7 @@ struct	btRigidBodyFloatData
 	int						m_additionalDamping;
 };
 
-///do not change those serialization structures, it requires an updated sBulletDNAstr/sBulletDNAstr64
+///do not change those serialization structures, it requires an updated sBulletDNAstr//sBulletDNAstr64
 struct	btRigidBodyDoubleData
 {
 	btCollisionObjectDoubleData	m_collisionObjectData;

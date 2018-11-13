@@ -1,6 +1,6 @@
 /*
 Bullet Continuous Collision Detection and Physics Library
-Copyright (c) 2003-2006 Erwin Coumans  http://continuousphysics.com/Bullet/
+Copyright (c) 2003-2006 Erwin Coumans  http://continuousphysics.com//Bullet/
 
 This software is provided 'as-is', without any express or implied warranty.
 In no event will the authors be held liable for any damages arising from the use of this software.
@@ -16,8 +16,8 @@ subject to the following restrictions:
 #ifndef BT_COLLISION_ALGORITHM_H
 #define BT_COLLISION_ALGORITHM_H
 
-#include "../../LinearMath/btScalar.h"
-#include "../../LinearMath/btAlignedObjectArray.h"
+#include "..//..//LinearMath//btScalar.h"
+#include "..//..//LinearMath//btAlignedObjectArray.h"
 
 struct btBroadphaseProxy;
 class btDispatcher;

@@ -7,10 +7,10 @@
  *  The Minkoski Portal Refinement implementation was ported 
  *  to OpenCL by Erwin Coumans for the Bullet 3 Physics library.
  *  The original MPR idea and implementation is by Gary Snethen
- *  in XenoCollide, see http://github.com/erwincoumans/xenocollide
+ *  in XenoCollide, see http://github.com//erwincoumans//xenocollide
  *
  *  Distributed under the OSI-approved BSD License (the "License");
- *  see <http://www.opensource.org/licenses/bsd-license.php>.
+ *  see <http://www.opensource.org//licenses//bsd-license.php>.
  *  This software is distributed WITHOUT ANY WARRANTY; without even the
  *  implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  *  See the License for more information.
@@ -23,8 +23,8 @@
 
 #define BT_DEBUG_MPR1
 
-#include "../LinearMath/btTransform.h"
-#include "../LinearMath/btAlignedObjectArray.h"
+#include "..//LinearMath//btTransform.h"
+#include "..//LinearMath//btAlignedObjectArray.h"
 
 //#define MPR_AVERAGE_CONTACT_POSITIONS
 

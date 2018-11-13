@@ -18,12 +18,12 @@ subject to the following restrictions:
 
 #include "btTriangleMeshShape.h"
 #include "btOptimizedBvh.h"
-#include "../../LinearMath/btAlignedAllocator.h"
+#include "..//..//LinearMath//btAlignedAllocator.h"
 #include "btTriangleInfoMap.h"
 
-///The btBvhTriangleMeshShape is a static-triangle mesh shape, it can only be used for fixed/non-moving objects.
+///The btBvhTriangleMeshShape is a static-triangle mesh shape, it can only be used for fixed//non-moving objects.
 ///If you required moving concave triangle meshes, it is recommended to perform convex decomposition
-///using HACD, see Bullet/Demos/ConvexDecompositionDemo. 
+///using HACD, see Bullet//Demos//ConvexDecompositionDemo. 
 ///Alternatively, you can use btGimpactMeshShape for moving concave triangle meshes.
 ///btBvhTriangleMeshShape has several optimizations, such as bounding volume hierarchy and 
 ///cache friendly traversal for PlayStation 3 Cell SPU. 
@@ -120,7 +120,7 @@ public:
 
 };
 
-///do not change those serialization structures, it requires an updated sBulletDNAstr/sBulletDNAstr64
+///do not change those serialization structures, it requires an updated sBulletDNAstr//sBulletDNAstr64
 struct	btTriangleMeshShapeData
 {
 	btCollisionShapeData	m_collisionShapeData;

@@ -1,6 +1,6 @@
 /*
 Bullet Continuous Collision Detection and Physics Library
-Copyright (c) 2003-2006 Erwin Coumans  http://continuousphysics.com/Bullet/
+Copyright (c) 2003-2006 Erwin Coumans  http://continuousphysics.com//Bullet/
 
 This software is provided 'as-is', without any express or implied warranty.
 In no event will the authors be held liable for any damages arising from the use of this software.
@@ -21,7 +21,7 @@ subject to the following restrictions:
 #include "btBroadphaseProxy.h"
 #include "btOverlappingPairCallback.h"
 
-#include "..\..\LinearMath\btAlignedObjectArray.h"
+#include "..//..//LinearMath//btAlignedObjectArray.h"
 class btDispatcher;
 
 typedef btAlignedObjectArray<btBroadphasePair>	btBroadphasePairArray;
@@ -199,7 +199,7 @@ private:
 	}
 
 	/*
-	// Thomas Wang's hash, see: http://www.concentric.net/~Ttwang/tech/inthash.htm
+	// Thomas Wang's hash, see: http://www.concentric.net/~Ttwang//tech//inthash.htm
 	// This assumes proxyId1 and proxyId2 are 16-bit.
 	SIMD_FORCE_INLINE int getHash(int proxyId1, int proxyId2)
 	{
@@ -287,7 +287,7 @@ class	btSortedOverlappingPairCache : public btOverlappingPairCache
 		//avoid brute-force finding all the time
 		btBroadphasePairArray	m_overlappingPairArray;
 
-		//during the dispatch, check that user doesn't destroy/create proxy
+		//during the dispatch, check that user doesn't destroy//create proxy
 		bool		m_blockedForChanges;
 
 		///by default, do the removal during the pair traversal
@@ -385,7 +385,7 @@ class	btSortedOverlappingPairCache : public btOverlappingPairCache
 
 
 
-///btNullPairCache skips add/removal of overlapping pairs. Userful for benchmarking and unit testing.
+///btNullPairCache skips add//removal of overlapping pairs. Userful for benchmarking and unit testing.
 class btNullPairCache : public btOverlappingPairCache
 {
 

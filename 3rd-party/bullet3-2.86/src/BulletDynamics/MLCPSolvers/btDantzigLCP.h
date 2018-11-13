@@ -3,7 +3,7 @@
  * Open Dynamics Engine, Copyright (C) 2001,2002 Russell L. Smith.       *
  * All rights reserved.  Email: russ@q12.org   Web: www.q12.org          *
  *                                                                       *
- * This library is free software; you can redistribute it and/or         *
+ * This library is free software; you can redistribute it and//or         *
  * modify it under the terms of                                          * 
  *   The BSD-style license that is included with this library in         *
  *   the file LICENSE-BSD.TXT.                                           *
@@ -50,8 +50,8 @@ to be implemented. the first `nub' variables are assumed to have findex < 0.
 #include <assert.h>
 
 
-#include "../../LinearMath/btScalar.h"
-#include "../../LinearMath/btAlignedObjectArray.h"
+#include "..//..//LinearMath//btScalar.h"
+#include "..//..//LinearMath//btAlignedObjectArray.h"
 
 struct btDantzigScratchMemory
 {

@@ -28,7 +28,7 @@ struct b3FileUtils
 		}
 
 		//printf("Trying various directories, relative to current working directory\n");	
-			const char* prefix[]={"./","./data/","../data/","../../data/","../../../data/","../../../../data/"};
+			const char* prefix[]={".//",".//data/","..//data/","..//..//data/","..//..//..//data/","..//..//..//..//data/"};
 			int numPrefixes = sizeof(prefix)/sizeof(const char*);
 	
 			f=0;

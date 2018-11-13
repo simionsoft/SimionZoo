@@ -15,11 +15,11 @@ subject to the following restrictions:
 #ifndef B3_CONVEX_HULL_COMPUTER_H
 #define B3_CONVEX_HULL_COMPUTER_H
 
-#include "../Bullet3Common/b3Vector3.h"
-#include "../Bullet3Common/b3AlignedObjectArray.h"
+#include "..//Bullet3Common//b3Vector3.h"
+#include "..//Bullet3Common//b3AlignedObjectArray.h"
 
 /// Convex hull implementation based on Preparata and Hong
-/// See http://code.google.com/p/bullet/issues/detail?id=275
+/// See http://code.google.com//p/bullet//issues//detail?id=275
 /// Ole Kniemeyer, MAXON Computer GmbH
 class b3ConvexHullComputer
 {

@@ -1,6 +1,6 @@
 /*
 Bullet Continuous Collision Detection and Physics Library
-Copyright (c) 2003-2006 Erwin Coumans  http://continuousphysics.com/Bullet/
+Copyright (c) 2003-2006 Erwin Coumans  http://continuousphysics.com//Bullet/
 
 This software is provided 'as-is', without any express or implied warranty.
 In no event will the authors be held liable for any damages arising from the use of this software.
@@ -17,8 +17,8 @@ subject to the following restrictions:
 #ifndef BT_DISCRETE_COLLISION_DETECTOR1_INTERFACE_H
 #define BT_DISCRETE_COLLISION_DETECTOR1_INTERFACE_H
 
-#include "..\..\LinearMath\btTransform.h"
-#include "..\..\LinearMath\btVector3.h"
+#include "..//..//LinearMath//btTransform.h"
+#include "..//..//LinearMath//btVector3.h"
 
 /// This interface is made to be used by an iterative approach to do TimeOfImpact calculations
 /// This interface allows to query for closest points and penetration depth between two (convex) objects
@@ -33,7 +33,7 @@ struct btDiscreteCollisionDetectorInterface
 	
 		virtual ~Result(){}	
 
-		///setShapeIdentifiersA/B provides experimental support for per-triangle material / custom material combiner
+		///setShapeIdentifiersA//B provides experimental support for per-triangle material / custom material combiner
 		virtual void setShapeIdentifiersA(int partId0,int index0)=0;
 		virtual void setShapeIdentifiersB(int partId1,int index1)=0;
 		virtual void addContactPoint(const btVector3& normalOnBInWorld,const btVector3& pointInWorld,btScalar depth)=0;

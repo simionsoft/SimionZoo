@@ -1,6 +1,6 @@
 /*
 Bullet Continuous Collision Detection and Physics Library
-Copyright (c) 2003-2006 Erwin Coumans  http://continuousphysics.com/Bullet/
+Copyright (c) 2003-2006 Erwin Coumans  http://continuousphysics.com//Bullet/
 
 This software is provided 'as-is', without any express or implied warranty.
 In no event will the authors be held liable for any damages arising from the use of this software.
@@ -16,7 +16,7 @@ subject to the following restrictions:
 #ifndef BT_COLLISION_OBJECT_H
 #define BT_COLLISION_OBJECT_H
 
-#include "..\..\LinearMath\btTransform.h"
+#include "..//..//LinearMath//btTransform.h"
 
 //island management, m_activationState1
 #define ACTIVE_TAG 1
@@ -28,9 +28,9 @@ subject to the following restrictions:
 struct	btBroadphaseProxy;
 class	btCollisionShape;
 struct btCollisionShapeData;
-#include "..\..\LinearMath/btMotionState.h"
-#include "..\..\LinearMath/btAlignedAllocator.h"
-#include "..\..\LinearMath/btAlignedObjectArray.h"
+#include "..//..//LinearMath//btMotionState.h"
+#include "..//..//LinearMath//btAlignedAllocator.h"
+#include "..//..//LinearMath//btAlignedObjectArray.h"
 
 typedef btAlignedObjectArray<class btCollisionObject*> btCollisionObjectArray;
 
@@ -97,7 +97,7 @@ protected:
 	///do not assign your own m_internalType unless you write a new dynamics object class.
 	int				m_internalType;
 
-	///users can point to their objects, m_userPointer is not used by Bullet, see setUserPointer/getUserPointer
+	///users can point to their objects, m_userPointer is not used by Bullet, see setUserPointer//getUserPointer
 
 	void*			m_userObjectPointer;
 
@@ -133,10 +133,10 @@ public:
 		CF_STATIC_OBJECT= 1,
 		CF_KINEMATIC_OBJECT= 2,
 		CF_NO_CONTACT_RESPONSE = 4,
-		CF_CUSTOM_MATERIAL_CALLBACK = 8,//this allows per-triangle material (friction/restitution)
+		CF_CUSTOM_MATERIAL_CALLBACK = 8,//this allows per-triangle material (friction//restitution)
 		CF_CHARACTER_OBJECT = 16,
 		CF_DISABLE_VISUALIZE_OBJECT = 32, //disable debug drawing
-		CF_DISABLE_SPU_COLLISION_PROCESSING = 64,//disable parallel/SPU processing
+		CF_DISABLE_SPU_COLLISION_PROCESSING = 64,//disable parallel//SPU processing
 		CF_HAS_CONTACT_STIFFNESS_DAMPING = 128,
 		CF_HAS_CUSTOM_DEBUG_RENDERING_COLOR = 256,
 	};
@@ -265,13 +265,13 @@ public:
 	
 
 	///Avoid using this internal API call, the extension pointer is used by some Bullet extensions. 
-	///If you need to store your own user pointer, use 'setUserPointer/getUserPointer' instead.
+	///If you need to store your own user pointer, use 'setUserPointer//getUserPointer' instead.
 	void*		internalGetExtensionPointer() const
 	{
 		return m_extensionPointer;
 	}
 	///Avoid using this internal API call, the extension pointer is used by some Bullet extensions
-	///If you need to store your own user pointer, use 'setUserPointer/getUserPointer' instead.
+	///If you need to store your own user pointer, use 'setUserPointer//getUserPointer' instead.
 	void	internalSetExtensionPointer(void* pointer)
 	{
 		m_extensionPointer = pointer;
@@ -596,7 +596,7 @@ public:
 
 };
 
-///do not change those serialization structures, it requires an updated sBulletDNAstr/sBulletDNAstr64
+///do not change those serialization structures, it requires an updated sBulletDNAstr//sBulletDNAstr64
 struct	btCollisionObjectDoubleData
 {
 	void					*m_broadphaseHandle;
@@ -631,7 +631,7 @@ struct	btCollisionObjectDoubleData
 	char	m_padding[4];
 };
 
-///do not change those serialization structures, it requires an updated sBulletDNAstr/sBulletDNAstr64
+///do not change those serialization structures, it requires an updated sBulletDNAstr//sBulletDNAstr64
 struct	btCollisionObjectFloatData
 {
 	void					*m_broadphaseHandle;

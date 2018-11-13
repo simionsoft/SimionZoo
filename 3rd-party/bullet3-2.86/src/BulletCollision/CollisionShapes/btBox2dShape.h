@@ -1,6 +1,6 @@
 /*
 Bullet Continuous Collision Detection and Physics Library
-Copyright (c) 2003-2006 Erwin Coumans  http://continuousphysics.com/Bullet/
+Copyright (c) 2003-2006 Erwin Coumans  http://continuousphysics.com//Bullet/
 
 This software is provided 'as-is', without any express or implied warranty.
 In no event will the authors be held liable for any damages arising from the use of this software.
@@ -16,11 +16,11 @@ subject to the following restrictions:
 #ifndef BT_OBB_BOX_2D_SHAPE_H
 #define BT_OBB_BOX_2D_SHAPE_H
 
-#include "../../BulletCollision/CollisionShapes/btPolyhedralConvexShape.h"
-#include "../../BulletCollision/CollisionShapes/btCollisionMargin.h"
-#include "../../BulletCollision/BroadphaseCollision/btBroadphaseProxy.h"
-#include "../../LinearMath/btVector3.h"
-#include "../../LinearMath/btMinMax.h"
+#include "..//..//BulletCollision//CollisionShapes//btPolyhedralConvexShape.h"
+#include "..//..//BulletCollision//CollisionShapes//btCollisionMargin.h"
+#include "..//..//BulletCollision//BroadphaseCollision//btBroadphaseProxy.h"
+#include "..//..//LinearMath//btVector3.h"
+#include "..//..//LinearMath//btMinMax.h"
 
 ///The btBox2dShape is a box primitive around the origin, its sides axis aligned with length specified by half extents, in local shape coordinates. When used as part of a btCollisionObject or btRigidBody it will be an oriented box in world space.
 ATTRIBUTE_ALIGNED16(class) btBox2dShape: public btPolyhedralConvexShape

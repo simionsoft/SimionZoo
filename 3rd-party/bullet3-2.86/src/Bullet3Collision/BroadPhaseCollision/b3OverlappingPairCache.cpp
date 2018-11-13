@@ -19,7 +19,7 @@ subject to the following restrictions:
 
 //#include "b3Dispatcher.h"
 //#include "b3CollisionAlgorithm.h"
-#include "../../Bullet3Geometry/b3AabbUtil.h"
+#include "..//..//Bullet3Geometry//b3AabbUtil.h"
 
 #include <stdio.h>
 

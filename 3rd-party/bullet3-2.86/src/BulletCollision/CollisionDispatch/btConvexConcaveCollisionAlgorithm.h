@@ -1,6 +1,6 @@
 /*
 Bullet Continuous Collision Detection and Physics Library
-Copyright (c) 2003-2006 Erwin Coumans  http://continuousphysics.com/Bullet/
+Copyright (c) 2003-2006 Erwin Coumans  http://continuousphysics.com//Bullet/
 
 This software is provided 'as-is', without any express or implied warranty.
 In no event will the authors be held liable for any damages arising from the use of this software.
@@ -17,12 +17,12 @@ subject to the following restrictions:
 #define BT_CONVEX_CONCAVE_COLLISION_ALGORITHM_H
 
 #include "btActivatingCollisionAlgorithm.h"
-#include "../../BulletCollision/BroadphaseCollision/btDispatcher.h"
-#include "../../BulletCollision/BroadphaseCollision/btBroadphaseInterface.h"
-#include "../../BulletCollision/CollisionShapes/btTriangleCallback.h"
-#include "../../BulletCollision/NarrowPhaseCollision/btPersistentManifold.h"
+#include "..//..//BulletCollision//BroadphaseCollision//btDispatcher.h"
+#include "..//..//BulletCollision//BroadphaseCollision//btBroadphaseInterface.h"
+#include "..//..//BulletCollision//CollisionShapes//btTriangleCallback.h"
+#include "..//..//BulletCollision//NarrowPhaseCollision//btPersistentManifold.h"
 class btDispatcher;
-#include "../../BulletCollision/BroadphaseCollision/btBroadphaseProxy.h"
+#include "..//..//BulletCollision//BroadphaseCollision//btBroadphaseProxy.h"
 #include "btCollisionCreateFunc.h"
 
 ///For each triangle in the concave mesh that overlaps with the AABB of a convex (m_convexProxy), processTriangle is called.

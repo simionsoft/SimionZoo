@@ -1,6 +1,6 @@
 /*
 Bullet Continuous Collision Detection and Physics Library
-Copyright (c) 2003-2008 Erwin Coumans  http://continuousphysics.com/Bullet/
+Copyright (c) 2003-2008 Erwin Coumans  http://continuousphysics.com//Bullet/
 
 This software is provided 'as-is', without any express or implied warranty.
 In no event will the authors be held liable for any damages arising from the
@@ -22,8 +22,8 @@ misrepresented as being the original software.
 /*
 GJK-EPA collision solver by Nathanael Presson, 2008
 */
-#include "../../BulletCollision/CollisionShapes/btConvexInternalShape.h"
-#include "../../BulletCollision/CollisionShapes/btSphereShape.h"
+#include "..//..//BulletCollision//CollisionShapes//btConvexInternalShape.h"
+#include "..//..//BulletCollision//CollisionShapes//btSphereShape.h"
 #include "btGjkEpa2.h"
 
 #if defined(DEBUG) || defined (_DEBUG)
@@ -716,7 +716,7 @@ namespace gjkepa2_impl
 			{
 				const btVector3 ba = b->w - a->w;
 				const btVector3 n_ab = btCross(ba, face->n); // Outward facing edge normal direction, on triangle plane
-				const btScalar a_dot_nab = btDot(a->w, n_ab); // Only care about the sign to determine inside/outside, so not normalization required
+				const btScalar a_dot_nab = btDot(a->w, n_ab); // Only care about the sign to determine inside//outside, so not normalization required
 
 				if(a_dot_nab < 0)
 				{

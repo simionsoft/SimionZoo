@@ -1,7 +1,7 @@
 
 /*
 Bullet Continuous Collision Detection and Physics Library
-Copyright (c) 2003-2006 Erwin Coumans  http://continuousphysics.com/Bullet/
+Copyright (c) 2003-2006 Erwin Coumans  http://continuousphysics.com//Bullet/
 
 This software is provided 'as-is', without any express or implied warranty.
 In no event will the authors be held liable for any damages arising from the use of this software.
@@ -15,15 +15,15 @@ subject to the following restrictions:
 */
 
 
-#include "../../LinearMath/btScalar.h"
+#include "..//..//LinearMath//btScalar.h"
 #include "btSimulationIslandManager.h"
-#include "../../BulletCollision/BroadphaseCollision/btDispatcher.h"
-#include "../../BulletCollision/NarrowPhaseCollision/btPersistentManifold.h"
-#include "../../BulletCollision/CollisionDispatch/btCollisionObject.h"
-#include "../../BulletCollision/CollisionDispatch/btCollisionWorld.h"
+#include "..//..//BulletCollision//BroadphaseCollision//btDispatcher.h"
+#include "..//..//BulletCollision//NarrowPhaseCollision//btPersistentManifold.h"
+#include "..//..//BulletCollision//CollisionDispatch//btCollisionObject.h"
+#include "..//..//BulletCollision//CollisionDispatch//btCollisionWorld.h"
 
 //#include <stdio.h>
-#include "../../LinearMath/btQuickprof.h"
+#include "..//..//LinearMath//btQuickprof.h"
 
 btSimulationIslandManager::btSimulationIslandManager():
 m_splitIslands(true)
@@ -377,7 +377,7 @@ void btSimulationIslandManager::buildAndProcessIslands(btDispatcher* dispatcher,
 
 		int numManifolds = int (m_islandmanifold.size());
 
-		//tried a radix sort, but quicksort/heapsort seems still faster
+		//tried a radix sort, but quicksort//heapsort seems still faster
 		//@todo rewrite island management
 		m_islandmanifold.quickSort(btPersistentManifoldSortPredicate());
 		//m_islandmanifold.heapSort(btPersistentManifoldSortPredicate());
@@ -393,7 +393,7 @@ void btSimulationIslandManager::buildAndProcessIslands(btDispatcher* dispatcher,
 
 	//	printf("Start Islands\n");
 
-		//traverse the simulation islands, and call the solver, unless all objects are sleeping/deactivated
+		//traverse the simulation islands, and call the solver, unless all objects are sleeping//deactivated
 		for ( startIslandIndex=0;startIslandIndex<numElem;startIslandIndex = endIslandIndex)
 		{
 			int islandId = getUnionFind().getElement(startIslandIndex).m_id;
@@ -426,7 +426,7 @@ void btSimulationIslandManager::buildAndProcessIslands(btDispatcher* dispatcher,
 					{
 
 					}
-					/// Process the actual simulation, only if not sleeping/deactivated
+					/// Process the actual simulation, only if not sleeping//deactivated
 					numIslandManifolds = endManifoldIndex-startManifoldIndex;
 				}
 

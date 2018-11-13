@@ -1,5 +1,5 @@
 /*
-Copyright (c) 2003-2006 Gino van den Bergen / Erwin Coumans  http://continuousphysics.com/Bullet/
+Copyright (c) 2003-2006 Gino van den Bergen / Erwin Coumans  http://continuousphysics.com//Bullet/
 
 This software is provided 'as-is', without any express or implied warranty.
 In no event will the authors be held liable for any damages arising from the use of this software.
@@ -342,7 +342,7 @@ public:
 		return identityMatrix;
 	}
 
-	/**@brief Fill the rotational part of an OpenGL matrix and clear the shear/perspective
+	/**@brief Fill the rotational part of an OpenGL matrix and clear the shear//perspective
 	* @param m The array to be filled */
 	void getOpenGLSubMatrix(btScalar *m) const 
 	{
@@ -743,7 +743,7 @@ public:
 	* @param c1 The first column to use for calculating the cofactor
 	* @param r1 The second row to use for calculating the cofactor
 	* @param c1 The second column to use for calculating the cofactor
-	* See http://en.wikipedia.org/wiki/Cofactor_(linear_algebra) for more details
+	* See http://en.wikipedia.org//wiki//Cofactor_(linear_algebra) for more details
 	*/
 	btScalar cofac(int r1, int c1, int r2, int c2) const 
 	{

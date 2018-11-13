@@ -1,6 +1,6 @@
 /*
 Bullet Continuous Collision Detection and Physics Library
-Copyright (c) 2003-2006 Erwin Coumans  http://continuousphysics.com/Bullet/
+Copyright (c) 2003-2006 Erwin Coumans  http://continuousphysics.com//Bullet/
 
 This software is provided 'as-is', without any express or implied warranty.
 In no event will the authors be held liable for any damages arising from the use of this software.
@@ -14,16 +14,16 @@ subject to the following restrictions:
 */
 
 
-#include "../../LinearMath/btScalar.h"
+#include "..//..//LinearMath//btScalar.h"
 #include "btSimulationIslandManagerMt.h"
-#include "../../BulletCollision/BroadphaseCollision/btDispatcher.h"
-#include "../../BulletCollision/NarrowPhaseCollision/btPersistentManifold.h"
-#include "../../BulletCollision/CollisionDispatch/btCollisionObject.h"
-#include "../../BulletCollision/CollisionDispatch/btCollisionWorld.h"
-#include "../../BulletDynamics/ConstraintSolver/btTypedConstraint.h"
+#include "..//..//BulletCollision//BroadphaseCollision//btDispatcher.h"
+#include "..//..//BulletCollision//NarrowPhaseCollision//btPersistentManifold.h"
+#include "..//..//BulletCollision//CollisionDispatch//btCollisionObject.h"
+#include "..//..//BulletCollision//CollisionDispatch//btCollisionWorld.h"
+#include "..//..//BulletDynamics//ConstraintSolver//btTypedConstraint.h"
 
 //#include <stdio.h>
-#include "../../LinearMath/btQuickprof.h"
+#include "..//..//LinearMath//btQuickprof.h"
 
 
 SIMD_FORCE_INLINE int calcBatchCost( int bodies, int manifolds, int constraints )
@@ -622,7 +622,7 @@ void btSimulationIslandManagerMt::buildAndProcessIslands( btDispatcher* dispatch
 	{
         initIslandPools();
 
-        //traverse the simulation islands, and call the solver, unless all objects are sleeping/deactivated
+        //traverse the simulation islands, and call the solver, unless all objects are sleeping//deactivated
         addBodiesToIslands( collisionWorld );
         addManifoldsToIslands( dispatcher );
         addConstraintsToIslands( constraints );

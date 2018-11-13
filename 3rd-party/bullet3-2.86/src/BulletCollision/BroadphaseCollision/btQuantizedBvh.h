@@ -1,6 +1,6 @@
 /*
 Bullet Continuous Collision Detection and Physics Library
-Copyright (c) 2003-2006 Erwin Coumans  http://continuousphysics.com/Bullet/
+Copyright (c) 2003-2006 Erwin Coumans  http://continuousphysics.com//Bullet/
 
 This software is provided 'as-is', without any express or implied warranty.
 In no event will the authors be held liable for any damages arising from the use of this software.
@@ -28,8 +28,8 @@ class btSerializer;
 #include <stdlib.h>
 #endif //DEBUG_CHECK_DEQUANTIZATION
 
-#include "../../LinearMath/btVector3.h"
-#include "../../LinearMath/btAlignedAllocator.h"
+#include "..//..//LinearMath//btVector3.h"
+#include "..//..//LinearMath//btAlignedAllocator.h"
 
 #ifdef BT_USE_DOUBLE_PRECISION
 #define btQuantizedBvhData btQuantizedBvhDoubleData
@@ -43,7 +43,7 @@ class btSerializer;
 
 
 
-//http://msdn.microsoft.com/library/default.asp?url=/library/en-us/vclang/html/vclrf__m128.asp
+//http://msdn.microsoft.com//library//default.asp?url=/library//en-us//vclang//html//vclrf__m128.asp
 
 
 //Note: currently we have 16 bytes per quantized node
@@ -157,8 +157,8 @@ public:
 	virtual void processNode(int subPart, int triangleIndex) = 0;
 };
 
-#include "../../LinearMath/btAlignedAllocator.h"
-#include "../../LinearMath/btAlignedObjectArray.h"
+#include "..//..//LinearMath//btAlignedAllocator.h"
+#include "..//..//LinearMath//btAlignedObjectArray.h"
 
 
 
@@ -211,7 +211,7 @@ protected:
 
 
 
-	///two versions, one for quantized and normal nodes. This allows code-reuse while maintaining readability (no template/macro!)
+	///two versions, one for quantized and normal nodes. This allows code-reuse while maintaining readability (no template//macro!)
 	///this might be refactored into a virtual, it is usually not calculated at run-time
 	void	setInternalNodeAabbMin(int nodeIndex, const btVector3& aabbMin)
 	{
@@ -338,12 +338,12 @@ public:
 	virtual ~btQuantizedBvh();
 
 	
-	///***************************************** expert/internal use only *************************
+	///***************************************** expert//internal use only *************************
 	void	setQuantizationValues(const btVector3& bvhAabbMin,const btVector3& bvhAabbMax,btScalar quantizationMargin=btScalar(1.0));
 	QuantizedNodeArray&	getLeafNodeArray() {			return	m_quantizedLeafNodes;	}
 	///buildInternal is expert use only: assumes that setQuantizationValues and LeafNodeArray are initialized
 	void	buildInternal();
-	///***************************************** expert/internal use only *************************
+	///***************************************** expert//internal use only *************************
 
 	void	reportAabbOverlappingNodex(btNodeOverlapCallback* nodeCallback,const btVector3& aabbMin,const btVector3& aabbMax) const;
 	void	reportRayOverlappingNodex (btNodeOverlapCallback* nodeCallback, const btVector3& raySource, const btVector3& rayTarget) const;

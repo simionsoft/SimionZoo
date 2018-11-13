@@ -1,6 +1,6 @@
 /*
 Bullet Continuous Collision Detection and Physics Library
-Copyright (c) 2003-2006 Erwin Coumans  http://continuousphysics.com/Bullet/
+Copyright (c) 2003-2006 Erwin Coumans  http://continuousphysics.com//Bullet/
 
 EPA Copyright (c) Ricardo Padrela 2006
 
@@ -15,11 +15,11 @@ subject to the following restrictions:
 3. This notice may not be removed or altered from any source distribution.
 */
 
-#include "../../BulletCollision/CollisionShapes/btConvexShape.h"
+#include "..//..//BulletCollision//CollisionShapes//btConvexShape.h"
 #include "btGjkEpaPenetrationDepthSolver.h"
 
 
-#include "../../BulletCollision/NarrowPhaseCollision/btGjkEpa2.h"
+#include "..//..//BulletCollision//NarrowPhaseCollision//btGjkEpa2.h"
 
 bool btGjkEpaPenetrationDepthSolver::calcPenDepth( btSimplexSolverInterface& simplexSolver,
 											  const btConvexShape* pConvexA, const btConvexShape* pConvexB,

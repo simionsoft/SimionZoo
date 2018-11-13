@@ -1,6 +1,6 @@
 /*
 Bullet Continuous Collision Detection and Physics Library
-Copyright (c) 2003-2006 Erwin Coumans  http://continuousphysics.com/Bullet/
+Copyright (c) 2003-2006 Erwin Coumans  http://continuousphysics.com//Bullet/
 
 This software is provided 'as-is', without any express or implied warranty.
 In no event will the authors be held liable for any damages arising from the use of this software.
@@ -17,8 +17,8 @@ subject to the following restrictions:
 #ifndef BT_SPARSE_SDF_H
 #define BT_SPARSE_SDF_H
 
-#include "../BulletCollision/CollisionDispatch/btCollisionObject.h"
-#include "../BulletCollision/NarrowPhaseCollision/btGjkEpa2.h"
+#include "..//BulletCollision//CollisionDispatch//btCollisionObject.h"
+#include "..//BulletCollision//NarrowPhaseCollision//btGjkEpa2.h"
 
 // Modified Paul Hsieh hash
 template <const int DWORDLEN>

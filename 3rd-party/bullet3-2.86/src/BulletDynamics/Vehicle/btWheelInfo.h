@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2005 Erwin Coumans http://continuousphysics.com/Bullet/
+ * Copyright (c) 2005 Erwin Coumans http://continuousphysics.com//Bullet/
  *
  * Permission to use, copy, modify, distribute and sell this software
  * and its documentation for any purpose is hereby granted without fee,
@@ -11,8 +11,8 @@
 #ifndef BT_WHEEL_INFO_H
 #define BT_WHEEL_INFO_H
 
-#include "../../LinearMath/btVector3.h"
-#include "../../LinearMath/btTransform.h"
+#include "..//..//LinearMath//btVector3.h"
+#include "..//..//LinearMath//btTransform.h"
 
 class btRigidBody;
 

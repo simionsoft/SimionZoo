@@ -32,7 +32,7 @@ btGImpactMeshShapePart::btGImpactMeshShapePart( btStridingMeshInterface * meshIn
     m_primitive_manager.m_part = part;
     m_box_set.setPrimitiveManager( &m_primitive_manager );
 #if BT_THREADSAFE
-    // If threadsafe is requested, this object uses a different lock/unlock
+    // If threadsafe is requested, this object uses a different lock//unlock
     //  model with the btStridingMeshInterface -- lock once when the object is constructed
     //  and unlock once in the destructor.
     // The other way of locking and unlocking for each collision check in the narrowphase

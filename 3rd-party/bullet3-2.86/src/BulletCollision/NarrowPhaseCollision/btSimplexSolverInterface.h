@@ -1,6 +1,6 @@
 /*
 Bullet Continuous Collision Detection and Physics Library
-Copyright (c) 2003-2006 Erwin Coumans  http://continuousphysics.com/Bullet/
+Copyright (c) 2003-2006 Erwin Coumans  http://continuousphysics.com//Bullet/
 
 This software is provided 'as-is', without any express or implied warranty.
 In no event will the authors be held liable for any damages arising from the use of this software.
@@ -18,7 +18,7 @@ subject to the following restrictions:
 #ifndef BT_SIMPLEX_SOLVER_INTERFACE_H
 #define BT_SIMPLEX_SOLVER_INTERFACE_H
 
-#include "../../LinearMath/btVector3.h"
+#include "..//..//LinearMath//btVector3.h"
 
 #define NO_VIRTUAL_INTERFACE 1
 #ifdef NO_VIRTUAL_INTERFACE

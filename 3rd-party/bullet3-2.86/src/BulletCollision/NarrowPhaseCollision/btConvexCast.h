@@ -1,6 +1,6 @@
 /*
 Bullet Continuous Collision Detection and Physics Library
-Copyright (c) 2003-2006 Erwin Coumans  http://continuousphysics.com/Bullet/
+Copyright (c) 2003-2006 Erwin Coumans  http://continuousphysics.com//Bullet/
 
 This software is provided 'as-is', without any express or implied warranty.
 In no event will the authors be held liable for any damages arising from the use of this software.
@@ -17,11 +17,11 @@ subject to the following restrictions:
 #ifndef BT_CONVEX_CAST_H
 #define BT_CONVEX_CAST_H
 
-#include "../../LinearMath/btTransform.h"
-#include "../../LinearMath/btVector3.h"
-#include "../../LinearMath/btScalar.h"
+#include "..//..//LinearMath//btTransform.h"
+#include "..//..//LinearMath//btVector3.h"
+#include "..//..//LinearMath//btScalar.h"
 class btMinkowskiSumShape;
-#include "../../LinearMath/btIDebugDraw.h"
+#include "..//..//LinearMath//btIDebugDraw.h"
 
 /// btConvexCast is an interface for Casting
 class btConvexCast
@@ -32,7 +32,7 @@ public:
 	virtual ~btConvexCast();
 
 	///RayResult stores the closest result
-	/// alternatively, add a callback method to decide about closest/all results
+	/// alternatively, add a callback method to decide about closest//all results
 	struct	CastResult
 	{
 		//virtual bool	addRayResult(const btVector3& normal,btScalar	fraction) = 0;

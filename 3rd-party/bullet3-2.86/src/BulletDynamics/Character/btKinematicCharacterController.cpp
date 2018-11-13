@@ -15,13 +15,13 @@ subject to the following restrictions:
 
 
 #include <stdio.h>
-#include "../../LinearMath/btIDebugDraw.h"
-#include "../../BulletCollision/CollisionDispatch/btGhostObject.h"
-#include "../../BulletCollision/CollisionShapes/btMultiSphereShape.h"
-#include "../../BulletCollision/BroadphaseCollision/btOverlappingPairCache.h"
-#include "../../BulletCollision/BroadphaseCollision/btCollisionAlgorithm.h"
-#include "../../BulletCollision/CollisionDispatch/btCollisionWorld.h"
-#include "../../LinearMath/btDefaultMotionState.h"
+#include "..//..//LinearMath//btIDebugDraw.h"
+#include "..//..//BulletCollision//CollisionDispatch//btGhostObject.h"
+#include "..//..//BulletCollision//CollisionShapes//btMultiSphereShape.h"
+#include "..//..//BulletCollision//BroadphaseCollision//btOverlappingPairCache.h"
+#include "..//..//BulletCollision//BroadphaseCollision//btCollisionAlgorithm.h"
+#include "..//..//BulletCollision//CollisionDispatch//btCollisionWorld.h"
+#include "..//..//LinearMath//btDefaultMotionState.h"
 #include "btKinematicCharacterController.h"
 
 
@@ -108,7 +108,7 @@ protected:
 /*
  * Returns the reflection direction of a ray going 'direction' hitting a surface with normal 'normal'
  *
- * from: http://www-cs-students.stanford.edu/~adityagp/final/node3.html
+ * from: http://www-cs-students.stanford.edu/~adityagp//final//node3.html
  */
 btVector3 btKinematicCharacterController::computeReflectionDirection (const btVector3& direction, const btVector3& normal)
 {
@@ -150,7 +150,7 @@ btKinematicCharacterController::btKinematicCharacterController (btPairCachingGho
 	m_verticalVelocity = 0.0;
 	m_verticalOffset = 0.0;
 	m_gravity = 9.8 * 3.0 ; // 3G acceleration.
-	m_fallSpeed = 55.0; // Terminal velocity of a sky diver in m/s.
+	m_fallSpeed = 55.0; // Terminal velocity of a sky diver in m//s.
 	m_jumpSpeed = 10.0; // ?
 	m_SetjumpSpeed = m_jumpSpeed;
 	m_wasOnGround = false;
@@ -546,7 +546,7 @@ void btKinematicCharacterController::stepDown ( btCollisionWorld* collisionWorld
 					&& (m_wasOnGround || !m_wasJumping))
 		{
 			//redo the velocity calculation when falling a small amount, for fast stairs motion
-			//for larger falls, use the smoother/slower interpolated movement by not touching the target position
+			//for larger falls, use the smoother//slower interpolated movement by not touching the target position
 
 			m_targetPosition = orig_position;
 			downVelocity = stepHeight;

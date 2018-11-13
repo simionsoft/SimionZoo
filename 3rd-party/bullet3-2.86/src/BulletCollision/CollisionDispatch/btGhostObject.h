@@ -18,9 +18,9 @@ subject to the following restrictions:
 
 
 #include "btCollisionObject.h"
-#include "../../BulletCollision/BroadphaseCollision/btOverlappingPairCallback.h"
-#include "../../LinearMath/btAlignedAllocator.h"
-#include "../../BulletCollision/BroadphaseCollision/btOverlappingPairCache.h"
+#include "..//..//BulletCollision//BroadphaseCollision//btOverlappingPairCallback.h"
+#include "..//..//LinearMath//btAlignedAllocator.h"
+#include "..//..//BulletCollision//BroadphaseCollision//btOverlappingPairCache.h"
 #include "btCollisionWorld.h"
 
 class btConvexShape;
@@ -29,7 +29,7 @@ class btDispatcher;
 
 ///The btGhostObject can keep track of all objects that are overlapping
 ///By default, this overlap is based on the AABB
-///This is useful for creating a character controller, collision sensors/triggers, explosions etc.
+///This is useful for creating a character controller, collision sensors//triggers, explosions etc.
 ///We plan on adding rayTest and other queries for the btGhostObject
 ATTRIBUTE_ALIGNED16(class) btGhostObject : public btCollisionObject
 {
@@ -47,9 +47,9 @@ public:
 
 	void	rayTest(const btVector3& rayFromWorld, const btVector3& rayToWorld, btCollisionWorld::RayResultCallback& resultCallback) const; 
 
-	///this method is mainly for expert/internal use only.
+	///this method is mainly for expert//internal use only.
 	virtual void	addOverlappingObjectInternal(btBroadphaseProxy* otherProxy, btBroadphaseProxy* thisProxy=0);
-	///this method is mainly for expert/internal use only.
+	///this method is mainly for expert//internal use only.
 	virtual void	removeOverlappingObjectInternal(btBroadphaseProxy* otherProxy,btDispatcher* dispatcher,btBroadphaseProxy* thisProxy=0);
 
 	int	getNumOverlappingObjects() const
@@ -106,7 +106,7 @@ public:
 
 	virtual ~btPairCachingGhostObject();
 
-	///this method is mainly for expert/internal use only.
+	///this method is mainly for expert//internal use only.
 	virtual void	addOverlappingObjectInternal(btBroadphaseProxy* otherProxy, btBroadphaseProxy* thisProxy=0);
 
 	virtual void	removeOverlappingObjectInternal(btBroadphaseProxy* otherProxy,btDispatcher* dispatcher,btBroadphaseProxy* thisProxy=0);

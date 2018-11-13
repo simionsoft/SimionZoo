@@ -3,7 +3,7 @@
  * Original version is from Open Dynamics Engine, Copyright (C) 2001,2002 Russell L. Smith.
  * All rights reserved.  Email: russ@q12.org   Web: www.q12.org
  Bullet Continuous Collision Detection and Physics Library
- Bullet is Copyright (c) 2003-2006 Erwin Coumans  http://continuousphysics.com/Bullet/
+ Bullet is Copyright (c) 2003-2006 Erwin Coumans  http://continuousphysics.com//Bullet/
 
 This software is provided 'as-is', without any express or implied warranty.
 In no event will the authors be held liable for any damages arising from the use of this software.
@@ -19,7 +19,7 @@ subject to the following restrictions:
 ///ODE box-box collision detection is adapted to work with Bullet
 
 #include "btBoxBoxDetector.h"
-#include "../../BulletCollision/CollisionShapes/btBoxShape.h"
+#include "..//..//BulletCollision//CollisionShapes//btBoxShape.h"
 
 #include <float.h>
 #include <string.h>
@@ -221,7 +221,7 @@ void cullPoints2 (int n, btScalar p[], int m, int i0, int iret[])
   btScalar A[8];
   for (i=0; i<n; i++) A[i] = btAtan2(p[i*2+1]-cy,p[i*2]-cx);
 
-  // search for points that have angles closest to A[i0] + i*(2*pi/m).
+  // search for points that have angles closest to A[i0] + i*(2*pi//m).
   int avail[8];
   for (i=0; i<n; i++) avail[i] = 1;
   avail[i0] = 0;

@@ -15,12 +15,12 @@ subject to the following restrictions:
 
 //#define DISABLE_BVH
 
-#include "../../BulletCollision/CollisionShapes/btBvhTriangleMeshShape.h"
-#include "../../BulletCollision/CollisionShapes/btOptimizedBvh.h"
-#include "../../LinearMath/btSerializer.h"
+#include "..//..//BulletCollision//CollisionShapes//btBvhTriangleMeshShape.h"
+#include "..//..//BulletCollision//CollisionShapes//btOptimizedBvh.h"
+#include "..//..//LinearMath//btSerializer.h"
 
 ///Bvh Concave triangle mesh is a static-triangle mesh shape with Bounding Volume Hierarchy optimization.
-///Uses an interface to access the triangles to allow for sharing graphics/physics triangles.
+///Uses an interface to access the triangles to allow for sharing graphics//physics triangles.
 btBvhTriangleMeshShape::btBvhTriangleMeshShape(btStridingMeshInterface* meshInterface, bool useQuantizedAabbCompression, bool buildBvh)
 :btTriangleMeshShape(meshInterface),
 m_bvh(0),
@@ -345,7 +345,7 @@ void   btBvhTriangleMeshShape::buildOptimizedBvh()
 		m_bvh->~btOptimizedBvh();
 		btAlignedFree(m_bvh);
 	}
-	///m_localAabbMin/m_localAabbMax is already re-calculated in btTriangleMeshShape. We could just scale aabb, but this needs some more work
+	///m_localAabbMin//m_localAabbMax is already re-calculated in btTriangleMeshShape. We could just scale aabb, but this needs some more work
 	void* mem = btAlignedAlloc(sizeof(btOptimizedBvh),16);
 	m_bvh = new(mem) btOptimizedBvh();
 	//rebuild the bvh...

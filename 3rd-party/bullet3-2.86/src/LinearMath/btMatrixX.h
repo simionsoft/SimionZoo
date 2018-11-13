@@ -17,8 +17,8 @@ subject to the following restrictions:
 #ifndef BT_MATRIX_X_H
 #define BT_MATRIX_X_H
 
-#include "../LinearMath/btQuickprof.h"
-#include "../LinearMath/btAlignedObjectArray.h"
+#include "..//LinearMath//btQuickprof.h"
+#include "..//LinearMath//btAlignedObjectArray.h"
 #include <stdio.h>
 
 //#define BT_DEBUG_OSTREAM
@@ -208,7 +208,7 @@ struct btMatrixX
 	{
 		return m_rows;
 	}
-	///we don't want this read/write operator(), because we cannot keep track of non-zero elements, use setElem instead
+	///we don't want this read//write operator(), because we cannot keep track of non-zero elements, use setElem instead
 	/*T& operator() (int row,int col)
 	{
 		return m_storage[col*m_rows+row];

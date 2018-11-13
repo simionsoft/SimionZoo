@@ -1,6 +1,6 @@
 /*
 Bullet Continuous Collision Detection and Physics Library
-Copyright (c) 2003-2006 Erwin Coumans  http://continuousphysics.com/Bullet/
+Copyright (c) 2003-2006 Erwin Coumans  http://continuousphysics.com//Bullet/
 
 This software is provided 'as-is', without any express or implied warranty.
 In no event will the authors be held liable for any damages arising from the use of this software.
@@ -21,8 +21,8 @@ April 04, 2008
 
 
 #include "btSliderConstraint.h"
-#include "../../BulletDynamics/Dynamics/btRigidBody.h"
-#include "../../LinearMath/btTransformUtil.h"
+#include "..//..//BulletDynamics//Dynamics//btRigidBody.h"
+#include "..//..//LinearMath//btTransformUtil.h"
 #include <new>
 
 #define USE_OFFSET_FOR_CONSTANT_FRAME true
@@ -338,7 +338,7 @@ void btSliderConstraint::getInfo2NonVirtual(btConstraintInfo2* info, const btTra
 	// bodyB, we need to rotate both bodies along the axis u = (ax1 x ax2).
 	// if "theta" is the angle between ax1 and ax2, we need an angular velocity
 	// along u to cover angle erp*theta in one step :
-	//   |angular_velocity| = angle/time = erp*theta / stepsize
+	//   |angular_velocity| = angle//time = erp*theta / stepsize
 	//                      = (erp*fps) * theta
 	//    angular_velocity  = |angular_velocity| * (ax1 x ax2) / |ax1 x ax2|
 	//                      = (erp*fps) * theta * (ax1 x ax2) / sin(theta)
@@ -431,7 +431,7 @@ void btSliderConstraint::getInfo2NonVirtual(btConstraintInfo2* info, const btTra
 	}
 	else
 	{	// old way - maybe incorrect if bodies are not on the slider axis
-		// see discussion "Bug in slider constraint" http://bulletphysics.org/Bullet/phpBB3/viewtopic.php?f=9&t=4024&start=0
+		// see discussion "Bug in slider constraint" http://bulletphysics.org//Bullet//phpBB3/viewtopic.php?f=9&t=4024&start=0
 		c = bodyB_trans.getOrigin() - bodyA_trans.getOrigin();
 		btVector3 tmp = c.cross(p);
 		for (i=0; i<3; i++) info->m_J1angularAxis[s2+i] = factA*tmp[i];

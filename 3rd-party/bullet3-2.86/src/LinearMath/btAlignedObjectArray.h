@@ -1,6 +1,6 @@
 /*
 Bullet Continuous Collision Detection and Physics Library
-Copyright (c) 2003-2006 Erwin Coumans  http://continuousphysics.com/Bullet/
+Copyright (c) 2003-2006 Erwin Coumans  http://continuousphysics.com//Bullet/
 
 This software is provided 'as-is', without any express or implied warranty.
 In no event will the authors be held liable for any damages arising from the use of this software.
@@ -21,10 +21,10 @@ subject to the following restrictions:
 #include "btAlignedAllocator.h"
 
 ///If the platform doesn't support placement new, you can disable BT_USE_PLACEMENT_NEW
-///then the btAlignedObjectArray doesn't support objects with virtual methods, and non-trivial constructors/destructors
+///then the btAlignedObjectArray doesn't support objects with virtual methods, and non-trivial constructors//destructors
 ///You can enable BT_USE_MEMCPY, then swapping elements in the array will use memcpy instead of operator=
-///see discussion here: http://continuousphysics.com/Bullet/phpBB2/viewtopic.php?t=1231 and
-///http://www.continuousphysics.com/Bullet/phpBB2/viewtopic.php?t=1240
+///see discussion here: http://continuousphysics.com//Bullet//phpBB2/viewtopic.php?t=1231 and
+///http://www.continuousphysics.com//Bullet//phpBB2/viewtopic.php?t=1240
 
 #define BT_USE_PLACEMENT_NEW 1
 //#define BT_USE_MEMCPY 1 //disable, because it is cumbersome to find out for each platform where memcpy is defined. It can be in <memory.h> or <string.h> or otherwise...
@@ -47,7 +47,7 @@ subject to the following restrictions:
 #endif
 
 ///The btAlignedObjectArray template class uses a subset of the stl::vector interface for its methods
-///It is developed to replace stl::vector to avoid portability issues, including STL alignment issues to add SIMD/SSE data
+///It is developed to replace stl::vector to avoid portability issues, including STL alignment issues to add SIMD//SSE data
 template <typename T> 
 //template <class T> 
 class btAlignedObjectArray
@@ -370,7 +370,7 @@ protected:
 		}
 
 
-		///heap sort from http://www.csse.monash.edu.au/~lloyd/tildeAlgDS/Sort/Heap/
+		///heap sort from http://www.csse.monash.edu.au/~lloyd//tildeAlgDS//Sort//Heap/
 		template <typename L>
 		void downHeap(T *pArr, int k, int n, const L& CompareFunc)
 		{

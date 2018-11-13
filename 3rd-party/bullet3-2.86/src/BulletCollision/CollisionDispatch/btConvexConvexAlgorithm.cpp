@@ -1,6 +1,6 @@
 /*
 Bullet Continuous Collision Detection and Physics Library
-Copyright (c) 2003-2006 Erwin Coumans  http://continuousphysics.com/Bullet/
+Copyright (c) 2003-2006 Erwin Coumans  http://continuousphysics.com//Bullet/
 
 This software is provided 'as-is', without any express or implied warranty.
 In no event will the authors be held liable for any damages arising from the use of this software.
@@ -22,37 +22,37 @@ subject to the following restrictions:
 #include "btConvexConvexAlgorithm.h"
 
 //#include <stdio.h>
-#include "../../BulletCollision/NarrowPhaseCollision/btDiscreteCollisionDetectorInterface.h"
-#include "../../BulletCollision/BroadphaseCollision/btBroadphaseInterface.h"
-#include "../../BulletCollision/CollisionDispatch/btCollisionObject.h"
-#include "../../BulletCollision/CollisionShapes/btConvexShape.h"
-#include "../../BulletCollision/CollisionShapes/btCapsuleShape.h"
-#include "../../BulletCollision/CollisionShapes/btTriangleShape.h"
+#include "..//..//BulletCollision//NarrowPhaseCollision//btDiscreteCollisionDetectorInterface.h"
+#include "..//..//BulletCollision//BroadphaseCollision//btBroadphaseInterface.h"
+#include "..//..//BulletCollision//CollisionDispatch//btCollisionObject.h"
+#include "..//..//BulletCollision//CollisionShapes//btConvexShape.h"
+#include "..//..//BulletCollision//CollisionShapes//btCapsuleShape.h"
+#include "..//..//BulletCollision//CollisionShapes//btTriangleShape.h"
 
 
 
-#include "../../BulletCollision/NarrowPhaseCollision/btGjkPairDetector.h"
-#include "../../BulletCollision/BroadphaseCollision/btBroadphaseProxy.h"
-#include "../../BulletCollision/CollisionDispatch/btCollisionDispatcher.h"
-#include "../../BulletCollision/CollisionShapes/btBoxShape.h"
-#include "../../BulletCollision/CollisionDispatch/btManifoldResult.h"
+#include "..//..//BulletCollision//NarrowPhaseCollision//btGjkPairDetector.h"
+#include "..//..//BulletCollision//BroadphaseCollision//btBroadphaseProxy.h"
+#include "..//..//BulletCollision//CollisionDispatch//btCollisionDispatcher.h"
+#include "..//..//BulletCollision//CollisionShapes//btBoxShape.h"
+#include "..//..//BulletCollision//CollisionDispatch//btManifoldResult.h"
 
-#include "../../BulletCollision/NarrowPhaseCollision/btConvexPenetrationDepthSolver.h"
-#include "../../BulletCollision/NarrowPhaseCollision/btContinuousConvexCollision.h"
-#include "../../BulletCollision/NarrowPhaseCollision/btSubSimplexConvexCast.h"
-#include "../../BulletCollision/NarrowPhaseCollision/btGjkConvexCast.h"
+#include "..//..//BulletCollision//NarrowPhaseCollision//btConvexPenetrationDepthSolver.h"
+#include "..//..//BulletCollision//NarrowPhaseCollision//btContinuousConvexCollision.h"
+#include "..//..//BulletCollision//NarrowPhaseCollision//btSubSimplexConvexCast.h"
+#include "..//..//BulletCollision//NarrowPhaseCollision//btGjkConvexCast.h"
 
 
 
-#include "../../BulletCollision/NarrowPhaseCollision/btVoronoiSimplexSolver.h"
-#include "../../BulletCollision/CollisionShapes/btSphereShape.h"
+#include "..//..//BulletCollision//NarrowPhaseCollision//btVoronoiSimplexSolver.h"
+#include "..//..//BulletCollision//CollisionShapes//btSphereShape.h"
 
-#include "../../BulletCollision/NarrowPhaseCollision/btMinkowskiPenetrationDepthSolver.h"
+#include "..//..//BulletCollision//NarrowPhaseCollision//btMinkowskiPenetrationDepthSolver.h"
 
-#include "../../BulletCollision/NarrowPhaseCollision/btGjkEpa2.h"
-#include "../../BulletCollision/NarrowPhaseCollision/btGjkEpaPenetrationDepthSolver.h"
-#include "../../BulletCollision/NarrowPhaseCollision/btPolyhedralContactClipping.h"
-#include "../../BulletCollision/CollisionDispatch/btCollisionObjectWrapper.h"
+#include "..//..//BulletCollision//NarrowPhaseCollision//btGjkEpa2.h"
+#include "..//..//BulletCollision//NarrowPhaseCollision//btGjkEpaPenetrationDepthSolver.h"
+#include "..//..//BulletCollision//NarrowPhaseCollision//btPolyhedralContactClipping.h"
+#include "..//..//BulletCollision//CollisionDispatch//btCollisionObjectWrapper.h"
 
 ///////////
 
@@ -529,7 +529,7 @@ void btConvexConvexAlgorithm ::processCollision (const btCollisionObjectWrapper*
 				//btScalar l2 = gjkPairDetector.getCachedSeparatingAxis().length2();
 				//if (l2>SIMD_EPSILON)
 				{
-					sepNormalWorldSpace = withoutMargin.m_reportedNormalOnWorld;//gjkPairDetector.getCachedSeparatingAxis()*(1.f/l2);
+					sepNormalWorldSpace = withoutMargin.m_reportedNormalOnWorld;//gjkPairDetector.getCachedSeparatingAxis()*(1.f//l2);
 					//minDist = -1e30f;//gjkPairDetector.getCachedSeparatingDistance();
 					minDist = withoutMargin.m_reportedDistance;//gjkPairDetector.getCachedSeparatingDistance()+min0->getMargin()+min1->getMargin();
 	

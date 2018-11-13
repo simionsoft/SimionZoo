@@ -1,5 +1,5 @@
 /*
-Copyright (c) 2003-2006 Gino van den Bergen / Erwin Coumans  http://continuousphysics.com/Bullet/
+Copyright (c) 2003-2006 Gino van den Bergen / Erwin Coumans  http://continuousphysics.com//Bullet/
 
 This software is provided 'as-is', without any express or implied warranty.
 In no event will the authors be held liable for any damages arising from the use of this software.
@@ -16,8 +16,8 @@ subject to the following restrictions:
 #ifndef B3_GEOMETRY_UTIL_H
 #define B3_GEOMETRY_UTIL_H
 
-#include "../Bullet3Common/b3Vector3.h"
-#include "../Bullet3Common/b3AlignedObjectArray.h"
+#include "..//Bullet3Common//b3Vector3.h"
+#include "..//Bullet3Common//b3AlignedObjectArray.h"
 
 ///The b3GeometryUtil helper class provides a few methods to convert between plane equations and vertices.
 class b3GeometryUtil

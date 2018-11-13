@@ -1,5 +1,5 @@
 /*
-Copyright (c) 2003-2006 Gino van den Bergen / Erwin Coumans  http://continuousphysics.com/Bullet/
+Copyright (c) 2003-2006 Gino van den Bergen / Erwin Coumans  http://continuousphysics.com//Bullet/
 
 This software is provided 'as-is', without any express or implied warranty.
 In no event will the authors be held liable for any damages arising from the use of this software.
@@ -142,7 +142,7 @@ public:
 
 
 ///The btConvexSeparatingDistanceUtil can help speed up convex collision detection 
-///by conservatively updating a cached separating distance/vector instead of re-calculating the closest distance
+///by conservatively updating a cached separating distance//vector instead of re-calculating the closest distance
 class	btConvexSeparatingDistanceUtil
 {
 	btQuaternion	m_ornA;

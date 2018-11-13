@@ -16,7 +16,7 @@ subject to the following restrictions:
 #ifndef BT_FEATHERSTONE_LINK_COLLIDER_H
 #define BT_FEATHERSTONE_LINK_COLLIDER_H
 
-#include "../../BulletCollision/CollisionDispatch/btCollisionObject.h"
+#include "..//..//BulletCollision//CollisionDispatch//btCollisionObject.h"
 
 #include "btMultiBody.h"
 
@@ -34,7 +34,7 @@ public:
 		m_link(link)
 	{
 		m_checkCollideWith =  true;
-		//we need to remove the 'CF_STATIC_OBJECT' flag, otherwise links/base doesn't merge islands
+		//we need to remove the 'CF_STATIC_OBJECT' flag, otherwise links//base doesn't merge islands
 		//this means that some constraints might point to bodies that are not in the islands, causing crashes
 		//if (link>=0 || (multiBody && !multiBody->hasFixedBase()))
 		{

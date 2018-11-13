@@ -1,6 +1,6 @@
 /*
 Bullet Continuous Collision Detection and Physics Library
-Copyright (c) 2003-2006 Erwin Coumans  http://continuousphysics.com/Bullet/
+Copyright (c) 2003-2006 Erwin Coumans  http://continuousphysics.com//Bullet/
 
 This software is provided 'as-is', without any express or implied warranty.
 In no event will the authors be held liable for any damages arising from the use of this software.
@@ -16,11 +16,11 @@ subject to the following restrictions:
 #ifndef BT_MANIFOLD_CONTACT_POINT_H
 #define BT_MANIFOLD_CONTACT_POINT_H
 
-#include "..\..\LinearMath\btVector3.h"
-#include "..\..\LinearMath\btTransformUtil.h"
+#include "..//..//LinearMath//btVector3.h"
+#include "..//..//LinearMath//btTransformUtil.h"
 
 #ifdef PFX_USE_FREE_VECTORMATH
-	#include "physics_effects/base_level/solver/pfx_constraint_row.h"
+	#include "physics_effects//base_level//solver//pfx_constraint_row.h"
 typedef sce::PhysicsEffects::PfxConstraintRow btConstraintRow;
 #else
 	// Don't change following order of parameters

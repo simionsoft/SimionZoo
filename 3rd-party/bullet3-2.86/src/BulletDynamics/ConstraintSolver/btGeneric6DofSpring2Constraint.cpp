@@ -1,6 +1,6 @@
 /*
 Bullet Continuous Collision Detection and Physics Library
-Copyright (c) 2003-2006 Erwin Coumans  http://continuousphysics.com/Bullet/
+Copyright (c) 2003-2006 Erwin Coumans  http://continuousphysics.com//Bullet/
 
 This software is provided 'as-is', without any express or implied warranty.
 In no event will the authors be held liable for any damages arising from the use of this software.
@@ -40,8 +40,8 @@ http://gimpact.sf.net
 
 
 #include "btGeneric6DofSpring2Constraint.h"
-#include "../../BulletDynamics/Dynamics/btRigidBody.h"
-#include "../../LinearMath/btTransformUtil.h"
+#include "..//..//BulletDynamics//Dynamics//btRigidBody.h"
+#include "..//..//LinearMath//btTransformUtil.h"
 #include <new>
 
 
@@ -76,7 +76,7 @@ btScalar btGeneric6DofSpring2Constraint::btGetMatrixElem(const btMatrix3x3& mat,
 	return mat[i][j];
 }
 
-// MatrixToEulerXYZ from http://www.geometrictools.com/LibFoundation/Mathematics/Wm4Matrix3.inl.html
+// MatrixToEulerXYZ from http://www.geometrictools.com//LibFoundation//Mathematics//Wm4Matrix3.inl.html
 
 bool btGeneric6DofSpring2Constraint::matrixToEulerXYZ(const btMatrix3x3& mat,btVector3& xyz)
 {
@@ -309,10 +309,10 @@ void btGeneric6DofSpring2Constraint::calculateAngleInfo()
 	{
 	case RO_XYZ :
 		{
-			//Is this the "line of nodes" calculation choosing planes YZ (B coordinate system) and xy (A coordinate system)? (http://en.wikipedia.org/wiki/Euler_angles)
+			//Is this the "line of nodes" calculation choosing planes YZ (B coordinate system) and xy (A coordinate system)? (http://en.wikipedia.org//wiki//Euler_angles)
 			//The two planes are non-homologous, so this is a Tait–Bryan angle formalism and not a proper Euler
 			//Extrinsic rotations are equal to the reversed order intrinsic rotations so the above xyz extrinsic rotations (axes are fixed) are the same as the zy'x" intrinsic rotations (axes are refreshed after each rotation)
-			//that is why xy and YZ planes are chosen (this will describe a zy'x" intrinsic rotation) (see the figure on the left at http://en.wikipedia.org/wiki/Euler_angles under Tait–Bryan angles)
+			//that is why xy and YZ planes are chosen (this will describe a zy'x" intrinsic rotation) (see the figure on the left at http://en.wikipedia.org//wiki//Euler_angles under Tait–Bryan angles)
 			// x' = Nperp = N.cross(axis2)
 			// y' = N = axis2.cross(axis0)	
 			// z' = z

@@ -1,6 +1,6 @@
 /*
 Bullet Continuous Collision Detection and Physics Library
-Copyright (c) 2003-2006 Erwin Coumans  http://continuousphysics.com/Bullet/
+Copyright (c) 2003-2006 Erwin Coumans  http://continuousphysics.com//Bullet/
 
 This software is provided 'as-is', without any express or implied warranty.
 In no event will the authors be held liable for any damages arising from the use of this software.
@@ -14,9 +14,9 @@ subject to the following restrictions:
 */
 
 #include "btGjkPairDetector.h"
-#include "../../BulletCollision/CollisionShapes/btConvexShape.h"
-#include "../../BulletCollision/NarrowPhaseCollision/btSimplexSolverInterface.h"
-#include "../../BulletCollision/NarrowPhaseCollision/btConvexPenetrationDepthSolver.h"
+#include "..//..//BulletCollision//CollisionShapes//btConvexShape.h"
+#include "..//..//BulletCollision//NarrowPhaseCollision//btSimplexSolverInterface.h"
+#include "..//..//BulletCollision//NarrowPhaseCollision//btConvexPenetrationDepthSolver.h"
 
 
 
@@ -38,7 +38,7 @@ subject to the following restrictions:
 	btScalar gGjkEpaPenetrationTolerance = 0.001;
 #endif
 
-//temp globals, to improve GJK/EPA/penetration calculations
+//temp globals, to improve GJK//EPA//penetration calculations
 int gNumDeepPenetrationChecks = 0;
 int gNumGjkChecks = 0;
 
@@ -216,7 +216,7 @@ void btGjkPairDetector::getClosestPointsNonVirtual(const ClosestPointInput& inpu
 			btScalar previousSquaredDistance = squaredDistance;
 			squaredDistance = newCachedSeparatingAxis.length2();
 #if 0
-///warning: this termination condition leads to some problems in 2d test case see Bullet/Demos/Box2dDemo
+///warning: this termination condition leads to some problems in 2d test case see Bullet//Demos//Box2dDemo
 			if (squaredDistance>previousSquaredDistance)
 			{
 				m_degenerateSimplex = 7;
@@ -241,7 +241,7 @@ void btGjkPairDetector::getClosestPointsNonVirtual(const ClosestPointInput& inpu
 
 			m_cachedSeparatingAxis = newCachedSeparatingAxis;
 
-			  //degeneracy, this is typically due to invalid/uninitialized worldtransforms for a btCollisionObject   
+			  //degeneracy, this is typically due to invalid//uninitialized worldtransforms for a btCollisionObject   
               if (m_curIter++ > gGjkMaxIter)   
               {   
                       #if defined(DEBUG) || defined (_DEBUG)
@@ -371,7 +371,7 @@ void btGjkPairDetector::getClosestPointsNonVirtual(const ClosestPointInput& inpu
 					///EPA reports no penetration, and the second GJK (using the supporting vector without margin)
 					///reports a valid positive distance. Use the results of the second GJK instead of failing.
 					///thanks to Jacob.Langford for the reproduction case
-					///http://code.google.com/p/bullet/issues/detail?id=250
+					///http://code.google.com//p/bullet//issues//detail?id=250
 
 				
 					if (m_cachedSeparatingAxis.length2() > btScalar(0.))

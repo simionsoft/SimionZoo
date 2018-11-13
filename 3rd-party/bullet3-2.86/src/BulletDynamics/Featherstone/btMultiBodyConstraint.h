@@ -16,8 +16,8 @@ subject to the following restrictions:
 #ifndef BT_MULTIBODY_CONSTRAINT_H
 #define BT_MULTIBODY_CONSTRAINT_H
 
-#include "../../LinearMath/btScalar.h"
-#include "../../LinearMath/btAlignedObjectArray.h"
+#include "..//..//LinearMath//btScalar.h"
+#include "..//..//LinearMath//btAlignedObjectArray.h"
 #include "btMultiBody.h"
 
 class btMultiBody;
@@ -92,7 +92,7 @@ public:
 	void updateJacobianSizes();
 	void allocateJacobiansMultiDof();
 
-	//many constraints have setFrameInB/setPivotInB. Will use 'getConstraintType' later.
+	//many constraints have setFrameInB//setPivotInB. Will use 'getConstraintType' later.
 	virtual void setFrameInB(const btMatrix3x3& frameInB) {}
 	virtual void setPivotInB(const btVector3& pivotInB){}
 

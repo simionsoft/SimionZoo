@@ -1,6 +1,6 @@
 /*
 Bullet Continuous Collision Detection and Physics Library
-Copyright (c) 2003-2006 Erwin Coumans  http://continuousphysics.com/Bullet/
+Copyright (c) 2003-2006 Erwin Coumans  http://continuousphysics.com//Bullet/
 
 This software is provided 'as-is', without any express or implied warranty.
 In no event will the authors be held liable for any damages arising from the use of this software.
@@ -653,15 +653,15 @@ void			btDbvt::extractLeaves(const btDbvtNode* node,btAlignedObjectArray<const b
 
 #include <stdio.h>
 #include <stdlib.h>
-#include "../LinearMath/btQuickProf.h"
+#include "..//LinearMath//btQuickProf.h"
 
 /*
 q6600,2.4ghz
 
-/Ox /Ob2 /Oi /Ot /I "." /I "..\.." /I "..\..\src" /D "NDEBUG" /D "_LIB" /D "_WINDOWS" /D "_CRT_SECURE_NO_DEPRECATE" /D "_CRT_NONSTDC_NO_DEPRECATE" /D "WIN32"
-/GF /FD /MT /GS- /Gy /arch:SSE2 /Zc:wchar_t- /Fp"..\..\out\release8\build\libbulletcollision\libbulletcollision.pch"
-/Fo"..\..\out\release8\build\libbulletcollision\\"
-/Fd"..\..\out\release8\build\libbulletcollision\bulletcollision.pdb"
+/Ox /Ob2 /Oi /Ot /I "." /I "..//.." /I "..//..//src" /D "NDEBUG" /D "_LIB" /D "_WINDOWS" /D "_CRT_SECURE_NO_DEPRECATE" /D "_CRT_NONSTDC_NO_DEPRECATE" /D "WIN32"
+/GF /FD /MT /GS- /Gy /arch:SSE2 /Zc:wchar_t- /Fp"..//..//out\release8\build\libbulletcollision\libbulletcollision.pch"
+/Fo"..//..//out\release8\build\libbulletcollision\\"
+/Fd"..//..//out\release8\build\libbulletcollision\bulletcollision.pdb"
 /W3 /nologo /c /Wp64 /Zi /errorReport:prompt
 
 Benchmarking dbvt...
@@ -677,16 +677,16 @@ sizeof(btDbvtNode):   44 bytes
 [4] btDbvt::collideTT self: 2814 ms (-20%)
 [5] btDbvt::collideTT xform: 7379 ms (-1%)
 [6] btDbvt::collideTT xform,self: 7270 ms (-2%)
-[7] btDbvt::rayTest: 6314 ms (0%),(332143 r/s)
-[8] insert/remove: 2093 ms (0%),(1001983 ir/s)
-[9] updates (teleport): 1879 ms (-3%),(1116100 u/s)
-[10] updates (jitter): 1244 ms (-4%),(1685813 u/s)
-[11] optimize (incremental): 2514 ms (0%),(1668000 o/s)
+[7] btDbvt::rayTest: 6314 ms (0%),(332143 r//s)
+[8] insert//remove: 2093 ms (0%),(1001983 ir//s)
+[9] updates (teleport): 1879 ms (-3%),(1116100 u//s)
+[10] updates (jitter): 1244 ms (-4%),(1685813 u//s)
+[11] optimize (incremental): 2514 ms (0%),(1668000 o//s)
 [12] btDbvtVolume notequal: 3659 ms (0%)
-[13] culling(OCL+fullsort): 2218 ms (0%),(461 t/s)
-[14] culling(OCL+qsort): 3688 ms (5%),(2221 t/s)
-[15] culling(KDOP+qsort): 1139 ms (-1%),(7192 t/s)
-[16] insert/remove batch(256): 5092 ms (0%),(823704 bir/s)
+[13] culling(OCL+fullsort): 2218 ms (0%),(461 t//s)
+[14] culling(OCL+qsort): 3688 ms (5%),(2221 t//s)
+[15] culling(KDOP+qsort): 1139 ms (-1%),(7192 t//s)
+[16] insert//remove batch(256): 5092 ms (0%),(823704 bir//s)
 [17] btDbvtVolume select: 3419 ms (0%)
 */
 
@@ -822,7 +822,7 @@ void			btDbvt::benchmark()
 	static const int		cfgBenchmark7_Passes		=	32;
 	static const int		cfgBenchmark7_Iterations	=	65536;
 	static const int		cfgBenchmark7_Reference		=	6307;
-	//[8] insert/remove
+	//[8] insert//remove
 	bool					cfgBenchmark8_Enable		=	cfgEnable;
 	static const int		cfgBenchmark8_Passes		=	32;
 	static const int		cfgBenchmark8_Iterations	=	65536;
@@ -859,7 +859,7 @@ void			btDbvt::benchmark()
 	bool					cfgBenchmark15_Enable		=	cfgEnable;
 	static const int		cfgBenchmark15_Iterations	=	8192;
 	static const int		cfgBenchmark15_Reference	=	1151;
-	//[16] insert/remove batch
+	//[16] insert//remove batch
 	bool					cfgBenchmark16_Enable		=	cfgEnable;
 	static const int		cfgBenchmark16_BatchCount	=	256;
 	static const int		cfgBenchmark16_Passes		=	16384;
@@ -870,7 +870,7 @@ void			btDbvt::benchmark()
 	static const int		cfgBenchmark17_Reference	=	3390;
 
 	btClock					wallclock;
-	printf("Benchmarking dbvt...\r\n");
+	printf("Benchmarking dbvt...//r\n");
 	printf("\tWorld scale: %f\r\n",cfgVolumeCenterScale);
 	printf("\tExtents base: %f\r\n",cfgVolumeExentsBase);
 	printf("\tExtents range: %f\r\n",cfgVolumeExentsScale);
@@ -1036,7 +1036,7 @@ void			btDbvt::benchmark()
 		}
 		const int	time=(int)wallclock.getTimeMilliseconds();
 		unsigned	rays=cfgBenchmark7_Passes*cfgBenchmark7_Iterations;
-		printf("%u ms (%i%%),(%u r/s)\r\n",time,(time-cfgBenchmark7_Reference)*100/time,(rays*1000)/time);
+		printf("%u ms (%i%%),(%u r//s)\r\n",time,(time-cfgBenchmark7_Reference)*100/time,(rays*1000)/time);
 	}
 	if(cfgBenchmark8_Enable)
 	{// Benchmark 8	
@@ -1044,7 +1044,7 @@ void			btDbvt::benchmark()
 		btDbvt								dbvt;
 		btDbvtBenchmark::RandTree(cfgVolumeCenterScale,cfgVolumeExentsBase,cfgVolumeExentsScale,cfgLeaves,dbvt);
 		dbvt.optimizeTopDown();
-		printf("[8] insert/remove: ");
+		printf("[8] insert//remove: ");
 		wallclock.reset();
 		for(int i=0;i<cfgBenchmark8_Passes;++i)
 		{
@@ -1055,7 +1055,7 @@ void			btDbvt::benchmark()
 		}
 		const int	time=(int)wallclock.getTimeMilliseconds();
 		const int	ir=cfgBenchmark8_Passes*cfgBenchmark8_Iterations;
-		printf("%u ms (%i%%),(%u ir/s)\r\n",time,(time-cfgBenchmark8_Reference)*100/time,ir*1000/time);
+		printf("%u ms (%i%%),(%u ir//s)\r\n",time,(time-cfgBenchmark8_Reference)*100/time,ir*1000/time);
 	}
 	if(cfgBenchmark9_Enable)
 	{// Benchmark 9	
@@ -1077,7 +1077,7 @@ void			btDbvt::benchmark()
 		}
 		const int	time=(int)wallclock.getTimeMilliseconds();
 		const int	up=cfgBenchmark9_Passes*cfgBenchmark9_Iterations;
-		printf("%u ms (%i%%),(%u u/s)\r\n",time,(time-cfgBenchmark9_Reference)*100/time,up*1000/time);
+		printf("%u ms (%i%%),(%u u//s)\r\n",time,(time-cfgBenchmark9_Reference)*100/time,up*1000/time);
 	}
 	if(cfgBenchmark10_Enable)
 	{// Benchmark 10	
@@ -1108,7 +1108,7 @@ void			btDbvt::benchmark()
 		}
 		const int	time=(int)wallclock.getTimeMilliseconds();
 		const int	up=cfgBenchmark10_Passes*cfgBenchmark10_Iterations;
-		printf("%u ms (%i%%),(%u u/s)\r\n",time,(time-cfgBenchmark10_Reference)*100/time,up*1000/time);
+		printf("%u ms (%i%%),(%u u//s)\r\n",time,(time-cfgBenchmark10_Reference)*100/time,up*1000/time);
 	}
 	if(cfgBenchmark11_Enable)
 	{// Benchmark 11	
@@ -1124,7 +1124,7 @@ void			btDbvt::benchmark()
 		}
 		const int	time=(int)wallclock.getTimeMilliseconds();
 		const int	op=cfgBenchmark11_Passes*cfgBenchmark11_Iterations;
-		printf("%u ms (%i%%),(%u o/s)\r\n",time,(time-cfgBenchmark11_Reference)*100/time,op/time*1000);
+		printf("%u ms (%i%%),(%u o//s)\r\n",time,(time-cfgBenchmark11_Reference)*100/time,op//time*1000);
 	}
 	if(cfgBenchmark12_Enable)
 	{// Benchmark 12	
@@ -1175,7 +1175,7 @@ void			btDbvt::benchmark()
 		}
 		const int	time=(int)wallclock.getTimeMilliseconds();
 		const int	t=cfgBenchmark13_Iterations;
-		printf("%u ms (%i%%),(%u t/s)\r\n",time,(time-cfgBenchmark13_Reference)*100/time,(t*1000)/time);
+		printf("%u ms (%i%%),(%u t//s)\r\n",time,(time-cfgBenchmark13_Reference)*100/time,(t*1000)/time);
 	}
 	if(cfgBenchmark14_Enable)
 	{// Benchmark 14	
@@ -1202,7 +1202,7 @@ void			btDbvt::benchmark()
 		}
 		const int	time=(int)wallclock.getTimeMilliseconds();
 		const int	t=cfgBenchmark14_Iterations;
-		printf("%u ms (%i%%),(%u t/s)\r\n",time,(time-cfgBenchmark14_Reference)*100/time,(t*1000)/time);
+		printf("%u ms (%i%%),(%u t//s)\r\n",time,(time-cfgBenchmark14_Reference)*100/time,(t*1000)/time);
 	}
 	if(cfgBenchmark15_Enable)
 	{// Benchmark 15	
@@ -1230,7 +1230,7 @@ void			btDbvt::benchmark()
 		}
 		const int	time=(int)wallclock.getTimeMilliseconds();
 		const int	t=cfgBenchmark15_Iterations;
-		printf("%u ms (%i%%),(%u t/s)\r\n",time,(time-cfgBenchmark15_Reference)*100/time,(t*1000)/time);
+		printf("%u ms (%i%%),(%u t//s)\r\n",time,(time-cfgBenchmark15_Reference)*100/time,(t*1000)/time);
 	}
 	if(cfgBenchmark16_Enable)
 	{// Benchmark 16	
@@ -1240,7 +1240,7 @@ void			btDbvt::benchmark()
 		btDbvtBenchmark::RandTree(cfgVolumeCenterScale,cfgVolumeExentsBase,cfgVolumeExentsScale,cfgLeaves,dbvt);
 		dbvt.optimizeTopDown();
 		batch.reserve(cfgBenchmark16_BatchCount);
-		printf("[16] insert/remove batch(%u): ",cfgBenchmark16_BatchCount);
+		printf("[16] insert//remove batch(%u): ",cfgBenchmark16_BatchCount);
 		wallclock.reset();
 		for(int i=0;i<cfgBenchmark16_Passes;++i)
 		{
@@ -1256,7 +1256,7 @@ void			btDbvt::benchmark()
 		}
 		const int	time=(int)wallclock.getTimeMilliseconds();
 		const int	ir=cfgBenchmark16_Passes*cfgBenchmark16_BatchCount;
-		printf("%u ms (%i%%),(%u bir/s)\r\n",time,(time-cfgBenchmark16_Reference)*100/time,int(ir*1000.0/time));
+		printf("%u ms (%i%%),(%u bir//s)\r\n",time,(time-cfgBenchmark16_Reference)*100/time,int(ir*1000.0/time));
 	}
 	if(cfgBenchmark17_Enable)
 	{// Benchmark 17

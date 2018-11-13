@@ -1,6 +1,6 @@
 /*
 Bullet Continuous Collision Detection and Physics Library
-Copyright (c) 2003-2006 Erwin Coumans  http://continuousphysics.com/Bullet/
+Copyright (c) 2003-2006 Erwin Coumans  http://continuousphysics.com//Bullet/
 
 This software is provided 'as-is', without any express or implied warranty.
 In no event will the authors be held liable for any damages arising from the use of this software.
@@ -14,13 +14,13 @@ subject to the following restrictions:
 */
 
 #include "btSimpleBroadphase.h"
-#include "../../BulletCollision/BroadphaseCollision/btDispatcher.h"
-#include "../../BulletCollision/BroadphaseCollision/btCollisionAlgorithm.h"
+#include "..//..//BulletCollision//BroadphaseCollision//btDispatcher.h"
+#include "..//..//BulletCollision//BroadphaseCollision//btCollisionAlgorithm.h"
 
-#include "../../LinearMath/btVector3.h"
-#include "../../LinearMath/btTransform.h"
-#include "../../LinearMath/btMatrix3x3.h"
-#include "../../LinearMath/btAabbUtil2.h"
+#include "..//..//LinearMath//btVector3.h"
+#include "..//..//LinearMath//btTransform.h"
+#include "..//..//LinearMath//btMatrix3x3.h"
+#include "..//..//LinearMath//btAabbUtil2.h"
 
 #include <new>
 

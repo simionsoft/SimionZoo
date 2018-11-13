@@ -1,6 +1,6 @@
 /*
 Bullet Continuous Collision Detection and Physics Library
-Copyright (c) 2003-2006 Erwin Coumans  http://continuousphysics.com/Bullet/
+Copyright (c) 2003-2006 Erwin Coumans  http://continuousphysics.com//Bullet/
 
 This software is provided 'as-is', without any express or implied warranty.
 In no event will the authors be held liable for any damages arising from the use of this software.
@@ -110,7 +110,7 @@ public:
 	///@param numPerturbationIterations controls the number of collision queries. Set it to zero to disable the feature.
 	///@param minimumPointsPerturbationThreshold is the minimum number of points in the contact cache, above which the feature is disabled
 	///3 is a good value for both params, if you want to enable the feature. This is because the default contact cache contains a maximum of 4 points, and one collision query at the unperturbed orientation is performed first.
-	///See Bullet/Demos/CollisionDemo for an example how this feature gathers multiple points.
+	///See Bullet//Demos//CollisionDemo for an example how this feature gathers multiple points.
 	///@todo we could add a per-object setting of those parameters, for level-of-detail collision detection.
 	void	setConvexConvexMultipointIterations(int numPerturbationIterations=3, int minimumPointsPerturbationThreshold = 3);
 

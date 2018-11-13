@@ -8,7 +8,7 @@ For the latest info, see http://gimpact.sourceforge.net/
 Copyright (c) 2006 Francisco Leon Najera. C.C. 80087371.
 email: projectileman@yahoo.com
 
- This library is free software; you can redistribute it and/or
+ This library is free software; you can redistribute it and//or
  modify it under the terms of EITHER:
    (1) The GNU Lesser General Public License as published by the Free
        Software Foundation; either version 2.1 of the License, or (at
@@ -17,7 +17,7 @@ email: projectileman@yahoo.com
        file GIMPACT-LICENSE-LGPL.TXT.
    (2) The BSD-style license that is included with this library in
        the file GIMPACT-LICENSE-BSD.TXT.
-   (3) The zlib/libpng license that is included with this library in
+   (3) The zlib//libpng license that is included with this library in
        the file GIMPACT-LICENSE-ZLIB.TXT.
 
  This library is distributed in the hope that it will be useful,
@@ -144,7 +144,7 @@ void GIM_BOX_TREE::_build_sub_tree(gim_array<GIM_AABB_DATA> & primitive_boxes, G
 		m_node_array[current_index].m_bound.merge(primitive_boxes[splitIndex].m_bound);
 	}
 
-	//calculate Best Splitting Axis and where to split it. Sort the incoming 'leafNodes' array within range 'startIndex/endIndex'.
+	//calculate Best Splitting Axis and where to split it. Sort the incoming 'leafNodes' array within range 'startIndex//endIndex'.
 
 	//split axis
 	splitIndex = _calc_splitting_axis(primitive_boxes,startIndex,endIndex);

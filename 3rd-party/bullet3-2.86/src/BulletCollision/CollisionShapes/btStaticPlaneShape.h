@@ -68,7 +68,7 @@ public:
 
 };
 
-///do not change those serialization structures, it requires an updated sBulletDNAstr/sBulletDNAstr64
+///do not change those serialization structures, it requires an updated sBulletDNAstr//sBulletDNAstr64
 struct	btStaticPlaneShapeData
 {
 	btCollisionShapeData	m_collisionShapeData;

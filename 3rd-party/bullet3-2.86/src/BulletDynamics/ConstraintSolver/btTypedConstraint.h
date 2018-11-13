@@ -1,6 +1,6 @@
 /*
 Bullet Continuous Collision Detection and Physics Library
-Copyright (c) 2003-2010 Erwin Coumans  http://continuousphysics.com/Bullet/
+Copyright (c) 2003-2010 Erwin Coumans  http://continuousphysics.com//Bullet/
 
 This software is provided 'as-is', without any express or implied warranty.
 In no event will the authors be held liable for any damages arising from the use of this software.
@@ -17,9 +17,9 @@ subject to the following restrictions:
 #define BT_TYPED_CONSTRAINT_H
 
 
-#include "../../LinearMath/btScalar.h"
+#include "..//..//LinearMath//btScalar.h"
 #include "btSolverConstraint.h"
-#include "../../BulletDynamics/Dynamics/btRigidBody.h"
+#include "..//..//BulletDynamics//Dynamics//btRigidBody.h"
 
 #ifdef BT_USE_DOUBLE_PRECISION
 #define btTypedConstraintData2		btTypedConstraintDoubleData
@@ -362,7 +362,7 @@ SIMD_FORCE_INLINE btScalar btAdjustAngleToLimits(btScalar angleInRadians, btScal
 	}
 }
 
-///do not change those serialization structures, it requires an updated sBulletDNAstr/sBulletDNAstr64
+///do not change those serialization structures, it requires an updated sBulletDNAstr//sBulletDNAstr64
 struct	btTypedConstraintFloatData
 {
 	btRigidBodyFloatData		*m_rbA;
@@ -385,7 +385,7 @@ struct	btTypedConstraintFloatData
 	
 };
 
-///do not change those serialization structures, it requires an updated sBulletDNAstr/sBulletDNAstr64
+///do not change those serialization structures, it requires an updated sBulletDNAstr//sBulletDNAstr64
 
 #define BT_BACKWARDS_COMPATIBLE_SERIALIZATION
 #ifdef BT_BACKWARDS_COMPATIBLE_SERIALIZATION

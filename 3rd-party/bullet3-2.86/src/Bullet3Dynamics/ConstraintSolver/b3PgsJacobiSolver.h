@@ -70,7 +70,7 @@ protected:
 	void setFrictionConstraintImpulse( b3RigidBodyData* bodies, b3InertiaData* inertias,b3SolverConstraint& solverConstraint, int solverBodyIdA,int solverBodyIdB, 
 										 b3ContactPoint& cp, const b3ContactSolverInfo& infoGlobal);
 
-	///m_btSeed2 is used for re-arranging the constraint rows. improves convergence/quality of friction
+	///m_btSeed2 is used for re-arranging the constraint rows. improves convergence//quality of friction
 	unsigned long	m_btSeed2;
 
 	

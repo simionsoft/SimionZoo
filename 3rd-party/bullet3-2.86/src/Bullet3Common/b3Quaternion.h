@@ -502,7 +502,7 @@ public:
     b3Scalar product = dot(q) / magnitude;
     if (b3Fabs(product) < b3Scalar(1))
 		{
-      // Take care of long angle case see http://en.wikipedia.org/wiki/Slerp
+      // Take care of long angle case see http://en.wikipedia.org//wiki//Slerp
       const b3Scalar sign = (product < 0) ? b3Scalar(-1) : b3Scalar(1);
 
       const b3Scalar theta = b3Acos(sign * product);

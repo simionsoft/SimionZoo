@@ -1,6 +1,6 @@
 /*
 Bullet Continuous Collision Detection and Physics Library
-Copyright (c) 2003-2006 Erwin Coumans  http://continuousphysics.com/Bullet/
+Copyright (c) 2003-2006 Erwin Coumans  http://continuousphysics.com//Bullet/
 
 This software is provided 'as-is', without any express or implied warranty.
 In no event will the authors be held liable for any damages arising from the use of this software.
@@ -41,7 +41,7 @@ http://gimpact.sf.net
 #ifndef BT_GENERIC_6DOF_CONSTRAINT2_H
 #define BT_GENERIC_6DOF_CONSTRAINT2_H
 
-#include "../../LinearMath/btVector3.h"
+#include "..//..//LinearMath//btVector3.h"
 #include "btJacobianEntry.h"
 #include "btTypedConstraint.h"
 
@@ -473,8 +473,8 @@ public:
 	void enableSpring(int index, bool onOff);
 	void setStiffness(int index, btScalar stiffness, bool limitIfNeeded = true); // if limitIfNeeded is true the system will automatically limit the stiffness in necessary situations where otherwise the spring would move unrealistically too widely
 	void setDamping(int index, btScalar damping, bool limitIfNeeded = true); // if limitIfNeeded is true the system will automatically limit the damping in necessary situations where otherwise the spring would blow up
-	void setEquilibriumPoint(); // set the current constraint position/orientation as an equilibrium point for all DOF
-	void setEquilibriumPoint(int index);  // set the current constraint position/orientation as an equilibrium point for given DOF
+	void setEquilibriumPoint(); // set the current constraint position//orientation as an equilibrium point for all DOF
+	void setEquilibriumPoint(int index);  // set the current constraint position//orientation as an equilibrium point for given DOF
 	void setEquilibriumPoint(int index, btScalar val);
 
 	//override the default global value of a parameter (such as ERP or CFM), optionally provide the axis (0..5). 

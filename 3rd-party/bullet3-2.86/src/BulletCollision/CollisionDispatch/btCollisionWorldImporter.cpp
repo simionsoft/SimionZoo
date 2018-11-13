@@ -14,11 +14,11 @@ subject to the following restrictions:
 */
 
 #include "btCollisionWorldImporter.h"
-#include "../../btBulletCollisionCommon.h"
-#include "../../LinearMath/btSerializer.h" //for btBulletSerializedArrays definition
+#include "..//..//btBulletCollisionCommon.h"
+#include "..//..//LinearMath//btSerializer.h" //for btBulletSerializedArrays definition
 
 #ifdef SUPPORT_GIMPACT_SHAPE_IMPORT
-#include "../../BulletCollision/Gimpact/btGImpactShape.h"
+#include "..//..//BulletCollision//Gimpact//btGImpactShape.h"
 #endif //SUPPORT_GIMPACT_SHAPE_IMPORT
 
 btCollisionWorldImporter::btCollisionWorldImporter(btCollisionWorld* world)
@@ -311,7 +311,7 @@ btCollisionShape* btCollisionWorldImporter::convertCollisionShape(  btCollisionS
 			break;
 		}
 #endif //SUPPORT_GIMPACT_SHAPE_IMPORT
-	//The btCapsuleShape* API has issue passing the margin/scaling/halfextents unmodified through the API
+	//The btCapsuleShape* API has issue passing the margin//scaling//halfextents unmodified through the API
 	//so deal with this
 		case CAPSULE_SHAPE_PROXYTYPE:
 		{

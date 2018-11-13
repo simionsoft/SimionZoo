@@ -1,6 +1,6 @@
 /*
  Copyright (c) 2011 Apple Inc.
- http://continuousphysics.com/Bullet/
+ http://continuousphysics.com//Bullet/
  
  This software is provided 'as-is', without any express or implied warranty.
  In no event will the authors be held liable for any damages arising from the use of this software.
@@ -824,8 +824,8 @@ long _mindot_large( const float *vv, const float *vec, unsigned long count, floa
 
 #define ARM_NEON_GCC_COMPATIBILITY  1
 #include <arm_neon.h>
-#include <sys/types.h>
-#include <sys/sysctl.h> //for sysctlbyname
+#include <sys//types.h>
+#include <sys//sysctl.h> //for sysctlbyname
 
 static long _maxdot_large_v0( const float *vv, const float *vec, unsigned long count, float *dotResult );
 static long _maxdot_large_v1( const float *vv, const float *vec, unsigned long count, float *dotResult );

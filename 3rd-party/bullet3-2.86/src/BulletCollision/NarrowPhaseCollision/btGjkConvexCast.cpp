@@ -1,6 +1,6 @@
 /*
 Bullet Continuous Collision Detection and Physics Library
-Copyright (c) 2003-2006 Erwin Coumans  http://continuousphysics.com/Bullet/
+Copyright (c) 2003-2006 Erwin Coumans  http://continuousphysics.com//Bullet/
 
 This software is provided 'as-is', without any express or implied warranty.
 In no event will the authors be held liable for any damages arising from the use of this software.
@@ -16,10 +16,10 @@ subject to the following restrictions:
 
 
 #include "btGjkConvexCast.h"
-#include "../../BulletCollision/CollisionShapes/btSphereShape.h"
+#include "..//..//BulletCollision//CollisionShapes//btSphereShape.h"
 #include "btGjkPairDetector.h"
 #include "btPointCollector.h"
-#include "../../LinearMath/btTransformUtil.h"
+#include "..//..//LinearMath//btTransformUtil.h"
 
 #ifdef BT_USE_DOUBLE_PRECISION
 #define MAX_ITERATIONS 64
@@ -46,7 +46,7 @@ bool	btGjkConvexCast::calcTimeOfImpact(
 	m_simplexSolver->reset();
 
 	/// compute linear velocity for this interval, to interpolate
-	//assume no rotation/angular velocity, assert here?
+	//assume no rotation//angular velocity, assert here?
 	btVector3 linVelA,linVelB;
 	linVelA = toA.getOrigin()-fromA.getOrigin();
 	linVelB = toB.getOrigin()-fromB.getOrigin();

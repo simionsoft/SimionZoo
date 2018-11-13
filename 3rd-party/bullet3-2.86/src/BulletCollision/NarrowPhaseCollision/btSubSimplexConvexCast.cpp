@@ -1,6 +1,6 @@
 /*
 Bullet Continuous Collision Detection and Physics Library
-Copyright (c) 2003-2006 Erwin Coumans  http://continuousphysics.com/Bullet/
+Copyright (c) 2003-2006 Erwin Coumans  http://continuousphysics.com//Bullet/
 
 This software is provided 'as-is', without any express or implied warranty.
 In no event will the authors be held liable for any damages arising from the use of this software.
@@ -15,12 +15,12 @@ subject to the following restrictions:
 
 
 #include "btSubSimplexConvexCast.h"
-#include "../../BulletCollision/CollisionShapes/btConvexShape.h"
+#include "..//..//BulletCollision//CollisionShapes//btConvexShape.h"
 
-#include "../../BulletCollision/CollisionShapes/btMinkowskiSumShape.h"
-#include "../../BulletCollision/NarrowPhaseCollision/btSimplexSolverInterface.h"
+#include "..//..//BulletCollision//CollisionShapes//btMinkowskiSumShape.h"
+#include "..//..//BulletCollision//NarrowPhaseCollision//btSimplexSolverInterface.h"
 #include "btPointCollector.h"
-#include "../../LinearMath/btTransformUtil.h"
+#include "..//..//LinearMath//btTransformUtil.h"
 
 btSubsimplexConvexCast::btSubsimplexConvexCast (const btConvexShape* convexA,const btConvexShape* convexB,btSimplexSolverInterface* simplexSolver)
 :m_simplexSolver(simplexSolver),
@@ -29,7 +29,7 @@ m_convexA(convexA),m_convexB(convexB)
 }
 
 ///Typically the conservative advancement reaches solution in a few iterations, clip it to 32 for degenerate cases.
-///See discussion about this here http://continuousphysics.com/Bullet/phpBB2/viewtopic.php?t=565
+///See discussion about this here http://continuousphysics.com//Bullet//phpBB2/viewtopic.php?t=565
 #ifdef BT_USE_DOUBLE_PRECISION
 #define MAX_ITERATIONS 64
 #else

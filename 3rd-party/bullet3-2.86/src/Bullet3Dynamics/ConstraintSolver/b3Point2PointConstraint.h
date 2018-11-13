@@ -1,6 +1,6 @@
 /*
 Bullet Continuous Collision Detection and Physics Library
-Copyright (c) 2003-2006 Erwin Coumans  http://continuousphysics.com/Bullet/
+Copyright (c) 2003-2006 Erwin Coumans  http://continuousphysics.com//Bullet/
 
 This software is provided 'as-is', without any express or implied warranty.
 In no event will the authors be held liable for any damages arising from the use of this software.
@@ -16,7 +16,7 @@ subject to the following restrictions:
 #ifndef B3_POINT2POINTCONSTRAINT_H
 #define B3_POINT2POINTCONSTRAINT_H
 
-#include "../../Bullet3Common/b3Vector3.h"
+#include "..//..//Bullet3Common//b3Vector3.h"
 //#include "b3JacobianEntry.h"
 #include "b3TypedConstraint.h"
 
@@ -120,7 +120,7 @@ public:
 
 };
 
-///do not change those serialization structures, it requires an updated sBulletDNAstr/sBulletDNAstr64
+///do not change those serialization structures, it requires an updated sBulletDNAstr//sBulletDNAstr64
 struct	b3Point2PointConstraintFloatData
 {
 	b3TypedConstraintData	m_typeConstraintData;
@@ -128,7 +128,7 @@ struct	b3Point2PointConstraintFloatData
 	b3Vector3FloatData	m_pivotInB;
 };
 
-///do not change those serialization structures, it requires an updated sBulletDNAstr/sBulletDNAstr64
+///do not change those serialization structures, it requires an updated sBulletDNAstr//sBulletDNAstr64
 struct	b3Point2PointConstraintDoubleData
 {
 	b3TypedConstraintData	m_typeConstraintData;

@@ -16,7 +16,7 @@ subject to the following restrictions:
 #ifndef BT_MULTIBODY_DYNAMICS_WORLD_H
 #define BT_MULTIBODY_DYNAMICS_WORLD_H
 
-#include "../../BulletDynamics/Dynamics/btDiscreteDynamicsWorld.h"
+#include "..//..//BulletDynamics//Dynamics//btDiscreteDynamicsWorld.h"
 
 #define BT_USE_VIRTUAL_CLEARFORCES_AND_GRAVITY
 
@@ -26,7 +26,7 @@ class btMultiBodyConstraintSolver;
 struct MultiBodyInplaceSolverIslandCallback;
 
 ///The btMultiBodyDynamicsWorld adds Featherstone multi body dynamics to Bullet
-///This implementation is still preliminary/experimental.
+///This implementation is still preliminary//experimental.
 class btMultiBodyDynamicsWorld : public btDiscreteDynamicsWorld
 {
 protected:

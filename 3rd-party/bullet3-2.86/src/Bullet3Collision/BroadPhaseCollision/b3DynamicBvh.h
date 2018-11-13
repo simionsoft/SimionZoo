@@ -17,10 +17,10 @@ subject to the following restrictions:
 #ifndef B3_DYNAMIC_BOUNDING_VOLUME_TREE_H
 #define B3_DYNAMIC_BOUNDING_VOLUME_TREE_H
 
-#include "../../Bullet3Common/b3AlignedObjectArray.h"
-#include "../../Bullet3Common/b3Vector3.h"
-#include "../../Bullet3Common/b3Transform.h"
-#include "../../Bullet3Geometry/b3AabbUtil.h"
+#include "..//..//Bullet3Common//b3AlignedObjectArray.h"
+#include "..//..//Bullet3Common//b3Vector3.h"
+#include "..//..//Bullet3Common//b3Transform.h"
+#include "..//..//Bullet3Geometry//b3AabbUtil.h"
 
 //
 // Compile time configuration
@@ -221,7 +221,7 @@ struct	b3DynamicBvh
 		b3DbvtNode*		parent;
 		sStkCLN(const b3DbvtNode* n,b3DbvtNode* p) : node(n),parent(p) {}
 	};
-	// Policies/Interfaces
+	// Policies//Interfaces
 
 	/* ICollide	*/ 
 	struct	ICollide
@@ -291,7 +291,7 @@ struct	b3DynamicBvh
 #else
 	static void		benchmark(){}
 #endif
-	// B3_DBVT_IPOLICY must support ICollide policy/interface
+	// B3_DBVT_IPOLICY must support ICollide policy//interface
 	B3_DBVT_PREFIX
 		static void		enumNodes(	const b3DbvtNode* root,
 		B3_DBVT_IPOLICY);
@@ -326,13 +326,13 @@ struct	b3DynamicBvh
 		const b3DbvtVolume& volume,
 		B3_DBVT_IPOLICY) const;
 	///rayTest is a re-entrant ray test, and can be called in parallel as long as the b3AlignedAlloc is thread-safe (uses locking etc)
-	///rayTest is slower than rayTestInternal, because it builds a local stack, using memory allocations, and it recomputes signs/rayDirectionInverses each time
+	///rayTest is slower than rayTestInternal, because it builds a local stack, using memory allocations, and it recomputes signs//rayDirectionInverses each time
 	B3_DBVT_PREFIX
 		static void		rayTest(	const b3DbvtNode* root,
 		const b3Vector3& rayFrom,
 		const b3Vector3& rayTo,
 		B3_DBVT_IPOLICY);
-	///rayTestInternal is faster than rayTest, because it uses a persistent stack (to reduce dynamic memory allocations to a minimum) and it uses precomputed signs/rayInverseDirections
+	///rayTestInternal is faster than rayTest, because it uses a persistent stack (to reduce dynamic memory allocations to a minimum) and it uses precomputed signs//rayInverseDirections
 	///rayTestInternal is used by b3DynamicBvhBroadphase to accelerate world ray casts
 	B3_DBVT_PREFIX
 		void		rayTestInternal(	const b3DbvtNode* root,
@@ -1013,7 +1013,7 @@ inline void		b3DynamicBvh::rayTest(	const b3DbvtNode* root,
 			b3Vector3 rayDir = (rayTo-rayFrom);
 			rayDir.normalize ();
 
-			///what about division by zero? --> just set rayDirection[i] to INF/B3_LARGE_FLOAT
+			///what about division by zero? --> just set rayDirection[i] to INF//B3_LARGE_FLOAT
 			b3Vector3 rayDirectionInverse;
 			rayDirectionInverse[0] = rayDir[0] == b3Scalar(0.0) ? b3Scalar(B3_LARGE_FLOAT) : b3Scalar(1.0) / rayDir[0];
 			rayDirectionInverse[1] = rayDir[1] == b3Scalar(0.0) ? b3Scalar(B3_LARGE_FLOAT) : b3Scalar(1.0) / rayDir[1];

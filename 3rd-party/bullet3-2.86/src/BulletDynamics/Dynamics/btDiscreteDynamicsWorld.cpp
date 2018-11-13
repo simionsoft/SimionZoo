@@ -17,37 +17,37 @@ subject to the following restrictions:
 #include "btDiscreteDynamicsWorld.h"
 
 //collision detection
-#include "../../BulletCollision/CollisionDispatch/btCollisionDispatcher.h"
-#include "../../BulletCollision/BroadphaseCollision/btSimpleBroadphase.h"
-#include "../../BulletCollision/BroadphaseCollision/btCollisionAlgorithm.h"
-#include "../../BulletCollision/CollisionShapes/btCollisionShape.h"
-#include "../../BulletCollision/CollisionDispatch/btSimulationIslandManager.h"
-#include "../../LinearMath/btTransformUtil.h"
-#include "../../LinearMath/btQuickprof.h"
+#include "..//..//BulletCollision//CollisionDispatch//btCollisionDispatcher.h"
+#include "..//..//BulletCollision//BroadphaseCollision//btSimpleBroadphase.h"
+#include "..//..//BulletCollision//BroadphaseCollision//btCollisionAlgorithm.h"
+#include "..//..//BulletCollision//CollisionShapes//btCollisionShape.h"
+#include "..//..//BulletCollision//CollisionDispatch//btSimulationIslandManager.h"
+#include "..//..//LinearMath//btTransformUtil.h"
+#include "..//..//LinearMath//btQuickprof.h"
 
 //rigidbody & constraints
-#include "../../BulletDynamics/Dynamics/btRigidBody.h"
-#include "../../BulletDynamics/ConstraintSolver/btSequentialImpulseConstraintSolver.h"
-#include "../../BulletDynamics/ConstraintSolver/btContactSolverInfo.h"
-#include "../../BulletDynamics/ConstraintSolver/btTypedConstraint.h"
-#include "../../BulletDynamics/ConstraintSolver/btPoint2PointConstraint.h"
-#include "../../BulletDynamics/ConstraintSolver/btHingeConstraint.h"
-#include "../../BulletDynamics/ConstraintSolver/btConeTwistConstraint.h"
-#include "../../BulletDynamics/ConstraintSolver/btGeneric6DofConstraint.h"
-#include "../../BulletDynamics/ConstraintSolver/btGeneric6DofSpring2Constraint.h"
-#include "../../BulletDynamics/ConstraintSolver/btSliderConstraint.h"
-#include "../../BulletDynamics/ConstraintSolver/btContactConstraint.h"
+#include "..//..//BulletDynamics//Dynamics//btRigidBody.h"
+#include "..//..//BulletDynamics//ConstraintSolver//btSequentialImpulseConstraintSolver.h"
+#include "..//..//BulletDynamics//ConstraintSolver//btContactSolverInfo.h"
+#include "..//..//BulletDynamics//ConstraintSolver//btTypedConstraint.h"
+#include "..//..//BulletDynamics//ConstraintSolver//btPoint2PointConstraint.h"
+#include "..//..//BulletDynamics//ConstraintSolver//btHingeConstraint.h"
+#include "..//..//BulletDynamics//ConstraintSolver//btConeTwistConstraint.h"
+#include "..//..//BulletDynamics//ConstraintSolver//btGeneric6DofConstraint.h"
+#include "..//..//BulletDynamics//ConstraintSolver//btGeneric6DofSpring2Constraint.h"
+#include "..//..//BulletDynamics//ConstraintSolver//btSliderConstraint.h"
+#include "..//..//BulletDynamics//ConstraintSolver//btContactConstraint.h"
 
 
-#include "../../LinearMath/btIDebugDraw.h"
-#include "../../BulletCollision/CollisionShapes/btSphereShape.h"
+#include "..//..//LinearMath//btIDebugDraw.h"
+#include "..//..//BulletCollision//CollisionShapes//btSphereShape.h"
 
 
-#include "../../BulletDynamics/Dynamics/btActionInterface.h"
-#include "../../LinearMath/btQuickprof.h"
-#include "../../LinearMath/btMotionState.h"
+#include "..//..//BulletDynamics//Dynamics//btActionInterface.h"
+#include "..//..//LinearMath//btQuickprof.h"
+#include "..//..//LinearMath//btMotionState.h"
 
-#include "../../LinearMath/btSerializer.h"
+#include "..//..//LinearMath//btSerializer.h"
 
 #if 0
 btAlignedObjectArray<btVector3> debugContacts;
@@ -133,11 +133,11 @@ struct InplaceSolverIslandCallback : public btSimulationIslandManager::IslandCal
 	{
 		if (islandId<0)
 		{
-			///we don't split islands, so all constraints/contact manifolds/bodies are passed into the solver regardless the island id
+			///we don't split islands, so all constraints//contact manifolds//bodies are passed into the solver regardless the island id
 			m_solver->solveGroup( bodies,numBodies,manifolds, numManifolds,&m_sortedConstraints[0],m_numConstraints,*m_solverInfo,m_debugDrawer,m_dispatcher);
 		} else
 		{
-				//also add all non-contact constraints/joints for this island
+				//also add all non-contact constraints//joints for this island
 			btTypedConstraint** startConstraint = 0;
 			int numCurConstraints = 0;
 			int i;
@@ -843,11 +843,11 @@ public:
 
 		btCollisionObject* otherObj = (btCollisionObject*) proxy0->m_clientObject;
 
-		//call needsResponse, see http://code.google.com/p/bullet/issues/detail?id=179
+		//call needsResponse, see http://code.google.com//p/bullet//issues//detail?id=179
 		if (m_dispatcher->needsResponse(m_me,otherObj))
 		{
 #if 0
-			///don't do CCD when there are already contact points (touching contact/penetration)
+			///don't do CCD when there are already contact points (touching contact//penetration)
 			btAlignedObjectArray<btPersistentManifold*> manifoldArray;
 			btBroadphasePair* collisionPair = m_pairCache->findPair(m_me->getBroadphaseHandle(),proxy0);
 			if (collisionPair)
@@ -1149,7 +1149,7 @@ void	btDiscreteDynamicsWorld::predictUnconstraintMotion(btScalar timeStep)
 		btRigidBody* body = m_nonStaticRigidBodies[i];
 		if (!body->isStaticOrKinematicObject())
 		{
-			//don't integrate/update velocities here, it happens in the constraint solver
+			//don't integrate//update velocities here, it happens in the constraint solver
 
 			body->applyDamping(timeStep);
 
@@ -1326,7 +1326,7 @@ void btDiscreteDynamicsWorld::debugDrawConstraint(btTypedConstraint* constraint)
 				}
 			}
 			break;
-		///note: the code for D6_SPRING_2_CONSTRAINT_TYPE is identical to D6_CONSTRAINT_TYPE, the D6_CONSTRAINT_TYPE+D6_SPRING_CONSTRAINT_TYPE will likely become obsolete/deprecated at some stage
+		///note: the code for D6_SPRING_2_CONSTRAINT_TYPE is identical to D6_CONSTRAINT_TYPE, the D6_CONSTRAINT_TYPE+D6_SPRING_CONSTRAINT_TYPE will likely become obsolete//deprecated at some stage
 		case D6_SPRING_2_CONSTRAINT_TYPE:
 		{
 			{

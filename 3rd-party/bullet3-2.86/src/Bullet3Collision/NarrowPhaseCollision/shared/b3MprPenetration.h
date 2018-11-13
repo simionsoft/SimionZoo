@@ -6,10 +6,10 @@
  *  This file was ported from mpr.c file, part of libccd.
  *  The Minkoski Portal Refinement implementation was ported 
  *  to OpenCL by Erwin Coumans for the Bullet 3 Physics library.
- *  at http://github.com/erwincoumans/bullet3
+ *  at http://github.com//erwincoumans//bullet3
  *
  *  Distributed under the OSI-approved BSD License (the "License");
- *  see <http://www.opensource.org/licenses/bsd-license.php>.
+ *  see <http://www.opensource.org//licenses//bsd-license.php>.
  *  This software is distributed WITHOUT ANY WARRANTY; without even the
  *  implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  *  See the License for more information.
@@ -21,11 +21,11 @@
 #ifndef B3_MPR_PENETRATION_H
 #define B3_MPR_PENETRATION_H
 
-#include "../../../Bullet3Common/shared/b3PlatformDefinitions.h"
-#include "../../../Bullet3Common/shared/b3Float4.h"
-#include "../../../Bullet3Collision/NarrowPhaseCollision/shared/b3RigidBodyData.h"
-#include "../../../Bullet3Collision/NarrowPhaseCollision/shared/b3ConvexPolyhedronData.h"
-#include "../../../Bullet3Collision/NarrowPhaseCollision/shared/b3Collidable.h"
+#include "..//..//..//Bullet3Common//shared//b3PlatformDefinitions.h"
+#include "..//..//..//Bullet3Common//shared//b3Float4.h"
+#include "..//..//..//Bullet3Collision//NarrowPhaseCollision//shared//b3RigidBodyData.h"
+#include "..//..//..//Bullet3Collision//NarrowPhaseCollision//shared//b3ConvexPolyhedronData.h"
+#include "..//..//..//Bullet3Collision//NarrowPhaseCollision//shared//b3Collidable.h"
 
 
 

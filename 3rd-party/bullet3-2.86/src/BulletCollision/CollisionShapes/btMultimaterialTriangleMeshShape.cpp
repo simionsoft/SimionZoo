@@ -15,9 +15,9 @@ subject to the following restrictions:
 
 /// This file was created by Alex Silverman
 
-#include "../../BulletCollision/CollisionShapes/btMultimaterialTriangleMeshShape.h"
-#include "../../BulletCollision/CollisionShapes/btTriangleIndexVertexMaterialArray.h"
-//#include "../../BulletCollision/CollisionShapes/btOptimizedBvh.h"
+#include "..//..//BulletCollision//CollisionShapes//btMultimaterialTriangleMeshShape.h"
+#include "..//..//BulletCollision//CollisionShapes//btTriangleIndexVertexMaterialArray.h"
+//#include "..//..//BulletCollision//CollisionShapes//btOptimizedBvh.h"
 
 
 ///Obtains the material for a specific triangle

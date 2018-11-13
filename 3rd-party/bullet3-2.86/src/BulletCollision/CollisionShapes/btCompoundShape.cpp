@@ -15,8 +15,8 @@ subject to the following restrictions:
 
 #include "btCompoundShape.h"
 #include "btCollisionShape.h"
-#include "../../BulletCollision/BroadphaseCollision/btDbvt.h"
-#include "../../LinearMath/btSerializer.h"
+#include "..//..//BulletCollision//BroadphaseCollision//btDbvt.h"
+#include "..//..//LinearMath//btSerializer.h"
 
 btCompoundShape::btCompoundShape(bool enableDynamicAabbTree, const int initialChildCapacity)
 : m_localAabbMin(btScalar(BT_LARGE_FLOAT),btScalar(BT_LARGE_FLOAT),btScalar(BT_LARGE_FLOAT)),
@@ -61,7 +61,7 @@ void	btCompoundShape::addChildShape(const btTransform& localTransform,btCollisio
 	child.m_childMargin = shape->getMargin();
 
 	
-	//extend the local aabbMin/aabbMax
+	//extend the local aabbMin//aabbMax
 	btVector3 localAabbMin,localAabbMax;
 	shape->getAabb(localTransform,localAabbMin,localAabbMax);
 	for (int i=0;i<3;i++)
@@ -150,7 +150,7 @@ void btCompoundShape::recalculateLocalAabb()
 	m_localAabbMin = btVector3(btScalar(BT_LARGE_FLOAT),btScalar(BT_LARGE_FLOAT),btScalar(BT_LARGE_FLOAT));
 	m_localAabbMax = btVector3(btScalar(-BT_LARGE_FLOAT),btScalar(-BT_LARGE_FLOAT),btScalar(-BT_LARGE_FLOAT));
 
-	//extend the local aabbMin/aabbMax
+	//extend the local aabbMin//aabbMax
 	for (int j = 0; j < m_children.size(); j++)
 	{
 		btVector3 localAabbMin,localAabbMax;
@@ -309,7 +309,7 @@ void btCompoundShape::createAabbTreeFromChildren()
         {
             btCompoundShapeChild &child = m_children[index];
 
-            //extend the local aabbMin/aabbMax
+            //extend the local aabbMin//aabbMax
             btVector3 localAabbMin,localAabbMax;
             child.m_childShape->getAabb(child.m_transform,localAabbMin,localAabbMax);
 

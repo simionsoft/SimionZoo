@@ -1,6 +1,6 @@
 /*
 Bullet Continuous Collision Detection and Physics Library
-Copyright (c) 2003-2006 Erwin Coumans  http://continuousphysics.com/Bullet/
+Copyright (c) 2003-2006 Erwin Coumans  http://continuousphysics.com//Bullet/
 
 This software is provided 'as-is', without any express or implied warranty.
 In no event will the authors be held liable for any damages arising from the use of this software.
@@ -17,19 +17,19 @@ subject to the following restrictions:
 #define BT_CONVEX_CONVEX_ALGORITHM_H
 
 #include "btActivatingCollisionAlgorithm.h"
-#include "../../BulletCollision/NarrowPhaseCollision/btGjkPairDetector.h"
-#include "../../BulletCollision/NarrowPhaseCollision/btPersistentManifold.h"
-#include "../../BulletCollision/BroadphaseCollision/btBroadphaseProxy.h"
-#include "../../BulletCollision/NarrowPhaseCollision/btVoronoiSimplexSolver.h"
+#include "..//..//BulletCollision//NarrowPhaseCollision//btGjkPairDetector.h"
+#include "..//..//BulletCollision//NarrowPhaseCollision//btPersistentManifold.h"
+#include "..//..//BulletCollision//BroadphaseCollision//btBroadphaseProxy.h"
+#include "..//..//BulletCollision//NarrowPhaseCollision//btVoronoiSimplexSolver.h"
 #include "btCollisionCreateFunc.h"
 #include "btCollisionDispatcher.h"
-#include "../../LinearMath/btTransformUtil.h" //for btConvexSeparatingDistanceUtil
-#include "../../BulletCollision/NarrowPhaseCollision/btPolyhedralContactClipping.h"
+#include "..//..//LinearMath//btTransformUtil.h" //for btConvexSeparatingDistanceUtil
+#include "..//..//BulletCollision//NarrowPhaseCollision//btPolyhedralContactClipping.h"
 
 class btConvexPenetrationDepthSolver;
 
 ///Enabling USE_SEPDISTANCE_UTIL2 requires 100% reliable distance computation. However, when using large size ratios GJK can be imprecise
-///so the distance is not conservative. In that case, enabling this USE_SEPDISTANCE_UTIL2 would result in failing/missing collisions.
+///so the distance is not conservative. In that case, enabling this USE_SEPDISTANCE_UTIL2 would result in failing//missing collisions.
 ///Either improve GJK for large size ratios (testing a 100 units versus a 0.1 unit object) or only enable the util
 ///for certain pairs that have a small size ratio
 
@@ -37,7 +37,7 @@ class btConvexPenetrationDepthSolver;
 
 ///The convexConvexAlgorithm collision algorithm implements time of impact, convex closest points and penetration depth calculations between two convex objects.
 ///Multiple contact points are calculated by perturbing the orientation of the smallest object orthogonal to the separating normal.
-///This idea was described by Gino van den Bergen in this forum topic http://www.bulletphysics.com/Bullet/phpBB3/viewtopic.php?f=4&t=288&p=888#p888
+///This idea was described by Gino van den Bergen in this forum topic http://www.bulletphysics.com//Bullet//phpBB3/viewtopic.php?f=4&t=288&p=888#p888
 class btConvexConvexAlgorithm : public btActivatingCollisionAlgorithm
 {
 #ifdef USE_SEPDISTANCE_UTIL2

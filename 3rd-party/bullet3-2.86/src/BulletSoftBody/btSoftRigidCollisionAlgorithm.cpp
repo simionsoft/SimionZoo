@@ -1,6 +1,6 @@
 /*
 Bullet Continuous Collision Detection and Physics Library
-Copyright (c) 2003-2006 Erwin Coumans  http://continuousphysics.com/Bullet/
+Copyright (c) 2003-2006 Erwin Coumans  http://continuousphysics.com//Bullet/
 
 This software is provided 'as-is', without any express or implied warranty.
 In no event will the authors be held liable for any damages arising from the use of this software.
@@ -14,13 +14,13 @@ subject to the following restrictions:
 */
 
 #include "btSoftRigidCollisionAlgorithm.h"
-#include "../BulletCollision/CollisionDispatch/btCollisionDispatcher.h"
-#include "../BulletCollision/CollisionShapes/btSphereShape.h"
-#include "../BulletCollision/CollisionShapes/btBoxShape.h"
-#include "../BulletCollision/CollisionDispatch/btCollisionObject.h"
+#include "..//BulletCollision//CollisionDispatch//btCollisionDispatcher.h"
+#include "..//BulletCollision//CollisionShapes//btSphereShape.h"
+#include "..//BulletCollision//CollisionShapes//btBoxShape.h"
+#include "..//BulletCollision//CollisionDispatch//btCollisionObject.h"
 #include "btSoftBody.h"
-#include "../BulletSoftBody/btSoftBodySolvers.h"
-#include "../BulletCollision/CollisionDispatch/btCollisionObjectWrapper.h"
+#include "..//BulletSoftBody//btSoftBodySolvers.h"
+#include "..//BulletCollision//CollisionDispatch//btCollisionObjectWrapper.h"
 
 ///TODO: include all the shapes that the softbody can collide with
 ///alternatively, implement special case collision algorithms (just like for rigid collision shapes)

@@ -1,6 +1,6 @@
 /*
 Bullet Continuous Collision Detection and Physics Library
-Copyright (c) 2003-2006 Erwin Coumans  http://continuousphysics.com/Bullet/
+Copyright (c) 2003-2006 Erwin Coumans  http://continuousphysics.com//Bullet/
 
 This software is provided 'as-is', without any express or implied warranty.
 In no event will the authors be held liable for any damages arising from the use of this software.
@@ -16,7 +16,7 @@ subject to the following restrictions:
 #ifndef B3_JACOBIAN_ENTRY_H
 #define B3_JACOBIAN_ENTRY_H
 
-#include "../../Bullet3Common/b3Matrix3x3.h"
+#include "..//..//Bullet3Common//b3Matrix3x3.h"
 
 
 //notes:
@@ -147,7 +147,7 @@ public:
 	b3Vector3	m_bJ;
 	b3Vector3	m_0MinvJt;
 	b3Vector3	m_1MinvJt;
-	//Optimization: can be stored in the w/last component of one of the vectors
+	//Optimization: can be stored in the w//last component of one of the vectors
 	b3Scalar	m_Adiag;
 
 };
