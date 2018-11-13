@@ -25,12 +25,12 @@
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-#include <GL/freeglut.h>
-#include "fg_internal.h"
+#include "..//freeglut.h"
+#include "..//fg_internal.h"
 #ifdef EGL_VERSION_1_0
 #include "egl/fg_state_egl.h"
 #else
-#include "x11/fg_state_x11_glx.h"
+#include "fg_state_x11_glx.h"
 #endif
 
 int fgPlatformGlutDeviceGet ( GLenum eWhat )

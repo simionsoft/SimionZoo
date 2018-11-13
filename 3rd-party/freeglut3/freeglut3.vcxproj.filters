@@ -155,5 +155,14 @@
     <ClInclude Include="include\GL\glut.h">
       <Filter>Source Files</Filter>
     </ClInclude>
+    <ClInclude Include="src\fg_internal.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\util\xparsegeometry_repl.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\fg_init.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

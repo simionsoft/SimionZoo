@@ -26,8 +26,8 @@
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-#include <GL/freeglut.h>
-#include "../fg_internal.h"
+#include "..//freeglut.h"
+#include "..//fg_internal.h"
 
 void fgPlatformGlutSwapBuffers( SFG_PlatformDisplay *pDisplayPtr, SFG_Window* CurrentWindow )
 {

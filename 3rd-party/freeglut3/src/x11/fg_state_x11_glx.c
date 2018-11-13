@@ -25,9 +25,9 @@
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-#include <GL/freeglut.h>
-#include "fg_internal.h"
-#include "x11/fg_window_x11_glx.h"
+#include "..//freeglut.h"
+#include "..//fg_internal.h"
+#include "fg_window_x11_glx.h"
 
 /*
  * Queries the GL context about some attributes

@@ -26,8 +26,8 @@
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-#include <GL/freeglut.h>
-#include "../fg_internal.h"
+#include "..//freeglut.h"
+#include "..//fg_internal.h"
 
 /* we'll try to use XR&R if it's available at compile-time, and at runtime, and the user
  * hasn't explicitly disabled it by setting the FREEGLUT_NO_XRANDR env-var.

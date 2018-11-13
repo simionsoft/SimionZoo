@@ -9,8 +9,8 @@
  * magellan X-based protocol.
  */
 
-#include <GL/freeglut.h>
-#include "../fg_internal.h"
+#include "..//freeglut.h"
+#include "..//fg_internal.h"
 
 #include <X11/Xlib.h>
 

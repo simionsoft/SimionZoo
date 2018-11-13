@@ -127,6 +127,8 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Bullet3", "3rd-party\bullet
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Bullet3-linux", "3rd-party\bullet3-2.86\build3\linux\Bullet3-linux.vcxproj", "{C83DBC2A-7D20-492E-AA68-AB054F00D793}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "freeglut3-linux", "3rd-party\freeglut3\freeglut3-linux.vcxproj", "{61D2AC28-EB09-4DAA-B717-CEA7BA358077}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -723,6 +725,18 @@ Global
 		{C83DBC2A-7D20-492E-AA68-AB054F00D793}.Release|x64.Build.0 = Release|x64
 		{C83DBC2A-7D20-492E-AA68-AB054F00D793}.Release|x86.ActiveCfg = Release|x86
 		{C83DBC2A-7D20-492E-AA68-AB054F00D793}.Release|x86.Build.0 = Release|x86
+		{61D2AC28-EB09-4DAA-B717-CEA7BA358077}.Debug|Any CPU.ActiveCfg = Debug|x64
+		{61D2AC28-EB09-4DAA-B717-CEA7BA358077}.Debug|ARM.ActiveCfg = Debug|x64
+		{61D2AC28-EB09-4DAA-B717-CEA7BA358077}.Debug|ARM64.ActiveCfg = Debug|x64
+		{61D2AC28-EB09-4DAA-B717-CEA7BA358077}.Debug|x64.ActiveCfg = Debug|x64
+		{61D2AC28-EB09-4DAA-B717-CEA7BA358077}.Debug|x64.Build.0 = Debug|x64
+		{61D2AC28-EB09-4DAA-B717-CEA7BA358077}.Debug|x86.ActiveCfg = Debug|x64
+		{61D2AC28-EB09-4DAA-B717-CEA7BA358077}.Release|Any CPU.ActiveCfg = Release|x64
+		{61D2AC28-EB09-4DAA-B717-CEA7BA358077}.Release|ARM.ActiveCfg = Release|x64
+		{61D2AC28-EB09-4DAA-B717-CEA7BA358077}.Release|ARM64.ActiveCfg = Release|x64
+		{61D2AC28-EB09-4DAA-B717-CEA7BA358077}.Release|x64.ActiveCfg = Release|x64
+		{61D2AC28-EB09-4DAA-B717-CEA7BA358077}.Release|x64.Build.0 = Release|x64
+		{61D2AC28-EB09-4DAA-B717-CEA7BA358077}.Release|x86.ActiveCfg = Release|x64
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -776,6 +790,7 @@ Global
 		{0407C160-B25C-4A40-ACF8-F8CEC04ADD6B} = {F32084D3-945B-408B-8491-85D7055C6D6B}
 		{E70C61BB-6B5C-4D0C-A203-9E2C04995BEF} = {7398CB58-8521-4F9F-9E77-E697358E7636}
 		{C83DBC2A-7D20-492E-AA68-AB054F00D793} = {7398CB58-8521-4F9F-9E77-E697358E7636}
+		{61D2AC28-EB09-4DAA-B717-CEA7BA358077} = {012CB7EA-8141-4E34-83C2-A85B6DC0E603}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {F8F8B096-6BE4-44D0-B78E-2C39AD9519BA}

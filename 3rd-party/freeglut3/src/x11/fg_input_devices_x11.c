@@ -30,8 +30,8 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
-#include <GL/freeglut.h>
-#include "../fg_internal.h"
+#include "..//freeglut.h"
+#include "..//fg_internal.h"
 
 #include <errno.h>
 #include <sys/ioctl.h>

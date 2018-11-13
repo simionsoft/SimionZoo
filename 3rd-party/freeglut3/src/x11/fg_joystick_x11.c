@@ -33,8 +33,8 @@
  *  Many thanks for Steve Baker for permission to pull from that library.
  */
 
-#include <GL/freeglut.h>
-#include "../fg_internal.h"
+#include "..//freeglut.h"
+#include "..//fg_internal.h"
 #ifdef HAVE_SYS_PARAM_H
 #    include <sys/param.h>
 #endif
@@ -428,7 +428,7 @@ void fgPlatformJoystickInit( SFG_Joystick *fgJoystick[], int ident )
 
     snprintf( fgJoystick[ident]->pJoystick.fname, sizeof(fgJoystick[ident]->pJoystick.fname), "/dev/input/js%d", ident );
 
-    if( access( fgJoystick[ ident ]->pJoystick.fname, F_OK ) != 0 )
+    if( access( fgJoystick[ ident ]->pJoystick.fname, 0 ) != 0 )
         snprintf( fgJoystick[ ident ]->pJoystick.fname, sizeof(fgJoystick[ ident ]->pJoystick.fname), "/dev/js%d", ident );
 #endif
 }

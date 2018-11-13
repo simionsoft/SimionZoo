@@ -59,7 +59,7 @@
 #define glutBitmapHelvetica12 glutBitmapHelvetica12IGNOREME
 #define glutBitmapHelvetica18 glutBitmapHelvetica18IGNOREME
 
-#include <GL/freeglut_std.h>
+#include "..//freeglut_std.h"
 
 #undef glutStrokeRoman
 #undef glutStrokeMonoRoman
@@ -71,7 +71,7 @@
 #undef glutBitmapHelvetica12
 #undef glutBitmapHelvetica18
 
-#include "../fg_internal.h"
+#include "..//fg_internal.h"
 
 struct freeglutStrokeFont
 {

@@ -42,7 +42,7 @@
  */
 
 /* -- GLOBAL VARIABLES ----------------------------------------------------- */
-#include "util\xparsegeometry_repl.h"
+#include "util//xparsegeometry_repl.h"
 /*
  * A structure pointed by fgDisplay holds all information
  * regarding the display, screen, root window etc.
