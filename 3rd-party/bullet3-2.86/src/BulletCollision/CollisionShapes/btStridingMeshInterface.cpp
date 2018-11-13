@@ -14,7 +14,7 @@ subject to the following restrictions:
 */
 
 #include "btStridingMeshInterface.h"
-#include "LinearMath/btSerializer.h"
+#include "../../LinearMath/btSerializer.h"
 
 btStridingMeshInterface::~btStridingMeshInterface()
 {

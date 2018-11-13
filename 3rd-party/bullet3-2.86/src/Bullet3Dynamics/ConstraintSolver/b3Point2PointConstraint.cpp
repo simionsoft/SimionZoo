@@ -15,7 +15,7 @@ subject to the following restrictions:
 
 
 #include "b3Point2PointConstraint.h"
-#include "Bullet3Collision/NarrowPhaseCollision/shared/b3RigidBodyData.h"
+#include "../../Bullet3Collision/NarrowPhaseCollision/shared/b3RigidBodyData.h"
 
 #include <new>
 

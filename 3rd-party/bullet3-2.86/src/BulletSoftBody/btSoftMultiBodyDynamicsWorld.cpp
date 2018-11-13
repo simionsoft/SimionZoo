@@ -15,14 +15,14 @@ subject to the following restrictions:
 
 
 #include "btSoftMultiBodyDynamicsWorld.h"
-#include "LinearMath/btQuickprof.h"
+#include "../LinearMath/btQuickprof.h"
 
 //softbody & helpers
-#include "BulletSoftBody/btSoftBody.h"
-#include "BulletSoftBody/btSoftBodyHelpers.h"
-#include "BulletSoftBody/btSoftBodySolvers.h"
-#include "BulletSoftBody/btDefaultSoftBodySolver.h"
-#include "LinearMath/btSerializer.h"
+#include "../BulletSoftBody/btSoftBody.h"
+#include "../BulletSoftBody/btSoftBodyHelpers.h"
+#include "../BulletSoftBody/btSoftBodySolvers.h"
+#include "../BulletSoftBody/btDefaultSoftBodySolver.h"
+#include "../LinearMath/btSerializer.h"
 
 
 btSoftMultiBodyDynamicsWorld::btSoftMultiBodyDynamicsWorld(

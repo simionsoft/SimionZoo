@@ -24,23 +24,23 @@ subject to the following restrictions:
 #ifndef BT_GIMPACT_BVH_CONCAVE_COLLISION_ALGORITHM_H
 #define BT_GIMPACT_BVH_CONCAVE_COLLISION_ALGORITHM_H
 
-#include "BulletCollision/CollisionDispatch/btActivatingCollisionAlgorithm.h"
-#include "BulletCollision/BroadphaseCollision/btDispatcher.h"
-#include "BulletCollision/BroadphaseCollision/btBroadphaseInterface.h"
-#include "BulletCollision/NarrowPhaseCollision/btPersistentManifold.h"
+#include "../../BulletCollision/CollisionDispatch/btActivatingCollisionAlgorithm.h"
+#include "../../BulletCollision/BroadphaseCollision/btDispatcher.h"
+#include "../../BulletCollision/BroadphaseCollision/btBroadphaseInterface.h"
+#include "../../BulletCollision/NarrowPhaseCollision/btPersistentManifold.h"
 class btDispatcher;
-#include "BulletCollision/BroadphaseCollision/btBroadphaseProxy.h"
-#include "BulletCollision/CollisionDispatch/btCollisionCreateFunc.h"
-#include "BulletCollision/CollisionDispatch/btCollisionDispatcher.h"
+#include "../../BulletCollision/BroadphaseCollision/btBroadphaseProxy.h"
+#include "../../BulletCollision/CollisionDispatch/btCollisionCreateFunc.h"
+#include "../../BulletCollision/CollisionDispatch/btCollisionDispatcher.h"
 
-#include "LinearMath/btAlignedObjectArray.h"
+#include "../../LinearMath/btAlignedObjectArray.h"
 
 #include "btGImpactShape.h"
-#include "BulletCollision/CollisionShapes/btStaticPlaneShape.h"
-#include "BulletCollision/CollisionShapes/btCompoundShape.h"
-#include "BulletCollision/CollisionDispatch/btConvexConvexAlgorithm.h"
-#include "LinearMath/btIDebugDraw.h"
-#include "BulletCollision/CollisionDispatch/btCollisionObjectWrapper.h"
+#include "../../BulletCollision/CollisionShapes/btStaticPlaneShape.h"
+#include "../../BulletCollision/CollisionShapes/btCompoundShape.h"
+#include "../../BulletCollision/CollisionDispatch/btConvexConvexAlgorithm.h"
+#include "../../LinearMath/btIDebugDraw.h"
+#include "../../BulletCollision/CollisionDispatch/btCollisionObjectWrapper.h"
 
 
 //! Collision Algorithm for GImpact Shapes

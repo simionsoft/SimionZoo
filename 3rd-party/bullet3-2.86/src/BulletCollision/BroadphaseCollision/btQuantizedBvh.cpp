@@ -15,9 +15,9 @@ subject to the following restrictions:
 
 #include "btQuantizedBvh.h"
 
-#include "LinearMath/btAabbUtil2.h"
-#include "LinearMath/btIDebugDraw.h"
-#include "LinearMath/btSerializer.h"
+#include "../../LinearMath/btAabbUtil2.h"
+#include "../../LinearMath/btIDebugDraw.h"
+#include "../../LinearMath/btSerializer.h"
 
 #define RAYAABB2
 

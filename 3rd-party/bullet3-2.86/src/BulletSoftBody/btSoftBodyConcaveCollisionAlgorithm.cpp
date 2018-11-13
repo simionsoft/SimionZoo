@@ -15,22 +15,22 @@ subject to the following restrictions:
 
 
 #include "btSoftBodyConcaveCollisionAlgorithm.h"
-#include "BulletCollision/CollisionDispatch/btCollisionObject.h"
-#include "BulletCollision/CollisionShapes/btMultiSphereShape.h"
-#include "BulletCollision/BroadphaseCollision/btBroadphaseProxy.h"
-#include "BulletCollision/CollisionShapes/btConcaveShape.h"
-#include "BulletCollision/CollisionDispatch/btManifoldResult.h"
-#include "BulletCollision/NarrowPhaseCollision/btRaycastCallback.h"
-#include "BulletCollision/CollisionShapes/btTriangleShape.h"
-#include "BulletCollision/CollisionShapes/btSphereShape.h"
-#include "BulletCollision/CollisionShapes/btTetrahedronShape.h"
-#include "BulletCollision/CollisionShapes/btConvexHullShape.h"
-#include "BulletCollision/CollisionDispatch/btCollisionObjectWrapper.h"
+#include "../BulletCollision/CollisionDispatch/btCollisionObject.h"
+#include "../BulletCollision/CollisionShapes/btMultiSphereShape.h"
+#include "../BulletCollision/BroadphaseCollision/btBroadphaseProxy.h"
+#include "../BulletCollision/CollisionShapes/btConcaveShape.h"
+#include "../BulletCollision/CollisionDispatch/btManifoldResult.h"
+#include "../BulletCollision/NarrowPhaseCollision/btRaycastCallback.h"
+#include "../BulletCollision/CollisionShapes/btTriangleShape.h"
+#include "../BulletCollision/CollisionShapes/btSphereShape.h"
+#include "../BulletCollision/CollisionShapes/btTetrahedronShape.h"
+#include "../BulletCollision/CollisionShapes/btConvexHullShape.h"
+#include "../BulletCollision/CollisionDispatch/btCollisionObjectWrapper.h"
 
 
-#include "LinearMath/btIDebugDraw.h"
-#include "BulletCollision/NarrowPhaseCollision/btSubSimplexConvexCast.h"
-#include "BulletSoftBody/btSoftBody.h"
+#include "../LinearMath/btIDebugDraw.h"
+#include "../BulletCollision/NarrowPhaseCollision/btSubSimplexConvexCast.h"
+#include "../BulletSoftBody/btSoftBody.h"
 
 #define BT_SOFTBODY_TRIANGLE_EXTRUSION btScalar(0.06)//make this configurable
 

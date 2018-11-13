@@ -15,7 +15,7 @@ subject to the following restrictions:
 
 
 #include "b3TypedConstraint.h"
-//#include "Bullet3Common/b3Serializer.h"
+//#include "../../Bullet3Common/b3Serializer.h"
 
 
 #define B3_DEFAULT_DEBUGDRAW_SIZE b3Scalar(0.3f)

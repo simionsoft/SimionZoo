@@ -13,10 +13,10 @@ subject to the following restrictions:
 3. This notice may not be removed or altered from any source distribution.
 */
 
-#include "LinearMath/btScalar.h"
+#include "../../LinearMath/btScalar.h"
 #include "SphereTriangleDetector.h"
-#include "BulletCollision/CollisionShapes/btTriangleShape.h"
-#include "BulletCollision/CollisionShapes/btSphereShape.h"
+#include "../../BulletCollision/CollisionShapes/btTriangleShape.h"
+#include "../../BulletCollision/CollisionShapes/btSphereShape.h"
 
 
 SphereTriangleDetector::SphereTriangleDetector(btSphereShape* sphere,btTriangleShape* triangle,btScalar contactBreakingThreshold)

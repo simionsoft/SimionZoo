@@ -26,9 +26,9 @@
 #include "btMultiBodyLink.h"
 #include "btMultiBodyLinkCollider.h"
 #include "btMultiBodyJointFeedback.h"
-#include "LinearMath/btTransformUtil.h"
-#include "LinearMath/btSerializer.h"
-//#include "Bullet3Common/b3Logging.h"
+#include "../../LinearMath/btTransformUtil.h"
+#include "../../LinearMath/btSerializer.h"
+//#include "../../Bullet3Common/b3Logging.h"
 // #define INCLUDE_GYRO_TERM 
 
 ///todo: determine if we need these options. If so, make a proper API, otherwise delete those globals

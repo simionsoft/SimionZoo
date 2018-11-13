@@ -15,8 +15,8 @@ subject to the following restrictions:
 
 #include "btCompoundShape.h"
 #include "btCollisionShape.h"
-#include "BulletCollision/BroadphaseCollision/btDbvt.h"
-#include "LinearMath/btSerializer.h"
+#include "../../BulletCollision/BroadphaseCollision/btDbvt.h"
+#include "../../LinearMath/btSerializer.h"
 
 btCompoundShape::btCompoundShape(bool enableDynamicAabbTree, const int initialChildCapacity)
 : m_localAabbMin(btScalar(BT_LARGE_FLOAT),btScalar(BT_LARGE_FLOAT),btScalar(BT_LARGE_FLOAT)),

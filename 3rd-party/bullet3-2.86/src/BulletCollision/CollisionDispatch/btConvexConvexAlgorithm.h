@@ -17,14 +17,14 @@ subject to the following restrictions:
 #define BT_CONVEX_CONVEX_ALGORITHM_H
 
 #include "btActivatingCollisionAlgorithm.h"
-#include "BulletCollision/NarrowPhaseCollision/btGjkPairDetector.h"
-#include "BulletCollision/NarrowPhaseCollision/btPersistentManifold.h"
-#include "BulletCollision/BroadphaseCollision/btBroadphaseProxy.h"
-#include "BulletCollision/NarrowPhaseCollision/btVoronoiSimplexSolver.h"
+#include "../../BulletCollision/NarrowPhaseCollision/btGjkPairDetector.h"
+#include "../../BulletCollision/NarrowPhaseCollision/btPersistentManifold.h"
+#include "../../BulletCollision/BroadphaseCollision/btBroadphaseProxy.h"
+#include "../../BulletCollision/NarrowPhaseCollision/btVoronoiSimplexSolver.h"
 #include "btCollisionCreateFunc.h"
 #include "btCollisionDispatcher.h"
-#include "LinearMath/btTransformUtil.h" //for btConvexSeparatingDistanceUtil
-#include "BulletCollision/NarrowPhaseCollision/btPolyhedralContactClipping.h"
+#include "../../LinearMath/btTransformUtil.h" //for btConvexSeparatingDistanceUtil
+#include "../../BulletCollision/NarrowPhaseCollision/btPolyhedralContactClipping.h"
 
 class btConvexPenetrationDepthSolver;
 

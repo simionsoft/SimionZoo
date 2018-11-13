@@ -19,7 +19,7 @@
 #ifndef BT_AXIS_SWEEP_3_H
 #define BT_AXIS_SWEEP_3_H
 
-#include "LinearMath/btVector3.h"
+#include "../../LinearMath/btVector3.h"
 #include "btOverlappingPairCache.h"
 #include "btBroadphaseInterface.h"
 #include "btBroadphaseProxy.h"

@@ -15,15 +15,15 @@ subject to the following restrictions:
 */
 
 
-#include "LinearMath/btScalar.h"
+#include "../../LinearMath/btScalar.h"
 #include "btSimulationIslandManager.h"
-#include "BulletCollision/BroadphaseCollision/btDispatcher.h"
-#include "BulletCollision/NarrowPhaseCollision/btPersistentManifold.h"
-#include "BulletCollision/CollisionDispatch/btCollisionObject.h"
-#include "BulletCollision/CollisionDispatch/btCollisionWorld.h"
+#include "../../BulletCollision/BroadphaseCollision/btDispatcher.h"
+#include "../../BulletCollision/NarrowPhaseCollision/btPersistentManifold.h"
+#include "../../BulletCollision/CollisionDispatch/btCollisionObject.h"
+#include "../../BulletCollision/CollisionDispatch/btCollisionWorld.h"
 
 //#include <stdio.h>
-#include "LinearMath/btQuickprof.h"
+#include "../../LinearMath/btQuickprof.h"
 
 btSimulationIslandManager::btSimulationIslandManager():
 m_splitIslands(true)

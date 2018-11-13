@@ -21,7 +21,7 @@ subject to the following restrictions:
 
 
 class btBoxShape;
-#include "BulletCollision/NarrowPhaseCollision/btDiscreteCollisionDetectorInterface.h"
+#include "../../BulletCollision/NarrowPhaseCollision/btDiscreteCollisionDetectorInterface.h"
 
 
 /// btBoxBoxDetector wraps the ODE box-box collision detector

@@ -17,10 +17,10 @@ subject to the following restrictions:
 #define B3_SOLVER_CONSTRAINT_H
 
 
-#include "Bullet3Common/b3Vector3.h"
-#include "Bullet3Common/b3Matrix3x3.h"
+#include "../../Bullet3Common/b3Vector3.h"
+#include "../../Bullet3Common/b3Matrix3x3.h"
 //#include "b3JacobianEntry.h"
-#include "Bullet3Common/b3AlignedObjectArray.h"
+#include "../../Bullet3Common/b3AlignedObjectArray.h"
 
 //#define NO_FRICTION_TANGENTIALS 1
 #include "b3SolverBody.h"

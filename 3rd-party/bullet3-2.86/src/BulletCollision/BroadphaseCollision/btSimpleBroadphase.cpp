@@ -14,13 +14,13 @@ subject to the following restrictions:
 */
 
 #include "btSimpleBroadphase.h"
-#include "BulletCollision/BroadphaseCollision/btDispatcher.h"
-#include "BulletCollision/BroadphaseCollision/btCollisionAlgorithm.h"
+#include "../../BulletCollision/BroadphaseCollision/btDispatcher.h"
+#include "../../BulletCollision/BroadphaseCollision/btCollisionAlgorithm.h"
 
-#include "LinearMath/btVector3.h"
-#include "LinearMath/btTransform.h"
-#include "LinearMath/btMatrix3x3.h"
-#include "LinearMath/btAabbUtil2.h"
+#include "../../LinearMath/btVector3.h"
+#include "../../LinearMath/btTransform.h"
+#include "../../LinearMath/btMatrix3x3.h"
+#include "../../LinearMath/btAabbUtil2.h"
 
 #include <new>
 

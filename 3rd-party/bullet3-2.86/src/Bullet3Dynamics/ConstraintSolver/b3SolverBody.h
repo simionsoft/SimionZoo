@@ -17,11 +17,11 @@ subject to the following restrictions:
 #define B3_SOLVER_BODY_H
 
 
-#include "Bullet3Common/b3Vector3.h"
-#include "Bullet3Common/b3Matrix3x3.h"
+#include "../../Bullet3Common/b3Vector3.h"
+#include "../../Bullet3Common/b3Matrix3x3.h"
 
-#include "Bullet3Common/b3AlignedAllocator.h"
-#include "Bullet3Common/b3TransformUtil.h"
+#include "../../Bullet3Common/b3AlignedAllocator.h"
+#include "../../Bullet3Common/b3TransformUtil.h"
 
 ///Until we get other contributions, only use SIMD on Windows, when using Visual Studio 2008 or later, and not double precision
 #ifdef B3_USE_SSE

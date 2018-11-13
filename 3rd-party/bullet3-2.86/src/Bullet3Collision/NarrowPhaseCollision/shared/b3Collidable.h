@@ -3,8 +3,8 @@
 #define B3_COLLIDABLE_H
 
 
-#include "Bullet3Common/shared/b3Float4.h"
-#include "Bullet3Common/shared/b3Quat.h"
+#include "../../Bullet3Common/shared/b3Float4.h"
+#include "../../Bullet3Common/shared/b3Quat.h"
 
 enum b3ShapeTypes
 {

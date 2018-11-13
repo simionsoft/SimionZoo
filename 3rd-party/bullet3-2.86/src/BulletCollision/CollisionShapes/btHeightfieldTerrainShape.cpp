@@ -15,7 +15,7 @@ subject to the following restrictions:
 
 #include "btHeightfieldTerrainShape.h"
 
-#include "LinearMath/btTransformUtil.h"
+#include "../../LinearMath/btTransformUtil.h"
 
 
 

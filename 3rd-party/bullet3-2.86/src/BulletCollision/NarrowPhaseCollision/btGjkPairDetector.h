@@ -20,7 +20,7 @@ subject to the following restrictions:
 #define BT_GJK_PAIR_DETECTOR_H
 
 #include "btDiscreteCollisionDetectorInterface.h"
-#include "BulletCollision/CollisionShapes/btCollisionMargin.h"
+#include "../../BulletCollision/CollisionShapes/btCollisionMargin.h"
 
 class btConvexShape;
 #include "btSimplexSolverInterface.h"

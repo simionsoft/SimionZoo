@@ -15,14 +15,14 @@ subject to the following restrictions:
 */
 
 #include "btCompoundCompoundCollisionAlgorithm.h"
-#include "LinearMath/btQuickprof.h"
-#include "BulletCollision/CollisionDispatch/btCollisionObject.h"
-#include "BulletCollision/CollisionShapes/btCompoundShape.h"
-#include "BulletCollision/BroadphaseCollision/btDbvt.h"
-#include "LinearMath/btIDebugDraw.h"
-#include "LinearMath/btAabbUtil2.h"
-#include "BulletCollision/CollisionDispatch/btManifoldResult.h"
-#include "BulletCollision/CollisionDispatch/btCollisionObjectWrapper.h"
+#include "../../LinearMath/btQuickprof.h"
+#include "../../BulletCollision/CollisionDispatch/btCollisionObject.h"
+#include "../../BulletCollision/CollisionShapes/btCompoundShape.h"
+#include "../../BulletCollision/BroadphaseCollision/btDbvt.h"
+#include "../../LinearMath/btIDebugDraw.h"
+#include "../../LinearMath/btAabbUtil2.h"
+#include "../../BulletCollision/CollisionDispatch/btManifoldResult.h"
+#include "../../BulletCollision/CollisionDispatch/btCollisionObjectWrapper.h"
 
 
 btShapePairCallback gCompoundCompoundChildShapePairCallback = 0;

@@ -16,7 +16,7 @@ subject to the following restrictions:
 #ifndef B3_POINT2POINTCONSTRAINT_H
 #define B3_POINT2POINTCONSTRAINT_H
 
-#include "Bullet3Common/b3Vector3.h"
+#include "../../Bullet3Common/b3Vector3.h"
 //#include "b3JacobianEntry.h"
 #include "b3TypedConstraint.h"
 

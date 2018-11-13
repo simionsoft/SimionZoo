@@ -14,9 +14,9 @@ subject to the following restrictions:
 */
 
 #include "btGjkPairDetector.h"
-#include "BulletCollision/CollisionShapes/btConvexShape.h"
-#include "BulletCollision/NarrowPhaseCollision/btSimplexSolverInterface.h"
-#include "BulletCollision/NarrowPhaseCollision/btConvexPenetrationDepthSolver.h"
+#include "../../BulletCollision/CollisionShapes/btConvexShape.h"
+#include "../../BulletCollision/NarrowPhaseCollision/btSimplexSolverInterface.h"
+#include "../../BulletCollision/NarrowPhaseCollision/btConvexPenetrationDepthSolver.h"
 
 
 

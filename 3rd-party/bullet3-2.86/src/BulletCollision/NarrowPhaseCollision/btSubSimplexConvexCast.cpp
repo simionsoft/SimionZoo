@@ -15,12 +15,12 @@ subject to the following restrictions:
 
 
 #include "btSubSimplexConvexCast.h"
-#include "BulletCollision/CollisionShapes/btConvexShape.h"
+#include "../../BulletCollision/CollisionShapes/btConvexShape.h"
 
-#include "BulletCollision/CollisionShapes/btMinkowskiSumShape.h"
-#include "BulletCollision/NarrowPhaseCollision/btSimplexSolverInterface.h"
+#include "../../BulletCollision/CollisionShapes/btMinkowskiSumShape.h"
+#include "../../BulletCollision/NarrowPhaseCollision/btSimplexSolverInterface.h"
 #include "btPointCollector.h"
-#include "LinearMath/btTransformUtil.h"
+#include "../../LinearMath/btTransformUtil.h"
 
 btSubsimplexConvexCast::btSubsimplexConvexCast (const btConvexShape* convexA,const btConvexShape* convexB,btSimplexSolverInterface* simplexSolver)
 :m_simplexSolver(simplexSolver),

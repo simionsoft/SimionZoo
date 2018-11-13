@@ -15,12 +15,12 @@ subject to the following restrictions:
 
 //#include <stdio.h>
 
-#include "BulletCollision/CollisionShapes/btConvexShape.h"
-#include "BulletCollision/CollisionShapes/btTriangleShape.h"
-#include "BulletCollision/NarrowPhaseCollision/btSubSimplexConvexCast.h"
-#include "BulletCollision/NarrowPhaseCollision/btGjkConvexCast.h"
-#include "BulletCollision/NarrowPhaseCollision/btContinuousConvexCollision.h"
-#include "BulletCollision/NarrowPhaseCollision/btGjkEpaPenetrationDepthSolver.h"
+#include "../../BulletCollision/CollisionShapes/btConvexShape.h"
+#include "../../BulletCollision/CollisionShapes/btTriangleShape.h"
+#include "../../BulletCollision/NarrowPhaseCollision/btSubSimplexConvexCast.h"
+#include "../../BulletCollision/NarrowPhaseCollision/btGjkConvexCast.h"
+#include "../../BulletCollision/NarrowPhaseCollision/btContinuousConvexCollision.h"
+#include "../../BulletCollision/NarrowPhaseCollision/btGjkEpaPenetrationDepthSolver.h"
 #include "btRaycastCallback.h"
 
 btTriangleRaycastCallback::btTriangleRaycastCallback(const btVector3& from,const btVector3& to, unsigned int flags)

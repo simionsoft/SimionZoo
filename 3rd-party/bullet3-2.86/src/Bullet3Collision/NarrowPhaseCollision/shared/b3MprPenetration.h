@@ -21,11 +21,11 @@
 #ifndef B3_MPR_PENETRATION_H
 #define B3_MPR_PENETRATION_H
 
-#include "Bullet3Common/shared/b3PlatformDefinitions.h"
-#include "Bullet3Common/shared/b3Float4.h"
-#include "Bullet3Collision/NarrowPhaseCollision/shared/b3RigidBodyData.h"
-#include "Bullet3Collision/NarrowPhaseCollision/shared/b3ConvexPolyhedronData.h"
-#include "Bullet3Collision/NarrowPhaseCollision/shared/b3Collidable.h"
+#include "../../../Bullet3Common/shared/b3PlatformDefinitions.h"
+#include "../../../Bullet3Common/shared/b3Float4.h"
+#include "../../../Bullet3Collision/NarrowPhaseCollision/shared/b3RigidBodyData.h"
+#include "../../../Bullet3Collision/NarrowPhaseCollision/shared/b3ConvexPolyhedronData.h"
+#include "../../../Bullet3Collision/NarrowPhaseCollision/shared/b3Collidable.h"
 
 
 

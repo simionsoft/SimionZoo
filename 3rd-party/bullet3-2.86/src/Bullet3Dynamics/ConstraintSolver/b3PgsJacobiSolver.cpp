@@ -21,20 +21,20 @@ subject to the following restrictions:
 //#define DISABLE_JOINTS
 
 #include "b3PgsJacobiSolver.h"
-#include "Bullet3Common/b3MinMax.h"
+#include "../../Bullet3Common/b3MinMax.h"
 #include "b3TypedConstraint.h"
 #include <new>
-#include "Bullet3Common/b3StackAlloc.h"
+#include "../../Bullet3Common/b3StackAlloc.h"
 
 //#include "b3SolverBody.h"
 //#include "b3SolverConstraint.h"
-#include "Bullet3Common/b3AlignedObjectArray.h"
+#include "../../Bullet3Common/b3AlignedObjectArray.h"
 #include <string.h> //for memset
 //#include "../../dynamics/basic_demo/Stubs/AdlContact4.h"
-#include "Bullet3Collision/NarrowPhaseCollision/b3Contact4.h"
+#include "../../Bullet3Collision/NarrowPhaseCollision/b3Contact4.h"
 
 
-#include "Bullet3Collision/NarrowPhaseCollision/shared/b3RigidBodyData.h"
+#include "../../Bullet3Collision/NarrowPhaseCollision/shared/b3RigidBodyData.h"
 
 static b3Transform	getWorldTransform(b3RigidBodyData* rb)
 {

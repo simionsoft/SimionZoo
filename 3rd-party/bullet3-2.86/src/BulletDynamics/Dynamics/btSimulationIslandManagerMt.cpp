@@ -14,16 +14,16 @@ subject to the following restrictions:
 */
 
 
-#include "LinearMath/btScalar.h"
+#include "../../LinearMath/btScalar.h"
 #include "btSimulationIslandManagerMt.h"
-#include "BulletCollision/BroadphaseCollision/btDispatcher.h"
-#include "BulletCollision/NarrowPhaseCollision/btPersistentManifold.h"
-#include "BulletCollision/CollisionDispatch/btCollisionObject.h"
-#include "BulletCollision/CollisionDispatch/btCollisionWorld.h"
-#include "BulletDynamics/ConstraintSolver/btTypedConstraint.h"
+#include "../../BulletCollision/BroadphaseCollision/btDispatcher.h"
+#include "../../BulletCollision/NarrowPhaseCollision/btPersistentManifold.h"
+#include "../../BulletCollision/CollisionDispatch/btCollisionObject.h"
+#include "../../BulletCollision/CollisionDispatch/btCollisionWorld.h"
+#include "../../BulletDynamics/ConstraintSolver/btTypedConstraint.h"
 
 //#include <stdio.h>
-#include "LinearMath/btQuickprof.h"
+#include "../../LinearMath/btQuickprof.h"
 
 
 SIMD_FORCE_INLINE int calcBatchCost( int bodies, int manifolds, int constraints )

@@ -15,11 +15,11 @@ subject to the following restrictions:
 
 
 #include "btSphereTriangleCollisionAlgorithm.h"
-#include "BulletCollision/CollisionDispatch/btCollisionDispatcher.h"
-#include "BulletCollision/CollisionShapes/btSphereShape.h"
-#include "BulletCollision/CollisionDispatch/btCollisionObject.h"
+#include "../../BulletCollision/CollisionDispatch/btCollisionDispatcher.h"
+#include "../../BulletCollision/CollisionShapes/btSphereShape.h"
+#include "../../BulletCollision/CollisionDispatch/btCollisionObject.h"
 #include "SphereTriangleDetector.h"
-#include "BulletCollision/CollisionDispatch/btCollisionObjectWrapper.h"
+#include "../../BulletCollision/CollisionDispatch/btCollisionObjectWrapper.h"
 
 btSphereTriangleCollisionAlgorithm::btSphereTriangleCollisionAlgorithm(btPersistentManifold* mf,const btCollisionAlgorithmConstructionInfo& ci,const btCollisionObjectWrapper* body0Wrap,const btCollisionObjectWrapper* body1Wrap,bool swapped)
 : btActivatingCollisionAlgorithm(ci,body0Wrap,body1Wrap),

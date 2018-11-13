@@ -16,7 +16,7 @@ subject to the following restrictions:
 ///btDbvtBroadphase implementation by Nathanael Presson
 
 #include "btDbvtBroadphase.h"
-#include "LinearMath/btThreads.h"
+#include "../../LinearMath/btThreads.h"
 
 //
 // Profiling

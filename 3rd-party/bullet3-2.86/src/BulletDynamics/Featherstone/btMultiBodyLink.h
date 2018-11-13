@@ -16,9 +16,9 @@ subject to the following restrictions:
 #ifndef BT_MULTIBODY_LINK_H
 #define BT_MULTIBODY_LINK_H
 
-#include "LinearMath/btQuaternion.h"
-#include "LinearMath/btVector3.h"
-#include "BulletCollision/CollisionDispatch/btCollisionObject.h"
+#include "../../LinearMath/btQuaternion.h"
+#include "../../LinearMath/btVector3.h"
+#include "../../BulletCollision/CollisionDispatch/btCollisionObject.h"
 
 enum	btMultiBodyLinkFlags
 {
@@ -36,7 +36,7 @@ enum	btMultiBodyLinkFlags
 //namespace {
 
 
-#include "LinearMath/btSpatialAlgebra.h"
+#include "../../LinearMath/btSpatialAlgebra.h"
 
 //}
 

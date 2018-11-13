@@ -19,25 +19,25 @@ subject to the following restrictions:
 //It is not necessary (redundant) to refresh contact manifolds, this refresh has been moved to the collision algorithms.
 
 #include "btSequentialImpulseConstraintSolver.h"
-#include "BulletCollision/NarrowPhaseCollision/btPersistentManifold.h"
+#include "../../BulletCollision/NarrowPhaseCollision/btPersistentManifold.h"
 
-#include "LinearMath/btIDebugDraw.h"
-#include "LinearMath/btCpuFeatureUtility.h"
+#include "../../LinearMath/btIDebugDraw.h"
+#include "../../LinearMath/btCpuFeatureUtility.h"
 
 //#include "btJacobianEntry.h"
-#include "LinearMath/btMinMax.h"
-#include "BulletDynamics/ConstraintSolver/btTypedConstraint.h"
+#include "../../LinearMath/btMinMax.h"
+#include "../../BulletDynamics/ConstraintSolver/btTypedConstraint.h"
 #include <new>
-#include "LinearMath/btStackAlloc.h"
-#include "LinearMath/btQuickprof.h"
+#include "../../LinearMath/btStackAlloc.h"
+#include "../../LinearMath/btQuickprof.h"
 //#include "btSolverBody.h"
 //#include "btSolverConstraint.h"
-#include "LinearMath/btAlignedObjectArray.h"
+#include "../../LinearMath/btAlignedObjectArray.h"
 #include <string.h> //for memset
 
 int		gNumSplitImpulseRecoveries = 0;
 
-#include "BulletDynamics/Dynamics/btRigidBody.h"
+#include "../../BulletDynamics/Dynamics/btRigidBody.h"
 
 //#define VERBOSE_RESIDUAL_PRINTF 1
 ///This is the scalar reference implementation of solving a single constraint row, the innerloop of the Projected Gauss Seidel/Sequential Impulse constraint solver

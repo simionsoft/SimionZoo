@@ -3,8 +3,8 @@
 #define B3_AABB_H
 
 
-#include "Bullet3Common/shared/b3Float4.h"
-#include "Bullet3Common/shared/b3Mat3x3.h"
+#include "../../Bullet3Common/shared/b3Float4.h"
+#include "../../Bullet3Common/shared/b3Mat3x3.h"
 
 typedef struct b3Aabb b3Aabb_t;
 

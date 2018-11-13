@@ -3,7 +3,7 @@
 #ifndef B3_INERTIA_H
 #define B3_INERTIA_H
 
-#include "Bullet3Common/shared/b3Mat3x3.h"
+#include "../../Bullet3Common/shared/b3Mat3x3.h"
 
 struct b3Inertia
 {

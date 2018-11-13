@@ -18,7 +18,7 @@ subject to the following restrictions:
 
 
 
-#include "LinearMath/btAlignedObjectArray.h"
+#include "../../LinearMath/btAlignedObjectArray.h"
 
 const int BT_SIMPLE_NULL_PAIR=0xffffffff;
 

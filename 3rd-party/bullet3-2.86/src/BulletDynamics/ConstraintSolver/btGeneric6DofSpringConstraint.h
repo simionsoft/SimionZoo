@@ -17,7 +17,7 @@ subject to the following restrictions:
 #define BT_GENERIC_6DOF_SPRING_CONSTRAINT_H
 
 
-#include "LinearMath/btVector3.h"
+#include "../../LinearMath/btVector3.h"
 #include "btTypedConstraint.h"
 #include "btGeneric6DofConstraint.h"
 

@@ -1,9 +1,9 @@
 #include "b3CpuNarrowPhase.h"
-#include "Bullet3Collision/NarrowPhaseCollision/b3ConvexUtility.h"
-#include "Bullet3Collision/NarrowPhaseCollision/b3Config.h"
+#include "../../Bullet3Collision/NarrowPhaseCollision/b3ConvexUtility.h"
+#include "../../Bullet3Collision/NarrowPhaseCollision/b3Config.h"
 
-#include "Bullet3Collision/NarrowPhaseCollision/shared/b3ConvexPolyhedronData.h"
-#include "Bullet3Collision/NarrowPhaseCollision/shared/b3ContactConvexConvexSAT.h"
+#include "../../Bullet3Collision/NarrowPhaseCollision/shared/b3ConvexPolyhedronData.h"
+#include "../../Bullet3Collision/NarrowPhaseCollision/shared/b3ContactConvexConvexSAT.h"
 
 
 struct b3CpuNarrowPhaseInternalData

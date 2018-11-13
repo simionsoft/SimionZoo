@@ -1,7 +1,7 @@
 
 #include "b3FixedConstraint.h"
-#include "Bullet3Collision/NarrowPhaseCollision/shared/b3RigidBodyData.h"
-#include "Bullet3Common/b3TransformUtil.h"
+#include "../../Bullet3Collision/NarrowPhaseCollision/shared/b3RigidBodyData.h"
+#include "../../Bullet3Common/b3TransformUtil.h"
 #include <new>
 
 

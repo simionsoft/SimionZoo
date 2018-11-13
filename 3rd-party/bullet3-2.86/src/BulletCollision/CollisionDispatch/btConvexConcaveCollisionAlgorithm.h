@@ -17,12 +17,12 @@ subject to the following restrictions:
 #define BT_CONVEX_CONCAVE_COLLISION_ALGORITHM_H
 
 #include "btActivatingCollisionAlgorithm.h"
-#include "BulletCollision/BroadphaseCollision/btDispatcher.h"
-#include "BulletCollision/BroadphaseCollision/btBroadphaseInterface.h"
-#include "BulletCollision/CollisionShapes/btTriangleCallback.h"
-#include "BulletCollision/NarrowPhaseCollision/btPersistentManifold.h"
+#include "../../BulletCollision/BroadphaseCollision/btDispatcher.h"
+#include "../../BulletCollision/BroadphaseCollision/btBroadphaseInterface.h"
+#include "../../BulletCollision/CollisionShapes/btTriangleCallback.h"
+#include "../../BulletCollision/NarrowPhaseCollision/btPersistentManifold.h"
 class btDispatcher;
-#include "BulletCollision/BroadphaseCollision/btBroadphaseProxy.h"
+#include "../../BulletCollision/BroadphaseCollision/btBroadphaseProxy.h"
 #include "btCollisionCreateFunc.h"
 
 ///For each triangle in the concave mesh that overlaps with the AABB of a convex (m_convexProxy), processTriangle is called.

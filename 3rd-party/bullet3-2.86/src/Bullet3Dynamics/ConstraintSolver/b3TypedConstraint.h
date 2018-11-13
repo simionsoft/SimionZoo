@@ -17,7 +17,7 @@ subject to the following restrictions:
 #define B3_TYPED_CONSTRAINT_H
 
 
-#include "Bullet3Common/b3Scalar.h"
+#include "../../Bullet3Common/b3Scalar.h"
 #include "b3SolverConstraint.h"
 
 class b3Serializer;

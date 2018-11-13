@@ -14,12 +14,12 @@ subject to the following restrictions:
 */
 
 #include "btSimpleDynamicsWorld.h"
-#include "BulletCollision/CollisionDispatch/btCollisionDispatcher.h"
-#include "BulletCollision/BroadphaseCollision/btSimpleBroadphase.h"
-#include "BulletCollision/CollisionShapes/btCollisionShape.h"
-#include "BulletDynamics/Dynamics/btRigidBody.h"
-#include "BulletDynamics/ConstraintSolver/btSequentialImpulseConstraintSolver.h"
-#include "BulletDynamics/ConstraintSolver/btContactSolverInfo.h"
+#include "../../BulletCollision/CollisionDispatch/btCollisionDispatcher.h"
+#include "../../BulletCollision/BroadphaseCollision/btSimpleBroadphase.h"
+#include "../../BulletCollision/CollisionShapes/btCollisionShape.h"
+#include "../../BulletDynamics/Dynamics/btRigidBody.h"
+#include "../../BulletDynamics/ConstraintSolver/btSequentialImpulseConstraintSolver.h"
+#include "../../BulletDynamics/ConstraintSolver/btContactSolverInfo.h"
 
 
 /*
