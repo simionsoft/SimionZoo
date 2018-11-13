@@ -172,7 +172,7 @@
     <ClCompile Include="unittest1.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\..\tools\WindowsUtils\WindowsUtils.vcxproj">
+    <ProjectReference Include="..\..\..\tools\System\System.vcxproj">
       <Project>{f32419bf-f083-4552-aa39-610898f34dbb}</Project>
     </ProjectReference>
   </ItemGroup>

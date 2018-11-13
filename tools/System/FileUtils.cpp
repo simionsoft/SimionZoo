@@ -1,6 +1,10 @@
 #include "FileUtils.h"
 #include <algorithm>
 
+#ifdef __unix__
+#include <sys/stat.h>
+#endif
+
 //returns the last position where a bar character is found in s: '/' or '\\'
 //0 if none is found. This is a shortcut because in our context, we can assume that the
 //last bar will never be in the 0th position and avoids using std::string::npos outside
