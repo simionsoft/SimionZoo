@@ -1,8 +1,8 @@
 /* Written for XI1 by Nikolas Doerfler <doerflen@in.tum.de> (c) 2008 *
  * Rewritten for XI2 by Florian Echtler <echtler@in.tum.de> (c) 2009 */
 
-#include "..//freeglut.h"
-#include "..//fg_internal.h"
+#include "../../include/GL/freeglut.h"
+#include "../fg_internal.h"
 
 #ifdef HAVE_X11_EXTENSIONS_XINPUT2_H
 

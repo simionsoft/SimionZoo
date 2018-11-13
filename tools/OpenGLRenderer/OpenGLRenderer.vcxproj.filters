@@ -134,9 +134,6 @@
     <ClInclude Include="resource.h" />
   </ItemGroup>
   <ItemGroup>
-    <Text Include="ReadMe.txt" />
-  </ItemGroup>
-  <ItemGroup>
     <Filter Include="graphics">
       <UniqueIdentifier>{59f3d4e5-c225-49b2-9c12-9a0ea1d5288e}</UniqueIdentifier>
     </Filter>

@@ -11,9 +11,9 @@
     </ProjectConfiguration>
   </ItemGroup>
   <PropertyGroup Label="Globals">
-    <ProjectGuid>{fc7bec9b-7c66-4ad3-a2de-8441046dbe08}</ProjectGuid>
+    <ProjectGuid>{5d2a0a84-ac67-4700-8934-a38c01966ad4}</ProjectGuid>
     <Keyword>Linux</Keyword>
-    <RootNamespace>SOIL_linux</RootNamespace>
+    <RootNamespace>GeometryLib_linux</RootNamespace>
     <MinimumVisualStudioVersion>15.0</MinimumVisualStudioVersion>
     <ApplicationType>Linux</ApplicationType>
     <ApplicationTypeRevision>1.0</ApplicationTypeRevision>
@@ -36,30 +36,36 @@
   <ImportGroup Label="PropertySheets" />
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
-    <RemoteProjectDir>$(RemoteRootDir)/3rd-party/SOIL</RemoteProjectDir>
+    <RemoteProjectDir>$(RemoteRootDir)/tools/GeometryLib</RemoteProjectDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
-    <RemoteProjectDir>$(RemoteRootDir)/3rd-party/SOIL</RemoteProjectDir>
+    <RemoteProjectDir>$(RemoteRootDir)/tools/GeometryLib</RemoteProjectDir>
   </PropertyGroup>
   <ItemGroup>
-    <ClCompile Include="..\src\image_DXT.c" />
-    <ClCompile Include="..\src\image_helper.c" />
-    <ClCompile Include="..\src\SOIL.c" />
-    <ClCompile Include="..\src\stb_image_aug.c" />
+    <ClCompile Include="bounding-box.cpp" />
+    <ClCompile Include="bounding-cylinder.cpp" />
+    <ClCompile Include="frustum.cpp" />
+    <ClCompile Include="matrix44.cpp" />
+    <ClCompile Include="plane.cpp" />
+    <ClCompile Include="quaternion.cpp" />
+    <ClCompile Include="transform2d.cpp" />
+    <ClCompile Include="transform3d.cpp" />
+    <ClCompile Include="vector2d.cpp" />
+    <ClCompile Include="vector3d.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\include\SOIL.h" />
-    <ClInclude Include="..\src\image_DXT.h" />
-    <ClInclude Include="..\src\image_helper.h" />
-    <ClInclude Include="..\src\stbi_DDS_aug.h" />
-    <ClInclude Include="..\src\stbi_DDS_aug_c.h" />
-    <ClInclude Include="..\src\stb_image_aug.h" />
+    <ClInclude Include="bounding-box.h" />
+    <ClInclude Include="bounding-cylinder.h" />
+    <ClInclude Include="frustum.h" />
+    <ClInclude Include="matrix44.h" />
+    <ClInclude Include="plane.h" />
+    <ClInclude Include="quaternion.h" />
+    <ClInclude Include="transform2d.h" />
+    <ClInclude Include="transform3d.h" />
+    <ClInclude Include="vector2d.h" />
+    <ClInclude Include="vector3d.h" />
   </ItemGroup>
-  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
-    <ClCompile>
-      <WarningLevel>TurnOffAllWarnings</WarningLevel>
-    </ClCompile>
-  </ItemDefinitionGroup>
+  <ItemDefinitionGroup />
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets" />
 </Project>

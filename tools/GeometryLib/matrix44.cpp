@@ -117,10 +117,11 @@ void Matrix44::setPerspective(double halfWidth, double halfHeight, double nearPl
 	set(3, 3, 0.0);
 }
 
-BoundingBox3D Matrix44::operator*(const BoundingBox3D& box) const
+BoundingBox3D Matrix44::operator*(BoundingBox3D& box) const
 {
 	BoundingBox3D result;
-	result = BoundingBox3D(*this*box.min(), *this*box.max());
+	result.min() = (*this)*box.min();
+	result.max() = (*this)*box.max();
 	return result;
 }
 

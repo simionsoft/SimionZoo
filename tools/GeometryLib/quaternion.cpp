@@ -51,7 +51,6 @@ double Quaternion::yaw() const
 	if (test < -0.499) // singularity at south pole
 		return -2 * atan2(x(), w());
 
-	double sqx = x()*x();
 	double sqy = y()*y();
 	double sqz = z()*z();
 	return atan2(2 * y()*w() - 2 * x()*z(), 1 - 2 * sqy - 2 * sqz);
@@ -69,7 +68,6 @@ double Quaternion::pitch() const
 		return 0.0;
 
 	double sqx = x()*x();
-	double sqy = y()*y();
 	double sqz = z()*z();
 	return atan2(2 * x()*w() - 2 * y()*z(), 1 - 2 * sqx - 2 * sqz);
 }

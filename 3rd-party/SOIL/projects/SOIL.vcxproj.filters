@@ -15,36 +15,36 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="..\..\src\image_DXT.c">
+    <ClCompile Include="..\src\image_DXT.c">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\src\image_helper.c">
+    <ClCompile Include="..\src\image_helper.c">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\src\SOIL.c">
+    <ClCompile Include="..\src\SOIL.c">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\src\stb_image_aug.c">
+    <ClCompile Include="..\src\stb_image_aug.c">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\..\src\image_DXT.h">
+    <ClInclude Include="..\src\image_DXT.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\src\image_helper.h">
+    <ClInclude Include="..\src\image_helper.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\src\SOIL.h">
+    <ClInclude Include="..\src\stbi_DDS_aug.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\src\stb_image_aug.h">
+    <ClInclude Include="..\src\stbi_DDS_aug_c.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\src\stbi_DDS_aug.h">
+    <ClInclude Include="..\src\stb_image_aug.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\src\stbi_DDS_aug_c.h">
+    <ClInclude Include="..\include\SOIL.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

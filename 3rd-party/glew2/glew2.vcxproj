@@ -136,10 +136,10 @@
     <ClCompile Include="src\glew.c" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="src\eglew.h" />
-    <ClInclude Include="src\glew.h" />
-    <ClInclude Include="src\glxew.h" />
-    <ClInclude Include="src\wglew.h" />
+    <ClInclude Include="include\eglew.h" />
+    <ClInclude Include="include\glew.h" />
+    <ClInclude Include="include\glxew.h" />
+    <ClInclude Include="include\wglew.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

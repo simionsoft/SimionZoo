@@ -18,7 +18,7 @@ public:
 	void setPerspective(double halfWidth, double halfHeight, double nearPlaneDist, double farPlaneDist);
 
 	Matrix44 operator*(Matrix44& mat) const;
-	BoundingBox3D operator*( const BoundingBox3D& box) const;
+	BoundingBox3D operator*( BoundingBox3D& box) const;
 
 	Point3D operator*(Point3D& p) const;
 	Vector3D operator*(Vector3D& v) const;

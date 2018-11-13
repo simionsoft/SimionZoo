@@ -149,9 +149,9 @@
     <ClCompile Include="..\src\stb_image_aug.c" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="..\include\SOIL.h" />
     <ClInclude Include="..\src\image_DXT.h" />
     <ClInclude Include="..\src\image_helper.h" />
-    <ClInclude Include="..\src\SOIL.h" />
     <ClInclude Include="..\src\stbi_DDS_aug.h" />
     <ClInclude Include="..\src\stbi_DDS_aug_c.h" />
     <ClInclude Include="..\src\stb_image_aug.h" />

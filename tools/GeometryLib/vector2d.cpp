@@ -1,4 +1,5 @@
 #include "vector2d.h"
+#include <math.h>
 #include <algorithm>
 
 Vector2D Vector2D::operator+(const Vector2D& v) const

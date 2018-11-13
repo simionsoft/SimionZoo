@@ -25,8 +25,8 @@
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-#include "..//freeglut.h"
-#include "..//fg_internal.h"
+#include "../../include/GL/freeglut.h"
+#include "../fg_internal.h"
 
 /* This code is for Posix/X11, Solaris, and OSX */
 #include <X11//cursorfont.h>

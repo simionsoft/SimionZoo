@@ -5,34 +5,35 @@
 
 #pragma once
 
-#include "targetver.h"
-
-
-#include <stdio.h>
-#include <tchar.h>
-#include <windows.h>
-#include <math.h>
-#include <string>
+//#include "targetver.h"
+//
+//
+//#include <stdio.h>
+//#include <tchar.h>
+//#include <windows.h>
+//#include <math.h>
+//#include <string>
 #undef min
 #undef max
-////OPENGL includes
-//#include <GL/gl.h>
-//#include <GL/glu.h>
+
 
 //GLEW
 #define GLEW_STATIC
-#include "../../3rd-party/glew-2.0.0/src/glew.h"
+#include "../../3rd-party/glew2/include/glew.h"
 
 
 //GLUT
 #define FREEGLUT_STATIC 1
 #define FREEGLUT_LIB_PRAGMAS 0
 #include "../../3rd-party/freeglut3/include/GL/freeglut.h"
-#pragma comment (lib,"opengl32.lib")
+
+#ifdef _WIN32
+	#pragma comment (lib,"opengl32.lib")
+#endif
 
 //tinyxml2
 #include "../../3rd-party/tinyxml2/tinyxml2.h"
 using namespace tinyxml2;
 
 //SOIL
-#include "../../3rd-party/SOIL/src/SOIL.h"
+#include "../../3rd-party/SOIL/include/SOIL.h"

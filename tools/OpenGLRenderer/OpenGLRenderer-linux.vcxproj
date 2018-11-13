@@ -1,0 +1,101 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|x64">
+      <Configuration>Debug</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|x64">
+      <Configuration>Release</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <ProjectGuid>{6561176d-8e7c-4399-a133-ca9c36c143c5}</ProjectGuid>
+    <Keyword>Linux</Keyword>
+    <RootNamespace>OpenGLRenderer_linux</RootNamespace>
+    <MinimumVisualStudioVersion>15.0</MinimumVisualStudioVersion>
+    <ApplicationType>Linux</ApplicationType>
+    <ApplicationTypeRevision>1.0</ApplicationTypeRevision>
+    <TargetLinuxPlatform>Generic</TargetLinuxPlatform>
+    <LinuxProjectType>{2238F9CD-F817-4ECC-BD14-2524D2669B35}</LinuxProjectType>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <RemoteRootDir>~/projects</RemoteRootDir>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <RemoteRootDir>~/projects</RemoteRootDir>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings" />
+  <ImportGroup Label="Shared" />
+  <ImportGroup Label="PropertySheets" />
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <RemoteProjectDir>$(RemoteRootDir)/tools/OpenGLRenderer</RemoteProjectDir>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <RemoteProjectDir>$(RemoteRootDir)/tools/OpenGLRenderer</RemoteProjectDir>
+  </PropertyGroup>
+  <ItemGroup>
+    <ClCompile Include="arranger.cpp" />
+    <ClCompile Include="basic-shapes-2d.cpp" />
+    <ClCompile Include="basic-shapes-3d.cpp" />
+    <ClCompile Include="light.cpp" />
+    <ClCompile Include="material-live-texture.cpp" />
+    <ClCompile Include="mesh.cpp" />
+    <ClCompile Include="bindings.cpp" />
+    <ClCompile Include="graphic-object-2d.cpp" />
+    <ClCompile Include="camera.cpp" />
+    <ClCompile Include="collada-model.cpp" />
+    <ClCompile Include="ogl-utils.cpp" />
+    <ClCompile Include="scene-actor-2d.cpp" />
+    <ClCompile Include="scene-actor-3d.cpp" />
+    <ClCompile Include="graphic-object-3d.cpp" />
+    <ClCompile Include="input-handler.cpp" />
+    <ClCompile Include="material.cpp" />
+    <ClCompile Include="renderer.cpp" />
+    <ClCompile Include="color.cpp" />
+    <ClCompile Include="text.cpp" />
+    <ClCompile Include="texture-manager.cpp" />
+    <ClCompile Include="viewport.cpp" />
+    <ClCompile Include="xml-load.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="arranger.h" />
+    <ClInclude Include="basic-shapes-2d.h" />
+    <ClInclude Include="basic-shapes-3d.h" />
+    <ClInclude Include="bindings.h" />
+    <ClInclude Include="graphic-object-2d.h" />
+    <ClInclude Include="camera.h" />
+    <ClInclude Include="collada-model.h" />
+    <ClInclude Include="ogl-utils.h" />
+    <ClInclude Include="resource.h" />
+    <ClInclude Include="scene-actor-2d.h" />
+    <ClInclude Include="scene-actor-3d.h" />
+    <ClInclude Include="graphic-object-3d.h" />
+    <ClInclude Include="input-handler.h" />
+    <ClInclude Include="light.h" />
+    <ClInclude Include="material.h" />
+    <ClInclude Include="mesh.h" />
+    <ClInclude Include="renderer.h" />
+    <ClInclude Include="stdafx.h" />
+    <ClInclude Include="targetver.h" />
+    <ClInclude Include="color.h" />
+    <ClInclude Include="text.h" />
+    <ClInclude Include="texture-manager.h" />
+    <ClInclude Include="viewport.h" />
+    <ClInclude Include="xml-load.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\GeometryLib\GeometryLib-linux.vcxproj">
+      <Project>{5d2a0a84-ac67-4700-8934-a38c01966ad4}</Project>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemDefinitionGroup />
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets" />
+</Project>

@@ -16,8 +16,6 @@ public:
 	void addPoint(Point3D p);
 	void reset();
 
-	Point3D min() const;
-	Point3D max() const;
 	Point3D& min();
 	Point3D& max();
 	Point3D size() const;

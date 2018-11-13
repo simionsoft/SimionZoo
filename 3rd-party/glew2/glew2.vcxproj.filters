@@ -20,17 +20,17 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="src\eglew.h">
-      <Filter>Source Files</Filter>
+    <ClInclude Include="include\eglew.h">
+      <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\glew.h">
-      <Filter>Source Files</Filter>
+    <ClInclude Include="include\glew.h">
+      <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\glxew.h">
-      <Filter>Source Files</Filter>
+    <ClInclude Include="include\glxew.h">
+      <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\wglew.h">
-      <Filter>Source Files</Filter>
+    <ClInclude Include="include\wglew.h">
+      <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

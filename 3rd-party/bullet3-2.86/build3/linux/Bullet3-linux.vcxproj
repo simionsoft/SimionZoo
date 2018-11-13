@@ -82,6 +82,30 @@
   <ImportGroup Label="Shared" />
   <ImportGroup Label="PropertySheets" />
   <PropertyGroup Label="UserMacros" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|ARM'">
+    <RemoteProjectDir>$(RemoteRootDir)/3rd-party/Bullet3-2.86</RemoteProjectDir>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|ARM'">
+    <RemoteProjectDir>$(RemoteRootDir)/3rd-party/Bullet3-2.86</RemoteProjectDir>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|ARM64'">
+    <RemoteProjectDir>$(RemoteRootDir)/3rd-party/Bullet3-2.86</RemoteProjectDir>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|ARM64'">
+    <RemoteProjectDir>$(RemoteRootDir)/3rd-party/Bullet3-2.86</RemoteProjectDir>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <RemoteProjectDir>$(RemoteRootDir)/3rd-party/Bullet3-2.86</RemoteProjectDir>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <RemoteProjectDir>$(RemoteRootDir)/3rd-party/Bullet3-2.86</RemoteProjectDir>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x86'">
+    <RemoteProjectDir>$(RemoteRootDir)/3rd-party/Bullet3-2.86</RemoteProjectDir>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x86'">
+    <RemoteProjectDir>$(RemoteRootDir)/3rd-party/Bullet3-2.86</RemoteProjectDir>
+  </PropertyGroup>
   <ItemGroup>
     <ClInclude Include="..\..\src\btBulletCollisionCommon.h" />
     <ClInclude Include="..\..\src\btBulletDynamicsCommon.h" />

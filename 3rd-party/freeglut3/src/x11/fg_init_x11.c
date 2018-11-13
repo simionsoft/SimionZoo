@@ -28,9 +28,9 @@
 
 #define FREEGLUT_BUILDING_LIB
 #include <limits.h>  /* LONG_MAX */
-#include "..//freeglut.h"
-#include "..//fg_internal.h"
-#include "..//fg_init.h"
+#include "../../include/GL/freeglut.h"
+#include "../fg_internal.h"
+#include "../fg_init.h"
 //#include "egl//fg_init_egl.h"
 
 /* Return the atom associated with "name". */

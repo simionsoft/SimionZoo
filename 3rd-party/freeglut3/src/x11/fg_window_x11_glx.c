@@ -27,8 +27,8 @@
  */
 
 #define FREEGLUT_BUILDING_LIB
-#include "..//freeglut.h"
-#include "..//fg_internal.h"
+#include "../../include/GL/freeglut.h"
+#include "../fg_internal.h"
 
 
 /* pushing attribute/value pairs into an array */

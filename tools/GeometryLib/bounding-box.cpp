@@ -39,8 +39,7 @@ void BoundingBox3D::addPoint(Point3D p)
 	if (p.z() < m_min.z()) m_min.setZ(p.z());
 }
 
-Point3D BoundingBox3D::min() const { return m_min; }
-Point3D BoundingBox3D::max() const { return m_max; }
+
 Point3D& BoundingBox3D::min() { return m_min; }
 Point3D& BoundingBox3D::max() { return m_max; }
 Point3D BoundingBox3D::size() const 

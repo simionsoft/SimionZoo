@@ -27,13 +27,14 @@
  */
 
 #define FREEGLUT_BUILDING_LIB
-#include "..//freeglut.h"
+#include "../../include/GL/freeglut.h"
+
 
 #include <limits.h>     /* LONG_MAX */
 #include <unistd.h>     /* usleep, gethostname, getpid */
 #include <sys/types.h>  /* pid_t */
 
-#include "..//fg_internal.h"
+#include "../fg_internal.h"
 #ifdef EGL_VERSION_1_0
 #include "egl/fg_window_egl.h"
 #define fghCreateNewContext fghCreateNewContextEGL

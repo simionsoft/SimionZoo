@@ -26,8 +26,8 @@
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-#include "..//freeglut.h"
-#include "..//fg_internal.h"
+#include "../../include/GL/freeglut.h"
+#include "../fg_internal.h"
 #include <errno.h>
 #include <stdarg.h>
 

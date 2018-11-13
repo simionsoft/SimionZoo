@@ -1,4 +1,4 @@
-#include "Frustum.h"
+#include "frustum.h"
 #include "matrix44.h"
 #include "bounding-box.h"
 #include "vector3d.h"

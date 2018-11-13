@@ -150,6 +150,8 @@ class BoundingBox3D;
 class BoundingBox2D;
 class BoundingCylinder;
 
+#include "renderer.h"
+
 namespace XML
 {
 	template <typename T>

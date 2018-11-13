@@ -33,16 +33,16 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include "glew.h"
+#include "../include/glew.h"
 #if defined(GLEW_EGL)
 #include <GL/eglew.h>
 #elif defined(GLEW_OSMESA)
 #define GLAPI extern
 #include "osmesa.h"
 #elif defined(_WIN32)
-#include "wglew.h"
+#include "../include/wglew.h"
 #elif !defined(__APPLE__) && !defined(__HAIKU__) || defined(GLEW_APPLE_GLX)
-#include "glxew.h"
+#include "../include/glxew.h"
 #endif
 
 #if defined(__APPLE__)

@@ -1,6 +1,6 @@
 #include "stdafx.h"
 #include "ogl-utils.h"
-#include <gl\GL.h>
+#include "../../3rd-party/glew2/include/glew.h"
 #include "../GeometryLib/bounding-box.h"
 
 void drawBoundingBox3D(BoundingBox3D& box)
