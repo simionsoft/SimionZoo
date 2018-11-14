@@ -1,5 +1,5 @@
 #pragma once
-#include "../WindowsUtils/Timer.h"
+#include "../System/Timer.h"
 
 
 class IInputHandler

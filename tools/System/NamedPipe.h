@@ -5,9 +5,13 @@
 class NamedPipe
 {
 protected:
-	void* m_pipeHandle;
+
+	bool m_bVerbose = false;
+
+	unsigned long long int m_pipeHandle;
+
 	char m_pipeFullName[MAX_PIPE_NAME_SIZE];
-	//wchar_t m_pipeFullName[MAX_PIPE_NAME_SIZE];
+
 	//if bAddPrefix, this method appends the pipeName (i.e. "myPipe") to the standard pipe name prefix
 	//leaves the result in m_pipeFullName
 	void setPipeName(const char* pipeName,bool bAddPrefix= true,int id= -1);
@@ -20,26 +24,27 @@ public:
 	int readToBuffer(void *pBuffer, int numBytes);
 	char* getPipeFullName() { return m_pipeFullName; }
 	bool isConnected();
+
+	void setVerbose(bool set) { m_bVerbose = set; }
 };
 
-class CNamedPipeServer: public NamedPipe
+class NamedPipeServer: public NamedPipe
 {
-	
+	bool openNamedPipeServer();
 public:
-	CNamedPipeServer();
-	virtual ~CNamedPipeServer();
+	NamedPipeServer();
+	virtual ~NamedPipeServer();
 
-	bool openNamedPipeServer(const char*);
 	bool openUniqueNamedPipeServer(char*);
 	bool waitForClientConnection();
 	void closeServer();
 };
 
-class CNamedPipeClient: public NamedPipe
+class NamedPipeClient: public NamedPipe
 {
 public:
-	CNamedPipeClient();
-	virtual ~CNamedPipeClient();
+	NamedPipeClient();
+	virtual ~NamedPipeClient();
 
 	bool connectToServer(const char*,bool addPrefix= true);
 	void closeConnection();

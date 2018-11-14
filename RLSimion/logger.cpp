@@ -3,8 +3,8 @@
 #include "named-var-set.h"
 #include "config.h"
 #include "stats.h"
-#include "../tools/WindowsUtils/Timer.h"
-#include "../tools/WindowsUtils/FileUtils.h"
+#include "../tools/System/Timer.h"
+#include "../tools/System/FileUtils.h"
 #include "app.h"
 #include "utils.h"
 #include "experiment.h"
@@ -12,7 +12,7 @@
 
 FILE *Logger::m_logFile = 0;
 MessageOutputMode Logger::m_messageOutputMode = MessageOutputMode::Console;
-CNamedPipeClient Logger::m_outputPipe;
+NamedPipeClient Logger::m_outputPipe;
 bool Logger::m_bLogMessagesEnabled = true;
 
 #define HEADER_MAX_SIZE 16

@@ -7,7 +7,7 @@
 #include "mesh.h"
 #include "../GeometryLib/bounding-cylinder.h"
 #include <algorithm>
-#include "../WindowsUtils/FileUtils.h"
+#include "../System/FileUtils.h"
 
 
 unsigned int parseIntArray(const char* pInputString, unsigned int* pValues, unsigned int numValues, unsigned int startOffset= 0)

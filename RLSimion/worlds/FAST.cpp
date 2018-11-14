@@ -6,7 +6,7 @@
 #include "../app.h"
 #include "../logger.h"
 #include "../experiment.h"
-#include "../../tools/WindowsUtils/Process.h"
+#include "../../tools/System/Process.h"
 #include <string>
 #include <stdio.h>
 #include <algorithm>
@@ -237,10 +237,10 @@ void FASTWindTurbine::reset(State *s)
 	string outConfigFileName,windFile;
 	FILE *pOutConfigFile;
 
-	//Check if a previous instance of FAST is running and, if it is, kill the process
+	//Check if a previous instance of FAST is running and, if it is, stop the process
 	//This may happen for slight inaccuracies of DT
 	if (FASTprocess.isRunning())
-		FASTprocess.kill();
+		FASTprocess.stop();
 	//If the named pipe is already open, close it
 	m_namedPipeServer.closeServer();
 

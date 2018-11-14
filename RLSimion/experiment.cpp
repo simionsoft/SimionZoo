@@ -3,7 +3,7 @@
 #include "logger.h"
 #include "worlds/world.h"
 #include "stats.h"
-#include "../tools/WindowsUtils/Timer.h"
+#include "../tools/System/Timer.h"
 #include "app.h"
 
 ExperimentTime& ExperimentTime::operator=(ExperimentTime& exp)

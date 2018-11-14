@@ -15,7 +15,7 @@
 #include "../tools/OpenGLRenderer/input-handler.h"
 #include "../tools/OpenGLRenderer/material.h"
 #include "../tools/OpenGLRenderer/arranger.h"
-#include "../tools/WindowsUtils/FileUtils.h"
+#include "../tools/System/FileUtils.h"
 
 //Properties and xml tags
 #define APP_REQUIREMENTS_XML_TAG "Requirements"

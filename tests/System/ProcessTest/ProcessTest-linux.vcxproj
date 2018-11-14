@@ -10,8 +10,16 @@
       <Platform>x64</Platform>
     </ProjectConfiguration>
   </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\..\tools\System\System-linux.vcxproj">
+      <Project>{11efdd7d-a557-4cc7-ab52-46d850f67a1e}</Project>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="test-linux.cpp" />
+  </ItemGroup>
   <PropertyGroup Label="Globals">
-    <ProjectGuid>{11efdd7d-a557-4cc7-ab52-46d850f67a1e}</ProjectGuid>
+    <ProjectGuid>{6D41EEBC-F715-4DFE-B6C2-41AD65723324}</ProjectGuid>
     <Keyword>Linux</Keyword>
     <RootNamespace>System_linux</RootNamespace>
     <MinimumVisualStudioVersion>15.0</MinimumVisualStudioVersion>
@@ -23,11 +31,11 @@
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
     <UseDebugLibraries>true</UseDebugLibraries>
-    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <ConfigurationType>Application</ConfigurationType>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
     <UseDebugLibraries>false</UseDebugLibraries>
-    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <ConfigurationType>Application</ConfigurationType>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
   <ImportGroup Label="ExtensionSettings" />
@@ -35,23 +43,11 @@
   <ImportGroup Label="PropertySheets" />
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
-    <RemoteProjectDir>$(RemoteRootDir)/tools/System</RemoteProjectDir>
+    <RemoteProjectDir>$(RemoteRootDir)/tests/System/ProcessTest</RemoteProjectDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
-    <RemoteProjectDir>$(RemoteRootDir)/tools/System</RemoteProjectDir>
+    <RemoteProjectDir>$(RemoteRootDir)/tests/System/ProcessTest</RemoteProjectDir>
   </PropertyGroup>
-  <ItemGroup>
-    <ClCompile Include="FileUtils.cpp" />
-    <ClCompile Include="NamedPipe-linux.cpp" />
-    <ClCompile Include="Process-linux.cpp" />
-    <ClCompile Include="Timer.cpp" />
-  </ItemGroup>
-  <ItemGroup>
-    <ClInclude Include="FileUtils.h" />
-    <ClInclude Include="NamedPipe.h" />
-    <ClInclude Include="Process.h" />
-    <ClInclude Include="Timer.h" />
-  </ItemGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <ClCompile>
       <WarningLevel>TurnOffAllWarnings</WarningLevel>

@@ -1,6 +1,6 @@
 #pragma once
 #include <vector>
-#include "../WindowsUtils/Timer.h"
+#include "../System/Timer.h"
 #include "viewport.h"
 
 class GraphicObject3D;

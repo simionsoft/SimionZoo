@@ -9,7 +9,7 @@ using namespace std;
 #include "named-var-set.h"
 #include "wire-handler.h"
 
-#include "../tools/WindowsUtils/Timer.h"
+#include "../tools/System/Timer.h"
 #define MAX_PATH_SIZE 1024
 
 class Renderer;

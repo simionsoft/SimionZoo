@@ -2,8 +2,8 @@
 
 #include "world.h"
 #include "../deferred-load.h"
-#include "../../tools/WindowsUtils/NamedPipe.h"
-#include "../../tools/WindowsUtils/Process.h"
+#include "../../tools/System/NamedPipe.h"
+#include "../../tools/System/Process.h"
 #include "../parameters.h"
 #include "templatedConfigFile.h"
 
@@ -13,7 +13,7 @@ class RewardFunction;
 class FASTWindTurbine : public DynamicModel, public DeferredLoad
 {
 	Process FASTprocess,TurbSimProcess;
-	CNamedPipeServer m_namedPipeServer;
+	NamedPipeServer m_namedPipeServer;
 
 	TemplatedConfigFile m_FASTConfigTemplate, m_FASTWindConfigTemplate, m_TurbSimConfigTemplate;
 

@@ -1,6 +1,13 @@
 #include "NamedPipe.h"
-#include <string>
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <unistd.h>
+#include <sys/types.h>
+#include <sys/stat.h>
+#include <fcntl.h>
 #include <thread>
+
 
 #define NUM_MAX_CONNECTION_ATTEMPTS 10
 
@@ -12,174 +19,164 @@ NamedPipe::NamedPipe()
 
 NamedPipe::~NamedPipe()
 {
-	//if (m_pipeHandle!=INVALID_HANDLE_VALUE)
-	//	CloseHandle(m_pipeHandle);
+	close((int) m_pipeHandle);
 }
 
 bool NamedPipe::isConnected()
 {
-	//return (m_pipeHandle != INVALID_HANDLE_VALUE);
-	return false;
+	return (m_pipeHandle > 0);
 }
 
 void NamedPipe::setPipeName(const char* pipeName,bool bAddPrefix,int id)
 {
-	//this method appends the pipeName (i.e. "myPipe") to the standard pipe name prefix
-	//and leaves the result in m_pipeFullName
-	//if id>0, then the base name is appended with the id until a server can be opened with that name
-	//if (bAddPrefix)
-	//{
-	//	if (id < 0)
-	//		sprintf_s(m_pipeFullName, "\\\\.\\pipe\\%s", pipeName);
-	//	else
-	//		sprintf_s(m_pipeFullName, "\\\\.\\pipe\\%s-%d", pipeName, id);
-	//}
-	//else
-	//{
-	//	if (id < 0)
-	//		sprintf_s(m_pipeFullName, "%s", pipeName);
-	//	else
-	//		sprintf_s(m_pipeFullName, "%s-%d", pipeName, id);
-	//}
+	//this method builds the name of the pipe in m_pipeFullName
+	//if bAddPrefix, it prepends the pipeName (i.e. "myPipe") with tmp/
+	//if id>0, then the base name is appended with the id number until a new pipe can be opened with that name
+	if (bAddPrefix)
+	{
+		if (id < 0)
+			sprintf(m_pipeFullName, "tmp/%s", pipeName);
+		else
+			sprintf(m_pipeFullName, "tmp/%s-%d", pipeName, id);
+	}
+	else
+	{
+		if (id < 0)
+			sprintf(m_pipeFullName, "%s", pipeName);
+		else
+			sprintf(m_pipeFullName, "%s-%d", pipeName, id);
+	}
 }
 
 int NamedPipe::writeBuffer(const void* pBuffer, int numBytes)
 {
-	//DWORD bytesWritten= 0;
-	//if (m_pipeHandle!=INVALID_HANDLE_VALUE)
-	//	WriteFile(m_pipeHandle,	pBuffer, numBytes, &bytesWritten,	NULL);
-	//return bytesWritten;
+	if (!isConnected())
+	{
+		if (m_bVerbose) printf("Error: couldn't write on pipe %s\n", m_pipeFullName);
+		return 0;
+	}
+	int numBytesWritten= write((int)m_pipeHandle, pBuffer, numBytes);
+	if (m_bVerbose) printf("Written %d bytes on pipe %s\n", numBytesWritten, m_pipeFullName);
+	return numBytesWritten;
 }
 
 int NamedPipe::readToBuffer(void *pBuffer, int numBytes)
 {
-	//DWORD bytesRead= 0;
-	//if (m_pipeHandle!= INVALID_HANDLE_VALUE)
-	//	ReadFile(m_pipeHandle, pBuffer, numBytes, &bytesRead, NULL);
-	//return bytesRead;
+	if (!isConnected())
+	{
+		if (m_bVerbose) printf("Error: couldn't read from pipe %s\n", m_pipeFullName);
+		return 0;
+	}
+
+	int numBytesRead= read((int)m_pipeHandle, pBuffer, numBytes);
+	if (m_bVerbose) printf("Read %d bytes from pipe %s\n", numBytesRead, m_pipeFullName);
+	return numBytesRead;
 }
 
 
 //CNamedPipeServer
-CNamedPipeServer::CNamedPipeServer()
+NamedPipeServer::NamedPipeServer()
 {
-	//m_pipeHandle = INVALID_HANDLE_VALUE;
 }
 
-CNamedPipeServer::~CNamedPipeServer()
+NamedPipeServer::~NamedPipeServer()
 {
 	closeServer();
 }
 
-bool CNamedPipeServer::openNamedPipeServer(const char* pipeName)
+//before calling this function, setPipeName() must be called
+
+bool NamedPipeServer::openNamedPipeServer()
 {
-	//setPipeName(pipeName);
+	if (mkfifo(m_pipeFullName, S_IWUSR | S_IRUSR | S_IRGRP | S_IWGRP | S_IROTH | S_IWOTH) != 0)
+		return false;
 
-	//m_pipeHandle = CreateNamedPipe(m_pipeFullName,
-	//	PIPE_ACCESS_DUPLEX | PIPE_TYPE_BYTE | PIPE_READMODE_BYTE | FILE_FLAG_FIRST_PIPE_INSTANCE,
-	//	PIPE_WAIT,
-	//	1,
-	//	1024 * 16,
-	//	1024 * 16,
-	//	NMPWAIT_USE_DEFAULT_WAIT,
-	//	NULL);
-
-	//if (m_pipeHandle == INVALID_HANDLE_VALUE)
-	//	return false;
-
-	return true;
+	int pipeDescriptor = open(m_pipeFullName, O_RDWR);
+	
+	if (pipeDescriptor >= 0)
+	{
+		if (m_bVerbose) printf("Created pipe server %s\n", m_pipeFullName);
+		m_pipeHandle = pipeDescriptor;
+		return true;
+	}
+	else
+	{
+		if (m_bVerbose) printf("Error: couldn't create pipe server %s\n", m_pipeFullName);
+		return false;
+	}
 }
 
 #define NUM_MAX_PIPE_SERVERS_PER_MACHINE 100
-bool CNamedPipeServer::openUniqueNamedPipeServer(char* pipeName)
+bool NamedPipeServer::openUniqueNamedPipeServer(char* pipeName)
 {
-	/*int id = 0;
+	bool serverCreated = false;
+	int id = 0;
 	do
 	{
-		setPipeName(pipeName,true,id);
+		setPipeName(pipeName,false,id);
 
-		m_pipeHandle = CreateNamedPipe(m_pipeFullName,
-			PIPE_ACCESS_DUPLEX | PIPE_TYPE_BYTE | PIPE_READMODE_BYTE | FILE_FLAG_FIRST_PIPE_INSTANCE,
-			PIPE_WAIT,
-			1,
-			1024 * 16,
-			1024 * 16,
-			NMPWAIT_USE_DEFAULT_WAIT,
-			NULL);
-		++id;
-	} while (m_pipeHandle == INVALID_HANDLE_VALUE && id < NUM_MAX_PIPE_SERVERS_PER_MACHINE);
+		if (access(m_pipeFullName, F_OK) == -1)
+		{
+			//no pipe has been created with that name
+			serverCreated= openNamedPipeServer();
+		}
+		else
+			++id;
+	} while (!serverCreated && id < NUM_MAX_PIPE_SERVERS_PER_MACHINE);
 
-	if (m_pipeHandle == INVALID_HANDLE_VALUE)
-		return false;*/
+	return serverCreated;
+}
 
+bool NamedPipeServer::waitForClientConnection()
+{
+	//no waiting in the linux version. Read operations will block until the requested number of bytes is read
 	return true;
 }
 
-bool CNamedPipeServer::waitForClientConnection()
-{
-	//if (ConnectNamedPipe(m_pipeHandle, NULL) != FALSE)   // wait for someone to connect to the pipe
-	//	return true;
-	return false;
-}
 
-
-void CNamedPipeServer::closeServer()
+void NamedPipeServer::closeServer()
 {
-	//if (m_pipeHandle!= INVALID_HANDLE_VALUE)
-	//{
-	//	DisconnectNamedPipe(m_pipeHandle);
-	//	CloseHandle(m_pipeHandle);
-	//	m_pipeHandle = INVALID_HANDLE_VALUE;
-	//}
+	if (m_bVerbose) printf("Destroying pipe server %s\n", m_pipeFullName);
+	unlink(m_pipeFullName);
 }
 
 //CNamedPipeClient
-CNamedPipeClient::CNamedPipeClient()
+NamedPipeClient::NamedPipeClient()
 {
-	//m_pipeHandle = INVALID_HANDLE_VALUE;
 }
 
-CNamedPipeClient::~CNamedPipeClient()
+NamedPipeClient::~NamedPipeClient()
 {
 	closeConnection();
 }
-bool CNamedPipeClient::connectToServer(const char* pipeName, bool addPipePrefix)
+
+bool NamedPipeClient::connectToServer(const char* pipeName, bool addPipePrefix)
 {
-	//int numAttempts = 0;
+	int numAttempts = 0;
 
-	//if (m_pipeHandle != INVALID_HANDLE_VALUE)
-	//	return false;
+	setPipeName(pipeName, addPipePrefix);
+	do
+	{
+		m_pipeHandle= open(m_pipeFullName, O_RDWR);
 
-	//setPipeName(pipeName, addPipePrefix);
-	//do
-	//{
-	//	m_pipeHandle = CreateFile(
-	//		m_pipeFullName,   // pipe name 
-	//		PIPE_ACCESS_DUPLEX | PIPE_TYPE_BYTE | PIPE_READMODE_BYTE,
-	//		PIPE_WAIT,              // no sharing 
-	//		NULL,           // default security attributes
-	//		OPEN_EXISTING,  // opens existing pipe 
-	//		0,              // default attributes 
-	//		NULL);
-	//	numAttempts++;
-	//	
-	//	if (m_pipeHandle == INVALID_HANDLE_VALUE)
-	//		std::this_thread::sleep_for(std::chrono::milliseconds(500));
+		numAttempts++;
+		
+		if (m_pipeHandle <= 0)
+			std::this_thread::sleep_for(std::chrono::milliseconds(500));
 
-	//} while (m_pipeHandle == INVALID_HANDLE_VALUE && numAttempts<NUM_MAX_CONNECTION_ATTEMPTS);
+	} while (m_pipeHandle < 0 && numAttempts<NUM_MAX_CONNECTION_ATTEMPTS);
 
-	//if (m_pipeHandle == INVALID_HANDLE_VALUE)
-	//	return false;
+	if (m_bVerbose)
+	{
+		if (isConnected()) printf("Client connected to pipe server %s\n", m_pipeFullName);
+		else printf("Error: Client couldn't connect to pipe server %s\n", m_pipeFullName);
+	}
 
-	return true;
+	return m_pipeHandle > 0;
 }
 
-void CNamedPipeClient::closeConnection()
+void NamedPipeClient::closeConnection()
 {
-	//if (m_pipeHandle!=INVALID_HANDLE_VALUE)
-	//{
-	//	FlushFileBuffers(m_pipeHandle);
-	//	CloseHandle(m_pipeHandle);
-	//	m_pipeHandle = INVALID_HANDLE_VALUE;
-	//}
+	printf("Client closing connection to pipe server %s\n", m_pipeFullName);
+	close((int) m_pipeHandle);
 }

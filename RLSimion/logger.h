@@ -2,7 +2,7 @@
 
 #include <vector>
 #include "parameters.h"
-#include "../tools/WindowsUtils/NamedPipe.h"
+#include "../tools/System/NamedPipe.h"
 #include "stats.h"
 
 class NamedVarSet;
@@ -97,7 +97,7 @@ public:
 	void setOutputFilenames();
 
 	static MessageOutputMode m_messageOutputMode;
-	static CNamedPipeClient m_outputPipe;
+	static NamedPipeClient m_outputPipe;
 	static bool m_bLogMessagesEnabled;
 
 	//Function called to report progress and error messages
