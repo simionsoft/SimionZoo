@@ -8,6 +8,7 @@
 #include "light.h"
 #include "xml-load.h"
 #include "../GeometryLib/bounding-box.h"
+#include <algorithm>
 
 using namespace tinyxml2;
 
@@ -26,11 +27,11 @@ Renderer::Renderer()
 Renderer::~Renderer()
 {
 	//delete here all the objects handled by the renderer. Viewports have references to them, but they don't own them
-	for each (auto obj in m_3DgraphicObjects) delete obj;
-	for each (auto obj in m_2DgraphicObjects) delete obj;
-	for each (auto camera in m_cameras) delete camera;
-	for each (auto light in m_lights) delete light;
-	for each (auto viewport in m_viewPorts) delete viewport;
+	for (auto obj : m_3DgraphicObjects) delete obj;
+	for (auto obj : m_2DgraphicObjects) delete obj;
+	for (auto camera : m_cameras) delete camera;
+	for (auto light : m_lights) delete light;
+	for (auto viewport : m_viewPorts) delete viewport;
 	delete m_pTextureManager;
 	m_pInstance = nullptr;
 }
@@ -172,7 +173,7 @@ Camera* Renderer::getActiveCamera()
 
 GraphicObject3D* Renderer::get3DObjectByName(string name)
 {
-	for each (GraphicObject3D* object in m_3DgraphicObjects)
+	for (GraphicObject3D* object : m_3DgraphicObjects)
 	{
 		if (object->name() == name)
 		return object;
@@ -182,7 +183,7 @@ GraphicObject3D* Renderer::get3DObjectByName(string name)
 
 GraphicObject2D* Renderer::get2DObjectByName(string name)
 {
-	for each (GraphicObject2D* object in m_2DgraphicObjects)
+	for (GraphicObject2D* object : m_2DgraphicObjects)
 	{
 		if (object->name() == name)
 			return object;
@@ -229,14 +230,14 @@ void Renderer::loadSceneObjects(tinyxml2::XMLElement* pNode)
 	if (pObjects)
 		loadChildren<GraphicObject3D>(pObjects, nullptr, m_3DgraphicObjects);
 	//we need to add loaded objects to the default viewport
-	for each (GraphicObject3D* obj in m_3DgraphicObjects)
+	for (GraphicObject3D* obj : m_3DgraphicObjects)
 		m_pDefaultViewPort->addGraphicObject3D(obj);
 
 	//2d graphic objects
 	pObjects = pNode->FirstChildElement(XML_TAG_OBJECTS_2D);
 	if (pObjects)
 		loadChildren<GraphicObject2D>(pObjects, nullptr, m_2DgraphicObjects);
-	for each (GraphicObject2D* obj in m_2DgraphicObjects)
+	for (GraphicObject2D* obj : m_2DgraphicObjects)
 		m_pDefaultViewPort->addGraphicObject2D(obj);
 
 	//cameras
@@ -294,7 +295,7 @@ void Renderer::drawViewPorts()
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 	m_num3DObjectsDrawn = 0;
-	for each (ViewPort* pViewPort in m_viewPorts)
+	for (ViewPort* pViewPort : m_viewPorts)
 	{
 		m_num3DObjectsDrawn+= pViewPort->draw();
 	}
@@ -309,7 +310,7 @@ void Renderer::reshapeWindow(int w,int h)
 
 Binding* Renderer::getBinding(string externalName)
 {
-	for each (Binding* binding in m_bindings)
+	for (Binding* binding : m_bindings)
 	{
 		if (binding->externalName == externalName)
 			return binding;
@@ -361,6 +362,6 @@ void Renderer::drawBoundingBoxes(bool enable, ViewPort* pViewPort)
 	if (pViewPort)
 		pViewPort->drawBoundingBoxes(enable);
 	else
-		for each (ViewPort* pViewPort in m_viewPorts)
+		for (ViewPort* pViewPort : m_viewPorts)
 			pViewPort->drawBoundingBoxes(enable);
 }

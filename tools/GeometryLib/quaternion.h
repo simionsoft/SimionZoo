@@ -50,10 +50,10 @@ public:
 
 	Quaternion inverse();
 
-	Quaternion operator+(const Quaternion quat);
-	Quaternion operator-(const Quaternion quat);
-	Quaternion operator*(const Quaternion quat);
-	Quaternion operator*(const double x);
+	Quaternion operator+(Quaternion quat);
+	Quaternion operator-(Quaternion quat);
+	Quaternion operator*(Quaternion quat);
+	Quaternion operator*(double x);
 	void operator+=(const Quaternion quat);
 	void operator-=(const Quaternion quat);
 	void operator*=(const Quaternion quat);

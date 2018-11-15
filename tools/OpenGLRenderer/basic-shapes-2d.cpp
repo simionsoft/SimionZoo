@@ -116,7 +116,11 @@ void Meter2D::setValue(double value)
 
 	//update the text
 	char buffer[1024];
+#ifdef _WIN32
 	sprintf_s(buffer, 1024, "%s: %.4f", m_name.c_str(), value);
+#else
+	sprintf(buffer, "%s: %.4f", m_name.c_str(), value);
+#endif
 	m_pText->set(string(buffer));
 }
 

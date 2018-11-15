@@ -1,19 +1,22 @@
 #pragma once
 #include <vector>
+#include <string>
+using namespace std;
+
+namespace tinyxml2 { class XMLElement; }
+
 #include "../System/Timer.h"
 #include "viewport.h"
 
 class GraphicObject3D;
 class GraphicObject2D;
 class TextureManager;
-class Binding;
-class Bindable;
 class Camera;
 class Light;
 class BoundingBox3D;
 class BoundingBox2D;
-using namespace std;
-namespace tinyxml2 { class XMLElement; }
+class Binding;
+template <typename T> class BoundObject;
 
 class Renderer
 {

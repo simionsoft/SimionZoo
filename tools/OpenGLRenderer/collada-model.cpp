@@ -286,8 +286,7 @@ string MultiInputDef::getSourceName(string semantic)
 		if ((*it).semantic == semantic)
 			return (*it).source;
 	}
-	throw std::exception((string("Input definition not found: ") + semantic).c_str());
-	return string("Undefined");
+	throw std::runtime_error((string("Input definition not found: ") + semantic).c_str());
 }
 
 bool MultiInputDef::defines(string semantic)

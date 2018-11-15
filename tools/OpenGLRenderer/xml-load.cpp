@@ -185,9 +185,9 @@ namespace XML
 		if (pNode)
 		{
 			if (childExists(pNode,XML_TAG_MIN))
-				load(pNode->FirstChildElement(XML_TAG_MIN), box.min());
+				load(pNode->FirstChildElement(XML_TAG_MIN), box.minAsRef());
 			if (pNode->FirstChildElement(XML_TAG_MAX))
-				load(pNode->FirstChildElement(XML_TAG_MAX), box.max());
+				load(pNode->FirstChildElement(XML_TAG_MAX), box.maxAsRef());
 		}
 	}
 
@@ -196,9 +196,9 @@ namespace XML
 		if (pNode)
 		{
 			if (pNode->FirstChildElement(XML_TAG_MIN))
-				load(pNode->FirstChildElement(XML_TAG_MIN), box.min());
+				load(pNode->FirstChildElement(XML_TAG_MIN), box.minAsRef());
 			if (pNode->FirstChildElement(XML_TAG_MAX))
-				load(pNode->FirstChildElement(XML_TAG_MAX), box.max());
+				load(pNode->FirstChildElement(XML_TAG_MAX), box.maxAsRef());
 		}
 	}
 

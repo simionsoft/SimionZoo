@@ -6,6 +6,9 @@ using namespace std;
 #include "../GeometryLib/vector2d.h"
 #include "../GeometryLib/vector3d.h"
 #include "../GeometryLib/quaternion.h"
+#include "xml-load.h"
+
+class Binding;
 
 class Bindable
 {
@@ -63,7 +66,6 @@ public:
 
 	string internalName;
 
-	template <typename T>
 	BoundObject(T& object, string& name)
 		: m_obj(object), internalName(name) {}
 	

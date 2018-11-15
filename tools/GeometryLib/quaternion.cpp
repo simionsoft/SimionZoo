@@ -184,7 +184,7 @@ Quaternion Quaternion::inverse()
 
 
 
-Quaternion Quaternion::operator+(const Quaternion quat)
+Quaternion Quaternion::operator+(Quaternion quat)
 {
 	if (bUseOrientations())
 		fromOrientations();
@@ -195,7 +195,7 @@ Quaternion Quaternion::operator+(const Quaternion quat)
 	return result;
 }
 
-Quaternion Quaternion::operator-(const Quaternion quat)
+Quaternion Quaternion::operator-(Quaternion quat)
 {
 	if (bUseOrientations())
 		fromOrientations();
@@ -206,7 +206,7 @@ Quaternion Quaternion::operator-(const Quaternion quat)
 	return result;
 }
 
-Quaternion Quaternion::operator*(const Quaternion quat)
+Quaternion Quaternion::operator*(Quaternion quat)
 {
 	if (bUseOrientations())
 		fromOrientations();
@@ -253,7 +253,7 @@ void Quaternion::operator*= (const Quaternion quat)
 	(*this) = result;
 }
 
-Quaternion Quaternion::operator*(const double x)
+Quaternion Quaternion::operator*(double x)
 {
 	if (bUseOrientations())
 		fromOrientations();

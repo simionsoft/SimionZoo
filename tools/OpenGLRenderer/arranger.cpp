@@ -5,6 +5,7 @@
 #include "text.h"
 #include "../../tools/GeometryLib/vector2d.h"
 #include <algorithm>
+#include <math.h>
 
 Arranger::Arranger()
 {
@@ -47,7 +48,7 @@ void Arranger::arrange2DObjects(vector<GraphicObject2D*>& objects, Vector2D& are
 
 	double lastRow = 0.0;
 	unsigned int viewIndex = 0;
-	for each (GraphicObject2D* pObj in objects)
+	for (GraphicObject2D* pObj : objects)
 	{
 		//new row??
 		if ((objSize.x() + margin.x() * 2.0) *(double)(viewIndex + 1) - lastRow >1.01)
@@ -73,7 +74,7 @@ void Arranger::tag2DObjects(vector<GraphicObject2D*>& objects, ViewPort* pViewPo
 	//set legend to each function viewer
 	int objIndex = 0;
 	Vector2D legendOffset;
-	for each (GraphicObject2D* pObj in objects)
+	for (GraphicObject2D* pObj : objects)
 	{
 		legendOffset = Vector2D(0.0, pObj->getTransform().scale().y() + 0.01);
 		Text2D* pFunctionLegend = new Text2D(pObj->name() + string("-legend"), pObj->getTransform().translation() + legendOffset, 0.3);

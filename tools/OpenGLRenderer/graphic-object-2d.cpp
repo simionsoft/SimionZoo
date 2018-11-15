@@ -37,7 +37,7 @@ vector<GraphicObject2D*>& GraphicObject2D::getChildren()
 
 void GraphicObject2D::drawChildren()
 {
-	for each(GraphicObject2D* pChild in m_children)
+	for (GraphicObject2D* pChild : m_children)
 	{
 		pChild->setTransform();
 		pChild->draw();
@@ -59,6 +59,6 @@ GraphicObject2D* GraphicObject2D::getInstance(tinyxml2::XMLElement* pNode)
 GraphicObject2D::~GraphicObject2D()
 {
 	//The renderer doesn't know about children, so we have to delete them here
-	for each(GraphicObject2D* pChild in m_children)
+	for (GraphicObject2D* pChild : m_children)
 		delete pChild;
 }

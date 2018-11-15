@@ -27,7 +27,7 @@ public:
 
 	void fromCameraMatrix(Matrix44& cameraMatrix);
 
-	bool isVisible(BoundingBox3D& boundingBox) const;
-	bool isVisible(Point3D& point) const;
+	bool isVisible(const BoundingBox3D& boundingBox) const;
+	bool isVisible(const Point3D& point) const;
 };
 

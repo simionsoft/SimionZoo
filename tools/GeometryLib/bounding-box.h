@@ -16,8 +16,12 @@ public:
 	void addPoint(Point3D p);
 	void reset();
 
-	Point3D& min();
-	Point3D& max();
+	const Point3D& min() const;
+	const Point3D& max() const;
+	Point3D& minAsRef();
+	Point3D& maxAsRef();
+	void setMin(const Point3D& min) { m_min = min; }
+	void setMax(const Point3D& max) { m_max = max; }
 	Point3D size() const;
 	Point3D center() const;
 	Point3D getMinMax(unsigned int index) const;
@@ -28,18 +32,22 @@ public:
 class BoundingBox2D
 {
 	bool m_bSet = false;
-	Vector2D m_min, m_max;
+	Point2D m_min, m_max;
 public:
 	BoundingBox2D();
 	virtual ~BoundingBox2D();
 
-	void addPoint(Vector2D p);
+	void addPoint(Point2D p);
 	void reset();
 
-	Vector2D& min();
-	Vector2D& max();
-	Vector2D size() const;
-	Vector2D center() const;
+	const Point2D& min() const;
+	const Point2D& max() const;
+	Point2D& minAsRef();
+	Point2D& maxAsRef();
+	void setMin(const Point2D& min) { m_min = min; }
+	void setMax(const Point2D& max) { m_max = max; }
+	Point2D size() const;
+	Point2D center() const;
 
 	bool bSet() const { return m_bSet; }
 };

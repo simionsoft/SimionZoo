@@ -13,13 +13,13 @@
 
 Binding::~Binding()
 {
-	for each (Bindable* object in boundObjects)
+	for (Bindable* object : boundObjects)
 		delete object;
 }
 
 void Binding::update(double value)
 {
-	for each (Bindable* object in boundObjects)
+	for (Bindable* object : boundObjects)
 		object->update( value*m_multiplier + m_offset );
 }
 

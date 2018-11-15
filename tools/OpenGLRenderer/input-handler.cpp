@@ -2,6 +2,7 @@
 #include "input-handler.h"
 #include "renderer.h"
 #include "camera.h"
+#include <math.h>
 
 #define MOVE_SPEED 10.0
 #define ROTATION_SPEED 1.0
