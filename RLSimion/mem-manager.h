@@ -1,5 +1,7 @@
 #pragma once
 
+#include <stddef.h>
+
 typedef size_t BUFFER_SIZE;
 
 #include <vector>
@@ -55,10 +57,10 @@ public:
 
 	bool bAskPermissionAllocateMemBuffer(BUFFER_SIZE memSizeRequested)
 	{
-		if (m_maxAllocatedMem < 0) return true;
-		int allocatedMem = getAllocatedMem();
+		if (this->m_maxAllocatedMem < 0) return true;
+		int allocatedMem = this->getAllocatedMem();
 
-		if (allocatedMem + memSizeRequested > m_maxAllocatedMem)
+		if (allocatedMem + memSizeRequested > this->m_maxAllocatedMem)
 			return false;
 		return true;
 	}

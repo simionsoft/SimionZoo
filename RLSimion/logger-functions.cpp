@@ -2,6 +2,7 @@
 #include "app.h"
 #include "experiment.h"
 #include "function-sampler.h"
+#include "../tools/System/CrossPlatform.h"
 #include <unordered_map>
 using namespace std;
 
@@ -12,37 +13,37 @@ using namespace std;
 
 #define MAX_FUNCTION_ID_LENGTH 128
 
-//using __int64 to assure C# data-type compatibility
+//using long long int to assure C# data-type compatibility
 
 struct FunctionLogHeader
 {
-	__int64 magicNumber = FUNCTION_LOG_FILE_HEADER;
-	__int64 fileVersion = FUNCTION_LOG_FILE_VERSION;
-	__int64 numFunctions = 0;
+	long long int magicNumber = FUNCTION_LOG_FILE_HEADER;
+	long long int fileVersion = FUNCTION_LOG_FILE_VERSION;
+	long long int numFunctions = 0;
 };
 
 struct FunctionDeclarationHeader
 {
-	__int64 magicNumber = FUNCTION_DECLARATION_HEADER;
-	__int64 id;
+	long long int magicNumber = FUNCTION_DECLARATION_HEADER;
+	long long int id;
 	char name[MAX_FUNCTION_ID_LENGTH];
-	__int64 numSamplesX;
-	__int64 numSamplesY;
-	__int64 numSamplesZ;
+	long long int numSamplesX;
+	long long int numSamplesY;
+	long long int numSamplesZ;
 };
 
 struct FunctionSampleHeader
 {
-	__int64 magicNumber = FUNCTION_SAMPLE_HEADER;
-	__int64 episode;
-	__int64 step;
-	__int64 experimentStep;
-	__int64 id;
+	long long int magicNumber = FUNCTION_SAMPLE_HEADER;
+	long long int episode;
+	long long int step;
+	long long int experimentStep;
+	long long int id;
 };
 
 void Logger::openFunctionLogFile(const char* filename)
 {
-	fopen_s(&m_functionLogFile, m_outputFunctionLogBinary.c_str(), "wb");
+	CrossPlatform::fopen_s(&m_functionLogFile, m_outputFunctionLogBinary.c_str(), "wb");
 	if (m_functionLogFile)
 	{
 		//write function log header
@@ -53,10 +54,10 @@ void Logger::openFunctionLogFile(const char* filename)
 		//write function declarations
 		unsigned int functionId = 0;
 		FunctionDeclarationHeader functionDeclarationHeader;
-		for each (FunctionSampler* sampler in SimionApp::get()->getFunctionSamplers())
+		for (FunctionSampler* sampler : SimionApp::get()->getFunctionSamplers())
 		{
 			functionDeclarationHeader.id = functionId;
-			sprintf_s(functionDeclarationHeader.name, MAX_FUNCTION_ID_LENGTH, "%s", sampler->getFunctionId().c_str());
+			CrossPlatform::sprintf_s(functionDeclarationHeader.name, MAX_FUNCTION_ID_LENGTH, "%s", sampler->getFunctionId().c_str());
 			functionDeclarationHeader.numSamplesX = (unsigned int)sampler->getNumSamplesX();
 			functionDeclarationHeader.numSamplesY = (unsigned int)sampler->getNumSamplesY();
 			functionDeclarationHeader.numSamplesZ = 1; //for now, not using it
@@ -81,7 +82,7 @@ void Logger::writeFunctionLogSample()
 		return;
 
 	unsigned int functionId = 0;
-	for each (FunctionSampler* sampler in SimionApp::get()->getFunctionSamplers())
+	for (FunctionSampler* sampler : SimionApp::get()->getFunctionSamplers())
 	{
 		//Write the header
 		FunctionSampleHeader header;

@@ -2,6 +2,7 @@
 #include "experiment.h"
 #include "logger.h"
 #include "app.h"
+#include "../tools/System/CrossPlatform.h"
 
 #define FEATURE_BLOCK_SIZE 1024
 #define DEFAULT_FEATURE_THRESHOLD 0.000001
@@ -48,7 +49,7 @@ void FeatureList::resize(size_t newSize, bool bKeepFeatures)
 	size_t oldsize = sizeof(Feature)*m_numFeatures;
 	size_t newsize = sizeof(Feature)*newSize;
 	if (bKeepFeatures)
-		memcpy_s(pNewFeatures, sizeof(Feature)*newSize, m_pFeatures, sizeof(Feature)*m_numFeatures);
+		CrossPlatform::memcpy_s(pNewFeatures, sizeof(Feature)*newSize, m_pFeatures, sizeof(Feature)*m_numFeatures);
 	else m_numFeatures = 0;
 
 	delete[] m_pFeatures;

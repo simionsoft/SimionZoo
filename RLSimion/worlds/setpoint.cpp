@@ -14,7 +14,7 @@ int countlines(const char *filename)
   fopen_s(&fp,filename,"r");
 
   if (!fp)
-	  throw std::exception((std::string("Couldn't open setpoint file: ") + std::string(filename)).c_str());
+	  throw std::runtime_error((std::string("Couldn't open setpoint file: ") + std::string(filename)).c_str());
 
   int ch=0;
   int lines=1;
@@ -66,7 +66,7 @@ FileSetPoint::FileSetPoint(const char* filename)
 	}
 	else
 	{
-		throw std::exception((std::string("Couldn't open setpoint file: ") + std::string(filename)).c_str());
+		throw std::runtime_error((std::string("Couldn't open setpoint file: ") + std::string(filename)).c_str());
 	}
 
 	m_totalTime= m_pTimes[m_numSteps-1];
@@ -152,7 +152,7 @@ HHFileSetPoint::HHFileSetPoint(const char* filename) : FileSetPoint()
 	}
 	else
 	{
-		throw std::exception((std::string("Couldn't open setpoint file: ") + std::string(filename)).c_str());
+		throw std::runtime_error((std::string("Couldn't open setpoint file: ") + std::string(filename)).c_str());
 	}
 }
 

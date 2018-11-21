@@ -1,4 +1,5 @@
 #pragma once
+#ifdef _WIN32 && _WIN64
 
 #include <vector>
 #include "simion.h"
@@ -53,3 +54,4 @@ public:
 	virtual INetwork* getQNetworkForTargetActionSelection();
 };
 
+#endif

@@ -13,8 +13,8 @@ public:
 	Arranger();
 	virtual ~Arranger();
 
-	void arrange2DObjects(vector<GraphicObject2D*>& objects, Vector2D& areaOrigin, Vector2D& areaSize
-		, Vector2D& minObjSize, Vector2D& maxObjSize, Vector2D& margin );
+	void arrange2DObjects(vector<GraphicObject2D*>& objects, const Vector2D& areaOrigin,const  Vector2D& areaSize
+		, const Vector2D& minObjSize, const Vector2D& maxObjSize, const Vector2D& margin );
 	void tag2DObjects(vector<GraphicObject2D*>& objects, ViewPort* pViewPort);
 };
 

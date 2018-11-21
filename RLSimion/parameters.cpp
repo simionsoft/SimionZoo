@@ -95,9 +95,9 @@ void WIRE_CONNECTION::set(double value)
 	Wire* pWire = SimionApp::get()->wireGet(m_name);
 	pWire->setValue(value);
 }
-
-#include "../tools/CNTKWrapper/CNTKWrapper.h"
-
+#if defined(_WIN32) && defined(_WIN64)
+	#include "../tools/CNTKWrapper/CNTKWrapper.h"
+#endif
 //Overriden Copy-assignment to avoid destroying copied buffer
 //Expected use: problem= NN_DEFINITION(...)
 NN_DEFINITION&  NN_DEFINITION::operator=(NN_DEFINITION& copied)

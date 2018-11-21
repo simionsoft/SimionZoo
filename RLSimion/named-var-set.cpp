@@ -2,20 +2,21 @@
 #include "app.h"
 #include "wire.h"
 #include <algorithm>
+#include "../tools/System/CrossPlatform.h"
 using namespace std;
 
 NamedVarProperties::NamedVarProperties()
 {
-	strcpy_s(m_name, VAR_NAME_MAX_LENGTH, "N/A");
-	strcpy_s(m_units, VAR_NAME_MAX_LENGTH, "N/A");
+	CrossPlatform::strcpy_s(m_name, VAR_NAME_MAX_LENGTH, "N/A");
+	CrossPlatform::strcpy_s(m_units, VAR_NAME_MAX_LENGTH, "N/A");
 	m_min = std::numeric_limits<double>::lowest();
 	m_max = std::numeric_limits<double>::max(); 
 }
 
 NamedVarProperties::NamedVarProperties(const char* name, const char* units, double min, double max, bool bCircular)
 {
-	sprintf_s(m_name, VAR_NAME_MAX_LENGTH, name);
-	sprintf_s(m_units, VAR_NAME_MAX_LENGTH, units);
+	CrossPlatform::sprintf_s(m_name, VAR_NAME_MAX_LENGTH, name);
+	CrossPlatform::sprintf_s(m_units, VAR_NAME_MAX_LENGTH, units);
 	m_min = min;
 	m_max = max;
 	m_bCircular = bCircular; //default value
@@ -23,7 +24,7 @@ NamedVarProperties::NamedVarProperties(const char* name, const char* units, doub
 
 void NamedVarProperties::setName(const char* name)
 {
-	strcpy_s(m_name, VAR_NAME_MAX_LENGTH, name);
+	CrossPlatform::strcpy_s(m_name, VAR_NAME_MAX_LENGTH, name);
 }
 
 NamedVarProperties* Descriptor::getProperties(const char* name)
@@ -43,7 +44,7 @@ NamedVarProperties* Descriptor::getProperties(const char* name)
 		return pProperties;
 	}
 	else
-		throw exception("Wrong variable name given to Descriptor::getVarIndex()");
+		throw runtime_error("Wrong variable name given to Descriptor::getVarIndex()");
 }
 
 size_t Descriptor::addVariable(const char* name, const char* units, double min, double max, bool bCircular)
@@ -121,10 +122,10 @@ void NamedVarSet::set(const char* varName, double value)
 		if (pWire != nullptr)
 			pWire->setValue(value);
 		else
-			throw std::exception("Incorrect variable name in NamedVarSet::set()");
+			throw std::runtime_error("Incorrect variable name in NamedVarSet::set()");
 	}
 	else
-		throw std::exception("Incorrect variable name in NamedVarSet::set()");
+		throw std::runtime_error("Incorrect variable name in NamedVarSet::set()");
 }
 
 void NamedVarSet::set(size_t i, double value)
@@ -145,7 +146,7 @@ void NamedVarSet::set(size_t i, double value)
 			m_pValues[i] = value;
 		}
 	}
-	else throw std::exception("Incorrect variable index in NamedVarSet::set()");
+	else throw std::runtime_error("Incorrect variable index in NamedVarSet::set()");
 }
 
 double NamedVarSet::getNormalized(const char* varName) const
@@ -157,7 +158,7 @@ double NamedVarSet::get(size_t i) const
 {
 	if (i >= 0 && i<m_numVars)
 		return m_pValues[i];
-	throw std::exception("Incorrect variable index in NamedVarSet::get()");
+	throw std::runtime_error("Incorrect variable index in NamedVarSet::get()");
 }
 
 double NamedVarSet::get(const char* varName) const
@@ -175,10 +176,10 @@ double NamedVarSet::get(const char* varName) const
 		if (pWire != nullptr)
 			return pWire->getValue();
 		else
-			throw std::exception("Incorrect variable name in NamedVarSet::get()");
+			throw std::runtime_error("Incorrect variable name in NamedVarSet::get()");
 	}
 	else
-		throw std::exception("Incorrect variable name in NamedVarSet::get()");
+		throw std::runtime_error("Incorrect variable name in NamedVarSet::get()");
 }
 
 
@@ -186,14 +187,14 @@ double* NamedVarSet::getValuePtr(size_t i)
 {
 	if (i >= 0 && i<m_numVars)
 		return &m_pValues[i];
-	throw std::exception("Incorrect variable index in NamedVarSet::getValuePtr()");
+	throw std::runtime_error("Incorrect variable index in NamedVarSet::getValuePtr()");
 }
 
 double& NamedVarSet::getRef(size_t i)
 {
 	if (i >= 0 && i<m_numVars)
 		return m_pValues[i];
-	throw std::exception("Incorrect variable index in NamedVarSet::getRef()");
+	throw std::runtime_error("Incorrect variable index in NamedVarSet::getRef()");
 }
 
 
@@ -209,7 +210,7 @@ double NamedVarSet::getSumValue() const
 void NamedVarSet::copy(const NamedVarSet* nvs)
 {
 	if(m_numVars != nvs->getNumVars())
-		throw std::exception("Missmatched array lenghts in NamedVarSet::copy()");
+		throw std::runtime_error("Missmatched array lenghts in NamedVarSet::copy()");
 
 	for (size_t i = 0; i<m_numVars; i++)
 	{

@@ -34,9 +34,9 @@
 
 #if defined(GLEW_OSMESA)
 #  define GLAPI extern
-#include "osmesa.h"
+#include "../include/osmesa.h"
 #elif defined(GLEW_EGL)
-#include "eglew.h"
+#include "../include/eglew.h"
 #elif defined(_WIN32)
 #include "../include/wglew.h"
 #elif !defined(__ANDROID__) && !defined(__native_client__) && !defined(__HAIKU__) && (!defined(__APPLE__) || defined(GLEW_APPLE_GLX))

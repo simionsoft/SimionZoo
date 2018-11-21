@@ -10,7 +10,7 @@
 #include "vfa.h"
 #include "featuremap.h"
 #include "simgod.h"
-#include "worlds\world.h"
+#include "worlds/world.h"
 #include "logger.h"
 #include <algorithm>
 
@@ -29,7 +29,7 @@ void Actor::deferredLoadStep()
 	State* s= SimionApp::get()->pWorld->getDynamicModel()->getStateInstance();
 	Action* a= SimionApp::get()->pWorld->getDynamicModel()->getActionInstance();
 	
-	if (m_pInitController.shared_ptr())
+	if (m_pInitController.sharedPtr())
 	{
 		size_t numActionDims = std::min((size_t) m_pInitController->getNumOutputs(), m_policyLearners.size());
 		Logger::logMessage(MessageType::Info, "Initializing the policy weights using the base controller");

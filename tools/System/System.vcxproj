@@ -140,6 +140,7 @@
     <ClCompile Include="Timer.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="CrossPlatform.h" />
     <ClInclude Include="FileUtils.h" />
     <ClInclude Include="NamedPipe.h" />
     <ClInclude Include="Process.h" />

@@ -50,6 +50,7 @@
     <ClCompile Include="async-deep-simion.cpp" />
     <ClCompile Include="CNTKWrapperClient.cpp" />
     <ClCompile Include="config.cpp" />
+    <ClCompile Include="controller-adaptive.cpp" />
     <ClCompile Include="controller.cpp" />
     <ClCompile Include="critic-td-lambda.cpp" />
     <ClCompile Include="critic-tdc-lambda.cpp" />
@@ -120,6 +121,7 @@
     <ClInclude Include="async-deep-simion.h" />
     <ClInclude Include="CNTKWrapperClient.h" />
     <ClInclude Include="config.h" />
+    <ClInclude Include="controller-adaptive.h" />
     <ClInclude Include="controller.h" />
     <ClInclude Include="critic.h" />
     <ClInclude Include="DDPG.h" />

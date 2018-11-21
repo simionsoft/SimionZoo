@@ -1,9 +1,12 @@
 #include "CNTKWrapperClient.h"
-#include "../tools/CNTKWrapper/CNTKWrapper.h"
 
-#include <windows.h>
-#undef min
-#undef max
+//so far, we only include CNTK-related stuff if we are under Windows AND x64 architecture
+#if defined(_WIN32) && defined(_WIN64)
+	#include "../tools/CNTKWrapper/CNTKWrapper.h"
+	#include <windows.h>
+	#undef min
+	#undef max
+#endif
 
 #include "app.h"
 #include "logger.h"
@@ -11,25 +14,29 @@
 
 namespace CNTK
 {
+#if defined(_WIN32) && defined(_WIN64)
 	int NumNetworkInstances = 0;
 	HMODULE hCNTKWrapperDLL = 0;
 
 	WrapperClient::getNetworkDefinitionDLL WrapperClient::getNetworkDefinition = 0;
 	WrapperClient::setDeviceDLL WrapperClient::setDevice = 0;
-
+#endif
 	//We want to be able to know the requirements even if we are running Badger on a Win-32 machine
 	//so, the only thing we actually don't do on Win-32 is load the dll and retrieve the access point
 
 	void WrapperClient::Load()
 	{
+#if defined(_WIN32) && defined(_WIN64)
 		NumNetworkInstances++;
+
 		if (hCNTKWrapperDLL == 0)
+
 		{
 			//Set the number of CPU threads to "all"
 			SimionApp::get()->setNumCPUCores(0);
 			SimionApp::get()->setRequiredArchitecture("Win-64");
 
-#ifdef _WIN64
+
 			//Load the wrapper library
 			Logger::logMessage(MessageType::Info, "Loading CNTK library");
 
@@ -49,7 +56,7 @@ namespace CNTK
 			setDevice = (setDeviceDLL)GetProcAddress(hCNTKWrapperDLL, "CNTKWrapper::setDevice");
 			if (setDevice == 0)
 				Logger::logMessage(MessageType::Error, "Failed to get a pointer to CNTKWrapper:setDevice()");
-
+		}
 #endif
 
 
@@ -70,12 +77,14 @@ namespace CNTK
 			SimionApp::get()->registerInputFile("..\\bin\\mkl_cntk_p.dll");
 			SimionApp::get()->registerInputFile("..\\bin\\mkldnn.dll");
 			SimionApp::get()->registerInputFile("..\\bin\\nvml.dll");
+#if defined(_WIN32) && defined(_WIN64)
 		}
+#endif
 	}
 
 	void WrapperClient::UnLoad()
 	{
-#ifdef _WIN64
+#if defined(_WIN32) && defined(_WIN64)
 		NumNetworkInstances--;
 		if (hCNTKWrapperDLL && NumNetworkInstances==0)
 		{

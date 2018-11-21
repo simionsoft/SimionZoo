@@ -1,5 +1,5 @@
 #include "deferred-load.h"
-#include "SimGod.h"
+#include "simgod.h"
 #include "app.h"
 
 DeferredLoad::DeferredLoad(unsigned int loadOrder)

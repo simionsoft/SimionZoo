@@ -96,7 +96,7 @@ StateFeatureMap::StateFeatureMap(ConfigNode* pConfigNode)
 StateFeatureMap::StateFeatureMap(FeatureMapper* pFeatureMapper, Descriptor& stateDescriptor, vector<size_t> variableIds, size_t numFeaturesPerVariable)
 	:FeatureMap(numFeaturesPerVariable)
 {
-	for each(size_t varid in variableIds)
+	for (size_t varid : variableIds)
 	{
 		m_stateVariableNames.push_back( stateDescriptor[varid].getName() );
 		m_stateVariables.add(new STATE_VARIABLE(stateDescriptor[varid].getName()));
@@ -148,7 +148,7 @@ ActionFeatureMap::ActionFeatureMap(ConfigNode* pConfigNode)
 ActionFeatureMap::ActionFeatureMap(FeatureMapper* pFeatureMapper, Descriptor& actionDescriptor, vector<size_t> variableIds, size_t numFeaturesPerVariable)
 	:FeatureMap(numFeaturesPerVariable)
 {
-	for each(size_t varid in variableIds)
+	for (size_t varid : variableIds)
 	{
 		m_actionVariableNames.push_back(actionDescriptor[varid].getName());
 		m_actionVariables.add(new ACTION_VARIABLE(actionDescriptor[varid].getName()));

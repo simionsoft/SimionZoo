@@ -86,7 +86,7 @@ const char* LQRController::getOutputAction(size_t output)
 {
 	if (output == 0)
 		return m_outputAction.get();
-	throw std::exception("LQRController. Invalid action output given.");
+	throw std::runtime_error("LQRController. Invalid action output given.");
 }
 
 //PID//////////////////////////////////////////////////////////////////////////
@@ -119,7 +119,7 @@ const char* PIDController::getOutputAction(size_t output)
 {
 	if (output == 0)
 		return m_outputAction.get();
-	throw std::exception("LQRController. Invalid action output given.");
+	throw std::runtime_error("LQRController. Invalid action output given.");
 }
 
 double PIDController::evaluate(const State* s, const Action* a, unsigned int output)
@@ -173,7 +173,7 @@ const char* WindTurbineVidalController::getOutputAction(size_t output)
 	case 0: return "beta";
 	case 1: return "T_g";
 	}
-	throw std::exception("LQRController. Invalid action output given.");
+	throw std::runtime_error("LQRController. Invalid action output given.");
 }
 
 //aux function used in WindTurbineVidal controller
@@ -262,7 +262,7 @@ const char* WindTurbineBoukhezzarController::getOutputAction(size_t output)
 	case 0: return "beta";
 	case 1: return "T_g";
 	}
-	throw std::exception("LQRController. Invalid action output given.");
+	throw std::runtime_error("LQRController. Invalid action output given.");
 }
 
 
@@ -366,7 +366,7 @@ const char* WindTurbineJonkmanController::getOutputAction(size_t output)
 	case 0: return "T_g";
 	}
 
-	throw std::exception("LQRController. Invalid action output given.");
+	throw std::runtime_error("LQRController. Invalid action output given.");
 }
 
 double WindTurbineJonkmanController::evaluate(const State *s,const Action *a, unsigned int output)

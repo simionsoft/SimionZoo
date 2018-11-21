@@ -44,12 +44,10 @@ public:
 	virtual double get() = 0;
 };
 
-template <typename T>
-class Stats: public IStats
+template <typename T> class Stats: public IStats
 {
 	T& m_variable;
 public:
-	template <typename T>
 	Stats(string key, string subkey, T& variable): m_variable(variable)
 	{
 		m_key = key;

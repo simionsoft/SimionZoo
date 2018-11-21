@@ -1,6 +1,7 @@
 #pragma once
 
 #include "mem-manager.h"
+#include "mem-block.h"
 
 #include <vector>
 #include <list>

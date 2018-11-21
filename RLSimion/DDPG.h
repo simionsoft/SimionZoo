@@ -1,5 +1,5 @@
 #pragma once
-
+#ifdef _WIN32 && _WIN64
 #include "simion.h"
 #include "deferred-load.h"
 
@@ -60,3 +60,5 @@ public:
 	//updates the critic network and the actor's policy network (both the target and the prediction network)
 	virtual double update(const State *s, const Action *a, const State *s_p, double r, double behaviorProb);
 };
+
+#endif

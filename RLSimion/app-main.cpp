@@ -26,7 +26,7 @@ int main(int argc, char* argv[])
 			Logger::logMessage(MessageType::Error, "Too few parameters: no config file provided");
 
 		ConfigNode* pParameters= configXMLFile.loadFile(argv[1]);
-		if (!pParameters) throw std::exception("Wrong experiment configuration file");
+		if (!pParameters) throw std::runtime_error("Wrong experiment configuration file");
 
 		if (SimionApp::flagPassed(argc, argv, "requirements"))
 			Logger::enableLogMessages(false);
@@ -55,7 +55,7 @@ int main(int argc, char* argv[])
 
 			delete pApp;
 		}
-		else throw std::exception("Wrong experiment configuration file");
+		else throw std::runtime_error("Wrong experiment configuration file");
 	}
 	catch (std::exception& e)
 	{

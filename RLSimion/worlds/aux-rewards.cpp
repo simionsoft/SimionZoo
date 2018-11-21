@@ -2,6 +2,7 @@
 #include "../named-var-set.h"
 #include "world.h"
 #include <algorithm>
+#include <math.h>
 
 double static getDistanceBetweenPoints(double x1, double y1, double x2, double y2)
 {

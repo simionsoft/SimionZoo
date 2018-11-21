@@ -1,9 +1,8 @@
-#include "stdafx.h"
 #include "app.h"
 #include "logger.h"
 #include "worlds/world.h"
 #include "experiment.h"
-#include "SimGod.h"
+#include "simgod.h"
 #include "config.h"
 #include "utils.h"
 #include "function-sampler.h"
@@ -16,6 +15,7 @@
 #include "../tools/OpenGLRenderer/material.h"
 #include "../tools/OpenGLRenderer/arranger.h"
 #include "../tools/System/FileUtils.h"
+#include "../tools/System/CrossPlatform.h"
 
 //Properties and xml tags
 #define APP_REQUIREMENTS_XML_TAG "Requirements"
@@ -32,7 +32,7 @@ SimionApp::SimionApp(ConfigNode* pConfigNode)
 	m_pAppInstance = this;
 
 	pConfigNode = pConfigNode->getChild("RLSimion");
-	if (!pConfigNode) throw std::exception("Wrong experiment configuration file");
+	if (!pConfigNode) throw std::runtime_error("Wrong experiment configuration file");
 
 	pMemManager = new MemManager<SimionMemPool>();
 
@@ -56,8 +56,8 @@ SimionApp::~SimionApp()
 	if (pMemManager != nullptr) delete pMemManager;
 	if (m_pRenderer != nullptr) delete m_pRenderer;
 
-	for each (FunctionSampler* sampler in m_pFunctionSamplers) delete sampler;
-	for each (pair<string, Wire*> p in m_wires) delete p.second;
+	for (FunctionSampler* sampler : m_pFunctionSamplers) delete sampler;
+	for (pair<string, Wire*> p : m_wires) delete p.second;
 
 	m_pAppInstance = 0;
 	for (auto it = m_inputFiles.begin(); it != m_inputFiles.end(); it++) delete (*it);
@@ -75,7 +75,7 @@ SimionApp::~SimionApp()
 const char* SimionApp::getArgValue(int argc,char** argv,char* argName)
 {
 	char argPrefix[256];
-	sprintf_s(argPrefix, 256, "-%s=", argName);
+	CrossPlatform::sprintf_s(argPrefix, 256, "-%s=", argName);
 	for (int i = 1; i < argc; ++i)
 	{
 		if (strstr(argv[i], argPrefix) == argv[i])
@@ -89,7 +89,7 @@ const char* SimionApp::getArgValue(int argc,char** argv,char* argName)
 bool SimionApp::flagPassed(int argc, char** argv, char* flagName)
 {
 	char argPrefix[256];
-	sprintf_s(argPrefix, 256, "-%s", flagName);
+	CrossPlatform::sprintf_s(argPrefix, 256, "-%s", flagName);
 	for (int i = 1; i < argc; ++i)
 	{
 		if (!strcmp(argv[i], argPrefix))
@@ -207,12 +207,12 @@ Wire* SimionApp::wireGet(string name)
 void SimionApp::registerInputFile(const char* filepath, const char* rename)
 {
 	char* copy = new char[strlen(filepath) + 1];
-	strcpy_s(copy, strlen(filepath) + 1, filepath);
+	CrossPlatform::strcpy_s(copy, strlen(filepath) + 1, filepath);
 	m_inputFiles.push_back(copy);
 	if (rename != 0)
 	{
 		copy = new char[strlen(rename) + 1];
-		strcpy_s(copy, strlen(rename) + 1, rename);
+		CrossPlatform::strcpy_s(copy, strlen(rename) + 1, rename);
 		m_inputFilesRenamed.push_back(copy);
 	}
 	else m_inputFilesRenamed.push_back(0);
@@ -253,7 +253,7 @@ const char* SimionApp::getOutputFile(unsigned int i)
 void SimionApp::registerOutputFile(const char* filepath)
 {
 	char* copy = new char[strlen(filepath) + 1];
-	strcpy_s(copy, strlen(filepath) + 1, filepath);
+	CrossPlatform::strcpy_s(copy, strlen(filepath) + 1, filepath);
 	m_outputFiles.push_back(copy);
 }
 
@@ -400,7 +400,7 @@ void SimionApp::initRenderer(string sceneFile, State* s, Action* a)
 		ViewPort* functionViewPort = new ViewPort(0.0, 0.0, 1.0, mainViewPortMinY);
 		m_pRenderer->addViewPort(functionViewPort);
 		vector<GraphicObject2D*> objects;
-		for each (FunctionSampler* pSampler in m_pFunctionSamplers)
+		for (FunctionSampler* pSampler : m_pFunctionSamplers)
 		{
 			//create the function viewer
 			FunctionViewer* pFunctionViewer = nullptr;
@@ -442,9 +442,9 @@ void SimionApp::initFunctionSamplers(State* s, Action* a)
 		{
 			//store all sampled variables to group them in pairs
 			m_sampledVariables.clear();
-			for each(string varName in functionIt.second->getInputStateVariables())
+			for (string varName : functionIt.second->getInputStateVariables())
 				m_sampledVariables.push_back(make_pair(VariableSource::StateSource, varName));
-			for each(string varName in functionIt.second->getInputActionVariables())
+			for (string varName : functionIt.second->getInputActionVariables())
 				m_sampledVariables.push_back(make_pair(VariableSource::ActionSource, varName));
 
 			for (size_t outputIndex = 0; outputIndex < functionIt.second->getNumOutputs(); outputIndex++)
@@ -496,7 +496,7 @@ void SimionApp::updateScene(State* s, Action* a)
 	//Update the function views each m_functionViewUpdateStepFreq steps
 	if ((pExperiment->getExperimentStep()-1) % m_functionViewUpdateStepFreq == 0)
 	{
-		for each(auto functionIt in m_pFunctionViews)
+		for (auto functionIt : m_pFunctionViews)
 		{
 			const vector<double>& sampledValues = functionIt.second->sample();
 			functionIt.first->update(sampledValues);
@@ -512,7 +512,7 @@ void SimionApp::update2DMeters(State* s, Action* a)
 	//2D METERS
 	//update stats
 	unsigned int statIndex = 0;
-	for each (Meter2D* pMeter2D in m_pStatsUIMeters)
+	for (Meter2D* pMeter2D : m_pStatsUIMeters)
 	{
 		IStats* pStat = pLogger->getStats(statIndex);
 		pMeter2D->setValue(pStat->get());

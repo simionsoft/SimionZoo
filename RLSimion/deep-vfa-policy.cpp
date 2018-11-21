@@ -1,6 +1,6 @@
 #include "deep-vfa-policy.h"
 #include "parameters.h"
-#include "SimGod.h"
+#include "simgod.h"
 #include "app.h"
 #include "noise.h"
 #include "featuremap.h"
@@ -8,6 +8,7 @@
 #include "experience-replay.h"
 #include "experiment.h"
 #include <algorithm>
+#include <math.h>
 
 std::shared_ptr<DiscreteDeepPolicy> DiscreteDeepPolicy::getInstance(ConfigNode* pConfigNode)
 {

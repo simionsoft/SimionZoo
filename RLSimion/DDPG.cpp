@@ -1,5 +1,5 @@
 #include "DDPG.h"
-
+#ifdef _WIN32 && _WIN64
 #include "../tools/CNTKWrapper/CNTKWrapper.h"
 #include "app.h"
 #include "noise.h"
@@ -189,6 +189,7 @@ void DDPG::updateCritic(const State* s, const Action* a, const State* s_p, doubl
 			m_pCriticTargetNetwork = m_pCriticOnlineNetwork->clone();
 		}
 	}
+
 }
 
-
+#endif

@@ -2,7 +2,7 @@
 #include "config.h"
 #include "parameters-numeric.h"
 #include "app.h"
-#include "worlds\world.h"
+#include "worlds/world.h"
 #define _USE_MATH_DEFINES
 #include <math.h>
 #include <algorithm>
@@ -180,7 +180,7 @@ OrnsteinUhlenbeckNoise::OrnsteinUhlenbeckNoise(ConfigNode* pConfigNode)
 
 	if (SimionApp::get() != nullptr && SimionApp::get()->pWorld.ptr() != nullptr)
 		m_dt = SimionApp::get()->pWorld->getDT();
-	else throw std::exception("OrnsteinUhlenbeckNoise initialization problem");
+	else throw std::runtime_error("OrnsteinUhlenbeckNoise initialization problem");
 }
 
 OrnsteinUhlenbeckNoise::OrnsteinUhlenbeckNoise(double theta, double sigma, double mu, double dt)

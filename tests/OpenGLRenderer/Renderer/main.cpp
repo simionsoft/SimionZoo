@@ -1,9 +1,8 @@
 // StandaloneOpenGLRenderer.cpp : Defines the entry point for the console application.
 //
-#include "stdafx.h"
+
 #include "../../../tools/System/Timer.h"
 
-#include "../../../tools/OpenGLRenderer/Renderer.h"
 #include "../../../tools/OpenGLRenderer/renderer.h"
 #include "../../../tools/OpenGLRenderer/text.h"
 #include "../../../tools/OpenGLRenderer/camera.h"
@@ -17,6 +16,8 @@
 #include "../../../tools/GeometryLib/vector3d.h"
 #include "../../../tools/GeometryLib/transform3d.h"
 #include "../../../tools/GeometryLib/vector2d.h"
+
+#include <math.h>
 
 #define LIVE_TEX_SIZE_X 64
 #define LIVE_TEX_SIZE_Y 64

@@ -111,11 +111,11 @@ void SimGod::deferredLoad()
 
 std::shared_ptr<StateFeatureMap> SimGod::getGlobalStateFeatureMap()
 {
-	return m_pGlobalStateFeatureMap.shared_ptr();
+	return m_pGlobalStateFeatureMap.sharedPtr();
 }
 std::shared_ptr<ActionFeatureMap> SimGod::getGlobalActionFeatureMap()
 {
-	return m_pGlobalActionFeatureMap.shared_ptr();
+	return m_pGlobalActionFeatureMap.sharedPtr();
 }
 
 

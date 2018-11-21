@@ -1,4 +1,7 @@
 #include "DQN.h"
+
+#ifdef _WIN32 && _WIN64
+
 #include "SimGod.h"
 #include "logger.h"
 #include "worlds\world.h"
@@ -140,3 +143,4 @@ INetwork* DoubleDQN::getQNetworkForTargetActionSelection()
 	return m_pOnlineQNetwork;
 }
 
+#endif

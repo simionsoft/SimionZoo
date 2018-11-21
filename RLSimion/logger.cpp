@@ -5,6 +5,7 @@
 #include "stats.h"
 #include "../tools/System/Timer.h"
 #include "../tools/System/FileUtils.h"
+#include "../tools/System/CrossPlatform.h"
 #include "app.h"
 #include "utils.h"
 #include "experiment.h"
@@ -25,11 +26,11 @@ bool Logger::m_bLogMessagesEnabled = true;
 
 struct ExperimentHeader
 {
-	__int64 magicNumber = EXPERIMENT_HEADER;
-	__int64 fileVersion = Logger::BIN_FILE_VERSION;
-	__int64 numEpisodes = 0;
+	long long int magicNumber = EXPERIMENT_HEADER;
+	long long int fileVersion = Logger::BIN_FILE_VERSION;
+	long long int numEpisodes = 0;
 
-	__int64 padding[HEADER_MAX_SIZE - 3]; //extra space
+	long long int padding[HEADER_MAX_SIZE - 3]; //extra space
 	ExperimentHeader()
 	{
 		memset(padding, 0, sizeof(padding));
@@ -38,16 +39,16 @@ struct ExperimentHeader
 
 struct EpisodeHeader
 {
-	__int64 magicNumber = EPISODE_HEADER;
-	__int64 episodeType;
-	__int64 episodeIndex;
-	__int64 numVariablesLogged;
+	long long int magicNumber = EPISODE_HEADER;
+	long long int episodeType;
+	long long int episodeIndex;
+	long long int numVariablesLogged;
 
 	//Added in version 2: if the episode belongs to an evaluation, the number of episodes per evaluation might be >1
 	//the episodeSubIndex will be in [1..numEpisodesPerEvaluation]
-	__int64 episodeSubIndex;
+	long long int episodeSubIndex;
 
-	__int64 padding[HEADER_MAX_SIZE - 5]; //extra space
+	long long int padding[HEADER_MAX_SIZE - 5]; //extra space
 	EpisodeHeader()
 	{
 		memset(padding, 0, sizeof(padding));
@@ -56,14 +57,14 @@ struct EpisodeHeader
 
 struct StepHeader
 {
-	__int64 magicNumber = STEP_HEADER;
-	__int64 stepIndex;
+	long long int magicNumber = STEP_HEADER;
+	long long int stepIndex;
 
 	double experimentRealTime;
 	double episodeSimTime;
 	double episodeRealTime;
 
-	__int64 padding[HEADER_MAX_SIZE - 5]; //extra space
+	long long int padding[HEADER_MAX_SIZE - 5]; //extra space
 	StepHeader()
 	{
 		memset(padding, 0, sizeof(padding));
@@ -140,16 +141,16 @@ void Logger::writeLogFileXMLDescriptor(const char* filename)
 	char buffer[BUFFER_SIZE];
 
 	FILE * logXMLDescriptorFile;
-	fopen_s(&logXMLDescriptorFile, filename, "w");
+	CrossPlatform::fopen_s(&logXMLDescriptorFile, filename, "w");
 	if (logXMLDescriptorFile)
 	{
 		if (m_bLogFunctions.get())
-			sprintf_s(buffer, BUFFER_SIZE, "<ExperimentLogDescriptor BinaryDataFile=\"%s\" FunctionsDataFile=\"%s\" SceneFile=\"%s\">\n"
+			CrossPlatform::sprintf_s(buffer, BUFFER_SIZE, "<ExperimentLogDescriptor BinaryDataFile=\"%s\" FunctionsDataFile=\"%s\" SceneFile=\"%s\">\n"
 				, getFilename(m_outputLogBinary).c_str()
 				, getFilename(m_outputFunctionLogBinary).c_str()
 				, (SimionApp::get()->pWorld->getDynamicModel()->getName() + string(".scene")).c_str());
 		else
-			sprintf_s(buffer, BUFFER_SIZE, "<ExperimentLogDescriptor BinaryDataFile=\"%s\" SceneFile=\"%s\">\n"
+			CrossPlatform::sprintf_s(buffer, BUFFER_SIZE, "<ExperimentLogDescriptor BinaryDataFile=\"%s\" SceneFile=\"%s\">\n"
 				, getFilename(m_outputLogBinary).c_str()
 				, (SimionApp::get()->pWorld->getDynamicModel()->getName() + string(".scene")).c_str());
 		writeEpisodeTypesToBuffer(buffer);
@@ -157,7 +158,7 @@ void Logger::writeLogFileXMLDescriptor(const char* filename)
 		writeNamedVarSetDescriptorToBuffer(buffer, "Action", SimionApp::get()->pWorld->getDynamicModel()->getActionDescriptorPtr()); //action
 		writeNamedVarSetDescriptorToBuffer(buffer, "Reward", SimionApp::get()->pWorld->getRewardVector()->getDescriptorPtr());
 		writeStatDescriptorToBuffer(buffer);
-		strcat_s(buffer, BUFFER_SIZE, "</ExperimentLogDescriptor>");
+		CrossPlatform::strcat_s(buffer, BUFFER_SIZE, "</ExperimentLogDescriptor>");
 		fwrite(buffer, 1, strlen(buffer), logXMLDescriptorFile);
 
 		fclose(logXMLDescriptorFile);
@@ -167,9 +168,9 @@ void Logger::writeLogFileXMLDescriptor(const char* filename)
 
 void Logger::writeEpisodeTypesToBuffer(char* pOutBuffer)
 {
-	if (m_bLogEvaluationEpisodes.get()) strcat_s(pOutBuffer, BUFFER_SIZE
+	if (m_bLogEvaluationEpisodes.get()) CrossPlatform::strcat_s(pOutBuffer, BUFFER_SIZE
 		, "  <Episode-Type Id=\"0\">Evaluation</Episode-Type>\n");
-	if (m_bLogTrainingEpisodes.get()) strcat_s(pOutBuffer, BUFFER_SIZE
+	if (m_bLogTrainingEpisodes.get()) CrossPlatform::strcat_s(pOutBuffer, BUFFER_SIZE
 		, "  <Episode-Type Id=\"1\">Training</Episode-Type>\n");
 }
 
@@ -179,9 +180,9 @@ void Logger::writeStatDescriptorToBuffer(char* pOutBuffer)
 
 	for (auto iterator = m_stats.begin(); iterator != m_stats.end(); iterator++)
 	{
-		sprintf_s(buffer, BUFFER_SIZE, "  <Stat-variable>%s/%s</Stat-variable>\n", (*iterator)->getKey().c_str()
+		CrossPlatform::sprintf_s(buffer, BUFFER_SIZE, "  <Stat-variable>%s/%s</Stat-variable>\n", (*iterator)->getKey().c_str()
 			, (*iterator)->getSubkey().c_str());
-		strcat_s(pOutBuffer, BUFFER_SIZE, buffer);
+		CrossPlatform::strcat_s(pOutBuffer, BUFFER_SIZE, buffer);
 	}
 }
 void Logger::writeNamedVarSetDescriptorToBuffer(char* pOutBuffer, const char* id, const Descriptor* descriptor)
@@ -194,10 +195,10 @@ void Logger::writeNamedVarSetDescriptorToBuffer(char* pOutBuffer, const char* id
 			circular = "true";
 		else
 			circular = "false";
-		sprintf_s(buffer, BUFFER_SIZE, "  <%s-variable Min=\"%.2f\" Max=\"%.2f\" Circular=\"%s\" Units=\"%s\">%s</%s-variable>\n"
+		CrossPlatform::sprintf_s(buffer, BUFFER_SIZE, "  <%s-variable Min=\"%.2f\" Max=\"%.2f\" Circular=\"%s\" Units=\"%s\">%s</%s-variable>\n"
 			, id, (*descriptor)[i].getMin(), (*descriptor)[i].getMax(), circular.c_str(), (*descriptor)[i].getUnits()
 			, (*descriptor)[i].getName(), id);
-		strcat_s(pOutBuffer, BUFFER_SIZE, buffer);
+		CrossPlatform::strcat_s(pOutBuffer, BUFFER_SIZE, buffer);
 	}
 }
 
@@ -276,7 +277,7 @@ void Logger::lastStep()
 	if (pExperiment->isEvaluationEpisode()
 		&& pExperiment->getEpisodeInEvaluationIndex() == pExperiment->getNumEpisodesPerEvaluation())
 	{
-		sprintf_s(buffer, BUFFER_SIZE, "%f,%f"
+		CrossPlatform::sprintf_s(buffer, BUFFER_SIZE, "%f,%f"
 			, (double)(numRelativeEpisodeIndex - 1)	/ (std::max(1.0, (double)numEvaluations*numEpisodesPerEvaluation - 1))
 			, m_episodeRewardSum / (double)pExperiment->getStep());
 		logMessage(MessageType::Evaluation, buffer);
@@ -376,7 +377,7 @@ int Logger::writeStepHeaderToBuffer(char* buffer, int offset)
 	header.episodeSimTime = SimionApp::get()->pWorld->getEpisodeSimTime();
 	header.experimentRealTime = m_pExperimentTimer->getElapsedTime();
 
-	memcpy_s(buffer + offset, BUFFER_SIZE, (char*)&header, sizeof(StepHeader));
+	CrossPlatform::memcpy_s(buffer + offset, BUFFER_SIZE, (char*)&header, sizeof(StepHeader));
 
 	return sizeof(header);
 }
@@ -429,7 +430,7 @@ IStats* Logger::getStats(unsigned int i)
 
 void Logger::openLogFile(const char* logFilename)
 {
-	fopen_s(&m_logFile, logFilename, "wb");
+	CrossPlatform::fopen_s(&m_logFile, logFilename, "wb");
 	if (!m_logFile)
 		logMessage(MessageType::Warning, "Log file couldn't be opened, so no log info will be saved.");
 }
@@ -460,15 +461,15 @@ void Logger::logMessage(MessageType type, const char* message)
 		switch (type)
 		{
 		case Warning:
-			sprintf_s(messageLine, 1024, "<Message>WARNING: %s</Message>", message); break;
+			CrossPlatform::sprintf_s(messageLine, 1024, "<Message>WARNING: %s</Message>", message); break;
 		case Progress:
-			sprintf_s(messageLine, 1024, "<Progress>%s</Progress>", message); break;
+			CrossPlatform::sprintf_s(messageLine, 1024, "<Progress>%s</Progress>", message); break;
 		case Evaluation:
-			sprintf_s(messageLine, 1024, "<Evaluation>%s</Evaluation>", message); break;
+			CrossPlatform::sprintf_s(messageLine, 1024, "<Evaluation>%s</Evaluation>", message); break;
 		case Info:
-			sprintf_s(messageLine, 1024, "<Message>%s</Message>", message); break;
+			CrossPlatform::sprintf_s(messageLine, 1024, "<Message>%s</Message>", message); break;
 		case Error:
-			sprintf_s(messageLine, 1024, "<Error>ERROR: %s</Error>", message); break;
+			CrossPlatform::sprintf_s(messageLine, 1024, "<Error>ERROR: %s</Error>", message); break;
 		}
 		m_outputPipe.writeBuffer(messageLine, (int)strlen(messageLine) + 1);
 	}
@@ -491,5 +492,5 @@ void Logger::logMessage(MessageType type, const char* message)
 		}
 	}
 	if (type == MessageType::Error)
-		throw std::exception(message);
+		throw std::runtime_error(message);
 }

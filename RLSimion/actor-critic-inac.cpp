@@ -14,6 +14,7 @@
 #include "logger.h"
 #include <iostream>
 #include "CNTKWrapperClient.h"
+#include "../tools/System/CrossPlatform.h"
 
 IncrementalNaturalActorCritic::IncrementalNaturalActorCritic(ConfigNode* pConfigNode)
 {
@@ -56,7 +57,7 @@ IncrementalNaturalActorCritic::IncrementalNaturalActorCritic(ConfigNode* pConfig
 	{
 		m_e_u[i] = new ETraces(pConfigNode);
 		char* buffer = new char[1024];
-		sprintf_s(buffer, 1024, "Actor/E-Trace %i", i);
+		CrossPlatform::sprintf_s(buffer, 1024, "Actor/E-Trace %i", i);
 		m_e_u[i]->setName("Actor/E-Trace");
 	}
 }

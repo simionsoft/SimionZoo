@@ -1,6 +1,7 @@
 #include "state-action-function.h"
 #include "function-sampler.h"
 #include "named-var-set.h"
+#include <math.h>
 
 FunctionSampler::~FunctionSampler()
 {
@@ -71,7 +72,7 @@ FunctionSampler3D::FunctionSampler3D(string functionId, StateActionFunction* pFu
 const vector<double>& FunctionSampler3D::sample(unsigned int outputIndex)
 {
 	if (outputIndex >= m_numOutputs)
-		throw exception("FunctionSampler3D::sample() was given an incorrect output index");
+		throw runtime_error("FunctionSampler3D::sample() was given an incorrect output index");
 
 	double xValue, yValue;
 	double xMinValue, xRangeStep, xRange;
@@ -115,7 +116,7 @@ FunctionSampler2D::FunctionSampler2D(string functionId, StateActionFunction* pFu
 const vector<double>& FunctionSampler2D::sample(unsigned int outputIndex)
 {
 	if (outputIndex >= m_numOutputs)
-		throw exception("FunctionSampler2D::sample() was given an incorrect output index");
+		throw runtime_error("FunctionSampler2D::sample() was given an incorrect output index");
 
 	double xValue, xMinValue, xRangeStep, xRange;
 	NamedVarProperties* pXProperties = m_xVarSource->getProperties(m_xVarName.c_str());

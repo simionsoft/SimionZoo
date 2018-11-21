@@ -92,11 +92,11 @@ protected:
 public:
 	SimpleParam() = default;
 	SimpleParam(ConfigNode* pConfigNode
-		, const char* name, const char* comment, DataType default)
+		, const char* name, const char* comment, DataType defaultValue)
 	{
 		m_name = name;
 		m_comment = comment;
-		m_default = default;
+		m_default = defaultValue;
 
 		initValue(pConfigNode, m_value);
 	}
@@ -118,12 +118,12 @@ class ENUM_PARAM : public SimpleParam<EnumType>
 {
 public:
 	ENUM_PARAM() = default;
-	ENUM_PARAM(ConfigNode* pConfigNode, const char* name, const char* comment, EnumType default)
+	ENUM_PARAM(ConfigNode* pConfigNode, const char* name, const char* comment, EnumType defaultValue)
 	{
-		m_name = name;
-		m_comment = comment;
-		m_default = default;
-		initValue(pConfigNode, m_value);
+		this->m_name = name;
+		this->m_comment = comment;
+		this->m_default = defaultValue;
+		initValue(pConfigNode, this->m_value);
 	}
 };
 
@@ -141,8 +141,8 @@ public:
 	STATE_VARIABLE(ConfigNode* pConfigNode, const char* name, const char* comment);
 	STATE_VARIABLE(const char* variableName);
 
-	void set(const char* variableName) { m_variableName = variableName; }
-	const char* get() { return m_variableName; }
+	void set(const char* variableName) { this->m_variableName = variableName; }
+	const char* get() { return this->m_variableName; }
 };
 
 class ACTION_VARIABLE
@@ -155,8 +155,8 @@ public:
 	ACTION_VARIABLE(ConfigNode* pConfigNode, const char* name, const char* comment);
 	ACTION_VARIABLE(const char* variableName);
 
-	void set(const char* variableName) { m_variableName = variableName; }
-	const char* get() { return m_variableName; }
+	void set(const char* variableName) { this->m_variableName = variableName; }
+	const char* get() { return this->m_variableName; }
 };
 
 class WIRE_CONNECTION
@@ -181,7 +181,7 @@ class CHILD_OBJECT
 	shared_ptr<DataType> m_pValue;
 public:
 	CHILD_OBJECT() = default;
-	template <typename DataType> CHILD_OBJECT(DataType* value)
+	CHILD_OBJECT(DataType* value)
 	{
 		m_pValue = std::shared_ptr<DataType>(value);
 	}
@@ -203,7 +203,7 @@ public:
 
 	DataType* operator->() const { return m_pValue.get(); }
 	DataType* operator->() { return m_pValue.get(); }
-	shared_ptr<DataType> shared_ptr() { return m_pValue; }
+	shared_ptr<DataType> sharedPtr() { return m_pValue; }
 	DataType* ptr() { return m_pValue.get(); }
 };
 
@@ -216,7 +216,7 @@ class CHILD_OBJECT_FACTORY
 	shared_ptr<DataType> m_pValue = 0;
 public:
 	CHILD_OBJECT_FACTORY() = default;
-	template <typename DataType> CHILD_OBJECT_FACTORY(DataType* value)
+	CHILD_OBJECT_FACTORY(DataType* value)
 	{
 		m_pValue = std::shared_ptr<DataType>(value);
 	}
@@ -254,7 +254,7 @@ public:
 
 	DataType* operator->() const { return m_pValue.get(); }
 	DataType* operator->() { return m_pValue.get(); }
-	shared_ptr<DataType> shared_ptr() { return m_pValue; }
+	shared_ptr<DataType> sharedPtr() { return m_pValue; }
 	DataType* ptr() { return m_pValue.get(); }
 };
 
@@ -295,14 +295,14 @@ public:
 
 	MULTI_VALUE_FACTORY(ConfigNode* pConfigNode, const char* name, const char* comment, bool bOptional = false)
 	{
-		m_name = name;
-		m_comment = comment;
-		m_bOptional = bOptional;
+		this->m_name = name;
+		this->m_comment = comment;
+		this->m_bOptional = bOptional;
 
 		ConfigNode* pChildParameters = pConfigNode->getChild(name);
 		while (pChildParameters != 0)
 		{
-			m_values.push_back(shared_ptr<DataType>(DataType::getInstance(pChildParameters)));
+			this->m_values.push_back(shared_ptr<DataType>(DataType::getInstance(pChildParameters)));
 			pChildParameters = pChildParameters->getNextSibling(name);
 		}
 	}
@@ -314,15 +314,15 @@ class MULTI_VALUE_SIMPLE_PARAM : public MULTI_VALUE<DataType>
 public:
 	MULTI_VALUE_SIMPLE_PARAM() = default;
 
-	MULTI_VALUE_SIMPLE_PARAM(ConfigNode* pConfigNode, const char* name, const char* comment, baseDataType default)
+	MULTI_VALUE_SIMPLE_PARAM(ConfigNode* pConfigNode, const char* name, const char* comment, baseDataType defaultValue)
 	{
-		m_name = name;
-		m_comment = comment;
+		this->m_name = name;
+		this->m_comment = comment;
 
 		ConfigNode* pChildParameters = pConfigNode->getChild(name);
 		while (pChildParameters != 0)
 		{
-			m_values.push_back(shared_ptr<DataType>(new DataType(pChildParameters, name, comment, default)));
+			this->m_values.push_back(shared_ptr<DataType>(new DataType(pChildParameters, name, comment, defaultValue)));
 			pChildParameters = pChildParameters->getNextSibling(name);
 		}
 	}
@@ -336,13 +336,13 @@ public:
 
 	MULTI_VALUE_VARIABLE(ConfigNode* pConfigNode, const char* name, const char* comment)
 	{
-		m_name = name;
-		m_comment = comment;
+		this->m_name = name;
+		this->m_comment = comment;
 
 		ConfigNode* pChildParameters = pConfigNode->getChild(name);
 		while (pChildParameters != 0)
 		{
-			m_values.push_back(shared_ptr<DataType>(new DataType(pChildParameters, name, comment)));
+			this->m_values.push_back(shared_ptr<DataType>(new DataType(pChildParameters, name, comment)));
 			pChildParameters = pChildParameters->getNextSibling(name);
 		}
 	}
@@ -370,7 +370,7 @@ shared_ptr<BaseClass> CHOICE(ConfigNode* pConfig, const char* choiceName, const 
 	pConfig = pConfig->getChild(choiceName);
 	if (!pConfig) return 0;
 
-	for each (auto var in choices)
+	for (auto var : choices)
 	{
 		const char* choiceName = get<0>(var);
 		ConfigNode* pChoiceConfig = pConfig->getChild(choiceName);
@@ -380,7 +380,7 @@ shared_ptr<BaseClass> CHOICE(ConfigNode* pConfig, const char* choiceName, const 
 			return choiceConstructor(pChoiceConfig);
 		}
 	}
-	throw exception("Couldn't read the value of a CHOICE parameter from the configuration file.");
+	throw runtime_error("Couldn't read the value of a CHOICE parameter from the configuration file.");
 }
 
 template<typename BaseClass>
@@ -391,7 +391,7 @@ shared_ptr<BaseClass> CHOICE(ConfigNode* pConfig, const char* choiceName, const 
 	pConfig = pConfig->getChild(choiceName);
 	if (!pConfig) return 0;
 
-	for each (auto var in choices)
+	for (auto var : choices)
 	{
 		const char* choiceName = var.first;
 		ConfigNode* pChoiceConfig = pConfig->getChild(choiceName);
@@ -400,7 +400,7 @@ shared_ptr<BaseClass> CHOICE(ConfigNode* pConfig, const char* choiceName, const 
 			return var.second(pChoiceConfig);
 		}
 	}
-	throw exception("Couldn't read the value of a CHOICE parameter from the configuration file.");
+	throw runtime_error("Couldn't read the value of a CHOICE parameter from the configuration file.");
 }
 
 //quick and dirty hack to store the name of the dynamic world in a choice

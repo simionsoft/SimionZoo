@@ -8,6 +8,8 @@ protected:
 	static IInputHandler* m_pInstance;
 public:
 	static IInputHandler* get();
+
+	virtual ~IInputHandler() = 0;
 	
 	virtual void handleInput() = 0;
 };

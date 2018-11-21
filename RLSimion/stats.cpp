@@ -1,5 +1,6 @@
 #include "stats.h"
 #include <algorithm>
+#include <math.h>
 
 #define MAX_KEY_SIZE 128
 

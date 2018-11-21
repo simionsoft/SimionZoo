@@ -16,11 +16,15 @@ Arranger::~Arranger()
 {
 }
 
-void Arranger::arrange2DObjects(vector<GraphicObject2D*>& objects, Vector2D& areaOrigin, Vector2D& areaSize, Vector2D& minObjSize, Vector2D& maxObjSize, Vector2D& margin)
+void Arranger::arrange2DObjects(vector<GraphicObject2D*>& objects
+	, const Vector2D& areaOrigin, const Vector2D& areaSize, const Vector2D& minObjSize
+	, const Vector2D& maxObjSize, const Vector2D& margin)
 {
 
 	if (objects.size() == 0)
 		return;
+
+	Vector2D limitedMargin = margin;
 
 	size_t numObjects = objects.size();
 	double dueSize = 1.0 / numObjects;
@@ -29,33 +33,33 @@ void Arranger::arrange2DObjects(vector<GraphicObject2D*>& objects, Vector2D& are
 	objSize.setX( std::max(minObjSize.x(), std::min(maxObjSize.x(), 1.0 / numObjects)) );
 	
 	//keep objects as separate from each other as possible
-	if ((objSize.x() + margin.x())*numObjects < areaSize.x())
-		margin.setX( (areaSize.x() - objSize.x()*numObjects) / (2*numObjects));
+	if ((objSize.x() + limitedMargin.x())*numObjects < areaSize.x())
+		limitedMargin.setX( (areaSize.x() - objSize.x()*numObjects) / (2*numObjects));
 		
-	double totalSizeInX = (objSize.x() + 2 * margin.x()) * numObjects;
+	double totalSizeInX = (objSize.x() + 2 * limitedMargin.x()) * numObjects;
 	double numRows = ceil(totalSizeInX);
 
 	objSize.setY( std::max(minObjSize.y(), std::min(maxObjSize.y(), 1.0 / numRows)) );
 
-	if ((objSize.y() + margin.y())*numRows > areaSize.y())
-		objSize.setY((areaSize.y() - 2*margin.y()*numRows) / numRows);
+	if ((objSize.y() + limitedMargin.y())*numRows > areaSize.y())
+		objSize.setY((areaSize.y() - 2*limitedMargin.y()*numRows) / numRows);
 
 	Vector2D objOrigin;
 	if (numRows == 1)
-		objOrigin = Vector2D((1 - totalSizeInX) *0.5 + margin.x(), margin.y());
+		objOrigin = Vector2D((1 - totalSizeInX) *0.5 + limitedMargin.x(), limitedMargin.y());
 	else
-		objOrigin = margin;
+		objOrigin = limitedMargin;
 
 	double lastRow = 0.0;
 	unsigned int viewIndex = 0;
 	for (GraphicObject2D* pObj : objects)
 	{
 		//new row??
-		if ((objSize.x() + margin.x() * 2.0) *(double)(viewIndex + 1) - lastRow >1.01)
+		if ((objSize.x() + limitedMargin.x() * 2.0) *(double)(viewIndex + 1) - lastRow >1.01)
 		{
 			//shift the origin y coordinate down
-			objOrigin.setX(margin.x());
-			objOrigin.setY(objOrigin.y() + objSize.y() + 2 * margin.y());
+			objOrigin.setX(limitedMargin.x());
+			objOrigin.setY(objOrigin.y() + objSize.y() + 2 * limitedMargin.y());
 			lastRow++;
 		}
 
@@ -63,7 +67,7 @@ void Arranger::arrange2DObjects(vector<GraphicObject2D*>& objects, Vector2D& are
 		pObj->getTransform().setScale(objSize);
 
 		//shift the origin x coordinate for the next object to the right
-		objOrigin.setX(objOrigin.x() + objSize.x() + 2 * margin.x());
+		objOrigin.setX(objOrigin.x() + objSize.x() + 2 * limitedMargin.x());
 
 		viewIndex++;
 	}

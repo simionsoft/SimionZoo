@@ -220,6 +220,9 @@
     <ClCompile Include="wire.cpp">
       <Filter>wires</Filter>
     </ClCompile>
+    <ClCompile Include="controller-adaptive.cpp">
+      <Filter>learning</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="resource1.h" />
@@ -426,6 +429,9 @@
     </ClInclude>
     <ClInclude Include="wire-handler.h">
       <Filter>wires</Filter>
+    </ClInclude>
+    <ClInclude Include="controller-adaptive.h">
+      <Filter>learning</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

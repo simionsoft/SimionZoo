@@ -3,6 +3,7 @@
 #include "experiment.h"
 #include "app.h"
 #include <assert.h>
+#include <math.h>
 
 ConstantValue::ConstantValue(ConfigNode* pConfigNode)
 {

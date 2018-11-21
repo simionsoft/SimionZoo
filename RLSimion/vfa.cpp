@@ -399,7 +399,7 @@ double LinearStateActionVFA::max(const State* s, bool bUseFrozenWeights)
 void LinearStateActionVFA::getActionValues(const State* s,double *outActionValues)
 {
 	if (!outActionValues)
-		throw std::exception("LinearStateActionVFA::getAction Values(...) tried to get action values without providing a buffer");
+		throw std::runtime_error("LinearStateActionVFA::getAction Values(...) tried to get action values without providing a buffer");
 	//state features in aux list
 	m_pStateFeatureMap->getFeatures(s, nullptr, m_pAux);
 

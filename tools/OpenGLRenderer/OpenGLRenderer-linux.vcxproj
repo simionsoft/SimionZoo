@@ -91,11 +91,6 @@
     <ClInclude Include="viewport.h" />
     <ClInclude Include="xml-load.h" />
   </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\GeometryLib\GeometryLib-linux.vcxproj">
-      <Project>{5d2a0a84-ac67-4700-8934-a38c01966ad4}</Project>
-    </ProjectReference>
-  </ItemGroup>
   <ItemDefinitionGroup />
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets" />

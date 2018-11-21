@@ -16,6 +16,7 @@ class Light;
 class BoundingBox3D;
 class BoundingBox2D;
 class Binding;
+
 template <typename T> class BoundObject;
 
 class Renderer

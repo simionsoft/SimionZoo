@@ -2,6 +2,7 @@
 #include "named-var-set.h"
 #include "features.h"
 #include "single-dimension-grid.h"
+#include <math.h>
 
 #define ACTIVATION_THRESHOLD 0.0001
 

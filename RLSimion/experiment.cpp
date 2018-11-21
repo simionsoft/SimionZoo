@@ -4,6 +4,7 @@
 #include "worlds/world.h"
 #include "stats.h"
 #include "../tools/System/Timer.h"
+#include "../tools/System/CrossPlatform.h"
 #include "app.h"
 
 ExperimentTime& ExperimentTime::operator=(ExperimentTime& exp)
@@ -43,7 +44,7 @@ double Experiment::getEpisodeProgress()
 
 const char* Experiment::getProgressString()
 {
-	sprintf_s(m_progressMsg, MAX_PROGRESS_MSG_LEN, "Episode: %d/%d Step %d/%d (%.2f%%)"
+	CrossPlatform::sprintf_s(m_progressMsg, MAX_PROGRESS_MSG_LEN, "Episode: %d/%d Step %d/%d (%.2f%%)"
 		, getEpisodeIndex(), getTotalNumEpisodes()
 		, getStep(), getNumSteps()
 		, getExperimentProgress()*100.0);
@@ -228,7 +229,7 @@ void Experiment::timestep(State* s, Action* a, State* s_p, Reward* r)
 
 	if (time > m_progUpdateFreq.get() || (isLastStep() && isLastEpisode()))
 	{
-		sprintf_s(msg, 1024, "%f", SimionApp::get()->pExperiment->getExperimentProgress()*100.0);
+		CrossPlatform::sprintf_s(msg, 1024, "%f", SimionApp::get()->pExperiment->getExperimentProgress()*100.0);
 		Logger::logMessage(Progress, msg);
 		m_pProgressTimer->start();
 	}
