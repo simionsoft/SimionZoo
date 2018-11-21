@@ -36,7 +36,7 @@
   <ImportGroup Label="PropertySheets" />
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
-    <RemoteProjectDir>$(RemoteRootDir)/tools/GeometryLib</RemoteProjectDir>
+    <RemoteProjectDir>$(RemoteRootDir)/SimionZoo/tools/GeometryLib</RemoteProjectDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <RemoteProjectDir>$(RemoteRootDir)/tools/GeometryLib</RemoteProjectDir>
@@ -64,6 +64,11 @@
     <ClInclude Include="transform3d.h" />
     <ClInclude Include="vector2d.h" />
     <ClInclude Include="vector3d.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\3rd-party\tinyxml2\Linux\tinyxml2-linux\tinyxml2-linux.vcxproj">
+      <Project>{0407c160-b25c-4a40-acf8-f8cec04add6b}</Project>
+    </ProjectReference>
   </ItemGroup>
   <ItemDefinitionGroup />
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

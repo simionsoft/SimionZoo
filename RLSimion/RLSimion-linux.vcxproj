@@ -33,7 +33,7 @@
   <ImportGroup Label="PropertySheets" />
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
-    <RemoteProjectDir>$(RemoteRootDir)/RLSimion</RemoteProjectDir>
+    <RemoteProjectDir>$(RemoteRootDir)/SimionZoo/RLSimion</RemoteProjectDir>
   </PropertyGroup>
   <ItemGroup>
     <Text Include="ReadMe.txt" />

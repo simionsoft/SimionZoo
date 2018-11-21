@@ -1842,7 +1842,7 @@ unsigned int SOIL_direct_load_DDS(
 		result_string_pointer = "NULL filename";
 		return 0;
 	}
-	fopen_s( &f, filename, "rb" );
+	f= fopen( filename, "rb" );
 	if( NULL == f )
 	{
 		/*	the file doesn't seem to exist (or be open-able)	*/

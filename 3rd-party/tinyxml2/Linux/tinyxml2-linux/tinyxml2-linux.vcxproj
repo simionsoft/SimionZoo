@@ -103,7 +103,7 @@
     <RemoteProjectDir>$(RemoteRootDir)/3rd-party/tinyxml2</RemoteProjectDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
-    <RemoteProjectDir>$(RemoteRootDir)/3rd-party/tinyxml2</RemoteProjectDir>
+    <RemoteProjectDir>$(RemoteRootDir)/SimionZoo/3rd-party/tinyxml2</RemoteProjectDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <RemoteProjectDir>$(RemoteRootDir)/3rd-party/tinyxml2</RemoteProjectDir>

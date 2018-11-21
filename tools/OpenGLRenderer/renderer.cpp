@@ -9,8 +9,10 @@
 #include "xml-load.h"
 #include "../GeometryLib/bounding-box.h"
 #include <algorithm>
+#include <iostream>
 
 using namespace tinyxml2;
+using namespace std;
 
 Renderer* Renderer::m_pInstance = 0;
 
@@ -191,17 +193,26 @@ GraphicObject2D* Renderer::get2DObjectByName(string name)
 	return nullptr;
 }
 
+void Renderer::logMessage(string message)
+{
+	if (m_bVerbose)
+		cout << message << "\n";
+}
 
 void Renderer::loadScene(const char* file)
 {
 	tinyxml2::XMLDocument doc;
-	doc.LoadFile((m_dataFolder + string(file)).c_str());
+	string fullFilename = m_dataFolder + string(file);
+	doc.LoadFile(fullFilename.c_str());
+	logMessage(string("Opening scene file: ") + fullFilename);
 	if (doc.Error() == tinyxml2::XML_SUCCESS)
 	{
+		logMessage("Success");
 		tinyxml2::XMLElement *pRoot = doc.FirstChildElement(XML_TAG_SCENE);
 		if (pRoot)
 			loadSceneObjects(pRoot);
 	}
+	else logMessage("ERROR: File not found");
 }
 void Renderer::loadSceneObjects(tinyxml2::XMLElement* pNode)
 {
@@ -231,14 +242,20 @@ void Renderer::loadSceneObjects(tinyxml2::XMLElement* pNode)
 		loadChildren<GraphicObject3D>(pObjects, nullptr, m_3DgraphicObjects);
 	//we need to add loaded objects to the default viewport
 	for (GraphicObject3D* obj : m_3DgraphicObjects)
+	{
+		logMessage(string("Loading 3D object: ") + obj->name());
 		m_pDefaultViewPort->addGraphicObject3D(obj);
+	}
 
 	//2d graphic objects
 	pObjects = pNode->FirstChildElement(XML_TAG_OBJECTS_2D);
 	if (pObjects)
 		loadChildren<GraphicObject2D>(pObjects, nullptr, m_2DgraphicObjects);
 	for (GraphicObject2D* obj : m_2DgraphicObjects)
+	{
+		logMessage(string("Loading 2D object: ") + obj->name());
 		m_pDefaultViewPort->addGraphicObject2D(obj);
+	}
 
 	//cameras
 	loadChildren<Camera>(pNode, XML_TAG_CAMERA, m_cameras);

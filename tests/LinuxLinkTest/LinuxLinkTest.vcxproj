@@ -35,92 +35,78 @@
     </ProjectConfiguration>
   </ItemGroup>
   <PropertyGroup Label="Globals">
-    <ProjectGuid>{5a78b024-ac4b-444c-95e3-6e3f15d84dba}</ProjectGuid>
+    <ProjectGuid>{d48ef7f7-3fbb-404f-a121-627caf36d1c3}</ProjectGuid>
     <Keyword>Linux</Keyword>
-    <RootNamespace>glew2_linux</RootNamespace>
+    <RootNamespace>LinuxLinkTest</RootNamespace>
     <MinimumVisualStudioVersion>15.0</MinimumVisualStudioVersion>
     <ApplicationType>Linux</ApplicationType>
     <ApplicationTypeRevision>1.0</ApplicationTypeRevision>
     <TargetLinuxPlatform>Generic</TargetLinuxPlatform>
-    <LinuxProjectType>{2238F9CD-F817-4ECC-BD14-2524D2669B35}</LinuxProjectType>
+    <LinuxProjectType>{D51BCBC9-82E9-4017-911E-C93873C4EA2B}</LinuxProjectType>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|ARM'" Label="Configuration">
     <UseDebugLibraries>true</UseDebugLibraries>
-    <RemoteRootDir>~/projects</RemoteRootDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|ARM'" Label="Configuration">
     <UseDebugLibraries>false</UseDebugLibraries>
-    <RemoteRootDir>~/projects</RemoteRootDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x86'" Label="Configuration">
     <UseDebugLibraries>true</UseDebugLibraries>
-    <RemoteRootDir>~/projects</RemoteRootDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x86'" Label="Configuration">
     <UseDebugLibraries>false</UseDebugLibraries>
-    <RemoteRootDir>~/projects</RemoteRootDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
     <UseDebugLibraries>true</UseDebugLibraries>
-    <ConfigurationType>StaticLibrary</ConfigurationType>
-    <RemoteRootDir>~/projects</RemoteRootDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
     <UseDebugLibraries>false</UseDebugLibraries>
-    <RemoteRootDir>~/projects</RemoteRootDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|ARM64'" Label="Configuration">
     <UseDebugLibraries>false</UseDebugLibraries>
-    <RemoteRootDir>~/projects</RemoteRootDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|ARM64'" Label="Configuration">
     <UseDebugLibraries>true</UseDebugLibraries>
-    <RemoteRootDir>~/projects</RemoteRootDir>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
   <ImportGroup Label="ExtensionSettings" />
   <ImportGroup Label="Shared" />
   <ImportGroup Label="PropertySheets" />
   <PropertyGroup Label="UserMacros" />
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|ARM'">
-    <RemoteProjectDir>$(RemoteRootDir)/3rd-party/glew2</RemoteProjectDir>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|ARM'">
-    <RemoteProjectDir>$(RemoteRootDir)/3rd-party/glew2</RemoteProjectDir>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|ARM64'">
-    <RemoteProjectDir>$(RemoteRootDir)/3rd-party/glew2</RemoteProjectDir>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|ARM64'">
-    <RemoteProjectDir>$(RemoteRootDir)/3rd-party/glew2</RemoteProjectDir>
-  </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
-    <RemoteProjectDir>$(RemoteRootDir)/SimionZoo/3rd-party/glew2</RemoteProjectDir>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
-    <RemoteProjectDir>$(RemoteRootDir)/3rd-party/glew2</RemoteProjectDir>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x86'">
-    <RemoteProjectDir>$(RemoteRootDir)/3rd-party/glew2</RemoteProjectDir>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x86'">
-    <RemoteProjectDir>$(RemoteRootDir)/3rd-party/glew2</RemoteProjectDir>
+    <RemoteProjectDir>$(RemoteRootDir)/tests/LinuxLinkTest</RemoteProjectDir>
   </PropertyGroup>
   <ItemGroup>
-    <ClCompile Include="src\glew.c" />
+    <ClCompile Include="main.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="include\eglew.h" />
-    <ClInclude Include="include\glew.h" />
-    <ClInclude Include="include\glxew.h" />
-    <ClInclude Include="include\wglew.h" />
+    <ProjectReference Include="..\..\3rd-party\freeglut3\freeglut3-linux.vcxproj">
+      <Project>{61d2ac28-eb09-4daa-b717-cea7ba358077}</Project>
+    </ProjectReference>
+    <ProjectReference Include="..\..\3rd-party\glew2\glew2-linux.vcxproj">
+      <Project>{5a78b024-ac4b-444c-95e3-6e3f15d84dba}</Project>
+    </ProjectReference>
+    <ProjectReference Include="..\..\3rd-party\SOIL\projects\SOIL-linux.vcxproj">
+      <Project>{fc7bec9b-7c66-4ad3-a2de-8441046dbe08}</Project>
+    </ProjectReference>
+    <ProjectReference Include="..\..\3rd-party\tinyxml2\Linux\tinyxml2-linux\tinyxml2-linux.vcxproj">
+      <Project>{0407c160-b25c-4a40-acf8-f8cec04add6b}</Project>
+    </ProjectReference>
+    <ProjectReference Include="..\..\tools\GeometryLib\GeometryLib-linux.vcxproj">
+      <Project>{5d2a0a84-ac67-4700-8934-a38c01966ad4}</Project>
+    </ProjectReference>
+    <ProjectReference Include="..\..\tools\OpenGLRenderer\OpenGLRenderer-linux.vcxproj">
+      <Project>{6561176d-8e7c-4399-a133-ca9c36c143c5}</Project>
+    </ProjectReference>
+    <ProjectReference Include="..\..\tools\System\System-linux.vcxproj">
+      <Project>{11efdd7d-a557-4cc7-ab52-46d850f67a1e}</Project>
+    </ProjectReference>
   </ItemGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
-    <ClCompile>
-      <PreprocessorDefinitions>
-      </PreprocessorDefinitions>
-    </ClCompile>
+    <Link>
+      <LibraryDependencies>GL;X11;GLU</LibraryDependencies>
+    </Link>
   </ItemDefinitionGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets" />

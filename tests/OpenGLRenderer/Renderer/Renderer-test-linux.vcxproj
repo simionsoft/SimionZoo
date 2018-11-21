@@ -33,7 +33,11 @@
   <ImportGroup Label="PropertySheets" />
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
-    <RemoteProjectDir>$(RemoteRootDir)/tests/OpenGLRenderer/Renderer-test</RemoteProjectDir>
+    <RemoteProjectDir>$(RemoteRootDir)/SimionZoo/tests/OpenGLRenderer/Renderer-test</RemoteProjectDir>
+    <OutDir>$(SolutionDir)debug\linux\x64</OutDir>
+    <TargetName>rendererTest</TargetName>
+    <AdditionalSourcesToCopyMapping>
+    </AdditionalSourcesToCopyMapping>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <RemoteProjectDir>$(RemoteRootDir)/tests/OpenGLRenderer/Renderer-test</RemoteProjectDir>
@@ -63,7 +67,7 @@
   </ItemGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <Link>
-      <LibraryDependencies>GL</LibraryDependencies>
+      <LibraryDependencies>GL;X11;GLU</LibraryDependencies>
       <VerboseOutput>true</VerboseOutput>
     </Link>
   </ItemDefinitionGroup>

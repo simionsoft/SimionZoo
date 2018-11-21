@@ -588,10 +588,11 @@ void ColladaModel::loadFromFile(const char* file)
 
 	string path = Renderer::get()->getDataFolder() + string(file);
 
-
+	Renderer::get()->logMessage("Opening Collada file" + path);
 	doc.LoadFile(path.c_str());
 	if (doc.Error() == tinyxml2::XML_SUCCESS)
 	{
+		Renderer::get()->logMessage("File found. Parsing");
 		tinyxml2::XMLElement *pColladaRoot = doc.FirstChildElement(XML_TAG_COLLADA_ROOT);
 
 		loadVisualScenes(pColladaRoot);
@@ -600,6 +601,7 @@ void ColladaModel::loadFromFile(const char* file)
 		//this is yet one more shortcut to get the geometry loaded
 		loadSkin(pColladaRoot);
 	}
+	else Renderer::get()->logMessage("ERROR: Cound not open Collada file");
 }
 
 const char* ColladaModel::findTexture(tinyxml2::XMLElement* pRootNode, string textureName)

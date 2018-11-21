@@ -9,7 +9,7 @@ protected:
 public:
 	static IInputHandler* get();
 
-	virtual ~IInputHandler() = 0;
+	virtual ~IInputHandler() {};
 	
 	virtual void handleInput() = 0;
 };

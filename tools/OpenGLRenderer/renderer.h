@@ -8,6 +8,7 @@ namespace tinyxml2 { class XMLElement; }
 #include "../System/Timer.h"
 #include "viewport.h"
 
+
 class GraphicObject3D;
 class GraphicObject2D;
 class TextureManager;
@@ -53,6 +54,9 @@ class Renderer
 
 	ViewPort* m_pDefaultViewPort = nullptr;
 	vector<ViewPort*> m_viewPorts;
+
+	bool m_bVerbose = false;
+	
 public:
 	Renderer();
 	virtual ~Renderer();
@@ -61,6 +65,9 @@ public:
 	double getFPS() { return m_fps; }
 	void updateFPS();
 	unsigned int getNum3DObjectsDrawn() { return m_num3DObjectsDrawn; }
+
+	void setVerbose(bool set) { m_bVerbose = set; }
+	void logMessage(string message);
 
 	void setDataFolder(string dataFolder);
 	string getDataFolder();

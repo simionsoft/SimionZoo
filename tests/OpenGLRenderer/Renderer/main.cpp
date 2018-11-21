@@ -28,6 +28,7 @@ int main(int argc, char** argv)
 	IInputHandler* pInputHandler = 0;
 
 	pRenderer = new Renderer();
+	pRenderer->setVerbose(true);
 	pRenderer->init(argc, argv, 600, 400);
 	pRenderer->setDataFolder("../../../config/scenes/");
 	pRenderer->loadScene("robot-control.scene");
@@ -100,7 +101,7 @@ int main(int argc, char** argv)
 
 		dt = timer.getElapsedTime(true);
 	}
-
+	pRenderer->logMessage("shutting down");
 	delete pRenderer;
 	delete pInputHandler;
 	return 0;
