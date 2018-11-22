@@ -14,6 +14,7 @@ class Bindable
 {
 public:
 	virtual void update(double value)= 0;
+	virtual ~Bindable() {};
 };
 
 template <typename T>

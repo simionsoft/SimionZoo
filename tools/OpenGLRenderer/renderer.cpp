@@ -29,11 +29,17 @@ Renderer::Renderer()
 Renderer::~Renderer()
 {
 	//delete here all the objects handled by the renderer. Viewports have references to them, but they don't own them
+	logMessage("Renderer::~Renderer(): 3D objects");
 	for (auto obj : m_3DgraphicObjects) delete obj;
+	logMessage("Renderer::~Renderer(): 2D objects");
 	for (auto obj : m_2DgraphicObjects) delete obj;
+	logMessage("Renderer::~Renderer(): cameras");
 	for (auto camera : m_cameras) delete camera;
+	logMessage("Renderer::~Renderer(): lights");
 	for (auto light : m_lights) delete light;
+	logMessage("Renderer::~Renderer(): viewports");
 	for (auto viewport : m_viewPorts) delete viewport;
+	logMessage("Renderer::~Renderer(): texture manager");
 	delete m_pTextureManager;
 	m_pInstance = nullptr;
 }
@@ -343,7 +349,7 @@ size_t Renderer::getNumBindings()
 
 string Renderer::getBindingExternalName(unsigned int i)
 {
-	if (i >= 0 && i < (int)m_bindings.size())
+	if (i >= 0 && i < (unsigned int)m_bindings.size())
 		return m_bindings[i]->externalName;
 	return string("N/A");
 }

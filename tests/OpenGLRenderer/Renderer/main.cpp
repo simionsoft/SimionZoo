@@ -18,6 +18,8 @@
 #include "../../../tools/GeometryLib/vector2d.h"
 
 #include <math.h>
+#include <iostream>
+using namespace std;
 
 #define LIVE_TEX_SIZE_X 64
 #define LIVE_TEX_SIZE_Y 64
@@ -25,10 +27,11 @@
 int main(int argc, char** argv)
 {
 	Renderer* pRenderer = 0;
-	IInputHandler* pInputHandler = 0;
+	FreeCameraInputHandler* pInputHandler = 0;
 
 	pRenderer = new Renderer();
 	pRenderer->setVerbose(true);
+
 	pRenderer->init(argc, argv, 600, 400);
 	pRenderer->setDataFolder("../../../config/scenes/");
 	pRenderer->loadScene("robot-control.scene");
@@ -54,13 +57,12 @@ int main(int argc, char** argv)
 	FunctionViewer* pFunctionView = new FunctionViewer3D("function-view", Vector2D(0.5, 0.5), Vector2D(0.25, 0.25),LIVE_TEX_SIZE_X, 0.0);
 	pRenderer->add2DGraphicObject(pFunctionView);
 
-
 	double t = 0.0;
 
 	Text2D* pFPSText = new Text2D(string("fps"), Vector2D(0.1, 0.9), 0);
 	pRenderer->add2DGraphicObject(pFPSText);
 
-	while (1)
+	while (!pInputHandler->exitRequested())
 	{
 		//UPDATE////////////////////
 		////////////////////////////
@@ -101,9 +103,11 @@ int main(int argc, char** argv)
 
 		dt = timer.getElapsedTime(true);
 	}
-	pRenderer->logMessage("shutting down");
-	delete pRenderer;
+	pRenderer->logMessage("Shutting down: input handler");
 	delete pInputHandler;
+	pRenderer->logMessage("Shutting down: renderer");
+	delete pRenderer;
+	pRenderer->logMessage("Shutting down: returning");
 	return 0;
 }
 

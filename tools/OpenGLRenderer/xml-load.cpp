@@ -42,7 +42,7 @@ namespace XML
 		//https://forums.khronos.org/showthread.php/11010-matrix-and-collada
 		const char* p = pText;
 		size_t charCount = strlen(p);
-		int col = 0, row = 0;
+
 		for (int row = 0; row < 4; ++row)
 		{
 			for (int col = 0; col < 4; ++col)

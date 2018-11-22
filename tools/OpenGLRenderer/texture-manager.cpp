@@ -4,10 +4,14 @@
 
 
 Texture::Texture()
-{}
+{
+	numRefs = 1;
+}
 
 Texture::~Texture()
 {
+	Renderer::get()->logMessage(string("Deleting texture object: ") + to_string(oglId) + string("(")
+		+ to_string(numRefs) + string(" references)"));
 	glDeleteTextures(1, &oglId);
 }
 
@@ -18,10 +22,11 @@ TextureManager::TextureManager()
 
 TextureManager::~TextureManager()
 {
-	for (vector<Texture*>::iterator it = m_textures.begin(); it != m_textures.end(); ++it)
+	for (auto it = m_textures.begin(); it != m_textures.end(); ++it)
 	{
 		delete *it;
 	}
+	Renderer::get()->logMessage("Finished freeing texture objects");
 }
 
 size_t TextureManager::loadTexture(string filename)
@@ -30,7 +35,7 @@ size_t TextureManager::loadTexture(string filename)
 
 	Renderer::get()->logMessage(string("Loading texture file: ") + filename);
 	int id = 0;
-	for (vector<Texture*>::iterator it = m_textures.begin(); it != m_textures.end(); ++it)
+	for (auto it = m_textures.begin(); it != m_textures.end(); ++it)
 	{
 		if ((*it)->path == filename)
 		{

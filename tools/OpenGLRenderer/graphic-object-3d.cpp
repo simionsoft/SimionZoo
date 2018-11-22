@@ -26,15 +26,15 @@ GraphicObject3D::GraphicObject3D(tinyxml2::XMLElement* pNode): SceneActor3D(pNod
 GraphicObject3D* GraphicObject3D::getInstance(tinyxml2::XMLElement* pNode)
 {
 	const char* name = pNode->Name();
-	if (!strcmp(pNode->Name(), XML_TAG_COLLADA_MODEL))
+	if (!strcmp(name, XML_TAG_COLLADA_MODEL))
 		return new ColladaModel(pNode);
-	if (!strcmp(pNode->Name(), XML_TAG_BOX))
+	if (!strcmp(name, XML_TAG_BOX))
 		return new Box(pNode);
-	if (!strcmp(pNode->Name(), XML_TAG_SPHERE))
+	if (!strcmp(name, XML_TAG_SPHERE))
 		return new Sphere(pNode);
-	if (!strcmp(pNode->Name(), XML_TAG_CILINDER))
+	if (!strcmp(name, XML_TAG_CILINDER))
 		return new Cilinder(pNode);
-	if (!strcmp(pNode->Name(), XML_TAG_POLYLINE))
+	if (!strcmp(name, XML_TAG_POLYLINE))
 		return new PolyLine(pNode);
 
 	return nullptr;

@@ -26,8 +26,7 @@ void Arranger::arrange2DObjects(vector<GraphicObject2D*>& objects
 
 	Vector2D limitedMargin = margin;
 
-	size_t numObjects = objects.size();
-	double dueSize = 1.0 / numObjects;
+	double numObjects = (double) objects.size();
 	Vector2D objSize;
 	
 	objSize.setX( std::max(minObjSize.x(), std::min(maxObjSize.x(), 1.0 / numObjects)) );

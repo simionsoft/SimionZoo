@@ -307,7 +307,7 @@ void fgDeinitialize( void )
 
     if( fgState.ProgramName )
     {
-        free( fgState.ProgramName );
+        //free( fgState.ProgramName );
         fgState.ProgramName = NULL;
     }
 

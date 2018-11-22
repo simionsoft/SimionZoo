@@ -41,21 +41,25 @@ FreeCameraInputHandler::~FreeCameraInputHandler()
 
 void FreeCameraInputHandler::_onSpecialKeyPressed(int key, int x, int y)
 {
+	Renderer::get()->logMessage(string("Special key pressed: ") + to_string(key));
 	((FreeCameraInputHandler*)IInputHandler::get())->onSpecialKeyPressed(key, x, y);
 }
 
 void FreeCameraInputHandler::_onSpecialKeyReleased(int key, int x, int y)
 {
+	Renderer::get()->logMessage(string("Special key released: ") + to_string(key));
 	((FreeCameraInputHandler*)IInputHandler::get())->onSpecialKeyReleased(key, x, y);
 }
 
 void FreeCameraInputHandler::_onKeyPressed(unsigned char key, int x, int y)
 {
+	Renderer::get()->logMessage(string("Key pressed: ") + to_string(key));
 	((FreeCameraInputHandler*)IInputHandler::get())->onKeyPressed(key, x, y);
 }
 
 void FreeCameraInputHandler::_onKeyReleased(unsigned char key, int x, int y)
 {
+	Renderer::get()->logMessage(string("Key released: ") + to_string(key));
 	((FreeCameraInputHandler*)IInputHandler::get())->onKeyReleased(key, x, y);
 }
 
@@ -116,7 +120,10 @@ bool FreeCameraInputHandler::bMoveRight() const
 void FreeCameraInputHandler::onKeyPressed(unsigned char key, int x, int y)
 {
 	if (key == 27)
-		exit(0);
+	{
+		Renderer::get()->logMessage("Exiting program");
+		m_bExitRequested = true;
+	}
 	m_keyboardState[key] = true;
 }
 
@@ -145,7 +152,6 @@ void FreeCameraInputHandler::handleInput()
 	if (!pCamera) return;
 
 	Matrix44 tras = pCamera->getTransformMatrix();
-	Vector3D res = tras*Vector3D(0, 0, -1);
 	Quaternion quat;
 
 	double yaw = pCamera->getTransform().rotation().yaw();
