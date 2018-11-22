@@ -101,8 +101,8 @@ public:
 	string getConfigFile();
 	void printRequirements();
 
-	static const char* getArgValue(int argc, char** argv, char* argName);
-	static bool flagPassed(int argc, char** argv, char* flagName);
+	static const char* getArgValue(int argc, char** argv, const char* argName);
+	static bool flagPassed(int argc, char** argv, const char* flagName);
 
 	void setExecutedRemotely(bool remote);
 	bool isExecutedRemotely();

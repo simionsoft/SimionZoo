@@ -81,7 +81,7 @@ void ExperienceReplay::addTuple(const State* s, const  Action* a, const State* s
 	//add the experience tuple to the buffer
 	if (!bUsing()) return;
 
-	if (m_numTuples < m_bufferSize.get())
+	if (m_numTuples < (size_t)m_bufferSize.get())
 	{
 		//the buffer is not yet full
 		m_pTupleBuffer[m_currentPosition].copy(s, a, s_p, r, probability);
@@ -92,12 +92,12 @@ void ExperienceReplay::addTuple(const State* s, const  Action* a, const State* s
 		//the buffer is full
 		m_pTupleBuffer[m_currentPosition].copy(s, a, s_p, r, probability);
 	}
-	m_currentPosition = ++m_currentPosition % m_bufferSize.get();
+	m_currentPosition = ++m_currentPosition % (size_t) m_bufferSize.get();
 }
 
 ExperienceTuple* ExperienceReplay::getRandomTupleFromBuffer()
 {
-	int randomIndex = rand() % m_numTuples;
+	int randomIndex = rand() % (size_t) m_numTuples;
 
 	return &m_pTupleBuffer[randomIndex];
 }

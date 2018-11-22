@@ -44,8 +44,8 @@ public:
 	virtual void updateState(State* s);
 	virtual void updateBulletState(State *s, const Action *a, double dt) {}
 
-	btRigidBody* BulletBody::getBody();
-	btCollisionShape* BulletBody::getShape();
+	btRigidBody* getBody();
+	btCollisionShape* getShape();
 	virtual bool bIsRigidBody() { return true; }
 protected:
 	btRigidBody* m_pBody= 0;

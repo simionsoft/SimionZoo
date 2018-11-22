@@ -60,7 +60,6 @@ SimionMemPool::~SimionMemPool()
 
 void SimionMemPool::addMemBufferHandler(SimionMemBuffer* pMemBufferHandler)
 {
-	BUFFER_SIZE newMemBufferOffset = m_elementSize;
 	m_elementSize += pMemBufferHandler->getElementSize();
 	m_memBufferHandlers.push_back(pMemBufferHandler);
 }
@@ -83,44 +82,39 @@ double& SimionMemPool::get(BUFFER_SIZE elementIndex, BUFFER_SIZE bufferOffset)
 	BUFFER_SIZE relBlockAddr = elementStartByte % m_memBlockSize;
 	double* pMemBuffer= 0;
 	MemBlock* pBlock = m_memBlocks[(size_t)blockId];
-	try
+
+	if (!pBlock->bAllocated())
 	{
-		if (!pBlock->bAllocated())
+		//can we allocate more memory?
+		BUFFER_SIZE allocatedMem = getTotalAllocatedMem();
+		BUFFER_SIZE requestedMem = m_memBlockSize * sizeof(double);
+
+		if (m_memLimit == 0 || allocatedMem + requestedMem <= m_memLimit)
 		{
-			//can we allocate more memory?
-			BUFFER_SIZE allocatedMem = getTotalAllocatedMem();
-			BUFFER_SIZE requestedMem = m_memBlockSize * sizeof(double);
+			//try to allocate the memory buffer
+			pMemBuffer = tryToAllocateMem(pBlock->size());
 
-			if (m_memLimit == 0 || allocatedMem + requestedMem <= m_memLimit)
+			if (pMemBuffer)
 			{
-				//try to allocate the memory buffer
-				pMemBuffer = tryToAllocateMem(pBlock->size());
-
-				if (pMemBuffer)
-				{
-					//memory block successfully allocated
-					m_allocatedMemBlocks.push_back(pBlock);
-					pBlock->setBuffer(pMemBuffer);
-					m_totalAllocatedMem += m_memBlockSize * sizeof(double);
-				}
-			}
-			if (!pMemBuffer)
-			{
-				//failed to allocate the memory block: either permission was denied or there is no more available memory
-				//recycle some already allocated memory block after dumping it to a file
-				pBlock->setBuffer(recycleMem());
+				//memory block successfully allocated
 				m_allocatedMemBlocks.push_back(pBlock);
+				pBlock->setBuffer(pMemBuffer);
+				m_totalAllocatedMem += m_memBlockSize * sizeof(double);
 			}
-			//initialization
-			if (!pBlock->bInitialized())
-				initialize(pBlock);
-			else pBlock->restoreFromFile();
 		}
+		if (!pMemBuffer)
+		{
+			//failed to allocate the memory block: either permission was denied or there is no more available memory
+			//recycle some already allocated memory block after dumping it to a file
+			pBlock->setBuffer(recycleMem());
+			m_allocatedMemBlocks.push_back(pBlock);
+		}
+		//initialization
+		if (!pBlock->bInitialized())
+			initialize(pBlock);
+		else pBlock->restoreFromFile();
 	}
-	catch (std::exception ex)
-	{
-		int x = 0;
-	}
+
 
 	return (*pBlock)[relBlockAddr];
 }
@@ -161,7 +155,7 @@ void SimionMemPool::initialize(MemBlock* pBlock)
 	size_t numHandlers = (int)m_memBufferHandlers.size();
 	size_t handler;
 	double initValue;
-	for (int i = 0; i < pBlock->size(); ++i)
+	for (int i = 0; i < (int) pBlock->size(); ++i)
 	{
 		handler = (firstElement+i) % numHandlers;
 		if (m_memBufferHandlers[handler]->bInitValueSet())

@@ -1,7 +1,9 @@
 #include "state-action-function.h"
 #include "function-sampler.h"
 #include "named-var-set.h"
+
 #include <math.h>
+#include <stdexcept>
 
 FunctionSampler::~FunctionSampler()
 {
@@ -33,10 +35,10 @@ FunctionSampler::FunctionSampler(string functionId, StateActionFunction* pFuncti
 	m_functionId = functionId;
 
 	//set all state/action variables to the its value range center
-	for (int i = 0; i < m_pState->getNumVars(); ++i)
+	for (int i = 0; i < (int) m_pState->getNumVars(); ++i)
 		m_pState->set(i, m_pState->getDescriptor()[i].getMin() + m_pState->getDescriptor()[i].getRangeWidth()*0.5);
 
-	for (int i = 0; i < m_pAction->getNumVars(); ++i)
+	for (int i = 0; i < (int) m_pAction->getNumVars(); ++i)
 		m_pAction->set(i, m_pAction->getDescriptor()[i].getMin() + m_pAction->getDescriptor()[i].getRangeWidth()*0.5);
 }
 

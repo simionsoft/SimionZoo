@@ -123,7 +123,7 @@ public:
 		this->m_name = name;
 		this->m_comment = comment;
 		this->m_default = defaultValue;
-		initValue(pConfigNode, this->m_value);
+		this->initValue(pConfigNode, this->m_value);
 	}
 };
 

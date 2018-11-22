@@ -14,15 +14,15 @@ SingleDimensionGrid::SingleDimensionGrid(size_t numValues, double min, double ma
 
 	if (!circular)
 	{
-		for (int i = 0; i < numValues; i++)
-			m_values[i] = m_min + (((double)i) / (numValues - 1))*(m_rangeWidth);
+		for (int i = 0; i < (int) numValues; i++)
+			m_values[i] = m_min + (((double)i) / (double)(numValues - 1))*(m_rangeWidth);
 	}
 	else
 	{
 		//if the variable is circular, the distance between the n points is calculated as if they were
 		//n+1 points, so that m_values[0] != m_values[numValues-1]
-		for (int i = 0; i < numValues; i++)
-			m_values[i] = m_min + (((double)i) / (numValues))*(m_rangeWidth);
+		for (int i = 0; i < (int) numValues; i++)
+			m_values[i] = m_min + (((double)i) / (double)(numValues))*(m_rangeWidth);
 	}
 }
 

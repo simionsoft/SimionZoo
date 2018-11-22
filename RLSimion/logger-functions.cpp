@@ -43,7 +43,7 @@ struct FunctionSampleHeader
 
 void Logger::openFunctionLogFile(const char* filename)
 {
-	CrossPlatform::fopen_s(&m_functionLogFile, m_outputFunctionLogBinary.c_str(), "wb");
+	CrossPlatform::Fopen_s(&m_functionLogFile, m_outputFunctionLogBinary.c_str(), "wb");
 	if (m_functionLogFile)
 	{
 		//write function log header
@@ -57,7 +57,7 @@ void Logger::openFunctionLogFile(const char* filename)
 		for (FunctionSampler* sampler : SimionApp::get()->getFunctionSamplers())
 		{
 			functionDeclarationHeader.id = functionId;
-			CrossPlatform::sprintf_s(functionDeclarationHeader.name, MAX_FUNCTION_ID_LENGTH, "%s", sampler->getFunctionId().c_str());
+			CrossPlatform::Sprintf_s(functionDeclarationHeader.name, MAX_FUNCTION_ID_LENGTH, "%s", sampler->getFunctionId().c_str());
 			functionDeclarationHeader.numSamplesX = (unsigned int)sampler->getNumSamplesX();
 			functionDeclarationHeader.numSamplesY = (unsigned int)sampler->getNumSamplesY();
 			functionDeclarationHeader.numSamplesZ = 1; //for now, not using it
@@ -92,7 +92,7 @@ void Logger::writeFunctionLogSample()
 		header.experimentStep = pExperiment->getExperimentStep();
 		header.id = functionId;
 
-		size_t numElemWritten = fwrite(&header, sizeof(FunctionSampleHeader), 1, m_functionLogFile);
+		fwrite(&header, sizeof(FunctionSampleHeader), 1, m_functionLogFile);
 
 		//Write the values sampled
 		const vector<double>& valuesSampled = sampler->sample();

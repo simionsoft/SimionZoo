@@ -8,6 +8,8 @@
 #include "../app.h"
 #include "../reward.h"
 
+#include <math.h>
+
 #define NUM_BETA_SAMPLES 100
 #define NUM_TSR_SAMPLES 100
 

@@ -41,6 +41,7 @@
     <RemoteProjectDir>$(RemoteRootDir)/tools/System</RemoteProjectDir>
   </PropertyGroup>
   <ItemGroup>
+    <ClCompile Include="CrossPlatform.cpp" />
     <ClCompile Include="FileUtils.cpp" />
     <ClCompile Include="NamedPipe-linux.cpp" />
     <ClCompile Include="Process-linux.cpp" />

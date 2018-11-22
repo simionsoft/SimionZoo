@@ -2,6 +2,7 @@
 #include "../config.h"
 #include "../logger.h"
 #include "../app.h"
+#include "../../tools/System/CrossPlatform.h"
 
 //FileSetPoint//////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////
@@ -11,7 +12,7 @@ int countlines(const char *filename)
   // count the number of lines in the file called filename                                    
   FILE *fp;
   
-  fopen_s(&fp,filename,"r");
+  CrossPlatform::Fopen_s(&fp,filename,"r");
 
   if (!fp)
 	  throw std::runtime_error((std::string("Couldn't open setpoint file: ") + std::string(filename)).c_str());
@@ -49,7 +50,7 @@ FileSetPoint::FileSetPoint(const char* filename)
 	if (numLines==0) return;
 
 	char buffer [1024];
-	fopen_s(&pFile,filename,"r");
+	CrossPlatform::Fopen_s(&pFile,filename,"r");
 	
 	if (pFile!=0)
 	{
@@ -59,7 +60,7 @@ FileSetPoint::FileSetPoint(const char* filename)
 		while (!feof(pFile))
 		{
 			fgets(buffer,1024,pFile);
-			if (sscanf_s(buffer,"%lf %lf\n",&m_pTimes[m_numSteps],&m_pSetPoints[m_numSteps])==2)
+			if (CrossPlatform::Sscanf_s(buffer,"%lf %lf\n",&m_pTimes[m_numSteps],&m_pSetPoints[m_numSteps])==2)
 				m_numSteps++;
 		}
 		fclose(pFile);
@@ -130,7 +131,7 @@ HHFileSetPoint::HHFileSetPoint(const char* filename) : FileSetPoint()
 	int numLines = countlines(filename);
 	if (numLines == 0) return;
 
-	fopen_s(&pHHFile, filename, "r");
+	CrossPlatform::Fopen_s(&pHHFile, filename, "r");
 	if (pHHFile)
 	{
 		m_pSetPoints = new double[numLines];

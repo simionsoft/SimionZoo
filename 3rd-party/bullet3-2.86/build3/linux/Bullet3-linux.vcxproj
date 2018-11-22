@@ -95,7 +95,7 @@
     <RemoteProjectDir>$(RemoteRootDir)/3rd-party/Bullet3-2.86</RemoteProjectDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
-    <RemoteProjectDir>$(RemoteRootDir)/SimionZoo/3rd-party/Bullet3-2.86/src</RemoteProjectDir>
+    <RemoteProjectDir>$(RemoteRootDir)/SimionZoo/3rd-party/bullet3-2.86/src</RemoteProjectDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <RemoteProjectDir>$(RemoteRootDir)/3rd-party/Bullet3-2.86</RemoteProjectDir>

@@ -6,6 +6,7 @@
 #include "../app.h"
 #include "../reward.h"
 
+#include <math.h>
 
 UnderwaterVehicle::UnderwaterVehicle(ConfigNode* pConfigNode)
 {

@@ -1,6 +1,7 @@
 #include "templatedConfigFile.h"
 #include <stdio.h>
 #include <string>
+#include "../../tools/System/CrossPlatform.h"
 
 #define MAX_CONFIG_FILE_SIZE 10000
 
@@ -28,10 +29,10 @@ bool TemplatedConfigFile::load(const char* inTemplateConfigFile)
 
 	m_pTemplateConfigFileContent = new char[MAX_CONFIG_FILE_SIZE];
 	m_pInstantiatedConfigFile = new char[MAX_CONFIG_FILE_SIZE];
-	fopen_s(&templateFile, inTemplateConfigFile, "r");
+	CrossPlatform::Fopen_s(&templateFile, inTemplateConfigFile, "r");
 	if (templateFile)
 	{
-		numCharsRead = fread_s(m_pTemplateConfigFileContent, MAX_CONFIG_FILE_SIZE, sizeof(char)
+		numCharsRead = CrossPlatform::Fread_s(m_pTemplateConfigFileContent, MAX_CONFIG_FILE_SIZE, sizeof(char)
 			, MAX_CONFIG_FILE_SIZE, templateFile);
 		m_pTemplateConfigFileContent[numCharsRead] = 0;
 
@@ -49,10 +50,10 @@ bool TemplatedConfigFile::instantiateConfigFile(const char* outInstantiatedConfi
 {
 	if (!m_bTemplateLoaded) return false;
 
-	sprintf_s(m_pInstantiatedConfigFile, MAX_CONFIG_FILE_SIZE, m_pTemplateConfigFileContent, args...);
+	CrossPlatform::Sprintf_s(m_pInstantiatedConfigFile, MAX_CONFIG_FILE_SIZE, m_pTemplateConfigFileContent, args...);
 
 	FILE* outputInstance;
-	fopen_s(&outputInstance, outInstantiatedConfigFile, "w");
+	CrossPlatform::Fopen_s(&outputInstance, outInstantiatedConfigFile, "w");
 
 	if (outputInstance)
 	{

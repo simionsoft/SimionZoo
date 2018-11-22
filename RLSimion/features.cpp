@@ -46,10 +46,8 @@ void FeatureList::resize(size_t newSize, bool bKeepFeatures)
 
 	Feature* pNewFeatures = new Feature[newSize];
 
-	size_t oldsize = sizeof(Feature)*m_numFeatures;
-	size_t newsize = sizeof(Feature)*newSize;
 	if (bKeepFeatures)
-		CrossPlatform::memcpy_s(pNewFeatures, sizeof(Feature)*newSize, m_pFeatures, sizeof(Feature)*m_numFeatures);
+		CrossPlatform::Memcpy_s(pNewFeatures, sizeof(Feature)*newSize, m_pFeatures, sizeof(Feature)*m_numFeatures);
 	else m_numFeatures = 0;
 
 	delete[] m_pFeatures;
@@ -72,10 +70,12 @@ double FeatureList::getFactor(size_t index) const
 	for (size_t i = 0; i < m_numFeatures; i++)
 	{
 		if (m_pFeatures[i].m_index == index)
+		{
 			if (m_overwriteMode == AllowDuplicates)
 				factor += m_pFeatures[i].m_factor;
 			else
 				return m_pFeatures[i].m_factor;
+		}
 	}
 	return factor;
 }

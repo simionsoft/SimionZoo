@@ -252,10 +252,10 @@ void FASTWindTurbine::reset(State *s)
 	{
 		outConfigFileName = string(SimionApp::get()->getOutputDirectory()) + string("\\")
 			+ string(PORTAL_CONFIG_FILE);
-		CrossPlatform::fopen_s(&pOutConfigFile, outConfigFileName.c_str(), "w");
+		CrossPlatform::Fopen_s(&pOutConfigFile, outConfigFileName.c_str(), "w");
 		if (pOutConfigFile)
 		{
-			CrossPlatform::fprintf_s(pOutConfigFile, "<?xml version=\"1.0\"?>\n<FAST-DIMENSIONAL-PORTAL>\n  <PIPE-NAME>%s</PIPE-NAME>\n</FAST-DIMENSIONAL-PORTAL>"
+			CrossPlatform::Fprintf_s(pOutConfigFile, "<?xml version=\"1.0\"?>\n<FAST-DIMENSIONAL-PORTAL>\n  <PIPE-NAME>%s</PIPE-NAME>\n</FAST-DIMENSIONAL-PORTAL>"
 				, m_namedPipeServer.getPipeFullName());
 			fclose(pOutConfigFile);
 			Logger::logMessage(MessageType::Info, "FASTDimensionalPortal.dll: pipe server created");

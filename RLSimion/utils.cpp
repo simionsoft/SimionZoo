@@ -36,7 +36,7 @@ bool Table::readFromFile(string filename)
 //9		1.2	3.2	-3	-3.4
 //10	2.3	2.5	-3	-4.2
 	char line[1024];
-	char* pChar= line;
+
 	ifstream inputFile(filename);
 	if (inputFile.is_open())
 	{
@@ -59,7 +59,7 @@ bool Table::readFromFile(string filename)
 
 		inputFile.close();
 
-		if (numRows*numColumns == m_values.size())
+		if (numRows*numColumns == (int) m_values.size())
 		{
 			m_bSuccess = true;
 			return true;

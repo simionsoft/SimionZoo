@@ -6,9 +6,9 @@ class INetworkDefinition;
 namespace tinyxml2 { class XMLElement; }
 
 #if defined(_WIN32) && defined(_WIN64)
-	#define DLL_API __stdcall
+	#define CNTK_WRAPPER_DLL_API __stdcall
 #else
-	#define DLL_API
+	#define CNTK_WRAPPER_DLL_API
 #endif
 
 namespace CNTK
@@ -17,8 +17,8 @@ namespace CNTK
 	{
 	public:
 
-		typedef INetworkDefinition* (DLL_API *getNetworkDefinitionDLL)(tinyxml2::XMLElement* pNode);
-		typedef void(DLL_API *setDeviceDLL)(bool useGPU);
+		typedef INetworkDefinition* (CNTK_WRAPPER_DLL_API *getNetworkDefinitionDLL)(tinyxml2::XMLElement* pNode);
+		typedef void(CNTK_WRAPPER_DLL_API *setDeviceDLL)(bool useGPU);
 		static getNetworkDefinitionDLL getNetworkDefinition;
 		static setDeviceDLL setDevice;
 

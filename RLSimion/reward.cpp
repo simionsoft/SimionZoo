@@ -5,6 +5,8 @@
 #include "app.h"
 #include "logger.h"
 #include "named-var-set.h"
+
+#include <math.h>
 #include <algorithm>
 
 ToleranceRegionReward::ToleranceRegionReward(string variable, double tolerance, double scale)

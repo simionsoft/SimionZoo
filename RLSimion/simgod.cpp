@@ -1,4 +1,4 @@
-#include "SimGod.h"
+#include "simgod.h"
 #include "experiment.h"
 #include "named-var-set.h"
 #include "config.h"
@@ -52,8 +52,6 @@ double SimGod::selectAction(State* s, Action* a)
 
 void SimGod::update(State* s, Action* a, State* s_p, double r, double probability)
 {
-	double actionImportanceWeight= 1.0;
-
 	if (SimionApp::get()->pExperiment->isEvaluationEpisode()) return;
 
 	m_bReplayingExperience = false;

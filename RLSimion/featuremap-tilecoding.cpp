@@ -48,7 +48,7 @@ void TileCodingFeatureMap::map(vector<SingleDimensionGrid*>& grids, const vector
 	//tile #0 starts from feature #0, tile #1 from feature #n, ...
 	size_t tileIndexOffset = 0;
 
-	for (size_t layerIndex = 0; layerIndex < m_numTiles.get(); layerIndex++)
+	for (size_t layerIndex = 0; layerIndex < (size_t) m_numTiles.get(); layerIndex++)
 	{
 		//the offset by which the feature of a i is multiplied
 		size_t tileDimIndexOffset = 1;

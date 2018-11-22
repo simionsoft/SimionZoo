@@ -35,6 +35,7 @@ protected:
 	string m_key;
 	string m_subkey;
 public:
+	virtual ~IStats() {}
 	StatsInfo* getStatsInfo() { return &m_statsInfo; }
 	string getKey() { return m_key; }
 	string getSubkey() { return m_subkey; }

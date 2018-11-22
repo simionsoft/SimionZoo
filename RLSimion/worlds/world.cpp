@@ -17,7 +17,7 @@
 #include "../reward.h"
 #include "../config.h"
 #include "../app.h"
-#include "../SimGod.h"
+#include "../simgod.h"
 #include "../logger.h"
 #include "../experiment.h"
 

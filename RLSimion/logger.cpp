@@ -141,16 +141,16 @@ void Logger::writeLogFileXMLDescriptor(const char* filename)
 	char buffer[BUFFER_SIZE];
 
 	FILE * logXMLDescriptorFile;
-	CrossPlatform::fopen_s(&logXMLDescriptorFile, filename, "w");
+	CrossPlatform::Fopen_s(&logXMLDescriptorFile, filename, "w");
 	if (logXMLDescriptorFile)
 	{
 		if (m_bLogFunctions.get())
-			CrossPlatform::sprintf_s(buffer, BUFFER_SIZE, "<ExperimentLogDescriptor BinaryDataFile=\"%s\" FunctionsDataFile=\"%s\" SceneFile=\"%s\">\n"
+			CrossPlatform::Sprintf_s(buffer, BUFFER_SIZE, "<ExperimentLogDescriptor BinaryDataFile=\"%s\" FunctionsDataFile=\"%s\" SceneFile=\"%s\">\n"
 				, getFilename(m_outputLogBinary).c_str()
 				, getFilename(m_outputFunctionLogBinary).c_str()
 				, (SimionApp::get()->pWorld->getDynamicModel()->getName() + string(".scene")).c_str());
 		else
-			CrossPlatform::sprintf_s(buffer, BUFFER_SIZE, "<ExperimentLogDescriptor BinaryDataFile=\"%s\" SceneFile=\"%s\">\n"
+			CrossPlatform::Sprintf_s(buffer, BUFFER_SIZE, "<ExperimentLogDescriptor BinaryDataFile=\"%s\" SceneFile=\"%s\">\n"
 				, getFilename(m_outputLogBinary).c_str()
 				, (SimionApp::get()->pWorld->getDynamicModel()->getName() + string(".scene")).c_str());
 		writeEpisodeTypesToBuffer(buffer);
@@ -158,7 +158,7 @@ void Logger::writeLogFileXMLDescriptor(const char* filename)
 		writeNamedVarSetDescriptorToBuffer(buffer, "Action", SimionApp::get()->pWorld->getDynamicModel()->getActionDescriptorPtr()); //action
 		writeNamedVarSetDescriptorToBuffer(buffer, "Reward", SimionApp::get()->pWorld->getRewardVector()->getDescriptorPtr());
 		writeStatDescriptorToBuffer(buffer);
-		CrossPlatform::strcat_s(buffer, BUFFER_SIZE, "</ExperimentLogDescriptor>");
+		CrossPlatform::Strcat_s(buffer, BUFFER_SIZE, "</ExperimentLogDescriptor>");
 		fwrite(buffer, 1, strlen(buffer), logXMLDescriptorFile);
 
 		fclose(logXMLDescriptorFile);
@@ -168,9 +168,9 @@ void Logger::writeLogFileXMLDescriptor(const char* filename)
 
 void Logger::writeEpisodeTypesToBuffer(char* pOutBuffer)
 {
-	if (m_bLogEvaluationEpisodes.get()) CrossPlatform::strcat_s(pOutBuffer, BUFFER_SIZE
+	if (m_bLogEvaluationEpisodes.get()) CrossPlatform::Strcat_s(pOutBuffer, BUFFER_SIZE
 		, "  <Episode-Type Id=\"0\">Evaluation</Episode-Type>\n");
-	if (m_bLogTrainingEpisodes.get()) CrossPlatform::strcat_s(pOutBuffer, BUFFER_SIZE
+	if (m_bLogTrainingEpisodes.get()) CrossPlatform::Strcat_s(pOutBuffer, BUFFER_SIZE
 		, "  <Episode-Type Id=\"1\">Training</Episode-Type>\n");
 }
 
@@ -180,9 +180,9 @@ void Logger::writeStatDescriptorToBuffer(char* pOutBuffer)
 
 	for (auto iterator = m_stats.begin(); iterator != m_stats.end(); iterator++)
 	{
-		CrossPlatform::sprintf_s(buffer, BUFFER_SIZE, "  <Stat-variable>%s/%s</Stat-variable>\n", (*iterator)->getKey().c_str()
+		CrossPlatform::Sprintf_s(buffer, BUFFER_SIZE, "  <Stat-variable>%s/%s</Stat-variable>\n", (*iterator)->getKey().c_str()
 			, (*iterator)->getSubkey().c_str());
-		CrossPlatform::strcat_s(pOutBuffer, BUFFER_SIZE, buffer);
+		CrossPlatform::Strcat_s(pOutBuffer, BUFFER_SIZE, buffer);
 	}
 }
 void Logger::writeNamedVarSetDescriptorToBuffer(char* pOutBuffer, const char* id, const Descriptor* descriptor)
@@ -195,10 +195,10 @@ void Logger::writeNamedVarSetDescriptorToBuffer(char* pOutBuffer, const char* id
 			circular = "true";
 		else
 			circular = "false";
-		CrossPlatform::sprintf_s(buffer, BUFFER_SIZE, "  <%s-variable Min=\"%.2f\" Max=\"%.2f\" Circular=\"%s\" Units=\"%s\">%s</%s-variable>\n"
+		CrossPlatform::Sprintf_s(buffer, BUFFER_SIZE, "  <%s-variable Min=\"%.2f\" Max=\"%.2f\" Circular=\"%s\" Units=\"%s\">%s</%s-variable>\n"
 			, id, (*descriptor)[i].getMin(), (*descriptor)[i].getMax(), circular.c_str(), (*descriptor)[i].getUnits()
 			, (*descriptor)[i].getName(), id);
-		CrossPlatform::strcat_s(pOutBuffer, BUFFER_SIZE, buffer);
+		CrossPlatform::Strcat_s(pOutBuffer, BUFFER_SIZE, buffer);
 	}
 }
 
@@ -268,7 +268,6 @@ void Logger::lastStep()
 
 	//in case this is the last step of an evaluation episode, we log it and send the info to the host if there is one
 	char buffer[BUFFER_SIZE];
-	int episodeIndex = pExperiment->getEvaluationIndex();
 	int numEvaluations = pExperiment->getNumEvaluations();
 	int numEpisodesPerEvaluation = pExperiment->getNumEpisodesPerEvaluation();
 	int numRelativeEpisodeIndex = pExperiment->getRelativeEpisodeIndex();
@@ -277,7 +276,7 @@ void Logger::lastStep()
 	if (pExperiment->isEvaluationEpisode()
 		&& pExperiment->getEpisodeInEvaluationIndex() == pExperiment->getNumEpisodesPerEvaluation())
 	{
-		CrossPlatform::sprintf_s(buffer, BUFFER_SIZE, "%f,%f"
+		CrossPlatform::Sprintf_s(buffer, BUFFER_SIZE, "%f,%f"
 			, (double)(numRelativeEpisodeIndex - 1)	/ (std::max(1.0, (double)numEvaluations*numEpisodesPerEvaluation - 1))
 			, m_episodeRewardSum / (double)pExperiment->getStep());
 		logMessage(MessageType::Evaluation, buffer);
@@ -377,7 +376,7 @@ int Logger::writeStepHeaderToBuffer(char* buffer, int offset)
 	header.episodeSimTime = SimionApp::get()->pWorld->getEpisodeSimTime();
 	header.experimentRealTime = m_pExperimentTimer->getElapsedTime();
 
-	CrossPlatform::memcpy_s(buffer + offset, BUFFER_SIZE, (char*)&header, sizeof(StepHeader));
+	CrossPlatform::Memcpy_s(buffer + offset, BUFFER_SIZE, (char*)&header, sizeof(StepHeader));
 
 	return sizeof(header);
 }
@@ -388,7 +387,7 @@ int Logger::writeNamedVarSetToBuffer(char* buffer, int offset, const NamedVarSet
 	double* pDoubleBuffer = (double*)(buffer + offset);
 	for (size_t i = 0; i < numVars; ++i)
 		pDoubleBuffer[i] = pNamedVarSet->get(i);
-	return (int) numVars * sizeof(double);
+	return (int) (numVars * sizeof(double));
 }
 
 int Logger::writeStatsToBuffer(char* buffer, int offset)
@@ -403,13 +402,13 @@ int Logger::writeStatsToBuffer(char* buffer, int offset)
 		pDoubleBuffer[i] = (*it)->getStatsInfo()->getAvg();
 		++i;
 	}
-	return numVars * sizeof(double);
+	return (int) (numVars * sizeof(double));
 }
 
 
 void Logger::addVarSetToStats(const char* key, NamedVarSet* varset)
 {
-	for (int i = 0; i < varset->getNumVars(); i++)
+	for (int i = 0; i < (int) varset->getNumVars(); i++)
 	{
 		m_stats.push_back(new Stats<double>(key, varset->getProperties(i)->getName(), varset->getRef(i)));
 	}
@@ -430,7 +429,7 @@ IStats* Logger::getStats(unsigned int i)
 
 void Logger::openLogFile(const char* logFilename)
 {
-	CrossPlatform::fopen_s(&m_logFile, logFilename, "wb");
+	CrossPlatform::Fopen_s(&m_logFile, logFilename, "wb");
 	if (!m_logFile)
 		logMessage(MessageType::Warning, "Log file couldn't be opened, so no log info will be saved.");
 }
@@ -442,9 +441,8 @@ void Logger::closeLogFile()
 
 void Logger::writeLogBuffer(const char* pBuffer, int numBytes)
 {
-	size_t numBytesWritten = 0;
 	if (m_logFile)
-		numBytesWritten= fwrite(pBuffer, 1, numBytes, m_logFile);
+		fwrite(pBuffer, 1, numBytes, m_logFile);
 }
 
 void Logger::enableLogMessages(bool enable)
@@ -461,15 +459,15 @@ void Logger::logMessage(MessageType type, const char* message)
 		switch (type)
 		{
 		case Warning:
-			CrossPlatform::sprintf_s(messageLine, 1024, "<Message>WARNING: %s</Message>", message); break;
+			CrossPlatform::Sprintf_s(messageLine, 1024, "<Message>WARNING: %s</Message>", message); break;
 		case Progress:
-			CrossPlatform::sprintf_s(messageLine, 1024, "<Progress>%s</Progress>", message); break;
+			CrossPlatform::Sprintf_s(messageLine, 1024, "<Progress>%s</Progress>", message); break;
 		case Evaluation:
-			CrossPlatform::sprintf_s(messageLine, 1024, "<Evaluation>%s</Evaluation>", message); break;
+			CrossPlatform::Sprintf_s(messageLine, 1024, "<Evaluation>%s</Evaluation>", message); break;
 		case Info:
-			CrossPlatform::sprintf_s(messageLine, 1024, "<Message>%s</Message>", message); break;
+			CrossPlatform::Sprintf_s(messageLine, 1024, "<Message>%s</Message>", message); break;
 		case Error:
-			CrossPlatform::sprintf_s(messageLine, 1024, "<Error>ERROR: %s</Error>", message); break;
+			CrossPlatform::Sprintf_s(messageLine, 1024, "<Error>ERROR: %s</Error>", message); break;
 		}
 		m_outputPipe.writeBuffer(messageLine, (int)strlen(messageLine) + 1);
 	}

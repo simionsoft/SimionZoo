@@ -72,10 +72,10 @@ SimionApp::~SimionApp()
 	m_inputFilesRenamed.clear();
 }
 
-const char* SimionApp::getArgValue(int argc,char** argv,char* argName)
+const char* SimionApp::getArgValue(int argc,char** argv,const char* argName)
 {
 	char argPrefix[256];
-	CrossPlatform::sprintf_s(argPrefix, 256, "-%s=", argName);
+	CrossPlatform::Sprintf_s(argPrefix, 256, "-%s=", argName);
 	for (int i = 1; i < argc; ++i)
 	{
 		if (strstr(argv[i], argPrefix) == argv[i])
@@ -86,10 +86,10 @@ const char* SimionApp::getArgValue(int argc,char** argv,char* argName)
 	return nullptr;
 }
 
-bool SimionApp::flagPassed(int argc, char** argv, char* flagName)
+bool SimionApp::flagPassed(int argc, char** argv, const char* flagName)
 {
 	char argPrefix[256];
-	CrossPlatform::sprintf_s(argPrefix, 256, "-%s", flagName);
+	CrossPlatform::Sprintf_s(argPrefix, 256, "-%s", flagName);
 	for (int i = 1; i < argc; ++i)
 	{
 		if (!strcmp(argv[i], argPrefix))
@@ -207,12 +207,12 @@ Wire* SimionApp::wireGet(string name)
 void SimionApp::registerInputFile(const char* filepath, const char* rename)
 {
 	char* copy = new char[strlen(filepath) + 1];
-	CrossPlatform::strcpy_s(copy, strlen(filepath) + 1, filepath);
+	CrossPlatform::Strcpy_s(copy, strlen(filepath) + 1, filepath);
 	m_inputFiles.push_back(copy);
 	if (rename != 0)
 	{
 		copy = new char[strlen(rename) + 1];
-		CrossPlatform::strcpy_s(copy, strlen(rename) + 1, rename);
+		CrossPlatform::Strcpy_s(copy, strlen(rename) + 1, rename);
 		m_inputFilesRenamed.push_back(copy);
 	}
 	else m_inputFilesRenamed.push_back(0);
@@ -253,7 +253,7 @@ const char* SimionApp::getOutputFile(unsigned int i)
 void SimionApp::registerOutputFile(const char* filepath)
 {
 	char* copy = new char[strlen(filepath) + 1];
-	CrossPlatform::strcpy_s(copy, strlen(filepath) + 1, filepath);
+	CrossPlatform::Strcpy_s(copy, strlen(filepath) + 1, filepath);
 	m_outputFiles.push_back(copy);
 }
 
@@ -520,11 +520,11 @@ void SimionApp::update2DMeters(State* s, Action* a)
 		++statIndex;
 	}
 	//update state
-	for (int i = 0; i < s->getNumVars(); i++)
+	for (int i = 0; i < (int) s->getNumVars(); i++)
 		m_pStateUIMeters[i]->setValue(s->get(i));
 
 	//update action
-	for (int i = 0; i < a->getNumVars(); i++)
+	for (int i = 0; i < (int) a->getNumVars(); i++)
 		m_pActionUIMeters[i]->setValue(a->get(i));
 }
 

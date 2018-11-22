@@ -24,9 +24,6 @@ int ConfigNode::countChildren(const char* name)
 {
 	int count = 0;
 	ConfigNode* p;
-
-	if (!this)
-		throw std::runtime_error((std::string("Illegal count of children parameters")).c_str());
 	
 	if (name) p= getChild(name);
 	else p = getChild();
@@ -48,9 +45,6 @@ bool ConfigNode::getConstBoolean(const char* paramName, bool defaultValue)
 {
 	tinyxml2::XMLElement* pParameter;
 
-	if (!this)
-		throw std::runtime_error((std::string("Illegal access to boolean parameter") + std::string(paramName)).c_str());
-
 	if (paramName) pParameter = getChild(paramName);
 	else pParameter = this;
 
@@ -64,7 +58,7 @@ bool ConfigNode::getConstBoolean(const char* paramName, bool defaultValue)
 	}
 
 	char msg[128];
-	CrossPlatform::sprintf_s(msg, 128, "Parameter %s/%s not found. Using default value %d", getName(), paramName, defaultValue);
+	CrossPlatform::Sprintf_s(msg, 128, "Parameter %s/%s not found. Using default value %d", getName(), paramName, defaultValue);
 	Logger::logMessage(Warning, msg);
 
 	return defaultValue;
@@ -73,8 +67,6 @@ bool ConfigNode::getConstBoolean(const char* paramName, bool defaultValue)
 int ConfigNode::getConstInteger(const char* paramName, int defaultValue)
 {
 	tinyxml2::XMLElement* pParameter;
-	if (!this)
-		throw std::runtime_error((std::string("Illegal access to integer parameter") + std::string(paramName)).c_str());
 
 	if (paramName) pParameter = getChild(paramName);
 	else pParameter = this;
@@ -86,7 +78,7 @@ int ConfigNode::getConstInteger(const char* paramName, int defaultValue)
 //	else throw std::runtime_error((std::string("Illegal access to int parameter") + std::string(paramName)).c_str());
 
 	char msg[128];
-	CrossPlatform::sprintf_s(msg, 128, "Parameter %s/%s not found. Using default value %d", getName(), paramName, defaultValue);
+	CrossPlatform::Sprintf_s(msg, 128, "Parameter %s/%s not found. Using default value %d", getName(), paramName, defaultValue);
 	Logger::logMessage(Warning, msg);
 	return defaultValue;
 }
@@ -94,8 +86,6 @@ int ConfigNode::getConstInteger(const char* paramName, int defaultValue)
 double ConfigNode::getConstDouble(const char* paramName, double defaultValue)
 {
 	ConfigNode* pParameter;
-	if (!this)
-		throw std::runtime_error((std::string("Illegal access to double parameter") + std::string(paramName)).c_str());
 
 	if (paramName) pParameter = getChild(paramName);
 	else pParameter = this;
@@ -107,7 +97,7 @@ double ConfigNode::getConstDouble(const char* paramName, double defaultValue)
 //	else throw std::runtime_error((std::string("Illegal access to double parameter") + std::string(paramName)).c_str());
 
 	char msg[128];
-	CrossPlatform::sprintf_s(msg, 128, "Parameter %s/%s not found. Using default value %f", getName(), paramName, defaultValue);
+	CrossPlatform::Sprintf_s(msg, 128, "Parameter %s/%s not found. Using default value %f", getName(), paramName, defaultValue);
 	Logger::logMessage(Warning, msg);
 
 	return defaultValue;
@@ -116,8 +106,6 @@ double ConfigNode::getConstDouble(const char* paramName, double defaultValue)
 const char* ConfigNode::getConstString(const char* paramName, const char* defaultValue)
 {
 	ConfigNode* pParameter;
-	if (!this)
-		throw std::runtime_error((std::string("Illegal access to string parameter") + std::string(paramName)).c_str());
 
 	if (paramName) pParameter = getChild(paramName);
 	else pParameter = this;
@@ -129,7 +117,7 @@ const char* ConfigNode::getConstString(const char* paramName, const char* defaul
 //	else throw std::runtime_error((std::string("Illegal access to string parameter") + std::string(paramName)).c_str());
 
 	char msg[128];
-	CrossPlatform::sprintf_s(msg, 128, "Parameter %s/%s not found. Using default value %s", getName(), paramName, defaultValue);
+	CrossPlatform::Sprintf_s(msg, 128, "Parameter %s/%s not found. Using default value %s", getName(), paramName, defaultValue);
 	Logger::logMessage(Warning, msg);
 
 	return defaultValue;
@@ -137,27 +125,18 @@ const char* ConfigNode::getConstString(const char* paramName, const char* defaul
 
 ConfigNode* ConfigNode::getChild(const char* paramName)
 {
-	if (!this)
-		throw std::runtime_error((std::string("Illegal access to child parameter ") + std::string(paramName)).c_str());
-
 	tinyxml2::XMLElement* child = FirstChildElement(paramName);
 	return static_cast<ConfigNode*> (child);
 }
 
 ConfigNode* ConfigNode::getNextSibling(const char* paramName)
 {
-	if (!this)
-		throw std::runtime_error((std::string("Illegal access to child parameter ") + std::string(paramName)).c_str());
-
 	tinyxml2::XMLElement* child = NextSiblingElement(paramName);
 	return static_cast<ConfigNode*> (child);
 }
 
 const char* ConfigNode::getName()
 {
-	if (!this)
-		throw std::runtime_error("Illegal access to inexistant parameter's name");
-
 	return Name();
 }
 

@@ -90,8 +90,6 @@ void BalancingPole::executeAction(State *s, const Action *a, double dt)
 #define twelve_degrees 0.2094384
 double BalancingPoleReward::getReward(const State* s, const Action* a, const State* s_p)
 {
-	bool bEval = SimionApp::get()->pExperiment->isEvaluationEpisode();
-	int step = SimionApp::get()->pExperiment->getStep();
 	double theta = s_p->get("theta");
 	double x = s_p->get("x");
 

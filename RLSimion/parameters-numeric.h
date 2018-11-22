@@ -6,6 +6,8 @@ class ConfigNode;
 class NumericValue
 {
 public:
+	virtual ~NumericValue(){}
+
 	virtual double get() = 0;
 
 	static std::shared_ptr<NumericValue> getInstance(ConfigNode* pConfigNode);

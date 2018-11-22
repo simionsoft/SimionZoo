@@ -7,16 +7,16 @@ using namespace std;
 
 NamedVarProperties::NamedVarProperties()
 {
-	CrossPlatform::strcpy_s(m_name, VAR_NAME_MAX_LENGTH, "N/A");
-	CrossPlatform::strcpy_s(m_units, VAR_NAME_MAX_LENGTH, "N/A");
+	CrossPlatform::Strcpy_s(m_name, VAR_NAME_MAX_LENGTH, "N/A");
+	CrossPlatform::Strcpy_s(m_units, VAR_NAME_MAX_LENGTH, "N/A");
 	m_min = std::numeric_limits<double>::lowest();
 	m_max = std::numeric_limits<double>::max(); 
 }
 
 NamedVarProperties::NamedVarProperties(const char* name, const char* units, double min, double max, bool bCircular)
 {
-	CrossPlatform::sprintf_s(m_name, VAR_NAME_MAX_LENGTH, name);
-	CrossPlatform::sprintf_s(m_units, VAR_NAME_MAX_LENGTH, units);
+	CrossPlatform::Sprintf_s(m_name, VAR_NAME_MAX_LENGTH, name);
+	CrossPlatform::Sprintf_s(m_units, VAR_NAME_MAX_LENGTH, units);
 	m_min = min;
 	m_max = max;
 	m_bCircular = bCircular; //default value
@@ -24,7 +24,7 @@ NamedVarProperties::NamedVarProperties(const char* name, const char* units, doub
 
 void NamedVarProperties::setName(const char* name)
 {
-	CrossPlatform::strcpy_s(m_name, VAR_NAME_MAX_LENGTH, name);
+	CrossPlatform::Strcpy_s(m_name, VAR_NAME_MAX_LENGTH, name);
 }
 
 NamedVarProperties* Descriptor::getProperties(const char* name)

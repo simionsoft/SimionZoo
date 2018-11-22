@@ -15,12 +15,13 @@
 namespace CNTK
 {
 #if defined(_WIN32) && defined(_WIN64)
-	int NumNetworkInstances = 0;
 	HMODULE hCNTKWrapperDLL = 0;
+#endif
 
+	int NumNetworkInstances = 0;
 	WrapperClient::getNetworkDefinitionDLL WrapperClient::getNetworkDefinition = 0;
 	WrapperClient::setDeviceDLL WrapperClient::setDevice = 0;
-#endif
+
 	//We want to be able to know the requirements even if we are running Badger on a Win-32 machine
 	//so, the only thing we actually don't do on Win-32 is load the dll and retrieve the access point
 
@@ -60,26 +61,24 @@ namespace CNTK
 #endif
 
 
-			//register dependencies
-			SimionApp::get()->registerInputFile("..\\bin\\CNTKWrapper.dll");
+		//register dependencies
+		SimionApp::get()->registerInputFile("..\\bin\\CNTKWrapper.dll");
 
-			SimionApp::get()->registerInputFile("..\\bin\\Cntk.Composite-2.5.1.dll");
-			SimionApp::get()->registerInputFile("..\\bin\\Cntk.Core-2.5.1.dll");
-			SimionApp::get()->registerInputFile("..\\bin\\Cntk.Math-2.5.1.dll");
-			SimionApp::get()->registerInputFile("..\\bin\\Cntk.PerformanceProfiler-2.5.1.dll");
+		SimionApp::get()->registerInputFile("..\\bin\\Cntk.Composite-2.5.1.dll");
+		SimionApp::get()->registerInputFile("..\\bin\\Cntk.Core-2.5.1.dll");
+		SimionApp::get()->registerInputFile("..\\bin\\Cntk.Math-2.5.1.dll");
+		SimionApp::get()->registerInputFile("..\\bin\\Cntk.PerformanceProfiler-2.5.1.dll");
 
-			SimionApp::get()->registerInputFile("..\\bin\\cublas64_90.dll");
-			SimionApp::get()->registerInputFile("..\\bin\\cudart64_90.dll");
-			SimionApp::get()->registerInputFile("..\\bin\\cudnn64_7.dll");
+		SimionApp::get()->registerInputFile("..\\bin\\cublas64_90.dll");
+		SimionApp::get()->registerInputFile("..\\bin\\cudart64_90.dll");
+		SimionApp::get()->registerInputFile("..\\bin\\cudnn64_7.dll");
 
-			SimionApp::get()->registerInputFile("..\\bin\\libiomp5md.dll");
-			SimionApp::get()->registerInputFile("..\\bin\\mklml.dll");
-			SimionApp::get()->registerInputFile("..\\bin\\mkl_cntk_p.dll");
-			SimionApp::get()->registerInputFile("..\\bin\\mkldnn.dll");
-			SimionApp::get()->registerInputFile("..\\bin\\nvml.dll");
-#if defined(_WIN32) && defined(_WIN64)
-		}
-#endif
+		SimionApp::get()->registerInputFile("..\\bin\\libiomp5md.dll");
+		SimionApp::get()->registerInputFile("..\\bin\\mklml.dll");
+		SimionApp::get()->registerInputFile("..\\bin\\mkl_cntk_p.dll");
+		SimionApp::get()->registerInputFile("..\\bin\\mkldnn.dll");
+		SimionApp::get()->registerInputFile("..\\bin\\nvml.dll");
+
 	}
 
 	void WrapperClient::UnLoad()

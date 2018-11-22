@@ -8,7 +8,7 @@ class DiscreteDeepPolicy
 protected:
 
 public:
-	static std::shared_ptr<DiscreteDeepPolicy> DiscreteDeepPolicy::getInstance(ConfigNode* pConfigNode);
+	static std::shared_ptr<DiscreteDeepPolicy> getInstance(ConfigNode* pConfigNode);
 
 	DiscreteDeepPolicy(ConfigNode* pConfigNode);
 

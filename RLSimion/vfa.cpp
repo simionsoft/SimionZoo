@@ -3,7 +3,7 @@
 #include "features.h"
 #include "logger.h"
 #include "app.h"
-#include "SimGod.h"
+#include "simgod.h"
 #include "experiment.h"
 #include <assert.h>
 #include <algorithm>
@@ -19,7 +19,7 @@ LinearVFA::LinearVFA(MemManager<SimionMemPool>* pMemManager)
 LinearVFA::~LinearVFA()
 {
 	if (m_pPendingUpdates)
-		delete[] m_pPendingUpdates;
+		delete m_pPendingUpdates;
 }
 
 void LinearVFA::setCanUseDeferredUpdates(bool bCanUseDeferredUpdates)

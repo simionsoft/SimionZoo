@@ -13,6 +13,8 @@
 #include "simgod.h"
 #include "experiment.h"
 
+#include <math.h>
+
 ///////////////////////////////////////
 //Q-function-based POLICIES
 std::shared_ptr<QPolicy> QPolicy::getInstance(ConfigNode* pConfigNode)
@@ -50,7 +52,7 @@ double QEGreedyPolicy::selectAction(LinearStateActionVFA* pQFunction, const Stat
 		size_t numActionWeights= pQFunction->getNumActionWeights();
 		size_t randomActionWeight = rand() % numActionWeights;
 		pQFunction->getActionFeatureMap()->getFeatureStateAction(randomActionWeight, (State*) s, a);
-		return 1.0 / numActionWeights;
+		return 1.0 / (double) numActionWeights;
 	}
 }
 
@@ -127,7 +129,7 @@ double GreedyQPlusNoisePolicy::selectAction(LinearStateActionVFA* pQFunction, co
 		pQFunction->argMax(s, a);
 
 		size_t action = 0;
-		for each(string outputAction in pQFunction->getInputActionVariables())
+		for (string outputAction : pQFunction->getInputActionVariables())
 		{
 			a->set(outputAction.c_str(), 0.5*a->get(outputAction.c_str()) + 0.5*m_noise[action]->getSample() );
 			action++;

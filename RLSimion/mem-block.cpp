@@ -1,7 +1,7 @@
 #include "mem-block.h"
 #include "mem-pool.h"
 #include "../tools/System/CrossPlatform.h"
-#include <numeric>
+#include <limits>
 
 MemBlock::MemBlock(SimionMemPool* pPool, int id, size_t blockSize)
 	: m_pPool(pPool), m_blockSize(blockSize), m_id (id)
@@ -40,7 +40,7 @@ void MemBlock::dumpToFile()
 		return;
 
 	string dumpFile = getDumpFileName();
-	CrossPlatform::fopen_s(&pFile, dumpFile.c_str(), "wb");
+	CrossPlatform::Fopen_s(&pFile, dumpFile.c_str(), "wb");
 	if (pFile)
 	{
 		m_bDumped = true;
@@ -55,11 +55,11 @@ void MemBlock::restoreFromFile()
 	
 	FILE* pFile;
 	string dumpFile = getDumpFileName();
-	CrossPlatform::fopen_s(&pFile, dumpFile.c_str(), "rb");
+	CrossPlatform::Fopen_s(&pFile, dumpFile.c_str(), "rb");
 	if (pFile)
 	{
 		m_bDumped = false;
-		CrossPlatform::fread_s(m_pBuffer,sizeof(double)*m_blockSize, sizeof(double), m_blockSize, pFile);
+		CrossPlatform::Fread_s(m_pBuffer,sizeof(double)*m_blockSize, sizeof(double), m_blockSize, pFile);
 		fclose(pFile);
 	}
 }

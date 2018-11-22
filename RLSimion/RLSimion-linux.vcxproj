@@ -33,7 +33,10 @@
   <ImportGroup Label="PropertySheets" />
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
-    <RemoteProjectDir>$(RemoteRootDir)/SimionZoo/RLSimion</RemoteProjectDir>
+    <RemoteProjectDir>$(RemoteRootDir)/SimionZoo/RLSimion/</RemoteProjectDir>
+    <TargetName>RLSimion-linux-x64</TargetName>
+    <OutDir>$(SolutionDir)debug/</OutDir>
+    <IntDir>$(ProjectDir)obj/$(Platform)/$(Configuration)/</IntDir>
   </PropertyGroup>
   <ItemGroup>
     <Text Include="ReadMe.txt" />
@@ -50,7 +53,6 @@
     <ClCompile Include="async-deep-simion.cpp" />
     <ClCompile Include="CNTKWrapperClient.cpp" />
     <ClCompile Include="config.cpp" />
-    <ClCompile Include="controller-adaptive.cpp" />
     <ClCompile Include="controller.cpp" />
     <ClCompile Include="critic-td-lambda.cpp" />
     <ClCompile Include="critic-tdc-lambda.cpp" />
@@ -121,7 +123,6 @@
     <ClInclude Include="async-deep-simion.h" />
     <ClInclude Include="CNTKWrapperClient.h" />
     <ClInclude Include="config.h" />
-    <ClInclude Include="controller-adaptive.h" />
     <ClInclude Include="controller.h" />
     <ClInclude Include="critic.h" />
     <ClInclude Include="DDPG.h" />
@@ -203,7 +204,11 @@
       <Project>{11efdd7d-a557-4cc7-ab52-46d850f67a1e}</Project>
     </ProjectReference>
   </ItemGroup>
-  <ItemDefinitionGroup />
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <Link>
+      <LibraryDependencies>GL;X11;GLU</LibraryDependencies>
+    </Link>
+  </ItemDefinitionGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets" />
 </Project>

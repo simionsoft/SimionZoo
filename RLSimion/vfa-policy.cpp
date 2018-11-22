@@ -7,13 +7,15 @@
 #include "features.h"
 #include "policy.h"
 #include "app.h"
-#include "SimGod.h"
+#include "simgod.h"
 #include "featuremap.h"
 #include <iostream>
 #include <typeinfo>
 #include "named-var-set.h"
 #include "logger.h"
 #include "experiment.h"
+
+#include <math.h>
 #include <algorithm>
 
 #define PROBABILITY_INTEGRATION_WIDTH 0.05

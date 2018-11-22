@@ -3,10 +3,10 @@
 #include "worlds/world.h"
 #include "config.h"
 #include "parameters-numeric.h"
-#include "controller-adaptive.h"
 #include "app.h"
 #include "experiment.h"
 #include <algorithm>
+#include <math.h>
 
 vector<double>& Controller::evaluate(const State* s, const Action* a)
 {
@@ -194,14 +194,10 @@ double WindTurbineVidalController::evaluate(const State* s, const Action* a, uns
 	//d(Tg)/dt= (-1/omega_g)*(T_g*(a*omega_g-d_omega_g)-a*P_setpoint + K_alpha*sgn(P_a-P_setpoint))
 	//beta= K_p*(omega_ref - omega_g) + K_i*(error_integral)
 
-	double omega_r = s->get("omega_r");
-	double d_omega_r = s->get("d_omega_r");
 	double omega_g = s->get("omega_g");
 	double d_omega_g = s->get("d_omega_g");
 
 	double error_P= s->get("E_p");
-
-	double T_g= s->get("T_g");
 
 	double e_omega_g, beta, d_T_g;
 
@@ -280,10 +276,6 @@ double WindTurbineBoukhezzarController::evaluate(const State *s,const Action *a,
 
 	double omega_g= s->get("omega_g");
 	double d_omega_g = s->get("d_omega_g");		
-	
-	double beta= s->get("beta");
-	double E_p = s->get("E_p");
-	double P_e = s->get("P_e");
 	
 	//Boukhezzar controller without making substitution: d_T_g= (-1/omega_g)(d_omega_g*T_g+C_0*Ep)
 	double d_T_g = (-1.0/(omega_g*m_genElecEff))*(d_omega_g*m_lastT_g*m_genElecEff + m_pC_0->get()*s->get("E_p"));

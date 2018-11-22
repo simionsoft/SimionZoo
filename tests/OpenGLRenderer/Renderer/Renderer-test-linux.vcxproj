@@ -34,7 +34,7 @@
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <RemoteProjectDir>$(RemoteRootDir)/SimionZoo/tests/OpenGLRenderer/Renderer-test</RemoteProjectDir>
-    <OutDir>$(SolutionDir)debug\linux\x64</OutDir>
+    <OutDir>$(SolutionDir)debug/linux-x64/</OutDir>
     <TargetName>rendererTest</TargetName>
     <AdditionalSourcesToCopyMapping>
     </AdditionalSourcesToCopyMapping>

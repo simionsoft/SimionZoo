@@ -187,6 +187,9 @@
     <ProjectReference Include="..\..\3rd-party\tinyxml2\tinyxml2.vcxproj">
       <Project>{d1c528b6-aa02-4d29-9d61-dc08e317a70d}</Project>
     </ProjectReference>
+    <ProjectReference Include="..\System\System.vcxproj">
+      <Project>{f32419bf-f083-4552-aa39-610898f34dbb}</Project>
+    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

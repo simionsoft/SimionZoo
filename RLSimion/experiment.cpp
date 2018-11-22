@@ -44,7 +44,7 @@ double Experiment::getEpisodeProgress()
 
 const char* Experiment::getProgressString()
 {
-	CrossPlatform::sprintf_s(m_progressMsg, MAX_PROGRESS_MSG_LEN, "Episode: %d/%d Step %d/%d (%.2f%%)"
+	CrossPlatform::Sprintf_s(m_progressMsg, MAX_PROGRESS_MSG_LEN, "Episode: %d/%d Step %d/%d (%.2f%%)"
 		, getEpisodeIndex(), getTotalNumEpisodes()
 		, getStep(), getNumSteps()
 		, getExperimentProgress()*100.0);
@@ -190,7 +190,7 @@ bool Experiment::isLastEpisode()
 {
 	if (isEvaluationEpisode())
 		return m_evalEpisodeIndex == m_numEvaluations*m_numEpisodesPerEvaluation;
-	return m_trainingEpisodeIndex == m_numTrainingEpisodes.get();
+	return m_trainingEpisodeIndex == (unsigned int) m_numTrainingEpisodes.get();
 }
 
 Experiment::~Experiment()
@@ -229,16 +229,14 @@ void Experiment::timestep(State* s, Action* a, State* s_p, Reward* r)
 
 	if (time > m_progUpdateFreq.get() || (isLastStep() && isLastEpisode()))
 	{
-		CrossPlatform::sprintf_s(msg, 1024, "%f", SimionApp::get()->pExperiment->getExperimentProgress()*100.0);
+		CrossPlatform::Sprintf_s(msg, 1024, "%f", SimionApp::get()->pExperiment->getExperimentProgress()*100.0);
 		Logger::logMessage(Progress, msg);
 		m_pProgressTimer->start();
 	}
 
-	bool evalEpisode = isEvaluationEpisode();
 	if (isFirstEpisode() && isFirstStep())
 		SimionApp::get()->pLogger->firstEpisode();
 
-	unsigned int episodeIndex = getRelativeEpisodeIndex();
 	if (isFirstStep())
 		SimionApp::get()->pLogger->firstStep();
 
