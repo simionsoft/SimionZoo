@@ -19,7 +19,6 @@ NamedPipe::NamedPipe()
 
 NamedPipe::~NamedPipe()
 {
-	close((int) m_pipeHandle);
 }
 
 bool NamedPipe::isConnected()
@@ -177,6 +176,10 @@ bool NamedPipeClient::connectToServer(const char* pipeName, bool addPipePrefix)
 
 void NamedPipeClient::closeConnection()
 {
-	printf("Client closing connection to pipe server %s\n", m_pipeFullName);
-	close((int) m_pipeHandle);
+	if (isConnected())
+	{
+		printf("Client closing connection to pipe server %s\n", m_pipeFullName);
+		close((int)m_pipeHandle);
+		m_pipeHandle = 0;
+	}
 }

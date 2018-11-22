@@ -123,6 +123,7 @@ void FreeCameraInputHandler::onKeyPressed(unsigned char key, int x, int y)
 	{
 		Renderer::get()->logMessage("Exiting program");
 		m_bExitRequested = true;
+		exit(0); //easier to get out of the main loop
 	}
 	m_keyboardState[key] = true;
 }

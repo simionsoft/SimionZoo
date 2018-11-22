@@ -17,6 +17,8 @@
 #include "../tools/System/FileUtils.h"
 #include "../tools/System/CrossPlatform.h"
 
+#include <algorithm>
+
 //Properties and xml tags
 #define APP_REQUIREMENTS_XML_TAG "Requirements"
 #define NUM_CPU_CORES_XML_TAG "NumCPUCores"
@@ -281,6 +283,8 @@ void SimionApp::run()
 	{
 		//load the scene
 		string sceneFile = pWorld->getDynamicModel()->getWorldSceneFile();
+		//scene file names are in lower case
+		std::transform(sceneFile.begin(), sceneFile.end(), sceneFile.begin(), ::tolower);
 		initRenderer(sceneFile, s, a);
 	}
 	else
