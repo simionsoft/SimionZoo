@@ -43,10 +43,10 @@
   <ImportGroup Label="PropertySheets" />
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
-    <RemoteProjectDir>$(RemoteRootDir)/tests/System/ProcessTest</RemoteProjectDir>
+    <RemoteProjectDir>$(RemoteRootDir)/SimionZoo/tests/System/ProcessTest</RemoteProjectDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
-    <RemoteProjectDir>$(RemoteRootDir)/tests/System/ProcessTest</RemoteProjectDir>
+    <RemoteProjectDir>$(RemoteRootDir)/SimionZoo/tests/System/ProcessTest</RemoteProjectDir>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <ClCompile>

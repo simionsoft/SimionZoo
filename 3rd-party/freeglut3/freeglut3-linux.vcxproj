@@ -29,6 +29,7 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
     <UseDebugLibraries>false</UseDebugLibraries>
     <RemoteRootDir>~/projects</RemoteRootDir>
+    <ConfigurationType>StaticLibrary</ConfigurationType>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
   <ImportGroup Label="ExtensionSettings" />
@@ -39,7 +40,7 @@
     <RemoteProjectDir>$(RemoteRootDir)/SimionZoo/3rd-party/freeglut3</RemoteProjectDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
-    <RemoteProjectDir>$(RemoteRootDir)/3rd-party/freeglut3</RemoteProjectDir>
+    <RemoteProjectDir>$(RemoteRootDir)/SimionZoo/3rd-party/freeglut3</RemoteProjectDir>
   </PropertyGroup>
   <ItemGroup>
     <ClCompile Include="src\fg_callbacks.c" />
@@ -104,6 +105,16 @@
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <ClCompile>
       <WarningLevel>TurnOffAllWarnings</WarningLevel>
+    </ClCompile>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <ClCompile>
+      <UnrollLoops>false</UnrollLoops>
+    </ClCompile>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <ClCompile>
+      <LinkTimeOptimization>false</LinkTimeOptimization>
     </ClCompile>
   </ItemDefinitionGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

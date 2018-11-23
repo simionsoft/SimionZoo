@@ -96,9 +96,11 @@
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <RemoteProjectDir>$(RemoteRootDir)/SimionZoo/3rd-party/bullet3-2.86/src</RemoteProjectDir>
+    <MultiProcNumber>2</MultiProcNumber>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
-    <RemoteProjectDir>$(RemoteRootDir)/3rd-party/Bullet3-2.86</RemoteProjectDir>
+    <RemoteProjectDir>$(RemoteRootDir)/SimionZoo/3rd-party/bullet3-2.86/src</RemoteProjectDir>
+    <MultiProcNumber>2</MultiProcNumber>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x86'">
     <RemoteProjectDir>$(RemoteRootDir)/3rd-party/Bullet3-2.86</RemoteProjectDir>
@@ -737,6 +739,13 @@
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <ClCompile>
       <WarningLevel>TurnOffAllWarnings</WarningLevel>
+    </ClCompile>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <ClCompile>
+      <WarningLevel>TurnOffAllWarnings</WarningLevel>
+      <UnrollLoops>true</UnrollLoops>
+      <LinkTimeOptimization>true</LinkTimeOptimization>
     </ClCompile>
   </ItemDefinitionGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

@@ -34,13 +34,15 @@
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <RemoteProjectDir>$(RemoteRootDir)/SimionZoo/tests/OpenGLRenderer/Renderer-test</RemoteProjectDir>
-    <OutDir>$(SolutionDir)debug/linux-x64/</OutDir>
-    <TargetName>rendererTest</TargetName>
+    <OutDir>$(SolutionDir)debug/</OutDir>
+    <TargetName>$(ProjectName)-$(Platform)</TargetName>
     <AdditionalSourcesToCopyMapping>
     </AdditionalSourcesToCopyMapping>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
-    <RemoteProjectDir>$(RemoteRootDir)/tests/OpenGLRenderer/Renderer-test</RemoteProjectDir>
+    <RemoteProjectDir>$(RemoteRootDir)/SimionZoo/tests/OpenGLRenderer/Renderer-test</RemoteProjectDir>
+    <OutDir>$(SolutionDir)bin/</OutDir>
+    <TargetName>$(ProjectName)-$(Platform)</TargetName>
   </PropertyGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp" />
@@ -69,6 +71,11 @@
     <Link>
       <LibraryDependencies>GL;X11;GLU</LibraryDependencies>
       <VerboseOutput>true</VerboseOutput>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <Link>
+      <LibraryDependencies>GL;X11;GLU</LibraryDependencies>
     </Link>
   </ItemDefinitionGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

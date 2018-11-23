@@ -1,9 +1,5 @@
 #include "templatedConfigFile.h"
-#include <stdio.h>
-#include <string>
-#include "../../tools/System/CrossPlatform.h"
 
-#define MAX_CONFIG_FILE_SIZE 10000
 
 TemplatedConfigFile::TemplatedConfigFile()
 {
@@ -42,27 +38,6 @@ bool TemplatedConfigFile::load(const char* inTemplateConfigFile)
 	return false;
 }
 
-
-
-
-template <typename ...ArgsType>
-bool TemplatedConfigFile::instantiateConfigFile(const char* outInstantiatedConfigFile, ArgsType... args)
-{
-	if (!m_bTemplateLoaded) return false;
-
-	CrossPlatform::Sprintf_s(m_pInstantiatedConfigFile, MAX_CONFIG_FILE_SIZE, m_pTemplateConfigFileContent, args...);
-
-	FILE* outputInstance;
-	CrossPlatform::Fopen_s(&outputInstance, outInstantiatedConfigFile, "w");
-
-	if (outputInstance)
-	{
-		fwrite(m_pInstantiatedConfigFile,1, strlen(m_pInstantiatedConfigFile), outputInstance);
-		fclose(outputInstance);
-		return true;
-	}
-	return false;
-}
 
 
 //for some unknown reason, VStudio fails to link to the versions of the templated functions that are only called from an implementation

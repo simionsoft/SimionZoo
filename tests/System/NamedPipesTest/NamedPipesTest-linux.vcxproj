@@ -82,13 +82,14 @@
     <RemoteProjectDir>$(RemoteRootDir)/tests/System/NamedPipesTest</RemoteProjectDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
-    <RemoteProjectDir>$(RemoteRootDir)/tests/System/NamedPipesTest</RemoteProjectDir>
+    <RemoteProjectDir>$(RemoteRootDir)/SimionZoo/tests/System/NamedPipesTest</RemoteProjectDir>
+    <TargetName>NamedPipesTest</TargetName>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x86'">
     <RemoteProjectDir>$(RemoteRootDir)/tests/System/NamedPipesTest</RemoteProjectDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
-    <RemoteProjectDir>$(RemoteRootDir)/tests/System/NamedPipesTest</RemoteProjectDir>
+    <RemoteProjectDir>$(RemoteRootDir)/SimionZoo/tests/System/NamedPipesTest</RemoteProjectDir>
     <TargetName>NamedPipesTest</TargetName>
   </PropertyGroup>
   <ItemGroup>
@@ -106,6 +107,11 @@
     <ClCompile>
       <WarningLevel>TurnOffAllWarnings</WarningLevel>
     </ClCompile>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <Link>
+      <LibraryDependencies>pthread</LibraryDependencies>
+    </Link>
   </ItemDefinitionGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets" />

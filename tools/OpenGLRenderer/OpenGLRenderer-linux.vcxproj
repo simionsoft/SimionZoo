@@ -29,6 +29,7 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
     <UseDebugLibraries>false</UseDebugLibraries>
     <RemoteRootDir>~/projects</RemoteRootDir>
+    <ConfigurationType>StaticLibrary</ConfigurationType>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
   <ImportGroup Label="ExtensionSettings" />
@@ -39,7 +40,7 @@
     <RemoteProjectDir>$(RemoteRootDir)/SimionZoo/tools/OpenGLRenderer</RemoteProjectDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
-    <RemoteProjectDir>$(RemoteRootDir)/tools/OpenGLRenderer</RemoteProjectDir>
+    <RemoteProjectDir>$(RemoteRootDir)/SimionZoo/tools/OpenGLRenderer</RemoteProjectDir>
   </PropertyGroup>
   <ItemGroup>
     <ClCompile Include="arranger.cpp" />
