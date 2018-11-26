@@ -1,5 +1,9 @@
 ﻿using System;
+
+#if !(__LINUX)
 using System.ServiceProcess;
+#endif
+
 using System.Threading;
 using System.Net.Sockets;
 using System.IO;
@@ -9,10 +13,11 @@ using Herd;
 
 namespace Herd
 {
-
-
-
+#if !(__LINUX)
     public partial class HerdService : ServiceBase
+#else
+        public class HerdService
+#endif
     {
         private HerdAgent m_herdAgent;
         private string m_dirPath;
@@ -26,7 +31,7 @@ namespace Herd
         }
         public string getLogFilename()
         {
-            return m_dirPath + @"\log.txt";
+            return m_dirPath + @"/log.txt";
         }
 
         public void cleanLog()
@@ -110,8 +115,11 @@ namespace Herd
             Console.ReadLine();
             this.OnStop();
         }
-
+#if !(__LINUX)
         protected override void OnStart(string[] args)
+#else
+        protected void OnStart(string[] args)
+#endif
         {
             DoStart();
         }
@@ -131,7 +139,11 @@ namespace Herd
             m_herdAgent.StartListening();
         }
 
+#if !(__LINUX)
         protected override void OnStop()
+#else
+        protected void OnStop()
+#endif
         {
             DoStop();
         }

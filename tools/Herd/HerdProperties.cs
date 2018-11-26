@@ -20,6 +20,9 @@
     {
         public const string Win64 = "Win-64";
         public const string Win32 = "Win-32";
+        public const string Unix64 = "Unix-64";
+        public const string Unix32 = "Unix-32";
+
         public const string AllCPUCores = "*";
         public const string None = "N/A";
 

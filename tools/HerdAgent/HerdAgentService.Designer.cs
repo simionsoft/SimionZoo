@@ -11,7 +11,9 @@
         /// Clean up any resources being used.
         /// </summary>
         /// <param name="disposing">true if managed resources should be disposed; otherwise, false.</param>
+#if !(__LINUX)
         protected override void Dispose(bool disposing)
+
         {
             if (disposing && (components != null))
             {
@@ -19,8 +21,9 @@
             }
             base.Dispose(disposing);
         }
+#endif
 
-        #region Component Designer generated code
+#region Component Designer generated code
 
         /// <summary> 
         /// Required method for Designer support - do not modify 
@@ -35,7 +38,7 @@
 
         }
 
-        #endregion
+#endregion
 
     }
 }

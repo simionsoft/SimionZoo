@@ -4,7 +4,6 @@ using System.Diagnostics;
 using System.IO;
 using System.IO.Pipes;
 using System.Linq;
-using System.Management;
 using System.Net;
 using System.Net.Sockets;
 using System.Runtime.InteropServices;
@@ -14,6 +13,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Security.Authentication;
 using System.Globalization;
+using System.Net.NetworkInformation;
 
 namespace Herd
 {
@@ -182,13 +182,13 @@ namespace Herd
 
     public class HerdAgent : CJobDispatcher
     {
-        [DllImport("kernel32.dll")]
-        private static extern void GetNativeSystemInfo(ref SYSTEM_INFO lpSystemInfo);
+        //[DllImport("kernel32.dll")]
+        //private static extern void GetNativeSystemInfo(ref SYSTEM_INFO lpSystemInfo);
 
         private const int PROCESSOR_ARCHITECTURE_AMD64 = 9;
         private const int PROCESSOR_ARCHITECTURE_IA64 = 6;
         private const int PROCESSOR_ARCHITECTURE_INTEL = 0;
-
+        /*
         [StructLayout(LayoutKind.Sequential)]
         private struct SYSTEM_INFO
         {
@@ -203,7 +203,7 @@ namespace Herd
             public int dwAllocationGranularity;
             public short wProcessorLevel;
             public short wProcessorRevision;
-        }
+        }*/
         public const string FirewallExceptionNameTCP = "HerdAgentFirewallExceptionTCP";
         public const string FirewallExceptionNameUDP = "HerdAgentFirewallExceptionUDP";
         private object m_quitExecutionLock = new object();
@@ -226,6 +226,7 @@ namespace Herd
         private CancellationTokenSource m_cancelTokenSource;
 
         private PerformanceCounter m_cpuCounter;
+        private PerformanceCounter m_ramCounter;
 
         /// <summary>
         ///     HerdAgent class constructor
@@ -240,6 +241,8 @@ namespace Herd
             m_cancelTokenSource = cancelTokenSource;
             m_state = AgentState.Available;
             m_cpuCounter = new PerformanceCounter("Processor", "% Processor Time", "_Total");
+            m_ramCounter = new PerformanceCounter("Memory", "Available MBytes", true);
+
             try
             {
                 m_credentials = Credentials.Load(Path.GetDirectoryName(System.Reflection.Assembly.GetEntryAssembly().Location));
@@ -492,40 +495,46 @@ namespace Herd
 
         static public string ProcessorId()
         {
-            var mbs = new ManagementObjectSearcher("Select ProcessorId From Win32_processor");
-            ManagementObjectCollection mbsList = mbs.Get();
-            string id = "";
-            foreach (ManagementObject mo in mbsList)
-            {
-                id = mo["ProcessorId"].ToString();
-                break;
-            }
+            //Using the ProcessorId doesn't work in Linux, so we will use the 1st adapter's physical address to identify the agent
 
-            return id;
+            IPGlobalProperties computerProperties = IPGlobalProperties.GetIPGlobalProperties();
+            NetworkInterface[] nics = NetworkInterface.GetAllNetworkInterfaces();
+
+            if (nics == null || nics.Length < 1)
+                return PropValues.None;
+
+            return nics[0].GetPhysicalAddress().ToString();
         }
 
         string HerdAgentVersion = PropValues.None;
         string CPUId = PropValues.None;
         int NumCPUCores = 0;
         string CPUArchitecture = PropValues.None;
-        double TotalMemory = 0.0;
-
-
+        string TotalMemory = PropValues.None;
 
         static public string ArchitectureId()
         {
-            SYSTEM_INFO si = new SYSTEM_INFO();
-            GetNativeSystemInfo(ref si);
-            switch (si.wProcessorArchitecture)
-            {
-                case PROCESSOR_ARCHITECTURE_AMD64:
-                case PROCESSOR_ARCHITECTURE_IA64:
-                    return PropValues.Win64;
+            bool is64 = Environment.Is64BitOperatingSystem;
 
-                case PROCESSOR_ARCHITECTURE_INTEL:
+            OperatingSystem os = Environment.OSVersion;
+            PlatformID pid = os.Platform;
+            switch (pid)
+            {
+                case PlatformID.Win32NT:
+                case PlatformID.Win32S:
+                case PlatformID.Win32Windows:
+                case PlatformID.WinCE:
+                    if (is64) return PropValues.Win64;
+                    else return PropValues.Win32;
+
+                case PlatformID.Unix:
+                    if (is64) return PropValues.Unix64;
+                    else return PropValues.Unix32;
                 default:
-                    return PropValues.Win32;
+                    return PropValues.None;
             }
+
+
         }
         /// <summary>
         /// This method should be called once on initialization to set static properties: CUDA support
@@ -542,10 +551,9 @@ namespace Herd
             //Processor Id
             CPUId = ProcessorId();
             // CPU architecture
-           // CPUArchitecture = Environment.GetEnvironmentVariable("PROCESSOR_ARCHITECTURE", EnvironmentVariableTarget.Machine);
             CPUArchitecture = ArchitectureId();
             // Total installed memory
-            TotalMemory = GetGlobalMemoryStatusEx();
+            TotalMemory = GetAvailableMemory();
             //CUDA support
             CUDAVersion= CUDASupport();
 
@@ -590,31 +598,9 @@ namespace Herd
         }
 
 
-        [StructLayout(LayoutKind.Sequential)]
-        struct MEMORYSTATUSEX
+        private string GetAvailableMemory()
         {
-            internal uint dwLength;
-            uint dwMemoryLoad;
-            internal ulong ullTotalPhys;
-            internal ulong ullAvailPhys;
-            internal ulong ullTotalPageFile;
-            ulong ullAvailPageFile;
-            ulong ullTotalVirtual;
-            ulong ullAvailVirtual;
-            ulong ullAvailExtendedVirtual;
-        }
-
-        [return: MarshalAs(UnmanagedType.Bool)]
-        [DllImport("kernel32.dll", CharSet = CharSet.Auto, SetLastError = true)]
-        static extern bool GlobalMemoryStatusEx(ref MEMORYSTATUSEX lpBuffer);
-
-        public static double GetGlobalMemoryStatusEx()
-        {
-            MEMORYSTATUSEX statEx = new MEMORYSTATUSEX();
-            statEx.dwLength = (uint)Marshal.SizeOf(typeof(MEMORYSTATUSEX));
-            GlobalMemoryStatusEx(ref statEx);
-
-            return statEx.ullTotalPhys;
+            return Convert.ToInt32(m_ramCounter.NextValue()).ToString() + "Mb";
         }
 
         public string AgentDescription()
