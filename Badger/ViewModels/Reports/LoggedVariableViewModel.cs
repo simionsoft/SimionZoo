@@ -106,5 +106,12 @@ namespace Badger.ViewModels
 
         [DataMember]
         public string SelectedProcessFunc { get; set; } = ProcessFunc.None;
+
+
+        public void SetNotifying(bool notifying)
+        {
+            IsNotifying = notifying;
+            m_selectedPlotTypes.CollectionChanged += M_selectedPlotTypes_CollectionChanged;
+        }
     }
 }

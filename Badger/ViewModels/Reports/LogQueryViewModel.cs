@@ -589,7 +589,7 @@ namespace Badger.ViewModels
         {
             IsNotifying = notifying;
             foreach (LoggedVariableViewModel variable in VariablesVM)
-                variable.IsNotifying = notifying;
+                variable.SetNotifying(notifying);
         }
     }
 }
