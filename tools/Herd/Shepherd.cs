@@ -23,7 +23,7 @@ namespace Herd
     }
 
 
-    public class Shepherd : CJobDispatcher
+    public class Shepherd : JobDispatcher
     {
         private object m_listLock = new object();
         private Dictionary<IPEndPoint, HerdAgentInfo> m_herdAgentList
@@ -118,13 +118,13 @@ namespace Herd
             }
             catch (TaskCanceledException ex)
             {
-                logMessage("Task canceled exception in Shepherd");
-                logMessage(ex.ToString());
+                LogMessage("Task canceled exception in Shepherd");
+                LogMessage(ex.ToString());
             }
             catch (Exception ex)
             {
-                logMessage("Exception in discovery callback function");
-                logMessage(ex.StackTrace);
+                LogMessage("Exception in discovery callback function");
+                LogMessage(ex.StackTrace);
             }
         }
 
@@ -140,7 +140,7 @@ namespace Herd
         public void BeginListeningHerdAgentQueryResponses()
         {
             ShepherdUdpState u = new ShepherdUdpState();
-            IPEndPoint xxx = new IPEndPoint(0, CJobDispatcher.m_discoveryPortHerd);
+            IPEndPoint xxx = new IPEndPoint(0, JobDispatcher.m_discoveryPortHerd);
             u.ip = xxx;
             u.client = m_discoverySocket;
             m_discoverySocket.BeginReceive(DiscoveryCallback, u);
@@ -152,11 +152,11 @@ namespace Herd
             try
             {
                 m_tcpClient = new TcpClient();
-                m_tcpClient.Connect(endPoint.Address, Herd.CJobDispatcher.m_comPortHerd);
+                m_tcpClient.Connect(endPoint.Address, Herd.JobDispatcher.m_comPortHerd);
                 m_xmlStream.resizeBuffer(m_tcpClient.ReceiveBufferSize);
                 m_netStream = m_tcpClient.GetStream();
                 //send slave acquire message
-                m_xmlStream.writeMessage(m_netStream, CJobDispatcher.m_acquireMessage, true);
+                m_xmlStream.writeMessage(m_netStream, JobDispatcher.m_acquireMessage, true);
             }
             catch
             {

@@ -14,6 +14,7 @@ using System.Threading.Tasks;
 using System.Security.Authentication;
 using System.Globalization;
 using System.Net.NetworkInformation;
+using System.Reflection;
 
 namespace Herd
 {
@@ -180,7 +181,7 @@ namespace Herd
     }
 
 
-    public class HerdAgent : CJobDispatcher
+    public class HerdAgent : JobDispatcher
     {
         //[DllImport("kernel32.dll")]
         //private static extern void GetNativeSystemInfo(ref SYSTEM_INFO lpSystemInfo);
@@ -219,10 +220,6 @@ namespace Herd
         public UdpClient getUdpClient() { return m_discoveryClient; }
         private TcpListener m_listener;
 
-        private Credentials m_credentials;
-
-        private string m_dirPath = "";
-
         private CancellationTokenSource m_cancelTokenSource;
 
         private PerformanceCounter m_cpuCounter;
@@ -232,43 +229,41 @@ namespace Herd
         ///     HerdAgent class constructor
         /// </summary>
         /// <param name="cancelTokenSource"></param>
-        public HerdAgent(CancellationTokenSource cancelTokenSource, Logger.LogFunction logMessageHandler= null)
+        public HerdAgent(CancellationTokenSource cancelTokenSource)
         {
             //Set invariant culture to use english notation
             Thread.CurrentThread.CurrentCulture = System.Globalization.CultureInfo.InvariantCulture;
-
-            setLogMessageHandler(logMessageHandler);
+            
+            SetLogMessageHandler(LogMessage);
             m_cancelTokenSource = cancelTokenSource;
             m_state = AgentState.Available;
+            
+            //Clean-up
+            m_dirPath = Path.GetDirectoryName(System.Reflection.Assembly.GetEntryAssembly().Location) + "/temp";
+            Directory.CreateDirectory(m_dirPath);
+            
+            CleanLog();
+            CleanTempDir();
+
+            //Run counters BEFORE initializing static properties because we use ram counter
             m_cpuCounter = new PerformanceCounter("Processor", "% Processor Time", "_Total");
-            m_ramCounter = new PerformanceCounter("Memory", "Available MBytes", true);
+            m_cpuCounter.NextValue();
 
-            try
-            {
-                m_credentials = Credentials.Load(Path.GetDirectoryName(System.Reflection.Assembly.GetEntryAssembly().Location));
-            }
-            catch
-            {
-                //we do nothing for now
-            }
-            InitStaticProperties();
-        }
-
-        protected override string TmpDir()
-        {
-            if (m_credentials == null)
-                return base.TmpDir();
+            if (ArchitectureId() == PropValues.Win32 || ArchitectureId() == PropValues.Win64)
+                m_ramCounter = new PerformanceCounter("Memory", "Available MBytes", true);
             else
-                return m_credentials.GetTempDir();
+                m_ramCounter = new PerformanceCounter("Mono Memory", "Total Physical Memory", true);
+            m_ramCounter.NextValue();
+
+            InitStaticProperties();
+
+            LogToFile("Herd agent started");
+
         }
 
         public string DirPath { get { return m_dirPath; } }
 
-        public void CleanCacheDir()
-        {
-            Directory.Delete(m_dirPath, true);
-            Directory.CreateDirectory(m_dirPath);
-        }
+
 
         public void SendJobResult(CancellationToken cancelToken)
         {
@@ -301,13 +296,13 @@ namespace Herd
                     case "Input": bret = await ReceiveFile(FileType.INPUT, true, true, cancelToken); break;
                     case "Output": bret = await ReceiveFile(FileType.OUTPUT, false, true, cancelToken); break;
                     case "/Job": bFooterPeeked = true; break;
-                    default: logMessage("WARNING: Unexpected xml tag received: " + xmlTag); break;
+                    default: LogToFile("WARNING: Unexpected xml tag received: " + xmlTag); break;
                 }
             } while (!bFooterPeeked);
 
-            logMessage("Waiting for job footer");
+            LogToFile("Waiting for job footer");
             bret = await ReceiveJobFooter(cancelToken);
-            logMessage("Job footer received");
+            LogToFile("Job footer received");
 
             return true;
         }
@@ -318,7 +313,7 @@ namespace Herd
             var tcs = new TaskCompletionSource<object>();
             process.EnableRaisingEvents = true;
             process.Exited += (sender, args) => { tcs.TrySetResult(null); };
-            //if(cancellationToken != default(CancellationToken))
+
             cancellationToken.Register(tcs.SetCanceled);
             return tcs.Task;
         }
@@ -338,33 +333,13 @@ namespace Herd
                 //not to read 23.232 as 23232
                 Thread.CurrentThread.CurrentCulture = System.Globalization.CultureInfo.InvariantCulture;
 
-                if (m_credentials != null)
-                {
-                    if (!m_credentials.AuthenticationCode.Equals(task.AuthenticationToken))
-                    {
-                        logMessage("Authentication tokens did NOT match. Won't execute command: " + getCachedFilename(task.Exe) + " " + task.Arguments);
-
-                        await xmlStream.writeMessageAsync(m_tcpClient.GetStream(),
-                       "<" + task.Pipe + "><End>Authentication Error</End></" + task.Pipe + ">", cancelToken);
-
-                        returnCode = -1;
-                        throw new AuthenticationException("AuthenticationToken of the task does not match local token.");
-                    }
-
-                    myProcess = WinApi.StartUnelevatedProcess(getCachedFilename(task.Exe), task.Arguments, Path.GetDirectoryName((getCachedFilename(task.Exe))));
-                    // myProcess = WinApi.StartUnelevatedProcess(@"C:\Users\Roland\Source\Repos\RLSimion\Debug\HerdAgentServiceSettings.exe", task.arguments, Path.GetDirectoryName(@"C:\Users\Roland\Source\Repos\RLSimion\Debug\HerdAgentServiceSettings.exe"));
-                }
-
                 myProcess.StartInfo.FileName = getCachedFilename(task.Exe);
                 myProcess.StartInfo.Arguments = task.Arguments;
                 myProcess.StartInfo.WorkingDirectory = Path.GetDirectoryName(myProcess.StartInfo.FileName);
 
-                if (m_credentials == null)
-                {
-                    myProcess.Start();
-                }
+                myProcess.Start();
 
-                logMessage("Running command: " + myProcess.StartInfo.FileName + " " + myProcess.StartInfo.Arguments);
+                LogToFile("Running command: " + myProcess.StartInfo.FileName + " " + myProcess.StartInfo.Arguments);
 
                 //addSpawnedProcessToList(myProcess);
 
@@ -395,11 +370,11 @@ namespace Herd
                     }
                 }
 
-                logMessage("Named pipe has been closed for task " + task.Name);
+                LogMessage("Named pipe has been closed for task " + task.Name);
                 await WaitForExitAsync(myProcess, cancelToken);
 
                 int exitCode = myProcess.ExitCode;
-                logMessage("Process exited in task " + task.Name + ". Return code=" + exitCode);
+                LogMessage("Process exited in task " + task.Name + ". Return code=" + exitCode);
                 //myProcess.WaitForExit();
 
                 if (exitCode < 0)
@@ -411,27 +386,27 @@ namespace Herd
                 else
                     await xmlStream.writeMessageAsync(m_tcpClient.GetStream(),
                         "<" + task.Pipe + "><End>Ok</End></" + task.Pipe + ">", cancelToken);
-                logMessage("Exit code: " + myProcess.ExitCode);
+                LogMessage("Exit code: " + myProcess.ExitCode);
             }
             catch (OperationCanceledException)
             {
-                logMessage("Thread finished gracefully");
+                LogMessage("Thread finished gracefully");
                 if (myProcess != null) myProcess.Kill();
                 returnCode = m_remotelyCancelledErrorCode;
             }
             catch (AuthenticationException ex){
-                logMessage(ex.ToString());
+                LogMessage(ex.ToString());
             }
             catch (Exception ex)
             {
-                logMessage("unhandled exception in runTaskAsync()");
-                logMessage(ex.ToString());
+                LogMessage("unhandled exception in runTaskAsync()");
+                LogMessage(ex.ToString());
                 if (myProcess != null) myProcess.Kill();
                 returnCode = m_jobInternalErrorCode;
             }
             finally
             {
-                logMessage("Task " + task.Name + " finished");
+                LogMessage("Task " + task.Name + " finished");
                 //removeSpawnedProcessFromList(myProcess);
                 if (pipeServer != null) pipeServer.Close();
             }
@@ -455,16 +430,16 @@ namespace Herd
                 else if (exitCodes.All((code) => code != m_noErrorCode))
                     returnCode = m_jobInternalErrorCode;
 
-                logMessage("All processes finished");
+                LogMessage("All processes finished");
             }
             catch (OperationCanceledException)
             {
                 returnCode = m_remotelyCancelledErrorCode;
-                logMessage("Job cancelled gracefully");
+                LogMessage("Job cancelled gracefully");
             }
             catch (Exception ex)
             {
-                logMessage(ex.ToString());
+                LogMessage(ex.ToString());
                 returnCode = m_jobInternalErrorCode;
             }
             finally
@@ -542,10 +517,10 @@ namespace Herd
         /// </summary>
         private void InitStaticProperties()
         {
-            logMessage("Initializing Herd Agent static properties:");
+            LogToFile("Initializing Herd Agent static properties:");
 
             //Herd Agent version
-            HerdAgentVersion = System.Reflection.Assembly.GetExecutingAssembly().GetName().Version.ToString();
+            HerdAgentVersion = Assembly.GetExecutingAssembly().GetName().Version.ToString();
             //Number of CPU cores
             NumCPUCores = Environment.ProcessorCount;
             //Processor Id
@@ -557,7 +532,7 @@ namespace Herd
             //CUDA support
             CUDAVersion= CUDASupport();
 
-            logMessage(AgentDescription());
+            LogToFile(AgentDescription());
         }
 
         string CUDAVersion = "";
@@ -575,7 +550,7 @@ namespace Herd
             {
                 FileVersionInfo myFileVersionInfo = null;
 
-                var dllPath = dir + "\\" + dllName;
+                var dllPath = dir + "/" + dllName;
                 if (System.IO.File.Exists(dllPath))
                 {
                     myFileVersionInfo = FileVersionInfo.GetVersionInfo(dllPath);
@@ -600,7 +575,10 @@ namespace Herd
 
         private string GetAvailableMemory()
         {
-            return Convert.ToInt32(m_ramCounter.NextValue()).ToString() + "Mb";
+            if (ArchitectureId() == PropValues.Win32 || ArchitectureId() == PropValues.Win64)
+                return Convert.ToInt32(m_ramCounter.NextValue()).ToString() + "Mb";
+            else
+                return Convert.ToInt32(m_ramCounter.NextValue() / 1024 / 1024).ToString() + "Mb";
         }
 
         public string AgentDescription()
@@ -653,36 +631,36 @@ namespace Herd
                 if (xmlItem != "")
                 {
                     string xmlItemContent = inputXMLStream.getLastXMLItemContent();
-                    if (xmlItemContent == CJobDispatcher.m_quitMessage)
+                    if (xmlItemContent == JobDispatcher.m_quitMessage)
                     {
                         inputXMLStream.addProcessedBytes(bytes);
                         inputXMLStream.discardProcessedData();
-                        logMessage("Stopping job execution");
+                        LogMessage("Stopping job execution");
                         m_cancelTokenSource.Cancel();
                     }
                 }
             }
             catch (IOException)
             {
-                logMessage("IOException in CheckCancellationRequests()");
+                LogMessage("IOException in CheckCancellationRequests()");
             }
             catch (OperationCanceledException)
             {
-                logMessage("Thread finished gracefully");
+                LogMessage("Thread finished gracefully");
             }
             catch (ObjectDisposedException)
             {
-                logMessage("Network stream closed: async read finished");
+                LogMessage("Network stream closed: async read finished");
             }
             catch (InvalidOperationException ex)
             {
-                logMessage("InvalidOperationException in CheckCancellationRequests");
-                logMessage(ex.ToString());
+                LogMessage("InvalidOperationException in CheckCancellationRequests");
+                LogMessage(ex.ToString());
             }
             catch (Exception ex)
             {
-                logMessage("Unhandled exception in CheckCancellationRequests");
-                logMessage(ex.ToString());
+                LogMessage("Unhandled exception in CheckCancellationRequests");
+                LogMessage(ex.ToString());
             }
         }
 
@@ -705,41 +683,35 @@ namespace Herd
                     if (xmlItem != "")
                     {
                         xmlItemContent = m_xmlStream.getLastXMLItemContent();
-                        if (xmlItemContent == CJobDispatcher.m_cleanCacheMessage)
+                        if (xmlItemContent == JobDispatcher.m_acquireMessage)
                         {
-                            //not yet implemented in the herd client, just in case...
-                            logMessage("Cleaning cache directory");
-                            CleanCacheDir();
-                        }
-                        else if (xmlItemContent == CJobDispatcher.m_acquireMessage)
-                        {
-                            logMessage("Receiving job data from "
+                            LogMessage("Receiving job data from "
                                 + m_tcpClient.Client.RemoteEndPoint.ToString());
                             bool bret = await ReceiveJobQuery(m_cancelTokenSource.Token);
                             if (bret)
                             {
                                 //run the job
-                                logMessage("Job received");
-                                logMessage(m_job.ToString());
-                                logMessage("Running job");
+                                LogMessage("Job received");
+                                LogMessage(m_job.ToString());
+                                LogMessage("Running job");
                                 returnCode = await RunJobAsync(m_cancelTokenSource.Token);
 
                                 if (returnCode == m_noErrorCode || returnCode == m_jobInternalErrorCode)
                                 {
-                                    logMessage("Job finished. Code=" + returnCode );
-                                    await writeMessageAsync(CJobDispatcher.m_endMessage, m_cancelTokenSource.Token, true);
+                                    LogMessage("Job finished. Code=" + returnCode );
+                                    await writeMessageAsync(JobDispatcher.m_endMessage, m_cancelTokenSource.Token, true);
 
-                                    logMessage("Sending job results");
+                                    LogMessage("Sending job results");
                                     //we will have to enqueue async write operations to wait for them to finish before closing the tcpClient
                                     startEnqueueingAsyncWriteOps();
                                     SendJobResult(m_cancelTokenSource.Token);
 
-                                    logMessage("Job results sent");
+                                    LogMessage("Job results sent");
                                 }
                                 else if (returnCode == m_remotelyCancelledErrorCode)
                                 {
-                                    logMessage("The job was remotely cancelled");
-                                    writeMessage(CJobDispatcher.m_errorMessage, false);
+                                    LogMessage("The job was remotely cancelled");
+                                    writeMessage(JobDispatcher.m_errorMessage, false);
                                 }
                             }
                         }
@@ -747,14 +719,14 @@ namespace Herd
                 }
                 catch (Exception ex)
                 {
-                    logMessage("Unhandled exception in the herd agent's communication callback function");
-                    logMessage(ex.ToString() + ex.InnerException + ex.StackTrace);
+                    LogMessage("Unhandled exception in the herd agent's communication callback function");
+                    LogMessage(ex.ToString() + ex.InnerException + ex.StackTrace);
                 }
                 finally
                 {
-                    logMessage("Waiting for queued async write operations to finish");
+                    LogMessage("Waiting for queued async write operations to finish");
                     waitAsyncWriteOpsToFinish();
-                    logMessage("Closing the TCP connection");
+                    LogMessage("Closing the TCP connection");
                     m_tcpClient.Close();
                     State = AgentState.Available;
 
@@ -778,7 +750,7 @@ namespace Herd
                 Byte[] receiveBytes = getUdpClient().EndReceive(ar, ref ip);
                 string receiveString = Encoding.ASCII.GetString(receiveBytes);
 
-                if (receiveString == CJobDispatcher.m_discoveryMessage)
+                if (receiveString == JobDispatcher.m_discoveryMessage)
                 {
                     //if (getState() == AgentState.AVAILABLE)
                     {
@@ -789,14 +761,14 @@ namespace Herd
                     }
                     //else logMessage("Agent contacted by " + ip.ToString() + " but rejected connection because it was busy");
                 }
-                else logMessage("Message received by " + ip + " not understood: " + receiveString);
+                else LogMessage("Message received by " + ip + " not understood: " + receiveString);
 
                 getUdpClient().BeginReceive(new AsyncCallback(DiscoveryCallback), ar.AsyncState);
             }
             catch (Exception ex)
             {
-                logMessage("Unhandled exception in DiscoveryCallback");
-                logMessage(ex.ToString());
+                LogMessage("Unhandled exception in DiscoveryCallback");
+                LogMessage(ex.ToString());
             }
         }
 
@@ -804,7 +776,7 @@ namespace Herd
         public void StartListening()
         {
             //UPD broadcast client
-            m_discoveryClient = new UdpClient(CJobDispatcher.m_discoveryPortHerd);
+            m_discoveryClient = new UdpClient(JobDispatcher.m_discoveryPortHerd);
             HerdAgentUdpState state = new HerdAgentUdpState();
             IPEndPoint shepherd = new IPEndPoint(0, 0);
             state.ip = shepherd;
@@ -813,7 +785,7 @@ namespace Herd
 
 
             //TCP communication socket
-            m_listener = new TcpListener(IPAddress.Any, CJobDispatcher.m_comPortHerd);
+            m_listener = new TcpListener(IPAddress.Any, JobDispatcher.m_comPortHerd);
             m_listener.Start();
             HerdAgentTcpState tcpState = new HerdAgentTcpState();
             tcpState.ip = shepherd;
@@ -826,6 +798,91 @@ namespace Herd
         {
             m_discoveryClient.Close();
             m_listener.Stop();
+            LogToFile("Herd Agent stopped");
+        }
+
+        public string GetLogFilename()
+        {
+            return m_dirPath + @"/log.txt";
+        }
+
+        private string m_dirPath = "";
+
+        private object m_logFileLock = new object();
+
+        public void CleanLog()
+        {
+            string logFile = GetLogFilename();
+            lock (m_logFileLock)
+            {
+                FileStream file = File.Create(logFile);
+                file.Close();
+            }
+        }
+        private const double fileRetirementAgeInDays = 15.0;
+        private void CleanDir(string dir)
+        {
+            //clean child files
+            foreach (string file in Directory.GetFiles(dir))
+            {
+                double filesAge = (DateTime.Now - File.GetLastWriteTime(file)).TotalDays;
+                if (filesAge > fileRetirementAgeInDays)
+                {
+                    LogToFile("Deleting temporal file: " + file);
+                    File.Delete(file);
+                }
+            }
+            //clean child directories
+            foreach (string subDir in Directory.GetDirectories(dir))
+            {
+                CleanDir(subDir);
+                string[] childDirs = Directory.GetDirectories(subDir);
+                string[] childFiles = Directory.GetFiles(subDir);
+                if (childDirs.Length == 0 && childFiles.Length == 0)
+                {
+                    LogToFile("Deleting temporal directory: " + subDir);
+                    Directory.Delete(subDir);
+                }
+            }
+        }
+        public void CleanTempDir()
+        {
+            try
+            {
+                foreach (string dir in Directory.GetDirectories(m_dirPath))
+                {
+                    CleanDir(dir);
+                    string[] childDirs = Directory.GetDirectories(dir);
+                    string[] childFiles = Directory.GetFiles(dir);
+                    if (childDirs.Length == 0 && childFiles.Length == 0)
+                    {
+                        LogToFile("Deleting temporal directory: " + dir);
+                        Directory.Delete(dir);
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                LogToFile("Exception cleaning temporal directory");
+                LogToFile(ex.ToString());
+            }
+        }
+        public void LogToFile(string logMessage)
+        {
+            string logFilename = GetLogFilename();
+            lock (m_logFileLock)
+            {
+                if (File.Exists(logFilename))
+                {
+                    string text = DateTime.Now.ToShortDateString() + " " +
+                        DateTime.Now.ToShortTimeString() + ": " + logMessage;
+                    StreamWriter w = File.AppendText(logFilename);
+
+                    w.WriteLine(text);
+                    w.Close();
+                    Console.WriteLine(text);
+                }
+            }
         }
     }
 

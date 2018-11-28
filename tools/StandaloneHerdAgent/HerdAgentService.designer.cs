@@ -1,6 +1,6 @@
 ﻿namespace Herd
 {
-    partial class HerdService
+    partial class HerdAgentServiceWindows
     {
         /// <summary> 
         /// Required designer variable.

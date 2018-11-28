@@ -14,13 +14,13 @@ namespace TESTHerdAgent
 {
     class Program
     {
-        static HerdService m_herdService;
+        static HerdAgentServiceWindows m_herdService;
        
         static void Main(string[] args)
         {
             System.Threading.Thread.Sleep(2000);
 
-            m_herdService = new HerdService();
+            m_herdService = new HerdAgentServiceWindows();
 
             m_herdService.DoStart();
 

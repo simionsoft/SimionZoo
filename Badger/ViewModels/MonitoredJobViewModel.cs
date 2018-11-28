@@ -71,7 +71,7 @@ namespace Badger.ViewModels
             {
                 m_logFunction = logFunction;
                 m_shepherd = new Shepherd();
-                m_shepherd.setLogMessageHandler(logFunction);
+                m_shepherd.SetLogMessageHandler(logFunction);
                 m_cancelToken = cancelToken;
                 m_evaluationPlot = evaluationPlot;
                 m_experimentSeriesId = new Dictionary<string, int>();

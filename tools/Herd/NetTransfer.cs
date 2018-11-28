@@ -115,7 +115,7 @@ namespace Herd
 
 
 
-    public class CJobDispatcher
+    public class JobDispatcher
     {
         public const string LegacyTaskHeaderRegEx = "<Task Name=\"([^\"]*)\" Exe=\"([^\"]*)\" Arguments=\"([^\"]*)\" Pipe=\"([^\"]*)\"/>";
 
@@ -136,8 +136,7 @@ namespace Herd
         public const string m_errorMessage = "Error running job";
         public const string m_quitMessage = "Stop";
         public const string m_freeMessage = "You are free";
-        public const string m_cleanCacheMessage = "Clean the cache";
-        public const string m_updateMessage = "Update yourself";
+
 
         protected NetworkStream m_netStream;
         protected TcpClient m_tcpClient;
@@ -152,7 +151,7 @@ namespace Herd
 
         protected virtual string TmpDir()
         {
-            return Path.GetDirectoryName(System.Reflection.Assembly.GetEntryAssembly().Location) + "\\temp"; ;
+            return Path.GetDirectoryName(System.Reflection.Assembly.GetEntryAssembly().Location) + "/temp"; ;
         }
 
         public enum FileType { INPUT, OUTPUT };
@@ -161,10 +160,10 @@ namespace Herd
             if (type == FileType.INPUT)
                 return "Input";
             else if (type == FileType.OUTPUT) return "Output";
-            logMessage("Can't determine the XML tag of the unkwown file type");
+            LogMessage("Can't determine the XML tag of the unkwown file type");
             return "UnkwnownType";
         }
-        public CJobDispatcher()
+        public JobDispatcher()
         {
             m_job = new HerdJob("Job");
             m_xmlStream = new XMLStream();
@@ -179,12 +178,12 @@ namespace Herd
 
         public void setTCPClient(TcpClient client) { m_tcpClient = client; m_netStream = client.GetStream(); }
 
-        public void setLogMessageHandler(Logger.LogFunction logMessageHandler)
+        public void SetLogMessageHandler(Logger.LogFunction logMessageHandler)
         {
             m_logMessageHandler = logMessageHandler;
             m_xmlStream.setLogMessageHandler(logMessageHandler);
         }
-        protected void logMessage(string message) { if (m_logMessageHandler != null) m_logMessageHandler(message); }
+        protected void LogMessage(string message) { if (m_logMessageHandler != null) m_logMessageHandler(message); }
         public void writeMessage(string message, bool addDefaultMessageType = false)
         {
             m_xmlStream.writeMessage(m_netStream, message, addDefaultMessageType);
@@ -198,7 +197,7 @@ namespace Herd
         {
             int numBytesRead = 0;
             try { numBytesRead = await m_xmlStream.readFromNetworkStreamAsync(m_tcpClient, m_netStream, cancelToken); }
-            catch { logMessage("async read operation cancelled"); }
+            catch { LogMessage("async read operation cancelled"); }
             return numBytesRead;
         }
         public bool writeAsync(byte[] buffer, int offset, int length, CancellationToken cancelToken)
@@ -206,12 +205,12 @@ namespace Herd
             if (!m_bEnqueueAsyncWrites)
             {
                 try { m_netStream.WriteAsync(buffer, offset, length, cancelToken); }
-                catch (OperationCanceledException) { logMessage("async write operation cancelled"); }
+                catch (OperationCanceledException) { LogMessage("async write operation cancelled"); }
             }
             else
             {
                 try { m_pendingAsyncWrites.Add(m_netStream.WriteAsync(buffer, offset, length)); }
-                catch (OperationCanceledException) { logMessage("async write operation cancelled"); }
+                catch (OperationCanceledException) { LogMessage("async write operation cancelled"); }
             }
             return true;
         }
@@ -241,7 +240,7 @@ namespace Herd
                 else
                 {
                     unknownFiles.Add(file);
-                    logMessage("File " + file + " not found. Cannot be sent back to the client.");
+                    LogMessage("File " + file + " not found. Cannot be sent back to the client.");
                 }
             }
             foreach (string file in unknownFiles)
@@ -314,7 +313,7 @@ namespace Herd
             {
                 FileStream fileStream = null;
                 long fileSize = 0;
-                logMessage("Sending file " + fileName);
+                LogMessage("Sending file " + fileName);
 
                 if (fromCachedDir)
                     fileName = getCachedFilename(fileName);
@@ -322,7 +321,7 @@ namespace Herd
                 try { fileStream = File.OpenRead(fileName); }
                 catch
                 {
-                    logMessage("Could not find input file: " + fileName);
+                    LogMessage("Could not find input file: " + fileName);
                     return;
                 }
 
@@ -395,8 +394,8 @@ namespace Herd
 
                 if (!match.Success)
                 {
-                    logMessage("WARNING: Unexpected XML tag in ReadUntilMatchAsync(): " + header);
-                    logMessage("Buffer contents: " + Encoding.Default.GetString(m_xmlStream.getBuffer()));
+                    LogMessage("WARNING: Unexpected XML tag in ReadUntilMatchAsync(): " + header);
+                    LogMessage("Buffer contents: " + Encoding.Default.GetString(m_xmlStream.getBuffer()));
                 }
             }
             while (!match.Success);
@@ -427,11 +426,11 @@ namespace Herd
             bool ret = await ReceiveFileHeader(type, receiveContent, inCachedDir, cancelToken);
             if (receiveContent)
             {
-                logMessage("Receiving file data: " + m_nextFileName + " (" + m_nextFileSize + " bytes)");
+                LogMessage("Receiving file data: " + m_nextFileName + " (" + m_nextFileSize + " bytes)");
                 ret = await ReceiveFileData(inCachedDir, cancelToken);
-                logMessage("Receiving file footer");
+                LogMessage("Receiving file footer");
                 ret = await ReceiveFileFooter(type, cancelToken);
-                logMessage("File transfer complete");
+                LogMessage("File transfer complete");
             }
             return true;
         }
@@ -447,7 +446,7 @@ namespace Herd
             if ((match.Groups[1].Value == "Input" && type != FileType.INPUT)
                 || (match.Groups[1].Value == "Output" && type != FileType.OUTPUT))
             {
-                logMessage("Error (CJobDispatcher::ReceiveFileHeader): The type of the file received missmatches the expected file type");
+                LogMessage("Error (CJobDispatcher::ReceiveFileHeader): The type of the file received missmatches the expected file type");
                 return false;
             }
 
@@ -512,7 +511,7 @@ namespace Herd
             catch
             {
                 bFileOpen = false;
-                logMessage("Failed to create file " + outputFilename);
+                LogMessage("Failed to create file " + outputFilename);
             }
             int ret;
             //we may have already in the buffer the data
@@ -525,7 +524,7 @@ namespace Herd
                 bytesLeft -= SaveBufferToFile(outputFile, bytesLeft, bFileOpen);
             }
             if (bFileOpen) outputFile.Close();
-            logMessage("Closed file: " + outputFilename);
+            LogMessage("Closed file: " + outputFilename);
 
             return true;
         }

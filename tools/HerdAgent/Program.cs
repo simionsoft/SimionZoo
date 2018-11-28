@@ -1,7 +1,5 @@
 ﻿using System;
-#if !(__LINUX)
 using System.ServiceProcess;
-#endif
 
 
 namespace Herd
@@ -13,11 +11,11 @@ namespace Herd
         /// </summary>
         static void Main()
         {
-#if !(__LINUX)
+
             //windows
             if (Environment.UserInteractive)
             {
-                HerdService service = new HerdService();
+                HerdAgentServiceWindows service = new HerdAgentServiceWindows();
                 service.TestStartupAndStop(null);
             }
             else
@@ -26,16 +24,10 @@ namespace Herd
                 ServiceBase[] ServicesToRun;
                 ServicesToRun = new ServiceBase[]
                 {
-                    new HerdService()
+                    new HerdAgentServiceWindows()
                 };
                 ServiceBase.Run(ServicesToRun);
             }
-#else
-            //linux
-            HerdService service = new HerdService();
-            service.DoStart();
-#endif
-
         }
     }
 }
