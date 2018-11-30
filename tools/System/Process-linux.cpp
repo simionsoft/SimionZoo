@@ -19,8 +19,6 @@ Process::~Process()
 
 void Process::stop()
 {
-	int status;
-
 	if (m_handle > 0)
 	{
 		if (m_bVerbose) cout << "Stopping process\n";
@@ -105,7 +103,6 @@ bool Process::isRunning()
 
 void Process::wait()
 {
-	int status;
 	if (m_handle > 0)
 	{
 		if (isRunning())

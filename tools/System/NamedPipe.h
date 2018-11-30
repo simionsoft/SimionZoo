@@ -16,6 +16,8 @@ protected:
 	//leaves the result in m_pipeFullName
 	void setPipeName(const char* pipeName,bool bAddPrefix= true,int id= -1);
 
+	void logMessage(const char* message);
+
 public:
 	NamedPipe();
 	virtual ~NamedPipe();
@@ -35,7 +37,10 @@ public:
 	NamedPipeServer();
 	virtual ~NamedPipeServer();
 
-	bool openUniqueNamedPipeServer(char*);
+	//This method should be used when the name could have already been used from another instance of the program
+	//It appends an identifier to the name given until it finds an unused name. getPipeFullName() should be used after
+	//to retrieve the actual name of the pipe so that the client can open it
+	bool openUniqueNamedPipeServer(const char*);
 	bool waitForClientConnection();
 	void closeServer();
 };

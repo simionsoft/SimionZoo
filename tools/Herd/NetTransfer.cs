@@ -489,7 +489,7 @@ namespace Herd
         }
         protected string getCachedFilename(string originalFilename)
         {
-            string outputFilename = TmpDir().TrimEnd('/', '\\') + "\\" + originalFilename.TrimStart('.', '/', '\\');
+            string outputFilename = TmpDir().TrimEnd('/', '\\') + "/" + originalFilename.TrimStart('.', '/', '\\');
             return outputFilename;
         }
         protected async Task<bool> ReceiveFileData(bool inCachedDir, CancellationToken cancelToken)

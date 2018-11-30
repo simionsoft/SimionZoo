@@ -234,7 +234,7 @@ namespace Herd
             //Set invariant culture to use english notation
             Thread.CurrentThread.CurrentCulture = System.Globalization.CultureInfo.InvariantCulture;
             
-            SetLogMessageHandler(LogMessage);
+            SetLogMessageHandler(LogToFile);
             m_cancelTokenSource = cancelTokenSource;
             m_state = AgentState.Available;
             
@@ -324,8 +324,16 @@ namespace Herd
             int returnCode = m_noErrorCode;
             NamedPipeServerStream pipeServer = null;
             Process myProcess = new Process();
+            string actualPipeName = task.Pipe;
             if (task.Pipe != "")
-                pipeServer = new NamedPipeServerStream(task.Pipe);
+            {
+                if (CPUArchitecture == PropValues.Linux32 || CPUArchitecture == PropValues.Linux64)
+                {
+                    //we need to prepend the name of the pipe with "/tmp/" to be accesible to the client process
+                    actualPipeName = "/tmp/" + task.Pipe;
+                }
+                pipeServer = new NamedPipeServerStream(actualPipeName);
+            }
             XMLStream xmlStream = new XMLStream();
 
             try
@@ -336,12 +344,16 @@ namespace Herd
                 myProcess.StartInfo.FileName = getCachedFilename(task.Exe);
                 myProcess.StartInfo.Arguments = task.Arguments;
                 myProcess.StartInfo.WorkingDirectory = Path.GetDirectoryName(myProcess.StartInfo.FileName);
+                myProcess.StartInfo.RedirectStandardOutput = true;
+                myProcess.StartInfo.UseShellExecute = false;
 
-                myProcess.Start();
-
-                LogToFile("Running command: " + myProcess.StartInfo.FileName + " " + myProcess.StartInfo.Arguments);
-
-                //addSpawnedProcessToList(myProcess);
+                if (myProcess.Start())
+                    LogToFile("Running command: " + myProcess.StartInfo.FileName + " " + myProcess.StartInfo.Arguments);
+                else
+                {
+                    LogToFile("Error running command: " + myProcess.StartInfo.FileName + " " + myProcess.StartInfo.Arguments);
+                    return m_jobInternalErrorCode;
+                }
 
                 string xmlItem;
 
@@ -503,8 +515,8 @@ namespace Herd
                     else return PropValues.Win32;
 
                 case PlatformID.Unix:
-                    if (is64) return PropValues.Unix64;
-                    else return PropValues.Unix32;
+                    if (is64) return PropValues.Linux64;
+                    else return PropValues.Linux32;
                 default:
                     return PropValues.None;
             }
@@ -669,6 +681,7 @@ namespace Herd
         {
             if (State != AgentState.Busy)
             {
+                LogMessage("Receiving job");
                 AcceptJobQuery(ar);
 
                 try
@@ -744,7 +757,7 @@ namespace Herd
         public void DiscoveryCallback(IAsyncResult ar)
         {
             IPEndPoint ip = ((HerdAgentUdpState)ar.AsyncState).ip;
-            //HerdAgent herdAgent = ((HerdAgentUdpState)ar.AsyncState).herdAgent;
+
             try
             {
                 Byte[] receiveBytes = getUdpClient().EndReceive(ar, ref ip);
@@ -752,9 +765,8 @@ namespace Herd
 
                 if (receiveString == JobDispatcher.m_discoveryMessage)
                 {
-                    //if (getState() == AgentState.AVAILABLE)
                     {
-                        //logMessage("Agent discovered by " + ip + ". Current state=" + getStateString());
+                        LogMessage("Agent discovered by " + ip );
                         string agentDescription = AgentDescription();
                         byte[] data = Encoding.ASCII.GetBytes(agentDescription);
                         getUdpClient().Send(data, data.Length, ip);

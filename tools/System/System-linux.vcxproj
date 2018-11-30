@@ -43,6 +43,7 @@
   <ItemGroup>
     <ClCompile Include="CrossPlatform.cpp" />
     <ClCompile Include="FileUtils.cpp" />
+    <ClCompile Include="NamedPipe-Common.cpp" />
     <ClCompile Include="NamedPipe-linux.cpp" />
     <ClCompile Include="Process-linux.cpp" />
     <ClCompile Include="Timer.cpp" />

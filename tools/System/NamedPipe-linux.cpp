@@ -8,6 +8,8 @@
 #include <fcntl.h>
 #include <thread>
 
+#include "CrossPlatform.h"
+
 
 #define NUM_MAX_CONNECTION_ATTEMPTS 10
 
@@ -34,9 +36,9 @@ void NamedPipe::setPipeName(const char* pipeName,bool bAddPrefix,int id)
 	if (bAddPrefix)
 	{
 		if (id < 0)
-			sprintf(m_pipeFullName, "tmp/%s", pipeName);
+			sprintf(m_pipeFullName, "/tmp/%s", pipeName);
 		else
-			sprintf(m_pipeFullName, "tmp/%s-%d", pipeName, id);
+			sprintf(m_pipeFullName, "/tmp/%s-%d", pipeName, id);
 	}
 	else
 	{
@@ -51,11 +53,20 @@ int NamedPipe::writeBuffer(const void* pBuffer, int numBytes)
 {
 	if (!isConnected())
 	{
-		if (m_bVerbose) printf("Error: couldn't write on pipe %s\n", m_pipeFullName);
+		logMessage("Error: couldn't write on pipe");
 		return 0;
 	}
 	int numBytesWritten= write((int)m_pipeHandle, pBuffer, numBytes);
-	if (m_bVerbose) printf("Written %d bytes on pipe %s\n", numBytesWritten, m_pipeFullName);
+	char msg[1024];
+
+	if (m_bVerbose)
+	{
+		if (numBytesWritten < 0)
+			perror(msg);
+		logMessage(msg);
+		CrossPlatform::Sprintf_s(msg, 1024, "Written %d bytes on pipe %s", numBytesWritten, m_pipeFullName);
+		logMessage(msg);
+	}
 	return numBytesWritten;
 }
 
@@ -63,12 +74,12 @@ int NamedPipe::readToBuffer(void *pBuffer, int numBytes)
 {
 	if (!isConnected())
 	{
-		if (m_bVerbose) printf("Error: couldn't read from pipe %s\n", m_pipeFullName);
+		logMessage("Error: couldn't read from pipe because it's closed");
 		return 0;
 	}
 
 	int numBytesRead= read((int)m_pipeHandle, pBuffer, numBytes);
-	if (m_bVerbose) printf("Read %d bytes from pipe %s\n", numBytesRead, m_pipeFullName);
+	printf("Succesful read from pipe");
 	return numBytesRead;
 }
 
@@ -92,27 +103,27 @@ bool NamedPipeServer::openNamedPipeServer()
 
 	int pipeDescriptor = open(m_pipeFullName, O_RDWR);
 	
-	if (pipeDescriptor >= 0)
+	if (pipeDescriptor > 0)
 	{
-		if (m_bVerbose) printf("Created pipe server %s\n", m_pipeFullName);
+		logMessage("Pipe server created");
 		m_pipeHandle = pipeDescriptor;
 		return true;
 	}
 	else
 	{
-		if (m_bVerbose) printf("Error: couldn't create pipe server %s\n", m_pipeFullName);
+		logMessage("Error: couldn't create pipe server");
 		return false;
 	}
 }
 
 #define NUM_MAX_PIPE_SERVERS_PER_MACHINE 100
-bool NamedPipeServer::openUniqueNamedPipeServer(char* pipeName)
+bool NamedPipeServer::openUniqueNamedPipeServer(const char* pipeName)
 {
 	bool serverCreated = false;
 	int id = 0;
 	do
 	{
-		setPipeName(pipeName,false,id);
+		setPipeName(pipeName,true,id);
 
 		if (access(m_pipeFullName, F_OK) == -1)
 		{
@@ -135,7 +146,7 @@ bool NamedPipeServer::waitForClientConnection()
 
 void NamedPipeServer::closeServer()
 {
-	if (m_bVerbose) printf("Destroying pipe server %s\n", m_pipeFullName);
+	logMessage("Destroying pipe server");
 	unlink(m_pipeFullName);
 }
 
@@ -152,24 +163,28 @@ NamedPipeClient::~NamedPipeClient()
 bool NamedPipeClient::connectToServer(const char* pipeName, bool addPipePrefix)
 {
 	int numAttempts = 0;
+	int pipe = 0;
 
 	setPipeName(pipeName, addPipePrefix);
 	do
 	{
-		m_pipeHandle= open(m_pipeFullName, O_RDWR);
+		pipe= open(m_pipeFullName, O_RDWR);
 
 		numAttempts++;
 		
-		if (m_pipeHandle <= 0)
+		if (pipe <= 0)
+		{
+			logMessage("Failed to connect to pipe");
 			std::this_thread::sleep_for(std::chrono::milliseconds(500));
+		}
+		else
+			m_pipeHandle = (unsigned long long) pipe;
 
-	} while (m_pipeHandle < 0 && numAttempts<NUM_MAX_CONNECTION_ATTEMPTS);
+	} while (m_pipeHandle <= 0 && numAttempts<NUM_MAX_CONNECTION_ATTEMPTS);
 
-	if (m_bVerbose)
-	{
-		if (isConnected()) printf("Client connected to pipe server %s\n", m_pipeFullName);
-		else printf("Error: Client couldn't connect to pipe server %s\n", m_pipeFullName);
-	}
+
+	if (isConnected()) logMessage("Client connected to pipe server");
+	else logMessage("Error: Client couldn't connect to pipe server");
 
 	return m_pipeHandle > 0;
 }
@@ -178,7 +193,7 @@ void NamedPipeClient::closeConnection()
 {
 	if (isConnected())
 	{
-		printf("Client closing connection to pipe server %s\n", m_pipeFullName);
+		logMessage("Client closing connection to pipe server");
 		close((int)m_pipeHandle);
 		m_pipeHandle = 0;
 	}

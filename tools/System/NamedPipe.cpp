@@ -15,7 +15,7 @@ NamedPipe::~NamedPipe()
 {
 	if (m_pipeHandle != (unsigned long long int)INVALID_HANDLE_VALUE)
 	{
-		if (m_bVerbose) printf("Handle closed %llu\n", m_pipeHandle);
+		logMessage("Pipe closed");
 		CloseHandle((void*)m_pipeHandle);
 	}
 }
@@ -52,9 +52,9 @@ int NamedPipe::writeBuffer(const void* pBuffer, int numBytes)
 	if (m_pipeHandle != (unsigned long long int) INVALID_HANDLE_VALUE)
 	{
 		WriteFile((void*)m_pipeHandle, pBuffer, numBytes, &bytesWritten, NULL);
-		if (m_bVerbose) printf("Written in pipe %s %d bytes\n", m_pipeFullName, numBytes);
+		logMessage("Written in pipe");
 	}
-	else if (m_bVerbose) printf("Error: couldn't write in pipe\n");
+	else logMessage("Error: couldn't write in pipe");
 
 	return bytesWritten;
 }
@@ -65,7 +65,7 @@ int NamedPipe::readToBuffer(void *pBuffer, int numBytes)
 	if (m_pipeHandle != (unsigned long long int) INVALID_HANDLE_VALUE)
 	{
 		ReadFile((void*)m_pipeHandle, pBuffer, numBytes, &bytesRead, NULL);
-		if (m_bVerbose) printf("Read from pipe %s %d bytes\n", m_pipeFullName, bytesRead);
+		logMessage("Read from pipe");
 	}
 	return bytesRead;
 }
@@ -95,15 +95,15 @@ bool NamedPipeServer::openNamedPipeServer()
 
 	if (m_pipeHandle == (unsigned long long int) INVALID_HANDLE_VALUE)
 	{
-		if (m_bVerbose) printf("Created pipe server %s\n", m_pipeFullName);
+		logMessage("Created pipe server");
 		return false;
 	}
-	if (m_bVerbose) printf("Error: couldn't create pipe server %s\n", m_pipeFullName);
+	logMessage("Error: couldn't create pipe server");
 	return true;
 }
 
 #define NUM_MAX_PIPE_SERVERS_PER_MACHINE 100
-bool NamedPipeServer::openUniqueNamedPipeServer(char* pipeName)
+bool NamedPipeServer::openUniqueNamedPipeServer(const char* pipeName)
 {
 	int id = 0;
 	do
@@ -124,20 +124,20 @@ bool NamedPipeServer::openUniqueNamedPipeServer(char* pipeName)
 
 	if (m_pipeHandle != (unsigned long long int) INVALID_HANDLE_VALUE)
 	{
-		if (m_bVerbose) printf("Created pipe server %s\n", m_pipeFullName);
+		logMessage("Created pipe server");
 		return true;
 	}
-	if (m_bVerbose) printf("Error: couldn't create pipe server %s\n", m_pipeFullName);
+	logMessage("Error: couldn't create pipe serve");
 	return false;
 }
 
 bool NamedPipeServer::waitForClientConnection()
 {
-	if (m_bVerbose) printf("Waiting for client connection on pipe %s\n", m_pipeFullName);
+	logMessage("Waiting for client connection on pipe");
 
 	if (ConnectNamedPipe((void*)m_pipeHandle, NULL) != FALSE)   // wait for someone to connect to the pipe
 	{
-		if (m_bVerbose) printf("Client connected to pipe server %s\n", m_pipeFullName);
+		logMessage("Client connected to pipe server");
 		return true;
 	}
 	return false;
@@ -148,7 +148,7 @@ void NamedPipeServer::closeServer()
 {
 	if (m_pipeHandle != (unsigned long long int)INVALID_HANDLE_VALUE)
 	{
-		if (m_bVerbose) printf("Pipe server closed: %s\n", m_pipeFullName);
+		logMessage("Pipe server closed");
 		DisconnectNamedPipe((void*) m_pipeHandle);
 		CloseHandle((void*) m_pipeHandle);
 		m_pipeHandle = (unsigned long long int) INVALID_HANDLE_VALUE;
@@ -192,11 +192,11 @@ bool NamedPipeClient::connectToServer(const char* pipeName, bool addPipePrefix)
 
 	if (m_pipeHandle == (unsigned long long int) INVALID_HANDLE_VALUE)
 	{
-		if (m_bVerbose) printf("Error: couldn't connect to pipe server %s\n", m_pipeFullName);
+		logMessage("Error: couldn't connect to pipe server");
 		return false;
 	}
 
-	if (m_bVerbose) printf("Client connected to pipe server %s\n", m_pipeFullName);
+	logMessage("Client connected to pipe server");
 	return true;
 }
 
@@ -204,7 +204,7 @@ void NamedPipeClient::closeConnection()
 {
 	if (m_pipeHandle != (unsigned long long int)INVALID_HANDLE_VALUE)
 	{
-		if (m_bVerbose) printf("Closing connection to pipe server %s\n", m_pipeFullName);
+		logMessage("Closing connection to pipe server");
 		FlushFileBuffers((void*) m_pipeHandle);
 		CloseHandle((void*) m_pipeHandle);
 		m_pipeHandle = (unsigned long long int) INVALID_HANDLE_VALUE;
