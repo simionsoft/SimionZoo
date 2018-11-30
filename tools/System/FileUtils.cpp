@@ -60,3 +60,18 @@ bool bFileExists(const string& filename)
 	struct stat buffer;
 	return (stat(filename.c_str(), &buffer) == 0);
 }
+
+#if defined(_WIN32) || defined(_WIN64)
+#include <direct.h>
+#else
+#include <unistd.h>
+#endif
+
+bool changeWorkingDirectory(const string& directory)
+{
+#if defined(_WIN32) || defined(_WIN64)
+	return _chdir(directory.c_str()) == 0;
+#else
+	return chdir(directory.c_str()) == 0;
+#endif
+}
