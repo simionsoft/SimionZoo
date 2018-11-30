@@ -28,7 +28,7 @@ namespace Badger.ViewModels
         public List<AppVersion> AppVersions { get { return m_appVersions; } }
 
         AppVersion m_selectedVersion;
-        public AppVersion SelectedVersion{ get { return m_selectedVersion; } set { OnVersionSelection(value);  m_selectedVersion = value; } }
+        public AppVersion SelectedVersion{ get { return m_selectedVersion; } set { m_selectedVersion = value; } }
 
         public List<string> Forks { get; set; }
 
@@ -192,11 +192,39 @@ namespace Badger.ViewModels
             get { return m_runTimeRequirements; }
         }
 
-        private void OnVersionSelection(AppVersion selectedVersion)
+        public void GetRuntimeRequirements(AppVersion selectedVersion, List<AppVersion> appVersions)
         {
             //Added for testing purposes: this avoids using real experiments
-            if (m_runTimeRequirements==null)
-                m_runTimeRequirements = Utility.GetRunTimeRequirements(selectedVersion.ExeFile, FilePath);
+            if (m_runTimeRequirements == null)
+            {
+                //We can only get the runtime requirements of an app compatible with the current architecture
+                if (IsHostArchitectureCompatible(selectedVersion))
+                    m_runTimeRequirements = Utility.GetRunTimeRequirements(selectedVersion.ExeFile, FilePath);
+                else
+                {
+                    AppVersion compatibleVersion = BestHostArchitectureMatch(appVersions);
+                    m_runTimeRequirements = Utility.GetRunTimeRequirements(compatibleVersion.ExeFile, FilePath);
+                }
+            }
+        }
+
+        public bool IsHostArchitectureCompatible(AppVersion version)
+        {
+            if (HerdAgent.ArchitectureId() == version.Requirements.Architecture)
+                return true;
+            else
+                return false;
+        }
+
+        public AppVersion BestHostArchitectureMatch(List<AppVersion> appVersions)
+        {
+            string hostArchitecture = HerdAgent.ArchitectureId();
+            foreach (AppVersion version in appVersions)
+            {
+                if (version.Requirements.Architecture == hostArchitecture)
+                    return version;
+            }
+            return null;
         }
 
         //evaluation plot stuff

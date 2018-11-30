@@ -591,6 +591,7 @@ namespace Badger.ViewModels
                 {
                     //run-time requirements are calculated when a version is selected
                     experiment.SelectedVersion = HerdAgentViewModel.BestMatch(experiment.AppVersions, agent);
+                    experiment.GetRuntimeRequirements(experiment.SelectedVersion, experiment.AppVersions);
 
                     if (experiment.RunTimeReqs == null)
                         return null;
