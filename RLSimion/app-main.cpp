@@ -4,22 +4,32 @@
 #include "app.h"
 #include "logger.h"
 #include "config.h"
-
+#include "../tools/System/FileUtils.h"
 
 int main(int argc, char* argv[])
 {
 	try
 	{
+		//set the executable's directory as the current directory. This is required under Linux to be able to pass a relative path
+		string dir= getDirectory(string(argv[0]));
+		changeWorkingDirectory(dir);
+
 		ConfigFile configXMLFile;
 		SimionApp* pApp = 0;
 		//initialisation required for all apps: create the comm pipe and load the xml configuration file, ....
 		const char* pPipename = SimionApp::getArgValue(argc, argv, "pipe");
 		if (pPipename)
 		{
-			Logger::m_outputPipe.connectToServer(pPipename);
+			Logger::m_outputPipe.connectToServer(pPipename, true); //prefix must added under Windows (.////pipe//) and under Linux (/tmp/)
+
 			//if connection with parent process went ok, we set the logger's output mode accordingly
 			if (Logger::m_outputPipe.isConnected())
+			{
 				Logger::m_messageOutputMode = MessageOutputMode::NamedPipe;
+				Logger::logMessage(MessageType::Info, "Succesfully connected to output named pipe");
+			}
+			else
+				Logger::logMessage(MessageType::Info, "Failed to connect to output named pipe");
 		}
 
 		if (argc <= 1)
@@ -33,7 +43,7 @@ int main(int argc, char* argv[])
 
 		if (!strcmp("RLSimion", pParameters->getName()) || !strcmp("RLSimion-x64", pParameters->getName()) )
 			pApp = new SimionApp(pParameters);
-				
+
 		if (pApp)
 		{
 			pApp->setConfigFile(argv[1]);

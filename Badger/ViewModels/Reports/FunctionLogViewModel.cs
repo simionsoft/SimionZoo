@@ -116,7 +116,7 @@ namespace Badger.ViewModels
                 foreach (FunctionSample s in f.Samples)
                 {
                     //.png by default
-                    s.Sample.Save(m_outputDirectory + "\\" + f.Name + "." + s.Episode + ".png");
+                    s.Sample.Save(m_outputDirectory + "/" + f.Name + "." + s.Episode + ".png");
                 }
             }
 

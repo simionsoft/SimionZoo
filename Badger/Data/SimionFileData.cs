@@ -17,12 +17,12 @@ namespace Badger.Simion
         public const string binDir = "bin";
         public const string experimentDir = "experiments";
         public const string imageDir = "images";
-        public const string appConfigRelativeDir = "..\\config\\apps";
-        public const string experimentRelativeDir = "..\\" + experimentDir;
-        public const string imageRelativeDir = "..\\" + imageDir;
+        public const string appConfigRelativeDir = "../config/apps";
+        public const string experimentRelativeDir = "../" + experimentDir;
+        public const string imageRelativeDir = "../" + imageDir;
         public const string badgerLogFile = "badger-log.txt";
-        public const string tempRelativeDir = "..\\temp\\";
-        public const string logViewerExePath = "..\\" + binDir + "\\SimionLogViewer.exe";
+        public const string tempRelativeDir = "../temp/";
+        public const string logViewerExePath = "../" + binDir + "/SimionLogViewer.exe";
 
         public const string ExperimentExtension = ".simion.exp";
         public const string ExperimentBatchExtension = ".simion.batch";
@@ -262,11 +262,11 @@ namespace Badger.Simion
                         // Save the combination of forks as a new experiment
                         string experimentName = experimentViewModel.setForkCombination(i);
 
-                        string folderPath = batchFileDir + "\\" + experimentName;
+                        string folderPath = batchFileDir + "/" + experimentName;
                         Directory.CreateDirectory(folderPath);
-                        string filePath = folderPath + "\\" + experimentName + ExperimentExtension;
+                        string filePath = folderPath + "/" + experimentName + ExperimentExtension;
                         experimentViewModel.Save(filePath, SaveMode.AsExperimentalUnit);
-                        string relativePathToExperimentalUnit = batchFileName + "\\" + experimentName + "\\" + experimentName + ExperimentExtension;
+                        string relativePathToExperimentalUnit = batchFileName + "/" + experimentName + "/" + experimentName + ExperimentExtension;
 
                         // Save the experiment reference in the root batch file. Open 'EXPERIMENTAL-UNIT' tag
                         // with its corresponding attributes.
@@ -589,7 +589,7 @@ namespace Badger.Simion
         {
             //save the queries and the report (a set of log query results referencing the queries and the experiment batch)
             string nakedBatchFilename = Utility.RemoveDirectories(Utility.RemoveExtension(absBatchFilename, 2));
-            string reportFilename = absOutputFolder + "\\" + nakedBatchFilename + SimionFileData.ReportExtension;
+            string reportFilename = absOutputFolder + "/" + nakedBatchFilename + SimionFileData.ReportExtension;
             using (TextWriter writer = File.CreateText(reportFilename))
             {
                 //open the root node in the report
@@ -599,15 +599,15 @@ namespace Badger.Simion
                 {
                     string nakedLogQueryName = Utility.RemoveSpecialCharacters(logQueryResult.Name);
                     //Save the reports, each one in a different subfolder
-                    string absQueryOutputFolder = absOutputFolder + "\\" + nakedLogQueryName;
+                    string absQueryOutputFolder = absOutputFolder + "/" + nakedLogQueryName;
                     string relOutputFolder = nakedLogQueryName;
 
                     if (!Directory.Exists(absQueryOutputFolder))
                         Directory.CreateDirectory(absQueryOutputFolder);
 
                     //Save serializable data
-                    string relLogQueryResultFilename = nakedLogQueryName + "\\" + nakedLogQueryName + ".xml";
-                    string absLogQueryResultFilename = absOutputFolder + "\\" + relLogQueryResultFilename;
+                    string relLogQueryResultFilename = nakedLogQueryName + "/" + nakedLogQueryName + ".xml";
+                    string absLogQueryResultFilename = absOutputFolder + "/" + relLogQueryResultFilename;
                     Serialiazer.WriteObject(absLogQueryResultFilename, logQueryResult);
 
                     //Save non-serializable data

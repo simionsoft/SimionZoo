@@ -335,7 +335,7 @@ namespace Badger.ViewModels
             m_parentExperiment = parentExperiment;
             nodeDefinition = definitionNode;
 
-            xPath = parentXPath + "\\" + name;
+            xPath = parentXPath + "/" + name;
             if (definitionNode.Attributes.GetNamedItem(XMLConfig.defaultAttribute) != null)
             {
                 m_default = definitionNode.Attributes[XMLConfig.defaultAttribute].Value;

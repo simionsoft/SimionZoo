@@ -1,23 +1,29 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <App Name="RLSimion" FileVersion="1">
-  <Version Name="x64">
-    <Exe>..\bin\RLSimion-x64.exe</Exe>
+  <Version Name="Win-x64">
+    <Exe>../bin/RLSimion-x64.exe</Exe>
     <Requirements>
-      <Input-File Rename="..\bin\msvcp140.dll">..\bin\x64\msvcp140.dll</Input-File>
-      <Input-File Rename="..\bin\vcruntime140.dll">..\bin\x64\vcruntime140.dll</Input-File>
+      <Input-File Rename="../bin/msvcp140.dll">../bin/x64/msvcp140.dll</Input-File>
+      <Input-File Rename="../bin/vcruntime140.dll">../bin/x64/vcruntime140.dll</Input-File>
       <Architecture>Win-64</Architecture>
     </Requirements>
   </Version>
-  <Version Name="x32">
-    <Exe>..\bin\RLSimion.exe</Exe>
+  <Version Name="Win-x32">
+    <Exe>../bin/RLSimion.exe</Exe>
     <Requirements>
-      <Input-File>..\bin\msvcp140.dll</Input-File>
-      <Input-File>..\bin\vcruntime140.dll</Input-File>
+      <Input-File>../bin/msvcp140.dll</Input-File>
+      <Input-File>../bin/vcruntime140.dll</Input-File>
       <Architecture>Win-32</Architecture>
     </Requirements>
   </Version>
+  <Version Name="Linux-x64">
+    <Exe>../bin/RLSimion-linux-x64.out</Exe>
+    <Requirements>
+      <Architecture>Linux-64</Architecture>
+    </Requirements>
+  </Version>
   
-  <Include>..\config\definitions.xml</Include>
+  <Include>../config/definitions.xml</Include>
 
   <BRANCH Name="RLSimion" Class="SimionApp"/>
 </App>

@@ -122,17 +122,18 @@ namespace Badger.ViewModels
             LoadAppDefinitions();
 
             // Check for aditional required configuration files
-            if (!File.Exists("..\\config\\definitions.xml"))
+            if (!File.Exists("../config/definitions.xml"))
                 CaliburnUtility.ShowWarningDialog("Unable to find required configuration file.", "Fatal Error");
         }
 
 
         private void LoadAppDefinitions()
         {
+            char[] splitters = new char[] { '\\', '/' };
             foreach (string app in Directory.GetFiles(SimionFileData.appConfigRelativeDir))
             {
-                char[] spliter = "\\".ToCharArray();
-                string[] tmp = app.Split(spliter);
+                //char[] spliter = "\\".ToCharArray();
+                string[] tmp = app.Split(splitters);
                 tmp = tmp[tmp.Length - 1].Split('.');
                 string name = tmp[0];
                 appDefinitions.Add(name, app);

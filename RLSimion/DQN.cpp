@@ -4,7 +4,7 @@
 
 #include "SimGod.h"
 #include "logger.h"
-#include "worlds\world.h"
+#include "worlds/world.h"
 #include "app.h"
 #include "noise.h"
 #include "deep-vfa-policy.h"

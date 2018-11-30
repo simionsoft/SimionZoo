@@ -176,7 +176,7 @@ bool SimionLogViewer::loadLogFile(string filename)
 	m_pExperimentLog = new ExperimentLog();
 	if (m_pExperimentLog->load(filename, sceneFile))
 	{
-		m_pRenderer->setDataFolder("..\\config\\scenes\\");
+		m_pRenderer->setDataFolder("../config/scenes/");
 		m_pRenderer->loadScene(sceneFile.c_str());
 
 		//allocate a step object to store the interpolated data

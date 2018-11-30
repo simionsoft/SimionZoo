@@ -93,7 +93,7 @@ namespace Badger.ViewModels
                 //we need make all paths to experiment files relative and let the herd agent
                 //know that they must be renamed
                 string relPathExperimentFile = SimionFileData.experimentRelativeDir
-                     + "\\" + Utility.RemoveDirectories(experiment.FilePath, 2);
+                     + "/" + Utility.RemoveDirectories(experiment.FilePath, 2);
                 task.Name = experiment.Name;
                 task.Exe = experiment.SelectedVersion.ExeFile;
                 task.Arguments = relPathExperimentFile + " -pipe=" + experiment.PipeName;
@@ -128,7 +128,7 @@ namespace Badger.ViewModels
                 //  -for the output files
                 foreach (string outputFile in job.OutputFiles)
                 {
-                    string renamedFile = SimionFileData.experimentRelativeDir + "\\"
+                    string renamedFile = SimionFileData.experimentRelativeDir + "/"
                         + Utility.RemoveDirectories(outputFile, 2);
                     if (outputFile != renamedFile && !job.RenameRules.Keys.Contains(outputFile))
                         job.RenameRules.Add(outputFile, renamedFile);

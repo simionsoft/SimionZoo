@@ -75,8 +75,8 @@ namespace Badger.Data
 
         public static string GetRelativePathTo(string absPath, string relTo)
         {
-            string[] absDirs = absPath.Split('\\');
-            string[] relDirs = relTo.Split('\\');
+            string[] absDirs = absPath.Split('/');
+            string[] relDirs = relTo.Split('/');
             // Get the shortest of the two paths 
             int len = absDirs.Length < relDirs.Length ? absDirs.Length : relDirs.Length;
             // Use to determine where in the loop we exited 
@@ -98,16 +98,16 @@ namespace Badger.Data
             // Add on the .. 
             for (index = lastCommonRoot + 1; index < absDirs.Length; index++)
             {
-                if (absDirs[index].Length > 0) relativePath.Append("..\\");
+                if (absDirs[index].Length > 0) relativePath.Append("../");
             }
             // Add on the folders 
             if (absDirs.Contains(relDirs[lastCommonRoot]) && (len - 1 == lastCommonRoot))
             {
-                relativePath.Append("..\\");
+                relativePath.Append("../");
             }
             for (index = lastCommonRoot + 1; index < relDirs.Length - 1; index++)
             {
-                relativePath.Append(relDirs[index] + "\\");
+                relativePath.Append(relDirs[index] + "/");
             }
             relativePath.Append(relDirs[relDirs.Length - 1]);
             relativePath.Replace('\\', '/');

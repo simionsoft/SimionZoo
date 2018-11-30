@@ -42,9 +42,9 @@ namespace CNTK
 			Logger::logMessage(MessageType::Info, "Loading CNTK library");
 
 #ifdef _DEBUG
-			hCNTKWrapperDLL = LoadLibrary(".\\..\\Debug\\CNTKWrapper.dll");
+			hCNTKWrapperDLL = LoadLibrary("./../Debug/CNTKWrapper.dll");
 #else
-			hCNTKWrapperDLL = LoadLibrary(".\\..\\bin\\CNTKWrapper.dll");
+			hCNTKWrapperDLL = LoadLibrary("./../bin/CNTKWrapper.dll");
 #endif
 			if (hCNTKWrapperDLL == 0)
 				Logger::logMessage(MessageType::Error, "Failed to load CNTKWrapper.dll");
@@ -62,22 +62,22 @@ namespace CNTK
 
 
 		//register dependencies
-		SimionApp::get()->registerInputFile("..\\bin\\CNTKWrapper.dll");
+		SimionApp::get()->registerInputFile("../bin/CNTKWrapper.dll");
 
-		SimionApp::get()->registerInputFile("..\\bin\\Cntk.Composite-2.5.1.dll");
-		SimionApp::get()->registerInputFile("..\\bin\\Cntk.Core-2.5.1.dll");
-		SimionApp::get()->registerInputFile("..\\bin\\Cntk.Math-2.5.1.dll");
-		SimionApp::get()->registerInputFile("..\\bin\\Cntk.PerformanceProfiler-2.5.1.dll");
+		SimionApp::get()->registerInputFile("../bin/Cntk.Composite-2.5.1.dll");
+		SimionApp::get()->registerInputFile("../bin/Cntk.Core-2.5.1.dll");
+		SimionApp::get()->registerInputFile("../bin/Cntk.Math-2.5.1.dll");
+		SimionApp::get()->registerInputFile("../bin/Cntk.PerformanceProfiler-2.5.1.dll");
 
-		SimionApp::get()->registerInputFile("..\\bin\\cublas64_90.dll");
-		SimionApp::get()->registerInputFile("..\\bin\\cudart64_90.dll");
-		SimionApp::get()->registerInputFile("..\\bin\\cudnn64_7.dll");
+		SimionApp::get()->registerInputFile("../bin/cublas64_90.dll");
+		SimionApp::get()->registerInputFile("../bin/cudart64_90.dll");
+		SimionApp::get()->registerInputFile("../bin/cudnn64_7.dll");
 
-		SimionApp::get()->registerInputFile("..\\bin\\libiomp5md.dll");
-		SimionApp::get()->registerInputFile("..\\bin\\mklml.dll");
-		SimionApp::get()->registerInputFile("..\\bin\\mkl_cntk_p.dll");
-		SimionApp::get()->registerInputFile("..\\bin\\mkldnn.dll");
-		SimionApp::get()->registerInputFile("..\\bin\\nvml.dll");
+		SimionApp::get()->registerInputFile("../bin/libiomp5md.dll");
+		SimionApp::get()->registerInputFile("../bin/mklml.dll");
+		SimionApp::get()->registerInputFile("../bin/mkl_cntk_p.dll");
+		SimionApp::get()->registerInputFile("../bin/mkldnn.dll");
+		SimionApp::get()->registerInputFile("../bin/nvml.dll");
 
 	}
 

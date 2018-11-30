@@ -10,63 +10,63 @@ namespace Portable_Badger
 {
     class Program
     {
-        public static string inBaseRelPath = @"..\..\..\..\";
+        public static string inBaseRelPath = @"../../../../";
         public static string outBaseFolder;
         public static void Main()
         {
             List<string> files= new List<string>();
             string version;
 
-            version = GetVersion(inBaseRelPath + @"bin\Badger.exe");
-            outBaseFolder = @"SimionZoo-" + version + @"\";
+            version = GetVersion(inBaseRelPath + @"bin/Badger.exe");
+            outBaseFolder = @"SimionZoo-" + version + @"/";
 
             //Herd Agent
-            files.Add(inBaseRelPath + @"bin\HerdAgentInstaller.msi");
+            files.Add(inBaseRelPath + @"bin/HerdAgentInstaller.msi");
 
             //Badger
-            files.Add(inBaseRelPath + @"bin\Badger.exe");
+            files.Add(inBaseRelPath + @"bin/Badger.exe");
 
             //Badger - SimionLogViewer
-            files.Add(inBaseRelPath + @"bin\SimionLogViewer.exe");
+            files.Add(inBaseRelPath + @"bin/SimionLogViewer.exe");
 
             List<string> dependencyList = new List<string>();
-            GetDependencies(inBaseRelPath + @"bin\", "Badger.exe", ref dependencyList);
+            GetDependencies(inBaseRelPath + @"bin/", "Badger.exe", ref dependencyList);
             files.AddRange(dependencyList);
 
             //RLSimion
-            files.Add(inBaseRelPath + @"bin\RLSimion.exe");
-            files.Add(inBaseRelPath + @"bin\RLSimion-x64.exe");
+            files.Add(inBaseRelPath + @"bin/RLSimion.exe");
+            files.Add(inBaseRelPath + @"bin/RLSimion-x64.exe");
             //FAST
-            files.Add(inBaseRelPath + @"bin\openfast_Win32.exe");
-            files.Add(inBaseRelPath + @"bin\TurbSim.exe");
-            files.Add(inBaseRelPath + @"bin\MAP_Win32.dll");
-            files.Add(inBaseRelPath + @"bin\FASTDimensionalPortal.dll");
+            files.Add(inBaseRelPath + @"bin/openfast_Win32.exe");
+            files.Add(inBaseRelPath + @"bin/TurbSim.exe");
+            files.Add(inBaseRelPath + @"bin/MAP_Win32.dll");
+            files.Add(inBaseRelPath + @"bin/FASTDimensionalPortal.dll");
 
             //C++ Runtime libraries: x86 and x64 versions
-            files.Add(inBaseRelPath + @"bin\vcruntime140.dll");
-            files.Add(inBaseRelPath + @"bin\msvcp140.dll");
-            files.Add(inBaseRelPath + @"bin\x64\vcruntime140.dll");
-            files.Add(inBaseRelPath + @"bin\x64\msvcp140.dll");
+            files.Add(inBaseRelPath + @"bin/vcruntime140.dll");
+            files.Add(inBaseRelPath + @"bin/msvcp140.dll");
+            files.Add(inBaseRelPath + @"bin/x64\vcruntime140.dll");
+            files.Add(inBaseRelPath + @"bin/x64\msvcp140.dll");
             //CNTK library and dependencies
-            files.Add(inBaseRelPath + @"bin\CNTKWrapper.dll");
-            files.Add(inBaseRelPath + @"bin\Cntk.Composite-2.5.1.dll");
-            files.Add(inBaseRelPath + @"bin\Cntk.Core-2.5.1.dll");
-            files.Add(inBaseRelPath + @"bin\Cntk.Math-2.5.1.dll");
-            files.Add(inBaseRelPath + @"bin\Cntk.PerformanceProfiler-2.5.1.dll");
-            files.Add(inBaseRelPath + @"bin\cublas64_90.dll");
-            files.Add(inBaseRelPath + @"bin\cudart64_90.dll");
-            files.Add(inBaseRelPath + @"bin\cudnn64_7.dll");
-            files.Add(inBaseRelPath + @"bin\libiomp5md.dll");
-            files.Add(inBaseRelPath + @"bin\mklml.dll");
-            files.Add(inBaseRelPath + @"bin\mkl_cntk_p.dll");
-            files.Add(inBaseRelPath + @"bin\mkldnn.dll");
-            files.Add(inBaseRelPath + @"bin\nvml.dll");
+            files.Add(inBaseRelPath + @"bin/CNTKWrapper.dll");
+            files.Add(inBaseRelPath + @"bin/Cntk.Composite-2.5.1.dll");
+            files.Add(inBaseRelPath + @"bin/Cntk.Core-2.5.1.dll");
+            files.Add(inBaseRelPath + @"bin/Cntk.Math-2.5.1.dll");
+            files.Add(inBaseRelPath + @"bin/Cntk.PerformanceProfiler-2.5.1.dll");
+            files.Add(inBaseRelPath + @"bin/cublas64_90.dll");
+            files.Add(inBaseRelPath + @"bin/cudart64_90.dll");
+            files.Add(inBaseRelPath + @"bin/cudnn64_7.dll");
+            files.Add(inBaseRelPath + @"bin/libiomp5md.dll");
+            files.Add(inBaseRelPath + @"bin/mklml.dll");
+            files.Add(inBaseRelPath + @"bin/mkl_cntk_p.dll");
+            files.Add(inBaseRelPath + @"bin/mkldnn.dll");
+            files.Add(inBaseRelPath + @"bin/nvml.dll");
 
             //Config files and example experiments
-            files.AddRange(GetFilesInFolder(inBaseRelPath + @"experiments\examples", true, @"*.simion.exp"));
-            files.AddRange(GetFilesInFolder(inBaseRelPath + @"experiments\examples", true, @"*.simion.proj"));
+            files.AddRange(GetFilesInFolder(inBaseRelPath + @"experiments/examples", true, @"*.simion.exp"));
+            files.AddRange(GetFilesInFolder(inBaseRelPath + @"experiments/examples", true, @"*.simion.proj"));
 
-            files.AddRange(GetFilesInFolder(inBaseRelPath + @"config\", true));
+            files.AddRange(GetFilesInFolder(inBaseRelPath + @"config/", true));
 
 
             string outputFile = inBaseRelPath + @"SimionZoo-" + version + ".gz";

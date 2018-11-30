@@ -358,7 +358,7 @@ namespace Badger.ViewModels
 
         public void Export(string outputFolder, ref Dictionary<string, string> outputFiles)
         {
-            string baseFilename = outputFolder + "\\" + Utility.RemoveSpecialCharacters(name);
+            string baseFilename = outputFolder + "/" + Utility.RemoveSpecialCharacters(name);
 
             //1st save in common formats: png and svg
             string fileName;

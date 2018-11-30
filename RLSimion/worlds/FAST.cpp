@@ -16,15 +16,15 @@ using namespace std;
 #define FAST_FAILURE_REWARD -100.0 //reward given in case a simulation error arises
 
 #define FAST_WIND_CONFIG_FILE "NRELOffshrBsline5MW_InflowWind.dat"
-#define FAST_WIND_CONFIG_TEMPLATE_FILE "..\\config\\world\\FAST\\NRELOffshrBsline5MW_InflowWindTemplate.dat"
-#define TURBSIM_TEMPLATE_CONFIG_FILE "..\\config\\world\\TurbSim\\TurbSimConfigTemplate.inp"
-#define FAST_TEMPLATE_CONFIG_FILE "..\\config\\world\\FAST\\configFileTemplate.fst"
+#define FAST_WIND_CONFIG_TEMPLATE_FILE "../config/world/FAST/NRELOffshrBsline5MW_InflowWindTemplate.dat"
+#define TURBSIM_TEMPLATE_CONFIG_FILE "../config/world/TurbSim/TurbSimConfigTemplate.inp"
+#define FAST_TEMPLATE_CONFIG_FILE "../config/world/FAST/configFileTemplate.fst"
 #define FAST_CONFIG_FILE "fast-config.fst"
-#define SERVO_MODULE_TEMPLATE_FILE "..\\config\\world\\FAST\\NRELOffshrBsline5MW_Onshore_ServoDyn_Template.dat"
-#define SERVO_MODULE_CONFIG_FILE "..\\config\\world\\FAST\\NRELOffshrBsline5MW_Onshore_ServoDyn.dat"
+#define SERVO_MODULE_TEMPLATE_FILE "../config/world/FAST/NRELOffshrBsline5MW_Onshore_ServoDyn_Template.dat"
+#define SERVO_MODULE_CONFIG_FILE "../config/world/FAST/NRELOffshrBsline5MW_Onshore_ServoDyn.dat"
 #define PORTAL_CONFIG_FILE "FASTDimensionalPortal.xml"
 #define DIMENSIONAL_PORTAL_PIPE_NAME "FASTDimensionalPortal"
-#define DIMENSIONAL_PORTAL_DLL "..\\bin\\FASTDimensionalPortal.dll"
+#define DIMENSIONAL_PORTAL_DLL "../bin/FASTDimensionalPortal.dll"
 
 #define TRAINING_WIND_BASE_FILE_NAME "training-wind-file-"
 #define EVALUATION_WIND_BASE_FILE_NAME "eval-wind-file-"
@@ -95,68 +95,68 @@ FASTWindTurbine::FASTWindTurbine(ConfigNode* pConfigNode)
 	if (SimionApp::get())
 	{
 		//input/output files
-		SimionApp::get()->registerInputFile("..\\bin\\FASTDimensionalPortal.dll");
-		SimionApp::get()->registerInputFile("..\\bin\\openfast_Win32.exe");
-		SimionApp::get()->registerInputFile("..\\bin\\MAP_win32.dll");
-		SimionApp::get()->registerInputFile("..\\bin\\TurbSim.exe");
+		SimionApp::get()->registerInputFile("../bin/FASTDimensionalPortal.dll");
+		SimionApp::get()->registerInputFile("../bin/openfast_Win32.exe");
+		SimionApp::get()->registerInputFile("../bin/MAP_win32.dll");
+		SimionApp::get()->registerInputFile("../bin/TurbSim.exe");
 
 		//FAST data files
-		SimionApp::get()->registerInputFile("..\\config\\world\\FAST\\configFileTemplate.fst");
-		SimionApp::get()->registerInputFile("..\\config\\world\\FAST\\Cylinder1.dat");
-		SimionApp::get()->registerInputFile("..\\config\\world\\FAST\\Cylinder2.dat");
-		SimionApp::get()->registerInputFile("..\\config\\world\\FAST\\DU21_A17.dat");
-		SimionApp::get()->registerInputFile("..\\config\\world\\FAST\\DU25_A17.dat");
-		SimionApp::get()->registerInputFile("..\\config\\world\\FAST\\DU30_A17.dat");
-		SimionApp::get()->registerInputFile("..\\config\\world\\FAST\\DU35_A17.dat");
-		SimionApp::get()->registerInputFile("..\\config\\world\\FAST\\DU40_A17.dat");
-		SimionApp::get()->registerInputFile("..\\config\\world\\FAST\\NACA64_A17.dat");
-		SimionApp::get()->registerInputFile("..\\config\\world\\FAST\\Cylinder1_coords.txt");
-		SimionApp::get()->registerInputFile("..\\config\\world\\FAST\\Cylinder2_coords.txt");
-		SimionApp::get()->registerInputFile("..\\config\\world\\FAST\\DU21_A17_coords.txt");
-		SimionApp::get()->registerInputFile("..\\config\\world\\FAST\\DU25_A17_coords.txt");
-		SimionApp::get()->registerInputFile("..\\config\\world\\FAST\\DU30_A17_coords.txt");
-		SimionApp::get()->registerInputFile("..\\config\\world\\FAST\\DU35_A17_coords.txt");
-		SimionApp::get()->registerInputFile("..\\config\\world\\FAST\\DU40_A17_coords.txt");
-		SimionApp::get()->registerInputFile("..\\config\\world\\FAST\\NACA64_A17_coords.txt");
-		SimionApp::get()->registerInputFile("..\\config\\world\\FAST\\AeroData_Cylinder1.dat");
-		SimionApp::get()->registerInputFile("..\\config\\world\\FAST\\AeroData_Cylinder2.dat");
-		SimionApp::get()->registerInputFile("..\\config\\world\\FAST\\AeroData_DU21_A17.dat");
-		SimionApp::get()->registerInputFile("..\\config\\world\\FAST\\AeroData_DU25_A17.dat");
-		SimionApp::get()->registerInputFile("..\\config\\world\\FAST\\AeroData_DU30_A17.dat");
-		SimionApp::get()->registerInputFile("..\\config\\world\\FAST\\AeroData_DU35_A17.dat");
-		SimionApp::get()->registerInputFile("..\\config\\world\\FAST\\AeroData_DU40_A17.dat");
-		SimionApp::get()->registerInputFile("..\\config\\world\\FAST\\AeroData_NACA64_A17.dat");
-		SimionApp::get()->registerInputFile("..\\config\\world\\FAST\\NRELOffshrBsline5MW_AeroDyn_blade.dat");
-		SimionApp::get()->registerInputFile("..\\config\\world\\FAST\\NRELOffshrBsline5MW_BeamDyn.dat");
-		SimionApp::get()->registerInputFile("..\\config\\world\\FAST\\NRELOffshrBsline5MW_BeamDyn_Blade.dat");
-		SimionApp::get()->registerInputFile("..\\config\\world\\FAST\\NRELOffshrBsline5MW_Blade.dat");
-		SimionApp::get()->registerInputFile("..\\config\\world\\FAST\\NRELOffshrBsline5MW_InflowWindTemplate.dat");
-		SimionApp::get()->registerInputFile("..\\config\\world\\FAST\\NRELOffshrBsline5MW_Onshore_AeroDyn15.dat");
-		SimionApp::get()->registerInputFile("..\\config\\world\\FAST\\NRELOffshrBsline5MW_Onshore_ElastoDyn.dat");
-		SimionApp::get()->registerInputFile("..\\config\\world\\FAST\\NRELOffshrBsline5MW_Onshore_ElastoDyn_BDoutputs.dat");
-		SimionApp::get()->registerInputFile("..\\config\\world\\FAST\\NRELOffshrBsline5MW_Onshore_ElastoDyn_Tower.dat");
-		SimionApp::get()->registerInputFile("..\\config\\world\\FAST\\NRELOffshrBsline5MW_Onshore_ServoDyn.dat");
+		SimionApp::get()->registerInputFile("../config/world/FAST/configFileTemplate.fst");
+		SimionApp::get()->registerInputFile("../config/world/FAST/Cylinder1.dat");
+		SimionApp::get()->registerInputFile("../config/world/FAST/Cylinder2.dat");
+		SimionApp::get()->registerInputFile("../config/world/FAST/DU21_A17.dat");
+		SimionApp::get()->registerInputFile("../config/world/FAST/DU25_A17.dat");
+		SimionApp::get()->registerInputFile("../config/world/FAST/DU30_A17.dat");
+		SimionApp::get()->registerInputFile("../config/world/FAST/DU35_A17.dat");
+		SimionApp::get()->registerInputFile("../config/world/FAST/DU40_A17.dat");
+		SimionApp::get()->registerInputFile("../config/world/FAST/NACA64_A17.dat");
+		SimionApp::get()->registerInputFile("../config/world/FAST/Cylinder1_coords.txt");
+		SimionApp::get()->registerInputFile("../config/world/FAST/Cylinder2_coords.txt");
+		SimionApp::get()->registerInputFile("../config/world/FAST/DU21_A17_coords.txt");
+		SimionApp::get()->registerInputFile("../config/world/FAST/DU25_A17_coords.txt");
+		SimionApp::get()->registerInputFile("../config/world/FAST/DU30_A17_coords.txt");
+		SimionApp::get()->registerInputFile("../config/world/FAST/DU35_A17_coords.txt");
+		SimionApp::get()->registerInputFile("../config/world/FAST/DU40_A17_coords.txt");
+		SimionApp::get()->registerInputFile("../config/world/FAST/NACA64_A17_coords.txt");
+		SimionApp::get()->registerInputFile("../config/world/FAST/AeroData_Cylinder1.dat");
+		SimionApp::get()->registerInputFile("../config/world/FAST/AeroData_Cylinder2.dat");
+		SimionApp::get()->registerInputFile("../config/world/FAST/AeroData_DU21_A17.dat");
+		SimionApp::get()->registerInputFile("../config/world/FAST/AeroData_DU25_A17.dat");
+		SimionApp::get()->registerInputFile("../config/world/FAST/AeroData_DU30_A17.dat");
+		SimionApp::get()->registerInputFile("../config/world/FAST/AeroData_DU35_A17.dat");
+		SimionApp::get()->registerInputFile("../config/world/FAST/AeroData_DU40_A17.dat");
+		SimionApp::get()->registerInputFile("../config/world/FAST/AeroData_NACA64_A17.dat");
+		SimionApp::get()->registerInputFile("../config/world/FAST/NRELOffshrBsline5MW_AeroDyn_blade.dat");
+		SimionApp::get()->registerInputFile("../config/world/FAST/NRELOffshrBsline5MW_BeamDyn.dat");
+		SimionApp::get()->registerInputFile("../config/world/FAST/NRELOffshrBsline5MW_BeamDyn_Blade.dat");
+		SimionApp::get()->registerInputFile("../config/world/FAST/NRELOffshrBsline5MW_Blade.dat");
+		SimionApp::get()->registerInputFile("../config/world/FAST/NRELOffshrBsline5MW_InflowWindTemplate.dat");
+		SimionApp::get()->registerInputFile("../config/world/FAST/NRELOffshrBsline5MW_Onshore_AeroDyn15.dat");
+		SimionApp::get()->registerInputFile("../config/world/FAST/NRELOffshrBsline5MW_Onshore_ElastoDyn.dat");
+		SimionApp::get()->registerInputFile("../config/world/FAST/NRELOffshrBsline5MW_Onshore_ElastoDyn_BDoutputs.dat");
+		SimionApp::get()->registerInputFile("../config/world/FAST/NRELOffshrBsline5MW_Onshore_ElastoDyn_Tower.dat");
+		SimionApp::get()->registerInputFile("../config/world/FAST/NRELOffshrBsline5MW_Onshore_ServoDyn.dat");
 		
 		//TurbSim data files
-		SimionApp::get()->registerInputFile("..\\config\\world\\TurbSim\\TurbSimConfigTemplate.inp");
-		SimionApp::get()->registerInputFile("..\\config\\world\\TurbSim\\EventData\\Event00000.dat");
-		SimionApp::get()->registerInputFile("..\\config\\world\\TurbSim\\EventData\\Event01917.dat");
-		SimionApp::get()->registerInputFile("..\\config\\world\\TurbSim\\EventData\\Event02515.dat");
-		SimionApp::get()->registerInputFile("..\\config\\world\\TurbSim\\EventData\\Event02800.dat");
-		SimionApp::get()->registerInputFile("..\\config\\world\\TurbSim\\EventData\\Event02893.dat");
-		SimionApp::get()->registerInputFile("..\\config\\world\\TurbSim\\EventData\\Event03167.dat");
-		SimionApp::get()->registerInputFile("..\\config\\world\\TurbSim\\EventData\\Event03219.dat");
-		SimionApp::get()->registerInputFile("..\\config\\world\\TurbSim\\EventData\\Event03326.dat");
-		SimionApp::get()->registerInputFile("..\\config\\world\\TurbSim\\EventData\\Event03384.dat");
-		SimionApp::get()->registerInputFile("..\\config\\world\\TurbSim\\EventData\\Event03613.dat");
-		SimionApp::get()->registerInputFile("..\\config\\world\\TurbSim\\EventData\\Event03692.dat");
-		SimionApp::get()->registerInputFile("..\\config\\world\\TurbSim\\EventData\\Event03868.dat");
-		SimionApp::get()->registerInputFile("..\\config\\world\\TurbSim\\EventData\\Event04110.dat");
-		SimionApp::get()->registerInputFile("..\\config\\world\\TurbSim\\EventData\\Event04434.dat");
-		SimionApp::get()->registerInputFile("..\\config\\world\\TurbSim\\EventData\\Event04702.dat");
-		SimionApp::get()->registerInputFile("..\\config\\world\\TurbSim\\EventData\\Event99999.dat");
-		SimionApp::get()->registerInputFile("..\\config\\world\\TurbSim\\EventData\\Events.les");
-		SimionApp::get()->registerInputFile("..\\config\\world\\TurbSim\\EventData\\Events.xtm");
+		SimionApp::get()->registerInputFile("../config/world/TurbSim/TurbSimConfigTemplate.inp");
+		SimionApp::get()->registerInputFile("../config/world/TurbSim/EventData/Event00000.dat");
+		SimionApp::get()->registerInputFile("../config/world/TurbSim/EventData/Event01917.dat");
+		SimionApp::get()->registerInputFile("../config/world/TurbSim/EventData/Event02515.dat");
+		SimionApp::get()->registerInputFile("../config/world/TurbSim/EventData/Event02800.dat");
+		SimionApp::get()->registerInputFile("../config/world/TurbSim/EventData/Event02893.dat");
+		SimionApp::get()->registerInputFile("../config/world/TurbSim/EventData/Event03167.dat");
+		SimionApp::get()->registerInputFile("../config/world/TurbSim/EventData/Event03219.dat");
+		SimionApp::get()->registerInputFile("../config/world/TurbSim/EventData/Event03326.dat");
+		SimionApp::get()->registerInputFile("../config/world/TurbSim/EventData/Event03384.dat");
+		SimionApp::get()->registerInputFile("../config/world/TurbSim/EventData/Event03613.dat");
+		SimionApp::get()->registerInputFile("../config/world/TurbSim/EventData/Event03692.dat");
+		SimionApp::get()->registerInputFile("../config/world/TurbSim/EventData/Event03868.dat");
+		SimionApp::get()->registerInputFile("../config/world/TurbSim/EventData/Event04110.dat");
+		SimionApp::get()->registerInputFile("../config/world/TurbSim/EventData/Event04434.dat");
+		SimionApp::get()->registerInputFile("../config/world/TurbSim/EventData/Event04702.dat");
+		SimionApp::get()->registerInputFile("../config/world/TurbSim/EventData/Event99999.dat");
+		SimionApp::get()->registerInputFile("../config/world/TurbSim/EventData/Events.les");
+		SimionApp::get()->registerInputFile("../config/world/TurbSim/EventData/Events.xtm");
 	}
 }
 
@@ -172,12 +172,12 @@ void FASTWindTurbine::deferredLoadStep()
 	{
 		Logger::logMessage(MessageType::Info, "Generating TurbSim wind files");
 
-		exeFileName = string("..\\bin\\TurbSim.exe");
+		exeFileName = string("../bin/TurbSim.exe");
 
 		//evaluation wind files
 		for (unsigned int i = 0; i < m_evaluationMeanWindSpeeds.size(); i++)
 		{
-			outConfigFileName = string(SimionApp::get()->getOutputDirectory()) + string("\\")
+			outConfigFileName = string(SimionApp::get()->getOutputDirectory()) + string("/")
 				+ string(EVALUATION_WIND_BASE_FILE_NAME) + to_string(i) + string(".inp");
 			m_TurbSimConfigTemplate.instantiateConfigFile(outConfigFileName.c_str()
 				, SimionApp::get()->pExperiment->getEpisodeLength() + 30.0	//AnalysisTime
@@ -193,7 +193,7 @@ void FASTWindTurbine::deferredLoadStep()
 		//training wind files
 		for (unsigned int i = 0; i < m_trainingMeanWindSpeeds.size(); i++)
 		{
-			outConfigFileName = string(SimionApp::get()->getOutputDirectory()) + string("\\") 
+			outConfigFileName = string(SimionApp::get()->getOutputDirectory()) + string("/") 
 				+ string(TRAINING_WIND_BASE_FILE_NAME) + to_string(i) + string(".inp");
 			m_TurbSimConfigTemplate.instantiateConfigFile(outConfigFileName.c_str()
 				, SimionApp::get()->pExperiment->getEpisodeLength()+30.0	//AnalysisTime
@@ -208,18 +208,18 @@ void FASTWindTurbine::deferredLoadStep()
 	m_FASTWindConfigTemplate.load(FAST_WIND_CONFIG_TEMPLATE_FILE);
 	
 	//copy input .dat files to experiment directory to avoid problems with FAST adding base config file's directory
-	commandLine= string("copy ..\\config\\world\\FAST\\*.dat ") + string(SimionApp::get()->getOutputDirectory());
-	replace(commandLine.begin(), commandLine.end(), '/', '\\');
+	commandLine= string("copy \"../config/world/FAST/*.dat\" ") + string(SimionApp::get()->getOutputDirectory());
+	replace(commandLine.begin(), commandLine.end(), '\\', '/');
 	system(commandLine.c_str());
 
 	//copy input .txt files to experiment directory to avoid problems with FAST adding base config file's directory
-	commandLine = string("copy ..\\config\\world\\FAST\\*.txt ") + string(SimionApp::get()->getOutputDirectory());
-	replace(commandLine.begin(), commandLine.end(), '/', '\\');
+	commandLine = string("copy \"../config/world/FAST/*.txt\" ") + string(SimionApp::get()->getOutputDirectory());
+	replace(commandLine.begin(), commandLine.end(), '\\', '/');
 	system(commandLine.c_str());
 
 	//copy DLL to avoid problems with relative paths in the config file
 	commandLine = string("copy " + string(DIMENSIONAL_PORTAL_DLL) + string(" ") + string(SimionApp::get()->getOutputDirectory()));
-	replace(commandLine.begin(), commandLine.end(), '/', '\\'); 
+	replace(commandLine.begin(), commandLine.end(), '\\', '/'); 
 	system(commandLine.c_str());
 
 	Logger::logMessage(MessageType::Info, "Input files copied");
@@ -250,7 +250,7 @@ void FASTWindTurbine::reset(State *s)
 	bool pipeServerOpened = m_namedPipeServer.openUniqueNamedPipeServer(DIMENSIONAL_PORTAL_PIPE_NAME);
 	if (pipeServerOpened)
 	{
-		outConfigFileName = string(SimionApp::get()->getOutputDirectory()) + string("\\")
+		outConfigFileName = string(SimionApp::get()->getOutputDirectory()) + string("/")
 			+ string(PORTAL_CONFIG_FILE);
 		CrossPlatform::Fopen_s(&pOutConfigFile, outConfigFileName.c_str(), "w");
 		if (pOutConfigFile)
@@ -285,12 +285,12 @@ void FASTWindTurbine::reset(State *s)
 			windFile = string(TRAINING_WIND_BASE_FILE_NAME)
 				+ to_string(index) + string(".bts");
 		}
-		outConfigFileName = string(SimionApp::get()->getOutputDirectory()) + string("\\")
+		outConfigFileName = string(SimionApp::get()->getOutputDirectory()) + string("/")
 			+ string(FAST_WIND_CONFIG_FILE);
 		m_FASTWindConfigTemplate.instantiateConfigFile(outConfigFileName.c_str(), windFile.c_str());
 
 		Logger::logMessage(MessageType::Info, "Instantiating FAST config file");
-		outConfigFileName = string(SimionApp::get()->getOutputDirectory()) + string("\\")
+		outConfigFileName = string(SimionApp::get()->getOutputDirectory()) + string("/")
 			+ string(FAST_CONFIG_FILE);
 		m_FASTConfigTemplate.instantiateConfigFile(outConfigFileName.c_str()
 			, SimionApp::get()->pExperiment->getEpisodeLength()
@@ -305,9 +305,9 @@ void FASTWindTurbine::reset(State *s)
 	//spawn the FAST exe file
 	string commandLine;
 
-	commandLine= string("..\\bin\\openfast_Win32.exe");
+	commandLine= string("../bin/openfast_Win32.exe");
 
-	commandLine+= string(" ") + string(SimionApp::get()->getOutputDirectory())+ string("\\")
+	commandLine+= string(" ") + string(SimionApp::get()->getOutputDirectory())+ string("/")
 		+ string(FAST_CONFIG_FILE);
 	bool bSpawned= FASTprocess.spawn((char*)(commandLine).c_str());
 	//wait for the client (FASTDimensionalPortal DLL) to connect
