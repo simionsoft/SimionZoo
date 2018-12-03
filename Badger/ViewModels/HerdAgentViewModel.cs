@@ -14,7 +14,6 @@ namespace Badger.ViewModels
         public HerdAgentViewModel(HerdAgentInfo info)
         {
             m_herdAgentInfo = info;
-            ProcessorLoad = m_herdAgentInfo.ProcessorLoad.ToString("0.") + "%";
             IpAddress = m_herdAgentInfo.ipAddress;
 
             //deselect local agent by default
@@ -105,29 +104,25 @@ namespace Badger.ViewModels
             }
         }
 
-        private string m_processorLoad;
-
         public string ProcessorLoad
         {
-            get { return m_processorLoad; }
-            set
+            get
             {
-                m_processorLoad = value;
-                NotifyOfPropertyChange(() => ProcessorLoad);
+                //m_herdAgentInfo.ProcessorLoad is just the number, i.e. 3.723242
+                //We want to format it 3.72%
+                string processorLoad = m_herdAgentInfo.ProcessorLoad;
+                string formattedProcessorLoad;
+                int dotPos = processorLoad.LastIndexOf('.');
+                if (dotPos > 0)
+                    formattedProcessorLoad = processorLoad.Substring(0, Math.Min(processorLoad.Length, dotPos + 3)) + "%";
+                else formattedProcessorLoad = processorLoad + "%";
+                return formattedProcessorLoad;
             }
         }
 
         public string Memory
         {
-            get
-            {
-                double totalMem = m_herdAgentInfo.Memory / 1024 / 1024;
-
-                if (totalMem >= 1024)
-                    return (totalMem / 1024).ToString("0.0") + " GB";
-
-                return totalMem.ToString("0.") + " MB";
-            }
+            get { return m_herdAgentInfo.Memory; }
         }
 
         public bool IsAvailable { get { return m_herdAgentInfo.IsAvailable; } }
