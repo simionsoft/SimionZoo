@@ -9,6 +9,7 @@
 #include <thread>
 
 #include "CrossPlatform.h"
+#include "FileUtils.h"
 
 
 #define NUM_MAX_CONNECTION_ATTEMPTS 10
@@ -79,7 +80,7 @@ int NamedPipe::readToBuffer(void *pBuffer, int numBytes)
 	}
 
 	int numBytesRead= read((int)m_pipeHandle, pBuffer, numBytes);
-	printf("Succesful read from pipe");
+	logMessage("Succesful read from pipe");
 	return numBytesRead;
 }
 
@@ -101,7 +102,7 @@ bool NamedPipeServer::openNamedPipeServer()
 	if (mkfifo(m_pipeFullName, S_IWUSR | S_IRUSR | S_IRGRP | S_IWGRP | S_IROTH | S_IWOTH) != 0)
 		return false;
 
-	int pipeDescriptor = open(m_pipeFullName, O_RDWR);
+	int pipeDescriptor = open(m_pipeFullName, O_RDONLY);
 	
 	if (pipeDescriptor > 0)
 	{
@@ -116,30 +117,15 @@ bool NamedPipeServer::openNamedPipeServer()
 	}
 }
 
-#define NUM_MAX_PIPE_SERVERS_PER_MACHINE 100
-bool NamedPipeServer::openUniqueNamedPipeServer(const char* pipeName)
-{
-	bool serverCreated = false;
-	int id = 0;
-	do
-	{
-		setPipeName(pipeName,true,id);
 
-		if (access(m_pipeFullName, F_OK) == -1)
-		{
-			//no pipe has been created with that name
-			serverCreated= openNamedPipeServer();
-		}
-		else
-			++id;
-	} while (!serverCreated && id < NUM_MAX_PIPE_SERVERS_PER_MACHINE);
-
-	return serverCreated;
-}
 
 bool NamedPipeServer::waitForClientConnection()
 {
 	//no waiting in the linux version. Read operations will block until the requested number of bytes is read
+	char buffer[1024];
+	int res= read((int)m_pipeHandle, buffer, 0);
+	if (res == -1)
+		return false;
 	return true;
 }
 
@@ -168,7 +154,7 @@ bool NamedPipeClient::connectToServer(const char* pipeName, bool addPipePrefix)
 	setPipeName(pipeName, addPipePrefix);
 	do
 	{
-		pipe= open(m_pipeFullName, O_RDWR);
+		pipe= open(m_pipeFullName, O_WRONLY);
 
 		numAttempts++;
 		

@@ -129,21 +129,19 @@ namespace Herd
             }
         }
 
-        public double ProcessorLoad
+        public string ProcessorLoad
         {
             get
             {
-                string prop = Property(PropNames.ProcessorLoad);
-                return (!prop.Equals(PropValues.None)) ? double.Parse(prop) : 0.0;
+                return Property(PropNames.ProcessorLoad);
             }
         }
 
-        public double Memory
+        public string Memory
         {
             get
             {
-                string prop = Property(PropNames.TotalMemory);
-                return (!prop.Equals(PropValues.None)) ? double.Parse(prop) : 0.0;
+                return Property(PropNames.TotalMemory);
             }
         }
 
@@ -176,35 +174,16 @@ namespace Herd
 
     public class HerdAgentTcpState
     {
-        //    public HerdAgent herdAgent { get; set; }
         public IPEndPoint ip { get; set; }
     }
 
 
     public class HerdAgent : JobDispatcher
     {
-        //[DllImport("kernel32.dll")]
-        //private static extern void GetNativeSystemInfo(ref SYSTEM_INFO lpSystemInfo);
-
         private const int PROCESSOR_ARCHITECTURE_AMD64 = 9;
         private const int PROCESSOR_ARCHITECTURE_IA64 = 6;
         private const int PROCESSOR_ARCHITECTURE_INTEL = 0;
-        /*
-        [StructLayout(LayoutKind.Sequential)]
-        private struct SYSTEM_INFO
-        {
-            public short wProcessorArchitecture;
-            public short wReserved;
-            public int dwPageSize;
-            public IntPtr lpMinimumApplicationAddress;
-            public IntPtr lpMaximumApplicationAddress;
-            public IntPtr dwActiveProcessorMask;
-            public int dwNumberOfProcessors;
-            public int dwProcessorType;
-            public int dwAllocationGranularity;
-            public short wProcessorLevel;
-            public short wProcessorRevision;
-        }*/
+
         public const string FirewallExceptionNameTCP = "HerdAgentFirewallExceptionTCP";
         public const string FirewallExceptionNameUDP = "HerdAgentFirewallExceptionUDP";
         private object m_quitExecutionLock = new object();
@@ -232,14 +211,14 @@ namespace Herd
         public HerdAgent(CancellationTokenSource cancelTokenSource)
         {
             //Set invariant culture to use english notation
-            Thread.CurrentThread.CurrentCulture = System.Globalization.CultureInfo.InvariantCulture;
+            Thread.CurrentThread.CurrentCulture = CultureInfo.InvariantCulture;
             
             SetLogMessageHandler(LogToFile);
             m_cancelTokenSource = cancelTokenSource;
             m_state = AgentState.Available;
             
             //Clean-up
-            m_dirPath = Path.GetDirectoryName(System.Reflection.Assembly.GetEntryAssembly().Location) + "/temp";
+            m_dirPath = Path.GetDirectoryName(Assembly.GetEntryAssembly().Location) + "/temp";
             Directory.CreateDirectory(m_dirPath);
             
             CleanLog();
@@ -359,9 +338,10 @@ namespace Herd
 
                 if (pipeServer != null)
                 {
+                    bool clientEnded = false;
                     pipeServer.WaitForConnection();
 
-                    while (pipeServer.IsConnected)
+                    while (pipeServer.IsConnected && !clientEnded)
                     {
                         //check if the herd agent sent us a quit message
                         //in case it did, the function will cancel the cancellation token
@@ -372,22 +352,27 @@ namespace Herd
 
                         int numBytes = await xmlStream.readFromNamedPipeStreamAsync(pipeServer, cancelToken);
                         xmlItem = xmlStream.processNextXMLItem();
-                        while (xmlItem != "")
+                        while (xmlItem != "" && !clientEnded)
                         {
-                            await xmlStream.writeMessageAsync(m_tcpClient.GetStream(),
-                                "<" + task.Pipe + ">" + xmlItem + "</" + task.Pipe + ">", cancelToken);
+                            if (xmlItem != "<End></End>")
+                            {
+                                await xmlStream.writeMessageAsync(m_tcpClient.GetStream(),
+                                    "<" + task.Pipe + ">" + xmlItem + "</" + task.Pipe + ">", cancelToken);
 
-                            xmlItem = xmlStream.processNextXMLItem();
+                                xmlItem = xmlStream.processNextXMLItem();
+                            }
+                            else
+                                clientEnded = true;
                         }
                     }
                 }
 
-                LogMessage("Named pipe has been closed for task " + task.Name);
-                await WaitForExitAsync(myProcess, cancelToken);
+                LogMessage("Task ended: " + task.Name + ". Waiting for process to end");
+                if (!myProcess.HasExited)
+                    await WaitForExitAsync(myProcess, cancelToken);
 
                 int exitCode = myProcess.ExitCode;
                 LogMessage("Process exited in task " + task.Name + ". Return code=" + exitCode);
-                //myProcess.WaitForExit();
 
                 if (exitCode < 0)
                 {
@@ -406,7 +391,8 @@ namespace Herd
                 if (myProcess != null) myProcess.Kill();
                 returnCode = m_remotelyCancelledErrorCode;
             }
-            catch (AuthenticationException ex){
+            catch (AuthenticationException ex)
+            {
                 LogMessage(ex.ToString());
             }
             catch (Exception ex)
@@ -419,8 +405,7 @@ namespace Herd
             finally
             {
                 LogMessage("Task " + task.Name + " finished");
-                //removeSpawnedProcessFromList(myProcess);
-                if (pipeServer != null) pipeServer.Close();
+                if (pipeServer != null) pipeServer.Dispose();
             }
 
             return returnCode;

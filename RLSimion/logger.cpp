@@ -119,6 +119,10 @@ Logger::~Logger()
 	if (m_pExperimentTimer) delete m_pExperimentTimer;
 	if (m_pEpisodeTimer) delete m_pEpisodeTimer;
 
+	//Send message to let the server know we have finished
+	//Not really needed under Windows, but it seems to be needed in Linux
+	const char closingMessage [] = "<End></End>";
+	m_outputPipe.writeBuffer(closingMessage, (int)strlen(closingMessage) + 1);
 	m_outputPipe.closeConnection();
 
 	for (auto it = m_stats.begin(); it != m_stats.end(); it++)

@@ -102,34 +102,6 @@ bool NamedPipeServer::openNamedPipeServer()
 	return true;
 }
 
-#define NUM_MAX_PIPE_SERVERS_PER_MACHINE 100
-bool NamedPipeServer::openUniqueNamedPipeServer(const char* pipeName)
-{
-	int id = 0;
-	do
-	{
-		setPipeName(pipeName,true,id);
-
-		m_pipeHandle = (unsigned long long int) CreateNamedPipe(m_pipeFullName,
-			PIPE_ACCESS_DUPLEX | PIPE_TYPE_BYTE | PIPE_READMODE_BYTE | FILE_FLAG_FIRST_PIPE_INSTANCE,
-			PIPE_WAIT,
-			1,
-			1024 * 16,
-			1024 * 16,
-			NMPWAIT_USE_DEFAULT_WAIT,
-			NULL);
-		++id;
-	} while (m_pipeHandle == (unsigned long long int) INVALID_HANDLE_VALUE && id < NUM_MAX_PIPE_SERVERS_PER_MACHINE);
-
-
-	if (m_pipeHandle != (unsigned long long int) INVALID_HANDLE_VALUE)
-	{
-		logMessage("Created pipe server");
-		return true;
-	}
-	logMessage("Error: couldn't create pipe serve");
-	return false;
-}
 
 bool NamedPipeServer::waitForClientConnection()
 {

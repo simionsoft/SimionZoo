@@ -41,6 +41,9 @@ public:
 	//It appends an identifier to the name given until it finds an unused name. getPipeFullName() should be used after
 	//to retrieve the actual name of the pipe so that the client can open it
 	bool openUniqueNamedPipeServer(const char*);
+	//This method should be used when the name is not to be changed.
+	bool openNamedPipeServer(const char*);
+
 	bool waitForClientConnection();
 	void closeServer();
 };
