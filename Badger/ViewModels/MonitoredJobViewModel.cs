@@ -162,13 +162,12 @@ namespace Badger.ViewModels
                     logMessage("Sending job to herd agent " + m_herdAgent.IpAddress);
                     foreach (MonitoredExperimentalUnitViewModel expUnit in MonitoredExperimentalUnits)
                         expUnit.State = MonitoredExperimentalUnitViewModel.ExperimentState.SENDING;
-                    //m_herdAgent.State = "Sending job query";
                     m_shepherd.SendJobQuery(job, m_cancelToken);
                     logMessage("Job sent to herd agent " + m_herdAgent.IpAddress);
-                    //await m_shepherd.waitAsyncWriteOpsToFinish();
+
                     foreach (MonitoredExperimentalUnitViewModel expUnit in MonitoredExperimentalUnits)
                         expUnit.State = MonitoredExperimentalUnitViewModel.ExperimentState.RUNNING;
-                    //m_herdAgent.State = "Executing job query";
+
                 }
                 else
                 {
@@ -276,7 +275,6 @@ namespace Badger.ViewModels
 
                 foreach(MonitoredExperimentalUnitViewModel expUnit in MonitoredExperimentalUnits)
                     expUnit.resetState();
-                //m_herdAgent.State = "";
             }
             catch (Exception ex)
             {

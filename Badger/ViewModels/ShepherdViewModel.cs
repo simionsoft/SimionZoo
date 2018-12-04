@@ -85,13 +85,8 @@ namespace Badger.ViewModels
             m_shepherd = new Shepherd();
             m_shepherd.SetOnHerdAgentDiscoveryFunc(OnHerdAgetDiscovery);
 
-            // m_timer = new System.Timers.Timer(m_updateTimeSeconds * 1000);
             SendAgentDiscoveryBroadcast();
             m_shepherd.BeginListeningHerdAgentQueryResponses();
-
-            //m_timer.AutoReset = true;
-            //m_timer.Elapsed += new System.Timers.ElapsedEventHandler(ResendBroadcast);
-            //m_timer.Start();
         }
     }
 }

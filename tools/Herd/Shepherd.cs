@@ -6,7 +6,8 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Xml.Linq;
-
+using System.Net.NetworkInformation;
+using System.Linq;
 
 namespace Herd
 {
@@ -29,8 +30,6 @@ namespace Herd
         private Dictionary<IPEndPoint, HerdAgentInfo> m_herdAgentList
             = new Dictionary<IPEndPoint, HerdAgentInfo>();
 
-        UdpClient m_discoverySocket;
-
         public delegate void NotifyAgentListChanged(HerdAgentInfo newAgent);
         private NotifyAgentListChanged m_notifyAgentListChanged;
 
@@ -46,11 +45,8 @@ namespace Herd
 
         public Shepherd()
         {
-            m_discoverySocket = new UdpClient();
-            m_discoverySocket.EnableBroadcast = true;
             m_notifyAgentListChanged = null;
         }
-
 
         public static bool IsLocalIpAddress(string host)
         {
@@ -91,27 +87,30 @@ namespace Herd
                 Byte[] receiveBytes = u.EndReceive(ar, ref ip);
                 {
                     herdAgentXMLDescription = Encoding.ASCII.GetString(receiveBytes);
-                    xmlDescription = XElement.Parse(herdAgentXMLDescription);
-                    HerdAgentInfo herdAgentInfo = new HerdAgentInfo();
-                    herdAgentInfo.Parse(xmlDescription);
-                    //we copy the ip address into the properties
-                    herdAgentInfo.ipAddress = ip;
-                    //we update the ack time
-                    DateTime now = DateTime.Now;
-                    herdAgentInfo.lastACK = now;
+                    if (herdAgentXMLDescription.IndexOf('<') == 0)
+                    {
+                        xmlDescription = XElement.Parse(herdAgentXMLDescription);
+                        HerdAgentInfo herdAgentInfo = new HerdAgentInfo();
+                        herdAgentInfo.Parse(xmlDescription);
+                        //we copy the ip address into the properties
+                        herdAgentInfo.ipAddress = ip;
+                        //we update the ack time
+                        DateTime now = DateTime.Now;
+                        herdAgentInfo.lastACK = now;
 
-                    lock (m_listLock)
-                    {
-                        m_herdAgentList[ip] = herdAgentInfo;
+                        lock (m_listLock)
+                        {
+                            m_herdAgentList[ip] = herdAgentInfo;
+                        }
+                        //check how much time ago the agent list was updated
+                        double lastUpdateElapsedTime = (now - m_lastHerdAgentListUpdate).TotalSeconds;
+                        //notify, if we have to, that the agent list has probably changed
+                        if (lastUpdateElapsedTime > m_herdAgentListUpdateTime)
+                        {
+                            m_lastHerdAgentListUpdate = now;
+                        }
+                        m_notifyAgentListChanged?.Invoke(herdAgentInfo);
                     }
-                    //check how much time ago the agent list was updated
-                    double lastUpdateElapsedTime = (now - m_lastHerdAgentListUpdate).TotalSeconds;
-                    //notify, if we have to, that the agent list has probably changed
-                    if (lastUpdateElapsedTime > m_herdAgentListUpdateTime)
-                    {
-                        m_lastHerdAgentListUpdate = now;
-                    }
-                    m_notifyAgentListChanged?.Invoke(herdAgentInfo);
                 }
 
                 u.BeginReceive(new AsyncCallback(DiscoveryCallback), ar.AsyncState);
@@ -128,22 +127,198 @@ namespace Herd
             }
         }
 
+        List<UdpClient> m_broadcastInterfacesUdpClients = new List<UdpClient>();
+
+        void FindBroadcastInterfaces()
+        {
+            m_broadcastInterfacesUdpClients.Clear();
+
+            //create an udpClient for each of the interfaces to send the broadcast message through all
+            foreach (NetworkInterface ni in NetworkInterface.GetAllNetworkInterfaces())
+            {
+                if (ni.OperationalStatus == OperationalStatus.Up && ni.SupportsMulticast && ni.GetIPProperties().GetIPv4Properties() != null
+                    && ni.NetworkInterfaceType == NetworkInterfaceType.Ethernet)
+                {
+                    int id = ni.GetIPProperties().GetIPv4Properties().Index;
+                    if (NetworkInterface.LoopbackInterfaceIndex != id)
+                    {
+                        foreach (UnicastIPAddressInformation uip in ni.GetIPProperties().UnicastAddresses)
+                        {
+                            if (uip.Address.AddressFamily == AddressFamily.InterNetwork)
+                            {
+                                IPEndPoint local = new IPEndPoint(uip.Address, m_discoveryPortHerd);
+                                UdpClient udpClient = new UdpClient(local);
+                                udpClient.Client.SetSocketOption(SocketOptionLevel.Socket, SocketOptionName.Broadcast, 1);
+                                udpClient.Client.SetSocketOption(SocketOptionLevel.Socket, SocketOptionName.DontRoute, 1);
+                                m_broadcastInterfacesUdpClients.Add(udpClient);
+                            }
+                        }
+                    }
+                }
+            }
+        }
 
         public void SendBroadcastHerdAgentQuery()
         {
-            var RequestData = Encoding.ASCII.GetBytes(m_discoveryMessage);
-            m_discoverySocket.Send(RequestData, RequestData.Length,
-                new IPEndPoint(IPAddress.Broadcast, m_discoveryPortHerd));
-        }
+            byte[] DiscoveryMessage = Encoding.ASCII.GetBytes(m_discoveryMessage);
+            try
+            {
+                if (m_broadcastInterfacesUdpClients.Count == 0) FindBroadcastInterfaces();
+                
+                IPEndPoint target = new IPEndPoint(IPAddress.Broadcast, m_discoveryPortHerd);
+                foreach (UdpClient client in m_broadcastInterfacesUdpClients)
+                {
+                        
+                    client.Send(DiscoveryMessage, DiscoveryMessage.Length, target);
+                }
+            }
+            catch (Exception ex)
+            {
+                LogMessage("Unhandled error in SendBroadcastHerdAgentQuery: " + ex.ToString());
+            }
 
+            ////IPEndPoint ip = new IPEndPoint(IPAddress.Broadcast, m_discoveryPortHerd); //braodcast IP address, and corresponding port
+
+            ////NetworkInterface[] nics = NetworkInterface.GetAllNetworkInterfaces(); //get all network interfaces of the computer
+            ////int i = 0;
+            ////foreach (NetworkInterface adapter in nics)
+            ////{
+            ////    // Only select interfaces that are Ethernet type and support IPv4 (important to minimize waiting time)
+            ////    if (adapter.NetworkInterfaceType == NetworkInterfaceType.Loopback) { continue; }
+            ////    if (adapter.OperationalStatus != OperationalStatus.Up) { continue; }
+            ////    if (adapter.Supports(NetworkInterfaceComponent.IPv4) == false) { continue; }
+            ////    try
+            ////    {
+            ////        IPInterfaceProperties adapterProperties = adapter.GetIPProperties();
+            ////        ////IPAddress gatewayAddress = adapterProperties.GatewayAddresses.Select(g => g?.Address).Where(a => a != null).FirstOrDefault();
+
+            ////        ////if (gatewayAddress != null)
+            ////        ////{
+            ////        ////    UdpClient udpClient= new UdpClient();
+            ////        ////    udpClient.EnableBroadcast = true;
+            ////        ////    //SEND BROADCAST IN THE ADAPTER
+            ////        ////    //1) Set the socket as UDP Client
+            ////        ////    //Socket bcSocket = new Socket(AddressFamily.InterNetwork, SocketType.Dgram, ProtocolType.Udp); //broadcast socket
+            ////        ////    //                                                                                              //2) Set socket options
+            ////        ////    //bcSocket.SetSocketOption(SocketOptionLevel.Socket, SocketOptionName.Broadcast, 1);
+            ////        ////    ////3) Bind to the current selected adapter
+            ////        ////    IPEndPoint myLocalEndPoint = new IPEndPoint(gatewayAddress, m_discoveryPortHerd);
+            ////        ////    //bcSocket.Bind(myLocalEndPoint);
+
+            ////        ////    udpClient.Client.Bind(myLocalEndPoint);
+            ////        ////    udpClient.Client.SetSocketOption(SocketOptionLevel.Socket, SocketOptionName.Broadcast, 1);
+            ////        ////    //4) Send the broadcast data
+            ////        ////    udpClient.Send(RequestData, RequestData.Length, new IPEndPoint(IPAddress.Broadcast, m_discoveryPortHerd));
+            ////        ////}
+
+            ////        foreach (var ua in adapterProperties.UnicastAddresses)
+            ////        {
+            ////            if (ua.Address.AddressFamily == AddressFamily.InterNetwork)
+            ////            {
+            ////                IPEndPoint myLocalEndPoint = new IPEndPoint(ua.Address, m_discoveryPortHerd);
+            ////                UdpClient udpClient = new UdpClient(myLocalEndPoint);
+            ////                udpClient.EnableBroadcast = true;
+            ////                udpClient.Send(DiscoveryMessage, DiscoveryMessage.Length, new IPEndPoint(IPAddress.Broadcast, m_discoveryPortHerd));
+            ////                m_udpClients.Add(udpClient);
+            ////            }
+            ////            i++;
+            ////        }
+
+            ////    }
+            ////    catch (Exception ex)
+            ////    {
+            ////        LogMessage("Unhandled exception in SendBroadcastHerdAgentQuery(): " + ex.ToString());
+            ////    }
+            ////}
+
+            //UdpClient udpClient = new UdpClient();
+            //udpClient.EnableBroadcast = true;
+            //SEND BROADCAST IN THE ADAPTER
+            //1) Set the socket as UDP Client
+            //Socket bcSocket = new Socket(AddressFamily.InterNetwork, SocketType.Dgram, ProtocolType.Udp); //broadcast socket
+            //                                                                                              //2) Set socket options
+            //bcSocket.SetSocketOption(SocketOptionLevel.Socket, SocketOptionName.Broadcast, 1);
+            ////3) Bind to the current selected adapter
+            //IPEndPoint myLocalEndPoint = new IPEndPoint(IPAddress.Broadcast, m_discoveryPortHerd);
+            //bcSocket.Bind(myLocalEndPoint);
+
+
+            //udpClient.Client.Bind(myLocalEndPoint);
+            //udpClient.Client.SetSocketOption(SocketOptionLevel.Socket, SocketOptionName.Broadcast, 1);
+            ////4) Send the broadcast data
+            //udpClient.Send(DiscoveryMessage, DiscoveryMessage.Length, new IPEndPoint(IPAddress.Broadcast, m_discoveryPortHerd));
+            //m_discoverySocket.EnableBroadcast = true;
+
+            //m_discoverySocket.Send(DiscoveryMessage, DiscoveryMessage.Length, new IPEndPoint(IPAddress.Broadcast, m_discoveryPortHerd));
+        }
+       // UdpClient m_discoverySocket = new UdpClient(new IPEndPoint(IPAddress.Parse("158.227.232.36"), 2333));
 
         public void BeginListeningHerdAgentQueryResponses()
         {
-            ShepherdUdpState u = new ShepherdUdpState();
-            IPEndPoint xxx = new IPEndPoint(0, JobDispatcher.m_discoveryPortHerd);
-            u.ip = xxx;
-            u.client = m_discoverySocket;
-            m_discoverySocket.BeginReceive(DiscoveryCallback, u);
+            //NetworkInterface[] nics = NetworkInterface.GetAllNetworkInterfaces(); //get all network interfaces of the computer
+
+            //foreach (NetworkInterface adapter in nics)
+            //{
+            //    // Only select interfaces that are Ethernet type and support IPv4 (important to minimize waiting time)
+            //    if (adapter.NetworkInterfaceType == NetworkInterfaceType.Loopback) { continue; }
+            //    if (adapter.OperationalStatus != OperationalStatus.Up) { continue; }
+            //    if (adapter.Supports(NetworkInterfaceComponent.IPv4) == false) { continue; }
+            //    try
+            //    {
+            //        IPInterfaceProperties adapterProperties = adapter.GetIPProperties();
+            //        foreach (var ua in adapterProperties.UnicastAddresses)
+            //        {
+            //            if (ua.Address.AddressFamily == AddressFamily.InterNetwork)
+            //            {
+            //                Socket discoveryResponseSocket = new Socket(AddressFamily.InterNetwork, SocketType.Dgram, ProtocolType.Udp); //broadcast socket
+            //                ShepherdUdpState u = new ShepherdUdpState();
+            //                IPEndPoint myLocalEndPoint = new IPEndPoint(ua.Address, m_discoveryPortHerd);
+
+            //                u.ip = myLocalEndPoint;
+            //                u.client = new UdpClient(myLocalEndPoint);
+            //                u.client.BeginReceive(DiscoveryCallback, u);
+            //            }
+            //        }
+            //    }
+            //    catch (Exception ex)
+            //    {
+            //        LogMessage("Unhandled exception in BeginListeningHerAgentQueryResponses: " + ex.ToString());
+            //    }
+            //}
+
+            //try
+            //{
+
+            //    IPEndPoint localIPEndPoint = new IPEndPoint(IPAddress.Any, m_discoveryPortHerd);
+            //    UdpClient listeningUdpClient = new UdpClient(localIPEndPoint);
+
+            //    ShepherdUdpState u = new ShepherdUdpState();
+            //    u.ip = localIPEndPoint;
+            //    u.client = listeningUdpClient;
+
+            //    listeningUdpClient.BeginReceive(DiscoveryCallback, u);
+            //}
+            //catch (Exception ex)
+            //{
+            //    LogMessage("Unhandled exception in BeginListeningHerAgentQueryResponses: " + ex.ToString());
+            //}
+
+            //foreach (UdpClient client in m_udpClients)
+            //{
+            //    ShepherdUdpState callbackState = new ShepherdUdpState();
+            //    IPEndPoint localIp = new IPEndPoint(0, m_discoveryPortHerd);
+            //    callbackState.ip = localIp;
+            //    callbackState.client = client;
+            //    client.BeginReceive(DiscoveryCallback, callbackState);
+            //}
+            foreach (UdpClient client in m_broadcastInterfacesUdpClients)
+            {
+                ShepherdUdpState udpState = new ShepherdUdpState();
+                IPEndPoint localIP = new IPEndPoint(0, m_discoveryPortHerd);
+                udpState.ip = localIP;
+                udpState.client = client;
+                client.BeginReceive(DiscoveryCallback, udpState);
+            }
         }
 
 
@@ -152,11 +327,11 @@ namespace Herd
             try
             {
                 m_tcpClient = new TcpClient();
-                m_tcpClient.Connect(endPoint.Address, Herd.JobDispatcher.m_comPortHerd);
+                m_tcpClient.Connect(endPoint.Address, m_comPortHerd);
                 m_xmlStream.resizeBuffer(m_tcpClient.ReceiveBufferSize);
                 m_netStream = m_tcpClient.GetStream();
                 //send slave acquire message
-                m_xmlStream.writeMessage(m_netStream, JobDispatcher.m_acquireMessage, true);
+                m_xmlStream.writeMessage(m_netStream, m_acquireMessage, true);
             }
             catch
             {

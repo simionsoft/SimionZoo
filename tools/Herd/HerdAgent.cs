@@ -6,7 +6,6 @@ using System.IO.Pipes;
 using System.Linq;
 using System.Net;
 using System.Net.Sockets;
-using System.Runtime.InteropServices;
 using System.Text;
 using System.Xml.Linq;
 using System.Threading;
@@ -18,8 +17,6 @@ using System.Reflection;
 
 namespace Herd
 {
-
-
     public class HerdAgentInfo
     {
         private IPEndPoint m_ipAddress;
@@ -39,6 +36,10 @@ namespace Herd
 
         public HerdAgentInfo()
         {
+            CultureInfo customCulture = (CultureInfo)Thread.CurrentThread.CurrentCulture.Clone();
+            customCulture.NumberFormat.NumberDecimalSeparator = ".";
+            Thread.CurrentThread.CurrentCulture = customCulture;
+
             m_properties = new Dictionary<string, string>();
         }
 
@@ -47,6 +48,10 @@ namespace Herd
         /// </summary>
         public HerdAgentInfo(string processorId, int numCPUCores, string architecture, string CUDAVersion, string herdAgentVersion)
         {
+            CultureInfo customCulture = (CultureInfo)Thread.CurrentThread.CurrentCulture.Clone();
+            customCulture.NumberFormat.NumberDecimalSeparator = ".";
+            Thread.CurrentThread.CurrentCulture = customCulture;
+
             m_ipAddress = new IPEndPoint(0, 0);
             m_properties = new Dictionary<string, string>
             {
@@ -60,7 +65,9 @@ namespace Herd
 
         public void AddProperty(string name, string value)
         {
-            m_properties.Add(name, value);
+            if (!m_properties.ContainsKey(name))
+                m_properties.Add(name, value);
+            else m_properties[name] = value;
         }
 
         public string Property(string name)
@@ -133,7 +140,16 @@ namespace Herd
         {
             get
             {
-                return Property(PropNames.ProcessorLoad);
+                //The value reported by the herd agent might be a number with either a comma or dot delimiter and
+                //any number of decimal values: 3.723242 or 3,723242
+                //We normalize the format with a dot, only two decimal values and the percent symbol 3.72%
+                string processorLoad = Property(PropNames.ProcessorLoad);
+                processorLoad = processorLoad.Replace(',', '.');
+                int delimiterPos = processorLoad.LastIndexOf('.');
+                if (delimiterPos > 0)
+                    processorLoad = processorLoad.Substring(0, Math.Min(processorLoad.Length, delimiterPos + 3)) + "%";
+                else processorLoad = processorLoad + "%";
+                return processorLoad;
             }
         }
 
@@ -141,7 +157,41 @@ namespace Herd
         {
             get
             {
-                return Property(PropNames.TotalMemory);
+                //The value reported by the herd agent might be the absolute number of bytes or the number of megabytes, gigabytes....
+                //For example: 12341234, 12341234Mb, 12341234Gb
+                //We normalize the format in Gigabytes and using one decimal values AT MOST: 1.2Gb, 0.5Gb, 1204Gb
+                //We assume the minimum available memory will be 512Mb
+                string totalMemory= Property(PropNames.TotalMemory);
+                double multiplier = 1;
+
+                string ending= totalMemory.Substring(totalMemory.Length - 2, 2);
+
+                if (ending == "Gb")
+                    return totalMemory; // no tranformation needed?
+                else if (ending == "Mb")
+                {
+                    multiplier = 1.0 / 1024;
+                    totalMemory = totalMemory.Substring(0, totalMemory.Length - 2);
+                }
+                else if (ending == "Kb")
+                {
+                    multiplier = 1.0 / (1024 * 1024);
+                    totalMemory = totalMemory.Substring(0, totalMemory.Length - 2);
+                }
+                else
+                {
+                    multiplier = 1.0 / (1024 * 1024 * 1024);
+                }
+
+                double memoryInGbs;
+                double.TryParse(totalMemory, out memoryInGbs);
+                memoryInGbs *= multiplier;
+
+                //Remove unnecessary decimals
+                memoryInGbs = Math.Round(memoryInGbs, 1);
+                totalMemory = memoryInGbs.ToString(CultureInfo.GetCultureInfo("en-US"));
+
+                return memoryInGbs.ToString() + "Gb";
             }
         }
 
