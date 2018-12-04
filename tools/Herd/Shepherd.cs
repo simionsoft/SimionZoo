@@ -13,14 +13,14 @@ namespace Herd
 {
     public class ShepherdUdpState
     {
-        public UdpClient client { get; set; }
-        public IPEndPoint ip { get; set; }
+        public UdpClient Client { get; set; }
+        public IPEndPoint Ip { get; set; }
     }
 
 
     public class ShepherdTCPState
     {
-        public IPEndPoint ip { get; set; }
+        public IPEndPoint Ip { get; set; }
     }
 
 
@@ -75,16 +75,16 @@ namespace Herd
 
         public void DiscoveryCallback(IAsyncResult ar)
         {
-            UdpClient u = (UdpClient)((ShepherdUdpState)(ar.AsyncState)).client;
-            IPEndPoint ip = (IPEndPoint)((ShepherdUdpState)(ar.AsyncState)).ip;
+            UdpClient udpClient = (UdpClient)((ShepherdUdpState)(ar.AsyncState)).Client;
+            IPEndPoint ip = (IPEndPoint)((ShepherdUdpState)(ar.AsyncState)).Ip;
 
             XMLStream inputXMLStream = new XMLStream();
-            //IPEndPoint ip= new IPEndPoint();
+            
             XElement xmlDescription;
             string herdAgentXMLDescription;
             try
             {
-                Byte[] receiveBytes = u.EndReceive(ar, ref ip);
+                Byte[] receiveBytes = udpClient.EndReceive(ar, ref ip);
                 {
                     herdAgentXMLDescription = Encoding.ASCII.GetString(receiveBytes);
                     if (herdAgentXMLDescription.IndexOf('<') == 0)
@@ -113,7 +113,7 @@ namespace Herd
                     }
                 }
 
-                u.BeginReceive(new AsyncCallback(DiscoveryCallback), ar.AsyncState);
+                udpClient.BeginReceive(new AsyncCallback(DiscoveryCallback), ar.AsyncState);
             }
             catch (TaskCanceledException ex)
             {
@@ -176,147 +176,17 @@ namespace Herd
             {
                 LogMessage("Unhandled error in SendBroadcastHerdAgentQuery: " + ex.ToString());
             }
-
-            ////IPEndPoint ip = new IPEndPoint(IPAddress.Broadcast, m_discoveryPortHerd); //braodcast IP address, and corresponding port
-
-            ////NetworkInterface[] nics = NetworkInterface.GetAllNetworkInterfaces(); //get all network interfaces of the computer
-            ////int i = 0;
-            ////foreach (NetworkInterface adapter in nics)
-            ////{
-            ////    // Only select interfaces that are Ethernet type and support IPv4 (important to minimize waiting time)
-            ////    if (adapter.NetworkInterfaceType == NetworkInterfaceType.Loopback) { continue; }
-            ////    if (adapter.OperationalStatus != OperationalStatus.Up) { continue; }
-            ////    if (adapter.Supports(NetworkInterfaceComponent.IPv4) == false) { continue; }
-            ////    try
-            ////    {
-            ////        IPInterfaceProperties adapterProperties = adapter.GetIPProperties();
-            ////        ////IPAddress gatewayAddress = adapterProperties.GatewayAddresses.Select(g => g?.Address).Where(a => a != null).FirstOrDefault();
-
-            ////        ////if (gatewayAddress != null)
-            ////        ////{
-            ////        ////    UdpClient udpClient= new UdpClient();
-            ////        ////    udpClient.EnableBroadcast = true;
-            ////        ////    //SEND BROADCAST IN THE ADAPTER
-            ////        ////    //1) Set the socket as UDP Client
-            ////        ////    //Socket bcSocket = new Socket(AddressFamily.InterNetwork, SocketType.Dgram, ProtocolType.Udp); //broadcast socket
-            ////        ////    //                                                                                              //2) Set socket options
-            ////        ////    //bcSocket.SetSocketOption(SocketOptionLevel.Socket, SocketOptionName.Broadcast, 1);
-            ////        ////    ////3) Bind to the current selected adapter
-            ////        ////    IPEndPoint myLocalEndPoint = new IPEndPoint(gatewayAddress, m_discoveryPortHerd);
-            ////        ////    //bcSocket.Bind(myLocalEndPoint);
-
-            ////        ////    udpClient.Client.Bind(myLocalEndPoint);
-            ////        ////    udpClient.Client.SetSocketOption(SocketOptionLevel.Socket, SocketOptionName.Broadcast, 1);
-            ////        ////    //4) Send the broadcast data
-            ////        ////    udpClient.Send(RequestData, RequestData.Length, new IPEndPoint(IPAddress.Broadcast, m_discoveryPortHerd));
-            ////        ////}
-
-            ////        foreach (var ua in adapterProperties.UnicastAddresses)
-            ////        {
-            ////            if (ua.Address.AddressFamily == AddressFamily.InterNetwork)
-            ////            {
-            ////                IPEndPoint myLocalEndPoint = new IPEndPoint(ua.Address, m_discoveryPortHerd);
-            ////                UdpClient udpClient = new UdpClient(myLocalEndPoint);
-            ////                udpClient.EnableBroadcast = true;
-            ////                udpClient.Send(DiscoveryMessage, DiscoveryMessage.Length, new IPEndPoint(IPAddress.Broadcast, m_discoveryPortHerd));
-            ////                m_udpClients.Add(udpClient);
-            ////            }
-            ////            i++;
-            ////        }
-
-            ////    }
-            ////    catch (Exception ex)
-            ////    {
-            ////        LogMessage("Unhandled exception in SendBroadcastHerdAgentQuery(): " + ex.ToString());
-            ////    }
-            ////}
-
-            //UdpClient udpClient = new UdpClient();
-            //udpClient.EnableBroadcast = true;
-            //SEND BROADCAST IN THE ADAPTER
-            //1) Set the socket as UDP Client
-            //Socket bcSocket = new Socket(AddressFamily.InterNetwork, SocketType.Dgram, ProtocolType.Udp); //broadcast socket
-            //                                                                                              //2) Set socket options
-            //bcSocket.SetSocketOption(SocketOptionLevel.Socket, SocketOptionName.Broadcast, 1);
-            ////3) Bind to the current selected adapter
-            //IPEndPoint myLocalEndPoint = new IPEndPoint(IPAddress.Broadcast, m_discoveryPortHerd);
-            //bcSocket.Bind(myLocalEndPoint);
-
-
-            //udpClient.Client.Bind(myLocalEndPoint);
-            //udpClient.Client.SetSocketOption(SocketOptionLevel.Socket, SocketOptionName.Broadcast, 1);
-            ////4) Send the broadcast data
-            //udpClient.Send(DiscoveryMessage, DiscoveryMessage.Length, new IPEndPoint(IPAddress.Broadcast, m_discoveryPortHerd));
-            //m_discoverySocket.EnableBroadcast = true;
-
-            //m_discoverySocket.Send(DiscoveryMessage, DiscoveryMessage.Length, new IPEndPoint(IPAddress.Broadcast, m_discoveryPortHerd));
         }
-       // UdpClient m_discoverySocket = new UdpClient(new IPEndPoint(IPAddress.Parse("158.227.232.36"), 2333));
+
 
         public void BeginListeningHerdAgentQueryResponses()
         {
-            //NetworkInterface[] nics = NetworkInterface.GetAllNetworkInterfaces(); //get all network interfaces of the computer
-
-            //foreach (NetworkInterface adapter in nics)
-            //{
-            //    // Only select interfaces that are Ethernet type and support IPv4 (important to minimize waiting time)
-            //    if (adapter.NetworkInterfaceType == NetworkInterfaceType.Loopback) { continue; }
-            //    if (adapter.OperationalStatus != OperationalStatus.Up) { continue; }
-            //    if (adapter.Supports(NetworkInterfaceComponent.IPv4) == false) { continue; }
-            //    try
-            //    {
-            //        IPInterfaceProperties adapterProperties = adapter.GetIPProperties();
-            //        foreach (var ua in adapterProperties.UnicastAddresses)
-            //        {
-            //            if (ua.Address.AddressFamily == AddressFamily.InterNetwork)
-            //            {
-            //                Socket discoveryResponseSocket = new Socket(AddressFamily.InterNetwork, SocketType.Dgram, ProtocolType.Udp); //broadcast socket
-            //                ShepherdUdpState u = new ShepherdUdpState();
-            //                IPEndPoint myLocalEndPoint = new IPEndPoint(ua.Address, m_discoveryPortHerd);
-
-            //                u.ip = myLocalEndPoint;
-            //                u.client = new UdpClient(myLocalEndPoint);
-            //                u.client.BeginReceive(DiscoveryCallback, u);
-            //            }
-            //        }
-            //    }
-            //    catch (Exception ex)
-            //    {
-            //        LogMessage("Unhandled exception in BeginListeningHerAgentQueryResponses: " + ex.ToString());
-            //    }
-            //}
-
-            //try
-            //{
-
-            //    IPEndPoint localIPEndPoint = new IPEndPoint(IPAddress.Any, m_discoveryPortHerd);
-            //    UdpClient listeningUdpClient = new UdpClient(localIPEndPoint);
-
-            //    ShepherdUdpState u = new ShepherdUdpState();
-            //    u.ip = localIPEndPoint;
-            //    u.client = listeningUdpClient;
-
-            //    listeningUdpClient.BeginReceive(DiscoveryCallback, u);
-            //}
-            //catch (Exception ex)
-            //{
-            //    LogMessage("Unhandled exception in BeginListeningHerAgentQueryResponses: " + ex.ToString());
-            //}
-
-            //foreach (UdpClient client in m_udpClients)
-            //{
-            //    ShepherdUdpState callbackState = new ShepherdUdpState();
-            //    IPEndPoint localIp = new IPEndPoint(0, m_discoveryPortHerd);
-            //    callbackState.ip = localIp;
-            //    callbackState.client = client;
-            //    client.BeginReceive(DiscoveryCallback, callbackState);
-            //}
             foreach (UdpClient client in m_broadcastInterfacesUdpClients)
             {
                 ShepherdUdpState udpState = new ShepherdUdpState();
                 IPEndPoint localIP = new IPEndPoint(0, m_discoveryPortHerd);
-                udpState.ip = localIP;
-                udpState.client = client;
+                udpState.Ip = localIP;
+                udpState.Client = client;
                 client.BeginReceive(DiscoveryCallback, udpState);
             }
         }
