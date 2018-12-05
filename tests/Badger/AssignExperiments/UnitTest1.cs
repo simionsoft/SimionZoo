@@ -1,6 +1,6 @@
 ﻿using Badger.ViewModels;
-using Badger.Data;
-using Herd;
+using Herd.Network;
+using Herd.Files;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System.Collections.Generic;
 using System.Threading;

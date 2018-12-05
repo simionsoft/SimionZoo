@@ -1,7 +1,7 @@
 ﻿using System;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System.Text.RegularExpressions;
-using Herd;
+using Herd.Network;
 
 namespace RegExpressions
 {

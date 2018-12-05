@@ -2,16 +2,17 @@
 using System.Collections.Generic;
 using System;
 
+using Herd.Files;
+
 namespace Badger.ViewModels
 {
     public class LoggedForkViewModel : SelectableTreeItem
     {
-        private string m_name = "unnamed";
+        LoggedFork m_model;
 
         public string Name
         {
-            get { return m_name; }
-            set { m_name = value; }
+            get { return m_model.Name; }
         }
 
         private List<LoggedForkValueViewModel> m_values = new List<LoggedForkValueViewModel>();
@@ -19,7 +20,6 @@ namespace Badger.ViewModels
         public List<LoggedForkValueViewModel> Values
         {
             get { return m_values; }
-            set { m_values = value; }
         }
 
         private bool m_bGroupByThis;
@@ -56,15 +56,22 @@ namespace Badger.ViewModels
             set { m_bHasChildrenValues = value; NotifyOfPropertyChange(() => HasChildrenValues); }
         }
 
-        public LoggedForkViewModel(XmlNode configNode)
+        public LoggedForkViewModel(LoggedFork model)
         {
-            //FIXXXXXXXXXXXXXXXXXX
-            //
-            //
-            //
+            m_model = model;
 
-            //hide the area used to display children forks/values?
+            //Build View models from the models
+            foreach (LoggedFork fork in model.Forks)
+            {
+                LoggedForkViewModel forkVM = new LoggedForkViewModel(fork);
+                Forks.Add(forkVM);
+            }
             HasChildrenForks = Forks.Count != 0;
+            foreach (LoggedForkValue forkValue in model.Values)
+            {
+                LoggedForkValueViewModel forkValueVM = new LoggedForkValueViewModel(forkValue, this);
+                Values.Add(forkValueVM);
+            }
             HasChildrenValues = Values.Count != 0;
         }
 

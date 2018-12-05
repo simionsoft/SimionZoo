@@ -33,7 +33,6 @@ namespace Herd.Files
             LogFileName = Utils.GetLogFilePath(ExperimentFileName, false);
 
             //FORKS
-            //load the value of each fork used in this experimental unit
             foreach (XmlNode fork in configNode.ChildNodes)
             {
                 string forkName = fork.Attributes[XMLTags.aliasAttribute].Value;
@@ -44,19 +43,36 @@ namespace Herd.Files
                 }
             }
             //update progress
-            loadOptions.OnExpUnitLoaded?.Invoke();
+            loadOptions.OnExpUnitLoaded?.Invoke(this);
         }
 
+        /// <summary>
+        /// Use this if you want to load an experimental unit only depending on whether the log file exists or not
+        /// </summary>
+        /// <param name="logFileName"></param>
+        /// <returns></returns>
+        static public bool LogFileExists(string relExplUnitPath, string baseDirectory)
+        {
+            string experimentFileName = baseDirectory + relExplUnitPath;
+            string logDescriptorFileName = Utils.GetLogFilePath(experimentFileName, true);
+            string logFileName = Utils.GetLogFilePath(experimentFileName, false);
+
+            return FileExistsAndNotEmpty(logDescriptorFileName) && FileExistsAndNotEmpty(logFileName);
+        }
         public bool LogFileExists()
         {
-            if (File.Exists(LogFileName))
+            return FileExistsAndNotEmpty(LogFileName) && FileExistsAndNotEmpty(LogDescriptorFileName);
+        }
+
+        static bool FileExistsAndNotEmpty(string fileName)
+        {
+            if (File.Exists(fileName))
             {
-                FileInfo fileInfo = new FileInfo(LogFileName);
+                FileInfo fileInfo = new FileInfo(fileName);
                 if (fileInfo.Length > 0)
                     return true;
             }
             return false;
         }
-
     }
 }

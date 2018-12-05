@@ -46,35 +46,25 @@ namespace Herd.Files
                         break;
 
                     case XMLTags.ExperimentalUnitNodeTag:
-                        LoggedExperimentalUnit newExpUnit = new LoggedExperimentalUnit(child, baseDirectory, loadOptions);
-                        if (loadOptions.LoadVariablesInLog)
+                        if (loadOptions.Selection == LoadOptions.ExpUnitSelection.All
+                            || (LoggedExperimentalUnit.LogFileExists(child.Attributes[XMLTags.nameAttribute].Value,baseDirectory) 
+                            == (loadOptions.Selection == LoadOptions.ExpUnitSelection.OnlyFinished)))
                         {
-                            //We load the list of variables from the log descriptor and add them to the global list
-                            newExpUnit.Variables = Log.LoadLogDescriptor(newExpUnit.LogDescriptorFileName);
-                            foreach (string variable in newExpUnit.Variables) AddVariable(variable);
-                        }
-                        if ((loadOptions.LoadUnfinishedExpUnits && loadOptions.LoadFinishedExpUnits) || !newExpUnit.LogFileExists())
+                            LoggedExperimentalUnit newExpUnit = new LoggedExperimentalUnit(child, baseDirectory, loadOptions);
+                            if (loadOptions.LoadVariablesInLog)
+                            {
+                                //We load the list of variables from the log descriptor and add them to the global list
+                                newExpUnit.Variables = Log.LoadLogDescriptor(newExpUnit.LogDescriptorFileName);
+                                foreach (string variable in newExpUnit.Variables) AddVariable(variable);
+                            }
                             ExperimentalUnits.Add(newExpUnit);
+                        }
                         break;
                 }
             }
-            //Associate forks and experiment units
-            //foreach (ExperimentalUnit expUnit in ExperimentalUnits)
-            //{
-            //    TraverseAction(false, (node) =>
-            //    {
-            //        if (node is LoggedForkValueViewModel forkValue)
-            //        {
-            //            foreach (string forkName in expUnit.forkValues.Keys)
-            //            {
-            //                if (forkName == forkValue.parent.Name && expUnit.forkValues[forkName] == forkValue.Value)
-            //                {
-            //                    forkValue.expUnits.Add(expUnit);
-            //                }
-            //            }
-            //        }
-            //    });
-            //}
+
+            //update progress
+            loadOptions.OnExpLoaded?.Invoke(this);
         }
     }
 }

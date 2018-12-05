@@ -9,6 +9,8 @@ using System.Timers;
 
 using Badger.Data;
 
+using Herd.Files;
+
 using Caliburn.Micro;
 
 namespace Badger.ViewModels
@@ -41,7 +43,8 @@ namespace Badger.ViewModels
         ///</summary>
         public void CleanExperimentBatch()
         {
-            int numFilesDeleted= Files.LoadExperimentBatchFile(BatchFileName, Files.CleanExperimentalUnitLogFiles);
+            int numFilesDeleted = LoggedExperimentBatch.DeleteLogFiles(BatchFileName);
+
             NumFinishedExperimentalUnitsBeforeStart = 0;
             ResetPlot();
 
@@ -200,16 +203,6 @@ namespace Badger.ViewModels
             set { m_loggedExperiments = value; NotifyOfPropertyChange(() => LoggedExperiments); }
         }
 
-        private int LoadLoggedExperiment(XmlNode node, string baseDirectory
-            , Files.LoadUpdateFunction loadUpdateFunction = null)
-        {
-            LoggedExperimentViewModel newExperiment
-                = new LoggedExperimentViewModel(node, baseDirectory, false, true, loadUpdateFunction);
-            LoggedExperiments.Add(newExperiment);
-            return newExperiment.ExperimentalUnits.Count;
-        }
-
-
         public void SelectExperimentBatchFile()
         {
             string fileName = null;
@@ -275,16 +268,35 @@ namespace Badger.ViewModels
             BatchFileName = batchFileName;
             ResetPlot();
 
-            //Load the experiments
-            int numUnfinishedExperimentalUnits = Files.LoadExperimentBatchFile(batchFileName, LoadLoggedExperiment);
-            NumExperimentalUnits = Files.LoadExperimentBatchFile(batchFileName, Files.CountExperimentalUnitsInBatch);
-            if (NumExperimentalUnits < 0)
+            //Load unfinished experiments
+            LoadOptions loadOptionsUnfinished = new LoadOptions()
             {
-                CaliburnUtility.ShowWarningDialog("Failed to initialize the experiment batch", "Error");
-                return false;
+                Selection = LoadOptions.ExpUnitSelection.OnlyUnfinished,
+                LoadVariablesInLog = false
+            };
+
+            LoggedExperimentBatch batchUnfinished = new LoggedExperimentBatch();
+            batchUnfinished.Load(batchFileName, loadOptionsUnfinished);
+
+            foreach (LoggedExperiment experiment in batchUnfinished.Experiments)
+            {
+                LoggedExperimentViewModel newExperiment = new LoggedExperimentViewModel(experiment);
+                    //= new LoggedExperimentViewModel(node, baseDirectory, false, true, loadUpdateFunction);
+                LoggedExperiments.Add(newExperiment);
             }
-            NumFinishedExperimentalUnitsBeforeStart 
-                = Files.LoadExperimentBatchFile(batchFileName, Files.CountFinishedExperimentalUnitsInBatch);
+            //count unfinished experiments
+            int numUnfinishedExperimentalUnits = batchUnfinished.CountExperimentalUnits();
+
+            //load all experimental units and count them
+            LoadOptions loadOptionsFinished = new LoadOptions()
+            {
+                Selection = LoadOptions.ExpUnitSelection.OnlyFinished,
+                LoadVariablesInLog = false
+            };
+
+            NumFinishedExperimentalUnitsBeforeStart = LoggedExperimentBatch.CountExperimentalUnits(batchFileName, LoadOptions.ExpUnitSelection.OnlyFinished);
+
+            NumExperimentalUnits = numUnfinishedExperimentalUnits + NumFinishedExperimentalUnits;
 
             if (InitializeExperimentBatchForExecution())
                 BatchFileName = batchFileName;
@@ -298,7 +310,7 @@ namespace Badger.ViewModels
 
             foreach (var experiment in LoggedExperiments)
             {
-                foreach (Herd.Files.AppVersion version in experiment.AppVersions)
+                foreach (AppVersion version in experiment.AppVersions)
                 {
                     if (!ExistsRequiredFile(version.ExeFile))
                     {
@@ -307,11 +319,13 @@ namespace Badger.ViewModels
                     }
 
                     foreach (string pre in version.Requirements.InputFiles)
+                    {
                         if (!ExistsRequiredFile(pre))
                         {
                             CaliburnUtility.ShowWarningDialog("Cannot find required file: " + pre + ". Check the app definition file in /config/apps", "ERROR");
                             return false;
                         }
+                    }
                 }
                 foreach (var unit in experiment.ExperimentalUnits)
                 {

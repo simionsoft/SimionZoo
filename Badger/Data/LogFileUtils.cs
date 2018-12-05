@@ -1,15 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using static Herd.Files.Log;
+using Herd.Files;
+using Badger.ViewModels;
 
 namespace Badger.Data
 {
     public class LogFileUtils
     {
-        public static Series GetVariableData(EpisodesData episode, Report trackParameters, int variableIndex)
+        public static Series GetVariableData(Log.EpisodesData episode, Report trackParameters, int variableIndex)
         {
 
             if (episode.steps[episode.steps.Count - 1].episodeSimTime < trackParameters.MinEpisodeLength)
@@ -17,7 +16,7 @@ namespace Badger.Data
 
             Series data = new Series();
 
-            foreach (StepData step in episode.steps)
+            foreach (Log.StepData step in episode.steps)
             {
                 if (step.episodeSimTime >= trackParameters.TimeOffset)
                     data.AddValue(step.episodeSimTime
@@ -34,12 +33,12 @@ namespace Badger.Data
             return data;
         }
 
-        public static double GetEpisodeAverage(EpisodesData episode, int variableIndex, Report trackParameters)
+        public static double GetEpisodeAverage(Log.EpisodesData episode, int variableIndex, Report trackParameters)
         {
             double avg = 0.0;
             int count = 0;
             if (episode.steps.Count == 0) return 0.0;
-            foreach (StepData step in episode.steps)
+            foreach (Log.StepData step in episode.steps)
             {
                 if (step.episodeSimTime >= trackParameters.TimeOffset)
                 {
@@ -50,12 +49,12 @@ namespace Badger.Data
             return avg / count;
         }
 
-        public static SeriesGroup GetAveragedData(List<EpisodesData> episodes, Report trackParameters, int variableIndex)
+        public static SeriesGroup GetAveragedData(List<Log.EpisodesData> episodes, Report trackParameters, int variableIndex)
         {
             SeriesGroup data = new SeriesGroup(trackParameters);
             Series xYSeries = new Series();
 
-            foreach (EpisodesData episode in episodes)
+            foreach (Log.EpisodesData episode in episodes)
             {
                 xYSeries.AddValue(episode.index
                     , GetEpisodeAverage(episode, variableIndex, trackParameters));
@@ -65,6 +64,63 @@ namespace Badger.Data
                 xYSeries.Resample(trackParameters.NumSamples);
             data.AddSeries(xYSeries);
             return data;
+        }
+
+        /// <summary>
+        /// Reads the log file and returns in a track the data for each of the reports.
+        /// </summary>
+        /// <param name="reports">Parameters of each of the reporters: variable, type, ...</param>
+        /// <returns></returns>
+        public static Track LoadTrackData(LoggedExperimentalUnitViewModel expUnit, List<Report> reports)
+        {
+            Log.SimionLog Log = new Log.SimionLog();
+            Log.LoadBinaryLog(expUnit.LogFileName);
+
+            if (!Log.SuccessfulLoad || Log.TotalNumEpisodes == 0) return null;
+
+            Track track = new Track(expUnit.ForkValues, expUnit.LogFileName, expUnit.LogDescriptorFileName, expUnit.ExperimentFileName);
+            SeriesGroup dataSeries;
+            int variableIndex;
+            foreach (Report report in reports)
+            {
+                variableIndex = expUnit.GetVariableIndex(report.Variable);
+                switch (report.Type)
+                {
+                    case ReportType.LastEvaluation:
+                        Log.EpisodesData lastEpisode = Log.EvaluationEpisodes[Log.EvaluationEpisodes.Count - 1];
+                        dataSeries = new SeriesGroup(report);
+                        Series series = LogFileUtils.GetVariableData(lastEpisode, report, variableIndex);
+                        if (series != null)
+                        {
+                            dataSeries.AddSeries(series);
+                            track.AddVariableData(report, dataSeries);
+                        }
+                        break;
+                    case ReportType.EvaluationAverages:
+                        track.AddVariableData(report
+                            , LogFileUtils.GetAveragedData(Log.EvaluationEpisodes, report, variableIndex));
+                        break;
+                    case ReportType.AllEvaluationEpisodes:
+                    case ReportType.AllTrainingEpisodes:
+                        dataSeries = new SeriesGroup(report);
+                        List<Log.EpisodesData> episodes;
+                        if (report.Type == ReportType.AllEvaluationEpisodes)
+                            episodes = Log.EvaluationEpisodes;
+                        else episodes = Log.TrainingEpisodes;
+                        foreach (Log.EpisodesData episode in episodes)
+                        {
+                            Series subSeries = LogFileUtils.GetVariableData(episode, report, variableIndex);
+                            if (subSeries != null)
+                            {
+                                subSeries.Id = episode.index.ToString();
+                                dataSeries.AddSeries(subSeries);
+                            }
+                        }
+                        track.AddVariableData(report, dataSeries);
+                        break;
+                }
+            }
+            return track;
         }
     }
 }

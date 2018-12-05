@@ -3,14 +3,16 @@ using System.Collections.Generic;
 
 using Caliburn.Micro;
 
+using Herd.Files;
 
 namespace Badger.ViewModels
 {
 
     public class LoggedForkValueViewModel: SelectableTreeItem
     {
-        private string m_value = "";
-        public string Value { get { return m_value; } set { m_value = value; } }
+        LoggedForkValue m_model;
+
+        public string Value { get { return m_model.Value; } set { m_model.Value = value; } }
 
         private BindableCollection<LoggedForkViewModel> m_forks = new BindableCollection<LoggedForkViewModel>();
         public BindableCollection<LoggedForkViewModel> Forks
@@ -28,17 +30,13 @@ namespace Badger.ViewModels
         }
 
         public LoggedForkViewModel Parent { get; set; }
-        public List<LoggedExperimentalUnitViewModel> expUnits { get; }
+        public List<LoggedExperimentalUnitViewModel> ExpUnits { get; }
             = new List<LoggedExperimentalUnitViewModel>();
 
-        public LoggedForkValueViewModel(XmlNode configNode, LoggedForkViewModel _parent)
+        public LoggedForkValueViewModel(LoggedForkValue model, LoggedForkViewModel parent)
         {
-            //FIXXXXXXXXXXXXXXXXXXXXXX
-            //
-            //
-            //
-            //
-
+            m_model = model;
+            Parent = parent;
 
             //hide the area used to display children forks?
             HasChildrenForks = Forks.Count != 0;
@@ -49,7 +47,7 @@ namespace Badger.ViewModels
             if (doActionLocally) LocalTraverseAction(action);
             foreach (LoggedForkViewModel fork in Forks)
                 fork.TraverseAction(doActionLocally, action);
-            foreach (LoggedExperimentalUnitViewModel expUnit in expUnits)
+            foreach (LoggedExperimentalUnitViewModel expUnit in ExpUnits)
                 expUnit.LocalTraverseAction(action);
         }
     }

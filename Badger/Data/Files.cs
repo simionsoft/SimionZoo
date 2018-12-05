@@ -135,36 +135,36 @@ namespace Badger
         }
 
         
-        /// <summary>
-        ///     Load experiment batch file.
-        /// </summary>
-        /// <param name="perExperimentFunction"></param>
-        /// <param name="batchFilename"></param>
-        static public int LoadExperimentBatchFile(string batchFilename, XmlNodeFunction perExperimentFunction
-            , LoadUpdateFunction onExperimentLoaded = null)
-        {
-            int retValue = 0;
-            // Load the experiment batch in queue
-            XmlDocument batchDoc = new XmlDocument();
-            batchDoc.Load(batchFilename);
-            XmlElement fileRoot = batchDoc.DocumentElement;
+        ///// <summary>
+        /////     Load experiment batch file.
+        ///// </summary>
+        ///// <param name="perExperimentFunction"></param>
+        ///// <param name="batchFilename"></param>
+        //static public int LoadExperimentBatchFile(string batchFilename, LoadOptions loadOptions)
+        //{
+        //    LoggedExperimentBatch batch = new LoggedExperimentBatch(batchFilename, loadOptions);
+        //    int retValue = 0;
+        //    // Load the experiment batch in queue
+        //    XmlDocument batchDoc = new XmlDocument();
+        //    batchDoc.Load(batchFilename);
+        //    XmlElement fileRoot = batchDoc.DocumentElement;
 
-            if (fileRoot != null && fileRoot.Name == XMLTags.ExperimentBatchNodeTag)
-            {
-                foreach (XmlNode experiment in fileRoot.ChildNodes)
-                {
-                    if (experiment.Name == XMLTags.ExperimentNodeTag)
-                        retValue+= perExperimentFunction(experiment, Herd.Utils.GetDirectory(batchFilename), onExperimentLoaded);
-                }
-            }
-            else
-            {
-                CaliburnUtility.ShowWarningDialog("Malformed XML in experiment queue file. No badger node.", "ERROR");
-                return retValue;
-            }
+        //    if (fileRoot != null && fileRoot.Name == XMLTags.ExperimentBatchNodeTag)
+        //    {
+        //        foreach (XmlNode experiment in fileRoot.ChildNodes)
+        //        {
+        //            if (experiment.Name == XMLTags.ExperimentNodeTag)
+        //                retValue+= perExperimentFunction(experiment, Herd.Utils.GetDirectory(batchFilename), onExperimentLoaded);
+        //        }
+        //    }
+        //    else
+        //    {
+        //        CaliburnUtility.ShowWarningDialog("Malformed XML in experiment queue file. No badger node.", "ERROR");
+        //        return retValue;
+        //    }
 
-            return retValue;
-        }
+        //    return retValue;
+        //}
 
         /// <summary>
         ///     SAVE EXPERIMENT BATCH: the list of (possibly forked) experiments is saved a as set of experiments

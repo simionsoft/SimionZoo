@@ -184,7 +184,7 @@ namespace Badger.ViewModels
             m_name = m_loggedExperimentalUnit.Name;
             m_filePath = m_loggedExperimentalUnit.ExperimentFileName;
 
-            Forks = expUnit.forkValues.Select(k => k.Key + ": " + k.Value).ToList();
+            Forks = expUnit.ForkValues.Select(k => k.Key + ": " + k.Value).ToList();
             m_plotEvaluationMonitor = plot;
         }
 

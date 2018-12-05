@@ -262,15 +262,6 @@ namespace Badger.ViewModels
             set { m_loggedExperiments = value; NotifyOfPropertyChange(() => LoggedExperiments); }
         }
 
-        private int LoadLoggedExperiment(XmlNode node, string baseDirectory
-            , Files.LoadUpdateFunction updateFunction)
-        {
-            LoggedExperimentViewModel newExperiment
-                = new LoggedExperimentViewModel(node, baseDirectory, false, false, updateFunction);
-            LoggedExperiments.Add(newExperiment);
-            return newExperiment.ExperimentalUnits.Count;
-        }
-
 
         /// <summary>
         ///     Runs all the experiments open in the editor. Saves a batch file read by the experiment monitor, and also a project to be

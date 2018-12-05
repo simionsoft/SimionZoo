@@ -4,11 +4,26 @@ namespace Herd.Files
 {
     public class LoadOptions
     {
-        public delegate void UpdateFunction();
+        public enum ExpUnitSelection { All, OnlyFinished, OnlyUnfinished };
 
-        public UpdateFunction OnExpUnitLoaded = null;
-        public bool LoadFinishedExpUnits = true;
-        public bool LoadUnfinishedExpUnits = true;
-        public bool LoadVariablesInLog = true;
+        
+        public delegate void PerExperimentFunction(LoggedExperiment experiment) ;
+        public delegate void PerExperimentalUnitFunction(LoggedExperimentalUnit experimentalUnit) ;
+
+
+        public PerExperimentFunction OnExpLoaded;
+        public PerExperimentalUnitFunction OnExpUnitLoaded;
+        
+        public ExpUnitSelection Selection;
+        public bool LoadVariablesInLog;
+
+        public LoadOptions()
+        {
+            //default values
+            OnExpLoaded = null;
+            OnExpUnitLoaded = null;
+            Selection = ExpUnitSelection.All;
+            LoadVariablesInLog = false;
+        }
     }
 }

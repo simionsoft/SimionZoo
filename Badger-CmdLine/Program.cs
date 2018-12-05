@@ -8,12 +8,6 @@ namespace Badger_CmdLine
 {
     class Program
     {
-        static int numExperimentalUnitsLoaded = 0;
-        static void OnExpUnitLoaded()
-        {
-            numExperimentalUnitsLoaded++;
-        }
-
         static void Main(string[] args)
         {
             if (args.Length!=1)
@@ -22,18 +16,13 @@ namespace Badger_CmdLine
                 return;
             }
             string batchFilename= args[0];
-            LoadOptions loadOptions = new LoadOptions()
-            {
-                LoadUnfinishedExpUnits = true,
-                LoadFinishedExpUnits = false,
-                LoadVariablesInLog = false,
-                OnExpUnitLoaded = OnExpUnitLoaded
-            };
+            LoadOptions loadOptions = new LoadOptions();
 
             //load the experiment batch
             Console.WriteLine("Reading batch file: " + batchFilename);
-            LoggedExperimentBatch batch = new LoggedExperimentBatch(batchFilename, loadOptions);
-            Console.WriteLine("{0} unfinished experimental units loaded", numExperimentalUnitsLoaded);
+            LoggedExperimentBatch batch = new LoggedExperimentBatch();
+            batch.Load(batchFilename, loadOptions);
+            Console.WriteLine("{0} unfinished experimental units loaded", batch.CountExperimentalUnits());
 
             Console.WriteLine("Finding herd agents");
             Shepherd shepherd = new Shepherd();

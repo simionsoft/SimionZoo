@@ -7,6 +7,7 @@ using Caliburn.Micro;
 
 using Badger.Data;
 
+using Herd.Files;
 
 
 namespace Badger.ViewModels
@@ -165,26 +166,6 @@ namespace Badger.ViewModels
         }
 
         
-        private int LoadLoggedExperiment(XmlNode node, string baseDirectory
-            , Files.LoadUpdateFunction loadUpdateFunction)
-        {
-            LoggedExperimentViewModel newExperiment
-                = new LoggedExperimentViewModel(node, baseDirectory, true, false, loadUpdateFunction);
-
-            LoggedExperiments.Add(newExperiment);
-            ExperimentalUnits.AddRange(newExperiment.ExperimentalUnits);
-            Query.AddLogVariables(newExperiment.VariablesInLog);
-            ForksLoaded |= newExperiment.Forks.Count > 0;
-
-            newExperiment.TraverseAction(true, (n)=>
-            {
-                if (n is LoggedForkViewModel fork)
-                    fork.PropertyChanged += OnChildPropertyChanged;
-            });
-
-            return ExperimentalUnits.Count;
-        }
-
         private double m_loadProgress = 0.0;
         public double LoadProgress
         {
@@ -201,7 +182,7 @@ namespace Badger.ViewModels
         }
 
         int m_numProcessedExperimentalUnits = 0;
-        public void OnExperimentalUnitProcessed()
+        public void OnExperimentalUnitProcessed(LoggedExperimentalUnit expUnit)
         {
             m_numProcessedExperimentalUnits++;
             if (m_numExperimentalUnits != 0)
@@ -300,15 +281,42 @@ namespace Badger.ViewModels
             //First we load the batch file to cout how many experimental units we have
             StartLongOperation();
             LoadedBatch = "Reading batch file";
-            m_numExperimentalUnits = Files.LoadExperimentBatchFile(batchFileName
-                , Files.CountExperimentalUnitsInBatch);
+
+            //first count the total number of experimental units
+            m_numExperimentalUnits = LoggedExperimentBatch.CountExperimentalUnits(batchFileName, LoadOptions.ExpUnitSelection.All);
 
             Task.Run(() =>
             {
-                //load the batch
+                //load finished experimental units from the batch
+                LoadOptions loadOptions = new LoadOptions()
+                {
+                    Selection = LoadOptions.ExpUnitSelection.OnlyFinished,
+                    LoadVariablesInLog = true,
+                    OnExpUnitLoaded = OnExperimentalUnitProcessed
+                };
+
                 LoadedBatch = "Reading experiment files";
-                Files.LoadExperimentBatchFile(batchFileName, LoadLoggedExperiment, OnExperimentalUnitProcessed);
-            
+                LoggedExperimentBatch batch = new LoggedExperimentBatch();
+                batch.Load(batchFileName, loadOptions);
+
+                //Create ViewModels from LoggedExperimentBatch
+                foreach (LoggedExperiment experiment in batch.Experiments)
+                {
+                    LoggedExperimentViewModel newExperiment
+                        = new LoggedExperimentViewModel(experiment);
+
+                    LoggedExperiments.Add(newExperiment);
+                    ExperimentalUnits.AddRange(newExperiment.ExperimentalUnits);
+                    Query.AddLogVariables(newExperiment.VariablesInLog);
+                    ForksLoaded |= newExperiment.Forks.Count > 0;
+
+                    newExperiment.TraverseAction(true, (n) =>
+                    {
+                        if (n is LoggedForkViewModel fork)
+                            fork.PropertyChanged += OnChildPropertyChanged;
+                    });
+                }
+
                 //Update flags use to enable/disable parts of the report generation menu
                 NotifyOfPropertyChange(() => ForksLoaded);
                 NotifyOfPropertyChange(() => VariablesLoaded);
