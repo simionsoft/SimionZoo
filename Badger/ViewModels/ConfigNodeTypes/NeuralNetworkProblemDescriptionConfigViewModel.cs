@@ -1,8 +1,9 @@
-﻿using Badger.Simion;
-using System.Xml;
-using System.IO;
-using System.Windows.Forms;
+﻿using System.Xml;
+
 using Badger.Data;
+
+using Herd.Files;
+
 
 namespace Badger.ViewModels
 {
@@ -18,8 +19,8 @@ namespace Badger.ViewModels
                 //default init
 
                 //Using default attribute makes no sense here I think
-                //content = definitionNode.Attributes[XMLConfig.defaultAttribute].Value;
-                textColor = XMLConfig.colorInvalidValue;
+                //content = definitionNode.Attributes[XMLTags.defaultAttribute].Value;
+                textColor = XMLTags.colorInvalidValue;
             }
             else
             {

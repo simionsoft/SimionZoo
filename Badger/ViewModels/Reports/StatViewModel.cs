@@ -1,7 +1,9 @@
-﻿using Caliburn.Micro;
-using System.IO;
-using Badger.Simion;
+﻿using System.IO;
 using System.Runtime.Serialization;
+
+using Caliburn.Micro;
+
+using Badger.Data;
 
 namespace Badger.ViewModels
 {

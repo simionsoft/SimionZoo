@@ -1,13 +1,13 @@
-﻿using Badger.Data;
-using Badger.Simion;
-using Caliburn.Micro;
-using Herd;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+
+using Caliburn.Micro;
+
+using Herd.Network;
 
 namespace Badger.ViewModels
 {
@@ -92,8 +92,8 @@ namespace Badger.ViewModels
                 //Because the experiment file might well be outside the RLSimion folder structure
                 //we need make all paths to experiment files relative and let the herd agent
                 //know that they must be renamed
-                string relPathExperimentFile = SimionFileData.experimentRelativeDir
-                     + "/" + Utility.RemoveDirectories(experiment.FilePath, 2);
+                string relPathExperimentFile = Files.experimentRelativeDir
+                     + "/" + Herd.Utils.RemoveDirectories(experiment.FilePath, 2);
                 task.Name = experiment.Name;
                 task.Exe = experiment.SelectedVersion.ExeFile;
                 task.Arguments = relPathExperimentFile + " -pipe=" + experiment.PipeName;
@@ -128,8 +128,8 @@ namespace Badger.ViewModels
                 //  -for the output files
                 foreach (string outputFile in job.OutputFiles)
                 {
-                    string renamedFile = SimionFileData.experimentRelativeDir + "/"
-                        + Utility.RemoveDirectories(outputFile, 2);
+                    string renamedFile = Files.experimentRelativeDir + "/"
+                        + Herd.Utils.RemoveDirectories(outputFile, 2);
                     if (outputFile != renamedFile && !job.RenameRules.Keys.Contains(outputFile))
                         job.RenameRules.Add(outputFile, renamedFile);
                 }
@@ -270,7 +270,7 @@ namespace Badger.ViewModels
             {
                 //quit remote jobs
                 logMessage("Cancellation requested by user");
-                m_shepherd.writeMessage(Shepherd.m_quitMessage, true);
+                m_shepherd.WriteMessage(Shepherd.m_quitMessage, true);
                 await m_shepherd.readAsync(new CancellationToken()); //we synchronously wait until we get the ack from the client
 
                 foreach(MonitoredExperimentalUnitViewModel expUnit in MonitoredExperimentalUnits)

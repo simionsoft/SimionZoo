@@ -2,7 +2,9 @@
 using System.Collections.Generic;
 using System.Net;
 using Caliburn.Micro;
-using Herd;
+
+using Herd.Network;
+using Herd.Files;
 
 namespace Badger.ViewModels
 {

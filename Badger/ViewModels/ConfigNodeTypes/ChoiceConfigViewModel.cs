@@ -1,7 +1,8 @@
 ﻿using Caliburn.Micro;
 using System.Xml;
-using Badger.Simion;
 using System.IO;
+
+using Herd.Files;
 
 namespace Badger.ViewModels
 {
@@ -37,7 +38,7 @@ namespace Badger.ViewModels
         public void loadSelectedChoiceElement(string selectedChoiceElementName, XmlNode configNode = null)
         {
             foreach (XmlNode choiceElement in nodeDefinition.ChildNodes)
-                if (choiceElement.Attributes[XMLConfig.nameAttribute].Value == selectedChoiceElementName)
+                if (choiceElement.Attributes[XMLTags.nameAttribute].Value == selectedChoiceElementName)
                 {
                     //forces validation if it's called with a configNode
                     if (configNode != null)
@@ -66,7 +67,7 @@ namespace Badger.ViewModels
             {
                 foreach (XmlNode choiceElement in definitionNode.ChildNodes)
                 {
-                    choiceElementName = choiceElement.Attributes[XMLConfig.nameAttribute].Value;
+                    choiceElementName = choiceElement.Attributes[XMLTags.nameAttribute].Value;
 
                     m_choiceNames.Add(choiceElementName);
 
@@ -85,7 +86,7 @@ namespace Badger.ViewModels
             if (selectedChoiceName == null || selectedChoiceName == "")
                 return false;
             foreach (XmlNode choiceElement in nodeDefinition)
-                if (selectedChoiceName == choiceElement.Attributes[XMLConfig.nameAttribute].Value)
+                if (selectedChoiceName == choiceElement.Attributes[XMLTags.nameAttribute].Value)
                     bChoiceNameIsValid = true;
 
             return bChoiceNameIsValid && base.Validate();

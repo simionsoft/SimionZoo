@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Xml;
-using Badger.Simion;
+
+using Herd.Files;
+using Herd.Network;
 
 namespace Badger.ViewModels
 {
@@ -36,32 +38,32 @@ namespace Badger.ViewModels
         /// <param name="loadOnlyUnfinishedExperimentalUnits">True if we only want to load unfinished experimental units</param>
         /// <param name="updateFunction">Callback function to be called after a load progress event</param>
         public LoggedExperimentViewModel(XmlNode configNode, string baseDirectory, bool loadVariablesInLog
-            , bool loadOnlyUnfinishedExperimentalUnits, SimionFileData.LoadUpdateFunction updateFunction = null)
+            , bool loadOnlyUnfinishedExperimentalUnits, Files.LoadUpdateFunction updateFunction = null)
         {
             XmlAttributeCollection attrs = configNode.Attributes;
 
             if (attrs != null)
             {
-                if (attrs.GetNamedItem(XMLConfig.nameAttribute) != null)
-                    Name = attrs[XMLConfig.nameAttribute].Value;
+                if (attrs.GetNamedItem(XMLTags.nameAttribute) != null)
+                    Name = attrs[XMLTags.nameAttribute].Value;
             }
 
             foreach (XmlNode child in configNode.ChildNodes)
             {
                 switch (child.Name)
                 {
-                    case XMLConfig.forkTag:
+                    case XMLTags.forkTag:
                         LoggedForkViewModel newFork = new LoggedForkViewModel(child);
                         Forks.Add(newFork);
                         break;
 
-                    case Herd.XmlTags.Version:
+                    case XmlTags.Version:
 
                         AppVersion appVersion = new AppVersion(child);
                         m_appVersions.Add(appVersion);
                         break;
 
-                    case XMLConfig.experimentalUnitNodeTag:
+                    case XMLTags.ExperimentalUnitNodeTag:
                         LoggedExperimentalUnitViewModel newExpUnit = new LoggedExperimentalUnitViewModel(child, baseDirectory, updateFunction);
                         if (loadVariablesInLog)
                         {
@@ -83,7 +85,7 @@ namespace Badger.ViewModels
                     {
                         foreach (string forkName in expUnit.forkValues.Keys)
                         {
-                            if (forkName==forkValue.parent.Name && expUnit.forkValues[forkName]==forkValue.Value)
+                            if (forkName==forkValue.Parent.Name && expUnit.forkValues[forkName]==forkValue.Value)
                             {
                                 forkValue.expUnits.Add(expUnit);
                             }

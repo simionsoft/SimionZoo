@@ -1,7 +1,9 @@
 ﻿using System;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Badger.Simion;
+
 using System.Collections.Generic;
+
+using Badger.Data;
 
 namespace TrackBeauty
 {

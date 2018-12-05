@@ -15,7 +15,7 @@ using System.Globalization;
 using System.Net.NetworkInformation;
 using System.Reflection;
 
-namespace Herd
+namespace Herd.Network
 {
     public class HerdAgentInfo
     {
@@ -406,7 +406,7 @@ namespace Herd
                         {
                             if (xmlItem != "<End></End>")
                             {
-                                await xmlStream.writeMessageAsync(m_tcpClient.GetStream(),
+                                await xmlStream.WriteMessageAsync(m_tcpClient.GetStream(),
                                     "<" + task.Pipe + ">" + xmlItem + "</" + task.Pipe + ">", cancelToken);
 
                                 xmlItem = xmlStream.processNextXMLItem();
@@ -426,12 +426,12 @@ namespace Herd
 
                 if (exitCode < 0)
                 {
-                    await xmlStream.writeMessageAsync(m_tcpClient.GetStream(),
+                    await xmlStream.WriteMessageAsync(m_tcpClient.GetStream(),
                         "<" + task.Pipe + "><End>Error</End></" + task.Pipe + ">", cancelToken);
                     returnCode = m_jobInternalErrorCode;
                 }
                 else
-                    await xmlStream.writeMessageAsync(m_tcpClient.GetStream(),
+                    await xmlStream.WriteMessageAsync(m_tcpClient.GetStream(),
                         "<" + task.Pipe + "><End>Ok</End></" + task.Pipe + ">", cancelToken);
                 LogMessage("Exit code: " + myProcess.ExitCode);
             }
@@ -747,7 +747,7 @@ namespace Herd
                                 if (returnCode == m_noErrorCode || returnCode == m_jobInternalErrorCode)
                                 {
                                     LogMessage("Job finished. Code=" + returnCode );
-                                    await writeMessageAsync(JobDispatcher.m_endMessage, m_cancelTokenSource.Token, true);
+                                    await WriteMessageAsync(JobDispatcher.m_endMessage, m_cancelTokenSource.Token, true);
 
                                     LogMessage("Sending job results");
                                     //we will have to enqueue async write operations to wait for them to finish before closing the tcpClient
@@ -759,7 +759,7 @@ namespace Herd
                                 else if (returnCode == m_remotelyCancelledErrorCode)
                                 {
                                     LogMessage("The job was remotely cancelled");
-                                    writeMessage(JobDispatcher.m_errorMessage, false);
+                                    WriteMessage(JobDispatcher.m_errorMessage, false);
                                 }
                             }
                         }

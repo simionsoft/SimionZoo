@@ -1,10 +1,12 @@
 ﻿using System.Xml;
 using System.Collections.Generic;
-using Badger.Simion;
-using Badger.Data;
 using System;
-using System.IO;
+
 using Caliburn.Micro;
+
+using Badger.Data;
+
+using Herd.Files;
 
 namespace Badger.ViewModels
 {
@@ -29,7 +31,7 @@ namespace Badger.ViewModels
         }
         public string ForkValuesAsString
         {
-            get { return Utility.DictionaryAsString(forkValues); }
+            get { return Herd.Utils.DictionaryAsString(forkValues); }
         }
 
         public bool ContainsForks(BindableCollection<string> forks)
@@ -52,7 +54,7 @@ namespace Badger.ViewModels
         public LoggedExperimentalUnitViewModel(string filename)
         {
             ExperimentFileName = filename;
-            Name = Utility.GetFilename(filename);
+            Name = Herd.Utils.GetFilename(filename);
         }
 
         /// <summary>
@@ -63,36 +65,28 @@ namespace Badger.ViewModels
         /// <param name="updateFunction"></param>
 
         public LoggedExperimentalUnitViewModel(XmlNode configNode, string baseDirectory
-            , SimionFileData.LoadUpdateFunction updateFunction = null)
+            , Files.LoadUpdateFunction updateFunction = null)
         {
             //Experiment Name
             if (configNode.Attributes != null)
             {
-                if (configNode.Attributes.GetNamedItem(XMLConfig.nameAttribute) != null)
-                    Name = configNode.Attributes[XMLConfig.nameAttribute].Value;
+                if (configNode.Attributes.GetNamedItem(XMLTags.nameAttribute) != null)
+                    Name = configNode.Attributes[XMLTags.nameAttribute].Value;
             }
 
             //Initalize the paths to the log files
-            if (configNode.Attributes.GetNamedItem(XMLConfig.pathAttribute) == null)
+            if (configNode.Attributes.GetNamedItem(XMLTags.pathAttribute) == null)
                 throw new Exception("Malformed experiment batch file: cannot get the path to an experimental unit");
 
-            ExperimentFileName= baseDirectory + configNode.Attributes[XMLConfig.pathAttribute].Value;
-            LogDescriptorFileName = SimionFileData.GetLogFilePath(ExperimentFileName, true);
-            if (!File.Exists(LogDescriptorFileName))
-            {
-                //for back-compatibility: if the appropriate log file is not found, check whether one exists
-                //with the legacy naming convention: experiment-log.xml
-                LogDescriptorFileName = SimionFileData.GetLogFilePath(ExperimentFileName, true, true);
-                LogFileName = SimionFileData.GetLogFilePath(ExperimentFileName, false, true);
-            }
-            else
-                LogFileName = SimionFileData.GetLogFilePath(ExperimentFileName, false);
+            ExperimentFileName= baseDirectory + configNode.Attributes[XMLTags.pathAttribute].Value;
+            LogDescriptorFileName = Herd.Utils.GetLogFilePath(ExperimentFileName, true);
+            LogFileName = Herd.Utils.GetLogFilePath(ExperimentFileName, false);
 
             //FORKS
             //load the value of each fork used in this experimental unit
             foreach (XmlNode fork in configNode.ChildNodes)
             {
-                string forkName = fork.Attributes[XMLConfig.aliasAttribute].Value;
+                string forkName = fork.Attributes[XMLTags.aliasAttribute].Value;
                 foreach (XmlNode value in fork.ChildNodes)
                 {
                     string forkValue = value.Attributes.GetNamedItem("Value").InnerText; // The value is in the attribute named "Value"
@@ -103,21 +97,8 @@ namespace Badger.ViewModels
             updateFunction?.Invoke();
         }
 
-        public bool PreviousLogExists()
-        {
-            if (File.Exists(LogFileName))
-            {
-                FileInfo fileInfo = new FileInfo(LogFileName);
-                if (fileInfo.Length > 0)
-                    return true;
-            }
-            return false;
-        }
 
-        public void LoadLogDescriptor()
-        {
-            VariablesInLog = SimionLogDescriptor.LoadLogDescriptor(LogDescriptorFileName);
-        }
+
         public int GetVariableIndex(string variableName)
         {
             int index = 0;
@@ -136,7 +117,7 @@ namespace Badger.ViewModels
         /// <returns></returns>
         public Track LoadTrackData(List<Report> reports)
         {
-            SimionLog Log = new SimionLog();
+            Log.SimionLog Log = new Log.SimionLog();
             Log.LoadBinaryLog(LogFileName);
 
             if (!Log.SuccessfulLoad || Log.TotalNumEpisodes == 0) return null;
@@ -150,9 +131,9 @@ namespace Badger.ViewModels
                 switch(report.Type)
                 {
                     case ReportType.LastEvaluation:
-                        EpisodesData lastEpisode = Log.EvaluationEpisodes[Log.EvaluationEpisodes.Count - 1];
+                        Log.EpisodesData lastEpisode = Log.EvaluationEpisodes[Log.EvaluationEpisodes.Count - 1];
                         dataSeries = new SeriesGroup(report);
-                        Series series = Log.GetEpisodeData(lastEpisode, report, variableIndex);
+                        Series series = LogFileUtils.GetVariableData(lastEpisode, report, variableIndex);
                         if (series != null)
                         {
                             dataSeries.AddSeries(series);
@@ -161,18 +142,18 @@ namespace Badger.ViewModels
                         break;
                     case ReportType.EvaluationAverages:
                         track.AddVariableData(report
-                            , Log.GetAveragedData(Log.EvaluationEpisodes, report,variableIndex));
+                            , LogFileUtils.GetAveragedData(Log.EvaluationEpisodes, report,variableIndex));
                         break;
                     case ReportType.AllEvaluationEpisodes:
                     case ReportType.AllTrainingEpisodes:
                         dataSeries = new SeriesGroup(report);
-                        List<EpisodesData> episodes;
+                        List<Log.EpisodesData> episodes;
                         if (report.Type == ReportType.AllEvaluationEpisodes)
                             episodes = Log.EvaluationEpisodes;
                         else episodes = Log.TrainingEpisodes;
-                        foreach(EpisodesData episode in episodes)
+                        foreach(Log.EpisodesData episode in episodes)
                         {
-                            Series subSeries = Log.GetEpisodeData(episode, report, variableIndex);
+                            Series subSeries = LogFileUtils.GetVariableData(episode, report, variableIndex);
                             if (subSeries != null)
                             {
                                 subSeries.Id = episode.index.ToString();

@@ -9,7 +9,7 @@ using System.Xml.Linq;
 using System.Net.NetworkInformation;
 using System.Linq;
 
-namespace Herd
+namespace Herd.Network
 {
     public class ShepherdUdpState
     {
@@ -73,7 +73,7 @@ namespace Herd
         }
 
 
-        public void DiscoveryCallback(IAsyncResult ar)
+        void DiscoveryCallback(IAsyncResult ar)
         {
             UdpClient udpClient = (UdpClient)((ShepherdUdpState)(ar.AsyncState)).Client;
             IPEndPoint ip = (IPEndPoint)((ShepherdUdpState)(ar.AsyncState)).Ip;
@@ -158,7 +158,7 @@ namespace Herd
             }
         }
 
-        public void SendBroadcastHerdAgentQuery()
+        public void CallHerd()
         {
             byte[] DiscoveryMessage = Encoding.ASCII.GetBytes(m_discoveryMessage);
             try
@@ -168,27 +168,21 @@ namespace Herd
                 IPEndPoint target = new IPEndPoint(IPAddress.Broadcast, m_discoveryPortHerd);
                 foreach (UdpClient client in m_broadcastInterfacesUdpClients)
                 {
-                        
+                    //send broadcast to interface
                     client.Send(DiscoveryMessage, DiscoveryMessage.Length, target);
+                    //listen to herd agent responses
+                    ShepherdUdpState udpState = new ShepherdUdpState();
+                    IPEndPoint localIP = new IPEndPoint(0, m_discoveryPortHerd);
+                    udpState.Ip = localIP;
+                    udpState.Client = client;
+                    client.BeginReceive(DiscoveryCallback, udpState);
                 }
             }
             catch (Exception ex)
             {
                 LogMessage("Unhandled error in SendBroadcastHerdAgentQuery: " + ex.ToString());
             }
-        }
 
-
-        public void BeginListeningHerdAgentQueryResponses()
-        {
-            foreach (UdpClient client in m_broadcastInterfacesUdpClients)
-            {
-                ShepherdUdpState udpState = new ShepherdUdpState();
-                IPEndPoint localIP = new IPEndPoint(0, m_discoveryPortHerd);
-                udpState.Ip = localIP;
-                udpState.Client = client;
-                client.BeginReceive(DiscoveryCallback, udpState);
-            }
         }
 
 
@@ -201,7 +195,7 @@ namespace Herd
                 m_xmlStream.resizeBuffer(m_tcpClient.ReceiveBufferSize);
                 m_netStream = m_tcpClient.GetStream();
                 //send slave acquire message
-                m_xmlStream.writeMessage(m_netStream, m_acquireMessage, true);
+                m_xmlStream.WriteMessage(m_netStream, m_acquireMessage, true);
             }
             catch
             {

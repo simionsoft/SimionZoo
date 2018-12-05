@@ -1,8 +1,11 @@
-﻿using Caliburn.Micro;
-using Herd;
+﻿
 using System.Collections.Generic;
 using System.Linq;
 using Badger.Data;
+using Caliburn.Micro;
+
+using Herd.Files;
+using Herd.Network;
 
 namespace Badger.ViewModels
 {
@@ -36,7 +39,7 @@ namespace Badger.ViewModels
         {
             get
             {
-                if (Forks.Count > 0) return Data.Utility.ListAsString(Forks);
+                if (Forks.Count > 0) return Herd.Utils.ListAsString(Forks);
                 return Name;
             }
         }
@@ -138,7 +141,7 @@ namespace Badger.ViewModels
 
         public void ShowLog()
         {
-            CaliburnUtility.ShowWarningDialog(StatusInfo, "Experiment log");
+            Data.CaliburnUtility.ShowWarningDialog(StatusInfo, "Experiment log");
         }
 
         public void AddStatusInfoLine(string line)

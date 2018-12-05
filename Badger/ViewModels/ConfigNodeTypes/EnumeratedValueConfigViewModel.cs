@@ -1,7 +1,7 @@
-﻿using Badger.Simion;
-using System.Xml;
+﻿using System.Xml;
 using System.Collections.Generic;
-using Caliburn.Micro;
+
+using Herd.Files;
 
 namespace Badger.ViewModels
 {
@@ -28,13 +28,13 @@ namespace Badger.ViewModels
         {
             CommonInitialization(parentExperiment, parent, definitionNode, parentXPath);
 
-            m_class = definitionNode.Attributes[XMLConfig.classAttribute].Value;
+            m_class = definitionNode.Attributes[XMLTags.classAttribute].Value;
             enumeratedNames = m_parentExperiment.GetEnumeratedType(m_class);
 
             if (configNode == null || configNode[name] == null)
             {
                 content = m_default;
-                textColor = XMLConfig.colorDefaultValue;
+                textColor = XMLTags.colorDefaultValue;
             }
             else
             {

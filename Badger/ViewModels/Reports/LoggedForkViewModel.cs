@@ -1,9 +1,6 @@
 ﻿using System.Xml;
 using System.Collections.Generic;
-using Badger.Simion;
 using System;
-using Caliburn.Micro;
-using System.ComponentModel;
 
 namespace Badger.ViewModels
 {
@@ -61,22 +58,10 @@ namespace Badger.ViewModels
 
         public LoggedForkViewModel(XmlNode configNode)
         {
-            if (configNode.Attributes.GetNamedItem(XMLConfig.aliasAttribute) != null)
-                Name = configNode.Attributes[XMLConfig.aliasAttribute].Value;
-
-            foreach (XmlNode child in configNode.ChildNodes)
-            {
-                if (child.Name == XMLConfig.forkTag)
-                {
-                    LoggedForkViewModel newFork = new LoggedForkViewModel(child);
-                    Forks.Add(newFork);
-                }
-                else if (child.Name == XMLConfig.forkValueTag)
-                {
-                    LoggedForkValueViewModel newValue = new LoggedForkValueViewModel(child, this);
-                    Values.Add(newValue);
-                }
-            }
+            //FIXXXXXXXXXXXXXXXXXX
+            //
+            //
+            //
 
             //hide the area used to display children forks/values?
             HasChildrenForks = Forks.Count != 0;

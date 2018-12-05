@@ -1,8 +1,7 @@
-﻿using Badger.Simion;
-using Caliburn.Micro;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.IO;
+
+using Caliburn.Micro;
 
 namespace Badger.ViewModels
 {

@@ -62,7 +62,7 @@ namespace Badger.ViewModels
         {
             LineSeries = lineSeries;
             Visible = true;
-            Name = Utility.OxyPlotMathNotation(name);
+            Name = Herd.Utils.OxyPlotMathNotation(name);
             Description = description;
         }
     }

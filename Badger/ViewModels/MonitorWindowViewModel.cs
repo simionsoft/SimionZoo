@@ -1,15 +1,15 @@
 ﻿using System.Collections.Generic;
 using System.Threading.Tasks;
-using Herd;
-using Badger.Data;
-using Badger.Simion;
-using Caliburn.Micro;
 using System.Threading;
 using System.Diagnostics;
 using System.Xml;
 using System.IO;
 using System;
 using System.Timers;
+
+using Badger.Data;
+
+using Caliburn.Micro;
 
 namespace Badger.ViewModels
 {
@@ -41,7 +41,7 @@ namespace Badger.ViewModels
         ///</summary>
         public void CleanExperimentBatch()
         {
-            int numFilesDeleted= SimionFileData.LoadExperimentBatchFile(BatchFileName, SimionFileData.CleanExperimentalUnitLogFiles);
+            int numFilesDeleted= Files.LoadExperimentBatchFile(BatchFileName, Files.CleanExperimentalUnitLogFiles);
             NumFinishedExperimentalUnitsBeforeStart = 0;
             ResetPlot();
 
@@ -201,7 +201,7 @@ namespace Badger.ViewModels
         }
 
         private int LoadLoggedExperiment(XmlNode node, string baseDirectory
-            , SimionFileData.LoadUpdateFunction loadUpdateFunction = null)
+            , Files.LoadUpdateFunction loadUpdateFunction = null)
         {
             LoggedExperimentViewModel newExperiment
                 = new LoggedExperimentViewModel(node, baseDirectory, false, true, loadUpdateFunction);
@@ -213,8 +213,8 @@ namespace Badger.ViewModels
         public void SelectExperimentBatchFile()
         {
             string fileName = null;
-            bool isOpen = SimionFileData.OpenFileDialog(ref fileName, SimionFileData.ExperimentBatchDescription
-                , SimionFileData.ExperimentBatchFilter);
+            bool isOpen = Files.OpenFileDialog(ref fileName, Files.ExperimentBatchDescription
+                , Files.ExperimentBatchFilter);
             if (!isOpen) return;
             LoadExperimentBatch(fileName);
         }
@@ -276,15 +276,15 @@ namespace Badger.ViewModels
             ResetPlot();
 
             //Load the experiments
-            int numUnfinishedExperimentalUnits = SimionFileData.LoadExperimentBatchFile(batchFileName, LoadLoggedExperiment);
-            NumExperimentalUnits = SimionFileData.LoadExperimentBatchFile(batchFileName, SimionFileData.CountExperimentalUnitsInBatch);
+            int numUnfinishedExperimentalUnits = Files.LoadExperimentBatchFile(batchFileName, LoadLoggedExperiment);
+            NumExperimentalUnits = Files.LoadExperimentBatchFile(batchFileName, Files.CountExperimentalUnitsInBatch);
             if (NumExperimentalUnits < 0)
             {
                 CaliburnUtility.ShowWarningDialog("Failed to initialize the experiment batch", "Error");
                 return false;
             }
             NumFinishedExperimentalUnitsBeforeStart 
-                = SimionFileData.LoadExperimentBatchFile(batchFileName, SimionFileData.CountFinishedExperimentalUnitsInBatch);
+                = Files.LoadExperimentBatchFile(batchFileName, Files.CountFinishedExperimentalUnitsInBatch);
 
             if (InitializeExperimentBatchForExecution())
                 BatchFileName = batchFileName;
@@ -298,7 +298,7 @@ namespace Badger.ViewModels
 
             foreach (var experiment in LoggedExperiments)
             {
-                foreach (AppVersion version in experiment.AppVersions)
+                foreach (Herd.Files.AppVersion version in experiment.AppVersions)
                 {
                     if (!ExistsRequiredFile(version.ExeFile))
                     {
@@ -586,7 +586,7 @@ namespace Badger.ViewModels
         {
             foreach (MonitoredExperimentalUnitViewModel experiment in pendingExperiments)
             {
-                AppVersion bestMatchingVersion = HerdAgentViewModel.BestMatch(experiment.AppVersions, agent);
+                Herd.Files.AppVersion bestMatchingVersion = HerdAgentViewModel.BestMatch(experiment.AppVersions, agent);
                 if (bestMatchingVersion != null)
                 {
                     //run-time requirements are calculated when a version is selected
@@ -598,7 +598,8 @@ namespace Badger.ViewModels
                         
 
                     //Check that the version chosen for the agent supports the architecture requested by the run-time 
-                    if ( (experiment.RunTimeReqs.Architecture==PropValues.None || experiment.RunTimeReqs.Architecture == experiment.SelectedVersion.Requirements.Architecture)
+                    if ( (experiment.RunTimeReqs.Architecture==Herd.Network.PropValues.None 
+                        || experiment.RunTimeReqs.Architecture == experiment.SelectedVersion.Requirements.Architecture)
                         &&
                         //If NumCPUCores = "all", then the experiment only fits the agent in case it hasn't been given any other experimental unit
                         ((experiment.RunTimeReqs.NumCPUCores == 0 && !bAgentUsed)

@@ -2,18 +2,20 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Xml;
-using Badger.ViewModels;
 using System.Windows.Forms;
-using Badger.Properties;
+
 using Caliburn.Micro;
+
+using Herd.Files;
+
+using Badger.ViewModels;
 using Badger.Data;
 
-namespace Badger.Simion
+namespace Badger
 {
-    public static class SimionFileData
+    public static class Files
     {
-        public const string logDescriptorExtension = ".log";
-        public const string logBinaryExtension = ".log.bin";
+
         public const string binDir = "bin";
         public const string experimentDir = "experiments";
         public const string imageDir = "images";
@@ -24,16 +26,10 @@ namespace Badger.Simion
         public const string tempRelativeDir = "../temp/";
         public const string logViewerExePath = "../" + binDir + "/SimionLogViewer.exe";
 
-        public const string ExperimentExtension = ".simion.exp";
-        public const string ExperimentBatchExtension = ".simion.batch";
-        public const string ProjectExtension = ".simion.proj";
-        public const string ReportExtension = ".simion.report";
-        public const string PlotDataExtension = ".simion.plot";
-
-        public const string ExperimentBatchFilter = "*" + ExperimentBatchExtension;
-        public const string ProjectFilter = "*" + ProjectExtension;
-        public const string ExperimentFilter = "*" + ExperimentExtension;
-        public const string ReportFilter = "*" + ReportExtension;
+        public const string ExperimentBatchFilter = "*" + Extensions.ExperimentBatchExtension;
+        public const string ProjectFilter = "*" + Extensions.ProjectExtension;
+        public const string ExperimentFilter = "*" + Extensions.ExperimentExtension;
+        public const string ReportFilter = "*" + Extensions.ReportExtension;
 
         public const string ExperimentFileTypeDescription = "Experiment";
         public const string ExperimentBatchDescription = "Batch";
@@ -66,10 +62,10 @@ namespace Badger.Simion
             int finishedExperimentalUnits = 0;
             foreach (XmlNode child in node.ChildNodes)
             {
-                if (child.Name == XMLConfig.experimentalUnitNodeTag)
+                if (child.Name == XMLTags.ExperimentalUnitNodeTag)
                 {
-                    string pathToExpUnit = baseDirectory + child.Attributes[XMLConfig.pathAttribute].Value;
-                    string pathToLogFile = GetLogFilePath(pathToExpUnit, false);
+                    string pathToExpUnit = baseDirectory + child.Attributes[XMLTags.pathAttribute].Value;
+                    string pathToLogFile = Herd.Utils.GetLogFilePath(pathToExpUnit, false);
                     if (File.Exists(pathToLogFile))
                     {
                         FileInfo fileInfo = new FileInfo(pathToLogFile);
@@ -96,16 +92,16 @@ namespace Badger.Simion
             int numFilesDeleted = 0;
             foreach (XmlNode child in node.ChildNodes)
             {
-                if (child.Name == XMLConfig.experimentalUnitNodeTag)
+                if (child.Name == XMLTags.ExperimentalUnitNodeTag)
                 {
-                    string pathToExpUnit = baseDirectory + child.Attributes[XMLConfig.pathAttribute].Value;
-                    string pathToLogFile = GetLogFilePath(pathToExpUnit, false);
+                    string pathToExpUnit = baseDirectory + child.Attributes[XMLTags.pathAttribute].Value;
+                    string pathToLogFile = Herd.Utils.GetLogFilePath(pathToExpUnit, false);
                     if (File.Exists(pathToLogFile))
                     {
                         File.Delete(pathToLogFile);
                         numFilesDeleted++;
                     }
-                    string pathToLogFileDesc = GetLogFilePath(pathToExpUnit, true);
+                    string pathToLogFileDesc = Herd.Utils.GetLogFilePath(pathToExpUnit, true);
                     if (File.Exists(pathToLogFileDesc))
                     {
                         File.Delete(pathToLogFileDesc);
@@ -131,7 +127,7 @@ namespace Badger.Simion
             int ExperimentalUnitCount = 0;
             foreach (XmlNode child in node.ChildNodes)
             {
-                if (child.Name == XMLConfig.experimentalUnitNodeTag)
+                if (child.Name == XMLTags.ExperimentalUnitNodeTag)
                     ExperimentalUnitCount++;
                 else ExperimentalUnitCount += CountExperimentalUnitsInBatch(child, null, loadUpdateFunction);
             }
@@ -153,12 +149,12 @@ namespace Badger.Simion
             batchDoc.Load(batchFilename);
             XmlElement fileRoot = batchDoc.DocumentElement;
 
-            if (fileRoot != null && fileRoot.Name == XMLConfig.experimentBatchNodeTag)
+            if (fileRoot != null && fileRoot.Name == XMLTags.ExperimentBatchNodeTag)
             {
                 foreach (XmlNode experiment in fileRoot.ChildNodes)
                 {
-                    if (experiment.Name == XMLConfig.experimentNodeTag)
-                        retValue+= perExperimentFunction(experiment, Utility.GetDirectory(batchFilename), onExperimentLoaded);
+                    if (experiment.Name == XMLTags.ExperimentNodeTag)
+                        retValue+= perExperimentFunction(experiment, Herd.Utils.GetDirectory(batchFilename), onExperimentLoaded);
                 }
             }
             else
@@ -195,7 +191,7 @@ namespace Badger.Simion
             {
                 if (!experiment.Validate())
                 {
-                    CaliburnUtility.ShowWarningDialog("The configuration couldn't be validated in " + experiment.Name
+                    Data.CaliburnUtility.ShowWarningDialog("The configuration couldn't be validated in " + experiment.Name
                         + ". Please check it", "VALIDATION ERROR");
 
                     return -1;
@@ -218,22 +214,22 @@ namespace Badger.Simion
                     return -1;
                 }
             }
-            string batchFileDir = batchFilename.Remove(batchFilename.LastIndexOf(ExperimentBatchExtension));
-            string batchFileName = Utility.GetFilename(batchFileDir);
-            batchFileDir = Utility.GetRelativePathTo(Directory.GetCurrentDirectory(), batchFileDir);
+            string batchFileDir = batchFilename.Remove(batchFilename.LastIndexOf(Extensions.ExperimentBatchExtension));
+            string batchFileName = Herd.Utils.GetFilename(batchFileDir);
+            batchFileDir = Herd.Utils.GetRelativePathTo(Directory.GetCurrentDirectory(), batchFileDir);
             // Clean output directory if it exists
             if (Directory.Exists(batchFileDir))
             {
                 try { Directory.Delete(batchFileDir, true); }
                 catch
                 {
-                    CaliburnUtility.ShowWarningDialog("It has not been possible to remove the directory: "
+                    Data.CaliburnUtility.ShowWarningDialog("It has not been possible to remove the directory: "
                         + batchFileDir + ". Make sure that it's not been using for other app.", "ERROR");
                     log("Error saving the experiment queue");
                     return -1;
                 }
             }
-            string fullBatchFileName = batchFileDir + ExperimentBatchExtension;
+            string fullBatchFileName = batchFileDir + Herd.Files.Extensions.ExperimentBatchExtension;
 
             progressUpdateFunction?.Invoke(0.0);
             int numExperimentalUnitsSaved = 0;
@@ -241,12 +237,12 @@ namespace Badger.Simion
             using (StreamWriter batchFileWriter = new StreamWriter(fullBatchFileName))
             {
                 // Write batch file header (i.e. open 'EXPERIMENT-BATCH' tag)
-                batchFileWriter.WriteLine("<" + XMLConfig.experimentBatchNodeTag + ">");
+                batchFileWriter.WriteLine("<" + XMLTags.ExperimentBatchNodeTag + ">");
 
                 foreach (ExperimentViewModel experimentViewModel in experiments)
                 {
-                    batchFileWriter.WriteLine("  <" + XMLConfig.experimentNodeTag + " "
-                        + XMLConfig.nameAttribute + "=\"" + experimentViewModel.Name + "\">");
+                    batchFileWriter.WriteLine("  <" + XMLTags.ExperimentNodeTag + " "
+                        + XMLTags.nameAttribute + "=\"" + experimentViewModel.Name + "\">");
 
                     foreach (AppVersion appVersion in experimentViewModel.AppVersions)
                     {
@@ -264,29 +260,29 @@ namespace Badger.Simion
 
                         string folderPath = batchFileDir + "/" + experimentName;
                         Directory.CreateDirectory(folderPath);
-                        string filePath = folderPath + "/" + experimentName + ExperimentExtension;
+                        string filePath = folderPath + "/" + experimentName + Extensions.ExperimentExtension;
                         experimentViewModel.Save(filePath, SaveMode.AsExperimentalUnit);
-                        string relativePathToExperimentalUnit = batchFileName + "/" + experimentName + "/" + experimentName + ExperimentExtension;
+                        string relativePathToExperimentalUnit = batchFileName + "/" + experimentName + "/" + experimentName + Extensions.ExperimentExtension;
 
                         // Save the experiment reference in the root batch file. Open 'EXPERIMENTAL-UNIT' tag
                         // with its corresponding attributes.
-                        batchFileWriter.WriteLine("    <" + XMLConfig.experimentalUnitNodeTag + " "
-                            + XMLConfig.nameAttribute + "=\"" + experimentName + "\" "
-                            + XMLConfig.pathAttribute + "=\"" + relativePathToExperimentalUnit + "\">");
+                        batchFileWriter.WriteLine("    <" + XMLTags.ExperimentalUnitNodeTag + " "
+                            + XMLTags.nameAttribute + "=\"" + experimentName + "\" "
+                            + XMLTags.pathAttribute + "=\"" + relativePathToExperimentalUnit + "\">");
                         // Write fork values in between
                         experimentViewModel.SaveToStream(batchFileWriter, SaveMode.ForkValues, "\t");
                         // Close 'EXPERIMENTAL-UNIT' tag
-                        batchFileWriter.WriteLine("    </" + XMLConfig.experimentalUnitNodeTag + ">");
+                        batchFileWriter.WriteLine("    </" + XMLTags.ExperimentalUnitNodeTag + ">");
 
                         numExperimentalUnitsSaved++;
                         progressUpdateFunction?.Invoke(numExperimentalUnitsSaved / (double)experimentalUnitsCount);
                     }
 
                     // Close 'EXPERIMENT' tag
-                    batchFileWriter.WriteLine("  </" + XMLConfig.experimentNodeTag + ">");
+                    batchFileWriter.WriteLine("  </" + XMLTags.ExperimentNodeTag + ">");
                 }
                 // Write batch file footer (i.e. close 'EXPERIMENT-BATCH' tag)
-                batchFileWriter.WriteLine("</" + XMLConfig.experimentBatchNodeTag + ">");
+                batchFileWriter.WriteLine("</" + XMLTags.ExperimentBatchNodeTag + ">");
                 log("Succesfully saved " + experiments.Count + " experiments");
             }
 
@@ -308,9 +304,9 @@ namespace Badger.Simion
             XmlDocument badgerDoc = new XmlDocument();
             badgerDoc.Load(filename);
             XmlElement fileRoot = badgerDoc.DocumentElement;
-            if (fileRoot.Name != XMLConfig.badgerNodeTag)
+            if (fileRoot.Name != XMLTags.BadgerNodeTag)
             {
-                CaliburnUtility.ShowWarningDialog("Malformed XML in experiment badger project file.", "ERROR");
+                Data.CaliburnUtility.ShowWarningDialog("Malformed XML in experiment badger project file.", "ERROR");
                 log("ERROR: malformed XML in experiment badger project file.");
                 return;
             }
@@ -318,15 +314,15 @@ namespace Badger.Simion
             XmlNode configNode;
             foreach (XmlNode experiment in fileRoot.ChildNodes)
             {
-                if (experiment.Name == XMLConfig.experimentNodeTag && experiment.ChildNodes.Count > 0)
+                if (experiment.Name == XMLTags.ExperimentNodeTag && experiment.ChildNodes.Count > 0)
                 {
                     configNode = experiment.FirstChild;
                     experiments.Add(new ExperimentViewModel(appDefinitions[configNode.Name],
-                        configNode, experiment.Attributes[XMLConfig.nameAttribute].Value));
+                        configNode, experiment.Attributes[XMLTags.nameAttribute].Value));
                 }
                 else
                 {
-                    CaliburnUtility.ShowWarningDialog("Malformed XML in experiment queue file.", "ERROR");
+                    Data.CaliburnUtility.ShowWarningDialog("Malformed XML in experiment queue file.", "ERROR");
                     log("ERROR: malformed XML in experiment queue file.");
                 }
             }
@@ -346,7 +342,7 @@ namespace Badger.Simion
             {
                 if (!experiment.Validate())
                 {
-                    CaliburnUtility.ShowWarningDialog("The configuration couldn't be validated in " + experiment.Name
+                    Data.CaliburnUtility.ShowWarningDialog("The configuration couldn't be validated in " + experiment.Name
                         + ". Please check it", "VALIDATION ERROR");
                     return null;
                 }
@@ -364,19 +360,19 @@ namespace Badger.Simion
                 string leftSpace;
                 using (StreamWriter writer = new StreamWriter(outputFile))
                 {
-                    writer.WriteLine("<" + XMLConfig.badgerNodeTag + " " + XMLConfig.versionAttribute
-                        + "=\"" + XMLConfig.BadgerProjectConfigVersion + "\">");
+                    writer.WriteLine("<" + XMLTags.BadgerNodeTag + " " + XMLTags.versionAttribute
+                        + "=\"" + XMLTags.BadgerProjectConfigVersion + "\">");
                     leftSpace = "  ";
 
                     foreach (ExperimentViewModel experiment in experiments)
                     {
-                        writer.WriteLine(leftSpace + "<" + XMLConfig.experimentNodeTag
+                        writer.WriteLine(leftSpace + "<" + XMLTags.ExperimentNodeTag
                             + " Name=\"" + experiment.Name + "\">");
                         experiment.SaveToStream(writer, SaveMode.AsExperiment, leftSpace + "  ");
-                        writer.WriteLine(leftSpace + "</" + XMLConfig.experimentNodeTag + ">");
+                        writer.WriteLine(leftSpace + "</" + XMLTags.ExperimentNodeTag + ">");
                     }
 
-                    writer.WriteLine("</" + XMLConfig.badgerNodeTag + ">");
+                    writer.WriteLine("</" + XMLTags.BadgerNodeTag + ">");
                 }
             }
             return outputFile;
@@ -416,7 +412,7 @@ namespace Badger.Simion
 
             if (!experiment.Validate())
             {
-                CaliburnUtility.ShowWarningDialog("The configuration couldn't be validated in " + experiment.Name
+                Data.CaliburnUtility.ShowWarningDialog("The configuration couldn't be validated in " + experiment.Name
                     + ". Please check it", "VALIDATION ERROR");
                 return null;
             }
@@ -431,30 +427,6 @@ namespace Badger.Simion
             return null;
         }
 
-
-
-        static public string GetLogFilePath(string experimentFilePath, bool descriptor = true, bool legacyName= false)
-        {
-            if (experimentFilePath != "")
-            {
-                if (!legacyName)
-                {
-                    if (descriptor)
-                        return Utility.RemoveExtension(experimentFilePath, 1) + logDescriptorExtension;
-                    else
-                        return Utility.RemoveExtension(experimentFilePath, 1) + logBinaryExtension;
-                }
-                else
-                {
-                    if (descriptor)
-                        return Utility.GetDirectory(experimentFilePath) + "experiment-log.xml";
-                    else
-                        return Utility.GetDirectory(experimentFilePath) + "experiment-log.bin";
-                }
-            }
-
-            return "";
-        }
 
         static string globalOutputDirectory = null;
         static string globalInputDirectory = null;
@@ -486,7 +458,7 @@ namespace Badger.Simion
 
             if (suggestedFileName != null)
             {
-                globalInputDirectory = Utility.GetDirectory(sfd.FileName);
+                globalInputDirectory = Herd.Utils.GetDirectory(sfd.FileName);
                 sfd.FileName = suggestedFileName;
             }
             return sfd;
@@ -533,13 +505,13 @@ namespace Badger.Simion
             ofd.Filter = description + "|" + extension;
 
             if (globalInputDirectory == null)
-                ofd.InitialDirectory = Path.Combine(Path.GetDirectoryName(Directory.GetCurrentDirectory()), SimionFileData.experimentDir);
+                ofd.InitialDirectory = Path.Combine(Path.GetDirectoryName(Directory.GetCurrentDirectory()), Files.experimentDir);
             else
                 ofd.InitialDirectory = globalInputDirectory;
 
             if (ofd.ShowDialog() == DialogResult.OK)
             {
-                globalInputDirectory = Utility.GetDirectory(ofd.FileName);
+                globalInputDirectory = Herd.Utils.GetDirectory(ofd.FileName);
                 fileName = ofd.FileName;
                 return true;
             }
@@ -565,7 +537,7 @@ namespace Badger.Simion
             if (globalInputDirectory == null)
             {
                 ofd.InitialDirectory = Path.Combine(Path.GetDirectoryName(Directory.GetCurrentDirectory())
-                    , SimionFileData.experimentDir);
+                    , Files.experimentDir);
             }
             else
                 ofd.InitialDirectory = globalInputDirectory;
@@ -588,16 +560,16 @@ namespace Badger.Simion
         static public void SaveReport(string absBatchFilename, BindableCollection<LogQueryResultViewModel> logQueryResults, string absOutputFolder)
         {
             //save the queries and the report (a set of log query results referencing the queries and the experiment batch)
-            string nakedBatchFilename = Utility.RemoveDirectories(Utility.RemoveExtension(absBatchFilename, 2));
-            string reportFilename = absOutputFolder + "/" + nakedBatchFilename + SimionFileData.ReportExtension;
+            string nakedBatchFilename = Herd.Utils.RemoveDirectories(Herd.Utils.RemoveExtension(absBatchFilename, 2));
+            string reportFilename = absOutputFolder + "/" + nakedBatchFilename + Herd.Files.Extensions.ReportExtension;
             using (TextWriter writer = File.CreateText(reportFilename))
             {
                 //open the root node in the report
-                writer.WriteLine("<" + XMLConfig.reportNodeTag + " " + XMLConfig.BatchFilenameAttr + "=\"" + absBatchFilename + "\">");
+                writer.WriteLine("<" + XMLTags.ReportNodeTag + " " + XMLTags.BatchFilenameAttr + "=\"" + absBatchFilename + "\">");
 
                 foreach (LogQueryResultViewModel logQueryResult in logQueryResults)
                 {
-                    string nakedLogQueryName = Utility.RemoveSpecialCharacters(logQueryResult.Name);
+                    string nakedLogQueryName = Herd.Utils.RemoveSpecialCharacters(logQueryResult.Name);
                     //Save the reports, each one in a different subfolder
                     string absQueryOutputFolder = absOutputFolder + "/" + nakedLogQueryName;
                     string relOutputFolder = nakedLogQueryName;
@@ -614,17 +586,17 @@ namespace Badger.Simion
                     Dictionary<string,string> additionalOutputFiles= logQueryResult.ExportNonSerializable(absQueryOutputFolder);
 
                     //the reference to the query and non-serializable data files
-                    writer.WriteLine("  <" + XMLConfig.queryNodeTag + " " + XMLConfig.nameAttribute + "=\"" + relLogQueryResultFilename + "\">");
+                    writer.WriteLine("  <" + XMLTags.QueryNodeTag + " " + XMLTags.nameAttribute + "=\"" + relLogQueryResultFilename + "\">");
 
                     foreach(string file in additionalOutputFiles.Keys)
                     {
                         writer.WriteLine("    <" + additionalOutputFiles[file] + ">" + file + "</" + additionalOutputFiles[file] + ">");
                     }
-                    writer.WriteLine("  </" + XMLConfig.queryNodeTag + ">");
+                    writer.WriteLine("  </" + XMLTags.QueryNodeTag + ">");
                 }
 
                 //close the root node in the report
-                writer.WriteLine("</" + XMLConfig.reportNodeTag + ">");
+                writer.WriteLine("</" + XMLTags.ReportNodeTag + ">");
             }
         }
 
@@ -635,23 +607,23 @@ namespace Badger.Simion
             reportDoc.Load(reportFilename);
             XmlNode root= reportDoc.FirstChild;
             batchFilename = null;
-            string inputBaseFolder = Utility.GetDirectory(reportFilename);
+            string inputBaseFolder = Herd.Utils.GetDirectory(reportFilename);
 
-            if (root.Name==XMLConfig.reportNodeTag)
+            if (root.Name==XMLTags.ReportNodeTag)
             {
-                batchFilename = root.Attributes[XMLConfig.BatchFilenameAttr].Value;
+                batchFilename = root.Attributes[XMLTags.BatchFilenameAttr].Value;
                 
                 foreach(XmlNode child in root.ChildNodes)
                 {
-                    if (child.Name==XMLConfig.queryNodeTag)
+                    if (child.Name==XMLTags.QueryNodeTag)
                     {
                         LogQueryResultViewModel logQueryResult;
-                        string queryFilename = inputBaseFolder + child.Attributes[XMLConfig.nameAttribute].Value;
+                        string queryFilename = inputBaseFolder + child.Attributes[XMLTags.nameAttribute].Value;
                         
                         if (File.Exists(queryFilename))
                         {
                             logQueryResult = Serialiazer.ReadObject<LogQueryResultViewModel>(queryFilename);
-                            logQueryResult.ImportNonSerializable(Utility.GetDirectory(queryFilename));
+                            logQueryResult.ImportNonSerializable(Herd.Utils.GetDirectory(queryFilename));
                             logQueryResult.IsNotifying = true;
                             logQueryResults.Add(logQueryResult);
                         }

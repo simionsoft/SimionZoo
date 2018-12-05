@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.IO;
 
-namespace Badger.Data
+namespace Herd.Files
 {
 
 
@@ -117,9 +117,9 @@ namespace Badger.Data
                 for (int x = 0; x < sizeX; x++)
                 {
                     u = (m_functionData[y * sizeX + x] - minValue) / range;
-                    color = Color.FromArgb((int)(255.0 * ( minColorR * (1 - u) + maxColorR * u))
-                        , (int)(255.0 * ( minColorG * (1 - u) + maxColorG * u))
-                        , (int)(255.0 * ( minColorB * (1 - u) + maxColorB * u)));
+                    color = Color.FromArgb((int)(255.0 * (minColorR * (1 - u) + maxColorR * u))
+                        , (int)(255.0 * (minColorG * (1 - u) + maxColorG * u))
+                        , (int)(255.0 * (minColorB * (1 - u) + maxColorB * u)));
                     m_sample.SetPixel(x, y, color);
                 }
             }
@@ -257,7 +257,7 @@ namespace Badger.Data
                 throw new Exception("Wrong magic number read in function declaration");
             int id = (int)binaryReader.ReadInt64();
             char[] name = binaryReader.ReadChars(FunctionLog.MAX_FUNCTION_ID_LENGTH);
-            string nameAsString = new string (name);
+            string nameAsString = new string(name);
             nameAsString = nameAsString.Substring(0, nameAsString.IndexOf('\0'));
             int numSamplesX = (int)binaryReader.ReadInt64();
             int numSamplesY = (int)binaryReader.ReadInt64();

@@ -1,10 +1,6 @@
 ﻿using Badger.Utils;
-using System;
-using System.Collections.Generic;
 using System.ComponentModel;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+
 
 namespace Badger.Data.NeuralNetwork.Optimizers
 {

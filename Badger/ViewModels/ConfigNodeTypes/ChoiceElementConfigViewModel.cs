@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Xml;
-using Badger.Simion;
+
+using Herd.Files;
 
 namespace Badger.ViewModels
 {
@@ -16,17 +17,17 @@ namespace Badger.ViewModels
         {
             CommonInitialization(parentExperiment,parent,definitionNode,parentXPath);
 
-            m_className = definitionNode.Attributes[XMLConfig.classAttribute].Value;
-            if (definitionNode.Attributes.GetNamedItem(XMLConfig.windowAttribute) != null)
-                m_window = definitionNode.Attributes[XMLConfig.windowAttribute].Value;
+            m_className = definitionNode.Attributes[XMLTags.classAttribute].Value;
+            if (definitionNode.Attributes.GetNamedItem(XMLTags.windowAttribute) != null)
+                m_window = definitionNode.Attributes[XMLTags.windowAttribute].Value;
             else m_window = "";
-            if (definitionNode.Attributes.GetNamedItem(XMLConfig.optionalAttribute) != null)
-                m_bOptional = definitionNode.Attributes[XMLConfig.optionalAttribute].Value == "true";
+            if (definitionNode.Attributes.GetNamedItem(XMLTags.optionalAttribute) != null)
+                m_bOptional = definitionNode.Attributes[XMLTags.optionalAttribute].Value == "true";
             else m_bOptional = false;
-            if (definitionNode.Attributes.GetNamedItem(XMLConfig.badgerMetadataAttribute)!=null)
+            if (definitionNode.Attributes.GetNamedItem(XMLTags.badgerMetadataAttribute)!=null)
             {
                 //BadgerMetadata="World=Wind-turbine"
-                string metadata = definitionNode.Attributes[XMLConfig.badgerMetadataAttribute].Value;
+                string metadata = definitionNode.Attributes[XMLTags.badgerMetadataAttribute].Value;
                 if (metadata.StartsWith("World="))
                     m_selectWorld= metadata.Remove(0,"World=".Length);
 

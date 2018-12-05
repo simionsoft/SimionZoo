@@ -1,75 +1,19 @@
 ﻿using System.Xml;
 using System.Collections.Generic;
-using Caliburn.Micro;
 using System.IO;
-using Badger.Simion;
-using Badger.Data;
 using System.Linq;
 using System;
 using System.Diagnostics;
-using Herd;
-using System.Collections.ObjectModel;
+
+using Caliburn.Micro;
+
+using Badger.Data;
+
+using Herd.Files;
 
 namespace Badger.ViewModels
 {
-    public class AppVersion
-    {
-        string m_name = PropValues.None;
-        string m_exeFile = PropValues.None;
-
-        private AppVersionRequirements m_requirements;
-        public AppVersionRequirements Requirements { get { return m_requirements; } }
-
-        public string ExeFile { get { return m_exeFile; } }
-
-        public override string ToString()
-        {
-            string xml = "<" + XmlTags.Version + " " + XMLConfig.nameAttribute + "=\"" + m_name + "\">\n";
-            xml += "<" + XmlTags.Exe + ">" + m_exeFile + "</" + XmlTags.Exe + ">\n";
-            xml += m_requirements.ToString();
-            xml += "</" +  XmlTags.Version + ">";
-            return xml;
-        }
-
-        public AppVersion(string name, string exeFile, AppVersionRequirements requirements)
-        {
-            m_name = name;
-            m_exeFile = exeFile;
-            m_requirements = requirements;
-        }
-
-        public AppVersion(XmlNode node)
-        {
-            if (node.Attributes.GetNamedItem(XMLConfig.nameAttribute) != null)
-                m_name = node.Attributes[XMLConfig.nameAttribute].Value;
-
-            foreach (XmlElement child in node.ChildNodes)
-            {
-                //Only Exe and AppVersionRequirements (i/o files and architecture)
-                if (child.Name == XmlTags.Exe)
-                    m_exeFile = child.InnerText;
-                else if (child.Name == XmlTags.Requirements)
-                {
-                    m_requirements = new AppVersionRequirements(child);
-                }
-            }
-            
-        }
-        /// <summary>
-        /// Returns the best match (assuming versions are ordered by preference) to the local machine's architecture
-        /// </summary>
-        /// <param name="versions"></param>
-        public static AppVersion BestMatch(List<AppVersion> versions)
-        {
-            foreach (AppVersion version in versions)
-            {
-                if (HerdAgent.ArchitectureId() == version.Requirements.Architecture)
-                    return version;
-            }
-            return null;
-        }
-    }
-    /// <summary>
+     /// <summary>
     /// Save modes:
     ///     - AsExperiment: all forks and all values are saved.
     ///     - AsExperimentalUnit: for each combination of fork values, a different experimental unit
@@ -124,7 +68,7 @@ namespace Badger.ViewModels
             foreach (XmlNode child in definition)
                 enumeratedValues.Add(child.InnerText);
 
-            m_enumDefinitions.Add(definition.Attributes[XMLConfig.nameAttribute].Value, enumeratedValues);
+            m_enumDefinitions.Add(definition.Attributes[XMLTags.nameAttribute].Value, enumeratedValues);
         }
 
         public List<string> GetEnumeratedType(string enumName)
@@ -189,18 +133,18 @@ namespace Badger.ViewModels
         {
             string worldName;
             WorldDefinition worldDefinition;
-            if (definition.Attributes.GetNamedItem(XMLConfig.worldAttribute) != null)
+            if (definition.Attributes.GetNamedItem(XMLTags.worldAttribute) != null)
             {
-                worldName = definition.Attributes[XMLConfig.worldAttribute].Value;
+                worldName = definition.Attributes[XMLTags.worldAttribute].Value;
                 worldDefinition = new WorldDefinition();
                 foreach (XmlNode child in definition.ChildNodes)
                 {
-                    if (child.Name == XMLConfig.stateVarTag)
+                    if (child.Name == XMLTags.stateVarTag)
                         worldDefinition.AddStateVar(new StateVar(child));
-                    else if (child.Name == XMLConfig.actionVarTag)
+                    else if (child.Name == XMLTags.actionVarTag)
                         worldDefinition.AddActionVar(new ActionVar(child));
-                    else if (child.Name == XMLConfig.constantTag)
-                        worldDefinition.AddConstant(child.Attributes[XMLConfig.nameAttribute].Value);
+                    else if (child.Name == XMLTags.constantTag)
+                        worldDefinition.AddConstant(child.Attributes[XMLTags.nameAttribute].Value);
                 }
 
                 m_worldDefinitions.Add(worldName, worldDefinition);
@@ -256,27 +200,27 @@ namespace Badger.ViewModels
 
             foreach (XmlNode rootChild in appDefinition.ChildNodes)
             {
-                if (rootChild.Name == XMLConfig.appNodeTag)
+                if (rootChild.Name == XMLTags.AppNodeTag)
                 {
                     //APP node
-                    m_appName = rootChild.Attributes[XMLConfig.nameAttribute].Value;
+                    m_appName = rootChild.Attributes[XMLTags.nameAttribute].Value;
 
                     Name = experimentName;
 
-                    if (rootChild.Attributes.GetNamedItem(XMLConfig.versionAttribute) != null)
-                        m_version = rootChild.Attributes[XMLConfig.versionAttribute].Value;
+                    if (rootChild.Attributes.GetNamedItem(XMLTags.versionAttribute) != null)
+                        m_version = rootChild.Attributes[XMLTags.versionAttribute].Value;
                     else
                     {
                         CaliburnUtility.ShowWarningDialog("Error reading version attribute: "
-                            + XMLConfig.experimentConfigVersion, "ERROR");
+                            + XMLTags.ExperimentConfigVersion, "ERROR");
                         m_version = "0.0.0.0";
                     }
 
                     foreach (XmlNode child in rootChild.ChildNodes)
                     {
-                        if (child.Name == XmlTags.Version)
+                        if (child.Name == Herd.Network.XmlTags.Version)
                             m_appVersions.Add(new AppVersion(child));
-                        else if (child.Name == XmlTags.Include)
+                        else if (child.Name == Herd.Network.XmlTags.Include)
                             LoadIncludedDefinitionFile(child.InnerText);
                         else
                         {
@@ -311,8 +255,8 @@ namespace Badger.ViewModels
             }
 
             //Remove the extensions of the experiment file to give name to the experiment
-            int numExtensions = Utility.NumParts(SimionFileData.ProjectExtension, '.');
-            Initialize(appDefinitionFileName, configRootNode, Utility.GetFilename(configFilename, true, numExtensions));
+            int numExtensions = Herd.Utils.NumParts(Extensions.ProjectExtension, '.');
+            Initialize(appDefinitionFileName, configRootNode, Herd.Utils.GetFilename(configFilename, true, numExtensions));
         }
 
         //This constructor is called when a badger file is loaded. Because all the experiments are embedded within a single
@@ -328,17 +272,17 @@ namespace Badger.ViewModels
             definitionFile.Load(appDefinitionFile);
             foreach (XmlNode child in definitionFile.ChildNodes)
             {
-                if (child.Name == XMLConfig.definitionNodeTag)
+                if (child.Name == XMLTags.DefinitionNodeTag)
                 {
                     foreach (XmlNode definition in child.ChildNodes)
                     {
-                        string name = definition.Attributes[XMLConfig.nameAttribute].Value;
-                        if (definition.Name == XMLConfig.classDefinitionNodeTag)
+                        string name = definition.Attributes[XMLTags.nameAttribute].Value;
+                        if (definition.Name == XMLTags.ClassDefinitionNodeTag)
                         {
                             ParseClassDefinitionMetadata(definition);
                             m_classDefinitions.Add(name, definition);
                         }
-                        else if (definition.Name == XMLConfig.enumDefinitionNodeTag)
+                        else if (definition.Name == XMLTags.EnumDefinitionNodeTag)
                             AddEnumeratedType(definition);
                     }
                 }
@@ -403,11 +347,11 @@ namespace Badger.ViewModels
         {
             //we save the experiment with the currently selected fork values
             int fileId = new Random().Next(1, 1000);
-            string filename = SimionFileData.tempRelativeDir + fileId.ToString() 
-                + SimionFileData.ExperimentExtension;
+            string filename = Files.tempRelativeDir + fileId.ToString() 
+                + Extensions.ExperimentExtension;
 
-            if (!Directory.Exists(SimionFileData.tempRelativeDir))
-                Directory.CreateDirectory(SimionFileData.tempRelativeDir);
+            if (!Directory.Exists(Files.tempRelativeDir))
+                Directory.CreateDirectory(Files.tempRelativeDir);
 
             Save(filename, SaveMode.AsExperimentalUnit);
             AppVersion bestMatch = AppVersion.BestMatch(m_appVersions);
@@ -452,8 +396,8 @@ namespace Badger.ViewModels
             if (mode == SaveMode.AsExperiment || mode == SaveMode.AsExperimentalUnit)
             {
                 //We are saving the config file as an experiment, experiment unit, or a badger file
-                writer.WriteLine(leftSpace + "<" + AppName + " " + XMLConfig.versionAttribute
-                + "=\"" + XMLConfig.experimentConfigVersion + "\">");
+                writer.WriteLine(leftSpace + "<" + AppName + " " + XMLTags.versionAttribute
+                + "=\"" + XMLTags.ExperimentConfigVersion + "\">");
             }
 
             // Body
@@ -535,10 +479,10 @@ namespace Badger.ViewModels
                 ConfigNodeViewModel node = nodeStack.Pop();
 
                 if (node.nodeDefinition != null)
-                    if (node.nodeDefinition.Attributes[XMLConfig.nameAttribute].Value.Equals(nodeName))
+                    if (node.nodeDefinition.Attributes[XMLTags.nameAttribute].Value.Equals(nodeName))
                     {
-                        if (node.nodeDefinition.Attributes[XMLConfig.aliasAttribute] != null)
-                            if (node.nodeDefinition.Attributes[XMLConfig.aliasAttribute].Value.Equals(alias))
+                        if (node.nodeDefinition.Attributes[XMLTags.aliasAttribute] != null)
+                            if (node.nodeDefinition.Attributes[XMLTags.aliasAttribute].Value.Equals(alias))
                                 return node;
 
                         if (node.parent is NestedConfigNode)

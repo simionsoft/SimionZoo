@@ -2,10 +2,9 @@
 using System.IO;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Xml;
-using Badger.Simion;
+
+using Herd.Files;
 
 namespace Badger.ViewModels
 {
@@ -77,7 +76,7 @@ namespace Badger.ViewModels
 
             nodeDefinition = targetNode.nodeDefinition;
             name = targetNode.name;
-            comment = nodeDefinition.Attributes[XMLConfig.commentAttribute].Value;
+            comment = nodeDefinition.Attributes[XMLTags.commentAttribute].Value;
             content = originNode.content;
 
             CreateLinkedNode();
@@ -100,17 +99,17 @@ namespace Badger.ViewModels
 
             foreach (XmlNode configChildNode in configNode)
             {
-                if (configChildNode.Name.Equals(XMLConfig.linkedNodeTag)
-                    && configChildNode.Attributes[XMLConfig.nameAttribute].Value
-                    .Equals(classDefinition.Attributes[XMLConfig.nameAttribute].Value))
+                if (configChildNode.Name.Equals(XMLTags.linkedNodeTag)
+                    && configChildNode.Attributes[XMLTags.nameAttribute].Value
+                    .Equals(classDefinition.Attributes[XMLTags.nameAttribute].Value))
                 {
-                    OriginName = configChildNode.Attributes[XMLConfig.originNodeAttribute].Value;
-                    if (configChildNode.Attributes[XMLConfig.aliasAttribute] != null)
-                        OriginAlias = configChildNode.Attributes[XMLConfig.aliasAttribute].Value;
+                    OriginName = configChildNode.Attributes[XMLTags.originNodeAttribute].Value;
+                    if (configChildNode.Attributes[XMLTags.aliasAttribute] != null)
+                        OriginAlias = configChildNode.Attributes[XMLTags.aliasAttribute].Value;
                 }
             }
 
-            name = nodeDefinition.Attributes[XMLConfig.nameAttribute].Value;
+            name = nodeDefinition.Attributes[XMLTags.nameAttribute].Value;
             LinkedNode = getInstance(parentExperiment, parentNode, classDefinition,
                 parentExperiment.AppName, configNode);
         }
@@ -129,8 +128,8 @@ namespace Badger.ViewModels
         {
             if (mode == SaveMode.AsProject || mode == SaveMode.AsExperiment)
             {
-                writer.WriteLine(leftSpace + "<" + XMLConfig.linkedNodeTag + " "
-                    + XMLConfig.nameAttribute + "=\"" + name.TrimEnd(' ') + "\" " + XMLConfig.originNodeAttribute
+                writer.WriteLine(leftSpace + "<" + XMLTags.linkedNodeTag + " "
+                    + XMLTags.nameAttribute + "=\"" + name.TrimEnd(' ') + "\" " + XMLTags.originNodeAttribute
                     + "=\"" + m_origin.name + "\"/>");
             }
         }
@@ -151,7 +150,7 @@ namespace Badger.ViewModels
             LinkedNode.nodeDefinition = nodeDefinition;
             LinkedNode.LinkedNodes = LinkedNodes;
             LinkedNode.name = name;
-            LinkedNode.comment = nodeDefinition.Attributes[XMLConfig.commentAttribute].Value;
+            LinkedNode.comment = nodeDefinition.Attributes[XMLTags.commentAttribute].Value;
 
             if (LinkedNode is NestedConfigNode)
             {

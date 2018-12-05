@@ -1,33 +1,16 @@
 ﻿using System.Collections.Generic;
-using System.Linq;
-using Herd;
-using Caliburn.Micro;
-using System;
-using Badger.Data;
 using System.Runtime.CompilerServices;
+
+using Caliburn.Micro;
+
+using Badger.Data;
+
+using Herd.Network;
 
 namespace Badger.ViewModels
 {
-    public class ShepherdViewModel : PropertyChangedBase//, IDisposable
+    public class ShepherdViewModel : PropertyChangedBase
     {
-        //protected virtual void Dispose(bool disposing)
-        //{
-        //    if (disposing)
-        //    {
-        //        // dispose managed resources
-        //        m_timer.Dispose();
-        //    }
-        //}
-        //public void Dispose()
-        //{
-        //    Dispose(true);
-        //    GC.SuppressFinalize(this);
-        //}
-
-        // const int m_agentTimeoutSeconds = 10;
-        //const int m_updateTimeSeconds = 3;
-        //System.Timers.Timer m_timer;
-
         private Shepherd m_shepherd;
         public Shepherd shepherd { get { return m_shepherd; } set { } }
 
@@ -68,11 +51,7 @@ namespace Badger.ViewModels
             NotifyOfPropertyChange(() => HerdAgentList);
         }
 
-        public void SendAgentDiscoveryBroadcast()
-        {
-            HerdAgentList.Clear();
-            m_shepherd.SendBroadcastHerdAgentQuery();
-        }
+
 
         public void SelectHerdAgents()
         {
@@ -82,11 +61,11 @@ namespace Badger.ViewModels
 
         public ShepherdViewModel()
         {
+            HerdAgentList.Clear();
+
             m_shepherd = new Shepherd();
             m_shepherd.SetOnHerdAgentDiscoveryFunc(OnHerdAgetDiscovery);
-
-            SendAgentDiscoveryBroadcast();
-            m_shepherd.BeginListeningHerdAgentQueryResponses();
+            m_shepherd.CallHerd();
         }
     }
 }

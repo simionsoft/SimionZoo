@@ -1,8 +1,9 @@
 ﻿using System.Xml;
 using System.Collections.ObjectModel;
-using Badger.Simion;
 using System.IO;
-using System.Collections.Generic;
+
+using Herd.Files;
+
 
 namespace Badger.ViewModels
 {
@@ -43,15 +44,15 @@ namespace Badger.ViewModels
                 configNode = configNode[name];
                 //is the world variable wired?
                 XmlNode wireConfigNode = configNode.FirstChild;
-                if (wireConfigNode != null && wireConfigNode.Name == XMLConfig.WireTag)
+                if (wireConfigNode != null && wireConfigNode.Name == XMLTags.WireTag)
                 {
                     content = wireConfigNode.InnerText;
 
-                    if (wireConfigNode.Attributes[XMLConfig.minValueAttribute] != null
-                        && wireConfigNode.Attributes[XMLConfig.maxValueAttribute] != null)
+                    if (wireConfigNode.Attributes[XMLTags.minValueAttribute] != null
+                        && wireConfigNode.Attributes[XMLTags.maxValueAttribute] != null)
                     {
-                        double min = double.Parse(wireConfigNode.Attributes[XMLConfig.minValueAttribute].Value);
-                        double max = double.Parse(wireConfigNode.Attributes[XMLConfig.maxValueAttribute].Value);
+                        double min = double.Parse(wireConfigNode.Attributes[XMLTags.minValueAttribute].Value);
+                        double max = double.Parse(wireConfigNode.Attributes[XMLTags.maxValueAttribute].Value);
                         m_parentExperiment.AddWire(content, min, max);
                     }
                     else
@@ -105,11 +106,11 @@ namespace Badger.ViewModels
                 {
                     //wired
                     if (!wire.Limit)
-                        writer.Write(leftSpace + "<" + name + "><" + XMLConfig.WireTag + ">"
-                            + content + "</" + XMLConfig.WireTag + "></" + name + ">\n");
+                        writer.Write(leftSpace + "<" + name + "><" + XMLTags.WireTag + ">"
+                            + content + "</" + XMLTags.WireTag + "></" + name + ">\n");
                     else
-                        writer.WriteLine(leftSpace + "<" + name + "><" + XMLConfig.WireTag + " " + XMLConfig.minValueAttribute + "=\"" + wire.Minimum
-                            + "\" " + XMLConfig.maxValueAttribute + "=\"" + wire.Maximum + "\">" + content + "</" + XMLConfig.WireTag + "></" + name + ">");
+                        writer.WriteLine(leftSpace + "<" + name + "><" + XMLTags.WireTag + " " + XMLTags.minValueAttribute + "=\"" + wire.Minimum
+                            + "\" " + XMLTags.maxValueAttribute + "=\"" + wire.Maximum + "\">" + content + "</" + XMLTags.WireTag + "></" + name + ">");
                 }
                 else
                 {

@@ -1,12 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
-using Caliburn.Micro;
-using Badger.Simion;
-using Badger.Data;
 using System.ComponentModel;
 using System.Windows.Data;
 using System.Globalization;
 using System.Runtime.Serialization;
+
+using Caliburn.Micro;
+
+using Badger.Data;
 
 namespace Badger.ViewModels
 {
@@ -467,7 +468,7 @@ namespace Badger.ViewModels
         }
 
         public void Execute(BindableCollection<LoggedExperimentViewModel> experiments
-            ,SimionFileData.LoadUpdateFunction loadUpdateFunction, out List<TrackGroup> resultTracks, out List<Report> reports)
+            ,Files.LoadUpdateFunction loadUpdateFunction, out List<TrackGroup> resultTracks, out List<Report> reports)
         {
             TrackGroup resultTrackGroup = null;
 

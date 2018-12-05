@@ -1,4 +1,4 @@
-﻿namespace Herd
+﻿namespace Herd.Network
 {
     public class XmlTags
     {

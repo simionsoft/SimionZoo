@@ -8,113 +8,8 @@ using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace Herd
+namespace Herd.Network
 {
-    public class HerdTask
-    {
-        public string Exe;
-        public string Arguments;
-        public string Pipe;
-        public string AuthenticationToken;
-        public string Name;
-        public HerdTask()
-        {
-            Name = "";
-            Exe = "";
-            Arguments = "";
-            Pipe = "";
-            AuthenticationToken = "";
-        }
-        public override string ToString()
-        {
-            string ret = "Task = " + Name + "\n" + "Exe= " + Exe + "\n" + "Arguments= " + Arguments + "\n";
-            ret += "Pipe= " + Pipe + "\n" + "Auth.Token= " + AuthenticationToken + "\n";
-            return ret;
-        }
-    }
-    public class HerdJob
-    {
-        //name
-        string m_name = "";
-        public string Name { get { return m_name; } set { m_name = value; } }
-
-        //tasks
-        List<HerdTask> m_tasks = new List<HerdTask>();
-        public void AddTask(HerdTask task)
-        {
-            m_tasks.Add(task);
-        }
-        public List<HerdTask> Tasks { get { return m_tasks; } }
-
-        //input files
-        List<string> m_inputFiles = new List<string>();
-        public void AddInputFiles(List<string> source) { foreach (string file in source) AddInputFile(file); }
-        public bool AddInputFile(string file)
-        {
-            if (!m_inputFiles.Contains(file))
-            {
-                m_inputFiles.Add(file);
-                return true;
-            }
-            else return false;
-        }
-        public List<string> InputFiles { get { return m_inputFiles; } }
-
-        //output files
-        List<string> m_outputFiles = new List<string>();
-        public void AddOutputFiles(List<string> source) { foreach (string file in source) AddOutputFile(file); }
-        public bool AddOutputFile(string file)
-        {
-            if (!m_outputFiles.Contains(file))
-            {
-                m_outputFiles.Add(file);
-                return true;
-            }
-            else return false;
-        }
-        public List<string> OutputFiles { get { return m_outputFiles; } }
-
-        //rename rules
-        Dictionary<string, string> m_renameRules = new Dictionary<string, string>();
-        public Dictionary<string, string> RenameRules { get { return m_renameRules; } }
-        public void AddRenameRule(string original, string renamed) { m_renameRules[original] = renamed; }
-        public void AddRenameRules(Dictionary<string, string> source) { foreach (string key in source.Keys) m_renameRules[key] = source[key]; }
-
-
-
-        //constructor
-        public HerdJob(string name) { m_name = name; }
-
-        public override string ToString()
-        {
-            string ret = "Job: " + m_name;
-            foreach (HerdTask task in m_tasks)
-                ret += "||" + task.ToString();
-            return ret;
-        }
-
-        public string RenamedFilename(string filename)
-        {
-            if (m_renameRules != null && m_renameRules.ContainsKey(filename))
-                return m_renameRules[filename];
-            return filename;
-        }
-        public string OriginalFilename(string filename)
-        {
-            if (m_renameRules != null)
-            {
-                foreach (string originalName in m_renameRules.Keys)
-                {
-                    if (m_renameRules[originalName] == filename)
-                        return originalName;
-                }
-            }
-            return filename;
-        }
-    }
-
-
-
     public class JobDispatcher
     {
         public const string LegacyTaskHeaderRegEx = "<Task Name=\"([^\"]*)\" Exe=\"([^\"]*)\" Arguments=\"([^\"]*)\" Pipe=\"([^\"]*)\"/>";
@@ -176,27 +71,27 @@ namespace Herd
 
         private List<Task> m_pendingAsyncWrites = new List<Task>();
 
-        public void setTCPClient(TcpClient client) { m_tcpClient = client; m_netStream = client.GetStream(); }
+        public void SetTCPClient(TcpClient client) { m_tcpClient = client; m_netStream = client.GetStream(); }
 
         public void SetLogMessageHandler(Logger.LogFunction logMessageHandler)
         {
             m_logMessageHandler = logMessageHandler;
-            m_xmlStream.setLogMessageHandler(logMessageHandler);
+            m_xmlStream.SetLogMessageHandler(logMessageHandler);
         }
         protected void LogMessage(string message) { if (m_logMessageHandler != null) m_logMessageHandler(message); }
-        public void writeMessage(string message, bool addDefaultMessageType = false)
+        public void WriteMessage(string message, bool addDefaultMessageType = false)
         {
-            m_xmlStream.writeMessage(m_netStream, message, addDefaultMessageType);
+            m_xmlStream.WriteMessage(m_netStream, message, addDefaultMessageType);
         }
-        public async Task writeMessageAsync(string message, CancellationToken cancelToken, bool addDefaultMessageType = false)
+        public async Task WriteMessageAsync(string message, CancellationToken cancelToken, bool addDefaultMessageType = false)
         {
-            await m_xmlStream.writeMessageAsync(m_netStream, message, cancelToken, addDefaultMessageType);
+            await m_xmlStream.WriteMessageAsync(m_netStream, message, cancelToken, addDefaultMessageType);
         }
 
         public async Task<int> readAsync(CancellationToken cancelToken)
         {
             int numBytesRead = 0;
-            try { numBytesRead = await m_xmlStream.readFromNetworkStreamAsync(m_tcpClient, m_netStream, cancelToken); }
+            try { numBytesRead = await m_xmlStream.ReadFromNetworkStreamAsync(m_tcpClient, m_netStream, cancelToken); }
             catch { LogMessage("async read operation cancelled"); }
             return numBytesRead;
         }
@@ -372,7 +267,7 @@ namespace Herd
 
         public async Task<int> ReadFromStreamAsync(CancellationToken cancelToken)
         {
-            int ret = await m_xmlStream.readFromNetworkStreamAsync(m_tcpClient, m_netStream, cancelToken);
+            int ret = await m_xmlStream.ReadFromNetworkStreamAsync(m_tcpClient, m_netStream, cancelToken);
             return ret;
         }
 
@@ -543,7 +438,7 @@ namespace Herd
         public const string m_defaultMessageType = "Internal";
 
         protected Logger.LogFunction m_logMessageHandler;
-        public void setLogMessageHandler(Logger.LogFunction logMessageHandler)
+        public void SetLogMessageHandler(Logger.LogFunction logMessageHandler)
         { m_logMessageHandler = logMessageHandler; }
         protected void logMessage(string message) { if (m_logMessageHandler != null) m_logMessageHandler(message); }
 
@@ -572,7 +467,7 @@ namespace Herd
                 m_bufferOffset = 0;
             }
         }
-        public void writeMessage(NetworkStream stream, string message, bool addDefaultMessageType = false)
+        public void WriteMessage(NetworkStream stream, string message, bool addDefaultMessageType = false)
         {
             byte[] msg;
             if (addDefaultMessageType)
@@ -581,7 +476,7 @@ namespace Herd
                 msg = Encoding.ASCII.GetBytes(message);
             stream.Write(msg, 0, msg.Length);
         }
-        public async Task writeMessageAsync(NetworkStream stream, string message, CancellationToken cancelToken, bool addDefaultMessageType = false)
+        public async Task WriteMessageAsync(NetworkStream stream, string message, CancellationToken cancelToken, bool addDefaultMessageType = false)
         {
             byte[] msg;
             if (addDefaultMessageType)
@@ -628,7 +523,7 @@ namespace Herd
             }
         }
 
-        public async Task<int> readFromNetworkStreamAsync(TcpClient client, NetworkStream stream, CancellationToken cancelToken)
+        public async Task<int> ReadFromNetworkStreamAsync(TcpClient client, NetworkStream stream, CancellationToken cancelToken)
         {
             int numBytesRead = 0;
             discardProcessedData();

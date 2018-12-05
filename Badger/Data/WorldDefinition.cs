@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Xml;
-using Badger.Simion;
+using Herd.Files;
 
 namespace Badger.Data
 {
@@ -25,10 +25,10 @@ namespace Badger.Data
         }
         public WorldVar(XmlNode varDefinition)
         {
-            m_name = varDefinition.Attributes[XMLConfig.nameAttribute].Value;
-            m_min = double.Parse(varDefinition.Attributes[XMLConfig.minValueAttribute].Value);
-            m_max = double.Parse(varDefinition.Attributes[XMLConfig.maxValueAttribute].Value);
-            m_unit = varDefinition.Attributes[XMLConfig.unitAttribute].Value;
+            m_name = varDefinition.Attributes[XMLTags.nameAttribute].Value;
+            m_min = double.Parse(varDefinition.Attributes[XMLTags.minValueAttribute].Value);
+            m_max = double.Parse(varDefinition.Attributes[XMLTags.maxValueAttribute].Value);
+            m_unit = varDefinition.Attributes[XMLTags.unitAttribute].Value;
         }
     }
     public class StateVar : WorldVar

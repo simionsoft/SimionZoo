@@ -1,8 +1,8 @@
 ﻿using System.Collections.Generic;
 using System.Xml;
-using Herd;
+using Herd.Network;
 
-namespace Badger.Data
+namespace Herd.Files
 {
     public class Requirements
     {
@@ -118,7 +118,7 @@ namespace Badger.Data
 
         public override string ToString()
         {
-            string commonProperties= base.ToString();
+            string commonProperties = base.ToString();
             string xml = "<" + XmlTags.Requirements + ">\n";
             xml += commonProperties + "\n";
             xml += "<" + XmlTags.Architecture + ">" + m_architecture + "</" + XmlTags.Architecture + ">\n";

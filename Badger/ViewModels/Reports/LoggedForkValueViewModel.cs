@@ -1,8 +1,8 @@
-﻿using Caliburn.Micro;
-using System.Xml;
-using Badger.Data;
-using Badger.Simion;
+﻿using System.Xml;
 using System.Collections.Generic;
+
+using Caliburn.Micro;
+
 
 namespace Badger.ViewModels
 {
@@ -27,27 +27,18 @@ namespace Badger.ViewModels
             set { m_bHasForks = value; NotifyOfPropertyChange(() => HasChildrenForks); }
         }
 
-        public LoggedForkViewModel parent { get; set; }
+        public LoggedForkViewModel Parent { get; set; }
         public List<LoggedExperimentalUnitViewModel> expUnits { get; }
             = new List<LoggedExperimentalUnitViewModel>();
 
         public LoggedForkValueViewModel(XmlNode configNode, LoggedForkViewModel _parent)
         {
-            parent = _parent;
+            //FIXXXXXXXXXXXXXXXXXXXXXX
+            //
+            //
+            //
+            //
 
-            if (configNode.Attributes.GetNamedItem(XMLConfig.valueAttribute) != null)
-                Value = configNode.Attributes[XMLConfig.valueAttribute].Value;
-            else
-                Value = configNode.InnerText;
-
-            foreach (XmlNode child in configNode.ChildNodes)
-            {
-                if (child.Name == XMLConfig.forkTag)
-                {
-                    LoggedForkViewModel newFork = new LoggedForkViewModel(child);
-                    Forks.Add(newFork);
-                }
-            }
 
             //hide the area used to display children forks?
             HasChildrenForks = Forks.Count != 0;

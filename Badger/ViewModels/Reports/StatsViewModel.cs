@@ -1,11 +1,13 @@
-﻿using System;
-using System.Collections.ObjectModel;
+﻿using System.Collections.ObjectModel;
 using System.IO;
-using Caliburn.Micro;
-using Badger.Simion;
 using System.Diagnostics;
-using Badger.Data;
 using System.Runtime.Serialization;
+
+using Caliburn.Micro;
+
+using Badger.Data;
+
+using Herd.Files;
 
 namespace Badger.ViewModels
 {
@@ -37,17 +39,17 @@ namespace Badger.ViewModels
 
         public void Export(StreamWriter fileWriter, string leftSpace)
         {
-            fileWriter.WriteLine(leftSpace + "<" + XMLConfig.statVariableTag 
-                + " " + XMLConfig.nameAttribute + "=\"" + Variable + "\">");
+            fileWriter.WriteLine(leftSpace + "<" + XMLTags.statVariableTag 
+                + " " + XMLTags.nameAttribute + "=\"" + Variable + "\">");
             foreach(StatViewModel stat in Stats)
             {
-                fileWriter.WriteLine(leftSpace + "  <" + XMLConfig.statVariableItemTag 
-                    + " " + XMLConfig.groupIdAttribute + "=\"" + stat.ExperimentId + "\" "
-                    + XMLConfig.trackIdAttribute + "=\"" + stat.TrackId + "\">");
+                fileWriter.WriteLine(leftSpace + "  <" + XMLTags.statVariableItemTag 
+                    + " " + XMLTags.groupIdAttribute + "=\"" + stat.ExperimentId + "\" "
+                    + XMLTags.trackIdAttribute + "=\"" + stat.TrackId + "\">");
                 stat.Export(fileWriter, leftSpace + "    ");
-                fileWriter.WriteLine(leftSpace + "  </" + XMLConfig.statVariableItemTag + ">");
+                fileWriter.WriteLine(leftSpace + "  </" + XMLTags.statVariableItemTag + ">");
             }
-            fileWriter.WriteLine(leftSpace + "</" + XMLConfig.statVariableTag + ">");
+            fileWriter.WriteLine(leftSpace + "</" + XMLTags.statVariableTag + ">");
         }
 
         public void VisualizeExperiment()
@@ -56,7 +58,7 @@ namespace Badger.ViewModels
             {
                 StartInfo = new ProcessStartInfo
                 {
-                    FileName = SimionFileData.logViewerExePath,
+                    FileName = Files.logViewerExePath,
                     Arguments = SelectedStat.LogDescriptorFile,
                     UseShellExecute = false,
                     RedirectStandardOutput = true,

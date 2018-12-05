@@ -1,28 +1,28 @@
 ﻿
 
-namespace Badger.Simion
+namespace Herd.Files
 {
-    public class XMLConfig
+    public class XMLTags
     {
-        public const string experimentConfigVersion = "1.0.0.0";
+        public const string ExperimentConfigVersion = "1.0.0.0";
         public const string BadgerProjectConfigVersion = "1.0.0.0";
         public const string BatchConfigVersion = "1.0.0.0";
 
-        public const string definitionNodeTag = "DEFINITIONS";
-        public const string classDefinitionNodeTag = "CLASS";
-        public const string enumDefinitionNodeTag = "ENUMERATION";
-        public const string worldDefinitionNodeTag = "WORLD";
+        public const string DefinitionNodeTag = "DEFINITIONS";
+        public const string ClassDefinitionNodeTag = "CLASS";
+        public const string EnumDefinitionNodeTag = "ENUMERATION";
+        public const string WorldDefinitionNodeTag = "WORLD";
 
         //App-level tags: APP, PRE, EXE, INCLUDE
-        public const string badgerNodeTag = "BADGER-PROJECT";
-        public const string experimentNodeTag = "EXPERIMENT"; //a experiment which can have forks within
-        public const string experimentalUnitNodeTag = "EXPERIMENTAL-UNIT"; //an experiment within a batch without any forks
-        public const string experimentBatchNodeTag = "EXPERIMENT-BATCH";
-        public const string reportNodeTag = "REPORT";
-        public const string queryNodeTag = "QUERY";
-        public const string plotNodeTag = "PLOT";
-        public const string appNodeTag = "App";
-        public const string statisticsFileTag = "STATISTICS";
+        public const string BadgerNodeTag = "BADGER-PROJECT";
+        public const string ExperimentNodeTag = "EXPERIMENT"; //a experiment which can have forks within
+        public const string ExperimentalUnitNodeTag = "EXPERIMENTAL-UNIT"; //an experiment within a batch without any forks
+        public const string ExperimentBatchNodeTag = "EXPERIMENT-BATCH";
+        public const string ReportNodeTag = "REPORT";
+        public const string QueryNodeTag = "QUERY";
+        public const string PlotNodeTag = "PLOT";
+        public const string AppNodeTag = "App";
+        public const string StatisticsFileTag = "STATISTICS";
 
         //Class-level tags: BRANCH, CHOICE, CHOICE-ELEMENT, DOUBLE-VALUE, INTEGER-VALUE, STRING-VALUE
         //FILE-PATH-VALUE, DIR-PATH-VALUE, ENUM-VALUE, MULTI-VALUED, XML-NODE-REF
