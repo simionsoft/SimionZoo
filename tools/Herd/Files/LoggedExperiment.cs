@@ -47,7 +47,7 @@ namespace Herd.Files
 
                     case XMLTags.ExperimentalUnitNodeTag:
                         if (loadOptions.Selection == LoadOptions.ExpUnitSelection.All
-                            || (LoggedExperimentalUnit.LogFileExists(child.Attributes[XMLTags.nameAttribute].Value,baseDirectory) 
+                            || (LoggedExperimentalUnit.LogFileExists(child.Attributes[XMLTags.pathAttribute].Value,baseDirectory) 
                             == (loadOptions.Selection == LoadOptions.ExpUnitSelection.OnlyFinished)))
                         {
                             LoggedExperimentalUnit newExpUnit = new LoggedExperimentalUnit(child, baseDirectory, loadOptions);

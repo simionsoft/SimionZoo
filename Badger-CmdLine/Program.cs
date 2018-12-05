@@ -16,7 +16,10 @@ namespace Badger_CmdLine
                 return;
             }
             string batchFilename= args[0];
-            LoadOptions loadOptions = new LoadOptions();
+            LoadOptions loadOptions = new LoadOptions()
+            {
+                Selection = LoadOptions.ExpUnitSelection.OnlyUnfinished
+            };
 
             //load the experiment batch
             Console.WriteLine("Reading batch file: " + batchFilename);
