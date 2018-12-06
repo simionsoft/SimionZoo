@@ -1,5 +1,4 @@
-﻿using Badger.ViewModels;
-using Herd.Network;
+﻿using Herd.Network;
 using Herd.Files;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System.Collections.Generic;
@@ -25,13 +24,13 @@ namespace AssignExperiments
             //Exp.Unit 6: 1 cores
             //Exp.Unit 7: 2 cores
             //Exp.Unit 8: 1 cores
-            CancellationToken cancellationToken = new CancellationToken();
+            
             //create fake herd agents
-            List<HerdAgentViewModel> herdAgents = new List<HerdAgentViewModel>
+            List<HerdAgentInfo> herdAgents = new List<HerdAgentInfo>
             {
-                new HerdAgentViewModel(new HerdAgentInfo("Agent-1", 4, PropValues.Win64, PropValues.None, "1.1.0")),
-                new HerdAgentViewModel(new HerdAgentInfo("Agent-2", 2, PropValues.Win32, "8.1.2", "1.1.0")),
-                new HerdAgentViewModel(new HerdAgentInfo("Agent-3", 2, PropValues.Win64, "8.1.2", "1.1.0"))
+                new HerdAgentInfo("Agent-1", 4, PropValues.Win64, PropValues.None, "1.1.0"),
+                new HerdAgentInfo("Agent-2", 2, PropValues.Win32, "8.1.2", "1.1.0"),
+                new HerdAgentInfo("Agent-3", 2, PropValues.Win64, "8.1.2", "1.1.0")
             };
 
             //create app versions
@@ -46,41 +45,41 @@ namespace AssignExperiments
             RunTimeRequirements cores_2 = new RunTimeRequirements(2);
             RunTimeRequirements cores_1 = new RunTimeRequirements(1);
             //create fake experiments
-            List<MonitoredExperimentalUnitViewModel> pendingExperiments = new List<MonitoredExperimentalUnitViewModel>()
+            List<MonitoredExperimentalUnit> pendingExperiments = new List<MonitoredExperimentalUnit>()
             {
-                new MonitoredExperimentalUnitViewModel("Experiment-1", appVersions, cores_all),
-                new MonitoredExperimentalUnitViewModel("Experiment-2", appVersions, cores_1),
-                new MonitoredExperimentalUnitViewModel("Experiment-3", appVersions, cores_2),
-                new MonitoredExperimentalUnitViewModel("Experiment-4", appVersions, cores_1),
-                new MonitoredExperimentalUnitViewModel("Experiment-5", appVersions, cores_all),
-                new MonitoredExperimentalUnitViewModel("Experiment-6", appVersions, cores_1),
-                new MonitoredExperimentalUnitViewModel("Experiment-7", appVersions, cores_1),
-                new MonitoredExperimentalUnitViewModel("Experiment-8", appVersions, cores_1)
+                new MonitoredExperimentalUnit("Experiment-1", appVersions, cores_all),
+                new MonitoredExperimentalUnit("Experiment-2", appVersions, cores_1),
+                new MonitoredExperimentalUnit("Experiment-3", appVersions, cores_2),
+                new MonitoredExperimentalUnit("Experiment-4", appVersions, cores_1),
+                new MonitoredExperimentalUnit("Experiment-5", appVersions, cores_all),
+                new MonitoredExperimentalUnit("Experiment-6", appVersions, cores_1),
+                new MonitoredExperimentalUnit("Experiment-7", appVersions, cores_1),
+                new MonitoredExperimentalUnit("Experiment-8", appVersions, cores_1)
             };
 
             //create output list to receive assigned jobs
-            List<MonitoredJobViewModel> assignedJobs = new List<MonitoredJobViewModel>();
+            List<MonitoredJob> assignedJobs = new List<MonitoredJob>();
 
             //Assign experiments
-            MonitorWindowViewModel.AssignExperiments(ref pendingExperiments, ref herdAgents, ref assignedJobs, cancellationToken, null);
+            Dispatcher.AssignExperiments(ref pendingExperiments, ref herdAgents, ref assignedJobs);
 
             //Check everything went as expected
             Assert.IsTrue(assignedJobs.Count == 3);
             //  -assigned experimental units and agents
             Assert.IsTrue(assignedJobs[0].HerdAgent.ProcessorId == "Agent-1");
-            Assert.IsTrue(assignedJobs[0].MonitoredExperimentalUnits.Count == 1);
-            Assert.IsTrue(assignedJobs[0].MonitoredExperimentalUnits[0].Name == "Experiment-1");
-            Assert.IsTrue(assignedJobs[0].MonitoredExperimentalUnits[0].SelectedVersion.Requirements.Architecture == PropValues.Win64);
+            Assert.IsTrue(assignedJobs[0].ExperimentalUnits.Count == 1);
+            Assert.IsTrue(assignedJobs[0].ExperimentalUnits[0].Name == "Experiment-1");
+            Assert.IsTrue(assignedJobs[0].ExperimentalUnits[0].SelectedVersion.Requirements.Architecture == PropValues.Win64);
             Assert.IsTrue(assignedJobs[1].HerdAgent.ProcessorId == "Agent-2");
-            Assert.IsTrue(assignedJobs[1].MonitoredExperimentalUnits.Count == 2);
-            Assert.IsTrue(assignedJobs[1].MonitoredExperimentalUnits[0].Name == "Experiment-2");
-            Assert.IsTrue(assignedJobs[1].MonitoredExperimentalUnits[0].SelectedVersion.Requirements.Architecture == PropValues.Win32);
-            Assert.IsTrue(assignedJobs[1].MonitoredExperimentalUnits[1].Name == "Experiment-4");
-            Assert.IsTrue(assignedJobs[1].MonitoredExperimentalUnits[1].SelectedVersion.Requirements.Architecture == PropValues.Win32);
+            Assert.IsTrue(assignedJobs[1].ExperimentalUnits.Count == 2);
+            Assert.IsTrue(assignedJobs[1].ExperimentalUnits[0].Name == "Experiment-2");
+            Assert.IsTrue(assignedJobs[1].ExperimentalUnits[0].SelectedVersion.Requirements.Architecture == PropValues.Win32);
+            Assert.IsTrue(assignedJobs[1].ExperimentalUnits[1].Name == "Experiment-4");
+            Assert.IsTrue(assignedJobs[1].ExperimentalUnits[1].SelectedVersion.Requirements.Architecture == PropValues.Win32);
             Assert.IsTrue(assignedJobs[2].HerdAgent.ProcessorId == "Agent-3");
-            Assert.IsTrue(assignedJobs[2].MonitoredExperimentalUnits.Count == 1);
-            Assert.IsTrue(assignedJobs[2].MonitoredExperimentalUnits[0].Name == "Experiment-3");
-            Assert.IsTrue(assignedJobs[2].MonitoredExperimentalUnits[0].SelectedVersion.Requirements.Architecture == PropValues.Win64);
+            Assert.IsTrue(assignedJobs[2].ExperimentalUnits.Count == 1);
+            Assert.IsTrue(assignedJobs[2].ExperimentalUnits[0].Name == "Experiment-3");
+            Assert.IsTrue(assignedJobs[2].ExperimentalUnits[0].SelectedVersion.Requirements.Architecture == PropValues.Win64);
 
             //  -used agents are removed
             Assert.IsTrue(herdAgents.Count == 0);
@@ -102,13 +101,13 @@ namespace AssignExperiments
             //Exp.Unit 6: 1 cores
             //Exp.Unit 7: 2 cores
             //Exp.Unit 8: 1 cores
-            CancellationToken cancellationToken = new CancellationToken();
+
             //create fake herd agents
-            List<HerdAgentViewModel> herdAgents = new List<HerdAgentViewModel>
+            List<HerdAgentInfo> herdAgents = new List<HerdAgentInfo>
             {
-                new HerdAgentViewModel(new HerdAgentInfo("Agent-1", 4, PropValues.Win64, PropValues.None, "1.1.0")),
-                new HerdAgentViewModel(new HerdAgentInfo("Agent-2", 2, PropValues.Win32, "8.1.2", "1.1.0")),
-                new HerdAgentViewModel(new HerdAgentInfo("Agent-3", 2, PropValues.Win64, "8.1.2", "1.1.0"))
+                new HerdAgentInfo("Agent-1", 4, PropValues.Win64, PropValues.None, "1.1.0"),
+                new HerdAgentInfo("Agent-2", 2, PropValues.Win32, "8.1.2", "1.1.0"),
+                new HerdAgentInfo("Agent-3", 2, PropValues.Win64, "8.1.2", "1.1.0")
             };
 
             //create app versions
@@ -122,31 +121,31 @@ namespace AssignExperiments
             RunTimeRequirements cores_2 = new RunTimeRequirements(2);
             RunTimeRequirements cores_1 = new RunTimeRequirements(1);
             //create fake experiments
-            List<MonitoredExperimentalUnitViewModel> pendingExperiments = new List<MonitoredExperimentalUnitViewModel>()
+            List<MonitoredExperimentalUnit> pendingExperiments = new List<MonitoredExperimentalUnit>()
             {
-                new MonitoredExperimentalUnitViewModel("Experiment-1", appVersions, cores_all),
-                new MonitoredExperimentalUnitViewModel("Experiment-2", appVersions, cores_1),
-                new MonitoredExperimentalUnitViewModel("Experiment-3", appVersions, cores_2),
-                new MonitoredExperimentalUnitViewModel("Experiment-4", appVersions, cores_1),
-                new MonitoredExperimentalUnitViewModel("Experiment-5", appVersions, cores_all),
-                new MonitoredExperimentalUnitViewModel("Experiment-6", appVersions, cores_1),
-                new MonitoredExperimentalUnitViewModel("Experiment-7", appVersions, cores_1),
-                new MonitoredExperimentalUnitViewModel("Experiment-8", appVersions, cores_1)
+                new MonitoredExperimentalUnit("Experiment-1", appVersions, cores_all),
+                new MonitoredExperimentalUnit("Experiment-2", appVersions, cores_1),
+                new MonitoredExperimentalUnit("Experiment-3", appVersions, cores_2),
+                new MonitoredExperimentalUnit("Experiment-4", appVersions, cores_1),
+                new MonitoredExperimentalUnit("Experiment-5", appVersions, cores_all),
+                new MonitoredExperimentalUnit("Experiment-6", appVersions, cores_1),
+                new MonitoredExperimentalUnit("Experiment-7", appVersions, cores_1),
+                new MonitoredExperimentalUnit("Experiment-8", appVersions, cores_1)
             };
 
             //create output list to receive assigned jobs
-            List<MonitoredJobViewModel> assignedJobs = new List<MonitoredJobViewModel>();
+            List<MonitoredJob> assignedJobs = new List<MonitoredJob>();
 
             //Assign experiments
-            MonitorWindowViewModel.AssignExperiments(ref pendingExperiments, ref herdAgents, ref assignedJobs, cancellationToken, null);
+            Dispatcher.AssignExperiments(ref pendingExperiments, ref herdAgents, ref assignedJobs);
 
             //Check everything went as expected
             Assert.IsTrue(assignedJobs.Count == 1);
             //  -assigned experimental units and agents
             Assert.IsTrue(assignedJobs[0].HerdAgent.ProcessorId == "Agent-2");
-            Assert.IsTrue(assignedJobs[0].MonitoredExperimentalUnits.Count == 1);
-            Assert.IsTrue(assignedJobs[0].MonitoredExperimentalUnits[0].Name == "Experiment-1");
-            Assert.IsTrue(assignedJobs[0].MonitoredExperimentalUnits[0].SelectedVersion.Requirements.Architecture == PropValues.Win32);
+            Assert.IsTrue(assignedJobs[0].ExperimentalUnits.Count == 1);
+            Assert.IsTrue(assignedJobs[0].ExperimentalUnits[0].Name == "Experiment-1");
+            Assert.IsTrue(assignedJobs[0].ExperimentalUnits[0].SelectedVersion.Requirements.Architecture == PropValues.Win32);
 
 
             //  -used agents are removed
@@ -169,13 +168,13 @@ namespace AssignExperiments
             //Exp.Unit 6: 5 cores
             //Exp.Unit 7: 2 cores
             //Exp.Unit 8: 5 cores
-            CancellationToken cancellationToken = new CancellationToken();
+
             //create fake herd agents
-            List<HerdAgentViewModel> herdAgents = new List<HerdAgentViewModel>
+            List<HerdAgentInfo> herdAgents = new List<HerdAgentInfo>
             {
-                new HerdAgentViewModel(new HerdAgentInfo("Agent-1", 4, PropValues.Win64, PropValues.None, "1.1.0")),
-                new HerdAgentViewModel(new HerdAgentInfo("Agent-2", 1, PropValues.Win32, "8.1.2", "1.1.0")),
-                new HerdAgentViewModel(new HerdAgentInfo("Agent-3", 3, PropValues.Win32, "8.1.2", "1.1.0"))
+                new HerdAgentInfo("Agent-1", 4, PropValues.Win64, PropValues.None, "1.1.0"),
+                new HerdAgentInfo("Agent-2", 1, PropValues.Win32, "8.1.2", "1.1.0"),
+                new HerdAgentInfo("Agent-3", 3, PropValues.Win32, "8.1.2", "1.1.0")
             };
 
             //create app versions
@@ -192,36 +191,36 @@ namespace AssignExperiments
             RunTimeRequirements cores_5 = new RunTimeRequirements(5);
 
             //create fake experiments
-            List<MonitoredExperimentalUnitViewModel> pendingExperiments = new List<MonitoredExperimentalUnitViewModel>()
+            List<MonitoredExperimentalUnit> pendingExperiments = new List<MonitoredExperimentalUnit>()
             {
-                new MonitoredExperimentalUnitViewModel("Experiment-1", appVersions, cores_5),
-                new MonitoredExperimentalUnitViewModel("Experiment-2", appVersions, cores_5),
-                new MonitoredExperimentalUnitViewModel("Experiment-3", appVersions, cores_5),
-                new MonitoredExperimentalUnitViewModel("Experiment-4", appVersions, cores_2),
-                new MonitoredExperimentalUnitViewModel("Experiment-5", appVersions, cores_3),
-                new MonitoredExperimentalUnitViewModel("Experiment-6", appVersions, cores_5),
-                new MonitoredExperimentalUnitViewModel("Experiment-7", appVersions, cores_2),
-                new MonitoredExperimentalUnitViewModel("Experiment-8", appVersions, cores_5)
+                new MonitoredExperimentalUnit("Experiment-1", appVersions, cores_5),
+                new MonitoredExperimentalUnit("Experiment-2", appVersions, cores_5),
+                new MonitoredExperimentalUnit("Experiment-3", appVersions, cores_5),
+                new MonitoredExperimentalUnit("Experiment-4", appVersions, cores_2),
+                new MonitoredExperimentalUnit("Experiment-5", appVersions, cores_3),
+                new MonitoredExperimentalUnit("Experiment-6", appVersions, cores_5),
+                new MonitoredExperimentalUnit("Experiment-7", appVersions, cores_2),
+                new MonitoredExperimentalUnit("Experiment-8", appVersions, cores_5)
             };
 
             //create output list to receive assigned jobs
-            List<MonitoredJobViewModel> assignedJobs = new List<MonitoredJobViewModel>();
+            List<MonitoredJob> assignedJobs = new List<MonitoredJob>();
 
             //Assign experiments
-            MonitorWindowViewModel.AssignExperiments(ref pendingExperiments, ref herdAgents, ref assignedJobs, cancellationToken, null);
+            Dispatcher.AssignExperiments(ref pendingExperiments, ref herdAgents, ref assignedJobs);
 
             //Check everything went as expected
             Assert.IsTrue(assignedJobs.Count == 2);
             //  -assigned experimental units and agents
             Assert.IsTrue(assignedJobs[0].HerdAgent.ProcessorId == "Agent-1");
-            Assert.IsTrue(assignedJobs[0].MonitoredExperimentalUnits.Count == 2);
-            Assert.IsTrue(assignedJobs[0].MonitoredExperimentalUnits[0].Name == "Experiment-4");
-            Assert.IsTrue(assignedJobs[0].MonitoredExperimentalUnits[1].Name == "Experiment-7");
-            Assert.IsTrue(assignedJobs[0].MonitoredExperimentalUnits[0].SelectedVersion.Requirements.Architecture == PropValues.Win64);
+            Assert.IsTrue(assignedJobs[0].ExperimentalUnits.Count == 2);
+            Assert.IsTrue(assignedJobs[0].ExperimentalUnits[0].Name == "Experiment-4");
+            Assert.IsTrue(assignedJobs[0].ExperimentalUnits[1].Name == "Experiment-7");
+            Assert.IsTrue(assignedJobs[0].ExperimentalUnits[0].SelectedVersion.Requirements.Architecture == PropValues.Win64);
             Assert.IsTrue(assignedJobs[1].HerdAgent.ProcessorId == "Agent-3");
-            Assert.IsTrue(assignedJobs[1].MonitoredExperimentalUnits.Count == 1);
-            Assert.IsTrue(assignedJobs[1].MonitoredExperimentalUnits[0].Name == "Experiment-5");
-            Assert.IsTrue(assignedJobs[1].MonitoredExperimentalUnits[0].SelectedVersion.Requirements.Architecture == PropValues.Win32);
+            Assert.IsTrue(assignedJobs[1].ExperimentalUnits.Count == 1);
+            Assert.IsTrue(assignedJobs[1].ExperimentalUnits[0].Name == "Experiment-5");
+            Assert.IsTrue(assignedJobs[1].ExperimentalUnits[0].SelectedVersion.Requirements.Architecture == PropValues.Win32);
 
 
             //  -used agents are removed
@@ -245,13 +244,13 @@ namespace AssignExperiments
             //Exp.Unit 6: 1 cores
             //Exp.Unit 7: 2 cores
             //Exp.Unit 8: 1 cores
-            CancellationToken cancellationToken = new CancellationToken();
+
             //create fake herd agents
-            List<HerdAgentViewModel> herdAgents = new List<HerdAgentViewModel>
+            List<HerdAgentInfo> herdAgents = new List<HerdAgentInfo>
             {
-                new HerdAgentViewModel(new HerdAgentInfo("Agent-1", 4, PropValues.Win64, PropValues.None, "1.1.0")),
-                new HerdAgentViewModel(new HerdAgentInfo("Agent-2", 2, PropValues.Win32, "8.1.2", "1.1.0")),
-                new HerdAgentViewModel(new HerdAgentInfo("Agent-3", 2, PropValues.Win64, "8.1.2", "1.1.0"))
+                new HerdAgentInfo("Agent-1", 4, PropValues.Win64, PropValues.None, "1.1.0"),
+                new HerdAgentInfo("Agent-2", 2, PropValues.Win32, "8.1.2", "1.1.0"),
+                new HerdAgentInfo("Agent-3", 2, PropValues.Win64, "8.1.2", "1.1.0")
             };
 
             //create app versions
@@ -266,37 +265,37 @@ namespace AssignExperiments
             RunTimeRequirements cores_2 = new RunTimeRequirements(2, PropValues.Win64);
             RunTimeRequirements cores_1 = new RunTimeRequirements(1, PropValues.Win64);
             //create fake experiments
-            List<MonitoredExperimentalUnitViewModel> pendingExperiments = new List<MonitoredExperimentalUnitViewModel>()
+            List<MonitoredExperimentalUnit> pendingExperiments = new List<MonitoredExperimentalUnit>()
             {
-                new MonitoredExperimentalUnitViewModel("Experiment-1", appVersions, cores_all),
-                new MonitoredExperimentalUnitViewModel("Experiment-2", appVersions, cores_1),
-                new MonitoredExperimentalUnitViewModel("Experiment-3", appVersions, cores_2),
-                new MonitoredExperimentalUnitViewModel("Experiment-4", appVersions, cores_1),
-                new MonitoredExperimentalUnitViewModel("Experiment-5", appVersions, cores_all),
-                new MonitoredExperimentalUnitViewModel("Experiment-6", appVersions, cores_1),
-                new MonitoredExperimentalUnitViewModel("Experiment-7", appVersions, cores_1),
-                new MonitoredExperimentalUnitViewModel("Experiment-8", appVersions, cores_1)
+                new MonitoredExperimentalUnit("Experiment-1", appVersions, cores_all),
+                new MonitoredExperimentalUnit("Experiment-2", appVersions, cores_1),
+                new MonitoredExperimentalUnit("Experiment-3", appVersions, cores_2),
+                new MonitoredExperimentalUnit("Experiment-4", appVersions, cores_1),
+                new MonitoredExperimentalUnit("Experiment-5", appVersions, cores_all),
+                new MonitoredExperimentalUnit("Experiment-6", appVersions, cores_1),
+                new MonitoredExperimentalUnit("Experiment-7", appVersions, cores_1),
+                new MonitoredExperimentalUnit("Experiment-8", appVersions, cores_1)
             };
 
             //create output list to receive assigned jobs
-            List<MonitoredJobViewModel> assignedJobs = new List<MonitoredJobViewModel>();
+            List<MonitoredJob> assignedJobs = new List<MonitoredJob>();
 
             //Assign experiments
-            MonitorWindowViewModel.AssignExperiments(ref pendingExperiments, ref herdAgents, ref assignedJobs, cancellationToken, null);
+            Dispatcher.AssignExperiments(ref pendingExperiments, ref herdAgents, ref assignedJobs);
 
             //Check everything went as expected
             Assert.IsTrue(assignedJobs.Count == 2);
             //  -assigned experimental units and agents
             Assert.IsTrue(assignedJobs[0].HerdAgent.ProcessorId == "Agent-1");
-            Assert.IsTrue(assignedJobs[0].MonitoredExperimentalUnits.Count == 1);
-            Assert.IsTrue(assignedJobs[0].MonitoredExperimentalUnits[0].Name == "Experiment-1");
-            Assert.IsTrue(assignedJobs[0].MonitoredExperimentalUnits[0].SelectedVersion.Requirements.Architecture == PropValues.Win64);
+            Assert.IsTrue(assignedJobs[0].ExperimentalUnits.Count == 1);
+            Assert.IsTrue(assignedJobs[0].ExperimentalUnits[0].Name == "Experiment-1");
+            Assert.IsTrue(assignedJobs[0].ExperimentalUnits[0].SelectedVersion.Requirements.Architecture == PropValues.Win64);
             Assert.IsTrue(assignedJobs[1].HerdAgent.ProcessorId == "Agent-3");
-            Assert.IsTrue(assignedJobs[1].MonitoredExperimentalUnits.Count == 2);
-            Assert.IsTrue(assignedJobs[1].MonitoredExperimentalUnits[0].Name == "Experiment-2");
-            Assert.IsTrue(assignedJobs[1].MonitoredExperimentalUnits[0].SelectedVersion.Requirements.Architecture == PropValues.Win64);
-            Assert.IsTrue(assignedJobs[1].MonitoredExperimentalUnits[1].Name == "Experiment-4");
-            Assert.IsTrue(assignedJobs[1].MonitoredExperimentalUnits[1].SelectedVersion.Requirements.Architecture == PropValues.Win64);
+            Assert.IsTrue(assignedJobs[1].ExperimentalUnits.Count == 2);
+            Assert.IsTrue(assignedJobs[1].ExperimentalUnits[0].Name == "Experiment-2");
+            Assert.IsTrue(assignedJobs[1].ExperimentalUnits[0].SelectedVersion.Requirements.Architecture == PropValues.Win64);
+            Assert.IsTrue(assignedJobs[1].ExperimentalUnits[1].Name == "Experiment-4");
+            Assert.IsTrue(assignedJobs[1].ExperimentalUnits[1].SelectedVersion.Requirements.Architecture == PropValues.Win64);
 
             //  -used agents are removed
             Assert.IsTrue(herdAgents.Count == 1);

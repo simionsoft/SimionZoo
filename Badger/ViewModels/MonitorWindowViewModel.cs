@@ -600,7 +600,7 @@ namespace Badger.ViewModels
         {
             foreach (MonitoredExperimentalUnitViewModel experiment in pendingExperiments)
             {
-                Herd.Files.AppVersion bestMatchingVersion = HerdAgentViewModel.BestMatch(experiment.AppVersions, agent);
+                AppVersion bestMatchingVersion = HerdAgentViewModel.BestMatch(experiment.AppVersions, agent);
                 if (bestMatchingVersion != null)
                 {
                     //run-time requirements are calculated when a version is selected

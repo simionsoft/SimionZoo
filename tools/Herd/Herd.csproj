@@ -50,7 +50,9 @@
     <Compile Include="Files\LoggedExperimentalUnit.cs" />
     <Compile Include="Files\LoggedForkValue.cs" />
     <Compile Include="Files\Requirements.cs" />
+    <Compile Include="Network\Dispatcher.cs" />
     <Compile Include="Network\HerdAgent.cs" />
+    <Compile Include="Network\HerdAgentInfo.cs" />
     <Compile Include="Network\HerdProperties.cs" />
     <Compile Include="Network\Job.cs" />
     <Compile Include="Files\LoggedExperimentBatch.cs" />
@@ -58,6 +60,8 @@
     <Compile Include="Files\LoggedFork.cs" />
     <Compile Include="Files\LoadOptions.cs" />
     <Compile Include="Files\XMLTags.cs" />
+    <Compile Include="Network\MonitoredExperimentalUnit.cs" />
+    <Compile Include="Network\MonitoredJob.cs" />
     <Compile Include="Network\NetTransfer.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Network\Shepherd.cs" />
