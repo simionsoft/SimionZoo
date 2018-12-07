@@ -12,8 +12,8 @@ namespace Herd.Network
         /// </summary>
         /// <param name="freeHerdAgents"></param>
         /// 
-        public static void AssignExperiments(ref List<MonitoredExperimentalUnit> pendingExperiments
-            , ref List<HerdAgentInfo> freeHerdAgents, ref List<MonitoredJob> assignedJobs)
+        public static void AssignExperiments(ref List<ExperimentalUnit> pendingExperiments
+            , ref List<HerdAgentInfo> freeHerdAgents, ref List<Job> assignedJobs)
         {
             //Clear the list: these are jobs which have to be sent
             assignedJobs.Clear();
@@ -26,10 +26,10 @@ namespace Herd.Network
             //  -all agents have been given work
             foreach (HerdAgentInfo agent in freeHerdAgents)
             {
-                List<MonitoredExperimentalUnit> experiments = new List<MonitoredExperimentalUnit>();
+                List<ExperimentalUnit> experiments = new List<ExperimentalUnit>();
                 int numFreeCores = agent.NumProcessors;
                 bool bAgentUsed = false;
-                MonitoredExperimentalUnit experiment;
+                ExperimentalUnit experiment;
                 bool bFailedToFindMatch = false;
 
                 while (numFreeCores > 0 && !bFailedToFindMatch)
@@ -53,7 +53,7 @@ namespace Herd.Network
 
                 if (bAgentUsed)
                 {
-                    MonitoredJob newJob = new MonitoredJob("Job #" + jobId, experiments, agent);
+                    Job newJob = new Job(experiments, agent);
                     assignedJobs.Add(newJob);
                     usedHerdAgents.Add(agent);
 
@@ -67,9 +67,9 @@ namespace Herd.Network
             foreach (HerdAgentInfo agent in usedHerdAgents) freeHerdAgents.Remove(agent);
         }
 
-        static MonitoredExperimentalUnit FirstFittingExperiment(List<MonitoredExperimentalUnit> pendingExperiments, int numFreeCores, bool bAgentUsed, HerdAgentInfo agent)
+        static ExperimentalUnit FirstFittingExperiment(List<ExperimentalUnit> pendingExperiments, int numFreeCores, bool bAgentUsed, HerdAgentInfo agent)
         {
-            foreach (MonitoredExperimentalUnit experiment in pendingExperiments)
+            foreach (ExperimentalUnit experiment in pendingExperiments)
             {
                 AppVersion bestMatchingVersion = agent.BestMatch(experiment.AppVersions);
                 if (bestMatchingVersion != null)

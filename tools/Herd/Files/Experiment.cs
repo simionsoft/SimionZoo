@@ -5,12 +5,12 @@ using Herd.Network;
 
 namespace Herd.Files
 {
-    public class LoggedExperiment
+    public class Experiment
     {
         public string Name;
 
-        public List<LoggedExperimentalUnit> ExperimentalUnits = new List<LoggedExperimentalUnit>();
-        public List<LoggedFork> Forks = new List<LoggedFork>();
+        public List<ExperimentalUnit> ExperimentalUnits = new List<ExperimentalUnit>();
+        public List<Fork> Forks = new List<Fork>();
         public List<AppVersion> AppVersions = new List<AppVersion>();
 
         List<string> m_variables = new List<string>();
@@ -21,7 +21,7 @@ namespace Herd.Files
                 m_variables.Add(variable);
         }
 
-        public LoggedExperiment(XmlNode configNode, string baseDirectory, LoadOptions loadOptions)
+        public Experiment(XmlNode configNode, string baseDirectory, LoadOptions loadOptions)
         {
             XmlAttributeCollection attrs = configNode.Attributes;
 
@@ -36,7 +36,7 @@ namespace Herd.Files
                 switch (child.Name)
                 {
                     case XMLTags.forkTag:
-                        LoggedFork newFork = new LoggedFork(child);
+                        Fork newFork = new Fork(child);
                         Forks.Add(newFork);
                         break;
 
@@ -47,10 +47,10 @@ namespace Herd.Files
 
                     case XMLTags.ExperimentalUnitNodeTag:
                         if (loadOptions.Selection == LoadOptions.ExpUnitSelection.All
-                            || (LoggedExperimentalUnit.LogFileExists(child.Attributes[XMLTags.pathAttribute].Value,baseDirectory) 
+                            || (ExperimentalUnit.LogFileExists(child.Attributes[XMLTags.pathAttribute].Value,baseDirectory) 
                             == (loadOptions.Selection == LoadOptions.ExpUnitSelection.OnlyFinished)))
                         {
-                            LoggedExperimentalUnit newExpUnit = new LoggedExperimentalUnit(child, baseDirectory, loadOptions);
+                            ExperimentalUnit newExpUnit = new ExperimentalUnit(child, baseDirectory, loadOptions);
                             if (loadOptions.LoadVariablesInLog)
                             {
                                 //We load the list of variables from the log descriptor and add them to the global list
@@ -62,6 +62,9 @@ namespace Herd.Files
                         break;
                 }
             }
+
+            //set the children's AppVersions
+            foreach (ExperimentalUnit expUnit in ExperimentalUnits) expUnit.AppVersions = AppVersions;
 
             //update progress
             loadOptions.OnExpLoaded?.Invoke(this);

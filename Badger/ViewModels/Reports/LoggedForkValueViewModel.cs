@@ -10,7 +10,7 @@ namespace Badger.ViewModels
 
     public class LoggedForkValueViewModel: SelectableTreeItem
     {
-        LoggedForkValue m_model;
+        ForkValue m_model;
 
         public string Value { get { return m_model.Value; } set { m_model.Value = value; } }
 
@@ -33,7 +33,7 @@ namespace Badger.ViewModels
         public List<LoggedExperimentalUnitViewModel> ExpUnits { get; }
             = new List<LoggedExperimentalUnitViewModel>();
 
-        public LoggedForkValueViewModel(LoggedForkValue model, LoggedForkViewModel parent)
+        public LoggedForkValueViewModel(ForkValue model, LoggedForkViewModel parent)
         {
             m_model = model;
             Parent = parent;

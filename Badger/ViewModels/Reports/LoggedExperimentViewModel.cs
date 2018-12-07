@@ -9,8 +9,8 @@ namespace Badger.ViewModels
 {
     public class LoggedExperimentViewModel : SelectableTreeItem
     {
-        private LoggedExperiment m_model = null;
-        public LoggedExperiment Model { get { return m_model; } }
+        private Experiment m_model = null;
+        public Experiment Model { get { return m_model; } }
 
         public string Name { get { return m_model.Name; } set { m_model.Name = value; } }
 
@@ -36,18 +36,18 @@ namespace Badger.ViewModels
         /// </summary>
         /// <param name="experiment">The experiment with all the data used in the view model</param>
 
-        public LoggedExperimentViewModel(LoggedExperiment experiment)
+        public LoggedExperimentViewModel(Experiment experiment)
         {
             m_model = experiment;
 
             //Create the fork view models from the models
-            foreach (LoggedFork fork in experiment.Forks)
+            foreach (Fork fork in experiment.Forks)
             {
                 LoggedForkViewModel forkVM = new LoggedForkViewModel(fork);
                 Forks.Add(forkVM);
             }
             //Create the experimental unit view models from the models
-            foreach (LoggedExperimentalUnit expUnit in experiment.ExperimentalUnits)
+            foreach (ExperimentalUnit expUnit in experiment.ExperimentalUnits)
             {
                 LoggedExperimentalUnitViewModel expUnitVM = new LoggedExperimentalUnitViewModel(expUnit);
                 foreach (string variable in expUnitVM.VariablesInLog)

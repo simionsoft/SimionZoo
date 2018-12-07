@@ -24,7 +24,7 @@ namespace Herd.Network
     }
 
 
-    public class Shepherd : JobDispatcher
+    public class Shepherd : JobTransmitter
     {
         private object m_listLock = new object();
         private Dictionary<IPEndPoint, HerdAgentInfo> m_herdAgentList
@@ -237,7 +237,7 @@ namespace Herd.Network
             }
         }
 
-        public void SendJobQuery(HerdJob job, CancellationToken cancelToken)
+        public void SendJobQuery(Job job, CancellationToken cancelToken)
         {
             m_job = job;
             SendJobHeader(cancelToken);

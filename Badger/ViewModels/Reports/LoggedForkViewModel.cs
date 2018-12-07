@@ -8,7 +8,7 @@ namespace Badger.ViewModels
 {
     public class LoggedForkViewModel : SelectableTreeItem
     {
-        LoggedFork m_model;
+        Fork m_model;
 
         public string Name
         {
@@ -56,18 +56,18 @@ namespace Badger.ViewModels
             set { m_bHasChildrenValues = value; NotifyOfPropertyChange(() => HasChildrenValues); }
         }
 
-        public LoggedForkViewModel(LoggedFork model)
+        public LoggedForkViewModel(Fork model)
         {
             m_model = model;
 
             //Build View models from the models
-            foreach (LoggedFork fork in model.Forks)
+            foreach (Fork fork in model.Forks)
             {
                 LoggedForkViewModel forkVM = new LoggedForkViewModel(fork);
                 Forks.Add(forkVM);
             }
             HasChildrenForks = Forks.Count != 0;
-            foreach (LoggedForkValue forkValue in model.Values)
+            foreach (ForkValue forkValue in model.Values)
             {
                 LoggedForkValueViewModel forkValueVM = new LoggedForkValueViewModel(forkValue, this);
                 Values.Add(forkValueVM);

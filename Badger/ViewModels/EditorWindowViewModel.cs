@@ -11,6 +11,7 @@ using System.Xml;
 using Badger.Data;
 
 using Caliburn.Micro;
+using Herd.Files;
 
 namespace Badger.ViewModels
 {
@@ -131,7 +132,7 @@ namespace Badger.ViewModels
         private void LoadAppDefinitions()
         {
             char[] splitters = new char[] { '\\', '/' };
-            foreach (string app in Directory.GetFiles(Files.appConfigRelativeDir))
+            foreach (string app in Directory.GetFiles(Folders.appConfigRelativeDir))
             {
                 //char[] spliter = "\\".ToCharArray();
                 string[] tmp = app.Split(splitters);

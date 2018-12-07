@@ -5,8 +5,7 @@
              xmlns:vm="clr-namespace:Badger.ViewModels"
              xmlns:v="clr-namespace:Badger.Views"
              xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
-             Background="Transparent"
-             Width="300">
+             Background="Transparent">
     <UserControl.Resources>
         <BooleanToVisibilityConverter x:Key="BoolToVis" />
     </UserControl.Resources>
@@ -14,8 +13,8 @@
     <Border BorderThickness="1" BorderBrush="LightGray" Margin="3">
         <Grid>
             <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="100"/>
                 <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="*"/>
             </Grid.ColumnDefinitions>
 
             <StackPanel Grid.Column="0" Background="Transparent" Orientation="Vertical"
@@ -28,14 +27,19 @@
                 </StackPanel>
             </StackPanel>
 
-            <ListView Grid.Column="1" ItemsSource="{Binding MonitoredExperimentalUnits}" 
-                     HorizontalContentAlignment="Stretch" BorderThickness="0" Padding="1">
+            <ListView Grid.Column="1" ItemsSource="{Binding MonitoredExperimentalUnits}" Background="Transparent"
+                      BorderThickness="0" Padding="1">
+                <ListView.ItemsPanel>
+                    <ItemsPanelTemplate>
+                        <WrapPanel IsItemsHost="True" HorizontalAlignment="Stretch"/>
+                    </ItemsPanelTemplate>
+                </ListView.ItemsPanel>
                 <ListView.ItemContainerStyle>
-                    <Style TargetType="ListBoxItem">
-                        <Setter Property="Padding" Value="0"/>
+                    <Style TargetType="ListViewItem">
                         <Setter Property="Focusable" Value="false"/>
                     </Style>
                 </ListView.ItemContainerStyle>
+
                 <ListView.Resources>
                     <DataTemplate DataType="{x:Type vm:MonitoredExperimentalUnitViewModel}">
                         <v:MonitoredExperimentalUnitView />

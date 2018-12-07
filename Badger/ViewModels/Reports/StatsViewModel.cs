@@ -58,7 +58,7 @@ namespace Badger.ViewModels
             {
                 StartInfo = new ProcessStartInfo
                 {
-                    FileName = Files.logViewerExePath,
+                    FileName = Folders.logViewerExePath,
                     Arguments = SelectedStat.LogDescriptorFile,
                     UseShellExecute = false,
                     RedirectStandardOutput = true,

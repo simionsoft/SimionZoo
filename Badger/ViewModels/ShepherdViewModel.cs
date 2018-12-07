@@ -19,7 +19,7 @@ namespace Badger.ViewModels
             get; set;
         } = new BindableCollection<HerdAgentViewModel>();
 
-        public int getAvailableHerdAgents(ref List<HerdAgentViewModel> outList)
+        public int GetAvailableHerdAgents(ref List<HerdAgentInfo> outList)
         {
             //we assume outList needs no synchronization
             int numAvailableCores = 0;
@@ -30,7 +30,7 @@ namespace Badger.ViewModels
                 {
                     if (agent.IsAvailable && agent.IsSelected)
                     {
-                        outList.Add(agent);
+                        outList.Add(agent.Info);
                         numAvailableCores += agent.NumProcessors;
                     }
                 }

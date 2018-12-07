@@ -12,8 +12,8 @@ namespace Badger.ViewModels
 {
     public class LoggedExperimentalUnitViewModel : SelectableTreeItem
     {
-        LoggedExperimentalUnit m_model;
-        public LoggedExperimentalUnit Model { get { return m_model; } }
+        ExperimentalUnit m_model;
+        public ExperimentalUnit Model { get { return m_model; } }
 
         public string Name
         {
@@ -66,7 +66,7 @@ namespace Badger.ViewModels
         /// <param name="baseDirectory"></param>
         /// <param name="updateFunction"></param>
 
-        public LoggedExperimentalUnitViewModel(LoggedExperimentalUnit model)
+        public LoggedExperimentalUnitViewModel(ExperimentalUnit model)
         {
             m_model = model;
         }

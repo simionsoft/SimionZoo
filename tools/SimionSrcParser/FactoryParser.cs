@@ -109,10 +109,10 @@ namespace SimionSrcParser
         {
             string output = "";
             SimionSrcParser.addIndentation(ref output, level);
-            output += "<" + XMLTags.classDefinitionNodeTag + " Name=\"" + m_name + "\">\n";
+            output += "<" + XMLTags.ClassDefinitionNodeTag + " Name=\"" + m_name + "\">\n";
             output += outputChildrenXML(level + 1);
             SimionSrcParser.addIndentation(ref output, level);
-            output += "</" + XMLTags.classDefinitionNodeTag + ">\n";
+            output += "</" + XMLTags.ClassDefinitionNodeTag + ">\n";
             return output;
         }
     }

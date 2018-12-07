@@ -12,6 +12,7 @@ using Badger.Data;
 using Herd.Files;
 
 using Caliburn.Micro;
+using Herd.Network;
 
 namespace Badger.ViewModels
 {
@@ -43,7 +44,7 @@ namespace Badger.ViewModels
         ///</summary>
         public void CleanExperimentBatch()
         {
-            int numFilesDeleted = LoggedExperimentBatch.DeleteLogFiles(BatchFileName);
+            int numFilesDeleted = ExperimentBatch.DeleteLogFiles(BatchFileName);
 
             NumFinishedExperimentalUnitsBeforeStart = 0;
             ResetPlot();
@@ -52,36 +53,23 @@ namespace Badger.ViewModels
             InitializeExperimentBatchForExecution();
         }
 
-        List<HerdAgentViewModel> getFreeHerdAgentList()
-        {
-            if (ShepherdViewModel.HerdAgentList.Count == 0)
-                return null;
 
-            List<HerdAgentViewModel> freeHerdAgents = new List<HerdAgentViewModel>();
-
-            // Get available herd agents list. Inside the loop to update the list
-            ShepherdViewModel.getAvailableHerdAgents(ref freeHerdAgents);
-
-            if (freeHerdAgents.Count == 0)
-            {
-                CaliburnUtility.ShowWarningDialog(
-                    "There is no herd agents availables at this moment. Make sure you have selected at " +
-                    "least one available agent and try again.", "No agents detected");
-                return null;
-            }
-            return freeHerdAgents;
-        }
 
         /// <summary>
         ///     Runs the selected experiment in the experiment editor.
         /// </summary>
         public void RunExperimentBatch()
         {
-            jobId = 0; //initialize the job ids
-            List<HerdAgentViewModel> freeHerdAgents= getFreeHerdAgentList();
-            if (freeHerdAgents == null)
+            List<HerdAgentInfo> freeHerdAgents = new List<HerdAgentInfo>();
+
+            // Get available herd agents list. Inside the loop to update the list
+            ShepherdViewModel.GetAvailableHerdAgents(ref freeHerdAgents);
+
+            if (freeHerdAgents.Count == 0)
             {
-                CaliburnUtility.ShowWarningDialog("No Herd agents were detected. You can manually start the local agent in the console: \"net start HerdAgent\"", "No agents detected");
+                CaliburnUtility.ShowWarningDialog(
+                    "There is no herd agents availables at this moment. Make sure you have selected at " +
+                    "least one available agent and try again.", "No agents detected");
                 return;
             }
 
@@ -156,7 +144,7 @@ namespace Badger.ViewModels
             set { m_bFinished = value; NotifyOfPropertyChange(() => IsFinished); }
         }
 
-        private List<MonitoredExperimentalUnitViewModel> m_pendingExperiments = new List<MonitoredExperimentalUnitViewModel>();
+        private List<ExperimentalUnit> m_pendingExperiments = new List<ExperimentalUnit>();
         private CancellationTokenSource m_cancelTokenSource;
 
 
@@ -275,13 +263,12 @@ namespace Badger.ViewModels
                 LoadVariablesInLog = false
             };
 
-            LoggedExperimentBatch batchUnfinished = new LoggedExperimentBatch();
+            ExperimentBatch batchUnfinished = new ExperimentBatch();
             batchUnfinished.Load(batchFileName, loadOptionsUnfinished);
 
-            foreach (LoggedExperiment experiment in batchUnfinished.Experiments)
+            foreach (Experiment experiment in batchUnfinished.Experiments)
             {
                 LoggedExperimentViewModel newExperiment = new LoggedExperimentViewModel(experiment);
-                    //= new LoggedExperimentViewModel(node, baseDirectory, false, true, loadUpdateFunction);
                 LoggedExperiments.Add(newExperiment);
             }
             //count unfinished experiments
@@ -294,7 +281,7 @@ namespace Badger.ViewModels
                 LoadVariablesInLog = false
             };
 
-            NumFinishedExperimentalUnitsBeforeStart = LoggedExperimentBatch.CountExperimentalUnits(batchFileName, LoadOptions.ExpUnitSelection.OnlyFinished);
+            NumFinishedExperimentalUnitsBeforeStart = ExperimentBatch.CountExperimentalUnits(batchFileName, LoadOptions.ExpUnitSelection.OnlyFinished);
 
             NumExperimentalUnits = numUnfinishedExperimentalUnits + NumFinishedExperimentalUnits;
 
@@ -327,18 +314,126 @@ namespace Badger.ViewModels
                         }
                     }
                 }
-                foreach (var unit in experiment.ExperimentalUnits)
-                {
-                    MonitoredExperimentalUnitViewModel monitoredExperiment =
-                        new MonitoredExperimentalUnitViewModel(unit, Plot, experiment.AppVersions);
-                    m_pendingExperiments.Add(monitoredExperiment);
-                }
+                
+                foreach (LoggedExperimentalUnitViewModel unit in experiment.ExperimentalUnits) m_pendingExperiments.Add(unit.Model);
             }
+
             AllMonitoredJobs.Clear();
             IsBatchLoaded = true;
             IsRunning = false;
+
             return true;
         }
+
+        Dictionary<Job, MonitoredJobViewModel> ViewModelFromModel = new Dictionary<Job, MonitoredJobViewModel>();
+
+        public async void RunExperimentsAsync(List<HerdAgentInfo> freeHerdAgents)
+        {
+            List<Job> assignedJobs = new List<Job>();
+
+            m_timer = new System.Timers.Timer(2000);
+            m_timer.Elapsed += ProgressUpdateTimedEvent;
+            m_timer.Enabled = true;
+
+            IsRunning = true;
+            m_cancelTokenSource = new CancellationTokenSource();
+
+            List<Task<Job>> monitoredJobTasks = new List<Task<Job>>();
+
+            // Assign experiments to free agents
+            Dispatcher.AssignExperiments(ref m_pendingExperiments, ref freeHerdAgents, ref assignedJobs);
+
+            if (assignedJobs.Count == 0)
+            {
+                CaliburnUtility.ShowWarningDialog("Couldn't find any suitable agent for the experiments", "Error");
+                return;
+            }
+
+            try
+            {
+                while ((assignedJobs.Count > 0 || monitoredJobTasks.Count > 0
+                    || m_pendingExperiments.Count > 0) && !m_cancelTokenSource.IsCancellationRequested)
+                {
+                    //Create view-models for the jobs and execute them remotely
+                    foreach (Job job in assignedJobs)
+                    {
+                        MonitoredJobViewModel monitoredJob = new MonitoredJobViewModel(job);
+                        AllMonitoredJobs.Insert(0, monitoredJob);
+                        ViewModelFromModel[job]= monitoredJob;
+                        monitoredJobTasks.Add(monitoredJob.SendJobAndMonitor(Plot, m_cancelTokenSource.Token, MainWindowViewModel.Instance.LogToFile));
+                    }
+
+                    // All pending experiments sent? Then we await completion to retry in case something fails
+                    if (m_pendingExperiments.Count == 0)
+                    {
+                        Task.WhenAll(monitoredJobTasks).Wait();
+                        MainWindowViewModel.Instance.LogToFile("All the experiments have finished");
+                        break;
+                    }
+
+                    // Wait for the first agent to finish and give it something to do
+                    Task<Job> finishedTask = await Task.WhenAny(monitoredJobTasks);
+                    Job finishedTaskResult = await finishedTask;
+                    MainWindowViewModel.Instance.LogToFile("Job finished: " + finishedTaskResult.ToString());
+
+                    if (!m_cancelTokenSource.IsCancellationRequested)
+                        NumFinishedExperimentalUnitsAfterStart += finishedTaskResult.ExperimentalUnits.Count
+                            - finishedTaskResult.FailedExperimentalUnits.Count;
+
+                    monitoredJobTasks.Remove(finishedTask);
+
+                    if (finishedTaskResult.FailedExperimentalUnits.Count > 0)
+                    {
+                        m_pendingExperiments.AddRange(finishedTaskResult.FailedExperimentalUnits);
+                        MainWindowViewModel.Instance.LogToFile(finishedTaskResult.FailedExperimentalUnits.Count + " failed experiments enqueued again for further trials");
+                    }
+
+                    // Add the herd agent to the free agent list
+                    if (!freeHerdAgents.Contains(finishedTaskResult.HerdAgent))
+                        freeHerdAgents.Add(finishedTaskResult.HerdAgent);
+
+                    // Assign experiments to free agents
+                    if (!m_cancelTokenSource.IsCancellationRequested)
+                        Dispatcher.AssignExperiments(ref m_pendingExperiments, ref freeHerdAgents, ref assignedJobs);
+                }
+            }
+            catch (Exception ex)
+            {
+                MainWindowViewModel.Instance.LogToFile("Exception in runExperimentQueueRemotely()");
+                MainWindowViewModel.Instance.LogToFile(ex.StackTrace);
+            }
+            finally
+            {
+                if (m_cancelTokenSource.IsCancellationRequested)
+                {
+                    //the user cancelled, need to add unfinished experimental units to the pending list
+                    foreach (Job job in assignedJobs)
+                        m_pendingExperiments.AddRange(job.ExperimentalUnits);
+                    CalculateGlobalProgress();
+                }
+                else
+                {
+                    foreach (Task<Job> job in monitoredJobTasks)
+                    {
+                        NumFinishedExperimentalUnitsAfterStart += job.Result.ExperimentalUnits.Count
+                            - job.Result.FailedExperimentalUnits.Count;
+                        CalculateGlobalProgress();
+                    }
+                }
+
+                int finishedThisRun = NumFinishedExperimentalUnitsAfterStart;
+                int finishedBeforeThisRun = NumFinishedExperimentalUnitsBeforeStart;
+                NumFinishedExperimentalUnitsBeforeStart = finishedThisRun + finishedBeforeThisRun;
+                NumFinishedExperimentalUnitsAfterStart = 0;
+
+                if (m_pendingExperiments.Count == 0)
+                    IsFinished = true; // used to enable the "View reports" button
+
+                IsRunning = false;
+                m_cancelTokenSource.Dispose();
+            }
+        }
+
 
         /// <summary>
         ///     Check whether a required file to run an experiment exits or not.
@@ -379,7 +474,7 @@ namespace Badger.ViewModels
                 }
                 return progress;
             }
-            
+
         }
 
 
@@ -391,7 +486,7 @@ namespace Badger.ViewModels
         private void ProgressUpdateTimedEvent(object source, ElapsedEventArgs e)
         {
             // Recalculate global progress each time
-            GlobalProgress= CalculateGlobalProgress();
+            GlobalProgress = CalculateGlobalProgress();
             // Then update the estimated time to end
             if (IsRunning)
             {
@@ -414,112 +509,6 @@ namespace Badger.ViewModels
             }
         }
 
-
-        public async void RunExperimentsAsync(List<HerdAgentViewModel> freeHerdAgents)
-        {
-            List<MonitoredJobViewModel> assignedJobs = new List<MonitoredJobViewModel>();
-
-            m_timer = new System.Timers.Timer(2000);
-            m_timer.Elapsed += ProgressUpdateTimedEvent;
-            m_timer.Enabled = true;
-
-            IsRunning = true;
-            m_cancelTokenSource = new CancellationTokenSource();
-
-            List<Task<MonitoredJobViewModel>> monitoredJobTasks
-                = new List<Task<MonitoredJobViewModel>>();
-
-            // Assign experiments to free agents
-            AssignExperiments(ref m_pendingExperiments, ref freeHerdAgents, ref assignedJobs, m_cancelTokenSource.Token, Plot);
-
-            //update the history of monitored jobs
-            foreach (MonitoredJobViewModel job in assignedJobs) AllMonitoredJobs.Insert(0, job);
-
-            try
-            {
-                while ((assignedJobs.Count > 0 || monitoredJobTasks.Count > 0
-                    || m_pendingExperiments.Count > 0) && !m_cancelTokenSource.IsCancellationRequested)
-                {
-                    foreach (MonitoredJobViewModel batch in assignedJobs)
-                        monitoredJobTasks.Add(batch.SendJobAndMonitor());
-
-                    // All pending experiments sent? Then we await completion to retry in case something fails
-                    if (m_pendingExperiments.Count == 0)
-                    {
-                        Task.WhenAll(monitoredJobTasks).Wait();
-                        MainWindowViewModel.Instance.LogToFile("All the experiments have finished");
-                        break;
-                    }
-
-                    // Wait for the first agent to finish and give it something to do
-                    Task<MonitoredJobViewModel> finishedTask = await Task.WhenAny(monitoredJobTasks);
-                    MonitoredJobViewModel finishedTaskResult = await finishedTask;
-                    MainWindowViewModel.Instance.LogToFile("Job finished: " + finishedTaskResult.ToString());
-
-                    if (!m_cancelTokenSource.IsCancellationRequested)
-                        NumFinishedExperimentalUnitsAfterStart += finishedTaskResult.MonitoredExperimentalUnits.Count
-                            - finishedTaskResult.FailedExperiments.Count;
-
-                    monitoredJobTasks.Remove(finishedTask);
-
-                    if (finishedTaskResult.FailedExperiments.Count > 0)
-                    {
-                        foreach (MonitoredExperimentalUnitViewModel exp in finishedTaskResult.FailedExperiments)
-                            m_pendingExperiments.Add(exp);
-                        MainWindowViewModel.Instance.LogToFile(finishedTaskResult.FailedExperiments.Count + " failed experiments enqueued again for further trials");
-                    }
-
-                    // Add the herd agent to the free agent list
-                    if (!freeHerdAgents.Contains(finishedTaskResult.HerdAgent))
-                        freeHerdAgents.Add(finishedTaskResult.HerdAgent);
-
-                    // Assign experiments to free agents
-                    if (!m_cancelTokenSource.IsCancellationRequested)
-                    {
-                        AssignExperiments(ref m_pendingExperiments, ref freeHerdAgents, ref assignedJobs, m_cancelTokenSource.Token, Plot);
-
-                        //update the history of monitored jobs
-                        foreach (MonitoredJobViewModel job in assignedJobs) AllMonitoredJobs.Insert(0, job);
-                    }
-                }
-            }
-            catch (Exception ex)
-            {
-                MainWindowViewModel.Instance.LogToFile("Exception in runExperimentQueueRemotely()");
-                MainWindowViewModel.Instance.LogToFile(ex.StackTrace);
-            }
-            finally
-            {
-                if (m_cancelTokenSource.IsCancellationRequested)
-                {
-                    //the user cancelled, need to add unfinished experimental units to the pending list
-                    foreach (MonitoredJobViewModel job in assignedJobs)
-                        m_pendingExperiments.AddRange(job.MonitoredExperimentalUnits);
-                    CalculateGlobalProgress();
-                }
-                else
-                {
-                    foreach (Task<MonitoredJobViewModel> job in monitoredJobTasks)
-                    {
-                        NumFinishedExperimentalUnitsAfterStart += job.Result.MonitoredExperimentalUnits.Count
-                            - job.Result.FailedExperiments.Count;
-                        CalculateGlobalProgress();
-                    }
-                }
-                AllMonitoredJobs.Clear();
-                int finishedThisRun = NumFinishedExperimentalUnitsAfterStart;
-                int finishedBeforeThisRun = NumFinishedExperimentalUnitsBeforeStart;
-                NumFinishedExperimentalUnitsBeforeStart = finishedThisRun + finishedBeforeThisRun;
-                NumFinishedExperimentalUnitsAfterStart = 0;
-
-                if (m_pendingExperiments.Count == 0)
-                    IsFinished = true; // used to enable the "View reports" button
-
-                IsRunning = false;
-                m_cancelTokenSource.Dispose();
-            }
-        }
-
         /// <summary>
         ///     Stops all experiments in progress.
         /// </summary>
@@ -531,99 +520,99 @@ namespace Badger.ViewModels
             IsRunning = false;
         }
 
-        //integer value incremented to generate job ids
-        static int jobId = 0;
+        ////integer value incremented to generate job ids
+        //static int jobId = 0;
 
-        /// <summary>
-        ///     Assigns experiments to availables herd agents.
-        /// </summary>
-        /// <param name="freeHerdAgents"></param>
-        /// 
-        public static void AssignExperiments(ref List<MonitoredExperimentalUnitViewModel> pendingExperiments
-            , ref List<HerdAgentViewModel> freeHerdAgents, ref List<MonitoredJobViewModel> assignedJobs
-            , CancellationToken cancelToken, PlotViewModel plot = null)
-        {
-            //Clear the list: these are jobs which have to be sent
-            assignedJobs.Clear();
-            //Create a list of agents that are given work. We need to remove them from the "free" list out of the loop
-            List<HerdAgentViewModel> usedHerdAgents = new List<HerdAgentViewModel>();
+        ///// <summary>
+        /////     Assigns experiments to availables herd agents.
+        ///// </summary>
+        ///// <param name="freeHerdAgents"></param>
+        ///// 
+        //public static void AssignExperiments(ref List<MonitoredExperimentalUnitViewModel> pendingExperiments
+        //    , ref List<HerdAgentViewModel> freeHerdAgents, ref List<MonitoredJobViewModel> assignedJobs
+        //    , CancellationToken cancelToken, PlotViewModel plot = null)
+        //{
+        //    //Clear the list: these are jobs which have to be sent
+        //    assignedJobs.Clear();
+        //    //Create a list of agents that are given work. We need to remove them from the "free" list out of the loop
+        //    List<HerdAgentViewModel> usedHerdAgents = new List<HerdAgentViewModel>();
             
 
-            //We iterate on the free agents to decide what jobs to give each of them until:
-            //  -either there are no more pending experiments
-            //  -all agents have been given work
-            foreach (HerdAgentViewModel agent in freeHerdAgents)
-            {
-                List<MonitoredExperimentalUnitViewModel> experiments = new List<MonitoredExperimentalUnitViewModel>();
-                int numFreeCores = agent.NumProcessors;
-                bool bAgentUsed = false;
-                MonitoredExperimentalUnitViewModel experiment;
-                bool bFailedToFindMatch = false;
+        //    //We iterate on the free agents to decide what jobs to give each of them until:
+        //    //  -either there are no more pending experiments
+        //    //  -all agents have been given work
+        //    foreach (HerdAgentViewModel agent in freeHerdAgents)
+        //    {
+        //        List<MonitoredExperimentalUnitViewModel> experiments = new List<MonitoredExperimentalUnitViewModel>();
+        //        int numFreeCores = agent.NumProcessors;
+        //        bool bAgentUsed = false;
+        //        MonitoredExperimentalUnitViewModel experiment;
+        //        bool bFailedToFindMatch = false;
 
-                while (numFreeCores>0 && !bFailedToFindMatch)
-                {
-                    experiment = FirstFittingExperiment(pendingExperiments, numFreeCores, bAgentUsed, agent);
-                    if (experiment != null)
-                    {
-                        //remove the experiment from the list and add it to running experiments
-                        experiments.Add(experiment);
-                        pendingExperiments.Remove(experiment);
+        //        while (numFreeCores>0 && !bFailedToFindMatch)
+        //        {
+        //            experiment = FirstFittingExperiment(pendingExperiments, numFreeCores, bAgentUsed, agent);
+        //            if (experiment != null)
+        //            {
+        //                //remove the experiment from the list and add it to running experiments
+        //                experiments.Add(experiment);
+        //                pendingExperiments.Remove(experiment);
 
-                        //update the number of free cpu cores
-                        if (experiment.RunTimeReqs.NumCPUCores > 0)
-                            numFreeCores -= experiment.RunTimeReqs.NumCPUCores;
-                        else numFreeCores = 0;
+        //                //update the number of free cpu cores
+        //                if (experiment.RunTimeReqs.NumCPUCores > 0)
+        //                    numFreeCores -= experiment.RunTimeReqs.NumCPUCores;
+        //                else numFreeCores = 0;
 
-                        bAgentUsed = true;
-                    }
-                    else bFailedToFindMatch = true;
-                }
+        //                bAgentUsed = true;
+        //            }
+        //            else bFailedToFindMatch = true;
+        //        }
 
-                if (bAgentUsed)
-                {
-                    MonitoredJobViewModel newJob = new MonitoredJobViewModel("Job #" + jobId, experiments,
-                        agent, plot, cancelToken, MainWindowViewModel.Instance.LogToFile);
-                    assignedJobs.Add(newJob);
-                    usedHerdAgents.Add(agent);
+        //        if (bAgentUsed)
+        //        {
+        //            MonitoredJobViewModel newJob = new MonitoredJobViewModel("Job #" + jobId, experiments,
+        //                agent, plot, cancelToken, MainWindowViewModel.Instance.LogToFile);
+        //            assignedJobs.Add(newJob);
+        //            usedHerdAgents.Add(agent);
                     
 
-                    ++jobId;
-                }
+        //            ++jobId;
+        //        }
 
-                if (pendingExperiments.Count == 0) break;
-            }
-            //now we can remove used agents from the list
-            foreach(HerdAgentViewModel agent in usedHerdAgents) freeHerdAgents.Remove(agent);
-        }
+        //        if (pendingExperiments.Count == 0) break;
+        //    }
+        //    //now we can remove used agents from the list
+        //    foreach(HerdAgentViewModel agent in usedHerdAgents) freeHerdAgents.Remove(agent);
+        //}
 
-        static MonitoredExperimentalUnitViewModel FirstFittingExperiment(List<MonitoredExperimentalUnitViewModel> pendingExperiments, int numFreeCores, bool bAgentUsed, HerdAgentViewModel agent)
-        {
-            foreach (MonitoredExperimentalUnitViewModel experiment in pendingExperiments)
-            {
-                AppVersion bestMatchingVersion = HerdAgentViewModel.BestMatch(experiment.AppVersions, agent);
-                if (bestMatchingVersion != null)
-                {
-                    //run-time requirements are calculated when a version is selected
-                    experiment.SelectedVersion = HerdAgentViewModel.BestMatch(experiment.AppVersions, agent);
-                    experiment.GetRuntimeRequirements(experiment.SelectedVersion, experiment.AppVersions);
+        //static MonitoredExperimentalUnitViewModel FirstFittingExperiment(List<MonitoredExperimentalUnitViewModel> pendingExperiments, int numFreeCores, bool bAgentUsed, HerdAgentViewModel agent)
+        //{
+        //    foreach (MonitoredExperimentalUnitViewModel experiment in pendingExperiments)
+        //    {
+        //        AppVersion bestMatchingVersion = HerdAgentViewModel.BestMatch(experiment.AppVersions, agent);
+        //        if (bestMatchingVersion != null)
+        //        {
+        //            //run-time requirements are calculated when a version is selected
+        //            experiment.SelectedVersion = HerdAgentViewModel.BestMatch(experiment.AppVersions, agent);
+        //            experiment.GetRuntimeRequirements(experiment.SelectedVersion, experiment.AppVersions);
 
-                    if (experiment.RunTimeReqs == null)
-                        return null;
+        //            if (experiment.RunTimeReqs == null)
+        //                return null;
                         
 
-                    //Check that the version chosen for the agent supports the architecture requested by the run-time 
-                    if ( (experiment.RunTimeReqs.Architecture==Herd.Network.PropValues.None 
-                        || experiment.RunTimeReqs.Architecture == experiment.SelectedVersion.Requirements.Architecture)
-                        &&
-                        //If NumCPUCores = "all", then the experiment only fits the agent in case it hasn't been given any other experimental unit
-                        ((experiment.RunTimeReqs.NumCPUCores == 0 && !bAgentUsed)
-                        //If NumCPUCores != "all", then experiment only fits the agent if the number of cpu cores used is less than those available
-                        || (experiment.RunTimeReqs.NumCPUCores > 0 && experiment.RunTimeReqs.NumCPUCores <= numFreeCores)))
-                        return experiment;
-                }
-            }
-            return null;
-        }
+        //            //Check that the version chosen for the agent supports the architecture requested by the run-time 
+        //            if ( (experiment.RunTimeReqs.Architecture==Herd.Network.PropValues.None 
+        //                || experiment.RunTimeReqs.Architecture == experiment.SelectedVersion.Requirements.Architecture)
+        //                &&
+        //                //If NumCPUCores = "all", then the experiment only fits the agent in case it hasn't been given any other experimental unit
+        //                ((experiment.RunTimeReqs.NumCPUCores == 0 && !bAgentUsed)
+        //                //If NumCPUCores != "all", then experiment only fits the agent if the number of cpu cores used is less than those available
+        //                || (experiment.RunTimeReqs.NumCPUCores > 0 && experiment.RunTimeReqs.NumCPUCores <= numFreeCores)))
+        //                return experiment;
+        //        }
+        //    }
+        //    return null;
+        //}
     }
 
 }

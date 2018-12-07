@@ -7,8 +7,8 @@ namespace Herd.Files
         public enum ExpUnitSelection { All, OnlyFinished, OnlyUnfinished };
 
         
-        public delegate void PerExperimentFunction(LoggedExperiment experiment) ;
-        public delegate void PerExperimentalUnitFunction(LoggedExperimentalUnit experimentalUnit) ;
+        public delegate void PerExperimentFunction(Experiment experiment) ;
+        public delegate void PerExperimentalUnitFunction(ExperimentalUnit experimentalUnit) ;
 
 
         public PerExperimentFunction OnExpLoaded;

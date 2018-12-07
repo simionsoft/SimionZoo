@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Herd.Files;
+using System;
 using System.Collections.Generic;
 using System.Text.RegularExpressions;
 
@@ -29,7 +30,7 @@ namespace SimionSrcParser
         {
             string output = "";
             SimionSrcParser.addIndentation(ref output,level);
-            output += "<" + XMLTags.classDefinitionNodeTag + " Name=\"" + m_name + "\"";
+            output += "<" + XMLTags.ClassDefinitionNodeTag + " Name=\"" + m_name + "\"";
             if (m_world!=null)
                 output+= " " + XMLTags.worldAttribute + "=\"" + m_world + "\"";
             output += ">\n";
@@ -46,7 +47,7 @@ namespace SimionSrcParser
             }
             output += outputChildrenXML(level + 1);
             SimionSrcParser.addIndentation(ref output, level);
-            output += "</" + XMLTags.classDefinitionNodeTag + ">\n";
+            output += "</" + XMLTags.ClassDefinitionNodeTag + ">\n";
             return output;
         }
     }

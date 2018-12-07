@@ -347,11 +347,11 @@ namespace Badger.ViewModels
         {
             //we save the experiment with the currently selected fork values
             int fileId = new Random().Next(1, 1000);
-            string filename = Files.tempRelativeDir + fileId.ToString() 
+            string filename = Folders.tempRelativeDir + fileId.ToString() 
                 + Extensions.ExperimentExtension;
 
-            if (!Directory.Exists(Files.tempRelativeDir))
-                Directory.CreateDirectory(Files.tempRelativeDir);
+            if (!Directory.Exists(Folders.tempRelativeDir))
+                Directory.CreateDirectory(Folders.tempRelativeDir);
 
             Save(filename, SaveMode.AsExperimentalUnit);
             AppVersion bestMatch = AppVersion.BestMatch(m_appVersions);

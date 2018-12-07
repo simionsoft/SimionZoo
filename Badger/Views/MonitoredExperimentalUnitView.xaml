@@ -8,16 +8,8 @@
         <BooleanToVisibilityConverter x:Key="BoolToVis" />
     </UserControl.Resources>
 
-    <i:Interaction.Triggers>
-        <i:EventTrigger EventName="MouseEnter">
-            <cal:ActionMessage MethodName="HandleMouseEnter"/>
-        </i:EventTrigger>
-        <i:EventTrigger EventName="MouseLeave">
-            <cal:ActionMessage MethodName="HandleMouseLeave" />
-        </i:EventTrigger>
-    </i:Interaction.Triggers>
 
-    <Border BorderThickness="0" ToolTip="{Binding ForkListAsString}" MinHeight="20">
+    <Border BorderThickness="1" BorderBrush="LightGray" ToolTip="{Binding ForksAsString}" MinHeight="20">
         <StackPanel Orientation="Horizontal">
             <Label Content="{Binding TaskName}" VerticalAlignment="Center" Width="50" Margin="0" Padding="0"/>
             <TextBlock Foreground="{Binding StateColor}" 

@@ -5,13 +5,13 @@ using System.IO;
 
 namespace Herd.Files
 {
-    public class LoggedExperimentBatch
+    public class ExperimentBatch
     {
-        public List<LoggedExperiment> Experiments = new List<LoggedExperiment>();
+        public List<Experiment> Experiments = new List<Experiment>();
 
         public string FileName = null;
 
-        public LoggedExperimentBatch()
+        public ExperimentBatch()
         {
 
         }
@@ -31,7 +31,7 @@ namespace Herd.Files
                     foreach (XmlNode experiment in fileRoot.ChildNodes)
                     {
                         if (experiment.Name == XMLTags.ExperimentNodeTag)
-                            Experiments.Add(new LoggedExperiment(experiment, Utils.GetDirectory(batchFilename), loadOptions));
+                            Experiments.Add(new Experiment(experiment, Utils.GetDirectory(batchFilename), loadOptions));
                     }
                 }
             }
@@ -49,7 +49,7 @@ namespace Herd.Files
         {
             int counter = 0;
 
-            foreach(LoggedExperiment exp in Experiments)
+            foreach(Experiment exp in Experiments)
                 counter += exp.ExperimentalUnits.Count;
 
             return counter;
@@ -80,13 +80,14 @@ namespace Herd.Files
                                 if (child.Name == XMLTags.ExperimentalUnitNodeTag)
                                 {
                                     string expUnitPath = child.Attributes[XMLTags.pathAttribute].Value;
-                                    string logDescPath = Utils.GetLogFilePath(expUnitPath, true);
+                                    string baseDirectory = Utils.GetDirectory(batchFilename);
+                                    string logDescPath = Utils.GetLogFilePath(baseDirectory + expUnitPath, true);
+                                    string logPath = Utils.GetLogFilePath(baseDirectory + expUnitPath, false);
                                     if (File.Exists(logDescPath))
                                     {
                                         counter++;
                                         File.Delete(logDescPath);
                                     }
-                                    string logPath = Utils.GetLogFilePath(expUnitPath, false);
                                     if (File.Exists(logPath))
                                     {
                                         counter++;
@@ -133,11 +134,11 @@ namespace Herd.Files
                                 {
                                     if (selection == LoadOptions.ExpUnitSelection.All) counter++;
                                     else
-                                    {
-                                        
+                                    {                                 
                                         string expUnitPath = child.Attributes[XMLTags.pathAttribute].Value;
-                                        string logDescPath = Utils.GetLogFilePath(expUnitPath, true);
-                                        string logPath = Utils.GetLogFilePath(expUnitPath, false);
+                                        string baseDirectory = Utils.GetDirectory(batchFilename);
+                                        string logDescPath = Utils.GetLogFilePath(baseDirectory + expUnitPath, true);
+                                        string logPath = Utils.GetLogFilePath(baseDirectory + expUnitPath, false);
                                         bool logExists = File.Exists(logDescPath) && File.Exists(logPath);
 
                                         if (logExists == (selection==LoadOptions.ExpUnitSelection.OnlyFinished))

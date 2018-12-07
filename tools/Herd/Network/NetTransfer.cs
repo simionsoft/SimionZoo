@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 
 namespace Herd.Network
 {
-    public class JobDispatcher
+    public class JobTransmitter
     {
         public const string LegacyTaskHeaderRegEx = "<Task Name=\"([^\"]*)\" Exe=\"([^\"]*)\" Arguments=\"([^\"]*)\" Pipe=\"([^\"]*)\"/>";
 
@@ -40,9 +40,9 @@ namespace Herd.Network
         protected int m_nextFileSize;
         protected string m_nextFileName;
 
-        protected HerdJob m_job;
+        protected Job m_job;
 
-        protected Logger.LogFunction m_logMessageHandler;
+        protected Action<string> m_logMessageHandler;
 
         protected virtual string TmpDir()
         {
@@ -58,9 +58,9 @@ namespace Herd.Network
             LogMessage("Can't determine the XML tag of the unkwown file type");
             return "UnkwnownType";
         }
-        public JobDispatcher()
+        public JobTransmitter()
         {
-            m_job = new HerdJob("Job");
+            m_job = new Job();
             m_xmlStream = new XMLStream();
             m_nextFileSize = 0;
             m_logMessageHandler = null;
@@ -73,12 +73,12 @@ namespace Herd.Network
 
         public void SetTCPClient(TcpClient client) { m_tcpClient = client; m_netStream = client.GetStream(); }
 
-        public void SetLogMessageHandler(Logger.LogFunction logMessageHandler)
+        public void SetLogMessageHandler(Action<string> logMessageHandler)
         {
             m_logMessageHandler = logMessageHandler;
             m_xmlStream.SetLogMessageHandler(logMessageHandler);
         }
-        protected void LogMessage(string message) { if (m_logMessageHandler != null) m_logMessageHandler(message); }
+        protected void LogMessage(string message) { m_logMessageHandler?.Invoke(message); }
         public void WriteMessage(string message, bool addDefaultMessageType = false)
         {
             m_xmlStream.WriteMessage(m_netStream, message, addDefaultMessageType);
@@ -437,10 +437,9 @@ namespace Herd.Network
         private string m_lastXMLItem;
         public const string m_defaultMessageType = "Internal";
 
-        protected Logger.LogFunction m_logMessageHandler;
-        public void SetLogMessageHandler(Logger.LogFunction logMessageHandler)
-        { m_logMessageHandler = logMessageHandler; }
-        protected void logMessage(string message) { if (m_logMessageHandler != null) m_logMessageHandler(message); }
+        protected Action<string> m_logMessageHandler;
+        public void SetLogMessageHandler(Action<string> logMessageHandler) { m_logMessageHandler = logMessageHandler; }
+        protected void logMessage(string message) { m_logMessageHandler?.Invoke(message); }
 
         public XMLStream()
         {

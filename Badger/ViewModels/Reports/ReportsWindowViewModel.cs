@@ -182,7 +182,7 @@ namespace Badger.ViewModels
         }
 
         int m_numProcessedExperimentalUnits = 0;
-        public void OnExperimentalUnitProcessed(LoggedExperimentalUnit expUnit)
+        public void OnExperimentalUnitProcessed(ExperimentalUnit expUnit)
         {
             m_numProcessedExperimentalUnits++;
             if (m_numExperimentalUnits != 0)
@@ -252,7 +252,7 @@ namespace Badger.ViewModels
             if (LogQueryResults.Count == 0) return;
 
             string outputBaseFolder =
-                CaliburnUtility.SelectFolder(Files.imageRelativeDir);
+                CaliburnUtility.SelectFolder(Folders.imageRelativeDir);
 
             if (outputBaseFolder != "")
                 Files.SaveReport(LoadedBatch, LogQueryResults, outputBaseFolder);
@@ -283,7 +283,7 @@ namespace Badger.ViewModels
             LoadedBatch = "Reading batch file";
 
             //first count the total number of experimental units
-            m_numExperimentalUnits = LoggedExperimentBatch.CountExperimentalUnits(batchFileName, LoadOptions.ExpUnitSelection.All);
+            m_numExperimentalUnits = ExperimentBatch.CountExperimentalUnits(batchFileName, LoadOptions.ExpUnitSelection.All);
 
             Task.Run(() =>
             {
@@ -296,11 +296,11 @@ namespace Badger.ViewModels
                 };
 
                 LoadedBatch = "Reading experiment files";
-                LoggedExperimentBatch batch = new LoggedExperimentBatch();
+                ExperimentBatch batch = new ExperimentBatch();
                 batch.Load(batchFileName, loadOptions);
 
                 //Create ViewModels from LoggedExperimentBatch
-                foreach (LoggedExperiment experiment in batch.Experiments)
+                foreach (Experiment experiment in batch.Experiments)
                 {
                     LoggedExperimentViewModel newExperiment
                         = new LoggedExperimentViewModel(experiment);

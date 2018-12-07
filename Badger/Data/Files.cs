@@ -15,17 +15,6 @@ namespace Badger
 {
     public static class Files
     {
-
-        public const string binDir = "bin";
-        public const string experimentDir = "experiments";
-        public const string imageDir = "images";
-        public const string appConfigRelativeDir = "../config/apps";
-        public const string experimentRelativeDir = "../" + experimentDir;
-        public const string imageRelativeDir = "../" + imageDir;
-        public const string badgerLogFile = "badger-log.txt";
-        public const string tempRelativeDir = "../temp/";
-        public const string logViewerExePath = "../" + binDir + "/SimionLogViewer.exe";
-
         public const string ExperimentBatchFilter = "*" + Extensions.ExperimentBatchExtension;
         public const string ProjectFilter = "*" + Extensions.ProjectExtension;
         public const string ExperimentFilter = "*" + Extensions.ExperimentExtension;
@@ -49,90 +38,90 @@ namespace Badger
         //relative to the batch file, instead of relative to the RLSimion folder structure
         public delegate int XmlNodeFunction(XmlNode node, string baseDirectory,LoadUpdateFunction loadUpdateFunction);
 
-        /// <summary>
-        /// This function cleans the log files
-        /// </summary>
-        /// <param name="node">The node used in each call of the function</param>
-        /// <param name="baseDirectory">Base directory</param>
-        /// <param name="loadUpdateFunction">Callback function called after processing an experimental unit</param>
-        /// <returns></returns>
-        public static int CountFinishedExperimentalUnitsInBatch(XmlNode node, string baseDirectory
-                , LoadUpdateFunction loadUpdateFunction)
-        {
-            int finishedExperimentalUnits = 0;
-            foreach (XmlNode child in node.ChildNodes)
-            {
-                if (child.Name == XMLTags.ExperimentalUnitNodeTag)
-                {
-                    string pathToExpUnit = baseDirectory + child.Attributes[XMLTags.pathAttribute].Value;
-                    string pathToLogFile = Herd.Utils.GetLogFilePath(pathToExpUnit, false);
-                    if (File.Exists(pathToLogFile))
-                    {
-                        FileInfo fileInfo = new FileInfo(pathToLogFile);
-                        if (fileInfo.Length > 0)
-                            finishedExperimentalUnits++;
-                    }
-                }
-                else
-                    finishedExperimentalUnits+= CountFinishedExperimentalUnitsInBatch(child, baseDirectory, loadUpdateFunction);
-            }
-            return finishedExperimentalUnits;
-        }
+        ///// <summary>
+        ///// This function cleans the log files
+        ///// </summary>
+        ///// <param name="node">The node used in each call of the function</param>
+        ///// <param name="baseDirectory">Base directory</param>
+        ///// <param name="loadUpdateFunction">Callback function called after processing an experimental unit</param>
+        ///// <returns></returns>
+        //public static int CountFinishedExperimentalUnitsInBatch(XmlNode node, string baseDirectory
+        //        , LoadUpdateFunction loadUpdateFunction)
+        //{
+        //    int finishedExperimentalUnits = 0;
+        //    foreach (XmlNode child in node.ChildNodes)
+        //    {
+        //        if (child.Name == XMLTags.ExperimentalUnitNodeTag)
+        //        {
+        //            string pathToExpUnit = baseDirectory + child.Attributes[XMLTags.pathAttribute].Value;
+        //            string pathToLogFile = Herd.Utils.GetLogFilePath(pathToExpUnit, false);
+        //            if (File.Exists(pathToLogFile))
+        //            {
+        //                FileInfo fileInfo = new FileInfo(pathToLogFile);
+        //                if (fileInfo.Length > 0)
+        //                    finishedExperimentalUnits++;
+        //            }
+        //        }
+        //        else
+        //            finishedExperimentalUnits+= CountFinishedExperimentalUnitsInBatch(child, baseDirectory, loadUpdateFunction);
+        //    }
+        //    return finishedExperimentalUnits;
+        //}
 
-        /// <summary>
-        /// This function cleans the log files
-        /// </summary>
-        /// <param name="node">The node used in each call of the function</param>
-        /// <param name="baseDirectory">Base directory</param>
-        /// <param name="loadUpdateFunction">Callback function called after processing an experimental unit</param>
-        /// <returns></returns>
-        public static int CleanExperimentalUnitLogFiles(XmlNode node, string baseDirectory
-                , LoadUpdateFunction loadUpdateFunction)
-        {
-            int numFilesDeleted = 0;
-            foreach (XmlNode child in node.ChildNodes)
-            {
-                if (child.Name == XMLTags.ExperimentalUnitNodeTag)
-                {
-                    string pathToExpUnit = baseDirectory + child.Attributes[XMLTags.pathAttribute].Value;
-                    string pathToLogFile = Herd.Utils.GetLogFilePath(pathToExpUnit, false);
-                    if (File.Exists(pathToLogFile))
-                    {
-                        File.Delete(pathToLogFile);
-                        numFilesDeleted++;
-                    }
-                    string pathToLogFileDesc = Herd.Utils.GetLogFilePath(pathToExpUnit, true);
-                    if (File.Exists(pathToLogFileDesc))
-                    {
-                        File.Delete(pathToLogFileDesc);
-                        numFilesDeleted++;
-                    }
-                }
-                else
-                    numFilesDeleted+= CleanExperimentalUnitLogFiles(child, baseDirectory, loadUpdateFunction);
-            }
-            return numFilesDeleted;
-        }
-        /// <summary>
-        /// This function can be passed as an argument to LoadExperimentBatch to quickly count the number
-        /// of experimental units in a batch
-        /// </summary>
-        /// <param name="node">The node used in each call of the function</param>
-        /// <param name="baseDirectory">Base directory</param>
-        /// <param name="loadUpdateFunction">Callback function called after processing an experimental unit</param>
-        /// <returns></returns>
-        public static int CountExperimentalUnitsInBatch(XmlNode node, string baseDirectory
-                , LoadUpdateFunction loadUpdateFunction)
-        {
-            int ExperimentalUnitCount = 0;
-            foreach (XmlNode child in node.ChildNodes)
-            {
-                if (child.Name == XMLTags.ExperimentalUnitNodeTag)
-                    ExperimentalUnitCount++;
-                else ExperimentalUnitCount += CountExperimentalUnitsInBatch(child, null, loadUpdateFunction);
-            }
-            return ExperimentalUnitCount;
-        }
+        ///// <summary>
+        ///// This function cleans the log files
+        ///// </summary>
+        ///// <param name="node">The node used in each call of the function</param>
+        ///// <param name="baseDirectory">Base directory</param>
+        ///// <param name="loadUpdateFunction">Callback function called after processing an experimental unit</param>
+        ///// <returns></returns>
+        //public static int CleanExperimentalUnitLogFiles(XmlNode node, string baseDirectory
+        //        , LoadUpdateFunction loadUpdateFunction)
+        //{
+        //    int numFilesDeleted = 0;
+        //    foreach (XmlNode child in node.ChildNodes)
+        //    {
+        //        if (child.Name == XMLTags.ExperimentalUnitNodeTag)
+        //        {
+        //            string pathToExpUnit = baseDirectory + child.Attributes[XMLTags.pathAttribute].Value;
+        //            string pathToLogFile = Herd.Utils.GetLogFilePath(pathToExpUnit, false);
+        //            if (File.Exists(pathToLogFile))
+        //            {
+        //                File.Delete(pathToLogFile);
+        //                numFilesDeleted++;
+        //            }
+        //            string pathToLogFileDesc = Herd.Utils.GetLogFilePath(pathToExpUnit, true);
+        //            if (File.Exists(pathToLogFileDesc))
+        //            {
+        //                File.Delete(pathToLogFileDesc);
+        //                numFilesDeleted++;
+        //            }
+        //        }
+        //        else
+        //            numFilesDeleted+= CleanExperimentalUnitLogFiles(child, baseDirectory, loadUpdateFunction);
+        //    }
+        //    return numFilesDeleted;
+        //}
+        ///// <summary>
+        ///// This function can be passed as an argument to LoadExperimentBatch to quickly count the number
+        ///// of experimental units in a batch
+        ///// </summary>
+        ///// <param name="node">The node used in each call of the function</param>
+        ///// <param name="baseDirectory">Base directory</param>
+        ///// <param name="loadUpdateFunction">Callback function called after processing an experimental unit</param>
+        ///// <returns></returns>
+        //public static int CountExperimentalUnitsInBatch(XmlNode node, string baseDirectory
+        //        , LoadUpdateFunction loadUpdateFunction)
+        //{
+        //    int ExperimentalUnitCount = 0;
+        //    foreach (XmlNode child in node.ChildNodes)
+        //    {
+        //        if (child.Name == XMLTags.ExperimentalUnitNodeTag)
+        //            ExperimentalUnitCount++;
+        //        else ExperimentalUnitCount += CountExperimentalUnitsInBatch(child, null, loadUpdateFunction);
+        //    }
+        //    return ExperimentalUnitCount;
+        //}
 
         
         ///// <summary>
@@ -431,6 +420,8 @@ namespace Badger
         static string globalOutputDirectory = null;
         static string globalInputDirectory = null;
 
+        public static object Utils { get; internal set; }
+
         /// <summary>
         ///     Show a dialog used to save a file with an specific extension.
         /// </summary>
@@ -446,7 +437,7 @@ namespace Badger
 
             if (globalInputDirectory == null)
             {
-                string initialDirectory = Path.Combine(Directory.GetCurrentDirectory(), experimentRelativeDir);
+                string initialDirectory = Path.Combine(Directory.GetCurrentDirectory(), Folders.experimentRelativeDir);
 
                 if (!Directory.Exists(initialDirectory))
                     Directory.CreateDirectory(initialDirectory);
@@ -505,7 +496,7 @@ namespace Badger
             ofd.Filter = description + "|" + extension;
 
             if (globalInputDirectory == null)
-                ofd.InitialDirectory = Path.Combine(Path.GetDirectoryName(Directory.GetCurrentDirectory()), Files.experimentDir);
+                ofd.InitialDirectory = Path.Combine(Path.GetDirectoryName(Directory.GetCurrentDirectory()), Folders.experimentDir);
             else
                 ofd.InitialDirectory = globalInputDirectory;
 
@@ -537,7 +528,7 @@ namespace Badger
             if (globalInputDirectory == null)
             {
                 ofd.InitialDirectory = Path.Combine(Path.GetDirectoryName(Directory.GetCurrentDirectory())
-                    , Files.experimentDir);
+                    , Folders.experimentDir);
             }
             else
                 ofd.InitialDirectory = globalInputDirectory;

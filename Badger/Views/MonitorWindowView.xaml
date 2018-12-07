@@ -81,14 +81,17 @@
 
         <ContentControl x:Name="ShepherdViewModel" Grid.Column="0" Grid.Row="2" Grid.RowSpan="3" Background="White"/>
 
+
         <ListView Grid.Column="2" Grid.Row="4" Background="White"
-                  BorderThickness="0"
-                  ItemsSource="{Binding Path = AllMonitoredJobs}" HorizontalContentAlignment="Stretch">
+                  BorderThickness="0" ItemsSource="{Binding Path = AllMonitoredJobs}">
             <ListView.ItemContainerStyle>
-                <Style TargetType="ListBoxItem">
+                <Style TargetType="ListViewItem">
                     <Setter Property="Padding" Value="0"/>
+                    <Setter Property="Focusable" Value="false"/>
                 </Style>
             </ListView.ItemContainerStyle>
+            
+
             <ListBox.Resources>
                 <DataTemplate DataType="{x:Type vm:MonitoredJobViewModel}">
                     <v:MonitoredJobView />

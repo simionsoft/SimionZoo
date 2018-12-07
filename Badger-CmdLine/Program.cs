@@ -23,7 +23,7 @@ namespace Badger_CmdLine
 
             //load the experiment batch
             Console.WriteLine("Reading batch file: " + batchFilename);
-            LoggedExperimentBatch batch = new LoggedExperimentBatch();
+            ExperimentBatch batch = new ExperimentBatch();
             batch.Load(batchFilename, loadOptions);
             Console.WriteLine("{0} unfinished experimental units loaded", batch.CountExperimentalUnits());
 
@@ -40,7 +40,7 @@ namespace Badger_CmdLine
 
             int i = 0;
             foreach (HerdAgentInfo herdAgent in herdAgents)
-                Console.WriteLine("#{0}: {1}", i, herdAgent.ipAddressString);
+                Console.WriteLine("#{0}: {1}", i, herdAgent.IpAddressString);
         }
     }
 }

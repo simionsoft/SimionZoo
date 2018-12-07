@@ -31,7 +31,7 @@ namespace Herd.Network
     }
 
 
-    public class HerdAgent : JobDispatcher
+    public class HerdAgent : JobTransmitter
     {
         private const int PROCESSOR_ARCHITECTURE_AMD64 = 9;
         private const int PROCESSOR_ARCHITECTURE_IA64 = 6;
@@ -481,7 +481,7 @@ namespace Herd.Network
                 if (xmlItem != "")
                 {
                     string xmlItemContent = inputXMLStream.getLastXMLItemContent();
-                    if (xmlItemContent == JobDispatcher.m_quitMessage)
+                    if (xmlItemContent == JobTransmitter.m_quitMessage)
                     {
                         inputXMLStream.addProcessedBytes(bytes);
                         inputXMLStream.discardProcessedData();
@@ -534,7 +534,7 @@ namespace Herd.Network
                     if (xmlItem != "")
                     {
                         xmlItemContent = m_xmlStream.getLastXMLItemContent();
-                        if (xmlItemContent == JobDispatcher.m_acquireMessage)
+                        if (xmlItemContent == JobTransmitter.m_acquireMessage)
                         {
                             LogMessage("Receiving job data from "
                                 + m_tcpClient.Client.RemoteEndPoint.ToString());
@@ -550,7 +550,7 @@ namespace Herd.Network
                                 if (returnCode == m_noErrorCode || returnCode == m_jobInternalErrorCode)
                                 {
                                     LogMessage("Job finished. Code=" + returnCode );
-                                    await WriteMessageAsync(JobDispatcher.m_endMessage, m_cancelTokenSource.Token, true);
+                                    await WriteMessageAsync(JobTransmitter.m_endMessage, m_cancelTokenSource.Token, true);
 
                                     LogMessage("Sending job results");
                                     //we will have to enqueue async write operations to wait for them to finish before closing the tcpClient
@@ -562,7 +562,7 @@ namespace Herd.Network
                                 else if (returnCode == m_remotelyCancelledErrorCode)
                                 {
                                     LogMessage("The job was remotely cancelled");
-                                    WriteMessage(JobDispatcher.m_errorMessage, false);
+                                    WriteMessage(JobTransmitter.m_errorMessage, false);
                                 }
                             }
                         }
@@ -601,7 +601,7 @@ namespace Herd.Network
                 Byte[] receiveBytes = getUdpClient().EndReceive(ar, ref ip);
                 string receiveString = Encoding.ASCII.GetString(receiveBytes);
 
-                if (receiveString == JobDispatcher.m_discoveryMessage)
+                if (receiveString == JobTransmitter.m_discoveryMessage)
                 {
                     {
                         LogMessage("Agent discovered by " + ip );
@@ -626,7 +626,7 @@ namespace Herd.Network
         public void StartListening()
         {
             //UPD broadcast client
-            m_discoveryClient = new UdpClient(JobDispatcher.m_discoveryPortHerd);
+            m_discoveryClient = new UdpClient(JobTransmitter.m_discoveryPortHerd);
             HerdAgentUdpState state = new HerdAgentUdpState();
             IPEndPoint shepherd = new IPEndPoint(0, 0);
             state.ip = shepherd;
@@ -635,7 +635,7 @@ namespace Herd.Network
 
 
             //TCP communication socket
-            m_listener = new TcpListener(IPAddress.Any, JobDispatcher.m_comPortHerd);
+            m_listener = new TcpListener(IPAddress.Any, JobTransmitter.m_comPortHerd);
             m_listener.Start();
             HerdAgentTcpState tcpState = new HerdAgentTcpState();
             tcpState.ip = shepherd;

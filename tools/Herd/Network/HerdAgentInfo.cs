@@ -16,7 +16,7 @@ namespace Herd.Network
         private IPEndPoint m_ipAddress;
         public IPEndPoint ipAddress { get { return m_ipAddress; } set { m_ipAddress = value; } }
 
-        public string ipAddressString
+        public string IpAddressString
         {
             get
             {
@@ -24,8 +24,8 @@ namespace Herd.Network
             }
         }
 
-        public DateTime lastACK { get { return m_lastACK; } set { m_lastACK = value; } }
-        private DateTime m_lastACK;
+        public DateTime lastACK { get; set; }
+
         private Dictionary<string, string> m_properties;
 
         public HerdAgentInfo()

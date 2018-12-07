@@ -4,14 +4,14 @@ using System.Xml;
 
 namespace Herd.Files
 {
-    public class LoggedFork
+    public class Fork
     {
         public string Name;
 
-        public List<LoggedFork> Forks = new List<LoggedFork>();
-        public List<LoggedForkValue> Values = new List<LoggedForkValue>();
+        public List<Fork> Forks = new List<Fork>();
+        public List<ForkValue> Values = new List<ForkValue>();
 
-        public LoggedFork(XmlNode configNode)
+        public Fork(XmlNode configNode)
         {
             if (configNode.Attributes.GetNamedItem(XMLTags.aliasAttribute) != null)
                 Name = configNode.Attributes[XMLTags.aliasAttribute].Value;
@@ -20,12 +20,12 @@ namespace Herd.Files
             {
                 if (child.Name == XMLTags.forkTag)
                 {
-                    LoggedFork newFork = new LoggedFork(child);
+                    Fork newFork = new Fork(child);
                     Forks.Add(newFork);
                 }
                 else if (child.Name == XMLTags.forkValueTag)
                 {
-                    LoggedForkValue newValue = new LoggedForkValue(child);
+                    ForkValue newValue = new ForkValue(child);
                     Values.Add(newValue);
                 }
             }

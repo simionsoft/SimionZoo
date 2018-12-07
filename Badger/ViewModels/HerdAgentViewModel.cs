@@ -10,13 +10,13 @@ namespace Badger.ViewModels
 {
     public class HerdAgentViewModel : PropertyChangedBase
     {
-        private HerdAgentInfo m_herdAgentInfo;
+        public HerdAgentInfo Info;
         bool m_bLocalAgent = false;
 
         public HerdAgentViewModel(HerdAgentInfo info)
         {
-            m_herdAgentInfo = info;
-            IpAddress = m_herdAgentInfo.ipAddress;
+            Info = info;
+            IpAddress = Info.ipAddress;
 
             //deselect local agent by default
             m_bLocalAgent = IsLocalIpAddress(IpAddressString);
@@ -84,22 +84,22 @@ namespace Badger.ViewModels
 
         public DateTime lastACK
         {
-            get { return m_herdAgentInfo.lastACK; }
-            set { m_herdAgentInfo.lastACK = value; }
+            get { return Info.lastACK; }
+            set { Info.lastACK = value; }
         }
 
-        public string ProcessorId { get { return m_herdAgentInfo.ProcessorId; } }
+        public string ProcessorId { get { return Info.ProcessorId; } }
 
-        public int NumProcessors { get { if (!m_bLocalAgent) return m_herdAgentInfo.NumProcessors; else return m_herdAgentInfo.NumProcessors - 1; } }
+        public int NumProcessors { get { if (!m_bLocalAgent) return Info.NumProcessors; else return Info.NumProcessors - 1; } }
 
-        public string ProcessorArchitecture { get { return m_herdAgentInfo.ProcessorArchitecture; } }
+        public string ProcessorArchitecture { get { return Info.ProcessorArchitecture; } }
 
         public string FormatedProcessorInfo
         {
             get
             {
-                int cpus = m_herdAgentInfo.NumProcessors;
-                string info = m_herdAgentInfo.ProcessorArchitecture + ", ";
+                int cpus = Info.NumProcessors;
+                string info = Info.ProcessorArchitecture + ", ";
                 info += cpus + " Core";
                 if (cpus > 1) info += 's';
                 return info;
@@ -108,24 +108,24 @@ namespace Badger.ViewModels
 
         public string ProcessorLoad
         {
-            get { return m_herdAgentInfo.ProcessorLoad; }
+            get { return Info.ProcessorLoad; }
         }
 
         public string Memory
         {
-            get { return m_herdAgentInfo.Memory; }
+            get { return Info.Memory; }
         }
 
-        public bool IsAvailable { get { return m_herdAgentInfo.IsAvailable; } }
+        public bool IsAvailable { get { return Info.IsAvailable; } }
 
-        public string Version { get { return m_herdAgentInfo.Version; } }
+        public string Version { get { return Info.Version; } }
 
         public string State
         {
-            get { return m_herdAgentInfo.State; }
+            get { return Info.State; }
             set
             {
-                m_herdAgentInfo.State = value;
+                Info.State = value;
                 NotifyOfPropertyChange(() => State);
             }
         }
@@ -134,8 +134,8 @@ namespace Badger.ViewModels
         {
             get
             {
-                if (!m_herdAgentInfo.CUDA.Equals(PropValues.None))
-                    return m_herdAgentInfo.CUDA;
+                if (!Info.CUDA.Equals(PropValues.None))
+                    return Info.CUDA;
 
                 return "Not supported";
             }
@@ -145,7 +145,7 @@ namespace Badger.ViewModels
         {
             get
             {
-                if (!m_herdAgentInfo.CUDA.Equals(PropValues.None))
+                if (!Info.CUDA.Equals(PropValues.None))
                     return "Black";
 
                 return "Tomato";
