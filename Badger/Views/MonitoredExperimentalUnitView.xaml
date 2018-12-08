@@ -3,7 +3,7 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:cal="http://www.caliburnproject.org"
              xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
-             Background="Transparent" Width="250">
+             Background="Transparent" Width="180">
     <UserControl.Resources>
         <BooleanToVisibilityConverter x:Key="BoolToVis" />
     </UserControl.Resources>
@@ -17,13 +17,11 @@
                     FontSize="11" VerticalAlignment="Center" Margin="0" Width="50"/>
             <Button  Margin="2" Width="22" BorderThickness="0" Background="Transparent" Height="20" ToolTip="Show the experimental unit's log"
                         cal:Message.Attach="[Event Click]=[Action ShowLog()]">
-                <!--<Label FontSize="9" Margin="0" Padding="0" >log</Label>-->
                 <Path Data="{StaticResource Notification}" Width="16" Height="16" Canvas.Left="17" Canvas.Top="21" Stretch="Fill" Fill="#89000000" />
 
             </Button>
             
-            <ProgressBar Margin="5" Width="50" Minimum="0" Maximum="100" Value="{Binding Progress}" 
-                        Height="10" Visibility="{Binding Path = IsRunning, Converter = {StaticResource BoolToVis}}" />
+            <ProgressBar Margin="5" Width="40" Minimum="0" Maximum="100" Value="{Binding Progress}" Height="10"/>
 
         </StackPanel>
     </Border>

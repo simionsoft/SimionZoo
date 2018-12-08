@@ -20,7 +20,7 @@ namespace Badger.ViewModels
 
         public string ExperimentFileName => Model.ExperimentFileName;
 
-        public string TaskName { get; set; }
+        public string TaskName => Model.Name;
 
         public List<AppVersion> AppVersions => Model.AppVersions;
 

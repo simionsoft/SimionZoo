@@ -124,11 +124,6 @@ namespace Badger.ViewModels
             m_cancelToken = cancelToken;
             m_logFunction = logFunction;
 
-            //ExperimentalUnit fakeExpUnit = new ExperimentalUnit("Fake as fuck");
-            //MonitoredExperimentalUnitViewModel fakeExp = new MonitoredExperimentalUnitViewModel(fakeExpUnit, evaluationPlot);
-            //fakeExp.State = Monitoring.State.RUNNING;
-            //MonitoredExperimentalUnits.Add(fakeExp);
-
             Monitoring.Dispatcher dispatcher = new Monitoring.Dispatcher( OnAllStatesChanged, OnStateChanged
                 ,OnMessageReceived, OnExperimentalUnitLaunched, logFunction, cancelToken);
             Job job= await Model.SendJobAndMonitor(dispatcher);
