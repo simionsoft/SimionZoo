@@ -164,24 +164,24 @@ namespace Herd.Network
             try
             {
                 //SEND THE JOB DATA
-                dispatcher.AllStatesChanged?.Invoke(Monitoring.State.WAITING_EXECUTION);
+                dispatcher.AllStatesChanged?.Invoke(this, Monitoring.State.WAITING_EXECUTION);
 
                 PrepareForExecution(); // compute inputs/outputs...
 
                 //Let the dispatcher know which experimental units were created
                 foreach(ExperimentalUnit expUnit in ExperimentalUnits)
-                    dispatcher.ExperimentalUnitLaunched?.Invoke(expUnit);
+                    dispatcher.ExperimentalUnitLaunched?.Invoke(this, expUnit);
 
                 bool bConnected = shepherd.ConnectToHerdAgent(HerdAgent.ipAddress);
                 if (bConnected)
                 {
                     dispatcher.Log?.Invoke("Sending job to herd agent " + HerdAgent.ipAddress);
-                    dispatcher.AllStatesChanged?.Invoke(Monitoring.State.SENDING);
+                    dispatcher.AllStatesChanged?.Invoke(this, Monitoring.State.SENDING);
                     
                     shepherd.SendJobQuery(this, dispatcher.CancelToken);
                     dispatcher.Log?.Invoke("Job sent to herd agent " + HerdAgent.ipAddress);
 
-                    dispatcher.AllStatesChanged(Monitoring.State.RUNNING);
+                    dispatcher.AllStatesChanged(this, Monitoring.State.RUNNING);
                 }
                 else
                 {
@@ -189,7 +189,7 @@ namespace Herd.Network
                     ///
                     foreach (ExperimentalUnit exp in ExperimentalUnits) FailedExperimentalUnits.Add(exp);
 
-                    dispatcher.AllStatesChanged?.Invoke(Monitoring.State.ERROR);
+                    dispatcher.AllStatesChanged?.Invoke(this, Monitoring.State.ERROR);
                     dispatcher.Log?.Invoke("Failed to connect to herd agent " + HerdAgent.ipAddress);
 
                     return this;
@@ -215,16 +215,16 @@ namespace Herd.Network
                         {
                             //The message comes from the herd agent, must be sending results
                             dispatcher.Log?.Invoke("Receiving job results");
-                            dispatcher.AllStatesChanged?.Invoke(Monitoring.State.RECEIVING);
+                            dispatcher.AllStatesChanged?.Invoke(this, Monitoring.State.RECEIVING);
 
                             bool bret = await shepherd.ReceiveJobResult(dispatcher.CancelToken);
-                            dispatcher.AllStatesChanged?.Invoke(Monitoring.State.FINISHED);
+                            dispatcher.AllStatesChanged?.Invoke(this, Monitoring.State.FINISHED);
 
                             dispatcher.Log?.Invoke("Job results received");
                             return this;
                         }
                         else //the message comes from an experimental unit, the dispatcher will deal with it
-                            dispatcher.MessageReceived?.Invoke(experimentId, messageId, messageContent);
+                            dispatcher.MessageReceived?.Invoke(this, experimentId, messageId, messageContent);
                         
                         xmlItem = shepherd.m_xmlStream.processNextXMLItem();
                     }
@@ -237,7 +237,7 @@ namespace Herd.Network
                 shepherd.WriteMessage(Shepherd.m_quitMessage, true);
                 await shepherd.readAsync(new CancellationToken()); //we synchronously wait until we get the ack from the client
 
-                dispatcher.AllStatesChanged?.Invoke(Monitoring.State.ENQUEUED);
+                dispatcher.AllStatesChanged?.Invoke(this, Monitoring.State.ENQUEUED);
             }
             catch (Exception ex)
             {

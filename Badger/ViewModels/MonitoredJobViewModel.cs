@@ -13,7 +13,7 @@ namespace Badger.ViewModels
 {
     public class MonitoredJobViewModel: PropertyChangedBase
     {
-        Job Model;
+        Job m_model;
 
         //We keep two references to MonitoredExperimentalUnits:
         //1) In a collection directly bound to the view
@@ -29,8 +29,8 @@ namespace Badger.ViewModels
         Dictionary<string, MonitoredExperimentalUnitViewModel> ViewModelFromName 
             = new Dictionary<string, MonitoredExperimentalUnitViewModel>();
 
-        public HerdAgentInfo HerdAgent => Model.HerdAgent;
-        public string Name => Model.Name;
+        public HerdAgentInfo HerdAgent => m_model.HerdAgent;
+        public string Name => m_model.Name;
 
         public CancellationToken m_cancelToken;
 
@@ -40,12 +40,16 @@ namespace Badger.ViewModels
         private Dictionary<string, int> m_experimentSeriesId = new Dictionary<string, int>();
 
 
-        public MonitoredJobViewModel(Job job)
+        public MonitoredJobViewModel(Job job, PlotViewModel evaluationPlot, CancellationToken cancelToken, Action<string> logFunction)
         {
-            Model = job;
+            m_evaluationPlot = evaluationPlot;
+            m_cancelToken = cancelToken;
+            m_logFunction = logFunction;
+
+            m_model = job;
         }
 
-        void OnMessageReceived(string experimentId, string messageId, string messageContent)
+        public void OnMessageReceived(string experimentId, string messageId, string messageContent)
         {
             MonitoredExperimentalUnitViewModel experimentVM = ViewModelFromName[experimentId];
 
@@ -98,36 +102,23 @@ namespace Badger.ViewModels
             }
         }
 
-        void OnStateChanged(string experimentId, Monitoring.State state)
+        public void OnStateChanged(string experimentId, Monitoring.State state)
         {
             MonitoredExperimentalUnitViewModel experimentVM = ViewModelFromName[experimentId];
             experimentVM.State = state;
         }
 
-        void OnAllStatesChanged(Monitoring.State state)
+        public void OnAllStatesChanged(Monitoring.State state)
         {
             foreach (MonitoredExperimentalUnitViewModel experimentVM in MonitoredExperimentalUnits)
                 experimentVM.State = state;
         }
 
-        void OnExperimentalUnitLaunched(ExperimentalUnit expUnit)
+        public void OnExperimentalUnitLaunched(ExperimentalUnit expUnit)
         {
             MonitoredExperimentalUnitViewModel expUnitVM= new MonitoredExperimentalUnitViewModel(expUnit,m_evaluationPlot);
             ViewModelFromName[expUnit.Name] = expUnitVM;
             MonitoredExperimentalUnits.Add(expUnitVM);
-        }
-
-
-        public async Task<Job> SendJobAndMonitor(PlotViewModel evaluationPlot, CancellationToken cancelToken, Action<string> logFunction)
-        {
-            m_evaluationPlot = evaluationPlot;
-            m_cancelToken = cancelToken;
-            m_logFunction = logFunction;
-
-            Monitoring.Dispatcher dispatcher = new Monitoring.Dispatcher( OnAllStatesChanged, OnStateChanged
-                ,OnMessageReceived, OnExperimentalUnitLaunched, logFunction, cancelToken);
-            Job job= await Model.SendJobAndMonitor(dispatcher);
-            return job;
         }
 
 

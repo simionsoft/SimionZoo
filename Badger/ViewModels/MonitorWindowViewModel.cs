@@ -327,10 +327,47 @@ namespace Badger.ViewModels
 
         Dictionary<Job, MonitoredJobViewModel> ViewModelFromModel = new Dictionary<Job, MonitoredJobViewModel>();
 
+        public void DispatchOnMessageReceived(Job job, string experimentId, string messageId, string messageContent)
+        {
+            MonitoredJobViewModel jobVM = ViewModelFromModel[job];
+            jobVM.OnMessageReceived(experimentId, messageId, messageContent);
+        }
+
+        public void DispatchOnStateChanged(Job job, string experimentId, Monitoring.State state)
+        {
+            MonitoredJobViewModel jobVM = ViewModelFromModel[job];
+            jobVM.OnStateChanged(experimentId, state);
+        }
+
+        public void DispatchOnAllStatesChanged(Job job, Monitoring.State state)
+        {
+            MonitoredJobViewModel jobVM = ViewModelFromModel[job];
+            jobVM.OnAllStatesChanged(state);
+        }
+
+        public void DispatchOnExperimentalUnitLaunched(Job job, ExperimentalUnit expUnit)
+        {
+            MonitoredJobViewModel jobVM = ViewModelFromModel[job];
+            jobVM.OnExperimentalUnitLaunched(expUnit);
+        }
+
+        public void OnJobAssigned(Job job)
+        {
+            MonitoredJobViewModel monitoredJob
+                            = new MonitoredJobViewModel(job, Plot, m_cancelTokenSource.Token, MainWindowViewModel.Instance.LogToFile);
+            AllMonitoredJobs.Insert(0, monitoredJob);
+            ViewModelFromModel[job] = monitoredJob;
+        }
+
+        public void OnJobFinished(Job job)
+        {
+            NumFinishedExperimentalUnitsAfterStart += job.ExperimentalUnits.Count
+            - job.FailedExperimentalUnits.Count;
+        }
+
         public async void RunExperimentsAsync(List<HerdAgentInfo> freeHerdAgents)
         {
-            List<Job> assignedJobs = new List<Job>();
-
+            
             m_timer = new System.Timers.Timer(2000);
             m_timer.Elapsed += ProgressUpdateTimedEvent;
             m_timer.Enabled = true;
@@ -338,100 +375,23 @@ namespace Badger.ViewModels
             IsRunning = true;
             m_cancelTokenSource = new CancellationTokenSource();
 
-            List<Task<Job>> monitoredJobTasks = new List<Task<Job>>();
+            Monitoring.Dispatcher dispatcher
+                = new Monitoring.Dispatcher( OnJobAssigned, OnJobFinished
+                    , DispatchOnAllStatesChanged, DispatchOnStateChanged
+                    , DispatchOnMessageReceived, DispatchOnExperimentalUnitLaunched
+                    , MainWindowViewModel.Instance.LogToFile, m_cancelTokenSource.Token);
 
-            // Assign experiments to free agents
-            Dispatcher.AssignExperiments(ref m_pendingExperiments, ref freeHerdAgents, ref assignedJobs);
+            NumFinishedExperimentalUnitsAfterStart = await Dispatcher.RunExperimentsAsync(m_pendingExperiments, freeHerdAgents, dispatcher, m_cancelTokenSource);
 
-            if (assignedJobs.Count == 0)
-            {
-                CaliburnUtility.ShowWarningDialog("Couldn't find any suitable agent for the experiments", "Error");
-                return;
-            }
+            NumFinishedExperimentalUnitsBeforeStart = NumFinishedExperimentalUnitsAfterStart + NumFinishedExperimentalUnitsBeforeStart;
 
-            try
-            {
-                while ((assignedJobs.Count > 0 || monitoredJobTasks.Count > 0
-                    || m_pendingExperiments.Count > 0) && !m_cancelTokenSource.IsCancellationRequested)
-                {
-                    //Create view-models for the jobs and execute them remotely
-                    foreach (Job job in assignedJobs)
-                    {
-                        MonitoredJobViewModel monitoredJob = new MonitoredJobViewModel(job);
-                        AllMonitoredJobs.Insert(0, monitoredJob);
-                        ViewModelFromModel[job]= monitoredJob;
-                        monitoredJobTasks.Add(monitoredJob.SendJobAndMonitor(Plot, m_cancelTokenSource.Token, MainWindowViewModel.Instance.LogToFile));
-                    }
+            CalculateGlobalProgress();
 
-                    // All pending experiments sent? Then we await completion to retry in case something fails
-                    if (m_pendingExperiments.Count == 0)
-                    {
-                        Task.WhenAll(monitoredJobTasks).Wait();
-                        MainWindowViewModel.Instance.LogToFile("All the experiments have finished");
-                        break;
-                    }
-
-                    // Wait for the first agent to finish and give it something to do
-                    Task<Job> finishedTask = await Task.WhenAny(monitoredJobTasks);
-                    Job finishedTaskResult = await finishedTask;
-                    MainWindowViewModel.Instance.LogToFile("Job finished: " + finishedTaskResult.ToString());
-
-                    if (!m_cancelTokenSource.IsCancellationRequested)
-                        NumFinishedExperimentalUnitsAfterStart += finishedTaskResult.ExperimentalUnits.Count
-                            - finishedTaskResult.FailedExperimentalUnits.Count;
-
-                    monitoredJobTasks.Remove(finishedTask);
-
-                    if (finishedTaskResult.FailedExperimentalUnits.Count > 0)
-                    {
-                        m_pendingExperiments.AddRange(finishedTaskResult.FailedExperimentalUnits);
-                        MainWindowViewModel.Instance.LogToFile(finishedTaskResult.FailedExperimentalUnits.Count + " failed experiments enqueued again for further trials");
-                    }
-
-                    // Add the herd agent to the free agent list
-                    if (!freeHerdAgents.Contains(finishedTaskResult.HerdAgent))
-                        freeHerdAgents.Add(finishedTaskResult.HerdAgent);
-
-                    // Assign experiments to free agents
-                    if (!m_cancelTokenSource.IsCancellationRequested)
-                        Dispatcher.AssignExperiments(ref m_pendingExperiments, ref freeHerdAgents, ref assignedJobs);
-                }
-            }
-            catch (Exception ex)
-            {
-                MainWindowViewModel.Instance.LogToFile("Exception in runExperimentQueueRemotely()");
-                MainWindowViewModel.Instance.LogToFile(ex.StackTrace);
-            }
-            finally
-            {
-                if (m_cancelTokenSource.IsCancellationRequested)
-                {
-                    //the user cancelled, need to add unfinished experimental units to the pending list
-                    foreach (Job job in assignedJobs)
-                        m_pendingExperiments.AddRange(job.ExperimentalUnits);
-                    CalculateGlobalProgress();
-                }
-                else
-                {
-                    foreach (Task<Job> job in monitoredJobTasks)
-                    {
-                        NumFinishedExperimentalUnitsAfterStart += job.Result.ExperimentalUnits.Count
-                            - job.Result.FailedExperimentalUnits.Count;
-                        CalculateGlobalProgress();
-                    }
-                }
-
-                int finishedThisRun = NumFinishedExperimentalUnitsAfterStart;
-                int finishedBeforeThisRun = NumFinishedExperimentalUnitsBeforeStart;
-                NumFinishedExperimentalUnitsBeforeStart = finishedThisRun + finishedBeforeThisRun;
-                NumFinishedExperimentalUnitsAfterStart = 0;
-
-                if (m_pendingExperiments.Count == 0)
-                    IsFinished = true; // used to enable the "View reports" button
-
-                IsRunning = false;
-                m_cancelTokenSource.Dispose();
-            }
+            NumFinishedExperimentalUnitsAfterStart = 0;
+ 
+            IsFinished = true; // used to enable the "View reports" button
+            IsRunning = false;
+            m_cancelTokenSource.Dispose();
         }
 
 

@@ -159,7 +159,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NamedPipeConsoleClient", "t
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HerdAgentInfo", "tests\Badger\Herd\HerdAgentInfo.csproj", "{176442D2-6B49-484A-B076-126DCDFE3450}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Badger-CmdLine", "Badger-CmdLine\Badger-CmdLine.csproj", "{4A0A4634-66FC-47A3-A6B7-C1A53158E9C7}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BadgerConsole", "Badger-CmdLine\BadgerConsole.csproj", "{4A0A4634-66FC-47A3-A6B7-C1A53158E9C7}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

@@ -12,25 +12,25 @@ namespace Badger.ViewModels
 {
     public class MonitoredExperimentalUnitViewModel : PropertyChangedBase
     {
-        private ExperimentalUnit Model;
+        private ExperimentalUnit m_model;
 
         public string PipeName { get; set; }
 
-        public string Name => Model.Name;
+        public string Name => m_model.Name;
 
-        public string ExperimentFileName => Model.ExperimentFileName;
+        public string ExperimentFileName => m_model.ExperimentFileName;
 
-        public string TaskName => Model.Name;
+        public string TaskName => m_model.Name;
 
-        public List<AppVersion> AppVersions => Model.AppVersions;
+        public List<AppVersion> AppVersions => m_model.AppVersions;
 
-        public AppVersion SelectedVersion => Model.SelectedVersion;
+        public AppVersion SelectedVersion => m_model.SelectedVersion;
 
         public List<string> Forks
         {
             get
             {
-                return Model.ForkValues.Select(k => k.Key + ": " + k.Value).ToList();
+                return m_model.ForkValues.Select(k => k.Key + ": " + k.Value).ToList();
             }
         }
         public string ForksAsString
@@ -144,8 +144,8 @@ namespace Badger.ViewModels
         /// <param name="plot">The plot used to monitor data</param
         public MonitoredExperimentalUnitViewModel(ExperimentalUnit expUnit, PlotViewModel plot)
         {
-            Model = expUnit;
-            PipeName = Model.Name;
+            m_model = expUnit;
+            PipeName = m_model.Name;
             m_plotEvaluationMonitor = plot;
         }
 

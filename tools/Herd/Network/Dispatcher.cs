@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Threading;
+using System.Threading.Tasks;
 using Herd.Files;
 
 namespace Herd.Network
@@ -65,6 +67,90 @@ namespace Herd.Network
             }
             //now we can remove used agents from the list
             foreach (HerdAgentInfo agent in usedHerdAgents) freeHerdAgents.Remove(agent);
+        }
+
+        public static async Task<int> RunExperimentsAsync(List<ExperimentalUnit> experiments, List<HerdAgentInfo> freeHerdAgents
+            , Monitoring.Dispatcher dispatcher
+            , CancellationTokenSource cancellationTokenSource)
+        {
+            List<Job> assignedJobs = new List<Job>();
+            List<Task<Job>> monitoredJobTasks = new List<Task<Job>>();
+            int numExperimentalUnitsRun = 0;
+
+
+            // Assign experiments to free agents
+            Dispatcher.AssignExperiments(ref experiments, ref freeHerdAgents, ref assignedJobs);
+
+            if (assignedJobs.Count == 0)
+                return 0;
+            try
+            {
+                while ((assignedJobs.Count > 0 || monitoredJobTasks.Count > 0
+                    || experiments.Count > 0) && !cancellationTokenSource.IsCancellationRequested)
+                {
+                    //Create view-models for the jobs and execute them remotely
+                    foreach (Job job in assignedJobs)
+                    {
+                        dispatcher.JobAssigned?.Invoke(job);
+                        
+                        monitoredJobTasks.Add(job.SendJobAndMonitor(dispatcher));
+                    }
+
+                    // All pending experiments sent? Then we await completion to retry in case something fails
+                    if (experiments.Count == 0)
+                    {
+                        Task.WhenAll(monitoredJobTasks).Wait();
+                        dispatcher.Log?.Invoke("All the experiments have finished");
+                        break;
+                    }
+
+                    // Wait for the first agent to finish and give it something to do
+                    Task<Job> finishedTask = await Task.WhenAny(monitoredJobTasks);
+                    Job finishedJob = await finishedTask;
+                    dispatcher.Log?.Invoke("Job finished: " + finishedJob.ToString());
+
+                    //A job finished
+                    monitoredJobTasks.Remove(finishedTask);
+
+                    if (!cancellationTokenSource.IsCancellationRequested)
+                        dispatcher.JobFinished?.Invoke(finishedJob);
+
+
+                    if (finishedJob.FailedExperimentalUnits.Count > 0)
+                    {
+                        experiments.AddRange(finishedJob.FailedExperimentalUnits);
+                        dispatcher.Log?.Invoke(finishedJob.FailedExperimentalUnits.Count + " failed experiments enqueued again for further trials");
+                    }
+
+                    // Add the herd agent to the free agent list
+                    if (!freeHerdAgents.Contains(finishedJob.HerdAgent))
+                        freeHerdAgents.Add(finishedJob.HerdAgent);
+
+                    // Assign experiments to free agents
+                    if (!cancellationTokenSource.IsCancellationRequested)
+                        Dispatcher.AssignExperiments(ref experiments, ref freeHerdAgents, ref assignedJobs);
+                }
+            }
+            catch (Exception ex)
+            {
+                dispatcher.Log?.Invoke("Exception in runExperimentQueueRemotely()");
+                dispatcher.Log?.Invoke(ex.StackTrace);
+            }
+            finally
+            {
+                if (cancellationTokenSource.IsCancellationRequested)
+                {
+                    //the user cancelled, need to add unfinished experimental units to the pending list
+                    foreach (Job job in assignedJobs)
+                        experiments.AddRange(job.ExperimentalUnits);
+                }
+                else
+                {
+                    foreach (Task<Job> job in monitoredJobTasks)
+                        numExperimentalUnitsRun += job.Result.ExperimentalUnits.Count - job.Result.FailedExperimentalUnits.Count;
+                }
+            }
+            return numExperimentalUnitsRun;
         }
 
         static ExperimentalUnit FirstFittingExperiment(List<ExperimentalUnit> pendingExperiments, int numFreeCores, bool bAgentUsed, HerdAgentInfo agent)

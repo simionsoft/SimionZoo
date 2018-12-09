@@ -19,17 +19,24 @@ namespace Herd.Network
 
         public class Dispatcher
         {
-            public CancellationToken CancelToken;
-            public Action<State> AllStatesChanged;
-            public Action<string, State> StateChanged;
-            public Action<string, string, string> MessageReceived;
             public Action<string> Log;
-            public Action<ExperimentalUnit> ExperimentalUnitLaunched;
+            public CancellationToken CancelToken;
 
-            public Dispatcher(Action<State> onAllStatesChanged, Action<string, State> onStateChanged, Action<string, string, string> onMessageReceived
-                , Action<ExperimentalUnit> onExperimentalUnitLaunched
+            public Action<Job, State> AllStatesChanged;
+            public Action<Job, string, State> StateChanged;
+            public Action<Job, string, string, string> MessageReceived;
+            public Action<Job, ExperimentalUnit> ExperimentalUnitLaunched;
+            public Action<Job> JobAssigned;
+            public Action<Job> JobFinished;
+
+            public Dispatcher( Action<Job> onJobAssigned, Action<Job> onJobFinished
+                , Action<Job, State> onAllStatesChanged, Action<Job, string, State> onStateChanged
+                , Action<Job, string, string, string> onMessageReceived
+                , Action<Job, ExperimentalUnit> onExperimentalUnitLaunched
                 , Action<string> logFunction, CancellationToken cancelToken)
             {
+                JobAssigned = onJobAssigned;
+                JobFinished = onJobFinished;
                 AllStatesChanged = onAllStatesChanged;
                 StateChanged = onStateChanged;
                 MessageReceived = onMessageReceived;
