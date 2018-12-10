@@ -149,7 +149,7 @@ namespace Herd.Network
                                 IPEndPoint local = new IPEndPoint(uip.Address, m_discoveryPortHerd);
                                 UdpClient udpClient = new UdpClient(local);
                                 udpClient.Client.SetSocketOption(SocketOptionLevel.Socket, SocketOptionName.Broadcast, 1);
-                                udpClient.Client.SetSocketOption(SocketOptionLevel.Socket, SocketOptionName.DontRoute, 1);
+                                //udpClient.Client.SetSocketOption(SocketOptionLevel.Socket, SocketOptionName.DontRoute, 1);
                                 m_broadcastInterfacesUdpClients.Add(udpClient);
                             }
                         }

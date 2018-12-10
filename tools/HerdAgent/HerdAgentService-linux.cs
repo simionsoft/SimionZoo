@@ -1,4 +1,5 @@
 ﻿using System.Threading;
+using Herd.Network;
 
 namespace Herd
 {

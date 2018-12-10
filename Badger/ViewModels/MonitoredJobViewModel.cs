@@ -58,11 +58,11 @@ namespace Badger.ViewModels
 
             switch (messageId)
             {
-                case "Progress":
+                case Dispatcher.ProgressMessage:
                     double progress = double.Parse(messageContent, CultureInfo.InvariantCulture);
                     experimentVM.Progress = Convert.ToInt32(progress);
                     break;
-                case "Evaluation":
+                case Dispatcher.EvaluationMessage:
                     //<Evaluation>0.0,-1.23</Evaluation>
                     string[] values = messageContent.Split(',');
                     string seriesName = experimentVM.Name;
@@ -80,11 +80,11 @@ namespace Badger.ViewModels
                             , double.Parse(values[1], CultureInfo.InvariantCulture));
                     }
                     break;
-                case "Message":
+                case Dispatcher.GeneralMessage:
                     experimentVM.AddStatusInfoLine(messageContent);
                     break;
-                case "End":
-                    if (messageContent == "Ok")
+                case Dispatcher.EndMessage:
+                    if (messageContent == Dispatcher.EndMessageOk)
                     {
                         m_logFunction?.Invoke("Job finished sucessfully");
                         experimentVM.State = Monitoring.State.WAITING_RESULT;

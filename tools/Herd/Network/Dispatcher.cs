@@ -8,6 +8,13 @@ namespace Herd.Network
 {
     public class Dispatcher
     {
+        public const string ProgressMessage = "Progress";
+        public const string EvaluationMessage = "Evaluation";
+        public const string GeneralMessage = "Message";
+        public const string EndMessage = "End";
+
+        public const string EndMessageOk = "Ok";
+
         static int jobId = 0;
         /// <summary>
         ///     Assigns experiments to availables herd agents.
@@ -162,10 +169,10 @@ namespace Herd.Network
                 {
                     //run-time requirements are calculated when a version is selected
                     experiment.SelectedVersion = agent.BestMatch(experiment.AppVersions);
-                    experiment.GetRuntimeRequirements(experiment.SelectedVersion, experiment.AppVersions);
+                    if (experiment.SelectedVersion == null) return null;
 
-                    if (experiment.RunTimeReqs == null)
-                        return null;
+                    experiment.GetRuntimeRequirements(experiment.SelectedVersion, experiment.AppVersions);
+                    if (experiment.RunTimeReqs == null) return null;
 
 
                     //Check that the version chosen for the agent supports the architecture requested by the run-time 

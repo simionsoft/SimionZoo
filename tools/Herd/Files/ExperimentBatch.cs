@@ -83,16 +83,14 @@ namespace Herd.Files
                                     string baseDirectory = Utils.GetDirectory(batchFilename);
                                     string logDescPath = Utils.GetLogFilePath(baseDirectory + expUnitPath, true);
                                     string logPath = Utils.GetLogFilePath(baseDirectory + expUnitPath, false);
-                                    if (File.Exists(logDescPath))
-                                    {
+                                    bool logDescExists = File.Exists(logDescPath);
+                                    bool logExists = File.Exists(logPath);
+                                    if (logExists || logDescExists)
                                         counter++;
+                                    if ( logDescExists )
                                         File.Delete(logDescPath);
-                                    }
-                                    if (File.Exists(logPath))
-                                    {
-                                        counter++;
+                                    if ( logExists )
                                         File.Delete(logPath);
-                                    }
                                 }
                             }
                         }

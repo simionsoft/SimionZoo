@@ -17,7 +17,7 @@
     </Requirements>
   </Version>
   <Version Name="Linux-x64">
-    <Exe>../bin/RLSimion-linux-x64.out</Exe>
+    <Exe>../bin/RLSimion-linux-x64.exe</Exe>
     <Requirements>
       <Architecture>Linux-64</Architecture>
     </Requirements>
