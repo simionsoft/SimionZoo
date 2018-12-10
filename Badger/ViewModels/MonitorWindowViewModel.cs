@@ -375,13 +375,13 @@ namespace Badger.ViewModels
             IsRunning = true;
             m_cancelTokenSource = new CancellationTokenSource();
 
-            Monitoring.Dispatcher dispatcher
-                = new Monitoring.Dispatcher( OnJobAssigned, OnJobFinished
+            Monitoring.MsgDispatcher dispatcher
+                = new Monitoring.MsgDispatcher( OnJobAssigned, OnJobFinished
                     , DispatchOnAllStatesChanged, DispatchOnStateChanged
                     , DispatchOnMessageReceived, DispatchOnExperimentalUnitLaunched
                     , MainWindowViewModel.Instance.LogToFile, m_cancelTokenSource.Token);
 
-            NumFinishedExperimentalUnitsAfterStart = await Dispatcher.RunExperimentsAsync(m_pendingExperiments, freeHerdAgents, dispatcher, m_cancelTokenSource);
+            NumFinishedExperimentalUnitsAfterStart = await JobDispatcher.RunExperimentsAsync(m_pendingExperiments, freeHerdAgents, dispatcher, m_cancelTokenSource);
 
             NumFinishedExperimentalUnitsBeforeStart = NumFinishedExperimentalUnitsAfterStart + NumFinishedExperimentalUnitsBeforeStart;
 

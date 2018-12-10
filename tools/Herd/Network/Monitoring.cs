@@ -17,7 +17,7 @@ namespace Herd.Network
         public delegate void AllStatesChangedCallback(State state);
         public delegate void MessageReceivedCallback(string expUnitName, string messageId, string messageContent);
 
-        public class Dispatcher
+        public class MsgDispatcher
         {
             public Action<string> Log;
             public CancellationToken CancelToken;
@@ -29,7 +29,7 @@ namespace Herd.Network
             public Action<Job> JobAssigned;
             public Action<Job> JobFinished;
 
-            public Dispatcher( Action<Job> onJobAssigned, Action<Job> onJobFinished
+            public MsgDispatcher( Action<Job> onJobAssigned, Action<Job> onJobFinished
                 , Action<Job, State> onAllStatesChanged, Action<Job, string, State> onStateChanged
                 , Action<Job, string, string, string> onMessageReceived
                 , Action<Job, ExperimentalUnit> onExperimentalUnitLaunched

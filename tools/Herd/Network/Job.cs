@@ -156,7 +156,7 @@ namespace Herd.Network
         }
 
         //Remote execution and monitoring of the job
-        public async Task<Job> SendJobAndMonitor(Monitoring.Dispatcher dispatcher)
+        public async Task<Job> SendJobAndMonitor(Monitoring.MsgDispatcher dispatcher)
         {
             Shepherd shepherd = new Shepherd();
             shepherd.SetLogMessageHandler(dispatcher.Log);

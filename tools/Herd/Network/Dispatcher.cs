@@ -6,7 +6,7 @@ using Herd.Files;
 
 namespace Herd.Network
 {
-    public class Dispatcher
+    public class JobDispatcher
     {
         public const string ProgressMessage = "Progress";
         public const string EvaluationMessage = "Evaluation";
@@ -77,7 +77,7 @@ namespace Herd.Network
         }
 
         public static async Task<int> RunExperimentsAsync(List<ExperimentalUnit> experiments, List<HerdAgentInfo> freeHerdAgents
-            , Monitoring.Dispatcher dispatcher
+            , Monitoring.MsgDispatcher dispatcher
             , CancellationTokenSource cancellationTokenSource)
         {
             List<Job> assignedJobs = new List<Job>();
@@ -86,7 +86,7 @@ namespace Herd.Network
 
 
             // Assign experiments to free agents
-            Dispatcher.AssignExperiments(ref experiments, ref freeHerdAgents, ref assignedJobs);
+            JobDispatcher.AssignExperiments(ref experiments, ref freeHerdAgents, ref assignedJobs);
 
             if (assignedJobs.Count == 0)
                 return 0;
@@ -107,6 +107,8 @@ namespace Herd.Network
                     if (experiments.Count == 0)
                     {
                         Task.WhenAll(monitoredJobTasks).Wait();
+                        foreach (Task<Job> task in monitoredJobTasks)
+                            dispatcher.JobFinished?.Invoke(task.Result);
                         dispatcher.Log?.Invoke("All the experiments have finished");
                         break;
                     }
@@ -118,6 +120,7 @@ namespace Herd.Network
 
                     //A job finished
                     monitoredJobTasks.Remove(finishedTask);
+                    numExperimentalUnitsRun += finishedJob.ExperimentalUnits.Count;
 
                     if (!cancellationTokenSource.IsCancellationRequested)
                         dispatcher.JobFinished?.Invoke(finishedJob);
@@ -135,7 +138,7 @@ namespace Herd.Network
 
                     // Assign experiments to free agents
                     if (!cancellationTokenSource.IsCancellationRequested)
-                        Dispatcher.AssignExperiments(ref experiments, ref freeHerdAgents, ref assignedJobs);
+                        JobDispatcher.AssignExperiments(ref experiments, ref freeHerdAgents, ref assignedJobs);
                 }
             }
             catch (Exception ex)

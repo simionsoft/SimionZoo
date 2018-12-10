@@ -61,7 +61,7 @@ namespace AssignExperiments
             List<MonitoredJob> assignedJobs = new List<MonitoredJob>();
 
             //Assign experiments
-            Dispatcher.AssignExperiments(ref pendingExperiments, ref herdAgents, ref assignedJobs);
+            JobDispatcher.AssignExperiments(ref pendingExperiments, ref herdAgents, ref assignedJobs);
 
             //Check everything went as expected
             Assert.IsTrue(assignedJobs.Count == 3);
@@ -137,7 +137,7 @@ namespace AssignExperiments
             List<MonitoredJob> assignedJobs = new List<MonitoredJob>();
 
             //Assign experiments
-            Dispatcher.AssignExperiments(ref pendingExperiments, ref herdAgents, ref assignedJobs);
+            JobDispatcher.AssignExperiments(ref pendingExperiments, ref herdAgents, ref assignedJobs);
 
             //Check everything went as expected
             Assert.IsTrue(assignedJobs.Count == 1);
@@ -207,7 +207,7 @@ namespace AssignExperiments
             List<MonitoredJob> assignedJobs = new List<MonitoredJob>();
 
             //Assign experiments
-            Dispatcher.AssignExperiments(ref pendingExperiments, ref herdAgents, ref assignedJobs);
+            JobDispatcher.AssignExperiments(ref pendingExperiments, ref herdAgents, ref assignedJobs);
 
             //Check everything went as expected
             Assert.IsTrue(assignedJobs.Count == 2);
@@ -281,7 +281,7 @@ namespace AssignExperiments
             List<MonitoredJob> assignedJobs = new List<MonitoredJob>();
 
             //Assign experiments
-            Dispatcher.AssignExperiments(ref pendingExperiments, ref herdAgents, ref assignedJobs);
+            JobDispatcher.AssignExperiments(ref pendingExperiments, ref herdAgents, ref assignedJobs);
 
             //Check everything went as expected
             Assert.IsTrue(assignedJobs.Count == 2);
