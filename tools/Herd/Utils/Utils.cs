@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
+using System.Security.AccessControl;
+using System.Security.Principal;
 
 using Herd.Files;
 
@@ -10,6 +12,23 @@ namespace Herd
 {
     public class Utils
     {
+        public static bool GrantFileAllAccess(string filename)
+        {
+            try
+            {
+                FileInfo fileInfo = new FileInfo(filename);
+                FileSecurity fileSecurity = fileInfo.GetAccessControl();
+                fileSecurity.AddAccessRule(new FileSystemAccessRule(new SecurityIdentifier(WellKnownSidType.WorldSid, null)
+                        , FileSystemRights.FullControl, InheritanceFlags.ObjectInherit | InheritanceFlags.ContainerInherit
+                        , PropagationFlags.NoPropagateInherit, AccessControlType.Allow));
+                fileInfo.SetAccessControl(fileSecurity);
+            }
+            catch
+            {
+                return false;
+            }
+            return true;
+        }
 
         static public string GetLogFilePath(string experimentFilePath, bool descriptor = true)
         {

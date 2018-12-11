@@ -6,6 +6,8 @@ using NetFwTypeLib;
 using System;
 using System.ServiceProcess;
 
+using Herd.Network;
+
 namespace Herd
 {
     [RunInstaller(true)]

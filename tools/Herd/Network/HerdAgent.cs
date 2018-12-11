@@ -14,6 +14,9 @@ using System.Security.Authentication;
 using System.Globalization;
 using System.Net.NetworkInformation;
 using System.Reflection;
+using System.Security;
+using System.Security.AccessControl;
+using System.Security.Principal;
 
 namespace Herd.Network
 {
@@ -135,6 +138,20 @@ namespace Herd.Network
             LogToFile("Waiting for job footer");
             bret = await ReceiveJobFooter(cancelToken);
             LogToFile("Job footer received");
+
+
+            //Grant execution permission to exe files
+            if (CPUArchitecture == PropValues.Linux64 || CPUArchitecture == PropValues.Linux32)
+            {
+                foreach (HerdTask task in m_job.Tasks)
+                {
+                    string exeFilename = m_job.RenamedFilename(task.Exe);
+
+                    if (!Utils.GrantFileAllAccess(exeFilename))
+                        LogToFile("Error: granted full access permission to " + exeFilename);
+                    else LogToFile("Succesfully granted full access permission to " + exeFilename);
+                }
+            }
 
             return true;
         }
@@ -609,11 +626,14 @@ namespace Herd.Network
                         byte[] data = Encoding.ASCII.GetBytes(agentDescription);
                         getUdpClient().Send(data, data.Length, ip);
                     }
-                    //else logMessage("Agent contacted by " + ip.ToString() + " but rejected connection because it was busy");
                 }
                 else LogMessage("Message received by " + ip + " not understood: " + receiveString);
 
                 getUdpClient().BeginReceive(new AsyncCallback(DiscoveryCallback), ar.AsyncState);
+            }
+            catch (OperationCanceledException)
+            {
+                LogMessage("DiscoveryCallback function cancelled");
             }
             catch (Exception ex)
             {

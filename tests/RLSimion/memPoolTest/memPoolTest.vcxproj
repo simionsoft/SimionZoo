@@ -164,9 +164,6 @@
     <ProjectReference Include="..\..\..\RLSimion-Lib\RL-Lib.vcxproj">
       <Project>{a97cfeac-dbe2-433c-9454-6d1d2749c591}</Project>
     </ProjectReference>
-    <ProjectReference Include="..\..\..\tools\WindowsUtils\WindowsUtils.vcxproj">
-      <Project>{f32419bf-f083-4552-aa39-610898f34dbb}</Project>
-    </ProjectReference>
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets" />

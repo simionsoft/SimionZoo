@@ -231,6 +231,9 @@
     <ClInclude Include="xml-load.h" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\..\3rd-party\SOIL\projects\SOIL.vcxproj">
+      <Project>{c32fb2b4-500c-43cd-a099-eecce079d3f1}</Project>
+    </ProjectReference>
     <ProjectReference Include="..\GeometryLib\GeometryLib.vcxproj">
       <Project>{aabae018-c8f6-4865-a0f9-e8e46da55a2d}</Project>
     </ProjectReference>

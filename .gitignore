@@ -279,6 +279,7 @@ $RECYCLE.BIN/
 !bin/TurbSim.exe
 !bin/msvcp140.dll
 !bin/vcruntime140.dll
-
+!bin/HerdAgentInstaller-linux.sh
+!bin/herd-agent-daemon
 
 *.functions

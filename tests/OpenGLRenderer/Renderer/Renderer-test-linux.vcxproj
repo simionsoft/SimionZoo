@@ -34,15 +34,15 @@
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <RemoteProjectDir>$(RemoteRootDir)/SimionZoo/tests/OpenGLRenderer/Renderer-test</RemoteProjectDir>
-    <OutDir>$(SolutionDir)debug/</OutDir>
-    <TargetName>$(ProjectName)-$(Platform)</TargetName>
+    <OutDir>$(ProjectDir)Debug/</OutDir>
+    <TargetName>RendererTest</TargetName>
     <AdditionalSourcesToCopyMapping>
     </AdditionalSourcesToCopyMapping>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <RemoteProjectDir>$(RemoteRootDir)/SimionZoo/tests/OpenGLRenderer/Renderer-test</RemoteProjectDir>
-    <OutDir>$(SolutionDir)bin/</OutDir>
-    <TargetName>$(ProjectName)-$(Platform)</TargetName>
+    <OutDir>$(ProjectDir)bin/</OutDir>
+    <TargetName>RendererTest</TargetName>
   </PropertyGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp" />

@@ -35,7 +35,7 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <RemoteProjectDir>$(RemoteRootDir)/SimionZoo/RLSimion/</RemoteProjectDir>
     <TargetName>$(ProjectName)-$(Platform)</TargetName>
-    <OutDir>$(SolutionDir)debug/</OutDir>
+    <OutDir>$(SolutionDir)Debug/</OutDir>
     <IntDir>$(ProjectDir)obj/$(Platform)/$(Configuration)/</IntDir>
     <TargetExt>.exe</TargetExt>
   </PropertyGroup>
@@ -44,6 +44,7 @@
     <OutDir>$(SolutionDir)bin/</OutDir>
     <RemoteProjectDir>$(RemoteRootDir)/SimionZoo/RLSimion/</RemoteProjectDir>
     <TargetExt>.exe</TargetExt>
+    <IntDir>$(ProjectDir)obj/$(Platform)/$(Configuration)\</IntDir>
   </PropertyGroup>
   <ItemGroup>
     <Text Include="ReadMe.txt" />

@@ -30,9 +30,11 @@ namespace Herd.Files
         /// Minimal constructor for testing
         /// </summary>
         /// <param name="name"></param>
-        public ExperimentalUnit(string name)
+        public ExperimentalUnit(string name, List<AppVersion> appVersions, RunTimeRequirements runTimeRequirements)
         {
             Name = name;
+            AppVersions = appVersions;
+            RunTimeReqs = runTimeRequirements;
         }
 
         /// <summary>

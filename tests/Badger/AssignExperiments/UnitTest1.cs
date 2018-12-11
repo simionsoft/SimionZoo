@@ -45,20 +45,20 @@ namespace AssignExperiments
             RunTimeRequirements cores_2 = new RunTimeRequirements(2);
             RunTimeRequirements cores_1 = new RunTimeRequirements(1);
             //create fake experiments
-            List<MonitoredExperimentalUnit> pendingExperiments = new List<MonitoredExperimentalUnit>()
+            List<ExperimentalUnit> pendingExperiments = new List<ExperimentalUnit>()
             {
-                new MonitoredExperimentalUnit("Experiment-1", appVersions, cores_all),
-                new MonitoredExperimentalUnit("Experiment-2", appVersions, cores_1),
-                new MonitoredExperimentalUnit("Experiment-3", appVersions, cores_2),
-                new MonitoredExperimentalUnit("Experiment-4", appVersions, cores_1),
-                new MonitoredExperimentalUnit("Experiment-5", appVersions, cores_all),
-                new MonitoredExperimentalUnit("Experiment-6", appVersions, cores_1),
-                new MonitoredExperimentalUnit("Experiment-7", appVersions, cores_1),
-                new MonitoredExperimentalUnit("Experiment-8", appVersions, cores_1)
+                new ExperimentalUnit("Experiment-1", appVersions, cores_all),
+                new ExperimentalUnit("Experiment-2", appVersions, cores_1),
+                new ExperimentalUnit("Experiment-3", appVersions, cores_2),
+                new ExperimentalUnit("Experiment-4", appVersions, cores_1),
+                new ExperimentalUnit("Experiment-5", appVersions, cores_all),
+                new ExperimentalUnit("Experiment-6", appVersions, cores_1),
+                new ExperimentalUnit("Experiment-7", appVersions, cores_1),
+                new ExperimentalUnit("Experiment-8", appVersions, cores_1)
             };
 
             //create output list to receive assigned jobs
-            List<MonitoredJob> assignedJobs = new List<MonitoredJob>();
+            List<Job> assignedJobs = new List<Job>();
 
             //Assign experiments
             JobDispatcher.AssignExperiments(ref pendingExperiments, ref herdAgents, ref assignedJobs);
@@ -121,20 +121,20 @@ namespace AssignExperiments
             RunTimeRequirements cores_2 = new RunTimeRequirements(2);
             RunTimeRequirements cores_1 = new RunTimeRequirements(1);
             //create fake experiments
-            List<MonitoredExperimentalUnit> pendingExperiments = new List<MonitoredExperimentalUnit>()
+            List<ExperimentalUnit> pendingExperiments = new List<ExperimentalUnit>()
             {
-                new MonitoredExperimentalUnit("Experiment-1", appVersions, cores_all),
-                new MonitoredExperimentalUnit("Experiment-2", appVersions, cores_1),
-                new MonitoredExperimentalUnit("Experiment-3", appVersions, cores_2),
-                new MonitoredExperimentalUnit("Experiment-4", appVersions, cores_1),
-                new MonitoredExperimentalUnit("Experiment-5", appVersions, cores_all),
-                new MonitoredExperimentalUnit("Experiment-6", appVersions, cores_1),
-                new MonitoredExperimentalUnit("Experiment-7", appVersions, cores_1),
-                new MonitoredExperimentalUnit("Experiment-8", appVersions, cores_1)
+                new ExperimentalUnit("Experiment-1", appVersions, cores_all),
+                new ExperimentalUnit("Experiment-2", appVersions, cores_1),
+                new ExperimentalUnit("Experiment-3", appVersions, cores_2),
+                new ExperimentalUnit("Experiment-4", appVersions, cores_1),
+                new ExperimentalUnit("Experiment-5", appVersions, cores_all),
+                new ExperimentalUnit("Experiment-6", appVersions, cores_1),
+                new ExperimentalUnit("Experiment-7", appVersions, cores_1),
+                new ExperimentalUnit("Experiment-8", appVersions, cores_1)
             };
 
             //create output list to receive assigned jobs
-            List<MonitoredJob> assignedJobs = new List<MonitoredJob>();
+            List<Job> assignedJobs = new List<Job>();
 
             //Assign experiments
             JobDispatcher.AssignExperiments(ref pendingExperiments, ref herdAgents, ref assignedJobs);
@@ -191,20 +191,20 @@ namespace AssignExperiments
             RunTimeRequirements cores_5 = new RunTimeRequirements(5);
 
             //create fake experiments
-            List<MonitoredExperimentalUnit> pendingExperiments = new List<MonitoredExperimentalUnit>()
+            List<ExperimentalUnit> pendingExperiments = new List<ExperimentalUnit>()
             {
-                new MonitoredExperimentalUnit("Experiment-1", appVersions, cores_5),
-                new MonitoredExperimentalUnit("Experiment-2", appVersions, cores_5),
-                new MonitoredExperimentalUnit("Experiment-3", appVersions, cores_5),
-                new MonitoredExperimentalUnit("Experiment-4", appVersions, cores_2),
-                new MonitoredExperimentalUnit("Experiment-5", appVersions, cores_3),
-                new MonitoredExperimentalUnit("Experiment-6", appVersions, cores_5),
-                new MonitoredExperimentalUnit("Experiment-7", appVersions, cores_2),
-                new MonitoredExperimentalUnit("Experiment-8", appVersions, cores_5)
+                new ExperimentalUnit("Experiment-1", appVersions, cores_5),
+                new ExperimentalUnit("Experiment-2", appVersions, cores_5),
+                new ExperimentalUnit("Experiment-3", appVersions, cores_5),
+                new ExperimentalUnit("Experiment-4", appVersions, cores_2),
+                new ExperimentalUnit("Experiment-5", appVersions, cores_3),
+                new ExperimentalUnit("Experiment-6", appVersions, cores_5),
+                new ExperimentalUnit("Experiment-7", appVersions, cores_2),
+                new ExperimentalUnit("Experiment-8", appVersions, cores_5)
             };
 
             //create output list to receive assigned jobs
-            List<MonitoredJob> assignedJobs = new List<MonitoredJob>();
+            List<Job> assignedJobs = new List<Job>();
 
             //Assign experiments
             JobDispatcher.AssignExperiments(ref pendingExperiments, ref herdAgents, ref assignedJobs);
@@ -265,20 +265,20 @@ namespace AssignExperiments
             RunTimeRequirements cores_2 = new RunTimeRequirements(2, PropValues.Win64);
             RunTimeRequirements cores_1 = new RunTimeRequirements(1, PropValues.Win64);
             //create fake experiments
-            List<MonitoredExperimentalUnit> pendingExperiments = new List<MonitoredExperimentalUnit>()
+            List<ExperimentalUnit> pendingExperiments = new List<ExperimentalUnit>()
             {
-                new MonitoredExperimentalUnit("Experiment-1", appVersions, cores_all),
-                new MonitoredExperimentalUnit("Experiment-2", appVersions, cores_1),
-                new MonitoredExperimentalUnit("Experiment-3", appVersions, cores_2),
-                new MonitoredExperimentalUnit("Experiment-4", appVersions, cores_1),
-                new MonitoredExperimentalUnit("Experiment-5", appVersions, cores_all),
-                new MonitoredExperimentalUnit("Experiment-6", appVersions, cores_1),
-                new MonitoredExperimentalUnit("Experiment-7", appVersions, cores_1),
-                new MonitoredExperimentalUnit("Experiment-8", appVersions, cores_1)
+                new ExperimentalUnit("Experiment-1", appVersions, cores_all),
+                new ExperimentalUnit("Experiment-2", appVersions, cores_1),
+                new ExperimentalUnit("Experiment-3", appVersions, cores_2),
+                new ExperimentalUnit("Experiment-4", appVersions, cores_1),
+                new ExperimentalUnit("Experiment-5", appVersions, cores_all),
+                new ExperimentalUnit("Experiment-6", appVersions, cores_1),
+                new ExperimentalUnit("Experiment-7", appVersions, cores_1),
+                new ExperimentalUnit("Experiment-8", appVersions, cores_1)
             };
 
             //create output list to receive assigned jobs
-            List<MonitoredJob> assignedJobs = new List<MonitoredJob>();
+            List<Job> assignedJobs = new List<Job>();
 
             //Assign experiments
             JobDispatcher.AssignExperiments(ref pendingExperiments, ref herdAgents, ref assignedJobs);

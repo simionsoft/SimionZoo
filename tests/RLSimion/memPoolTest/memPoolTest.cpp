@@ -4,7 +4,7 @@
 #include "stdafx.h"
 
 #include "../../../RLSimion/mem-manager.h"
-#include "../../../tools/WindowsUtils/Timer.h"
+#include "../../../tools/System/Timer.h"
 
 #include <algorithm>
 int main()
