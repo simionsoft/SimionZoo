@@ -22,6 +22,7 @@ namespace Portable_Badger
 
             //Herd Agent
             files.Add(inBaseRelPath + @"bin/HerdAgent.exe");
+            files.Add(inBaseRelPath + @"bin/Herd.dll");
             files.Add(inBaseRelPath + @"bin/HerdAgentInstaller-linux.sh");
             files.Add(inBaseRelPath + @"bin/herd-agent-daemon");
 
