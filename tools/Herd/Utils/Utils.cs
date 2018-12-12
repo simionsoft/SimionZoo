@@ -7,27 +7,15 @@ using System.Security.AccessControl;
 using System.Security.Principal;
 
 using Herd.Files;
+using System.Diagnostics;
 
 namespace Herd
 {
     public class Utils
     {
-        public static bool GrantFileAllAccess(string filename)
+        public static void SetExecutionPermission(string filename)
         {
-            try
-            {
-                FileInfo fileInfo = new FileInfo(filename);
-                FileSecurity fileSecurity = fileInfo.GetAccessControl();
-                fileSecurity.AddAccessRule(new FileSystemAccessRule(new SecurityIdentifier(WellKnownSidType.WorldSid, null)
-                        , FileSystemRights.FullControl, InheritanceFlags.ObjectInherit | InheritanceFlags.ContainerInherit
-                        , PropagationFlags.NoPropagateInherit, AccessControlType.Allow));
-                fileInfo.SetAccessControl(fileSecurity);
-            }
-            catch
-            {
-                return false;
-            }
-            return true;
+            Process.Start("chmod", "770 " + filename);
         }
 
         static public string GetLogFilePath(string experimentFilePath, bool descriptor = true)

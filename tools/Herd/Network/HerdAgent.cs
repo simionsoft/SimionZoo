@@ -145,11 +145,10 @@ namespace Herd.Network
             {
                 foreach (HerdTask task in m_job.Tasks)
                 {
-                    string exeFilename = m_job.RenamedFilename(task.Exe);
+                    string absFilepath = getCachedFilename(m_job.RenamedFilename(task.Exe));
 
-                    if (!Utils.GrantFileAllAccess(exeFilename))
-                        LogToFile("Error: granted full access permission to " + exeFilename);
-                    else LogToFile("Succesfully granted full access permission to " + exeFilename);
+                    Utils.SetExecutionPermission(absFilepath);
+                    LogToFile("Granting execution permission to " + absFilepath);
                 }
             }
 
