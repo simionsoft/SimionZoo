@@ -49,6 +49,7 @@ logs/
 /images/
 .vs/
 *.gz
+*.zip
 
 #FAST log files
 *.sum

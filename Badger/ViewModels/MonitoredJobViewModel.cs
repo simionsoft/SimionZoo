@@ -84,7 +84,7 @@ namespace Badger.ViewModels
                     experimentVM.AddStatusInfoLine(messageContent);
                     break;
                 case JobDispatcher.EndMessage:
-                    if (messageContent == JobDispatcher.EndMessageOk)
+                    if (messageContent == JobDispatcher.EndMessageOk || messageContent == "")
                     {
                         m_logFunction?.Invoke("Job finished sucessfully");
                         experimentVM.State = Monitoring.State.WAITING_RESULT;
