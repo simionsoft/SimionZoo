@@ -55,7 +55,13 @@ namespace Badger.ViewModels
 
         public void SelectHerdAgents()
         {
-            CaliburnUtility.ShowPopupWindow(new HerdAgentSelectionViewModel(HerdAgentList), "Herd Aget selection tool");
+            CaliburnUtility.ShowPopupWindow(new HerdAgentSelectionViewModel(HerdAgentList), "Herd Agent selection");
+        }
+
+        public JobDispatcherOptions DispatcherOptions { get; } = new JobDispatcherOptions();
+        public void ConfigureJobDispatcher()
+        {
+            CaliburnUtility.ShowPopupWindow(new JobDispatcherSettingsViewModel(DispatcherOptions), "Job Dispathcer settings");
         }
 
 

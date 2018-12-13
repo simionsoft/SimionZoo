@@ -51,7 +51,7 @@
     <Compile Include="Files\ExperimentalUnit.cs" />
     <Compile Include="Files\ForkValue.cs" />
     <Compile Include="Files\Requirements.cs" />
-    <Compile Include="Network\Dispatcher.cs" />
+    <Compile Include="Network\JobDispatcher.cs" />
     <Compile Include="Network\HerdAgent.cs" />
     <Compile Include="Network\HerdAgentInfo.cs" />
     <Compile Include="Network\HerdProperties.cs" />
@@ -60,6 +60,7 @@
     <Compile Include="Files\Fork.cs" />
     <Compile Include="Files\LoadOptions.cs" />
     <Compile Include="Files\XMLTags.cs" />
+    <Compile Include="Network\JobDispatcherOptions.cs" />
     <Compile Include="Network\Monitoring.cs" />
     <Compile Include="Network\NetTransfer.cs" />
     <Compile Include="Network\XMLStream.cs" />

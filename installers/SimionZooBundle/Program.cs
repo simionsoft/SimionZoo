@@ -4,7 +4,6 @@ using System.IO;
 using System.IO.Compression;
 using System.Collections.Generic;
 using System.Diagnostics;
-using IWshRuntimeLibrary;
 
 namespace Portable_Badger
 {
@@ -37,7 +36,7 @@ namespace Portable_Badger
             //RLSimion
             files.Add(inBaseRelPath + @"bin/RLSimion.exe");
             files.Add(inBaseRelPath + @"bin/RLSimion-x64.exe");
-            files.Add(inBaseRelPath + @"bin/RLSimion-x64-linux.exe");
+            files.Add(inBaseRelPath + @"bin/RLSimion-linux-x64.exe");
             //FAST
             files.Add(inBaseRelPath + @"bin/openfast_Win32.exe");
             files.Add(inBaseRelPath + @"bin/TurbSim.exe");
@@ -47,8 +46,8 @@ namespace Portable_Badger
             //C++ Runtime libraries: x86 and x64 versions
             files.Add(inBaseRelPath + @"bin/vcruntime140.dll");
             files.Add(inBaseRelPath + @"bin/msvcp140.dll");
-            files.Add(inBaseRelPath + @"bin/x64\vcruntime140.dll");
-            files.Add(inBaseRelPath + @"bin/x64\msvcp140.dll");
+            files.Add(inBaseRelPath + @"bin/x64/vcruntime140.dll");
+            files.Add(inBaseRelPath + @"bin/x64/msvcp140.dll");
             //CNTK library and dependencies
             files.Add(inBaseRelPath + @"bin/CNTKWrapper.dll");
             files.Add(inBaseRelPath + @"bin/Cntk.Composite-2.5.1.dll");
@@ -71,7 +70,7 @@ namespace Portable_Badger
             files.AddRange(GetFilesInFolder(inBaseRelPath + @"config/", true));
 
 
-            string outputFile = inBaseRelPath + @"SimionZoo-" + version + ".gz";
+            string outputFile = inBaseRelPath + @"SimionZoo-" + version + ".zip";
 
             Console.WriteLine("Compressing files");
             Compress(outputFile, files);

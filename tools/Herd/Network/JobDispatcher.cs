@@ -22,7 +22,7 @@ namespace Herd.Network
         /// <param name="freeHerdAgents"></param>
         /// 
         public static void AssignExperiments(ref List<ExperimentalUnit> pendingExperiments
-            , ref List<HerdAgentInfo> freeHerdAgents, ref List<Job> assignedJobs)
+            , ref List<HerdAgentInfo> freeHerdAgents, ref List<Job> assignedJobs, JobDispatcherOptions options= null)
         {
             //Clear the list: these are jobs which have to be sent
             assignedJobs.Clear();
@@ -40,6 +40,10 @@ namespace Herd.Network
                 bool bAgentUsed = false;
                 ExperimentalUnit experiment;
                 bool bFailedToFindMatch = false;
+
+                //leave one free core??
+                if (options != null && options.LeaveOneFreeCore && numFreeCores>1)
+                    numFreeCores--;
 
                 while (numFreeCores > 0 && !bFailedToFindMatch)
                 {
@@ -78,7 +82,8 @@ namespace Herd.Network
 
         public static async Task<int> RunExperimentsAsync(List<ExperimentalUnit> experiments, List<HerdAgentInfo> freeHerdAgents
             , Monitoring.MsgDispatcher dispatcher
-            , CancellationTokenSource cancellationTokenSource)
+            , CancellationTokenSource cancellationTokenSource
+            , JobDispatcherOptions jobDispatcherOptions = null)
         {
             List<Job> assignedJobs = new List<Job>();
             List<Task<Job>> monitoredJobTasks = new List<Task<Job>>();
@@ -86,7 +91,7 @@ namespace Herd.Network
 
 
             // Assign experiments to free agents
-            JobDispatcher.AssignExperiments(ref experiments, ref freeHerdAgents, ref assignedJobs);
+            JobDispatcher.AssignExperiments(ref experiments, ref freeHerdAgents, ref assignedJobs, jobDispatcherOptions);
 
             if (assignedJobs.Count == 0)
                 return 0;
@@ -138,7 +143,7 @@ namespace Herd.Network
 
                     // Assign experiments to free agents
                     if (!cancellationTokenSource.IsCancellationRequested)
-                        JobDispatcher.AssignExperiments(ref experiments, ref freeHerdAgents, ref assignedJobs);
+                        JobDispatcher.AssignExperiments(ref experiments, ref freeHerdAgents, ref assignedJobs, jobDispatcherOptions);
                 }
             }
             catch (Exception ex)

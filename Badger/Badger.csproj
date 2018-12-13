@@ -198,6 +198,7 @@
     <Compile Include="ViewModels\DialogViewModel.cs" />
     <Compile Include="ViewModels\EditorWindowViewModel.cs" />
     <Compile Include="ViewModels\HerdAgentSelectionViewModel.cs" />
+    <Compile Include="ViewModels\JobDispatcherSettingsViewModel.cs" />
     <Compile Include="ViewModels\MonitoredJobViewModel.cs" />
     <Compile Include="ViewModels\MultiStateButtonViewModel.cs" />
     <Compile Include="ViewModels\NeuralNetwork\ChainViewModel.cs" />
@@ -448,6 +449,10 @@
     <Page Include="Views\HerdAgentView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\JobDispatcherSettingsView.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
     </Page>
     <Page Include="Views\MonitoredJobView.xaml">
       <Generator>MSBuild:Compile</Generator>

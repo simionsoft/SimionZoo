@@ -25,7 +25,7 @@ namespace AssignExperiments
             //Exp.Unit 7: 2 cores
             //Exp.Unit 8: 1 cores
             
-            //create fake herd agents
+            //create herd agents
             List<HerdAgentInfo> herdAgents = new List<HerdAgentInfo>
             {
                 new HerdAgentInfo("Agent-1", 4, PropValues.Win64, PropValues.None, "1.1.0"),
@@ -44,7 +44,7 @@ namespace AssignExperiments
             RunTimeRequirements cores_all = new RunTimeRequirements(0);
             RunTimeRequirements cores_2 = new RunTimeRequirements(2);
             RunTimeRequirements cores_1 = new RunTimeRequirements(1);
-            //create fake experiments
+            //create experiments
             List<ExperimentalUnit> pendingExperiments = new List<ExperimentalUnit>()
             {
                 new ExperimentalUnit("Experiment-1", appVersions, cores_all),
@@ -102,7 +102,7 @@ namespace AssignExperiments
             //Exp.Unit 7: 2 cores
             //Exp.Unit 8: 1 cores
 
-            //create fake herd agents
+            //create herd agents
             List<HerdAgentInfo> herdAgents = new List<HerdAgentInfo>
             {
                 new HerdAgentInfo("Agent-1", 4, PropValues.Win64, PropValues.None, "1.1.0"),
@@ -120,7 +120,7 @@ namespace AssignExperiments
             RunTimeRequirements cores_all = new RunTimeRequirements(0);
             RunTimeRequirements cores_2 = new RunTimeRequirements(2);
             RunTimeRequirements cores_1 = new RunTimeRequirements(1);
-            //create fake experiments
+            //create experiments
             List<ExperimentalUnit> pendingExperiments = new List<ExperimentalUnit>()
             {
                 new ExperimentalUnit("Experiment-1", appVersions, cores_all),
@@ -169,7 +169,7 @@ namespace AssignExperiments
             //Exp.Unit 7: 2 cores
             //Exp.Unit 8: 5 cores
 
-            //create fake herd agents
+            //create herd agents
             List<HerdAgentInfo> herdAgents = new List<HerdAgentInfo>
             {
                 new HerdAgentInfo("Agent-1", 4, PropValues.Win64, PropValues.None, "1.1.0"),
@@ -190,7 +190,7 @@ namespace AssignExperiments
             RunTimeRequirements cores_3 = new RunTimeRequirements(3);
             RunTimeRequirements cores_5 = new RunTimeRequirements(5);
 
-            //create fake experiments
+            //create experiments
             List<ExperimentalUnit> pendingExperiments = new List<ExperimentalUnit>()
             {
                 new ExperimentalUnit("Experiment-1", appVersions, cores_5),
@@ -245,7 +245,7 @@ namespace AssignExperiments
             //Exp.Unit 7: 2 cores
             //Exp.Unit 8: 1 cores
 
-            //create fake herd agents
+            //create herd agents
             List<HerdAgentInfo> herdAgents = new List<HerdAgentInfo>
             {
                 new HerdAgentInfo("Agent-1", 4, PropValues.Win64, PropValues.None, "1.1.0"),
@@ -264,7 +264,7 @@ namespace AssignExperiments
             RunTimeRequirements cores_all = new RunTimeRequirements(0, PropValues.Win64);
             RunTimeRequirements cores_2 = new RunTimeRequirements(2, PropValues.Win64);
             RunTimeRequirements cores_1 = new RunTimeRequirements(1, PropValues.Win64);
-            //create fake experiments
+            //create experiments
             List<ExperimentalUnit> pendingExperiments = new List<ExperimentalUnit>()
             {
                 new ExperimentalUnit("Experiment-1", appVersions, cores_all),
@@ -301,6 +301,121 @@ namespace AssignExperiments
             Assert.IsTrue(herdAgents.Count == 1);
             //  -assigned experiments are removed
             Assert.IsTrue(pendingExperiments.Count == 5);
+        }
+        [TestMethod]
+        public void Badger_AssignExperiments5()
+        {
+            //create herd agents
+            List<HerdAgentInfo> herdAgents = new List<HerdAgentInfo>
+            {
+                new HerdAgentInfo("Agent-1", 4, PropValues.Linux64, PropValues.None, "1.1.0"),
+                new HerdAgentInfo("Agent-2", 2, PropValues.Win32, "8.1.2", "1.1.0"),
+                new HerdAgentInfo("Agent-3", 2, PropValues.Win64, "8.1.2", "1.1.0")
+            };
+
+            //create app versions
+            AppVersionRequirements win64Reqs = new AppVersionRequirements(PropValues.Win64);
+            AppVersionRequirements win32Reqs = new AppVersionRequirements(PropValues.Win32);
+            AppVersionRequirements linux64Reqs = new AppVersionRequirements(PropValues.Linux64);
+            AppVersion win32Version = new AppVersion("win-x32", "RLSimion.exe", win32Reqs);
+            AppVersion win64Version = new AppVersion("win-x64", "RLSimion-linux-x64.exe", win64Reqs);
+            AppVersion linux64Version = new AppVersion("linux-x64", "RLSimion-x64.exe", linux64Reqs);
+            List<AppVersion> appVersions = new List<AppVersion>() { win32Version, win64Version, linux64Version };
+
+            //create run-time requirements
+            RunTimeRequirements cores_2_win32 = new RunTimeRequirements(0, PropValues.Win32);
+            RunTimeRequirements cores_2_linux64 = new RunTimeRequirements(2, PropValues.Linux64);
+            RunTimeRequirements cores_1 = new RunTimeRequirements(1, PropValues.Linux64);
+            //create experiments
+            List<ExperimentalUnit> pendingExperiments = new List<ExperimentalUnit>()
+            {
+                new ExperimentalUnit("Experiment-1", appVersions, cores_2_win32),
+                new ExperimentalUnit("Experiment-2", appVersions, cores_2_linux64),
+                new ExperimentalUnit("Experiment-3", appVersions, cores_2_linux64),
+            };
+
+            //create output list to receive assigned jobs
+            List<Job> assignedJobs = new List<Job>();
+
+            //Assign experiments
+            JobDispatcher.AssignExperiments(ref pendingExperiments, ref herdAgents, ref assignedJobs);
+
+            //Check everything went as expected
+            Assert.IsTrue(assignedJobs.Count == 2);
+            //  -assigned experimental units and agents
+            Assert.IsTrue(assignedJobs[0].HerdAgent.ProcessorId == "Agent-1");
+            Assert.IsTrue(assignedJobs[0].ExperimentalUnits.Count == 2);
+            Assert.IsTrue(assignedJobs[0].ExperimentalUnits[0].Name == "Experiment-2");
+            Assert.IsTrue(assignedJobs[0].ExperimentalUnits[0].SelectedVersion.Requirements.Architecture == PropValues.Linux64);
+            Assert.IsTrue(assignedJobs[0].ExperimentalUnits[1].Name == "Experiment-3");
+            Assert.IsTrue(assignedJobs[0].ExperimentalUnits[1].SelectedVersion.Requirements.Architecture == PropValues.Linux64);
+            Assert.IsTrue(assignedJobs[1].HerdAgent.ProcessorId == "Agent-2");
+            Assert.IsTrue(assignedJobs[1].ExperimentalUnits.Count == 1);
+            Assert.IsTrue(assignedJobs[1].ExperimentalUnits[0].Name == "Experiment-1");
+            Assert.IsTrue(assignedJobs[1].ExperimentalUnits[0].SelectedVersion.Requirements.Architecture == PropValues.Win32);
+
+            //  -used agents are removed
+            Assert.IsTrue(herdAgents.Count == 1);
+            //  -assigned experiments are removed
+            Assert.IsTrue(pendingExperiments.Count == 0);
+        }
+        [TestMethod]
+        public void Badger_AssignExperiments6()
+        {
+            //create herd agents
+            List<HerdAgentInfo> herdAgents = new List<HerdAgentInfo>
+            {
+                new HerdAgentInfo("Agent-1", 4, PropValues.Linux64, PropValues.None, "1.1.0"),
+                new HerdAgentInfo("Agent-2", 2, PropValues.Win32, "8.1.2", "1.1.0"),
+                new HerdAgentInfo("Agent-3", 2, PropValues.Win64, "8.1.2", "1.1.0")
+            };
+
+            //create app versions
+            AppVersionRequirements win64Reqs = new AppVersionRequirements(PropValues.Win64);
+            AppVersionRequirements win32Reqs = new AppVersionRequirements(PropValues.Win32);
+            AppVersionRequirements linux64Reqs = new AppVersionRequirements(PropValues.Linux64);
+            AppVersion win32Version = new AppVersion("win-x32", "RLSimion.exe", win32Reqs);
+            AppVersion win64Version = new AppVersion("win-x64", "RLSimion-linux-x64.exe", win64Reqs);
+            AppVersion linux64Version = new AppVersion("linux-x64", "RLSimion-x64.exe", linux64Reqs);
+            List<AppVersion> appVersions = new List<AppVersion>() { win32Version, win64Version, linux64Version };
+
+            //create run-time requirements
+            RunTimeRequirements cores_2_win32 = new RunTimeRequirements(0, PropValues.Win32);
+            RunTimeRequirements cores_2_linux64 = new RunTimeRequirements(2, PropValues.Linux64);
+            RunTimeRequirements cores_1 = new RunTimeRequirements(1, PropValues.Linux64);
+            //create experiments
+            List<ExperimentalUnit> pendingExperiments = new List<ExperimentalUnit>()
+            {
+                new ExperimentalUnit("Experiment-1", appVersions, cores_2_win32),
+                new ExperimentalUnit("Experiment-2", appVersions, cores_2_linux64),
+                new ExperimentalUnit("Experiment-3", appVersions, cores_2_linux64),
+            };
+
+            //create output list to receive assigned jobs
+            List<Job> assignedJobs = new List<Job>();
+
+            //Assign experiments
+            JobDispatcherOptions options = new JobDispatcherOptions();
+            options.LeaveOneFreeCore = true;
+
+            JobDispatcher.AssignExperiments(ref pendingExperiments, ref herdAgents, ref assignedJobs, options);
+
+            //Check everything went as expected
+            Assert.IsTrue(assignedJobs.Count == 2);
+            //  -assigned experimental units and agents
+            Assert.IsTrue(assignedJobs[0].HerdAgent.ProcessorId == "Agent-1");
+            Assert.IsTrue(assignedJobs[0].ExperimentalUnits.Count == 1);
+            Assert.IsTrue(assignedJobs[0].ExperimentalUnits[0].Name == "Experiment-2");
+            Assert.IsTrue(assignedJobs[0].ExperimentalUnits[0].SelectedVersion.Requirements.Architecture == PropValues.Linux64);
+            Assert.IsTrue(assignedJobs[1].HerdAgent.ProcessorId == "Agent-2");
+            Assert.IsTrue(assignedJobs[1].ExperimentalUnits.Count == 1);
+            Assert.IsTrue(assignedJobs[1].ExperimentalUnits[0].Name == "Experiment-1");
+            Assert.IsTrue(assignedJobs[1].ExperimentalUnits[0].SelectedVersion.Requirements.Architecture == PropValues.Win32);
+
+            //  -used agents are removed
+            Assert.IsTrue(herdAgents.Count == 1);
+            //  -assigned experiments are removed
+            Assert.IsTrue(pendingExperiments.Count == 1);
         }
     }
 }

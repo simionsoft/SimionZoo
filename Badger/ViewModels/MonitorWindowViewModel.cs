@@ -381,7 +381,7 @@ namespace Badger.ViewModels
                     , DispatchOnMessageReceived, DispatchOnExperimentalUnitLaunched
                     , MainWindowViewModel.Instance.LogToFile, m_cancelTokenSource.Token);
 
-            NumFinishedExperimentalUnitsAfterStart = await JobDispatcher.RunExperimentsAsync(m_pendingExperiments, freeHerdAgents, dispatcher, m_cancelTokenSource);
+            NumFinishedExperimentalUnitsAfterStart = await JobDispatcher.RunExperimentsAsync(m_pendingExperiments, freeHerdAgents, dispatcher, m_cancelTokenSource, ShepherdViewModel.DispatcherOptions);
 
             NumFinishedExperimentalUnitsBeforeStart = NumFinishedExperimentalUnitsAfterStart + NumFinishedExperimentalUnitsBeforeStart;
 
