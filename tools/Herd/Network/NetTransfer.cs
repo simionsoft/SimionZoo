@@ -23,6 +23,7 @@ namespace Herd.Network
 
         public XMLStream m_xmlStream;
         public const int m_discoveryPortHerd = 2333;
+        public const int m_discoveryPortServer = 2334;
         public const int m_comPortHerd = 2335;
         public const string m_discoveryMessage = "Slaves, show yourselves!";
         public const string m_discoveryAnswer = "At your command, my Master";

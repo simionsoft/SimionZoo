@@ -136,8 +136,9 @@ namespace Herd.Network
             //create an udpClient for each of the interfaces to send the broadcast message through all
             foreach (NetworkInterface ni in NetworkInterface.GetAllNetworkInterfaces())
             {
-                if (ni.OperationalStatus == OperationalStatus.Up && ni.SupportsMulticast && ni.GetIPProperties().GetIPv4Properties() != null
-                    && ni.NetworkInterfaceType == NetworkInterfaceType.Ethernet)
+                if (ni.OperationalStatus == OperationalStatus.Up && ni.SupportsMulticast 
+                    && ni.GetIPProperties().GetIPv4Properties() != null
+                    /*&& ni.NetworkInterfaceType == NetworkInterfaceType.Ethernet*/)
                 {
                     int id = ni.GetIPProperties().GetIPv4Properties().Index;
                     if (NetworkInterface.LoopbackInterfaceIndex != id)
@@ -146,11 +147,17 @@ namespace Herd.Network
                         {
                             if (uip.Address.AddressFamily == AddressFamily.InterNetwork)
                             {
-                                IPEndPoint local = new IPEndPoint(uip.Address, m_discoveryPortHerd);
-                                UdpClient udpClient = new UdpClient(local);
-                                udpClient.Client.SetSocketOption(SocketOptionLevel.Socket, SocketOptionName.Broadcast, 1);
-                                //udpClient.Client.SetSocketOption(SocketOptionLevel.Socket, SocketOptionName.DontRoute, 1);
-                                m_broadcastInterfacesUdpClients.Add(udpClient);
+                                try
+                                {
+                                    IPEndPoint local = new IPEndPoint(uip.Address, m_discoveryPortServer);
+                                    UdpClient udpClient = new UdpClient(local);
+                                    udpClient.Client.SetSocketOption(SocketOptionLevel.Socket, SocketOptionName.Broadcast, 1);
+                                    m_broadcastInterfacesUdpClients.Add(udpClient);
+                                }
+                                catch (Exception ex)
+                                {
+                                    LogMessage("ERROR: Shepherd failed to bind socket to discovery broadcast port");
+                                }
                             }
                         }
                     }
