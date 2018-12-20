@@ -27,8 +27,8 @@ namespace Herd.Network
     public class Shepherd : JobTransmitter
     {
         private object m_listLock = new object();
-        private Dictionary<IPEndPoint, HerdAgentInfo> m_herdAgentList
-            = new Dictionary<IPEndPoint, HerdAgentInfo>();
+        private Dictionary<string, HerdAgentInfo> m_herdAgentList
+            = new Dictionary<string, HerdAgentInfo>();
 
         public delegate void NotifyAgentListChanged(HerdAgentInfo newAgent);
         private NotifyAgentListChanged m_notifyAgentListChanged;
@@ -97,19 +97,26 @@ namespace Herd.Network
                         //we update the ack time
                         DateTime now = DateTime.Now;
                         herdAgentInfo.lastACK = now;
-
+                        bool agentAddedToList = false;
                         lock (m_listLock)
                         {
-                            m_herdAgentList[ip] = herdAgentInfo;
+                            if (!m_herdAgentList.ContainsKey(herdAgentInfo.ProcessorId))
+                            {
+                                m_herdAgentList[herdAgentInfo.ProcessorId] = herdAgentInfo;
+                                agentAddedToList = true;
+                            }
                         }
-                        //check how much time ago the agent list was updated
-                        double lastUpdateElapsedTime = (now - m_lastHerdAgentListUpdate).TotalSeconds;
-                        //notify, if we have to, that the agent list has probably changed
-                        if (lastUpdateElapsedTime > m_herdAgentListUpdateTime)
+                        if (agentAddedToList)
                         {
-                            m_lastHerdAgentListUpdate = now;
+                            //check how much time ago the agent list was updated
+                            double lastUpdateElapsedTime = (now - m_lastHerdAgentListUpdate).TotalSeconds;
+                            //notify, if we have to, that the agent list has probably changed
+                            if (lastUpdateElapsedTime > m_herdAgentListUpdateTime)
+                            {
+                                m_lastHerdAgentListUpdate = now;
+                            }
+                            m_notifyAgentListChanged?.Invoke(herdAgentInfo);
                         }
-                        m_notifyAgentListChanged?.Invoke(herdAgentInfo);
                     }
                 }
 
@@ -233,7 +240,7 @@ namespace Herd.Network
         }
 
 
-        public void GetHerdAgentList(ref Dictionary<IPEndPoint, HerdAgentInfo> outDictionary)
+        public void GetHerdAgentList(ref Dictionary<string, HerdAgentInfo> outDictionary)
         {
             lock (m_listLock)
             {
