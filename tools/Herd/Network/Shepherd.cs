@@ -102,7 +102,7 @@ namespace Herd.Network
                         {
                             if (!m_herdAgentList.ContainsKey(herdAgentInfo.ProcessorId))
                             {
-                                m_herdAgentList[herdAgentInfo.ProcessorId] = herdAgentInfo;
+                                m_herdAgentList[herdAgentInfo.IpAddressString] = herdAgentInfo; //We have to use the ip address until ProcessorId is a GUID on all deployed agents
                                 agentAddedToList = true;
                             }
                         }
@@ -145,7 +145,7 @@ namespace Herd.Network
             {
                 if (ni.OperationalStatus == OperationalStatus.Up && ni.SupportsMulticast 
                     && ni.GetIPProperties().GetIPv4Properties() != null
-                    /*&& ni.NetworkInterfaceType == NetworkInterfaceType.Ethernet*/)
+                    && (ni.NetworkInterfaceType == NetworkInterfaceType.Ethernet || ni.NetworkInterfaceType == NetworkInterfaceType.Wireless80211))
                 {
                     int id = ni.GetIPProperties().GetIPv4Properties().Index;
                     if (NetworkInterface.LoopbackInterfaceIndex != id)

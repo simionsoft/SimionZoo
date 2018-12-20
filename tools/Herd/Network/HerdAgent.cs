@@ -334,17 +334,10 @@ namespace Herd.Network
             return m_cpuCounter.NextValue();
          }
 
-        static public string ProcessorId()
+        string m_processorId = new Guid().ToString();
+        public string ProcessorId()
         {
-            //Using the ProcessorId doesn't work in Linux, so we will use the 1st adapter's physical address to identify the agent
-
-            IPGlobalProperties computerProperties = IPGlobalProperties.GetIPGlobalProperties();
-            NetworkInterface[] nics = NetworkInterface.GetAllNetworkInterfaces();
-
-            if (nics == null || nics.Length < 1)
-                return PropValues.None;
-
-            return nics[0].GetPhysicalAddress().ToString();
+            return m_processorId;
         }
 
         string HerdAgentVersion = PropValues.None;
