@@ -13,14 +13,14 @@
     <Border BorderThickness="1" BorderBrush="LightGray" Margin="3">
         <Grid>
             <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="90"/>
                 <ColumnDefinition Width="*"/>
             </Grid.ColumnDefinitions>
 
             <StackPanel Grid.Column="0" Background="Transparent" Orientation="Vertical"
                         Margin="3" VerticalAlignment="Center">
                 <StackPanel>
-                    <Label Content="{Binding Path=HerdAgent.IpAddressString}" Margin="0" Padding="0" FontWeight="Bold"/>
+                    <Label Content="{Binding Path=HerdAgent.IpAddressString}" Margin="0" Padding="0" FontWeight="Bold" FontSize="11"/>
                 </StackPanel>
                 <StackPanel>
                     <Label Content="{Binding Name}" Foreground="#FF616161" Margin="0" Padding="0" FontSize="10"/>
@@ -28,10 +28,10 @@
             </StackPanel>
 
             <ListView Grid.Column="1" ItemsSource="{Binding MonitoredExperimentalUnits}" Background="Transparent"
-                      BorderThickness="0" Padding="1">
+                      BorderThickness="0" Padding="1" ScrollViewer.HorizontalScrollBarVisibility="Disabled" Width="580">
                 <ListView.ItemsPanel>
                     <ItemsPanelTemplate>
-                        <WrapPanel IsItemsHost="True" HorizontalAlignment="Stretch"/>
+                        <UniformGrid Columns="4"/>
                     </ItemsPanelTemplate>
                 </ListView.ItemsPanel>
                 <ListView.ItemContainerStyle>

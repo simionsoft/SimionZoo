@@ -12,6 +12,8 @@ namespace Badger.ViewModels
 {
     public class MonitoredExperimentalUnitViewModel : PropertyChangedBase
     {
+        static int NextTaskId { get; set; } = 0;
+
         private ExperimentalUnit m_model;
 
         public string PipeName { get; set; }
@@ -20,7 +22,7 @@ namespace Badger.ViewModels
 
         public string ExperimentFileName => m_model.ExperimentFileName;
 
-        public string TaskName => m_model.Name;
+        public string TaskName { get; set; }
 
         public List<AppVersion> AppVersions => m_model.AppVersions;
 
@@ -144,6 +146,9 @@ namespace Badger.ViewModels
         /// <param name="plot">The plot used to monitor data</param
         public MonitoredExperimentalUnitViewModel(ExperimentalUnit expUnit, PlotViewModel plot)
         {
+            TaskName = "Task #" + NextTaskId;
+            NextTaskId++;
+
             m_model = expUnit;
             PipeName = m_model.Name;
             m_plotEvaluationMonitor = plot;
