@@ -10,7 +10,6 @@
 #include "../../tools/System/CrossPlatform.h"
 #include <string>
 #include <stdio.h>
-#include <algorithm>
 using namespace std;
 
 #define FAST_FAILURE_REWARD -100.0 //reward given in case a simulation error arises
@@ -209,17 +208,17 @@ void FASTWindTurbine::deferredLoadStep()
 	
 	//copy input .dat files to experiment directory to avoid problems with FAST adding base config file's directory
 	commandLine= string("copy \"../config/world/FAST/*.dat\" ") + string(SimionApp::get()->getOutputDirectory());
-	replace(commandLine.begin(), commandLine.end(), '\\', '/');
+	CrossPlatform::ForceUseFolderCharacter(commandLine);
 	system(commandLine.c_str());
 
 	//copy input .txt files to experiment directory to avoid problems with FAST adding base config file's directory
 	commandLine = string("copy \"../config/world/FAST/*.txt\" ") + string(SimionApp::get()->getOutputDirectory());
-	replace(commandLine.begin(), commandLine.end(), '\\', '/');
+	CrossPlatform::ForceUseFolderCharacter(commandLine);
 	system(commandLine.c_str());
 
 	//copy DLL to avoid problems with relative paths in the config file
 	commandLine = string("copy " + string(DIMENSIONAL_PORTAL_DLL) + string(" ") + string(SimionApp::get()->getOutputDirectory()));
-	replace(commandLine.begin(), commandLine.end(), '\\', '/'); 
+	CrossPlatform::ForceUseFolderCharacter(commandLine);
 	system(commandLine.c_str());
 
 	Logger::logMessage(MessageType::Info, "Input files copied");

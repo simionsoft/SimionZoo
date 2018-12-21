@@ -3,10 +3,14 @@
 #include <string.h>
 #include <stdio.h>
 #include <stddef.h>
+#include <string>
+
 using namespace std;
 
 namespace CrossPlatform
 {
+	void ForceUseFolderCharacter(string& commandLine);
+
 	template<typename ...Args>
 	int Sprintf_s(char* buffer, int bufferSize, const char* format, Args... args)
 	{

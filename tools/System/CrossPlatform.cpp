@@ -1,7 +1,18 @@
 #include "CrossPlatform.h"
+#include <algorithm>
 
 namespace CrossPlatform
 {
+	void ForceUseFolderCharacter(string& commandLine)
+	{
+#ifdef _WIN32
+		replace(commandLine.begin(), commandLine.end(), '/', '\\');
+#else
+		replace(commandLine.begin(), commandLine.end(), '\\', '/');
+#endif
+
+	}
+
 	void Fopen_s(FILE** pOutFile, const char* filename, const char* mode)
 	{
 #ifdef _WIN32
