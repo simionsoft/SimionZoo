@@ -28,6 +28,25 @@ namespace Badger.ViewModels
 
         public AppVersion SelectedVersion => m_model.SelectedVersion;
 
+        public DateTime LastHeartbeat;
+
+        public string TimeSinceLastHeartbeat
+        {
+            get
+            {
+                TimeSpan timeElapsed = new TimeSpan();
+                timeElapsed= (DateTime.Now - LastHeartbeat);
+                if (timeElapsed.Hours>0)
+                    return timeElapsed.Hours.ToString() + "h";
+                if (timeElapsed.Minutes > 0)
+                    return timeElapsed.Minutes.ToString() + "m";
+                if (timeElapsed.Seconds > 0)
+                    return timeElapsed.Seconds.ToString() + "s";
+
+                return "<1s";
+            }
+        }
+
         public List<string> Forks
         {
             get
@@ -152,6 +171,8 @@ namespace Badger.ViewModels
             m_model = expUnit;
             PipeName = m_model.Name;
             m_plotEvaluationMonitor = plot;
+
+            LastHeartbeat = DateTime.Now;
         }
 
 

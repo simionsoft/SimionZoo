@@ -49,15 +49,20 @@ namespace Badger.ViewModels
             m_model = job;
         }
 
+        DateTime m_lastHeartbeat = DateTime.Now;
+
         public void OnMessageReceived(string experimentId, string messageId, string messageContent)
         {
             MonitoredExperimentalUnitViewModel experimentVM = ViewModelFromName[experimentId];
 
             if (experimentVM == null)
                 m_logFunction?.Invoke("Could not find the View-Model for experiment " + experimentId);
-
-            switch (messageId)
+            else
             {
+                experimentVM.LastHeartbeat = DateTime.Now;
+                m_lastHeartbeat = DateTime.Now;
+                switch (messageId)
+                {
                 case JobDispatcher.ProgressMessage:
                     double progress = double.Parse(messageContent, CultureInfo.InvariantCulture);
                     experimentVM.Progress = Convert.ToInt32(progress);
@@ -99,6 +104,7 @@ namespace Badger.ViewModels
                         experimentVM.State = Monitoring.State.ERROR;
                     }
                     break;
+                }
             }
         }
 
