@@ -125,10 +125,11 @@ namespace Herd.Network
 
                     //A job finished
                     monitoredJobTasks.Remove(finishedTask);
-                    numExperimentalUnitsRun += finishedJob.ExperimentalUnits.Count;
-
                     if (!cancellationTokenSource.IsCancellationRequested)
+                    {
+                        numExperimentalUnitsRun += finishedJob.ExperimentalUnits.Count;
                         dispatcher.JobFinished?.Invoke(finishedJob);
+                    }
 
 
                     if (finishedJob.FailedExperimentalUnits.Count > 0)
@@ -143,7 +144,7 @@ namespace Herd.Network
 
                     // Assign experiments to free agents
                     if (!cancellationTokenSource.IsCancellationRequested)
-                        JobDispatcher.AssignExperiments(ref experiments, ref freeHerdAgents, ref assignedJobs, jobDispatcherOptions);
+                        AssignExperiments(ref experiments, ref freeHerdAgents, ref assignedJobs, jobDispatcherOptions);
                 }
             }
             catch (Exception ex)
