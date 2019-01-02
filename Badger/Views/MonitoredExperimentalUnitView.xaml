@@ -17,23 +17,24 @@
     <Border BorderThickness="1" BorderBrush="LightGray" MinHeight="20">
         <Grid>
             <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="46"/>
-                <ColumnDefinition Width="Auto"/>
-                <ColumnDefinition Width="20"/>
+                <ColumnDefinition Width="60"/>
+
                 <ColumnDefinition Width="*"/>
             </Grid.ColumnDefinitions>
-            <Button BorderThickness="0" Background="Transparent" Margin="1" ToolTip="{Binding ForksAsString}" 
-                        Grid.Column="0" HorizontalAlignment="Left" VerticalAlignment="Center" cal:Message.Attach="[Event Click]=[Action ShowLog()]">
-                <StackPanel Orientation="Horizontal">
-                    <Path Data="{StaticResource Experiment}" Width="12" Height="12" Canvas.Left="17" Canvas.Top="10" Stretch="Uniform" Fill="#FF616161" />
-                    <Label Content="{Binding TaskName}" Foreground="#FF616161"  VerticalAlignment="Center" FontSize="10" Margin="2,0,2,0" Padding="0"/>
-                </StackPanel>
-            </Button>
-            <Separator Style="{StaticResource {x:Static ToolBar.SeparatorStyleKey}}" Grid.Column="1" />
-            <ContentControl Content="{Binding StateButton}" ToolTip="{Binding StateString}" Grid.Column="2"/>
+            <StackPanel Grid.Column="0" Orientation="Horizontal" Background="#FAFAFA">
+                <Button BorderThickness="0" Background="Transparent" Margin="1" ToolTip="{Binding ForksAsString}" 
+                        HorizontalAlignment="Left" VerticalAlignment="Center" cal:Message.Attach="[Event Click]=[Action ShowLog()]">
+                    <StackPanel Orientation="Horizontal">
+                        <Path Data="{StaticResource Experiment}" Width="12" Height="12" Canvas.Left="17" Canvas.Top="10" Stretch="Uniform" Fill="#FF616161" />
+                        <Label Content="{Binding TaskName}" Foreground="#FF616161"  VerticalAlignment="Center" FontSize="10" Margin="2,0,2,0" Padding="0"/>
+                    </StackPanel>
+                </Button>
+            </StackPanel>
 
-            <ProgressBar Grid.Column="3" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="1,0,1,0" Width="40" Minimum="0" Maximum="100" Value="{Binding Progress}" Height="10"/>
-
+            <StackPanel Orientation="Horizontal" Grid.Column="2">
+                <ContentControl Content="{Binding StateButton}" ToolTip="{Binding StateString}" Margin="2,0,2,0"/>
+                <ProgressBar HorizontalAlignment="Center" VerticalAlignment="Center" Margin="2,0,2,0" Width="40" Minimum="0" Maximum="100" Value="{Binding Progress}" Height="10"/>
+            </StackPanel>
         </Grid>
     </Border>
 </UserControl>
