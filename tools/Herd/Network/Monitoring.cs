@@ -11,7 +11,7 @@ namespace Herd.Network
 
     public class Monitoring
     {
-        public enum State { RUNNING, FINISHED, ERROR, ENQUEUED, SENDING, RECEIVING, WAITING_EXECUTION, WAITING_RESULT };
+        public enum State { UNITIALIZED, RUNNING, FINISHED, ERROR, SENDING, RECEIVING, WAITING_RESULT };
     
         public delegate void StateChangedCallback(string expUnitName, State state);
         public delegate void AllStatesChangedCallback(State state);

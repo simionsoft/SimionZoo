@@ -60,7 +60,9 @@ namespace Badger.ViewModels
         }
 
         //STATE
-        private Monitoring.State m_state = Monitoring.State.ENQUEUED;
+        public MonitoredExperimentStateViewModel StateButton { get; set; } = new MonitoredExperimentStateViewModel();
+
+        private Monitoring.State m_state = Monitoring.State.UNITIALIZED;
         public Monitoring.State State
         {
             get { return m_state; }
@@ -68,18 +70,17 @@ namespace Badger.ViewModels
             {
                 //if a task within a job fails, we don't want to overwrite it's state when the job finishes
                 //we don't update state in case new state is not RUNNING or SENDING
-                if (m_state != Monitoring.State.ERROR || value == Monitoring.State.WAITING_EXECUTION)
+                if (m_state != Monitoring.State.ERROR)
                     m_state = value;
                 NotifyOfPropertyChange(() => State);
                 NotifyOfPropertyChange(() => IsRunning);
                 NotifyOfPropertyChange(() => StateString);
                 NotifyOfPropertyChange(() => StateColor);
+                StateButton.Icon= StateString;
             }
         }
 
         public bool IsRunning { get { return m_state == Monitoring.State.RUNNING; } }
-
-        public bool IsEnqueued { get { return m_state == Monitoring.State.ENQUEUED; } }
 
         public string StateString
         {
@@ -92,10 +93,9 @@ namespace Badger.ViewModels
                     case Monitoring.State.ERROR: return "Error";
                     case Monitoring.State.SENDING: return "Sending";
                     case Monitoring.State.RECEIVING: return "Receiving";
-                    case Monitoring.State.WAITING_EXECUTION: return "Awaiting";
                     case Monitoring.State.WAITING_RESULT: return "Awaiting";
                     default:
-                        return "";
+                        return null;
                 }
             }
         }
@@ -106,11 +106,9 @@ namespace Badger.ViewModels
             {
                 switch (m_state)
                 {
-                    case Monitoring.State.ENQUEUED:
                     case Monitoring.State.RUNNING:
                     case Monitoring.State.SENDING:
                     case Monitoring.State.RECEIVING:
-                    case Monitoring.State.WAITING_EXECUTION:
                     case Monitoring.State.WAITING_RESULT:
                         return "Black";
                     case Monitoring.State.FINISHED: return "DarkGreen";
@@ -165,7 +163,9 @@ namespace Badger.ViewModels
         /// <param name="plot">The plot used to monitor data</param
         public MonitoredExperimentalUnitViewModel(ExperimentalUnit expUnit, PlotViewModel plot)
         {
-            TaskName = "Task #" + NextTaskId;
+            StateButton.Icon = "Sending";
+
+            TaskName = "#" + NextTaskId;
             NextTaskId++;
 
             m_model = expUnit;

@@ -39,9 +39,12 @@ namespace Badger.ViewModels
 
         private Dictionary<string, int> m_experimentSeriesId = new Dictionary<string, int>();
 
+        public MonitoredJobStateViewModel ConnectionState { get; set; } = new MonitoredJobStateViewModel();
 
         public MonitoredJobViewModel(Job job, PlotViewModel evaluationPlot, CancellationToken cancelToken, Action<string> logFunction)
         {
+            ConnectionState.Icon = "ConnectionOK";
+
             m_evaluationPlot = evaluationPlot;
             m_cancelToken = cancelToken;
             m_logFunction = logFunction;

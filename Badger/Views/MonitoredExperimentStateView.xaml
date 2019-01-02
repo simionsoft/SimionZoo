@@ -1,0 +1,38 @@
+﻿<UserControl x:Class="Badger.Views.MonitoredExperimentStateView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+            xmlns:vm="clr-namespace:Badger.ViewModels"
+            xmlns:v="clr-namespace:Badger.Views"
+            xmlns:cal="http://www.caliburnproject.org"
+             mc:Ignorable="d" 
+             d:DesignWidth="20">
+
+    <Path Tag="{Binding Icon}" Stretch="UniformToFill" Width="14" Height="14" Fill="#89000000">
+        <Path.Style>
+            <Style TargetType="Path">
+                <Style.Triggers>
+                    <DataTrigger Binding="{Binding Icon}" Value="Running">
+                        <Setter Property="Data" Value="{StaticResource Running}"/>
+                    </DataTrigger>
+                    <DataTrigger Binding="{Binding Icon}" Value="Finished">
+                        <Setter Property="Data" Value="{StaticResource Finished}"/>
+                    </DataTrigger>
+                    <DataTrigger Binding="{Binding Icon}" Value="Error">
+                        <Setter Property="Data" Value="{StaticResource Error}"/>
+                    </DataTrigger>
+                    <DataTrigger Binding="{Binding Icon}" Value="Sending">
+                        <Setter Property="Data" Value="{StaticResource Sending}"/>
+                    </DataTrigger>
+                    <DataTrigger Binding="{Binding Icon}" Value="Receiving">
+                        <Setter Property="Data" Value="{StaticResource Receiving}"/>
+                    </DataTrigger>
+                    <DataTrigger Binding="{Binding Icon}" Value="Awaiting">
+                        <Setter Property="Data" Value="{StaticResource Awaiting}"/>
+                    </DataTrigger>
+                </Style.Triggers>
+            </Style>
+        </Path.Style>
+    </Path>
+</UserControl>

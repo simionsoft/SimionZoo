@@ -140,7 +140,7 @@ namespace Badger.ViewModels
                         AllNotifies();
                     }
                 }
-                catch (Exception ex)
+                catch
                 {
                     throw new Exception("Error loading log descriptor: " + logDescriptorDoc);
                 }

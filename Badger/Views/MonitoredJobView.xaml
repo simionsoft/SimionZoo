@@ -8,26 +8,36 @@
              Background="Transparent">
     <UserControl.Resources>
         <BooleanToVisibilityConverter x:Key="BoolToVis" />
+        <DataTemplate DataType="{x:Type vm:MonitoredExperimentalUnitViewModel}">
+            <v:MonitoredExperimentalUnitView/>
+        </DataTemplate>
+        <DataTemplate DataType="{x:Type vm:MonitoredJobStateViewModel}">
+            <v:MonitoredJobStateView/>
+        </DataTemplate>
     </UserControl.Resources>
 
     <Border BorderThickness="1" BorderBrush="LightGray" Margin="3">
         <Grid>
             <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="90"/>
+                <ColumnDefinition Width="110"/>
+                <ColumnDefinition Width="Auto"/>
                 <ColumnDefinition Width="*"/>
             </Grid.ColumnDefinitions>
 
-            <StackPanel Grid.Column="0" Background="Transparent" Orientation="Vertical"
-                        Margin="3" VerticalAlignment="Center">
-                <StackPanel>
-                    <Label Content="{Binding Path=HerdAgent.IpAddressString}" Margin="0" Padding="0" FontWeight="Bold" FontSize="11"/>
-                </StackPanel>
-                <StackPanel>
-                    <Label Content="{Binding Name}" Foreground="#FF616161" Margin="0" Padding="0" FontSize="10"/>
+            <StackPanel Grid.Column="0" Orientation="Horizontal">
+                <ContentControl Content="{Binding ConnectionState}" ToolTip="{Binding StateString}"/>
+                <StackPanel Background="Transparent" Orientation="Vertical"
+                            Margin="3" VerticalAlignment="Center">
+                    <StackPanel>
+                        <Label Content="{Binding Path=HerdAgent.IpAddressString}" Margin="0" Padding="0" FontWeight="Bold" FontSize="11"/>
+                    </StackPanel>
+                    <StackPanel>
+                        <Label Content="{Binding Name}" Foreground="#FF616161" Margin="0" Padding="0" FontSize="10"/>
+                    </StackPanel>
                 </StackPanel>
             </StackPanel>
-
-            <ListView Grid.Column="1" ItemsSource="{Binding MonitoredExperimentalUnits}" Background="Transparent"
+            <Separator Style="{StaticResource {x:Static ToolBar.SeparatorStyleKey}}" Grid.Column="1" />
+            <ListView Grid.Column="2" ItemsSource="{Binding MonitoredExperimentalUnits}" Background="Transparent"
                       BorderThickness="0" Padding="1" ScrollViewer.HorizontalScrollBarVisibility="Disabled" Width="580">
                 <ListView.ItemsPanel>
                     <ItemsPanelTemplate>
@@ -42,7 +52,7 @@
 
                 <ListView.Resources>
                     <DataTemplate DataType="{x:Type vm:MonitoredExperimentalUnitViewModel}">
-                        <v:MonitoredExperimentalUnitView />
+                        <v:MonitoredExperimentalUnitView/>
                     </DataTemplate>
                 </ListView.Resources>
             </ListView>

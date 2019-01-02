@@ -199,8 +199,9 @@
     <Compile Include="ViewModels\EditorWindowViewModel.cs" />
     <Compile Include="ViewModels\HerdAgentSelectionViewModel.cs" />
     <Compile Include="ViewModels\JobDispatcherSettingsViewModel.cs" />
+    <Compile Include="ViewModels\MonitoredJobStateViewModel.cs" />
     <Compile Include="ViewModels\MonitoredJobViewModel.cs" />
-    <Compile Include="ViewModels\MultiStateButtonViewModel.cs" />
+    <Compile Include="ViewModels\MonitoredExperimentStateViewModel.cs" />
     <Compile Include="ViewModels\NeuralNetwork\ChainViewModel.cs" />
     <Compile Include="ViewModels\NeuralNetwork\InputDataViewModel.cs" />
     <Compile Include="ViewModels\NeuralNetwork\LinkConnectionViewModel.cs" />
@@ -251,12 +252,14 @@
     <Compile Include="Views\HerdAgentView.xaml.cs">
       <DependentUpon>HerdAgentView.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Views\MonitoredExperimentalUnitView.xaml.cs">
-      <DependentUpon>MonitoredExperimentalUnitView.xaml</DependentUpon>
+    <Compile Include="Views\MonitoredExperimentalUnitView.xaml.cs" />
+    <Compile Include="Views\MonitoredExperimentStateView.xaml.cs">
+      <DependentUpon>MonitoredExperimentStateView.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Views\MonitoredJobView.xaml.cs">
-      <DependentUpon>MonitoredJobView.xaml</DependentUpon>
+    <Compile Include="Views\MonitoredJobStateView.xaml.cs">
+      <DependentUpon>MonitoredJobStateView.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Views\MonitoredJobView.xaml.cs" />
     <Compile Include="Views\NeuralNetwork\ChainView.xaml.cs">
       <DependentUpon>ChainView.xaml</DependentUpon>
     </Compile>
@@ -454,11 +457,15 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
+    <Page Include="Views\MonitoredJobStateView.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
     <Page Include="Views\MonitoredJobView.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="Views\MultiStateButtonView.xaml">
+    <Page Include="Views\MonitoredExperimentStateView.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>

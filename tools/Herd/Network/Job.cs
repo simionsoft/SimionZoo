@@ -163,9 +163,6 @@ namespace Herd.Network
 
             try
             {
-                //SEND THE JOB DATA
-                dispatcher.AllStatesChanged?.Invoke(this, Monitoring.State.WAITING_EXECUTION);
-
                 PrepareForExecution(); // compute inputs/outputs...
 
                 //Let the dispatcher know which experimental units were created
@@ -236,8 +233,6 @@ namespace Herd.Network
                 dispatcher.Log?.Invoke("Cancellation requested by user");
                 shepherd.WriteMessage(Shepherd.m_quitMessage, true);
                 await shepherd.readAsync(new CancellationToken()); //we synchronously wait until we get the ack from the client
-
-                dispatcher.AllStatesChanged?.Invoke(this, Monitoring.State.ENQUEUED);
             }
             catch (Exception ex)
             {

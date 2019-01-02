@@ -161,7 +161,7 @@ namespace Herd.Network
                                     udpClient.Client.SetSocketOption(SocketOptionLevel.Socket, SocketOptionName.Broadcast, 1);
                                     m_broadcastInterfacesUdpClients.Add(udpClient);
                                 }
-                                catch (Exception ex)
+                                catch
                                 {
                                     LogMessage("ERROR: Shepherd failed to bind socket to discovery broadcast port");
                                 }
