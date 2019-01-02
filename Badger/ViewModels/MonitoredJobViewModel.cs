@@ -43,7 +43,7 @@ namespace Badger.ViewModels
 
         public MonitoredJobViewModel(Job job, PlotViewModel evaluationPlot, CancellationToken cancelToken, Action<string> logFunction)
         {
-            ConnectionState.Icon = "ConnectionOK";
+            ConnectionState.Icon = null;
 
             m_evaluationPlot = evaluationPlot;
             m_cancelToken = cancelToken;
@@ -52,7 +52,8 @@ namespace Badger.ViewModels
             m_model = job;
         }
 
-        DateTime m_lastHeartbeat = DateTime.Now;
+        public bool Finished => m_model.Finished;
+        public DateTime LastHeartbeat = DateTime.Now;
 
         public void OnMessageReceived(string experimentId, string messageId, string messageContent)
         {
@@ -63,7 +64,7 @@ namespace Badger.ViewModels
             else
             {
                 experimentVM.LastHeartbeat = DateTime.Now;
-                m_lastHeartbeat = DateTime.Now;
+                LastHeartbeat = DateTime.Now;
                 switch (messageId)
                 {
                 case JobDispatcher.ProgressMessage:

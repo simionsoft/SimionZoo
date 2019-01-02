@@ -21,7 +21,7 @@
 
                 <ColumnDefinition Width="*"/>
             </Grid.ColumnDefinitions>
-            <StackPanel Grid.Column="0" Orientation="Horizontal" Background="#FAFAFA">
+            <StackPanel Grid.Column="0" Orientation="Horizontal" VerticalAlignment="Center" Background="#FAFAFA">
                 <Button BorderThickness="0" Background="Transparent" Margin="1" ToolTip="{Binding ForksAsString}" 
                         HorizontalAlignment="Left" VerticalAlignment="Center" cal:Message.Attach="[Event Click]=[Action ShowLog()]">
                     <StackPanel Orientation="Horizontal">
@@ -33,7 +33,7 @@
 
             <StackPanel Orientation="Horizontal" Grid.Column="2">
                 <ContentControl Content="{Binding StateButton}" ToolTip="{Binding StateString}" Margin="2,0,2,0"/>
-                <ProgressBar HorizontalAlignment="Center" VerticalAlignment="Center" Margin="2,0,2,0" Width="40" Minimum="0" Maximum="100" Value="{Binding Progress}" Height="10"/>
+                <ProgressBar HorizontalAlignment="Center" VerticalAlignment="Center" Margin="12,0,2,0" Width="40" Minimum="0" Maximum="100" Value="{Binding Progress}" Height="10"/>
             </StackPanel>
         </Grid>
     </Border>

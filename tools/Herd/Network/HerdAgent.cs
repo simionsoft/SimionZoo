@@ -535,7 +535,7 @@ namespace Herd.Network
                 {
                     State = AgentState.Busy;
 
-                    int ret = await readAsync(m_cancelTokenSource.Token);
+                    int ret = await ReadAsync(m_cancelTokenSource.Token);
                     string xmlItem = m_xmlStream.processNextXMLItem();
                     string xmlItemContent;
                     int returnCode;
@@ -563,7 +563,7 @@ namespace Herd.Network
 
                                     LogMessage("Sending job results");
                                     //we will have to enqueue async write operations to wait for them to finish before closing the tcpClient
-                                    startEnqueueingAsyncWriteOps();
+                                    StartEnqueueingAsyncWriteOps();
                                     SendJobResult(m_cancelTokenSource.Token);
 
                                     LogMessage("Job results sent");

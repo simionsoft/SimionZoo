@@ -68,7 +68,7 @@ namespace Herd.Network
         }
 
         private bool m_bEnqueueAsyncWrites = false;
-        public void startEnqueueingAsyncWriteOps() { m_bEnqueueAsyncWrites = true; }
+        public void StartEnqueueingAsyncWriteOps() { m_bEnqueueAsyncWrites = true; }
 
         private List<Task> m_pendingAsyncWrites = new List<Task>();
 
@@ -89,14 +89,18 @@ namespace Herd.Network
             await m_xmlStream.WriteMessageAsync(m_netStream, message, cancelToken, addDefaultMessageType);
         }
 
-        public async Task<int> readAsync(CancellationToken cancelToken)
+        public async Task<int> ReadAsync(CancellationToken cancelToken)
         {
             int numBytesRead = 0;
-            try { numBytesRead = await m_xmlStream.ReadFromNetworkStreamAsync(m_tcpClient, m_netStream, cancelToken); }
-            catch { LogMessage("async read operation cancelled"); }
+            try
+            {
+                numBytesRead = await m_xmlStream.ReadFromNetworkStreamAsync(m_tcpClient, m_netStream, cancelToken);
+            }
+            catch
+            { }// { LogMessage("async read operation cancelled"); } //<- this logged too many messages on cancellation
             return numBytesRead;
         }
-        public bool writeAsync(byte[] buffer, int offset, int length, CancellationToken cancelToken)
+        public bool WriteAsync(byte[] buffer, int offset, int length, CancellationToken cancelToken)
         {
             if (!m_bEnqueueAsyncWrites)
             {
@@ -157,7 +161,7 @@ namespace Herd.Network
             taskXML += "/>";
             byte[] bytes = Encoding.ASCII.GetBytes(taskXML);
 
-            writeAsync(bytes, 0, bytes.Length, cancelToken);
+            WriteAsync(bytes, 0, bytes.Length, cancelToken);
         }
 
         public async Task<bool> ReceiveTask(CancellationToken cancelToken)
@@ -180,13 +184,13 @@ namespace Herd.Network
         {
             string header = "<Job Name=\"" + m_job.Name + "\">";
             byte[] headerbytes = Encoding.ASCII.GetBytes(header);
-            writeAsync(headerbytes, 0, headerbytes.Length, cancelToken);
+            WriteAsync(headerbytes, 0, headerbytes.Length, cancelToken);
         }
         protected void SendJobFooter(CancellationToken cancelToken)
         {
             string footer = "</Job>";
             byte[] footerbytes = Encoding.ASCII.GetBytes(footer);
-            writeAsync(footerbytes, 0, footerbytes.Length, cancelToken);
+            WriteAsync(footerbytes, 0, footerbytes.Length, cancelToken);
         }
         protected void SendFile(string fileName, FileType type, bool sendContent
             , bool fromCachedDir, CancellationToken cancelToken, string rename = null)
@@ -226,7 +230,7 @@ namespace Herd.Network
 
                 //send the header
                 headerBytes = Encoding.ASCII.GetBytes(header);
-                writeAsync(headerBytes, 0, headerBytes.Length, cancelToken);
+                WriteAsync(headerBytes, 0, headerBytes.Length, cancelToken);
 
 
                 long readBytes = 0;
@@ -240,7 +244,7 @@ namespace Herd.Network
 
                     try
                     {
-                        writeAsync(buffer, 0, (int)lastReadBytes, cancelToken);
+                        WriteAsync(buffer, 0, (int)lastReadBytes, cancelToken);
                     }
                     catch (Exception ex)
                     {
@@ -251,7 +255,7 @@ namespace Herd.Network
 
                 //Send the footer: </Exe>, </Input> or </Output>
                 byte[] footerBytes = Encoding.ASCII.GetBytes(footer);
-                writeAsync(footerBytes, 0, footerBytes.Length, cancelToken);
+                WriteAsync(footerBytes, 0, footerBytes.Length, cancelToken);
                 m_netStream.Flush();
             }
             else
@@ -259,7 +263,7 @@ namespace Herd.Network
                 header += "/>";
                 //send the header
                 headerBytes = Encoding.ASCII.GetBytes(header);
-                writeAsync(headerBytes, 0, headerBytes.Length, cancelToken);
+                WriteAsync(headerBytes, 0, headerBytes.Length, cancelToken);
 
                 m_netStream.Flush();
             }

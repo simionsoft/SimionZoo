@@ -155,6 +155,8 @@ namespace Herd.Network
             return filename;
         }
 
+        public bool Finished { get; set; } = false;
+
         //Remote execution and monitoring of the job
         public async Task<Job> SendJobAndMonitor(Monitoring.MsgDispatcher dispatcher)
         {
@@ -195,7 +197,7 @@ namespace Herd.Network
                 // Monitor the remote job
                 while (true)
                 {
-                    int numBytesRead = await shepherd.readAsync(dispatcher.CancelToken);
+                    int numBytesRead = await shepherd.ReadAsync(dispatcher.CancelToken);
                     dispatcher.CancelToken.ThrowIfCancellationRequested();
 
                     string xmlItem = shepherd.m_xmlStream.processNextXMLItem();
@@ -217,6 +219,8 @@ namespace Herd.Network
                             bool bret = await shepherd.ReceiveJobResult(dispatcher.CancelToken);
                             dispatcher.AllStatesChanged?.Invoke(this, Monitoring.State.FINISHED);
 
+                            Finished = true;
+
                             dispatcher.Log?.Invoke("Job results received");
                             return this;
                         }
@@ -232,7 +236,7 @@ namespace Herd.Network
                 //quit remote jobs
                 dispatcher.Log?.Invoke("Cancellation requested by user");
                 shepherd.WriteMessage(Shepherd.m_quitMessage, true);
-                await shepherd.readAsync(new CancellationToken()); //we synchronously wait until we get the ack from the client
+                await shepherd.ReadAsync(new CancellationToken()); //we synchronously wait until we get the ack from the client
             }
             catch (Exception ex)
             {

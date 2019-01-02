@@ -31,6 +31,14 @@ namespace Badger.ViewModels
             Plot = new PlotViewModel("", "", "")
             { bShowOptions = false };
             Plot.Properties.LegendVisible = false;
+
+            //set timers:
+            //This first timer updates each 2s the progress bar when an experiment is running
+            m_progressUpdateTimer = new System.Timers.Timer(2000);
+            m_progressUpdateTimer.Elapsed += ProgressUpdateEvent;
+            //This second timer checks every 5s the connection with each herd agent running experiments
+            m_connectionStateTimer = new System.Timers.Timer(5000);
+            m_connectionStateTimer.Elapsed += ConnectionCheckEvent;
         }
 
         private void ResetPlot()
@@ -101,7 +109,8 @@ namespace Badger.ViewModels
             base.OnDeactivate(close);
         }
 
-        private System.Timers.Timer m_timer;
+        private System.Timers.Timer m_progressUpdateTimer;
+        private System.Timers.Timer m_connectionStateTimer;
 
         public bool IsBatchLoadedAndNotRunning
         {
@@ -325,7 +334,7 @@ namespace Badger.ViewModels
             return true;
         }
 
-        Dictionary<Job, MonitoredJobViewModel> ViewModelFromModel = new Dictionary<Job, MonitoredJobViewModel>();
+        readonly Dictionary<Job, MonitoredJobViewModel> ViewModelFromModel = new Dictionary<Job, MonitoredJobViewModel>();
 
         public void DispatchOnMessageReceived(Job job, string experimentId, string messageId, string messageContent)
         {
@@ -367,10 +376,8 @@ namespace Badger.ViewModels
 
         public async void RunExperimentsAsync(List<HerdAgentInfo> freeHerdAgents)
         {
-            
-            m_timer = new System.Timers.Timer(2000);
-            m_timer.Elapsed += ProgressUpdateTimedEvent;
-            m_timer.Enabled = true;
+            m_progressUpdateTimer.Enabled = true;
+            m_connectionStateTimer.Enabled = true;
 
             IsRunning = true;
             m_cancelTokenSource = new CancellationTokenSource();
@@ -391,6 +398,10 @@ namespace Badger.ViewModels
  
             IsFinished = true; // used to enable the "View reports" button
             IsRunning = false;
+
+            m_progressUpdateTimer.Enabled = false;
+            m_connectionStateTimer.Enabled = false;
+
             m_cancelTokenSource.Dispose();
         }
 
@@ -443,7 +454,7 @@ namespace Badger.ViewModels
         /// </summary>
         /// <param name="source"></param>
         /// <param name="e"></param>
-        private void ProgressUpdateTimedEvent(object source, ElapsedEventArgs e)
+        private void ProgressUpdateEvent(object source, ElapsedEventArgs e)
         {
             // Recalculate global progress each time
             GlobalProgress = CalculateGlobalProgress();
@@ -455,6 +466,33 @@ namespace Badger.ViewModels
                 EstimatedEndTime = TimeSpan.FromSeconds(m_timeRemaining).ToString(@"hh\:mm\:ss");
             }
             else EstimatedEndTime = "N/A";
+        }
+
+
+        const int ConnectionTimeOutSeconds = 20;
+        /// <summary>
+        /// Checks how much time has passed since a message was received from the herd agent running the job and updates
+        /// the icon accordingly
+        /// </summary>
+        /// <param name="source"></param>
+        /// <param name="e"></param>
+        private void ConnectionCheckEvent(object source, ElapsedEventArgs e)
+        {
+            DateTime now = DateTime.Now;
+            if (IsRunning)
+            {
+                foreach(MonitoredJobViewModel job in AllMonitoredJobs)
+                {
+                    if (!job.Finished)
+                    {
+                        if (now - job.LastHeartbeat > TimeSpan.FromSeconds(ConnectionTimeOutSeconds))
+                            job.ConnectionState.Icon = MonitoredJobStateViewModel.ConnectionError;
+                        else
+                            job.ConnectionState.Icon = MonitoredJobStateViewModel.ConnectionOK;
+                    }
+                    else job.ConnectionState.Icon = null;
+                }
+            }
         }
 
         BindableCollection<MonitoredJobViewModel> m_allMonitoredJobs
@@ -478,101 +516,17 @@ namespace Badger.ViewModels
                 m_cancelTokenSource.Cancel();
             Plot.ClearLineSeries();
             IsRunning = false;
+
+            //Disable the timers
+            m_progressUpdateTimer.Enabled = false;
+            m_connectionStateTimer.Enabled = false;
+
+            //We just disabled the timer that updates the connection status, so we have to change the icon manually for each job
+            foreach (MonitoredJobViewModel job in AllMonitoredJobs)
+            {
+                job.ConnectionState.Icon = null;
+            }
         }
-
-        ////integer value incremented to generate job ids
-        //static int jobId = 0;
-
-        ///// <summary>
-        /////     Assigns experiments to availables herd agents.
-        ///// </summary>
-        ///// <param name="freeHerdAgents"></param>
-        ///// 
-        //public static void AssignExperiments(ref List<MonitoredExperimentalUnitViewModel> pendingExperiments
-        //    , ref List<HerdAgentViewModel> freeHerdAgents, ref List<MonitoredJobViewModel> assignedJobs
-        //    , CancellationToken cancelToken, PlotViewModel plot = null)
-        //{
-        //    //Clear the list: these are jobs which have to be sent
-        //    assignedJobs.Clear();
-        //    //Create a list of agents that are given work. We need to remove them from the "free" list out of the loop
-        //    List<HerdAgentViewModel> usedHerdAgents = new List<HerdAgentViewModel>();
-            
-
-        //    //We iterate on the free agents to decide what jobs to give each of them until:
-        //    //  -either there are no more pending experiments
-        //    //  -all agents have been given work
-        //    foreach (HerdAgentViewModel agent in freeHerdAgents)
-        //    {
-        //        List<MonitoredExperimentalUnitViewModel> experiments = new List<MonitoredExperimentalUnitViewModel>();
-        //        int numFreeCores = agent.NumProcessors;
-        //        bool bAgentUsed = false;
-        //        MonitoredExperimentalUnitViewModel experiment;
-        //        bool bFailedToFindMatch = false;
-
-        //        while (numFreeCores>0 && !bFailedToFindMatch)
-        //        {
-        //            experiment = FirstFittingExperiment(pendingExperiments, numFreeCores, bAgentUsed, agent);
-        //            if (experiment != null)
-        //            {
-        //                //remove the experiment from the list and add it to running experiments
-        //                experiments.Add(experiment);
-        //                pendingExperiments.Remove(experiment);
-
-        //                //update the number of free cpu cores
-        //                if (experiment.RunTimeReqs.NumCPUCores > 0)
-        //                    numFreeCores -= experiment.RunTimeReqs.NumCPUCores;
-        //                else numFreeCores = 0;
-
-        //                bAgentUsed = true;
-        //            }
-        //            else bFailedToFindMatch = true;
-        //        }
-
-        //        if (bAgentUsed)
-        //        {
-        //            MonitoredJobViewModel newJob = new MonitoredJobViewModel("Job #" + jobId, experiments,
-        //                agent, plot, cancelToken, MainWindowViewModel.Instance.LogToFile);
-        //            assignedJobs.Add(newJob);
-        //            usedHerdAgents.Add(agent);
-                    
-
-        //            ++jobId;
-        //        }
-
-        //        if (pendingExperiments.Count == 0) break;
-        //    }
-        //    //now we can remove used agents from the list
-        //    foreach(HerdAgentViewModel agent in usedHerdAgents) freeHerdAgents.Remove(agent);
-        //}
-
-        //static MonitoredExperimentalUnitViewModel FirstFittingExperiment(List<MonitoredExperimentalUnitViewModel> pendingExperiments, int numFreeCores, bool bAgentUsed, HerdAgentViewModel agent)
-        //{
-        //    foreach (MonitoredExperimentalUnitViewModel experiment in pendingExperiments)
-        //    {
-        //        AppVersion bestMatchingVersion = HerdAgentViewModel.BestMatch(experiment.AppVersions, agent);
-        //        if (bestMatchingVersion != null)
-        //        {
-        //            //run-time requirements are calculated when a version is selected
-        //            experiment.SelectedVersion = HerdAgentViewModel.BestMatch(experiment.AppVersions, agent);
-        //            experiment.GetRuntimeRequirements(experiment.SelectedVersion, experiment.AppVersions);
-
-        //            if (experiment.RunTimeReqs == null)
-        //                return null;
-                        
-
-        //            //Check that the version chosen for the agent supports the architecture requested by the run-time 
-        //            if ( (experiment.RunTimeReqs.Architecture==Herd.Network.PropValues.None 
-        //                || experiment.RunTimeReqs.Architecture == experiment.SelectedVersion.Requirements.Architecture)
-        //                &&
-        //                //If NumCPUCores = "all", then the experiment only fits the agent in case it hasn't been given any other experimental unit
-        //                ((experiment.RunTimeReqs.NumCPUCores == 0 && !bAgentUsed)
-        //                //If NumCPUCores != "all", then experiment only fits the agent if the number of cpu cores used is less than those available
-        //                || (experiment.RunTimeReqs.NumCPUCores > 0 && experiment.RunTimeReqs.NumCPUCores <= numFreeCores)))
-        //                return experiment;
-        //        }
-        //    }
-        //    return null;
-        //}
     }
 
 }

@@ -38,7 +38,7 @@
             </StackPanel>
 
             <ListView Grid.Column="2" ItemsSource="{Binding MonitoredExperimentalUnits}" Background="Transparent"
-                      BorderThickness="0" Padding="1" ScrollViewer.HorizontalScrollBarVisibility="Disabled" Width="580">
+                      BorderThickness="0" Padding="1" ScrollViewer.HorizontalScrollBarVisibility="Disabled" Width="570">
                 <ListView.ItemsPanel>
                     <ItemsPanelTemplate>
                         <UniformGrid Columns="4"/>
