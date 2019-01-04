@@ -155,7 +155,11 @@ namespace Herd.Network
             return filename;
         }
 
-        public bool Finished { get; set; } = false;
+        bool m_bFinished = false;
+        public bool Finished { get { return m_bFinished; } }
+        bool m_bCancelled = false;
+        public bool Cancelled { get { return m_bCancelled; } }
+        public bool Running { get { return !(Finished || Cancelled); } }
 
         //Remote execution and monitoring of the job
         public async Task<Job> SendJobAndMonitor(Monitoring.MsgDispatcher dispatcher)
@@ -219,7 +223,7 @@ namespace Herd.Network
                             bool bret = await shepherd.ReceiveJobResult(dispatcher.CancelToken);
                             dispatcher.AllStatesChanged?.Invoke(this, Monitoring.State.FINISHED);
 
-                            Finished = true;
+                            m_bFinished = true;
 
                             dispatcher.Log?.Invoke("Job results received");
                             return this;
@@ -237,6 +241,7 @@ namespace Herd.Network
                 dispatcher.Log?.Invoke("Cancellation requested by user");
                 shepherd.WriteMessage(Shepherd.m_quitMessage, true);
                 await shepherd.ReadAsync(new CancellationToken()); //we synchronously wait until we get the ack from the client
+                m_bCancelled = true;
             }
             catch (Exception ex)
             {

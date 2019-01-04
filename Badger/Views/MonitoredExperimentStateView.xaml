@@ -9,7 +9,7 @@
              mc:Ignorable="d" 
              d:DesignWidth="20">
 
-    <Path Tag="{Binding Icon}" Stretch="UniformToFill" Width="12" Height="12" Fill="#89000000">
+    <Path Tag="{Binding Icon}" Stretch="Uniform" Width="12" Height="12" Fill="#89000000">
         <Path.Style>
             <Style TargetType="Path">
                 <Style.Triggers>

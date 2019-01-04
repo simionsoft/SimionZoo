@@ -41,12 +41,6 @@ namespace Badger.ViewModels
             m_connectionStateTimer.Elapsed += ConnectionCheckEvent;
         }
 
-        private void ResetPlot()
-        {
-            Plot.ClearLineSeries();
-            LoggedExperiments.Clear();
-        }
-
         ///<summary>
         ///Deletes all the log files in the batch
         ///</summary>
@@ -54,11 +48,8 @@ namespace Badger.ViewModels
         {
             int numFilesDeleted = ExperimentBatch.DeleteLogFiles(BatchFileName);
 
-            NumFinishedExperimentalUnitsBeforeStart = 0;
-            ResetPlot();
-
-            //prepare the batch for a new execution
-            InitializeExperimentBatchForExecution();
+            //re-load the batch for execution
+            LoadExperimentBatch(BatchFileName);
         }
 
 
@@ -262,9 +253,6 @@ namespace Badger.ViewModels
         /// <param name="batchFileName">The batch file with experiment data</param>
         public bool LoadExperimentBatch(string batchFileName)
         {
-            BatchFileName = batchFileName;
-            ResetPlot();
-
             //Load unfinished experiments
             LoadOptions loadOptionsUnfinished = new LoadOptions()
             {
@@ -275,6 +263,7 @@ namespace Badger.ViewModels
             ExperimentBatch batchUnfinished = new ExperimentBatch();
             batchUnfinished.Load(batchFileName, loadOptionsUnfinished);
 
+            LoggedExperiments.Clear();
             foreach (Experiment experiment in batchUnfinished.Experiments)
             {
                 LoggedExperimentViewModel newExperiment = new LoggedExperimentViewModel(experiment);
@@ -290,18 +279,13 @@ namespace Badger.ViewModels
                 LoadVariablesInLog = false
             };
 
+            //we use a temp variable first to get the count of finished units so that setting the value of NumFinishedExperimentalUnitsBeforeStart triggers the progress update
+            //AFTER setting the value of NumExperimentalUnits
             NumFinishedExperimentalUnitsBeforeStart = ExperimentBatch.CountExperimentalUnits(batchFileName, LoadOptions.ExpUnitSelection.OnlyFinished);
+            NumExperimentalUnits = numUnfinishedExperimentalUnits + NumFinishedExperimentalUnitsBeforeStart;
+            NumFinishedExperimentalUnitsAfterStart = 0;
 
-            NumExperimentalUnits = numUnfinishedExperimentalUnits + NumFinishedExperimentalUnits;
-
-            if (InitializeExperimentBatchForExecution())
-                BatchFileName = batchFileName;
-
-            return true;
-        }
-
-        bool InitializeExperimentBatchForExecution()
-        {
+            //Initialize pending experiment list
             m_pendingExperiments.Clear();
 
             foreach (var experiment in LoggedExperiments)
@@ -313,7 +297,6 @@ namespace Badger.ViewModels
                         CaliburnUtility.ShowWarningDialog("Cannot find required file: " + version.ExeFile + ". Check the app definition file in /config/apps", "ERROR");
                         return false;
                     }
-
                     foreach (string pre in version.Requirements.InputFiles)
                     {
                         if (!ExistsRequiredFile(pre))
@@ -323,10 +306,11 @@ namespace Badger.ViewModels
                         }
                     }
                 }
-                
                 foreach (LoggedExperimentalUnitViewModel unit in experiment.ExperimentalUnits) m_pendingExperiments.Add(unit.Model);
             }
 
+            BatchFileName = batchFileName;
+            Plot.ClearLineSeries();
             AllMonitoredJobs.Clear();
             IsBatchLoaded = true;
             IsRunning = false;
@@ -374,12 +358,27 @@ namespace Badger.ViewModels
             - job.FailedExperimentalUnits.Count;
         }
 
+        void SetRunning(bool running)
+        {
+            m_progressUpdateTimer.Enabled = running;
+            m_connectionStateTimer.Enabled = running;
+
+            IsRunning = running;
+            IsFinished = !running;
+
+
+            if (!running)
+            {
+                //We just disabled the timer that updates the connection status, so we have to change the icon manually for each job
+                foreach (MonitoredJobViewModel job in AllMonitoredJobs)
+                    job.ConnectionState.Icon = null;
+            }
+        }
+
         public async void RunExperimentsAsync(List<HerdAgentInfo> freeHerdAgents)
         {
-            m_progressUpdateTimer.Enabled = true;
-            m_connectionStateTimer.Enabled = true;
+            SetRunning(true);
 
-            IsRunning = true;
             m_cancelTokenSource = new CancellationTokenSource();
 
             Monitoring.MsgDispatcher dispatcher
@@ -388,21 +387,9 @@ namespace Badger.ViewModels
                     , DispatchOnMessageReceived, DispatchOnExperimentalUnitLaunched
                     , MainWindowViewModel.Instance.LogToFile, m_cancelTokenSource.Token);
 
-            NumFinishedExperimentalUnitsAfterStart = await JobDispatcher.RunExperimentsAsync(m_pendingExperiments, freeHerdAgents, dispatcher, m_cancelTokenSource, ShepherdViewModel.DispatcherOptions);
+            int ret = await JobDispatcher.RunExperimentsAsync(m_pendingExperiments, freeHerdAgents, dispatcher, m_cancelTokenSource, ShepherdViewModel.DispatcherOptions);
 
-            NumFinishedExperimentalUnitsBeforeStart = NumFinishedExperimentalUnitsAfterStart + NumFinishedExperimentalUnitsBeforeStart;
-
-            CalculateGlobalProgress();
-
-            NumFinishedExperimentalUnitsAfterStart = 0;
- 
-            IsFinished = true; // used to enable the "View reports" button
-            IsRunning = false;
-
-            m_progressUpdateTimer.Enabled = false;
-            m_connectionStateTimer.Enabled = false;
-
-            m_cancelTokenSource.Dispose();
+            SetRunning(false);
         }
 
 
@@ -438,10 +425,12 @@ namespace Badger.ViewModels
                 {
                     //the experiment is running
                     foreach (MonitoredJobViewModel exp in AllMonitoredJobs)
-                        sum += exp.MonitoredExperimentalUnits.Count * exp.NormalizedProgress;
-                    //to calculate the progress we only count exp.units finished before the start, because
-                    //those finished after the start should be in AllMonitoredJobs
-                    progress = (m_numFinishedExperimentalUnitsBeforeStart + sum) / (double)NumExperimentalUnits;
+                    {
+                        if (exp.Running)
+                            sum += exp.MonitoredExperimentalUnits.Count * exp.NormalizedProgress;
+                    }
+
+                    progress = (NumFinishedExperimentalUnitsAfterStart + NumFinishedExperimentalUnitsBeforeStart + sum) / (double)NumExperimentalUnits;
                 }
                 return progress;
             }
@@ -483,7 +472,7 @@ namespace Badger.ViewModels
             {
                 foreach(MonitoredJobViewModel job in AllMonitoredJobs)
                 {
-                    if (!job.Finished)
+                    if (job.Running)
                     {
                         if (now - job.LastHeartbeat > TimeSpan.FromSeconds(ConnectionTimeOutSeconds))
                             job.ConnectionState.Icon = MonitoredJobStateViewModel.ConnectionError;
@@ -512,20 +501,11 @@ namespace Badger.ViewModels
         /// </summary>
         public void StopExperiments()
         {
-            if (m_bRunning && m_cancelTokenSource != null)
-                m_cancelTokenSource.Cancel();
-            Plot.ClearLineSeries();
-            IsRunning = false;
+            if (m_cancelTokenSource != null) m_cancelTokenSource.Dispose();
 
-            //Disable the timers
-            m_progressUpdateTimer.Enabled = false;
-            m_connectionStateTimer.Enabled = false;
+            SetRunning(false);
 
-            //We just disabled the timer that updates the connection status, so we have to change the icon manually for each job
-            foreach (MonitoredJobViewModel job in AllMonitoredJobs)
-            {
-                job.ConnectionState.Icon = null;
-            }
+            LoadExperimentBatch(BatchFileName); //re-load the batch to check how many units were finished
         }
     }
 

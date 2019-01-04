@@ -3,8 +3,6 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
-using System.Security.AccessControl;
-using System.Security.Principal;
 
 using Herd.Files;
 using System.Diagnostics;
@@ -13,6 +11,17 @@ namespace Herd
 {
     public class Utils
     {
+        public static bool FileExistsAndNotEmpty(string fileName)
+        {
+            if (File.Exists(fileName))
+            {
+                FileInfo fileInfo = new FileInfo(fileName);
+                if (fileInfo.Length > 0)
+                    return true;
+            }
+            return false;
+        }
+
         public static void SetExecutionPermission(string filename)
         {
             Process.Start("chmod", "770 " + filename);

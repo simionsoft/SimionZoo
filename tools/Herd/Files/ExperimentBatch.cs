@@ -137,7 +137,8 @@ namespace Herd.Files
                                         string baseDirectory = Utils.GetDirectory(batchFilename);
                                         string logDescPath = Utils.GetLogFilePath(baseDirectory + expUnitPath, true);
                                         string logPath = Utils.GetLogFilePath(baseDirectory + expUnitPath, false);
-                                        bool logExists = File.Exists(logDescPath) && File.Exists(logPath);
+
+                                        bool logExists = Utils.FileExistsAndNotEmpty(logDescPath) && Utils.FileExistsAndNotEmpty(logPath);
 
                                         if (logExists == (selection==LoadOptions.ExpUnitSelection.OnlyFinished))
                                             counter++;

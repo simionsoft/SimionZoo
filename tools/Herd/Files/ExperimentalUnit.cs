@@ -1,4 +1,6 @@
 ﻿using Herd.Network;
+using Herd;
+
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -85,23 +87,14 @@ namespace Herd.Files
             string logDescriptorFileName = Utils.GetLogFilePath(experimentFileName, true);
             string logFileName = Utils.GetLogFilePath(experimentFileName, false);
 
-            return FileExistsAndNotEmpty(logDescriptorFileName) && FileExistsAndNotEmpty(logFileName);
+            return Utils.FileExistsAndNotEmpty(logDescriptorFileName) && Utils.FileExistsAndNotEmpty(logFileName);
         }
         public bool LogFileExists()
         {
-            return FileExistsAndNotEmpty(LogFileName) && FileExistsAndNotEmpty(LogDescriptorFileName);
+            return Utils.FileExistsAndNotEmpty(LogFileName) && Utils.FileExistsAndNotEmpty(LogDescriptorFileName);
         }
 
-        static bool FileExistsAndNotEmpty(string fileName)
-        {
-            if (File.Exists(fileName))
-            {
-                FileInfo fileInfo = new FileInfo(fileName);
-                if (fileInfo.Length > 0)
-                    return true;
-            }
-            return false;
-        }
+
 
         public List<AppVersion> AppVersions { get; set; }
         public AppVersion SelectedVersion { get; set; }

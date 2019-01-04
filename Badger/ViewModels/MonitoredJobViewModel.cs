@@ -52,7 +52,8 @@ namespace Badger.ViewModels
             m_model = job;
         }
 
-        public bool Finished => m_model.Finished;
+        public bool Running => m_model.Running;
+
         public DateTime LastHeartbeat = DateTime.Now;
 
         public void OnMessageReceived(string experimentId, string messageId, string messageContent)

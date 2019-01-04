@@ -25,7 +25,7 @@
             </Grid.ColumnDefinitions>
 
             <StackPanel Grid.Column="0" Orientation="Horizontal" Background="WhiteSmoke">
-                <ContentControl Content="{Binding ConnectionState}" ToolTip="{Binding StateString}"/>
+                <ContentControl Content="{Binding ConnectionState}"/>
                 <StackPanel Background="Transparent" Orientation="Vertical"
                             Margin="3" VerticalAlignment="Center">
                     <StackPanel>
