@@ -42,6 +42,7 @@
   </PropertyGroup>
   <ItemGroup>
     <ClCompile Include="CrossPlatform.cpp" />
+    <ClCompile Include="DynamicLib-linux.cpp" />
     <ClCompile Include="FileUtils.cpp" />
     <ClCompile Include="NamedPipe-Common.cpp" />
     <ClCompile Include="NamedPipe-linux.cpp" />
@@ -49,6 +50,7 @@
     <ClCompile Include="Timer.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="DynamicLib.h" />
     <ClInclude Include="FileUtils.h" />
     <ClInclude Include="NamedPipe.h" />
     <ClInclude Include="CrossPlatform.h" />

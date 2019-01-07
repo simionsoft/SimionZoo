@@ -3,9 +3,7 @@
 //so far, we only include CNTK-related stuff if we are under Windows AND x64 architecture
 #if defined(_WIN32) && defined(_WIN64)
 	#include "../tools/CNTKWrapper/CNTKWrapper.h"
-	#include <windows.h>
-	#undef min
-	#undef max
+	#include "../tools/System/DynamicLib.h"
 #endif
 
 #include "app.h"
@@ -15,7 +13,8 @@
 namespace CNTK
 {
 #if defined(_WIN32) && defined(_WIN64)
-	HMODULE hCNTKWrapperDLL = 0;
+	DynamicLib DynamicLibCNTK;
+	//HMODULE hCNTKWrapperDLL = 0;
 #endif
 
 	int NumNetworkInstances = 0;
@@ -30,7 +29,7 @@ namespace CNTK
 #if defined(_WIN32) && defined(_WIN64)
 		NumNetworkInstances++;
 
-		if (hCNTKWrapperDLL == 0)
+		if (!DynamicLibCNTK.IsLoaded())
 
 		{
 			//Set the number of CPU threads to "all"
@@ -42,19 +41,24 @@ namespace CNTK
 			Logger::logMessage(MessageType::Info, "Loading CNTK library");
 
 #ifdef _DEBUG
-			hCNTKWrapperDLL = LoadLibrary("./../Debug/CNTKWrapper.dll");
+			DynamicLibCNTK.Load("./../Debug/CNTKWrapper.dll");
+			//hCNTKWrapperDLL = LoadLibrary("./../Debug/CNTKWrapper.dll");
 #else
-			hCNTKWrapperDLL = LoadLibrary("./../bin/CNTKWrapper.dll");
+			DynamicLibCNTK.Load("./../bin/CNTKWrapper.dll");
+			//hCNTKWrapperDLL = LoadLibrary("./../bin/CNTKWrapper.dll");
 #endif
-			if (hCNTKWrapperDLL == 0)
+			//if (hCNTKWrapperDLL == 0)
+			if (!DynamicLibCNTK.IsLoaded())
 				Logger::logMessage(MessageType::Error, "Failed to load CNTKWrapper.dll");
 
 			//get the address of the interface functions
-			getNetworkDefinition = (getNetworkDefinitionDLL)GetProcAddress(hCNTKWrapperDLL, "CNTKWrapper::getNetworkDefinition");
+			getNetworkDefinition = (getNetworkDefinitionDLL)DynamicLibCNTK.GetFuncAddress("CNTKWrapper::getNetworkDefinition");
+				//GetProcAddress(hCNTKWrapperDLL, "CNTKWrapper::getNetworkDefinition");
 			if (getNetworkDefinition == 0)
 				Logger::logMessage(MessageType::Error, "Failed to get a pointer to CNTKWrapper:getNetworkDefinition()");
 
-			setDevice = (setDeviceDLL)GetProcAddress(hCNTKWrapperDLL, "CNTKWrapper::setDevice");
+			setDevice = (setDeviceDLL) DynamicLibCNTK.GetFuncAddress("CNTKWrapper::setDevice");
+				//GetProcAddress(hCNTKWrapperDLL, "CNTKWrapper::setDevice");
 			if (setDevice == 0)
 				Logger::logMessage(MessageType::Error, "Failed to get a pointer to CNTKWrapper:setDevice()");
 		}
@@ -85,10 +89,12 @@ namespace CNTK
 	{
 #if defined(_WIN32) && defined(_WIN64)
 		NumNetworkInstances--;
-		if (hCNTKWrapperDLL && NumNetworkInstances==0)
+		if (NumNetworkInstances==0 && DynamicLibCNTK.IsLoaded())
+		//if (hCNTKWrapperDLL && NumNetworkInstances==0)
 		{
-			FreeLibrary(hCNTKWrapperDLL);
-			hCNTKWrapperDLL = 0;
+			DynamicLibCNTK.Unload();
+			//FreeLibrary(hCNTKWrapperDLL);
+			//hCNTKWrapperDLL = 0;
 		}
 #endif
 	}

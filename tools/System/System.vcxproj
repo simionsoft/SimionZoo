@@ -135,6 +135,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="CrossPlatform.cpp" />
+    <ClCompile Include="DynamicLib.cpp" />
     <ClCompile Include="FileUtils.cpp" />
     <ClCompile Include="NamedPipe-Common.cpp" />
     <ClCompile Include="NamedPipe.cpp" />
@@ -143,6 +144,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="CrossPlatform.h" />
+    <ClInclude Include="DynamicLib.h" />
     <ClInclude Include="FileUtils.h" />
     <ClInclude Include="NamedPipe.h" />
     <ClInclude Include="Process.h" />
