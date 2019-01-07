@@ -38,18 +38,25 @@
     <RemoteProjectDir>$(RemoteRootDir)/SimionZoo/tools/CNTKWrapper</RemoteProjectDir>
     <OutDir>$(SolutionDir)debug/</OutDir>
     <TargetName>$(ProjectName)</TargetName>
+    <AdditionalSourcesToCopyMapping>
+    </AdditionalSourcesToCopyMapping>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <RemoteProjectDir>$(RemoteRootDir)/SimionZoo/tools/CNTKWrapper</RemoteProjectDir>
     <OutDir>$(SolutionDir)bin/</OutDir>
     <TargetName>$(ProjectName)</TargetName>
+    <AdditionalSourcesToCopyMapping>
+    </AdditionalSourcesToCopyMapping>
   </PropertyGroup>
   <ItemGroup>
     <ClInclude Include="Chain.h" />
+    <ClInclude Include="CNTKLibrary.h" />
+    <ClInclude Include="CNTKLibraryInternals.h" />
     <ClInclude Include="CNTKWrapper.h" />
     <ClInclude Include="CNTKWrapperInternals.h" />
     <ClInclude Include="Exceptions.h" />
-    <ClInclude Include="minibatch.h" />
+    <ClInclude Include="HalfConverter.hpp" />
+    <ClInclude Include="Minibatch.h" />
     <ClInclude Include="OptimizerSetting.h" />
     <ClInclude Include="NetworkDefinition.h" />
     <ClInclude Include="InputData.h" />
@@ -65,7 +72,7 @@
     <ClCompile Include="Chain.cpp" />
     <ClCompile Include="CNTKWrapper.cpp" />
     <ClCompile Include="CNTKWrapperInternals.cpp" />
-    <ClCompile Include="minibatch.cpp" />
+    <ClCompile Include="Minibatch.cpp" />
     <ClCompile Include="OptimizerSetting.cpp" />
     <ClCompile Include="NetworkDefinition.cpp" />
     <ClCompile Include="InputData.cpp" />
@@ -76,6 +83,9 @@
     <ClCompile Include="ParameterValues.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\..\3rd-party\tinyxml2\Linux\tinyxml2-linux\tinyxml2-linux.vcxproj">
+      <Project>{0407c160-b25c-4a40-acf8-f8cec04add6b}</Project>
+    </ProjectReference>
     <ProjectReference Include="..\System\System-linux.vcxproj">
       <Project>{11efdd7d-a557-4cc7-ab52-46d850f67a1e}</Project>
     </ProjectReference>
@@ -84,11 +94,19 @@
     <ClCompile>
       <PreprocessorDefinitions>BUILD_CNTK_WRAPPER</PreprocessorDefinitions>
     </ClCompile>
+    <Link>
+      <LibraryDependencies>$(SolutionDir)/bin/cntk-linux/Cntk.Core-2.5.1.so;</LibraryDependencies>
+      <AdditionalLibraryDirectories>%(Link.AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+    </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <ClCompile>
       <PreprocessorDefinitions>NDEBUG;BUILD_CNTK_WRAPPER;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
+    <Link>
+      <AdditionalLibraryDirectories>%(Link.AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <LibraryDependencies>$(SolutionDir)/bin/cntk-linux/Cntk.Core-2.5.1.so;</LibraryDependencies>
+    </Link>
   </ItemDefinitionGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets" />

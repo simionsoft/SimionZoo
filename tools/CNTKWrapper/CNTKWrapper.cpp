@@ -1,5 +1,4 @@
 
-#ifdef _WIN64
 
 #include "CNTKWrapper.h"
 #include "Parameter.h"
@@ -34,7 +33,3 @@ void CNTKWrapper::setDevice(bool useGPU)
 	else
 		CNTK::DeviceDescriptor::TrySetDefaultDevice(CNTK::DeviceDescriptor::CPUDevice());
 }
-
-
-
-#endif // _WIN64

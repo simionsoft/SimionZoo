@@ -1,5 +1,3 @@
-#ifdef _WIN64
-
 #include "xmltags.h"
 #include "NetworkArchitecture.h"
 #include "Parameter.h"
@@ -131,5 +129,3 @@ LinkConnectionListParameter::LinkConnectionListParameter(tinyxml2::XMLElement * 
 	tinyxml2::XMLElement *pNode = pParentNode->FirstChildElement(XML_TAG_Value);
 	loadChildren<LinkConnection>(pNode, XML_TAG_LinkConnection, m_value);
 }
-
-#endif // _WIN64

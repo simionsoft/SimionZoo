@@ -1,5 +1,4 @@
 #pragma once
-#ifdef _WIN64
 
 #include "CNTKWrapper.h"
 #include "../../3rd-party/tinyxml2/tinyxml2.h"
@@ -82,5 +81,3 @@ public:
 
 	string getDeviceName();
 };
-
-#endif

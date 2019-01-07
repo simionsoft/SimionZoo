@@ -1,5 +1,3 @@
-#ifdef _WIN64
-
 #include "CNTKLibrary.h"
 #include "xmltags.h"
 #include "NetworkArchitecture.h"
@@ -179,5 +177,3 @@ CIntTuple * CIntTuple::getInstance(tinyxml2::XMLElement * pNode)
 		return CIntTuple4D::getInstance(pNode);
 	return nullptr;
 }
-
-#endif // _WIN64

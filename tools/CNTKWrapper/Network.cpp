@@ -1,13 +1,12 @@
-#ifdef _WIN64
-
-
 #include "CNTKLibrary.h"
 #include "Network.h"
 #include "CNTKWrapperInternals.h"
 #include "OptimizerSetting.h"
 #include "InputData.h"
 #include "NetworkDefinition.h"
+
 #include <iostream>
+#include <stdexcept>
 
 Network::Network(NetworkDefinition* pNetworkDefinition)
 {
@@ -54,7 +53,7 @@ INetwork* Network::clone(bool bFreezeWeights) const
 
 	result->m_networkFunctionPtr = m_networkFunctionPtr->Clone(cloneMethod);
 
-	for each (auto input in result->m_networkFunctionPtr->Arguments())
+	for (auto input : result->m_networkFunctionPtr->Arguments())
 	{
 		wstring name = input.Name();
 		if (m_pNetworkDefinition->getStateInputLayer() == name)
@@ -85,12 +84,12 @@ void Network::initSoftUpdate(double u, INetwork* pTargetNetworkInterface)
 {
 	Network* pTargetNetwork = dynamic_cast<Network*>(pTargetNetworkInterface);
 	if (!pTargetNetwork)
-		throw std::exception("Incorrect target in CNTKWrapper::Network::initSoftUpdate");
+		throw std::runtime_error("Incorrect target in CNTKWrapper::Network::initSoftUpdate");
 	
 	size_t numOnlineParams = m_FunctionPtr->Parameters().size();
 	size_t numTargetParams = pTargetNetwork->m_FunctionPtr->Parameters().size();
 	if (numOnlineParams!=numTargetParams)
-		throw std::exception("Missmatched number of parameters in CNTKWrapper::Network::initSoftUpdate");
+		throw std::runtime_error("Missmatched number of parameters in CNTKWrapper::Network::initSoftUpdate");
 
 	auto scale = CNTK::Constant::Scalar(CNTK::DataType::Float, u, CNTK::DeviceDescriptor::UseDefaultDevice());
 	auto anitScale = CNTK::Constant::Scalar(CNTK::DataType::Float, 1.0f - u, CNTK::DeviceDescriptor::UseDefaultDevice());
@@ -109,12 +108,12 @@ void Network::softUpdate(INetwork* pTargetNetworkInterface)
 {
 	Network* pTargetNetwork = dynamic_cast<Network*>(pTargetNetworkInterface);
 	if (!pTargetNetwork)
-		throw std::exception("Incorrect target in CNTKWrapper::Network::softUpdate");
+		throw std::runtime_error("Incorrect target in CNTKWrapper::Network::softUpdate");
 
 	size_t numOnlineParams = m_FunctionPtr->Parameters().size();
 	size_t numTargetParams = pTargetNetwork->m_FunctionPtr->Parameters().size();
 	if (numOnlineParams != numTargetParams)
-		throw std::exception("Missmatched number of parameters in CNTKWrapper::Network::softUpdate");
+		throw std::runtime_error("Missmatched number of parameters in CNTKWrapper::Network::softUpdate");
 
 	for (int i = 0; i < m_FunctionPtr->Parameters().size(); i++)
 	{
@@ -135,7 +134,7 @@ void Network::findInputsAndOutputs()
 	if (m_FunctionPtr == nullptr)
 		throw runtime_error("Output layer not set in the network");
 	//look for the input layer among the arguments
-	for each(auto inputVariable in m_FunctionPtr->Arguments())
+	for (auto inputVariable : m_FunctionPtr->Arguments())
 	{
 		//This avoids the "Target" layer to be added to the list
 		if (m_pNetworkDefinition->getStateInputLayer() == inputVariable.Name())
@@ -256,7 +255,7 @@ void Network::gradientWrtAction(const State* s, const Action* a, vector<double>&
 	unordered_map<Variable, ValuePtr> gradients = {};
 
 	if (!m_bInputStateUsed || !m_bInputActionUsed)
-		throw std::exception("Can only use gradient() with f(s,a)-form functions");
+		throw std::runtime_error("Can only use gradient() with f(s,a)-form functions");
 
 	vector<double> inputState;
 	stateToVector(s, inputState);
@@ -274,7 +273,7 @@ void Network::gradientWrtAction(const State* s, const Action* a, vector<double>&
 	//copy gradient to cpu vector
 	ValuePtr gradient = gradients[m_inputAction];
 	if (gradient->Shape().TotalSize() != outputGradient.size())
-		throw exception("Missmatched length for output vector in gradients()");
+		throw std::runtime_error("Missmatched length for output vector in gradients()");
 
 	NDArrayViewPtr qParameterGradientCpuArrayView =
 		MakeSharedObject<NDArrayView>(gradient->Shape(), outputGradient, false);
@@ -341,4 +340,3 @@ const vector<string>& Network::getInputActionVariables()
 {
 	return m_pNetworkDefinition->getInputActionVariables();
 }
-#endif // _WIN64

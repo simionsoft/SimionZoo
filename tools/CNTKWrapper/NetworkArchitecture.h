@@ -1,7 +1,7 @@
 #pragma once
 #include <vector>
 #include "../../3rd-party/tinyxml2/tinyxml2.h"
-
+#include <string>
 using namespace std;
 
 class Chain;

@@ -1,6 +1,4 @@
 #pragma once
-#ifdef _WIN64
-
 
 #include "CNTKWrapper.h"
 #include "../../RLSimion/named-var-set.h"
@@ -33,5 +31,3 @@ public:
 	size_t size() const;
 	size_t outputSize() const;
 };
-
-#endif

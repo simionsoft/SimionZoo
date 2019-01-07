@@ -1,6 +1,3 @@
-#ifdef _WIN64
-
-
 #include "xmltags.h"
 #include "NetworkArchitecture.h"
 #include "Parameter.h"
@@ -29,7 +26,7 @@ NetworkArchitecture::NetworkArchitecture(tinyxml2::XMLElement* pParentNode) : Ne
 		throw ProblemParserElementNotFound(XML_TAG_Chains);
 
 	loadChildren<Chain>(pNode, XML_TAG_Chain, m_chains);
-	for each (auto var in m_chains)
+	for (auto var : m_chains)
 	{
 		var->setParentNetworkArchitecture(this);
 	}
@@ -47,7 +44,7 @@ NetworkArchitecture* NetworkArchitecture::getInstance(tinyxml2::XMLElement* pNod
 const Link* NetworkArchitecture::getLinkById(const wstring& id) const
 {
 	const Link* result = NULL;
-	for each (auto cItem in m_chains)
+	for (auto cItem : m_chains)
 	{
 		result = cItem->getLinkById(id);
 		if (result != NULL)
@@ -56,5 +53,3 @@ const Link* NetworkArchitecture::getLinkById(const wstring& id) const
 
 	return result;
 }
-
-#endif // _WIN64

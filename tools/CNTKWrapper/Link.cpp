@@ -1,6 +1,3 @@
-#ifdef _WIN64
-
-
 #include "xmltags.h"
 #include "NetworkArchitecture.h"
 #include "Parameter.h"
@@ -78,7 +75,7 @@ std::vector<const Link*> Link::getDependencies() const
 	if (m_linkType == LinkType::MergeLayer)
 	{
 		auto dependenciesList = getParameterByName<LinkConnectionListParameter>("Links");
-		for each (LinkConnection* var in dependenciesList->getValue())
+		for (LinkConnection* var : dependenciesList->getValue())
 			result.push_back(m_pParentChain->getNetworkArchitecture()->getLinkById(var->getTargetId()));
 	}
 	else
@@ -177,5 +174,3 @@ Link* Link::getInstance(tinyxml2::XMLElement* pNode)
 
 	return nullptr;
 }
-
-#endif // _WIN64

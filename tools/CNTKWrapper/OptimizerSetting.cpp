@@ -1,6 +1,3 @@
-#ifdef _WIN64
-
-
 #include "OptimizerSetting.h"
 #include "xmltags.h"
 #include "Exceptions.h"
@@ -49,7 +46,7 @@ OptimizerSettings * OptimizerSettings::getInstance(tinyxml2::XMLElement * pNode)
 
 const OptimizerParameter * OptimizerSettings::getParameterByKey(std::string key) const
 {
-	for each (auto pParameter in m_parameters)
+	for (auto pParameter : m_parameters)
 	{
 		if (pParameter->getKey() == key)
 		{
@@ -79,5 +76,3 @@ OptimizerParameter * OptimizerParameter::getInstance(tinyxml2::XMLElement * pNod
 		return new OptimizerParameter(pNode);
 	return nullptr;
 }
-
-#endif // _WIN64

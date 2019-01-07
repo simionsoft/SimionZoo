@@ -1,6 +1,7 @@
 #include "Minibatch.h"
-#ifdef _WIN64
 #include "NetworkDefinition.h"
+
+#include <stdexcept>
 
 Minibatch::Minibatch(size_t size, NetworkDefinition* pNetworkDefinition, size_t outputSize)
 {
@@ -32,7 +33,7 @@ void Minibatch::clear()
 void Minibatch::addTuple(const State* s, const Action* a, double targetValue)
 {
 	if (m_outputSize != 1)
-		throw std::exception("Cannot use a scalar target value with multiple-output networks");
+		throw std::runtime_error("Cannot use a scalar target value with multiple-output networks");
 
 	vector<double> targetValues = vector<double>(1);
 	targetValues[0] = targetValue;
@@ -45,7 +46,7 @@ void Minibatch::addTuple(const State* s, const Action* a, const vector<double>& 
 		return;
 
 	if (targetValues.size() != m_outputSize)
-		throw std::exception("Missmatched tuple output size and minibatch output size");
+		throw std::runtime_error("Missmatched tuple output size and minibatch output size");
 
 	//copy state input
 	const vector<string>& stateVars= m_pNetworkDefinition->getInputStateVariables();
@@ -100,5 +101,3 @@ size_t Minibatch::outputSize() const
 {
 	return m_outputSize;
 }
-
-#endif

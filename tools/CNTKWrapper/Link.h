@@ -57,9 +57,9 @@ public:
 	template <typename T = IParameter>
 	const T* getParameterByName(const string name) const
 	{
-		for each (auto item in this->m_parameters)
+		for (auto item : this->m_parameters)
 		{
-			if (item->getName()._Equal(name))
+			if (item->getName() == name)
 			{
 				return (T*)item;
 			}
@@ -78,5 +78,5 @@ public:
 	void createCNTKFunctionPtr(vector<const Link*> dependencies);
 
 
-	static Link* Link::getInstance(tinyxml2::XMLElement* pNode);
+	static Link* getInstance(tinyxml2::XMLElement* pNode);
 };

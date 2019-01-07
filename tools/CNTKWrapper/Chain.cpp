@@ -1,4 +1,3 @@
-#ifdef _WIN64
 
 #include "xmltags.h"
 #include "NetworkArchitecture.h"
@@ -34,7 +33,7 @@ Chain::Chain(tinyxml2::XMLElement* pParentNode) : Chain()
 		throw ProblemParserElementNotFound(XML_TAG_ChainLinks);
 
 	loadChildren<Link>(pNode, XML_TAG_LinkBase, m_chainLinks);
-	for each (auto var in m_chainLinks)
+	for (auto var : m_chainLinks)
 	{
 		var->setParentChain(this);
 	}
@@ -42,7 +41,7 @@ Chain::Chain(tinyxml2::XMLElement* pParentNode) : Chain()
 
 const Link* Chain::getLinkById(const wstring id) const
 {
-	for each (auto item in m_chainLinks)
+	for (auto item : m_chainLinks)
 	{
 		if (item->getId()==id)
 			return item;
@@ -50,5 +49,3 @@ const Link* Chain::getLinkById(const wstring id) const
 
 	return nullptr;
 }
-
-#endif

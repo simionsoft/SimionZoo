@@ -1,6 +1,7 @@
 #pragma once
 #include "../../3rd-party/tinyxml2/tinyxml2.h"
 #include <vector>
+#include <string>
 
 enum class OptimizerType
 {
@@ -42,8 +43,8 @@ protected:
 	OptimizerParameter(tinyxml2::XMLElement *pNode);
 
 public:
-	OptimizerParameter();
-	~OptimizerParameter();
+	OptimizerParameter() {}
+	~OptimizerParameter() {}
 	static OptimizerParameter* getInstance(tinyxml2::XMLElement* pNode);
 
 	const std::string& getKey() const { return m_key; }

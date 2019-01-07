@@ -1,5 +1,3 @@
-#ifdef _WIN64
-
 #include "CNTKWrapperInternals.h"
 #include "Parameter.h"
 #include "Link.h"
@@ -163,11 +161,11 @@ CNTK::FunctionPtr CNTKWrapper::MergeLayer(const Link * pLink, vector<const Link*
 	vector<Variable> inputs = vector<Variable>();
 	if (dependencies.size() > 1)
 	{
-		for each(auto pItem in dependencies)
+		for (auto pItem : dependencies)
 			inputs.push_back((CNTK::Variable)pItem->getFunctionPtr());
 
 		auto axisIndex = pLink->getParameterByName<IntParameter>("Axis")->getValue();
-		auto axis = CNTK::Axis::Axis(axisIndex);
+		CNTK::Axis axis(axisIndex);
 		return Splice(inputs, axis);
 	}
 
@@ -205,7 +203,7 @@ CNTK::FunctionPtr CNTKWrapper::LinearTransformationLayer(const Link * pLink, vec
 
 	auto timesFunction = ElementTimes(timesParam, dependencies.at(0)->getFunctionPtr(),L"Times");
 
-	auto plusParam = Constant::Constant(dependencies.at(0)->getFunctionPtr()->Output().Shape(), offset, device);
+	Constant plusParam(dependencies.at(0)->getFunctionPtr()->Output().Shape(), offset, device);
 	
 	return Plus(plusParam, timesFunction, name);
 
@@ -349,7 +347,7 @@ FunctionPtr CNTKWrapper::Internal::Convolution1D(Variable input, size_t kernelCo
 	auto convParams = Parameter({ kernel, numInputChannels, kernelCount }, DataType::Double
 		, GlorotUniformInitializer(wScale, -1, 2), device,L"ConvParams");
 	return applyActivationFunction(
-		Convolution(convParams, input, { stride, numInputChannels }, { true }, { true }, {1}, 1Ui64, 1Ui64, 0Ui64, outputName),
+		Convolution(convParams, input, { stride, numInputChannels }, { true }, { true }, {1}, 1, 1, 0, outputName),
 		activationFunction
 	);
 }
@@ -362,7 +360,7 @@ FunctionPtr CNTKWrapper::Internal::Convolution2D(Variable input, size_t kernelCo
 
 	auto convParams = Parameter({ kernelWidth, kernelHeight, numInputChannels, kernelCount }, DataType::Double, GlorotUniformInitializer(wScale, -1, 2), device);
 	return applyActivationFunction(
-		Convolution(convParams, input, { strideWidth, strideHeight, numInputChannels }, { true }, { true }, { 1 }, 1Ui64, 1Ui64, 0Ui64, outputName),
+		Convolution(convParams, input, { strideWidth, strideHeight, numInputChannels }, { true }, { true }, { 1 }, 1, 1, 0, outputName),
 		activationFunction
 	);
 }
@@ -375,7 +373,7 @@ FunctionPtr CNTKWrapper::Internal::Convolution3D(Variable input, size_t kernelCo
 
 	auto convParams = Parameter({ kernelWidth, kernelHeight, kernelDepth, numInputChannels, kernelCount }, DataType::Double, GlorotUniformInitializer(wScale, -1, 2), device);
 	return applyActivationFunction(
-		Convolution(convParams, input, { strideWidth, strideHeight, strideDepth, numInputChannels }, { true }, { true }, { 1 }, 1Ui64, 1Ui64, 0Ui64, outputName),
+		Convolution(convParams, input, { strideWidth, strideHeight, strideDepth, numInputChannels }, { true }, { true }, { 1 }, 1, 1, 0, outputName),
 		activationFunction
 	);
 }
@@ -392,4 +390,3 @@ FunctionPtr CNTKWrapper::Internal::FullyConnectedDNNLayer(Variable input, size_t
 	return applyActivationFunction(FullyConnectedLinearLayer(input, outputDim, device, outputName)
 		, activationFunction);
 }
-#endif

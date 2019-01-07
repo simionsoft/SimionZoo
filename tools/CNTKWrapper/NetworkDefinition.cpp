@@ -1,5 +1,3 @@
-#ifdef _WIN64
-
 #include "NetworkDefinition.h"
 #include "xmltags.h"
 #include "InputData.h"
@@ -12,7 +10,10 @@
 #include "Exceptions.h"
 #include "Minibatch.h"
 #include "CNTKWrapperInternals.h"
+
 #include "../../RLSimion/named-var-set.h"
+
+#include <stdexcept>
 
 NetworkDefinition::NetworkDefinition(tinyxml2::XMLElement * pParentNode)
 {
@@ -115,7 +116,7 @@ INetwork * NetworkDefinition::createNetwork(double learningRate, bool inputsNeed
 	CNTK::FunctionPtr pOutputFunction = nullptr;
 
 	//stores the progress of each chain
-	auto progressMap = std::map<Chain*, Link*>();
+	std::map<Chain*, Link*> progressMap;
 
 	//the currently processed link
 	Link* pCurrentLink;
@@ -132,7 +133,7 @@ INetwork * NetworkDefinition::createNetwork(double learningRate, bool inputsNeed
 	{
 		architectureDeadEndReached = true;
 
-		for each (Chain* pChain in m_pNetworkArchitecture->getChains())
+		for (Chain* pChain : m_pNetworkArchitecture->getChains())
 		{
 			//get current link of the chain
 			if (progressMap.find(pChain) == progressMap.end())
@@ -154,7 +155,7 @@ INetwork * NetworkDefinition::createNetwork(double learningRate, bool inputsNeed
 
 				//check if dependencies have already been traversed
 				bool dependencies_satisfied = true;
-				for each (const Link* item in dependencies)
+				for (const Link* item : dependencies)
 				{
 					if (item->getFunctionPtr() == nullptr)
 					{
@@ -187,7 +188,6 @@ INetwork * NetworkDefinition::createNetwork(double learningRate, bool inputsNeed
 
 				//keep the loop alive
 				architectureDeadEndReached = false;
-
 			}
 
 			//the output node has already been created
@@ -197,7 +197,7 @@ INetwork * NetworkDefinition::createNetwork(double learningRate, bool inputsNeed
 				break;
 
 			//store last processed item of the current chain
-			progressMap.insert_or_assign(pChain, pCurrentLink);
+			progressMap[pChain] = pCurrentLink;
 		}
 	}
 
@@ -251,7 +251,7 @@ void NetworkDefinition::setDiscretizedActionVectorOutput(size_t numOutputs, doub
 double NetworkDefinition::getActionIndexOutput(size_t actionIndex)
 {
 	if (m_outputType != DiscretizedActionVector)
-		throw std::exception("Can only use getActionIndexOutput() with discretized action vector outputs");
+		throw std::runtime_error("Can only use getActionIndexOutput() with discretized action vector outputs");
 
 	actionIndex = std::max((size_t)0, std::min(m_outputActionValues.size() - 1, actionIndex));
 	return m_outputActionValues[actionIndex];
@@ -260,7 +260,7 @@ double NetworkDefinition::getActionIndexOutput(size_t actionIndex)
 size_t NetworkDefinition::getClosestOutputIndex(double value)
 {
 	if (m_outputType != DiscretizedActionVector)
-		throw std::exception("Can only use getClosestOutputIndex() with discretized action vector outputs");
+		throw std::runtime_error("Can only use getClosestOutputIndex() with discretized action vector outputs");
 
 	size_t nearestIndex = 0;
 
@@ -337,5 +337,3 @@ string NetworkDefinition::getDeviceName()
 {
 	return CNTKWrapper::Internal::wstring2string(CNTK::DeviceDescriptor::UseDefaultDevice().AsString());
 }
-
-#endif // _WIN64

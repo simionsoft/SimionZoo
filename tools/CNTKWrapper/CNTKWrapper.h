@@ -2,10 +2,14 @@
 
 
 #ifdef BUILD_CNTK_WRAPPER
-//we are building the CNTK Wrapper
-#define DLL_API __declspec(dllexport)
+	//we are building the CNTK Wrapper
+	#ifdef __linux__
+		#define DLL_API
+	#else
+		#define DLL_API __declspec(dllexport)
+	#endif
 #else
-#define DLL_API
+	#define DLL_API
 #endif
 
 #include <vector>
