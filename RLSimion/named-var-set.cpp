@@ -1,7 +1,7 @@
 #include "named-var-set.h"
-#include "app.h"
 #include "wire.h"
 #include <algorithm>
+#include <stdexcept>
 #include "../tools/System/CrossPlatform.h"
 using namespace std;
 

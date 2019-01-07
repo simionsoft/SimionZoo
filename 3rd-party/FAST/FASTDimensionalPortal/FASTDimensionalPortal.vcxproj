@@ -177,13 +177,6 @@
   <ItemGroup>
     <Image Include="app.ico" />
   </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\..\..\RLSimion-Lib\RL-Lib.vcxproj">
-      <Project>{a97cfeac-dbe2-433c-9454-6d1d2749c591}</Project>
-      <UseLibraryDependencyInputs>false</UseLibraryDependencyInputs>
-      <LinkLibraryDependencies>true</LinkLibraryDependencies>
-    </ProjectReference>
-  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets" />
 </Project>

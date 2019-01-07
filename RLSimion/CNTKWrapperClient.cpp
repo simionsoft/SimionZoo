@@ -1,7 +1,7 @@
 #include "CNTKWrapperClient.h"
 
-//so far, we only include CNTK-related stuff if we are under Windows AND x64 architecture
-#if defined(_WIN32) && defined(_WIN64)
+//so far, we only include CNTK-related stuff if we are under Windows-64 OR Linux architecture (so far, only Linux-64 is supported)
+#if defined(__linux__) || defined(_WIN64)
 	#include "../tools/CNTKWrapper/CNTKWrapper.h"
 	#include "../tools/System/DynamicLib.h"
 #endif
@@ -12,9 +12,8 @@
 
 namespace CNTK
 {
-#if defined(_WIN32) && defined(_WIN64)
+#if defined(__linux__) || defined(_WIN64)
 	DynamicLib DynamicLibCNTK;
-	//HMODULE hCNTKWrapperDLL = 0;
 #endif
 
 	int NumNetworkInstances = 0;
@@ -26,7 +25,7 @@ namespace CNTK
 
 	void WrapperClient::Load()
 	{
-#if defined(_WIN32) && defined(_WIN64)
+#if defined(__linux__) || defined(_WIN64)
 		NumNetworkInstances++;
 
 		if (!DynamicLibCNTK.IsLoaded())
@@ -34,22 +33,32 @@ namespace CNTK
 		{
 			//Set the number of CPU threads to "all"
 			SimionApp::get()->setNumCPUCores(0);
+#ifdef __linux__
+			SimionApp::get()->setRequiredArchitecture("Linux-64");
+#else
 			SimionApp::get()->setRequiredArchitecture("Win-64");
+#endif
 
 
 			//Load the wrapper library
 			Logger::logMessage(MessageType::Info, "Loading CNTK library");
 
-#ifdef _DEBUG
-			DynamicLibCNTK.Load("./../Debug/CNTKWrapper.dll");
-			//hCNTKWrapperDLL = LoadLibrary("./../Debug/CNTKWrapper.dll");
+#ifdef __linux__
+	#ifdef _DEBUG
+			DynamicLibCNTK.Load("./../debug/CNTKWrapper-linux.so");
+	#else
+			DynamicLibCNTK.Load("./../bin/CNTKWrapper-linux.so");
+	#endif
 #else
+	#ifdef _DEBUG
+			DynamicLibCNTK.Load("./../debug/CNTKWrapper.dll");
+	#else
 			DynamicLibCNTK.Load("./../bin/CNTKWrapper.dll");
-			//hCNTKWrapperDLL = LoadLibrary("./../bin/CNTKWrapper.dll");
+	#endif
 #endif
 			//if (hCNTKWrapperDLL == 0)
 			if (!DynamicLibCNTK.IsLoaded())
-				Logger::logMessage(MessageType::Error, "Failed to load CNTKWrapper.dll");
+				Logger::logMessage(MessageType::Error, "Failed to load dynamic library: CNTKWrapper");
 
 			//get the address of the interface functions
 			getNetworkDefinition = (getNetworkDefinitionDLL)DynamicLibCNTK.GetFuncAddress("CNTKWrapper::getNetworkDefinition");
@@ -87,7 +96,7 @@ namespace CNTK
 
 	void WrapperClient::UnLoad()
 	{
-#if defined(_WIN32) && defined(_WIN64)
+#if defined(__linux__) && defined(_WIN64)
 		NumNetworkInstances--;
 		if (NumNetworkInstances==0 && DynamicLibCNTK.IsLoaded())
 		//if (hCNTKWrapperDLL && NumNetworkInstances==0)

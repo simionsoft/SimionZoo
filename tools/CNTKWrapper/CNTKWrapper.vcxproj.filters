@@ -28,12 +28,6 @@
     <ClInclude Include="Link.h">
       <Filter>Source</Filter>
     </ClInclude>
-    <ClInclude Include="minibatch.h">
-      <Filter>Source</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\RLSimion\named-var-set.h">
-      <Filter>Source</Filter>
-    </ClInclude>
     <ClInclude Include="Network.h">
       <Filter>Source</Filter>
     </ClInclude>
@@ -58,10 +52,7 @@
     <ClInclude Include="xmltags.h">
       <Filter>Source</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\RLSimion\wire.h">
-      <Filter>Source</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\RLSimion\wire-handler.h">
+    <ClInclude Include="Minibatch.h">
       <Filter>Source</Filter>
     </ClInclude>
   </ItemGroup>
@@ -96,16 +87,10 @@
     <ClCompile Include="CNTKWrapperInternals.cpp">
       <Filter>Source</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\RLSimion\named-var-set.cpp">
-      <Filter>Source</Filter>
-    </ClCompile>
     <ClCompile Include="NetworkDefinition.cpp">
       <Filter>Source</Filter>
     </ClCompile>
-    <ClCompile Include="minibatch.cpp">
-      <Filter>Source</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\RLSimion\wire.cpp">
+    <ClCompile Include="Minibatch.cpp">
       <Filter>Source</Filter>
     </ClCompile>
   </ItemGroup>
