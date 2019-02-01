@@ -35,7 +35,7 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <RemoteProjectDir>$(RemoteRootDir)/SimionZoo/RLSimion/</RemoteProjectDir>
     <TargetName>$(ProjectName)-$(Platform)</TargetName>
-    <OutDir>$(SolutionDir)Debug/</OutDir>
+    <OutDir>$(SolutionDir)debug/</OutDir>
     <IntDir>$(ProjectDir)obj/$(Platform)/$(Configuration)/</IntDir>
     <TargetExt>.exe</TargetExt>
   </PropertyGroup>
@@ -44,7 +44,7 @@
     <OutDir>$(SolutionDir)bin/</OutDir>
     <RemoteProjectDir>$(RemoteRootDir)/SimionZoo/RLSimion/</RemoteProjectDir>
     <TargetExt>.exe</TargetExt>
-    <IntDir>$(ProjectDir)obj/$(Platform)/$(Configuration)\</IntDir>
+    <IntDir>$(ProjectDir)obj/$(Platform)/$(Configuration)/</IntDir>
   </PropertyGroup>
   <ItemGroup>
     <Text Include="ReadMe.txt" />
@@ -196,14 +196,8 @@
     <ClInclude Include="worlds\world.h" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\3rd-party\bullet3-2.86\build3\linux\Bullet3-linux.vcxproj">
-      <Project>{c83dbc2a-7d20-492e-aa68-ab054f00d793}</Project>
-    </ProjectReference>
     <ProjectReference Include="..\3rd-party\glew2\glew2-linux.vcxproj">
       <Project>{5a78b024-ac4b-444c-95e3-6e3f15d84dba}</Project>
-    </ProjectReference>
-    <ProjectReference Include="..\3rd-party\tinyxml2\Linux\tinyxml2-linux\tinyxml2-linux.vcxproj">
-      <Project>{0407c160-b25c-4a40-acf8-f8cec04add6b}</Project>
     </ProjectReference>
     <ProjectReference Include="..\tools\CNTKWrapper\CNTKWrapper-linux.vcxproj">
       <Project>{a16e7eee-9c81-4966-b58f-da1268f00cfe}</Project>

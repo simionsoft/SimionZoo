@@ -1,8 +1,11 @@
 #pragma once
 
-#define VAR_NAME_MAX_LENGTH 128
+constexpr auto VAR_NAME_MAX_LENGTH = 128;
 #include <vector>
-#include "wire-handler.h"
+
+class WireHandler;
+class NamedVarSet;
+
 using namespace std;
 
 
@@ -29,7 +32,7 @@ public:
 	const char* getUnits() const { return m_units; }
 };
 
-class NamedVarSet;
+
 
 class Descriptor
 {

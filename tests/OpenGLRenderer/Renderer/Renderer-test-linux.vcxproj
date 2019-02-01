@@ -54,9 +54,6 @@
     <ProjectReference Include="..\..\..\3rd-party\glew2\glew2-linux.vcxproj">
       <Project>{5a78b024-ac4b-444c-95e3-6e3f15d84dba}</Project>
     </ProjectReference>
-    <ProjectReference Include="..\..\..\3rd-party\tinyxml2\Linux\tinyxml2-linux\tinyxml2-linux.vcxproj">
-      <Project>{0407c160-b25c-4a40-acf8-f8cec04add6b}</Project>
-    </ProjectReference>
     <ProjectReference Include="..\..\..\tools\GeometryLib\GeometryLib-linux.vcxproj">
       <Project>{5d2a0a84-ac67-4700-8934-a38c01966ad4}</Project>
     </ProjectReference>
@@ -70,7 +67,7 @@
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <Link>
       <LibraryDependencies>GL;X11;GLU</LibraryDependencies>
-      <VerboseOutput>true</VerboseOutput>
+      <VerboseOutput>false</VerboseOutput>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">

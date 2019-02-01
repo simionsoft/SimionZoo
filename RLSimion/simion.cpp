@@ -6,7 +6,7 @@
 #include "q-learners.h"
 #include "DQN.h"
 #include "DDPG.h"
-#include "async-deep-simion.h"
+//#include "async-deep-simion.h"
 
 std::shared_ptr<Simion> Simion::getInstance(ConfigNode* pConfigNode)
 {

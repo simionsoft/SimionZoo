@@ -1,5 +1,3 @@
-
-
 #include "CNTKWrapper.h"
 #include "Parameter.h"
 #include "Link.h"
@@ -13,6 +11,7 @@
 #include "Exceptions.h"
 #include "Network.h"
 
+#include "../../RLSimion/named-var-set.h"
 
 #define EXPORT comment(linker, "/EXPORT:" __FUNCTION__ "=" __FUNCDNAME__)
 

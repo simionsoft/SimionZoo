@@ -38,9 +38,11 @@
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <RemoteProjectDir>$(RemoteRootDir)/SimionZoo/tools/OpenGLRenderer</RemoteProjectDir>
+    <OutDir>$(SolutionDir)debug\$(Platform)\</OutDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <RemoteProjectDir>$(RemoteRootDir)/SimionZoo/tools/OpenGLRenderer</RemoteProjectDir>
+    <OutDir>$(SolutionDir)bin\$(Platform)\</OutDir>
   </PropertyGroup>
   <ItemGroup>
     <ClCompile Include="arranger.cpp" />
@@ -96,11 +98,14 @@
     <ProjectReference Include="..\..\3rd-party\freeglut3\freeglut3-linux.vcxproj">
       <Project>{61d2ac28-eb09-4daa-b717-cea7ba358077}</Project>
     </ProjectReference>
-    <ProjectReference Include="..\..\3rd-party\SOIL\projects\SOIL-linux.vcxproj">
-      <Project>{fc7bec9b-7c66-4ad3-a2de-8441046dbe08}</Project>
+    <ProjectReference Include="..\..\3rd-party\glew2\glew2-linux.vcxproj">
+      <Project>{5a78b024-ac4b-444c-95e3-6e3f15d84dba}</Project>
     </ProjectReference>
     <ProjectReference Include="..\GeometryLib\GeometryLib-linux.vcxproj">
       <Project>{5d2a0a84-ac67-4700-8934-a38c01966ad4}</Project>
+    </ProjectReference>
+    <ProjectReference Include="..\System\System-linux.vcxproj">
+      <Project>{11efdd7d-a557-4cc7-ab52-46d850f67a1e}</Project>
     </ProjectReference>
   </ItemGroup>
   <ItemDefinitionGroup />

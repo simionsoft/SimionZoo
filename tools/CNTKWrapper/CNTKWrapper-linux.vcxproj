@@ -36,14 +36,14 @@
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <RemoteProjectDir>$(RemoteRootDir)/SimionZoo/tools/CNTKWrapper</RemoteProjectDir>
-    <OutDir>$(SolutionDir)debug/</OutDir>
+    <OutDir>$(SolutionDir)debug\</OutDir>
     <TargetName>$(ProjectName)</TargetName>
     <AdditionalSourcesToCopyMapping>
     </AdditionalSourcesToCopyMapping>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <RemoteProjectDir>$(RemoteRootDir)/SimionZoo/tools/CNTKWrapper</RemoteProjectDir>
-    <OutDir>$(SolutionDir)bin/</OutDir>
+    <OutDir>$(SolutionDir)bin\</OutDir>
     <TargetName>$(ProjectName)</TargetName>
     <AdditionalSourcesToCopyMapping>
     </AdditionalSourcesToCopyMapping>
@@ -83,19 +83,23 @@
     <ClCompile Include="ParameterValues.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\3rd-party\tinyxml2\Linux\tinyxml2-linux\tinyxml2-linux.vcxproj">
-      <Project>{0407c160-b25c-4a40-acf8-f8cec04add6b}</Project>
+    <ProjectReference Include="..\..\RLSimion\RLSimion-Lib-linux.vcxproj">
+      <Project>{193a615a-b241-47a3-a144-a095679ed2b1}</Project>
     </ProjectReference>
     <ProjectReference Include="..\System\System-linux.vcxproj">
       <Project>{11efdd7d-a557-4cc7-ab52-46d850f67a1e}</Project>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Library Include="libCntk.Core-2.5.1.so" />
   </ItemGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <ClCompile>
       <PreprocessorDefinitions>BUILD_CNTK_WRAPPER</PreprocessorDefinitions>
     </ClCompile>
     <Link>
-      <LibraryDependencies>$(SolutionDir)/bin/cntk-linux/Cntk.Core-2.5.1.so;</LibraryDependencies>
+      <LibraryDependencies>
+      </LibraryDependencies>
       <AdditionalLibraryDirectories>%(Link.AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Link>
   </ItemDefinitionGroup>
@@ -105,7 +109,7 @@
     </ClCompile>
     <Link>
       <AdditionalLibraryDirectories>%(Link.AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <LibraryDependencies>$(SolutionDir)/bin/cntk-linux/Cntk.Core-2.5.1.so;</LibraryDependencies>
+      <LibraryDependencies>../../bin/cntk-linux/Cntk.Core-2.5.1.so;</LibraryDependencies>
     </Link>
   </ItemDefinitionGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

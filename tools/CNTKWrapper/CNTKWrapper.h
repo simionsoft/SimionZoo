@@ -17,11 +17,13 @@
 using namespace std;
 namespace tinyxml2 { class XMLElement; }
 
-#include "../../RLSimion/named-var-set.h"
+
 #include "../../RLSimion/state-action-function.h"
+
 class NetworkArchitecture;
 class INetwork;
 class IMinibatch;
+
 
 //Network definition
 class INetworkDefinition

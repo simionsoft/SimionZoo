@@ -1,16 +1,19 @@
 #pragma once
 
+#include <string>
+using namespace std;
+
 #include "named-var-set.h"
 
 class Wire
 {
-	string m_name;
+	std::string m_name;
 	double m_value;
 	NamedVarProperties m_properties;
 	bool m_bPropertiesSet;
 public:
-	Wire(string name);
-	Wire(string name, double minimum, double maximum);
+	Wire(std::string name);
+	Wire(std::string name, double minimum, double maximum);
 	virtual ~Wire();
 
 	NamedVarProperties* getProperties();

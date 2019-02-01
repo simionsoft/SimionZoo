@@ -56,24 +56,23 @@ namespace CNTK
 			DynamicLibCNTK.Load("./../bin/CNTKWrapper.dll");
 	#endif
 #endif
-			//if (hCNTKWrapperDLL == 0)
 			if (!DynamicLibCNTK.IsLoaded())
 				Logger::logMessage(MessageType::Error, "Failed to load dynamic library: CNTKWrapper");
 
 			//get the address of the interface functions
 			getNetworkDefinition = (getNetworkDefinitionDLL)DynamicLibCNTK.GetFuncAddress("CNTKWrapper::getNetworkDefinition");
-				//GetProcAddress(hCNTKWrapperDLL, "CNTKWrapper::getNetworkDefinition");
+
 			if (getNetworkDefinition == 0)
 				Logger::logMessage(MessageType::Error, "Failed to get a pointer to CNTKWrapper:getNetworkDefinition()");
 
 			setDevice = (setDeviceDLL) DynamicLibCNTK.GetFuncAddress("CNTKWrapper::setDevice");
-				//GetProcAddress(hCNTKWrapperDLL, "CNTKWrapper::setDevice");
+
 			if (setDevice == 0)
 				Logger::logMessage(MessageType::Error, "Failed to get a pointer to CNTKWrapper:setDevice()");
 		}
 #endif
 
-
+#ifdef __WIN64
 		//register dependencies
 		SimionApp::get()->registerInputFile("../bin/CNTKWrapper.dll");
 
@@ -91,7 +90,12 @@ namespace CNTK
 		SimionApp::get()->registerInputFile("../bin/mkl_cntk_p.dll");
 		SimionApp::get()->registerInputFile("../bin/mkldnn.dll");
 		SimionApp::get()->registerInputFile("../bin/nvml.dll");
+#endif
+#ifdef __linux__
+		SimionApp::get()->registerInputFile("../bin/CNTKWrapper-linux.so");
 
+		SimionApp::get()->registerInputFile("../bin/cntk-linux/libCntk.Core-2.5.1.so", "../bin/libCntk.Core-2.5.1.so");
+#endif
 	}
 
 	void WrapperClient::UnLoad()
@@ -99,11 +103,8 @@ namespace CNTK
 #if defined(__linux__) && defined(_WIN64)
 		NumNetworkInstances--;
 		if (NumNetworkInstances==0 && DynamicLibCNTK.IsLoaded())
-		//if (hCNTKWrapperDLL && NumNetworkInstances==0)
 		{
 			DynamicLibCNTK.Unload();
-			//FreeLibrary(hCNTKWrapperDLL);
-			//hCNTKWrapperDLL = 0;
 		}
 #endif
 	}

@@ -1,8 +1,11 @@
 #include "named-var-set.h"
 #include "wire.h"
+#include "wire-handler.h"
 #include <algorithm>
 #include <stdexcept>
+
 #include "../tools/System/CrossPlatform.h"
+
 using namespace std;
 
 NamedVarProperties::NamedVarProperties()
@@ -44,7 +47,7 @@ NamedVarProperties* Descriptor::getProperties(const char* name)
 		return pProperties;
 	}
 	else
-		throw runtime_error("Wrong variable name given to Descriptor::getVarIndex()");
+		throw std::runtime_error("Wrong variable name given to Descriptor::getVarIndex()");
 }
 
 size_t Descriptor::addVariable(const char* name, const char* units, double min, double max, bool bCircular)
