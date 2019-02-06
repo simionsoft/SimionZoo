@@ -1,6 +1,5 @@
 #include "stdafx.h"
 #include "material.h"
-#include "../../3rd-party/glew2/include/glew.h"
 #include <algorithm>
 #include <stdexcept>
 

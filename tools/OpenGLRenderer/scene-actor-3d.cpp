@@ -36,7 +36,7 @@ void SceneActor3D::restoreTransform()
 Matrix44 SceneActor3D::getTransformMatrix() const
 {
 	Matrix44 mat, rot, scale,trans;
-	Quaternion rotationQuaternion= m_transform.rotation();
+
 	Vector3D translationVector= m_transform.translation();
 	Vector3D scaleVector= m_transform.scale();
 	rot.setRotation(m_transform.rotation());

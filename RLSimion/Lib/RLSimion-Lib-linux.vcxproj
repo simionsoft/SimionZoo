@@ -1,0 +1,208 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|x64">
+      <Configuration>Debug</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|x64">
+      <Configuration>Release</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <ProjectGuid>{193a615a-b241-47a3-a144-a095679ed2b1}</ProjectGuid>
+    <Keyword>Linux</Keyword>
+    <RootNamespace>RLSimion_Lib_linux</RootNamespace>
+    <MinimumVisualStudioVersion>15.0</MinimumVisualStudioVersion>
+    <ApplicationType>Linux</ApplicationType>
+    <ApplicationTypeRevision>1.0</ApplicationTypeRevision>
+    <TargetLinuxPlatform>Generic</TargetLinuxPlatform>
+    <LinuxProjectType>{2238F9CD-F817-4ECC-BD14-2524D2669B35}</LinuxProjectType>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings" />
+  <ImportGroup Label="Shared" />
+  <ImportGroup Label="PropertySheets" />
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <RemoteProjectDir>$(RemoteRootDir)/SimionZoo/RLSimion/Lib</RemoteProjectDir>
+    <IntDir>$(ProjectDir)obj-lib\$(Platform)\$(Configuration)\</IntDir>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <RemoteProjectDir>$(RemoteRootDir)/SimionZoo/RLSimion/Lib</RemoteProjectDir>
+    <IntDir>$(ProjectDir)obj-lib\$(Platform)\$(Configuration)\</IntDir>
+  </PropertyGroup>
+  <ItemGroup>
+    <ClInclude Include="actor-critic.h" />
+    <ClInclude Include="actor.h" />
+    <ClInclude Include="CNTKWrapperClient.h" />
+    <ClInclude Include="config.h" />
+    <ClInclude Include="controller.h" />
+    <ClInclude Include="critic.h" />
+    <ClInclude Include="DDPG.h" />
+    <ClInclude Include="deep-vfa-policy.h" />
+    <ClInclude Include="deferred-load.h" />
+    <ClInclude Include="DQN.h" />
+    <ClInclude Include="etraces.h" />
+    <ClInclude Include="experience-replay.h" />
+    <ClInclude Include="experiment.h" />
+    <ClInclude Include="featuremap.h" />
+    <ClInclude Include="features.h" />
+    <ClInclude Include="function-sampler.h" />
+    <ClInclude Include="logger.h" />
+    <ClInclude Include="mem-block.h" />
+    <ClInclude Include="mem-buffer.h" />
+    <ClInclude Include="mem-interfaces.h" />
+    <ClInclude Include="mem-manager.h" />
+    <ClInclude Include="mem-pool.h" />
+    <ClInclude Include="noise.h" />
+    <ClInclude Include="parameters-numeric.h" />
+    <ClInclude Include="parameters.h" />
+    <ClInclude Include="policy-learner.h" />
+    <ClInclude Include="policy.h" />
+    <ClInclude Include="q-learners.h" />
+    <ClInclude Include="reward.h" />
+    <ClInclude Include="simgod.h" />
+    <ClInclude Include="simion.h" />
+    <ClInclude Include="single-dimension-grid.h" />
+    <ClInclude Include="stats.h" />
+    <ClInclude Include="utils.h" />
+    <ClInclude Include="vfa-critic.h" />
+    <ClInclude Include="vfa.h" />
+    <ClInclude Include="worlds\aux-rewards.h" />
+    <ClInclude Include="worlds\balancingpole.h" />
+    <ClInclude Include="worlds\Box.h" />
+    <ClInclude Include="worlds\bullet-common.h" />
+    <ClInclude Include="worlds\BulletBody.h" />
+    <ClInclude Include="worlds\BulletCreationInterface.h" />
+    <ClInclude Include="worlds\BulletPhysics.h" />
+    <ClInclude Include="worlds\double-pendulum.h" />
+    <ClInclude Include="worlds\FAST.h" />
+    <ClInclude Include="worlds\mountaincar.h" />
+    <ClInclude Include="worlds\pitchcontrol.h" />
+    <ClInclude Include="worlds\pull-box-1.h" />
+    <ClInclude Include="worlds\pull-box-2.h" />
+    <ClInclude Include="worlds\push-box-1.h" />
+    <ClInclude Include="worlds\push-box-2.h" />
+    <ClInclude Include="worlds\raincar.h" />
+    <ClInclude Include="worlds\robot-control.h" />
+    <ClInclude Include="worlds\Robot.h" />
+    <ClInclude Include="worlds\Rope.h" />
+    <ClInclude Include="worlds\setpoint.h" />
+    <ClInclude Include="worlds\swinguppendulum.h" />
+    <ClInclude Include="worlds\templatedConfigFile.h" />
+    <ClInclude Include="worlds\underwatervehicle.h" />
+    <ClInclude Include="worlds\windturbine.h" />
+    <ClInclude Include="worlds\world.h" />
+    <ClInclude Include="app.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="actor-cacla.cpp" />
+    <ClCompile Include="actor-critic-inac.cpp" />
+    <ClCompile Include="actor-critic-offpac.cpp" />
+    <ClCompile Include="actor-critic-opdac.cpp" />
+    <ClCompile Include="actor-critic.cpp" />
+    <ClCompile Include="actor-regular.cpp" />
+    <ClCompile Include="actor.cpp" />
+    <ClCompile Include="app.cpp" />
+    <ClCompile Include="CNTKWrapperClient.cpp" />
+    <ClCompile Include="config.cpp" />
+    <ClCompile Include="controller.cpp" />
+    <ClCompile Include="critic-td-lambda.cpp" />
+    <ClCompile Include="critic-tdc-lambda.cpp" />
+    <ClCompile Include="critic-true-online-td-lambda.cpp" />
+    <ClCompile Include="critic.cpp" />
+    <ClCompile Include="DDPG.cpp" />
+    <ClCompile Include="deep-vfa-policy.cpp" />
+    <ClCompile Include="deferred-load.cpp" />
+    <ClCompile Include="DQN.cpp" />
+    <ClCompile Include="etraces.cpp" />
+    <ClCompile Include="experience-replay.cpp" />
+    <ClCompile Include="experiment.cpp" />
+    <ClCompile Include="featuremap-discrete.cpp" />
+    <ClCompile Include="featuremap-rbfgrid.cpp" />
+    <ClCompile Include="featuremap-tilecoding.cpp" />
+    <ClCompile Include="featuremap.cpp" />
+    <ClCompile Include="features.cpp" />
+    <ClCompile Include="function-sampler.cpp" />
+    <ClCompile Include="logger-functions.cpp" />
+    <ClCompile Include="logger.cpp" />
+    <ClCompile Include="mem-block.cpp" />
+    <ClCompile Include="mem-buffer.cpp" />
+    <ClCompile Include="mem-pool.cpp" />
+    <ClCompile Include="noise.cpp" />
+    <ClCompile Include="parameters-numeric.cpp" />
+    <ClCompile Include="parameters.cpp" />
+    <ClCompile Include="policy-learner.cpp" />
+    <ClCompile Include="q-learners.cpp" />
+    <ClCompile Include="reward.cpp" />
+    <ClCompile Include="simgod.cpp" />
+    <ClCompile Include="simion.cpp" />
+    <ClCompile Include="single-dimension-grid.cpp" />
+    <ClCompile Include="stats.cpp" />
+    <ClCompile Include="utils.cpp" />
+    <ClCompile Include="vfa-policy.cpp" />
+    <ClCompile Include="vfa.cpp" />
+    <ClCompile Include="worlds\aux-rewards.cpp" />
+    <ClCompile Include="worlds\balancingpole.cpp" />
+    <ClCompile Include="worlds\BulletBody.cpp" />
+    <ClCompile Include="worlds\BulletPhysics.cpp" />
+    <ClCompile Include="worlds\double-pendulum.cpp" />
+    <ClCompile Include="worlds\FAST.cpp" />
+    <ClCompile Include="worlds\mountaincar.cpp" />
+    <ClCompile Include="worlds\pitchcontrol.cpp" />
+    <ClCompile Include="worlds\pull-box-1.cpp" />
+    <ClCompile Include="worlds\pull-box-2.cpp" />
+    <ClCompile Include="worlds\push-box-1.cpp" />
+    <ClCompile Include="worlds\push-box-2.cpp" />
+    <ClCompile Include="worlds\raincar.cpp" />
+    <ClCompile Include="worlds\robot-control.cpp" />
+    <ClCompile Include="worlds\Robot.cpp" />
+    <ClCompile Include="worlds\Rope.cpp" />
+    <ClCompile Include="worlds\setpoint.cpp" />
+    <ClCompile Include="worlds\swinguppendulum.cpp" />
+    <ClCompile Include="worlds\templatedConfigFile.cpp" />
+    <ClCompile Include="worlds\underwatervehicle.cpp" />
+    <ClCompile Include="worlds\windturbine.cpp" />
+    <ClCompile Include="worlds\world.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\3rd-party\bullet3-2.86\Bullet3-linux.vcxproj">
+      <Project>{c83dbc2a-7d20-492e-aa68-ab054f00d793}</Project>
+    </ProjectReference>
+    <ProjectReference Include="..\..\3rd-party\tinyxml2\tinyxml2-linux.vcxproj">
+      <Project>{0407c160-b25c-4a40-acf8-f8cec04add6b}</Project>
+    </ProjectReference>
+    <ProjectReference Include="..\..\tools\OpenGLRenderer\OpenGLRenderer-linux.vcxproj">
+      <Project>{6561176d-8e7c-4399-a133-ca9c36c143c5}</Project>
+    </ProjectReference>
+    <ProjectReference Include="..\CNTKWrapper\CNTKWrapper-linux.vcxproj">
+      <Project>{a16e7eee-9c81-4966-b58f-da1268f00cfe}</Project>
+    </ProjectReference>
+    <ProjectReference Include="..\Common\RLSimion-Common-linux.vcxproj">
+      <Project>{1999e3bf-d76e-4347-802d-b9c0b1e014d5}</Project>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <ClCompile>
+      <PositionIndependentCode>true</PositionIndependentCode>
+    </ClCompile>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <ClCompile>
+      <PositionIndependentCode>true</PositionIndependentCode>
+    </ClCompile>
+  </ItemDefinitionGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets" />
+</Project>

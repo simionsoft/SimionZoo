@@ -5,8 +5,8 @@
 
 
 Text2D::Text2D(string name, Vector2D origin, double depth)
-	: m_color(Color(0.0, 0.0, 0.0, 1.0))
-	, GraphicObject2D(name,origin,Vector2D(1.0,1.0),0.0, depth) //size 1, no rotation
+	: GraphicObject2D(name, origin, Vector2D(1.0, 1.0), 0.0, depth) //size 1, no rotation
+	, m_color(Color(0.0, 0.0, 0.0, 1.0))
 {
 }
 

@@ -1,9 +1,9 @@
 #include "stdafx.h"
 #include "CppUnitTest.h"
-#include "../../../RLSimion/single-dimension-grid.h"
-#include "../../../RLSimion/featuremap.h"
-#include "../../../RLSimion/named-var-set.h"
-#include "../../../RLSimion/features.h"
+#include "../../../RLSimion/Lib/single-dimension-grid.h"
+#include "../../../RLSimion/Lib/featuremap.h"
+#include "../../../RLSimion/Lib/features.h"
+#include "../../../RLSimion/Common/named-var-set.h"
 
 using namespace Microsoft::VisualStudio::CppUnitTestFramework;
 

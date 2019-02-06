@@ -168,8 +168,6 @@
     <ClInclude Include="targetver.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="..\..\RLSimion\named-var-set.cpp" />
-    <ClCompile Include="..\..\RLSimion\wire.cpp" />
     <ClCompile Include="LogLoader.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="SimionLogViewer.cpp" />
@@ -181,14 +179,11 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\3rd-party\freeglut3\freeglut3.vcxproj">
-      <Project>{5a98782e-7027-46f9-91e1-e1ede1e14bf4}</Project>
-    </ProjectReference>
-    <ProjectReference Include="..\..\3rd-party\SOIL\projects\SOIL.vcxproj">
-      <Project>{c32fb2b4-500c-43cd-a099-eecce079d3f1}</Project>
-    </ProjectReference>
     <ProjectReference Include="..\..\3rd-party\tinyxml2\tinyxml2.vcxproj">
       <Project>{d1c528b6-aa02-4d29-9d61-dc08e317a70d}</Project>
+    </ProjectReference>
+    <ProjectReference Include="..\..\RLSimion\Common\RLSimion-Common.vcxproj">
+      <Project>{e62aac98-a3aa-4f77-beb3-3d6e4b3c6ea5}</Project>
     </ProjectReference>
     <ProjectReference Include="..\OpenGLRenderer\OpenGLRenderer.vcxproj">
       <Project>{b16284d9-e609-4914-9459-0b65ee749489}</Project>

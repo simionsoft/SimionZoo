@@ -1,12 +1,12 @@
 #include "stdafx.h"
 #include "CppUnitTest.h"
-#include "../../../RLSimion/vfa.h"
-#include "../../../RLSimion/app.h"
-#include "../../../RLSimion/features.h"
-#include "../../../RLSimion/simgod.h"
-#include "../../../RLSimion/worlds/world.h"
-#include "../../../RLSimion/named-var-set.h"
-#include "../../../RLSimion/featuremap.h"
+#include "../../../RLSimion/Lib/vfa.h"
+#include "../../../RLSimion/Lib/app.h"
+#include "../../../RLSimion/Lib/features.h"
+#include "../../../RLSimion/Lib/simgod.h"
+#include "../../../RLSimion/Lib/worlds/world.h"
+#include "../../../RLSimion/Lib/featuremap.h"
+#include "../../../RLSimion/Common/named-var-set.h"
 #include <iostream>
 
 using namespace Microsoft::VisualStudio::CppUnitTestFramework;

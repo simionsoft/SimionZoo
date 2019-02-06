@@ -132,6 +132,9 @@
       <Filter>aux</Filter>
     </ClInclude>
     <ClInclude Include="resource.h" />
+    <ClInclude Include="xml-tags.h">
+      <Filter>aux</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="graphics">

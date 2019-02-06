@@ -162,7 +162,7 @@
     <ClCompile Include="stdafx.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\..\RLSimion\RLSimion-Lib.vcxproj">
+    <ProjectReference Include="..\..\..\RLSimion\Lib\RLSimion-Lib.vcxproj">
       <Project>{a97cfeac-dbe2-433c-9454-6d1d2749c591}</Project>
     </ProjectReference>
   </ItemGroup>

@@ -1,5 +1,5 @@
 #pragma once
-#include "../../RLSimion/named-var-set.h"
+#include "../../RLSimion/Common/named-var-set.h"
 #include <vector>
 #include <string>
 using namespace std;

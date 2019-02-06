@@ -48,9 +48,9 @@ void GraphicObject2D::drawChildren()
 GraphicObject2D* GraphicObject2D::getInstance(tinyxml2::XMLElement* pNode)
 {
 	const char* name = pNode->Name();
-	if (!strcmp(pNode->Name(), XML_TAG_SPRITE_2D))
+	if (!strcmp(name, XML_TAG_SPRITE_2D))
 		return new Sprite2D(pNode);
-	if (!strcmp(pNode->Name(), XML_TAG_TEXT))
+	if (!strcmp(name, XML_TAG_TEXT))
 		return new Text2D(pNode);
 
 	return nullptr;

@@ -1,0 +1,108 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|x64">
+      <Configuration>Debug</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|x64">
+      <Configuration>Release</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <ProjectGuid>{e89bfd36-b3e0-4361-b4ae-59c68fb7a124}</ProjectGuid>
+    <Keyword>Linux</Keyword>
+    <RootNamespace>RLSimion_linux</RootNamespace>
+    <MinimumVisualStudioVersion>15.0</MinimumVisualStudioVersion>
+    <ApplicationType>Linux</ApplicationType>
+    <ApplicationTypeRevision>1.0</ApplicationTypeRevision>
+    <TargetLinuxPlatform>Generic</TargetLinuxPlatform>
+    <LinuxProjectType>{D51BCBC9-82E9-4017-911E-C93873C4EA2B}</LinuxProjectType>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
+    <UseDebugLibraries>true</UseDebugLibraries>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
+    <UseDebugLibraries>false</UseDebugLibraries>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings" />
+  <ImportGroup Label="Shared" />
+  <ImportGroup Label="PropertySheets" />
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <RemoteProjectDir>$(RemoteRootDir)/SimionZoo/RLSimion/App</RemoteProjectDir>
+    <TargetName>$(ProjectName)-$(Platform)</TargetName>
+    <OutDir>$(SolutionDir)debug/</OutDir>
+    <IntDir>$(ProjectDir)obj/$(Platform)/$(Configuration)/</IntDir>
+    <TargetExt>.exe</TargetExt>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <TargetName>$(ProjectName)-$(Platform)</TargetName>
+    <OutDir>$(SolutionDir)bin/</OutDir>
+    <RemoteProjectDir>$(RemoteRootDir)/SimionZoo/RLSimion/App</RemoteProjectDir>
+    <TargetExt>.exe</TargetExt>
+    <IntDir>$(ProjectDir)obj/$(Platform)/$(Configuration)/</IntDir>
+  </PropertyGroup>
+  <ItemGroup>
+    <Text Include="ReadMe.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="app-main.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="resource1.h" />
+    <ClInclude Include="targetver.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\3rd-party\bullet3-2.86\Bullet3-linux.vcxproj">
+      <Project>{c83dbc2a-7d20-492e-aa68-ab054f00d793}</Project>
+    </ProjectReference>
+    <ProjectReference Include="..\..\3rd-party\glew2\glew2-linux.vcxproj">
+      <Project>{5a78b024-ac4b-444c-95e3-6e3f15d84dba}</Project>
+    </ProjectReference>
+    <ProjectReference Include="..\..\3rd-party\SOIL\SOIL-linux.vcxproj">
+      <Project>{fc7bec9b-7c66-4ad3-a2de-8441046dbe08}</Project>
+    </ProjectReference>
+    <ProjectReference Include="..\..\3rd-party\tinyxml2\tinyxml2-linux.vcxproj">
+      <Project>{0407c160-b25c-4a40-acf8-f8cec04add6b}</Project>
+    </ProjectReference>
+    <ProjectReference Include="..\..\tools\OpenGLRenderer\OpenGLRenderer-linux.vcxproj">
+      <Project>{6561176d-8e7c-4399-a133-ca9c36c143c5}</Project>
+    </ProjectReference>
+    <ProjectReference Include="..\..\tools\System\System-linux.vcxproj">
+      <Project>{11efdd7d-a557-4cc7-ab52-46d850f67a1e}</Project>
+    </ProjectReference>
+    <ProjectReference Include="..\CNTKWrapper\CNTKWrapper-linux.vcxproj">
+      <Project>{a16e7eee-9c81-4966-b58f-da1268f00cfe}</Project>
+    </ProjectReference>
+    <ProjectReference Include="..\Common\RLSimion-Common-linux.vcxproj">
+      <Project>{1999e3bf-d76e-4347-802d-b9c0b1e014d5}</Project>
+    </ProjectReference>
+    <ProjectReference Include="..\Lib\RLSimion-Lib-linux.vcxproj">
+      <Project>{193a615a-b241-47a3-a144-a095679ed2b1}</Project>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <Link>
+      <LibraryDependencies>GL;X11;GLU;dl</LibraryDependencies>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <ClCompile>
+      <UnrollLoops>true</UnrollLoops>
+    </ClCompile>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <ClCompile>
+      <LinkTimeOptimization>true</LinkTimeOptimization>
+    </ClCompile>
+    <Link>
+      <LibraryDependencies>GL;X11;GLU;dl</LibraryDependencies>
+    </Link>
+  </ItemDefinitionGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets" />
+</Project>

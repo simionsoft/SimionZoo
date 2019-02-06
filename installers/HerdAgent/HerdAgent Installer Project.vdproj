@@ -15,7 +15,13 @@
     {
         "Entry"
         {
-        "MsmKey" = "8:_34A40646EA514B84AE5DFC3BCBA0BFE4"
+        "MsmKey" = "8:_7D8B1315DEC161FE55B1D9B4E3D2E4EE"
+        "OwnerKey" = "8:_A1F7ADB374374E41A8FF18731B26D4B8"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_A1F7ADB374374E41A8FF18731B26D4B8"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
         }
@@ -33,20 +39,14 @@
         }
         "Entry"
         {
-        "MsmKey" = "8:_EA93B8CA5C0C51E5DCA155397C1AB4A0"
-        "OwnerKey" = "8:_34A40646EA514B84AE5DFC3BCBA0BFE4"
+        "MsmKey" = "8:_UNDEFINED"
+        "OwnerKey" = "8:_7D8B1315DEC161FE55B1D9B4E3D2E4EE"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
         {
         "MsmKey" = "8:_UNDEFINED"
-        "OwnerKey" = "8:_EA93B8CA5C0C51E5DCA155397C1AB4A0"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
-        "MsmKey" = "8:_UNDEFINED"
-        "OwnerKey" = "8:_34A40646EA514B84AE5DFC3BCBA0BFE4"
+        "OwnerKey" = "8:_A1F7ADB374374E41A8FF18731B26D4B8"
         "MsmSig" = "8:_UNDEFINED"
         }
     }
@@ -121,31 +121,31 @@
     {
         "CustomAction"
         {
-            "{4AA51A2D-7D85-4A59-BA75-B0809FC8B380}:_40B3635CA760461191A68513A7372D7F"
+            "{4AA51A2D-7D85-4A59-BA75-B0809FC8B380}:_3C773A79ACCD462B966881A532061E78"
             {
             "Name" = "8:Primary output from HerdAgent (Release Win32)"
             "Condition" = "8:"
-            "Object" = "8:_34A40646EA514B84AE5DFC3BCBA0BFE4"
+            "Object" = "8:_A1F7ADB374374E41A8FF18731B26D4B8"
             "FileType" = "3:2"
             "InstallAction" = "3:1"
             "Arguments" = "8:"
             "EntryPoint" = "8:"
             "Sequence" = "3:1"
-            "Identifier" = "8:_10300E74_92A6_4A61_87C2_FC0963896213"
+            "Identifier" = "8:_F3D62071_6BA3_4666_9D83_8EB87155410A"
             "InstallerClass" = "11:TRUE"
             "CustomActionData" = "8:"
             }
-            "{4AA51A2D-7D85-4A59-BA75-B0809FC8B380}:_BC57B69A357845A4A0133599CE07A0A3"
+            "{4AA51A2D-7D85-4A59-BA75-B0809FC8B380}:_745C2F838EE342319A20A6BC7078DFEA"
             {
             "Name" = "8:Primary output from HerdAgent (Release Win32)"
             "Condition" = "8:"
-            "Object" = "8:_34A40646EA514B84AE5DFC3BCBA0BFE4"
+            "Object" = "8:_A1F7ADB374374E41A8FF18731B26D4B8"
             "FileType" = "3:2"
             "InstallAction" = "3:4"
             "Arguments" = "8:"
             "EntryPoint" = "8:"
             "Sequence" = "3:1"
-            "Identifier" = "8:_DD061833_E6CB_4A78_B2D1_2194E4CDCF28"
+            "Identifier" = "8:_1DF5D61B_0A65_48C8_8AC6_8BCA4E85D8F5"
             "InstallerClass" = "11:TRUE"
             "CustomActionData" = "8:"
             }
@@ -172,6 +172,37 @@
         }
         "File"
         {
+            "{9F6F8455-1EF1-4B85-886A-4223BCC8E7F7}:_7D8B1315DEC161FE55B1D9B4E3D2E4EE"
+            {
+            "AssemblyRegister" = "3:1"
+            "AssemblyIsInGAC" = "11:FALSE"
+            "AssemblyAsmDisplayName" = "8:Herd, Version=1.2.5.2, Culture=neutral, processorArchitecture=MSIL"
+                "ScatterAssemblies"
+                {
+                    "_7D8B1315DEC161FE55B1D9B4E3D2E4EE"
+                    {
+                    "Name" = "8:Herd.dll"
+                    "Attributes" = "3:512"
+                    }
+                }
+            "SourcePath" = "8:Herd.dll"
+            "TargetName" = "8:"
+            "Tag" = "8:"
+            "Folder" = "8:_25E3F76F56964AC892C056BACBDB9A77"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:TRUE"
+            "IsolateTo" = "8:"
+            }
             "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_C9FB232016A7471CB949E4F3BFD89E92"
             {
             "SourcePath" = "8:..\\..\\tools\\HerdAgent\\herdagent.ico"
@@ -210,37 +241,6 @@
             "Register" = "3:1"
             "Exclude" = "11:FALSE"
             "IsDependency" = "11:FALSE"
-            "IsolateTo" = "8:"
-            }
-            "{9F6F8455-1EF1-4B85-886A-4223BCC8E7F7}:_EA93B8CA5C0C51E5DCA155397C1AB4A0"
-            {
-            "AssemblyRegister" = "3:1"
-            "AssemblyIsInGAC" = "11:FALSE"
-            "AssemblyAsmDisplayName" = "8:Herd, Version=1.2.1.0, Culture=neutral, processorArchitecture=MSIL"
-                "ScatterAssemblies"
-                {
-                    "_EA93B8CA5C0C51E5DCA155397C1AB4A0"
-                    {
-                    "Name" = "8:Herd.dll"
-                    "Attributes" = "3:512"
-                    }
-                }
-            "SourcePath" = "8:Herd.dll"
-            "TargetName" = "8:"
-            "Tag" = "8:"
-            "Folder" = "8:_25E3F76F56964AC892C056BACBDB9A77"
-            "Condition" = "8:"
-            "Transitive" = "11:FALSE"
-            "Vital" = "11:TRUE"
-            "ReadOnly" = "11:FALSE"
-            "Hidden" = "11:FALSE"
-            "System" = "11:FALSE"
-            "Permanent" = "11:FALSE"
-            "SharedLegacy" = "11:FALSE"
-            "PackageAs" = "3:1"
-            "Register" = "3:1"
-            "Exclude" = "11:FALSE"
-            "IsDependency" = "11:TRUE"
             "IsolateTo" = "8:"
             }
         }
@@ -289,7 +289,7 @@
         "Name" = "8:Microsoft Visual Studio"
         "ProductName" = "8:HerdAgent"
         "ProductCode" = "8:{9FCD7399-2349-4AB9-B726-157036931102}"
-        "PackageCode" = "8:{2A9AC92B-DDB2-4763-A48A-72E057884CDE}"
+        "PackageCode" = "8:{A20D7C31-1609-47CF-AC3C-E67A03C05BC0}"
         "UpgradeCode" = "8:{836F307A-52F0-4BA7-A3C7-7D44954226A0}"
         "AspNetVersion" = "8:4.0.30319.0"
         "RestartWWWService" = "11:FALSE"
@@ -818,7 +818,7 @@
         }
         "ProjectOutput"
         {
-            "{5259A561-127C-4D43-A0A1-72F10C7B3BF8}:_34A40646EA514B84AE5DFC3BCBA0BFE4"
+            "{5259A561-127C-4D43-A0A1-72F10C7B3BF8}:_A1F7ADB374374E41A8FF18731B26D4B8"
             {
             "SourcePath" = "8:..\\..\\tools\\HerdAgent\\obj\\Win32\\Release\\HerdAgent.exe"
             "TargetName" = "8:"

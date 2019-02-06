@@ -752,7 +752,6 @@ void ColladaModel::loadMaterialProperties(tinyxml2::XMLElement* pRootNode
 
 const char* ColladaModel::findMaterialFxName(tinyxml2::XMLElement* pRootNode, string materialName)
 {
-	bool bMatFound = false;
 	tinyxml2::XMLElement* pMat, *pInstFX;
 	tinyxml2::XMLElement* pMatLib = pRootNode->FirstChildElement(XML_TAG_COLLADA_MATERIAL_LIB);
 	if (pMatLib)

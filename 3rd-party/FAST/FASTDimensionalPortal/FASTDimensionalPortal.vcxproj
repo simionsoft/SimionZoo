@@ -178,11 +178,26 @@
     <Image Include="app.ico" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\..\RLSimion\RLSimion-Lib.vcxproj">
+    <ProjectReference Include="..\..\..\RLSimion\Common\RLSimion-Common.vcxproj">
+      <Project>{e62aac98-a3aa-4f77-beb3-3d6e4b3c6ea5}</Project>
+    </ProjectReference>
+    <ProjectReference Include="..\..\..\RLSimion\Lib\RLSimion-Lib.vcxproj">
       <Project>{a97cfeac-dbe2-433c-9454-6d1d2749c591}</Project>
+    </ProjectReference>
+    <ProjectReference Include="..\..\..\tools\GeometryLib\GeometryLib.vcxproj">
+      <Project>{aabae018-c8f6-4865-a0f9-e8e46da55a2d}</Project>
+    </ProjectReference>
+    <ProjectReference Include="..\..\..\tools\OpenGLRenderer\OpenGLRenderer.vcxproj">
+      <Project>{b16284d9-e609-4914-9459-0b65ee749489}</Project>
     </ProjectReference>
     <ProjectReference Include="..\..\..\tools\System\System.vcxproj">
       <Project>{f32419bf-f083-4552-aa39-610898f34dbb}</Project>
+    </ProjectReference>
+    <ProjectReference Include="..\..\bullet3-2.86\Bullet3.vcxproj">
+      <Project>{e70c61bb-6b5c-4d0c-a203-9e2c04995bef}</Project>
+    </ProjectReference>
+    <ProjectReference Include="..\..\freeglut3\freeglut3.vcxproj">
+      <Project>{5a98782e-7027-46f9-91e1-e1ede1e14bf4}</Project>
     </ProjectReference>
     <ProjectReference Include="..\..\tinyxml2\tinyxml2.vcxproj">
       <Project>{d1c528b6-aa02-4d29-9d61-dc08e317a70d}</Project>

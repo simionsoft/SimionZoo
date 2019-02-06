@@ -1,0 +1,426 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <ClInclude Include="actor.h">
+      <Filter>linear-vfa-learning</Filter>
+    </ClInclude>
+    <ClInclude Include="actor-critic.h">
+      <Filter>linear-vfa-learning</Filter>
+    </ClInclude>
+    <ClInclude Include="worlds\Box.h">
+      <Filter>bullet3</Filter>
+    </ClInclude>
+    <ClInclude Include="worlds\BulletBody.h">
+      <Filter>bullet3</Filter>
+    </ClInclude>
+    <ClInclude Include="worlds\bullet-common.h">
+      <Filter>bullet3</Filter>
+    </ClInclude>
+    <ClInclude Include="worlds\BulletCreationInterface.h">
+      <Filter>bullet3</Filter>
+    </ClInclude>
+    <ClInclude Include="worlds\BulletPhysics.h">
+      <Filter>bullet3</Filter>
+    </ClInclude>
+    <ClInclude Include="CNTKWrapperClient.h">
+      <Filter>neural-networks</Filter>
+    </ClInclude>
+    <ClInclude Include="DDPG.h">
+      <Filter>neural-networks</Filter>
+    </ClInclude>
+    <ClInclude Include="worlds\aux-rewards.h">
+      <Filter>worlds</Filter>
+    </ClInclude>
+    <ClInclude Include="controller.h">
+      <Filter>linear-vfa-learning</Filter>
+    </ClInclude>
+    <ClInclude Include="critic.h">
+      <Filter>linear-vfa-learning</Filter>
+    </ClInclude>
+    <ClInclude Include="worlds\balancingpole.h">
+      <Filter>worlds</Filter>
+    </ClInclude>
+    <ClInclude Include="worlds\double-pendulum.h">
+      <Filter>worlds</Filter>
+    </ClInclude>
+    <ClInclude Include="deep-vfa-policy.h">
+      <Filter>neural-networks</Filter>
+    </ClInclude>
+    <ClInclude Include="etraces.h">
+      <Filter>linear-vfa-learning</Filter>
+    </ClInclude>
+    <ClInclude Include="experience-replay.h">
+      <Filter>linear-vfa-learning</Filter>
+    </ClInclude>
+    <ClInclude Include="featuremap.h">
+      <Filter>linear-vfa</Filter>
+    </ClInclude>
+    <ClInclude Include="features.h">
+      <Filter>linear-vfa</Filter>
+    </ClInclude>
+    <ClInclude Include="mem-block.h">
+      <Filter>mem-manager</Filter>
+    </ClInclude>
+    <ClInclude Include="mem-buffer.h">
+      <Filter>mem-manager</Filter>
+    </ClInclude>
+    <ClInclude Include="mem-interfaces.h">
+      <Filter>mem-manager</Filter>
+    </ClInclude>
+    <ClInclude Include="mem-manager.h">
+      <Filter>mem-manager</Filter>
+    </ClInclude>
+    <ClInclude Include="mem-pool.h">
+      <Filter>mem-manager</Filter>
+    </ClInclude>
+    <ClInclude Include="config.h">
+      <Filter>config</Filter>
+    </ClInclude>
+    <ClInclude Include="DQN.h">
+      <Filter>neural-networks</Filter>
+    </ClInclude>
+    <ClInclude Include="deferred-load.h">
+      <Filter>main-classes</Filter>
+    </ClInclude>
+    <ClInclude Include="experiment.h">
+      <Filter>main-classes</Filter>
+    </ClInclude>
+    <ClInclude Include="worlds\FAST.h">
+      <Filter>worlds</Filter>
+    </ClInclude>
+    <ClInclude Include="logger.h">
+      <Filter>logging</Filter>
+    </ClInclude>
+    <ClInclude Include="noise.h">
+      <Filter>linear-vfa-learning</Filter>
+    </ClInclude>
+    <ClInclude Include="parameters.h">
+      <Filter>config</Filter>
+    </ClInclude>
+    <ClInclude Include="parameters-numeric.h">
+      <Filter>config</Filter>
+    </ClInclude>
+    <ClInclude Include="worlds\mountaincar.h">
+      <Filter>worlds</Filter>
+    </ClInclude>
+    <ClInclude Include="worlds\pitchcontrol.h">
+      <Filter>worlds</Filter>
+    </ClInclude>
+    <ClInclude Include="worlds\pull-box-1.h">
+      <Filter>worlds</Filter>
+    </ClInclude>
+    <ClInclude Include="worlds\pull-box-2.h">
+      <Filter>worlds</Filter>
+    </ClInclude>
+    <ClInclude Include="worlds\push-box-1.h">
+      <Filter>worlds</Filter>
+    </ClInclude>
+    <ClInclude Include="worlds\push-box-2.h">
+      <Filter>worlds</Filter>
+    </ClInclude>
+    <ClInclude Include="worlds\raincar.h">
+      <Filter>worlds</Filter>
+    </ClInclude>
+    <ClInclude Include="reward.h">
+      <Filter>worlds</Filter>
+    </ClInclude>
+    <ClInclude Include="worlds\robot-control.h">
+      <Filter>worlds</Filter>
+    </ClInclude>
+    <ClInclude Include="worlds\setpoint.h">
+      <Filter>worlds</Filter>
+    </ClInclude>
+    <ClInclude Include="worlds\swinguppendulum.h">
+      <Filter>worlds</Filter>
+    </ClInclude>
+    <ClInclude Include="worlds\underwatervehicle.h">
+      <Filter>worlds</Filter>
+    </ClInclude>
+    <ClInclude Include="worlds\windturbine.h">
+      <Filter>worlds</Filter>
+    </ClInclude>
+    <ClInclude Include="policy.h">
+      <Filter>linear-vfa-learning</Filter>
+    </ClInclude>
+    <ClInclude Include="policy-learner.h">
+      <Filter>linear-vfa-learning</Filter>
+    </ClInclude>
+    <ClInclude Include="q-learners.h">
+      <Filter>linear-vfa-learning</Filter>
+    </ClInclude>
+    <ClInclude Include="worlds\Robot.h">
+      <Filter>bullet3</Filter>
+    </ClInclude>
+    <ClInclude Include="worlds\Rope.h">
+      <Filter>bullet3</Filter>
+    </ClInclude>
+    <ClInclude Include="simgod.h">
+      <Filter>main-classes</Filter>
+    </ClInclude>
+    <ClInclude Include="simion.h">
+      <Filter>main-classes</Filter>
+    </ClInclude>
+    <ClInclude Include="single-dimension-grid.h">
+      <Filter>linear-vfa</Filter>
+    </ClInclude>
+    <ClInclude Include="stats.h">
+      <Filter>logging</Filter>
+    </ClInclude>
+    <ClInclude Include="worlds\templatedConfigFile.h">
+      <Filter>worlds</Filter>
+    </ClInclude>
+    <ClInclude Include="vfa.h">
+      <Filter>linear-vfa</Filter>
+    </ClInclude>
+    <ClInclude Include="worlds\world.h">
+      <Filter>worlds</Filter>
+    </ClInclude>
+    <ClInclude Include="vfa-critic.h">
+      <Filter>linear-vfa-learning</Filter>
+    </ClInclude>
+    <ClInclude Include="app.h">
+      <Filter>main-classes</Filter>
+    </ClInclude>
+    <ClInclude Include="function-sampler.h">
+      <Filter>logging</Filter>
+    </ClInclude>
+    <ClInclude Include="utils.h">
+      <Filter>worlds</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="actor.cpp">
+      <Filter>linear-vfa-learning</Filter>
+    </ClCompile>
+    <ClCompile Include="actor-cacla.cpp">
+      <Filter>linear-vfa-learning</Filter>
+    </ClCompile>
+    <ClCompile Include="actor-critic.cpp">
+      <Filter>linear-vfa-learning</Filter>
+    </ClCompile>
+    <ClCompile Include="actor-critic-inac.cpp">
+      <Filter>linear-vfa-learning</Filter>
+    </ClCompile>
+    <ClCompile Include="actor-critic-offpac.cpp">
+      <Filter>linear-vfa-learning</Filter>
+    </ClCompile>
+    <ClCompile Include="actor-critic-opdac.cpp">
+      <Filter>linear-vfa-learning</Filter>
+    </ClCompile>
+    <ClCompile Include="actor-regular.cpp">
+      <Filter>linear-vfa-learning</Filter>
+    </ClCompile>
+    <ClCompile Include="worlds\BulletBody.cpp">
+      <Filter>bullet3</Filter>
+    </ClCompile>
+    <ClCompile Include="worlds\BulletPhysics.cpp">
+      <Filter>bullet3</Filter>
+    </ClCompile>
+    <ClCompile Include="CNTKWrapperClient.cpp">
+      <Filter>neural-networks</Filter>
+    </ClCompile>
+    <ClCompile Include="DDPG.cpp">
+      <Filter>neural-networks</Filter>
+    </ClCompile>
+    <ClCompile Include="worlds\aux-rewards.cpp">
+      <Filter>worlds</Filter>
+    </ClCompile>
+    <ClCompile Include="controller.cpp">
+      <Filter>linear-vfa-learning</Filter>
+    </ClCompile>
+    <ClCompile Include="critic.cpp">
+      <Filter>linear-vfa-learning</Filter>
+    </ClCompile>
+    <ClCompile Include="critic-tdc-lambda.cpp">
+      <Filter>linear-vfa-learning</Filter>
+    </ClCompile>
+    <ClCompile Include="critic-td-lambda.cpp">
+      <Filter>linear-vfa-learning</Filter>
+    </ClCompile>
+    <ClCompile Include="critic-true-online-td-lambda.cpp">
+      <Filter>linear-vfa-learning</Filter>
+    </ClCompile>
+    <ClCompile Include="worlds\balancingpole.cpp">
+      <Filter>worlds</Filter>
+    </ClCompile>
+    <ClCompile Include="worlds\double-pendulum.cpp">
+      <Filter>worlds</Filter>
+    </ClCompile>
+    <ClCompile Include="deep-vfa-policy.cpp">
+      <Filter>neural-networks</Filter>
+    </ClCompile>
+    <ClCompile Include="etraces.cpp">
+      <Filter>linear-vfa-learning</Filter>
+    </ClCompile>
+    <ClCompile Include="experience-replay.cpp">
+      <Filter>linear-vfa-learning</Filter>
+    </ClCompile>
+    <ClCompile Include="featuremap.cpp">
+      <Filter>linear-vfa</Filter>
+    </ClCompile>
+    <ClCompile Include="featuremap-discrete.cpp">
+      <Filter>linear-vfa</Filter>
+    </ClCompile>
+    <ClCompile Include="featuremap-rbfgrid.cpp">
+      <Filter>linear-vfa</Filter>
+    </ClCompile>
+    <ClCompile Include="featuremap-tilecoding.cpp">
+      <Filter>linear-vfa</Filter>
+    </ClCompile>
+    <ClCompile Include="features.cpp">
+      <Filter>linear-vfa</Filter>
+    </ClCompile>
+    <ClCompile Include="mem-block.cpp">
+      <Filter>mem-manager</Filter>
+    </ClCompile>
+    <ClCompile Include="mem-buffer.cpp">
+      <Filter>mem-manager</Filter>
+    </ClCompile>
+    <ClCompile Include="mem-pool.cpp">
+      <Filter>mem-manager</Filter>
+    </ClCompile>
+    <ClCompile Include="config.cpp">
+      <Filter>config</Filter>
+    </ClCompile>
+    <ClCompile Include="DQN.cpp">
+      <Filter>neural-networks</Filter>
+    </ClCompile>
+    <ClCompile Include="deferred-load.cpp">
+      <Filter>main-classes</Filter>
+    </ClCompile>
+    <ClCompile Include="experiment.cpp">
+      <Filter>main-classes</Filter>
+    </ClCompile>
+    <ClCompile Include="worlds\FAST.cpp">
+      <Filter>worlds</Filter>
+    </ClCompile>
+    <ClCompile Include="logger.cpp">
+      <Filter>logging</Filter>
+    </ClCompile>
+    <ClCompile Include="logger-functions.cpp">
+      <Filter>logging</Filter>
+    </ClCompile>
+    <ClCompile Include="noise.cpp">
+      <Filter>linear-vfa-learning</Filter>
+    </ClCompile>
+    <ClCompile Include="parameters.cpp">
+      <Filter>config</Filter>
+    </ClCompile>
+    <ClCompile Include="parameters-numeric.cpp">
+      <Filter>config</Filter>
+    </ClCompile>
+    <ClCompile Include="worlds\mountaincar.cpp">
+      <Filter>worlds</Filter>
+    </ClCompile>
+    <ClCompile Include="worlds\pitchcontrol.cpp">
+      <Filter>worlds</Filter>
+    </ClCompile>
+    <ClCompile Include="worlds\pull-box-1.cpp">
+      <Filter>worlds</Filter>
+    </ClCompile>
+    <ClCompile Include="worlds\pull-box-2.cpp">
+      <Filter>worlds</Filter>
+    </ClCompile>
+    <ClCompile Include="worlds\push-box-1.cpp">
+      <Filter>worlds</Filter>
+    </ClCompile>
+    <ClCompile Include="worlds\push-box-2.cpp">
+      <Filter>worlds</Filter>
+    </ClCompile>
+    <ClCompile Include="worlds\raincar.cpp">
+      <Filter>worlds</Filter>
+    </ClCompile>
+    <ClCompile Include="reward.cpp">
+      <Filter>worlds</Filter>
+    </ClCompile>
+    <ClCompile Include="worlds\robot-control.cpp">
+      <Filter>worlds</Filter>
+    </ClCompile>
+    <ClCompile Include="worlds\setpoint.cpp">
+      <Filter>worlds</Filter>
+    </ClCompile>
+    <ClCompile Include="worlds\swinguppendulum.cpp">
+      <Filter>worlds</Filter>
+    </ClCompile>
+    <ClCompile Include="worlds\underwatervehicle.cpp">
+      <Filter>worlds</Filter>
+    </ClCompile>
+    <ClCompile Include="worlds\windturbine.cpp">
+      <Filter>worlds</Filter>
+    </ClCompile>
+    <ClCompile Include="policy-learner.cpp">
+      <Filter>linear-vfa-learning</Filter>
+    </ClCompile>
+    <ClCompile Include="q-learners.cpp">
+      <Filter>linear-vfa-learning</Filter>
+    </ClCompile>
+    <ClCompile Include="worlds\Robot.cpp">
+      <Filter>bullet3</Filter>
+    </ClCompile>
+    <ClCompile Include="worlds\Rope.cpp">
+      <Filter>bullet3</Filter>
+    </ClCompile>
+    <ClCompile Include="simgod.cpp">
+      <Filter>main-classes</Filter>
+    </ClCompile>
+    <ClCompile Include="simion.cpp">
+      <Filter>main-classes</Filter>
+    </ClCompile>
+    <ClCompile Include="single-dimension-grid.cpp">
+      <Filter>linear-vfa</Filter>
+    </ClCompile>
+    <ClCompile Include="stats.cpp">
+      <Filter>logging</Filter>
+    </ClCompile>
+    <ClCompile Include="worlds\templatedConfigFile.cpp">
+      <Filter>worlds</Filter>
+    </ClCompile>
+    <ClCompile Include="vfa.cpp">
+      <Filter>linear-vfa</Filter>
+    </ClCompile>
+    <ClCompile Include="worlds\world.cpp">
+      <Filter>worlds</Filter>
+    </ClCompile>
+    <ClCompile Include="vfa-policy.cpp">
+      <Filter>linear-vfa-learning</Filter>
+    </ClCompile>
+    <ClCompile Include="app.cpp">
+      <Filter>main-classes</Filter>
+    </ClCompile>
+    <ClCompile Include="function-sampler.cpp">
+      <Filter>logging</Filter>
+    </ClCompile>
+    <ClCompile Include="utils.cpp">
+      <Filter>worlds</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="bullet3">
+      <UniqueIdentifier>{ebe982e2-d2ab-481f-b32d-780d1557e77e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="neural-networks">
+      <UniqueIdentifier>{123835b3-679e-43ce-b934-cc38940351e8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="worlds">
+      <UniqueIdentifier>{622357d9-d04a-46c4-af21-fdec1cfba79b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="mem-manager">
+      <UniqueIdentifier>{96fb4d29-e629-4011-971e-70f5f999f0b4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="linear-vfa">
+      <UniqueIdentifier>{dc2fb6e7-48db-4690-a390-c52fdfe8f361}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="config">
+      <UniqueIdentifier>{f7753ae4-daca-4d09-9915-6e98a2b83589}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="main-classes">
+      <UniqueIdentifier>{9065ade1-da69-4d5f-92da-251284edb919}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="logging">
+      <UniqueIdentifier>{5110f199-249c-4c26-b1c1-de9b9d42f8f4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="linear-vfa-learning">
+      <UniqueIdentifier>{762c5544-82b2-4bfc-ae2c-d3f99a3c8074}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+</Project>

@@ -1,6 +1,6 @@
 #include "stdafx.h"
 #include "CppUnitTest.h"
-#include "../../../RLSimion/experiment.h"
+#include "../../../RLSimion/Lib/experiment.h"
 
 using namespace Microsoft::VisualStudio::CppUnitTestFramework;
 

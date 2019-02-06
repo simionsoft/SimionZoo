@@ -7,7 +7,7 @@ namespace tinyxml2 { class XMLElement; }
 
 #include "../System/Timer.h"
 #include "viewport.h"
-
+#include "bindings.h"
 
 class GraphicObject3D;
 class GraphicObject2D;
@@ -16,9 +16,7 @@ class Camera;
 class Light;
 class BoundingBox3D;
 class BoundingBox2D;
-class Binding;
 
-template <typename T> class BoundObject;
 
 class Renderer
 {
