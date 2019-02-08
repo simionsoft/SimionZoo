@@ -105,6 +105,10 @@
       </LibraryDependencies>
       <AdditionalLibraryDirectories>%(Link.AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Link>
+    <PreBuildEvent>
+      <Command>xcopy /y /d "..\..\bin\cntk-linux\libCntk.Core-2.5.1.so" "$(ProjectDir)"</Command>
+      <Message>Copy required CNTK files to project folder</Message>
+    </PreBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <ClCompile>
@@ -115,6 +119,10 @@
       <LibraryDependencies>
       </LibraryDependencies>
     </Link>
+    <PreBuildEvent>
+      <Command>xcopy /y /d "..\..\bin\cntk-linux\libCntk.Core-2.5.1.so" "$(ProjectDir)"</Command>
+      <Message>Copy required CNTK files to project folder</Message>
+    </PreBuildEvent>
   </ItemDefinitionGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets" />

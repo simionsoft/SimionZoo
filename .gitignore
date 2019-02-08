@@ -98,6 +98,7 @@ dlldata.c
 *.bin
 *.dll
 *.lib
+*.so
 
 # Chutzpah Test files
 _Chutzpah*
@@ -282,5 +283,6 @@ $RECYCLE.BIN/
 !bin/vcruntime140.dll
 !bin/HerdAgentInstaller-linux.sh
 !bin/herd-agent-daemon
+!bin/cntk-linux/libCntk.Core-2.5.1.so
 
 *.functions
