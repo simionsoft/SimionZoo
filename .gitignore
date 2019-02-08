@@ -32,6 +32,8 @@ experiments/*
 x64/
 !bin/x64
 bin/x64/**
+!bin/cntk-linux
+bin/cntk-linux/**
 x86/
 **/Win32/
 
