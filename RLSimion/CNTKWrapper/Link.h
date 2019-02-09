@@ -3,12 +3,12 @@
 #include <vector>
 #include <memory>
 #include "CNTKWrapper.h"
+#include "Parameter.h"
 #include "../../3rd-party/tinyxml2/tinyxml2.h"
 
 using namespace std;
 
 class Chain;
-class IParameter;
 
 enum class LinkType
 {
