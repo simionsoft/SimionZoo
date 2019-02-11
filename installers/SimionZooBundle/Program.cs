@@ -20,7 +20,13 @@ namespace Portable_Badger
             outBaseFolder = @"SimionZoo-" + version + @"/";
 
             //Herd Agent
+            //windows:
             files.Add(inBaseRelPath + @"bin/HerdAgentInstaller.msi");
+            //linux:
+            files.Add(inBaseRelPath + @"bin/HerdAgent.exe");
+            files.Add(inBaseRelPath + @"bin/Herd.dll");
+            files.Add(inBaseRelPath + @"bin/HerdAgentInstaller-linux.sh");
+            files.Add(inBaseRelPath + @"bin/herd-agent-daemon");
 
             //Badger
             files.Add(inBaseRelPath + @"bin/Badger.exe");
@@ -49,6 +55,7 @@ namespace Portable_Badger
             files.Add(inBaseRelPath + @"bin/x64/vcruntime140.dll");
             files.Add(inBaseRelPath + @"bin/x64/msvcp140.dll");
             //CNTK library and dependencies
+            //windows:
             files.Add(inBaseRelPath + @"bin/CNTKWrapper.dll");
             files.Add(inBaseRelPath + @"bin/Cntk.Composite-2.5.1.dll");
             files.Add(inBaseRelPath + @"bin/Cntk.Core-2.5.1.dll");
@@ -59,9 +66,12 @@ namespace Portable_Badger
             files.Add(inBaseRelPath + @"bin/cudnn64_7.dll");
             files.Add(inBaseRelPath + @"bin/libiomp5md.dll");
             files.Add(inBaseRelPath + @"bin/mklml.dll");
-            files.Add(inBaseRelPath + @"bin/mkl_cntk_p.dll");
+            //files.Add(inBaseRelPath + @"bin/mkl_cntk_p.dll");
             files.Add(inBaseRelPath + @"bin/mkldnn.dll");
             files.Add(inBaseRelPath + @"bin/nvml.dll");
+            //linux:
+            files.Add(inBaseRelPath + @"bin/CNTKWrapper-linux.so");
+            files.Add(inBaseRelPath + @"bin/cntk-linux/libCntk.Core-2.5.1.so");
 
             //Config files and example experiments
             files.AddRange(GetFilesInFolder(inBaseRelPath + @"experiments/examples", true, @"*.simion.exp"));

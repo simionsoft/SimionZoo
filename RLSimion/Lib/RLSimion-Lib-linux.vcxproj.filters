@@ -210,67 +210,189 @@
     <ClInclude Include="app.h">
       <Filter>main-classes</Filter>
     </ClInclude>
-    <ClInclude Include="actor-critic.h" />
-    <ClInclude Include="actor.h" />
-    <ClInclude Include="CNTKWrapperClient.h" />
-    <ClInclude Include="config.h" />
-    <ClInclude Include="controller.h" />
-    <ClInclude Include="critic.h" />
-    <ClInclude Include="DDPG.h" />
-    <ClInclude Include="deep-vfa-policy.h" />
-    <ClInclude Include="deferred-load.h" />
-    <ClInclude Include="DQN.h" />
-    <ClInclude Include="etraces.h" />
-    <ClInclude Include="experience-replay.h" />
-    <ClInclude Include="experiment.h" />
-    <ClInclude Include="featuremap.h" />
-    <ClInclude Include="features.h" />
-    <ClInclude Include="function-sampler.h" />
-    <ClInclude Include="logger.h" />
-    <ClInclude Include="mem-block.h" />
-    <ClInclude Include="mem-buffer.h" />
-    <ClInclude Include="mem-interfaces.h" />
-    <ClInclude Include="mem-manager.h" />
-    <ClInclude Include="mem-pool.h" />
-    <ClInclude Include="noise.h" />
-    <ClInclude Include="parameters-numeric.h" />
-    <ClInclude Include="parameters.h" />
-    <ClInclude Include="policy-learner.h" />
-    <ClInclude Include="policy.h" />
-    <ClInclude Include="q-learners.h" />
-    <ClInclude Include="reward.h" />
-    <ClInclude Include="simgod.h" />
-    <ClInclude Include="simion.h" />
-    <ClInclude Include="single-dimension-grid.h" />
-    <ClInclude Include="stats.h" />
-    <ClInclude Include="utils.h" />
-    <ClInclude Include="vfa-critic.h" />
-    <ClInclude Include="vfa.h" />
-    <ClInclude Include="worlds\aux-rewards.h" />
-    <ClInclude Include="worlds\balancingpole.h" />
-    <ClInclude Include="worlds\Box.h" />
-    <ClInclude Include="worlds\bullet-common.h" />
-    <ClInclude Include="worlds\BulletBody.h" />
-    <ClInclude Include="worlds\BulletCreationInterface.h" />
-    <ClInclude Include="worlds\BulletPhysics.h" />
-    <ClInclude Include="worlds\double-pendulum.h" />
-    <ClInclude Include="worlds\FAST.h" />
-    <ClInclude Include="worlds\mountaincar.h" />
-    <ClInclude Include="worlds\pitchcontrol.h" />
-    <ClInclude Include="worlds\pull-box-1.h" />
-    <ClInclude Include="worlds\pull-box-2.h" />
-    <ClInclude Include="worlds\push-box-1.h" />
-    <ClInclude Include="worlds\push-box-2.h" />
-    <ClInclude Include="worlds\raincar.h" />
-    <ClInclude Include="worlds\robot-control.h" />
-    <ClInclude Include="worlds\Robot.h" />
-    <ClInclude Include="worlds\Rope.h" />
-    <ClInclude Include="worlds\setpoint.h" />
-    <ClInclude Include="worlds\swinguppendulum.h" />
-    <ClInclude Include="worlds\templatedConfigFile.h" />
-    <ClInclude Include="worlds\underwatervehicle.h" />
-    <ClInclude Include="worlds\windturbine.h" />
-    <ClInclude Include="worlds\world.h" />
+    <ClInclude Include="actor.h">
+      <Filter>linear-vfa-learning</Filter>
+    </ClInclude>
+    <ClInclude Include="actor-critic.h">
+      <Filter>linear-vfa-learning</Filter>
+    </ClInclude>
+    <ClInclude Include="worlds\BulletBody.h">
+      <Filter>bullet3</Filter>
+    </ClInclude>
+    <ClInclude Include="worlds\bullet-common.h">
+      <Filter>bullet3</Filter>
+    </ClInclude>
+    <ClInclude Include="worlds\BulletCreationInterface.h">
+      <Filter>bullet3</Filter>
+    </ClInclude>
+    <ClInclude Include="worlds\BulletPhysics.h">
+      <Filter>bullet3</Filter>
+    </ClInclude>
+    <ClInclude Include="worlds\balancingpole.h">
+      <Filter>worlds</Filter>
+    </ClInclude>
+    <ClInclude Include="worlds\aux-rewards.h">
+      <Filter>worlds</Filter>
+    </ClInclude>
+    <ClInclude Include="worlds\double-pendulum.h">
+      <Filter>worlds</Filter>
+    </ClInclude>
+    <ClInclude Include="CNTKWrapperClient.h">
+      <Filter>neural-networks</Filter>
+    </ClInclude>
+    <ClInclude Include="DQN.h">
+      <Filter>neural-networks</Filter>
+    </ClInclude>
+    <ClInclude Include="DDPG.h">
+      <Filter>neural-networks</Filter>
+    </ClInclude>
+    <ClInclude Include="config.h">
+      <Filter>config</Filter>
+    </ClInclude>
+    <ClInclude Include="deep-vfa-policy.h">
+      <Filter>neural-networks</Filter>
+    </ClInclude>
+    <ClInclude Include="controller.h">
+      <Filter>linear-vfa-learning</Filter>
+    </ClInclude>
+    <ClInclude Include="critic.h">
+      <Filter>linear-vfa-learning</Filter>
+    </ClInclude>
+    <ClInclude Include="deferred-load.h">
+      <Filter>linear-vfa-learning</Filter>
+    </ClInclude>
+    <ClInclude Include="etraces.h">
+      <Filter>linear-vfa-learning</Filter>
+    </ClInclude>
+    <ClInclude Include="experience-replay.h">
+      <Filter>linear-vfa-learning</Filter>
+    </ClInclude>
+    <ClInclude Include="mem-block.h">
+      <Filter>mem-manager</Filter>
+    </ClInclude>
+    <ClInclude Include="mem-buffer.h">
+      <Filter>mem-manager</Filter>
+    </ClInclude>
+    <ClInclude Include="mem-interfaces.h">
+      <Filter>mem-manager</Filter>
+    </ClInclude>
+    <ClInclude Include="mem-manager.h">
+      <Filter>mem-manager</Filter>
+    </ClInclude>
+    <ClInclude Include="mem-pool.h">
+      <Filter>mem-manager</Filter>
+    </ClInclude>
+    <ClInclude Include="worlds\pull-box-1.h">
+      <Filter>worlds</Filter>
+    </ClInclude>
+    <ClInclude Include="worlds\pull-box-2.h">
+      <Filter>worlds</Filter>
+    </ClInclude>
+    <ClInclude Include="worlds\push-box-1.h">
+      <Filter>worlds</Filter>
+    </ClInclude>
+    <ClInclude Include="worlds\push-box-2.h">
+      <Filter>worlds</Filter>
+    </ClInclude>
+    <ClInclude Include="worlds\mountaincar.h">
+      <Filter>worlds</Filter>
+    </ClInclude>
+    <ClInclude Include="worlds\Robot.h">
+      <Filter>worlds</Filter>
+    </ClInclude>
+    <ClInclude Include="worlds\Rope.h">
+      <Filter>worlds</Filter>
+    </ClInclude>
+    <ClInclude Include="reward.h">
+      <Filter>worlds</Filter>
+    </ClInclude>
+    <ClInclude Include="worlds\raincar.h">
+      <Filter>worlds</Filter>
+    </ClInclude>
+    <ClInclude Include="worlds\pitchcontrol.h">
+      <Filter>worlds</Filter>
+    </ClInclude>
+    <ClInclude Include="worlds\Box.h">
+      <Filter>worlds</Filter>
+    </ClInclude>
+    <ClInclude Include="worlds\windturbine.h">
+      <Filter>worlds</Filter>
+    </ClInclude>
+    <ClInclude Include="worlds\world.h">
+      <Filter>worlds</Filter>
+    </ClInclude>
+    <ClInclude Include="worlds\underwatervehicle.h">
+      <Filter>worlds</Filter>
+    </ClInclude>
+    <ClInclude Include="worlds\templatedConfigFile.h">
+      <Filter>worlds</Filter>
+    </ClInclude>
+    <ClInclude Include="worlds\swinguppendulum.h">
+      <Filter>worlds</Filter>
+    </ClInclude>
+    <ClInclude Include="worlds\setpoint.h">
+      <Filter>worlds</Filter>
+    </ClInclude>
+    <ClInclude Include="experiment.h">
+      <Filter>main-classes</Filter>
+    </ClInclude>
+    <ClInclude Include="noise.h">
+      <Filter>linear-vfa-learning</Filter>
+    </ClInclude>
+    <ClInclude Include="policy.h">
+      <Filter>linear-vfa-learning</Filter>
+    </ClInclude>
+    <ClInclude Include="policy-learner.h">
+      <Filter>linear-vfa-learning</Filter>
+    </ClInclude>
+    <ClInclude Include="q-learners.h">
+      <Filter>linear-vfa-learning</Filter>
+    </ClInclude>
+    <ClInclude Include="featuremap.h">
+      <Filter>linear-vfa</Filter>
+    </ClInclude>
+    <ClInclude Include="features.h">
+      <Filter>linear-vfa</Filter>
+    </ClInclude>
+    <ClInclude Include="simgod.h">
+      <Filter>main-classes</Filter>
+    </ClInclude>
+    <ClInclude Include="simion.h">
+      <Filter>main-classes</Filter>
+    </ClInclude>
+    <ClInclude Include="logger.h">
+      <Filter>logging</Filter>
+    </ClInclude>
+    <ClInclude Include="function-sampler.h">
+      <Filter>logging</Filter>
+    </ClInclude>
+    <ClInclude Include="vfa.h">
+      <Filter>linear-vfa</Filter>
+    </ClInclude>
+    <ClInclude Include="vfa-critic.h">
+      <Filter>linear-vfa-learning</Filter>
+    </ClInclude>
+    <ClInclude Include="parameters.h">
+      <Filter>config</Filter>
+    </ClInclude>
+    <ClInclude Include="parameters-numeric.h">
+      <Filter>config</Filter>
+    </ClInclude>
+    <ClInclude Include="stats.h">
+      <Filter>logging</Filter>
+    </ClInclude>
+    <ClInclude Include="utils.h">
+      <Filter>worlds</Filter>
+    </ClInclude>
+    <ClInclude Include="worlds\FAST.h">
+      <Filter>worlds</Filter>
+    </ClInclude>
+    <ClInclude Include="worlds\robot-control.h">
+      <Filter>worlds</Filter>
+    </ClInclude>
+    <ClInclude Include="single-dimension-grid.h">
+      <Filter>linear-vfa</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="linear-vfa-learning">
