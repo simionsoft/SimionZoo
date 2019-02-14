@@ -1,5 +1,5 @@
 #pragma once
-#if defined(_WIN32) && defined(_WIN64)
+#if defined(__linux__) || defined(_WIN64)
 
 #include <vector>
 #include "simion.h"

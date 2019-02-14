@@ -20,7 +20,7 @@ std::shared_ptr<Simion> Simion::getInstance(ConfigNode* pConfigNode)
 		{"SARSA", CHOICE_ELEMENT_NEW<SARSA>},
 		{"Inc-Natural-Actor-Critic", CHOICE_ELEMENT_NEW<IncrementalNaturalActorCritic>},
 		{"Off-Policy-Actor-Critic", CHOICE_ELEMENT_NEW<OffPolicyActorCritic>}
-#if defined(_WIN32) && defined(_WIN64)
+#if defined(__linux__) || defined(_WIN64)
 		,{"DQN", CHOICE_ELEMENT_NEW<DQN>}
 		,{"Double-DQN", CHOICE_ELEMENT_NEW<DoubleDQN>}
 		,{ "DDPG", CHOICE_ELEMENT_NEW<DDPG> }

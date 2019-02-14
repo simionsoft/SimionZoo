@@ -45,9 +45,9 @@ namespace CNTK
 
 #ifdef __linux__
 	#ifdef _DEBUG
-			DynamicLibCNTK.Load("./../debug/CNTKWrapper-linux.so");
+			DynamicLibCNTK.Load("./../debug/libiomp5.so");
 	#else
-			DynamicLibCNTK.Load("./../bin/CNTKWrapper-linux.so");
+			DynamicLibCNTK.Load("./../debug/libiomp5.so");
 	#endif
 #else
 	#ifdef _DEBUG
@@ -100,7 +100,7 @@ namespace CNTK
 
 	void WrapperClient::UnLoad()
 	{
-#if defined(__linux__) && defined(_WIN64)
+#if defined(__linux__) || defined(_WIN64)
 		NumNetworkInstances--;
 		if (NumNetworkInstances==0 && DynamicLibCNTK.IsLoaded())
 		{

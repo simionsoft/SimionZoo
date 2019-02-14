@@ -1,5 +1,5 @@
 #include "DDPG.h"
-#if defined(_WIN32) && defined(_WIN64)
+#if defined(__linux__) || defined(_WIN64)
 #include "../CNTKWrapper/CNTKWrapper.h"
 #include "app.h"
 #include "noise.h"

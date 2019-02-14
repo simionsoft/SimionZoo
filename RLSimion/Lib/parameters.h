@@ -425,6 +425,7 @@ public:
 	NN_DEFINITION() = default;
 	NN_DEFINITION(ConfigNode* pConfigNode, const char* name, const char* comment);
 	NN_DEFINITION& operator=(NN_DEFINITION& copied);
+	NN_DEFINITION& operator=(const NN_DEFINITION& copied);
 	INetworkDefinition* operator->() { return m_pDefinition; }
 
 	~NN_DEFINITION();
