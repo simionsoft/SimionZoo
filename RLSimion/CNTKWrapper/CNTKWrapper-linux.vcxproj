@@ -100,7 +100,7 @@
     </ClCompile>
     <Link>
       <LibraryDependencies>Cntk.Core-2.5.1;Cntk.Math-2.5.1;Cntk.PerformanceProfiler-2.5.1;iomp5;mklml_intel;mpi_cxx;mpi;open-rte;open-pal;pthread;</LibraryDependencies>
-      <AdditionalLibraryDirectories>/home/bortx/projects/SimionZoo/debug;/usr/local/mpi/lib;%(Link.AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>../../debug;/usr/local/mpi/lib;%(Link.AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <AdditionalDependencies>$(StlAdditionalDependencies);%(Link.AdditionalDependencies)</AdditionalDependencies>
       <UnresolvedSymbolReferences>true</UnresolvedSymbolReferences>
       <AdditionalOptions>-Wl,-rpath .</AdditionalOptions>
@@ -117,10 +117,10 @@
       <PreprocessorDefinitions>NDEBUG;BUILD_CNTK_WRAPPER;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
     <Link>
-      <AdditionalLibraryDirectories>%(Link.AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <LibraryDependencies>
-      </LibraryDependencies>
-      <UnresolvedSymbolReferences>false</UnresolvedSymbolReferences>
+      <AdditionalLibraryDirectories>../../debug;/usr/local/mpi/lib;%(Link.AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <LibraryDependencies>Cntk.Core-2.5.1;Cntk.Math-2.5.1;Cntk.PerformanceProfiler-2.5.1;iomp5;mklml_intel;mpi_cxx;mpi;open-rte;open-pal;pthread;</LibraryDependencies>
+      <UnresolvedSymbolReferences>true</UnresolvedSymbolReferences>
+      <AdditionalOptions>-Wl,-rpath .</AdditionalOptions>
     </Link>
     <PreBuildEvent>
       <Command>xcopy /y /d "..\..\bin\cntk-linux\libCntk.Core-2.5.1.so" "$(ProjectDir)"</Command>

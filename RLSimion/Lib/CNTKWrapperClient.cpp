@@ -4,14 +4,24 @@
 #if defined(__linux__) || defined(_WIN64)
 	#include "../CNTKWrapper/CNTKWrapper.h"
 	#include "../../tools/System/DynamicLib.h"
-#endif
 
-#ifdef __linux__
-	#define GET_NETWORK_DEFINITION_FUNC_NAME "getNetworkDefinition"
-	#define SET_DEVICE_FUNC_NAME "setDevice"
-#else
-	#define GET_NETWORK_DEFINITION_FUNC_NAME "CNTKWrapper::getNetworkDefinition"
-	#define SET_DEVICE_FUNC_NAME "CNTKWrapper::setDevice"
+	#ifdef __linux__
+		#define GET_NETWORK_DEFINITION_FUNC_NAME "getNetworkDefinition"
+		#define SET_DEVICE_FUNC_NAME "setDevice"
+		#ifdef _DEBUG
+			#define CNTK_WRAPPER_LIB_PATH "./../debug/CNTKWrapper-linux.so"
+		#else
+			#define CNTK_WRAPPER_LIB_PATH "./../bin/CNTKWrapper-linux.so"
+		#endif
+	#else
+		#define GET_NETWORK_DEFINITION_FUNC_NAME "CNTKWrapper::getNetworkDefinition"
+		#define SET_DEVICE_FUNC_NAME "CNTKWrapper::setDevice"
+		#ifdef _DEBUG
+			#define CNTK_WRAPPER_LIB_PATH "./../debug/CNTKWrapper.dll"
+		#else
+			#define CNTK_WRAPPER_LIB_PATH "./../bin/CNTKWrapper.dll"
+		#endif
+	#endif
 #endif
 
 #include "app.h"
@@ -51,19 +61,8 @@ namespace CNTK
 			//Load the wrapper library
 			Logger::logMessage(MessageType::Info, "Loading CNTK library");
 
-#ifdef __linux__
-	#ifdef _DEBUG
-			DynamicLibCNTK.Load("./CNTKWrapper-linux.so");
-	#else
-			DynamicLibCNTK.Load("./CNTKWrapper-linux.so");
-	#endif
-#else
-	#ifdef _DEBUG
-			DynamicLibCNTK.Load("./../debug/CNTKWrapper.dll");
-	#else
-			DynamicLibCNTK.Load("./../bin/CNTKWrapper.dll");
-	#endif
-#endif
+			DynamicLibCNTK.Load(CNTK_WRAPPER_LIB_PATH);
+
 			if (!DynamicLibCNTK.IsLoaded())
 				Logger::logMessage(MessageType::Error, "Failed to load dynamic library: CNTKWrapper");
 
