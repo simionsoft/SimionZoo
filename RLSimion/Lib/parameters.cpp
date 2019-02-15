@@ -133,14 +133,14 @@ NN_DEFINITION::NN_DEFINITION(ConfigNode* pConfigNode, const char* name, const ch
 {
 	m_name = name;
 	m_comment = comment;
-#ifdef _WIN64
+#if defined(_WIN64) || defined(__linux__)
 	m_pDefinition = CNTK::WrapperClient::getNetworkDefinition(pConfigNode->FirstChildElement(m_name)->FirstChildElement("Problem"));
 #endif
 }
 
 void NN_DEFINITION::destroy()
 {
-#ifdef _WIN64
+#if defined(_WIN64) || defined(__linux__)
 	if (m_pDefinition)
 	{
 		m_pDefinition->destroy();
