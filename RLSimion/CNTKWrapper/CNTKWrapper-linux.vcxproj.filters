@@ -34,14 +34,4 @@
     <ClInclude Include="HalfConverter.hpp" />
     <ClInclude Include="Minibatch.h" />
   </ItemGroup>
-  <ItemGroup>
-    <Filter Include="cntk">
-      <UniqueIdentifier>{db8a89b7-b327-4125-9bdb-54eaa37dd83c}</UniqueIdentifier>
-    </Filter>
-  </ItemGroup>
-  <ItemGroup>
-    <Library Include="libCntk.Core-2.5.1.so">
-      <Filter>cntk</Filter>
-    </Library>
-  </ItemGroup>
 </Project>

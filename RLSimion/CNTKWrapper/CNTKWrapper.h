@@ -98,6 +98,7 @@ public:
 
 namespace CNTKWrapper
 {
-	DLL_API INetworkDefinition* getNetworkDefinition(tinyxml2::XMLElement* pNode);
-	DLL_API void setDevice(bool useGPU);
+	extern "C" {DLL_API INetworkDefinition* getNetworkDefinition(tinyxml2::XMLElement* pNode); }
+	extern "C" {DLL_API void setDevice(bool useGPU); }
 }
+

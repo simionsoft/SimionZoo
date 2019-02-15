@@ -41,6 +41,7 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <RemoteProjectDir>$(RemoteRootDir)/SimionZoo/RLSimion/Lib</RemoteProjectDir>
     <IntDir>$(ProjectDir)obj-lib\$(Platform)\$(Configuration)\</IntDir>
+    <OutDir>$(SolutionDir)debug\</OutDir>
   </PropertyGroup>
   <ItemGroup>
     <ClInclude Include="actor-critic.h" />

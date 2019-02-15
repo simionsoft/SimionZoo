@@ -40,6 +40,7 @@
     <TargetName>$(ProjectName)</TargetName>
     <AdditionalSourcesToCopyMapping>
     </AdditionalSourcesToCopyMapping>
+    <PreBuildEventUseInBuild>false</PreBuildEventUseInBuild>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <RemoteProjectDir>$(RemoteRootDir)/SimionZoo/RLSimion/CNTKWrapper</RemoteProjectDir>
@@ -83,9 +84,6 @@
     <ClCompile Include="ParameterValues.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <Library Include="libCntk.Core-2.5.1.so" />
-  </ItemGroup>
-  <ItemGroup>
     <ProjectReference Include="..\..\3rd-party\tinyxml2\tinyxml2-linux.vcxproj">
       <Project>{0407c160-b25c-4a40-acf8-f8cec04add6b}</Project>
     </ProjectReference>
@@ -101,13 +99,17 @@
       <PreprocessorDefinitions>BUILD_CNTK_WRAPPER</PreprocessorDefinitions>
     </ClCompile>
     <Link>
-      <LibraryDependencies>
-      </LibraryDependencies>
-      <AdditionalLibraryDirectories>%(Link.AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <LibraryDependencies>Cntk.Core-2.5.1;Cntk.Math-2.5.1;Cntk.PerformanceProfiler-2.5.1;iomp5;mklml_intel;mpi_cxx;mpi;open-rte;open-pal;pthread;</LibraryDependencies>
+      <AdditionalLibraryDirectories>/home/bortx/projects/SimionZoo/debug;/usr/local/mpi/lib;%(Link.AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>$(StlAdditionalDependencies);%(Link.AdditionalDependencies)</AdditionalDependencies>
+      <UnresolvedSymbolReferences>true</UnresolvedSymbolReferences>
+      <AdditionalOptions>-Wl,-rpath .</AdditionalOptions>
     </Link>
     <PreBuildEvent>
-      <Command>xcopy /y /d "..\..\bin\cntk-linux\libCntk.Core-2.5.1.so" "$(ProjectDir)"</Command>
-      <Message>Copy required CNTK files to project folder</Message>
+      <Command>
+      </Command>
+      <Message>
+      </Message>
     </PreBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -118,6 +120,7 @@
       <AdditionalLibraryDirectories>%(Link.AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <LibraryDependencies>
       </LibraryDependencies>
+      <UnresolvedSymbolReferences>false</UnresolvedSymbolReferences>
     </Link>
     <PreBuildEvent>
       <Command>xcopy /y /d "..\..\bin\cntk-linux\libCntk.Core-2.5.1.so" "$(ProjectDir)"</Command>

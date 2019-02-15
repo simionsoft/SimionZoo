@@ -1,5 +1,5 @@
 #include "DynamicLib.h"
-
+#include <stdio.h>
 #include <dlfcn.h>
 
 DynamicLib::DynamicLib()
@@ -18,23 +18,16 @@ bool DynamicLib::IsLoaded()
 	return m_handle != 0;
 }
 
-#include <dlfcn.h>
-#include <stdio.h>
-#include <unistd.h>
-
 
 void DynamicLib::Load(const char* libPath)
 {
 	if (!IsLoaded())
 	{
 		m_libPath = libPath;
-		m_handle = dlopen(m_libPath, RTLD_NOW | RTLD_GLOBAL);
+		m_handle = dlopen(m_libPath, RTLD_LAZY | RTLD_GLOBAL);
 		if (!m_handle)
 		{
-			char buff[FILENAME_MAX];
-
-			fprintf(stderr, "Current directory: %s\n", getcwd(buff, FILENAME_MAX));
-			fprintf(stderr, "%s\n", dlerror());
+			fprintf(stderr, "Error: %s\n", dlerror());
 		}
 
 	}

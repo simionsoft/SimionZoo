@@ -88,6 +88,9 @@
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <Link>
       <LibraryDependencies>GL;X11;GLU;dl</LibraryDependencies>
+      <AdditionalOptions>
+      </AdditionalOptions>
+      <SharedLibrarySearchPath>.;%(Link.SharedLibrarySearchPath)</SharedLibrarySearchPath>
     </Link>
     <ClCompile>
       <PreprocessorDefinitions>_DEBUG</PreprocessorDefinitions>

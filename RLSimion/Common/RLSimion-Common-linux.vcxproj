@@ -41,6 +41,7 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <RemoteProjectDir>$(RemoteRootDir)/SimionZoo/RLSimion/Common</RemoteProjectDir>
     <IntDir>$(ProjectDir)obj-common\$(Platform)\$(Configuration)\</IntDir>
+    <OutDir>$(SolutionDir)debug\</OutDir>
   </PropertyGroup>
   <ItemGroup>
     <ClInclude Include="named-var-set.h" />

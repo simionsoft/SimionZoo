@@ -6,6 +6,14 @@
 	#include "../../tools/System/DynamicLib.h"
 #endif
 
+#ifdef __linux__
+	#define GET_NETWORK_DEFINITION_FUNC_NAME "getNetworkDefinition"
+	#define SET_DEVICE_FUNC_NAME "setDevice"
+#else
+	#define GET_NETWORK_DEFINITION_FUNC_NAME "CNTKWrapper::getNetworkDefinition"
+	#define SET_DEVICE_FUNC_NAME "CNTKWrapper::setDevice"
+#endif
+
 #include "app.h"
 #include "logger.h"
 
@@ -45,9 +53,9 @@ namespace CNTK
 
 #ifdef __linux__
 	#ifdef _DEBUG
-			DynamicLibCNTK.Load("./../debug/libiomp5.so");
+			DynamicLibCNTK.Load("./CNTKWrapper-linux.so");
 	#else
-			DynamicLibCNTK.Load("./../debug/libiomp5.so");
+			DynamicLibCNTK.Load("./CNTKWrapper-linux.so");
 	#endif
 #else
 	#ifdef _DEBUG
@@ -60,12 +68,12 @@ namespace CNTK
 				Logger::logMessage(MessageType::Error, "Failed to load dynamic library: CNTKWrapper");
 
 			//get the address of the interface functions
-			getNetworkDefinition = (getNetworkDefinitionDLL)DynamicLibCNTK.GetFuncAddress("CNTKWrapper::getNetworkDefinition");
+			getNetworkDefinition = (getNetworkDefinitionDLL)DynamicLibCNTK.GetFuncAddress(GET_NETWORK_DEFINITION_FUNC_NAME);
 
 			if (getNetworkDefinition == 0)
 				Logger::logMessage(MessageType::Error, "Failed to get a pointer to CNTKWrapper:getNetworkDefinition()");
 
-			setDevice = (setDeviceDLL) DynamicLibCNTK.GetFuncAddress("CNTKWrapper::setDevice");
+			setDevice = (setDeviceDLL) DynamicLibCNTK.GetFuncAddress(SET_DEVICE_FUNC_NAME);
 
 			if (setDevice == 0)
 				Logger::logMessage(MessageType::Error, "Failed to get a pointer to CNTKWrapper:setDevice()");
