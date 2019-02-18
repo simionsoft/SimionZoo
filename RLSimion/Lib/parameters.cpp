@@ -100,24 +100,13 @@ void WIRE_CONNECTION::set(double value)
 #endif
 //Overriden Copy-assignment to avoid destroying copied buffer
 //Expected use: problem= NN_DEFINITION(...)
-NN_DEFINITION&  NN_DEFINITION::operator=(NN_DEFINITION& copied)
-{
-	//we move pointers to the copy
-	m_pDefinition = copied.m_pDefinition;
 
-	copied.m_pDefinition = nullptr;
-
-	m_name = copied.m_name;
-	m_comment = copied.m_comment;
-
-	return *this;
-}
 NN_DEFINITION&  NN_DEFINITION::operator=(const NN_DEFINITION& copied)
 {
 	//we move pointers to the copy
 	m_pDefinition = copied.m_pDefinition;
 
-	//copied.m_pDefinition = nullptr;
+	//copied.m_pDefinition = nullptr; //cannot (const) and need not do this (destructor doesn't call destroy())
 
 	m_name = copied.m_name;
 	m_comment = copied.m_comment;
