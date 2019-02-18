@@ -286,5 +286,9 @@ $RECYCLE.BIN/
 !bin/HerdAgentInstaller-linux.sh
 !bin/herd-agent-daemon
 !bin/cntk-linux/libCntk.Core-2.5.1.so
+!bin/cntk-linux/libCntk.Math-2.5.1.so
+!bin/cntk-linux/libCntk.PerformanceProfiler-2.5.1.so
+!bin/cntk-linux/libmklml_intel.so
+!bin/cntk-linux/libiomp5.so
 
 *.functions
