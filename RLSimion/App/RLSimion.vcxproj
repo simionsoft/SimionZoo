@@ -172,6 +172,9 @@
     <ProjectReference>
       <UseLibraryDependencyInputs>false</UseLibraryDependencyInputs>
     </ProjectReference>
+    <PreBuildEvent>
+      <Command>xcopy /y /d "..\..\packages\CNTK.Deps.cuDNN.2.5.1\support\x64\Dependency\*.dll" "$(OutDir)" &amp;&amp; xcopy /y /d "..\..\packages\CNTK.Deps.Cuda.2.5.1\support\x64\Dependency\*.dll" "$(OutDir)" &amp;&amp; xcopy /y /d "..\..\packages\CNTK.GPU.2.5.1\support\x64\Release\*.dll" "$(OutDir)" &amp;&amp; xcopy /y /d "..\..\packages\CNTK.Deps.MKL.2.5.1\support\x64\Dependency\*.dll" "$(OutDir)"</Command>
+    </PreBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <ClCompile>
