@@ -72,6 +72,10 @@ namespace Portable_Badger
             //linux:
             files.Add(inBaseRelPath + @"bin/CNTKWrapper-linux.so");
             files.Add(inBaseRelPath + @"bin/cntk-linux/libCntk.Core-2.5.1.so");
+            files.Add(inBaseRelPath + @"bin/cntk-linux/libCntk.Math-2.5.1.so");
+            files.Add(inBaseRelPath + @"bin/cntk-linux/libCntk.PerformanceProfiler-2.5.1.so");
+            files.Add(inBaseRelPath + @"bin/cntk-linux/libmklml_intel.so");
+            files.Add(inBaseRelPath + @"bin/cntk-linux/libiomp5.so");
 
             //Config files and example experiments
             files.AddRange(GetFilesInFolder(inBaseRelPath + @"experiments/examples", true, @"*.simion.exp"));
