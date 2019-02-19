@@ -102,6 +102,10 @@ namespace CNTK
 		SimionApp::get()->registerInputFile("../bin/CNTKWrapper-linux.so");
 
 		SimionApp::get()->registerInputFile("../bin/cntk-linux/libCntk.Core-2.5.1.so", "../bin/libCntk.Core-2.5.1.so");
+		SimionApp::get()->registerInputFile("../bin/cntk-linux/libCntk.Math-2.5.1.so", "../bin/libCntk.Math-2.5.1.so");
+		SimionApp::get()->registerInputFile("../bin/cntk-linux/libCntk.PerformanceProfiler-2.5.1.so", "../bin/libCntk.PerformanceProfiler-2.5.1.so");
+		SimionApp::get()->registerInputFile("../bin/cntk-linux/libmklml_intel.so", "../bin/libmklml_intel.so");
+		SimionApp::get()->registerInputFile("../bin/cntk-linux/libiomp5.so", "../bin/libiomp5.so");
 #endif
 	}
 
