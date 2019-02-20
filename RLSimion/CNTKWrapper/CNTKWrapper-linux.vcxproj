@@ -38,7 +38,7 @@
     <RemoteProjectDir>$(RemoteRootDir)/SimionZoo/RLSimion/CNTKWrapper</RemoteProjectDir>
     <OutDir>$(SolutionDir)debug\</OutDir>
     <TargetName>$(ProjectName)</TargetName>
-    <AdditionalSourcesToCopyMapping>../../bin/cntk-linux/libCntk.Core-2.5.1.so:=~/projects/SimionZoo/debug/libCntk.Core-2.5.1.so;../../bin/cntk-linux/libCntk.Math-2.5.1.so:=~/projects/SimionZoo/debug/libCntk.Math-2.5.1.so;../../bin/cntk-linux/libCntk.PerformanceProfiler-2.5.1.so:=~/projects/SimionZoo/debug/libCntk.PerformanceProfiler-2.5.1.so;../../bin/cntk-linux/libiomp5.so:=~/projects/SimionZoo/debug/libiomp5.so;../../bin/cntk-linux/libmklml_intel.so:=~/projects/SimionZoo/debug/libmklml_intel.so;</AdditionalSourcesToCopyMapping>
+    <AdditionalSourcesToCopyMapping>../../bin/cntk-linux/libCntk.Core-2.5.1.so:=~/projects/SimionZoo/debug/libCntk.Core-2.5.1.so;../../bin/cntk-linux/libCntk.Math-2.5.1.so:=~/projects/SimionZoo/debug/libCntk.Math-2.5.1.so;../../bin/cntk-linux/libCntk.PerformanceProfiler-2.5.1.so:=~/projects/SimionZoo/debug/libCntk.PerformanceProfiler-2.5.1.so;../../bin/cntk-linux/libiomp5.so:=~/projects/SimionZoo/debug/libiomp5.so;../../bin/cntk-linux/libmklml_intel.so:=~/projects/SimionZoo/debug/libmklml_intel.so;../../bin/cntk-linux/libmpi.so:=~/projects/SimionZoo/debug/libmpi.so;../../bin/cntk-linux/libmpi_cxx.so:=~/projects/SimionZoo/debug/libmpi_cxx.so;../../bin/cntk-linux/libopen-pal.so:=~/projects/SimionZoo/debug/libopen-pal.so;../../bin/cntk-linux/libopen-rte.so:=~/projects/SimionZoo/debug/libopen-rte.so;</AdditionalSourcesToCopyMapping>
     <PreBuildEventUseInBuild>false</PreBuildEventUseInBuild>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -46,6 +46,7 @@
     <OutDir>$(SolutionDir)bin\</OutDir>
     <TargetName>$(ProjectName)</TargetName>
     <AdditionalSourcesToCopyMapping>../../bin/cntk-linux/libCntk.Core-2.5.1.so:=~/projects/SimionZoo/bin/libCntk.Core-2.5.1.so;../../bin/cntk-linux/libCntk.Math-2.5.1.so:=~/projects/SimionZoo/bin/libCntk.Math-2.5.1.so;../../bin/cntk-linux/libCntk.PerformanceProfiler-2.5.1.so:=~/projects/SimionZoo/bin/libCntk.PerformanceProfiler-2.5.1.so;../../bin/cntk-linux/libiomp5.so:=~/projects/SimionZoo/bin/libiomp5.so;../../bin/cntk-linux/libmklml_intel.so:=~/projects/SimionZoo/bin/libmklml_intel.so;../../bin/cntk-linux/libmpi.so:=~/projects/SimionZoo/bin/libmpi.so;../../bin/cntk-linux/libmpi_cxx.so:=~/projects/SimionZoo/bin/libmpi_cxx.so;../../bin/cntk-linux/libopen-pal.so:=~/projects/SimionZoo/bin/libopen-pal.so;../../bin/cntk-linux/libopen-rte.so:=~/projects/SimionZoo/bin/libopen-rte.so;</AdditionalSourcesToCopyMapping>
+    <PreBuildEventUseInBuild>false</PreBuildEventUseInBuild>
   </PropertyGroup>
   <ItemGroup>
     <ClInclude Include="Chain.h" />
@@ -98,7 +99,7 @@
     </ClCompile>
     <Link>
       <LibraryDependencies>Cntk.Core-2.5.1;Cntk.Math-2.5.1;Cntk.PerformanceProfiler-2.5.1;iomp5;mklml_intel;mpi_cxx;mpi;open-rte;open-pal;pthread;</LibraryDependencies>
-      <AdditionalLibraryDirectories>../../debug;/usr/local/mpi/lib;%(Link.AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>../../debug;%(Link.AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <AdditionalDependencies>$(StlAdditionalDependencies);%(Link.AdditionalDependencies)</AdditionalDependencies>
       <UnresolvedSymbolReferences>true</UnresolvedSymbolReferences>
       <AdditionalOptions>-Wl,-rpath .</AdditionalOptions>
@@ -121,8 +122,10 @@
       <AdditionalOptions>-Wl,-rpath .</AdditionalOptions>
     </Link>
     <PreBuildEvent>
-      <Command>xcopy /y /d "..\..\bin\cntk-linux\libCntk.Core-2.5.1.so" "$(ProjectDir)"</Command>
-      <Message>Copy required CNTK files to project folder</Message>
+      <Command>
+      </Command>
+      <Message>
+      </Message>
     </PreBuildEvent>
   </ItemDefinitionGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
