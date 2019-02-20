@@ -7,9 +7,11 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Xml;
+
 using Badger.Data;
-using Badger.Simion;
+
 using Caliburn.Micro;
+using Herd.Files;
 
 namespace Badger.ViewModels
 {
@@ -122,17 +124,18 @@ namespace Badger.ViewModels
             LoadAppDefinitions();
 
             // Check for aditional required configuration files
-            if (!File.Exists("..\\config\\definitions.xml"))
+            if (!File.Exists("../config/definitions.xml"))
                 CaliburnUtility.ShowWarningDialog("Unable to find required configuration file.", "Fatal Error");
         }
 
 
         private void LoadAppDefinitions()
         {
-            foreach (string app in Directory.GetFiles(SimionFileData.appConfigRelativeDir))
+            char[] splitters = new char[] { '\\', '/' };
+            foreach (string app in Directory.GetFiles(Folders.appConfigRelativeDir))
             {
-                char[] spliter = "\\".ToCharArray();
-                string[] tmp = app.Split(spliter);
+                //char[] spliter = "\\".ToCharArray();
+                string[] tmp = app.Split(splitters);
                 tmp = tmp[tmp.Length - 1].Split('.');
                 string name = tmp[0];
                 appDefinitions.Add(name, app);
@@ -153,19 +156,19 @@ namespace Badger.ViewModels
 
             string savedFilename = null;
             if (SelectedExperiment.getNumForkCombinations() > 1)
-                SimionFileData.SaveExperiments(ExperimentViewModels);
+                Files.SaveExperiments(ExperimentViewModels);
             else
-                savedFilename = SimionFileData.SaveExperiment(SelectedExperiment);
+                savedFilename = Files.SaveExperiment(SelectedExperiment);
 
             if (savedFilename != null)
-                SelectedExperiment.Name = Utility.GetFilename(savedFilename, true, 2);
+                SelectedExperiment.Name = Herd.Utils.GetFilename(savedFilename, true, 2);
         }
 
         //This method can be used from any child window to load experimental units (i.e, from the ReportViewer)
         public void LoadExperimentalUnit(string experimentalUnitConfigFile)
         {
             ExperimentViewModel newExperiment =
-                        SimionFileData.LoadExperiment(appDefinitions, experimentalUnitConfigFile);
+                        Files.LoadExperiment(appDefinitions, experimentalUnitConfigFile);
 
             if (newExperiment != null)
             {
@@ -177,17 +180,17 @@ namespace Badger.ViewModels
 
         public void LoadExperimentOrProject()
         {
-            string extension = SimionFileData.ProjectDescription;
-            string filter = SimionFileData.ExperimentOrProjectFilter;
+            string extension = Files.ProjectDescription;
+            string filter = Files.ExperimentOrProjectFilter;
 
-            List<string> filenames = SimionFileData.OpenFileDialogMultipleFiles(extension, filter);
+            List<string> filenames = Files.OpenFileDialogMultipleFiles(extension, filter);
             foreach (string filename in filenames)
             {
-                string fileExtension = Utility.GetExtension(filename, 2);
-                if (fileExtension == SimionFileData.ExperimentExtension)
+                string fileExtension = Herd.Utils.GetExtension(filename, 2);
+                if (fileExtension == Herd.Files.Extensions.ExperimentExtension)
                 {
                     ExperimentViewModel newExperiment =
-                        SimionFileData.LoadExperiment(appDefinitions, filename);
+                        Files.LoadExperiment(appDefinitions, filename);
 
                     if (newExperiment != null)
                     {
@@ -197,10 +200,10 @@ namespace Badger.ViewModels
                     }
 
                 }
-                else if (fileExtension == SimionFileData.ProjectExtension)
+                else if (fileExtension == Herd.Files.Extensions.ProjectExtension)
                 {
                     BindableCollection<ExperimentViewModel> newExperiments = new BindableCollection<ExperimentViewModel>();
-                    SimionFileData.LoadExperiments(ref newExperiments, appDefinitions
+                    Files.LoadExperiments(ref newExperiments, appDefinitions
                         , MainWindowViewModel.Instance.LogToFile
                         , filename);
                     ExperimentViewModels.AddRange(newExperiments);
@@ -260,15 +263,6 @@ namespace Badger.ViewModels
             set { m_loggedExperiments = value; NotifyOfPropertyChange(() => LoggedExperiments); }
         }
 
-        private int LoadLoggedExperiment(XmlNode node, string baseDirectory
-            , SimionFileData.LoadUpdateFunction updateFunction)
-        {
-            LoggedExperimentViewModel newExperiment
-                = new LoggedExperimentViewModel(node, baseDirectory, false, false, updateFunction);
-            LoggedExperiments.Add(newExperiment);
-            return newExperiment.ExperimentalUnits.Count;
-        }
-
 
         /// <summary>
         ///     Runs all the experiments open in the editor. Saves a batch file read by the experiment monitor, and also a project to be
@@ -290,7 +284,7 @@ namespace Badger.ViewModels
             string batchFileName;
             //Save dialog -> returns the experiment batch file
             string suggestedBatchFileName = SelectedExperiment.Name;
-            var sfd = SimionFileData.SaveFileDialog(SimionFileData.ExperimentBatchDescription, SimionFileData.ExperimentBatchFilter, suggestedBatchFileName);
+            var sfd = Files.SaveFileDialog(Files.ExperimentBatchDescription, Files.ExperimentBatchFilter, suggestedBatchFileName);
             if (sfd.ShowDialog() == DialogResult.OK)
             {
                 batchFileName = sfd.FileName;
@@ -308,14 +302,14 @@ namespace Badger.ViewModels
             Task.Run(() =>
             {
                 //Save the experiment batch, read by the Experiment Monitor
-                int experimentalUnitsCount = SimionFileData.SaveExperimentBatchFile(ExperimentViewModels,
+                int experimentalUnitsCount = Files.SaveExperimentBatchFile(ExperimentViewModels,
                     batchFileName, MainWindowViewModel.Instance.LogToFile
                     , progressBarDialogVM.UpdateProgressBar);
 
                 //Save the badger project to allow later changes and re-runs of the experiment
-                string badgerProjFileName = Utility.RemoveExtension(batchFileName, Utility.NumParts(SimionFileData.ProjectExtension, '.'))
-                    + SimionFileData.ProjectExtension;
-                SimionFileData.SaveExperiments(ExperimentViewModels, badgerProjFileName);
+                string badgerProjFileName = Herd.Utils.RemoveExtension(batchFileName, Herd.Utils.NumParts(Herd.Files.Extensions.ProjectExtension, '.'))
+                    + Herd.Files.Extensions.ProjectExtension;
+                Files.SaveExperiments(ExperimentViewModels, badgerProjFileName);
 
                 progressBarDialogVM.TryClose();
             }, cancellation.Token);

@@ -46,9 +46,11 @@ Matrix44 SceneActor2D::getTransformMatrix()
 	quat.fromOrientations(0.0, 0.0, m_transform.rotation());
 	rot.setRotation(quat);
 	Vector2D translation= m_transform.translation();
-	trans.setTranslation(Vector3D( translation.x(), translation.y(), m_transform.depth()));
+	Vector3D translation3D = Vector3D(translation.x(), translation.y(), m_transform.depth());
+	trans.setTranslation(translation3D);
 	Vector2D s = m_transform.scale();
-	scale.setScale(Vector3D(s.x(),s.y(),1.0));
+	Vector3D s3D = Vector3D(s.x(), s.y(), 1.0);
+	scale.setScale(s3D);
 	mat = trans * rot * scale;
 	return mat;
 }
@@ -56,7 +58,8 @@ Matrix44 SceneActor2D::getTransformMatrix()
 void SceneActor2D::addLocalOffset(Vector2D& offset)
 {
 	Matrix44 mat = getTransformMatrix();
-	Vector3D worldOffset = mat * Vector3D(offset.x(),offset.y(),0.0);
+	Vector3D offset3D = Vector3D(offset.x(), offset.y(), 0.0);
+	Vector3D worldOffset = mat * offset3D;
 	m_transform.setTranslation(m_transform.translation() + Vector2D(worldOffset.x(),worldOffset.y()));
 }
 

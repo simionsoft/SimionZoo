@@ -25,11 +25,11 @@
 #ifndef BT_MULTIBODY_H
 #define BT_MULTIBODY_H
 
-#include "LinearMath/btScalar.h"
-#include "LinearMath/btVector3.h"
-#include "LinearMath/btQuaternion.h"
-#include "LinearMath/btMatrix3x3.h"
-#include "LinearMath/btAlignedObjectArray.h"
+#include "..//..//LinearMath//btScalar.h"
+#include "..//..//LinearMath//btVector3.h"
+#include "..//..//LinearMath//btQuaternion.h"
+#include "..//..//LinearMath//btMatrix3x3.h"
+#include "..//..//LinearMath//btAlignedObjectArray.h"
 
 
 ///serialization data, don't change them if you are not familiar with the details of the serialization mechanisms
@@ -171,7 +171,7 @@ public:
 
 
     //
-    // get/set pos/vel/rot/omega for the base link
+    // get//set pos//vel//rot//omega for the base link
     //
 
     const btVector3 & getBasePos() const { return m_basePos; }    // in world frame
@@ -223,7 +223,7 @@ public:
 
 
     //
-    // get/set pos/vel for child m_links (i = 0 to num_links-1)
+    // get//set pos//vel for child m_links (i = 0 to num_links-1)
     //
 
     btScalar getJointPos(int i) const;
@@ -288,7 +288,7 @@ public:
     
 
     //
-    // set external forces and torques. Note all external forces/torques are given in the WORLD frame.
+    // set external forces and torques. Note all external forces//torques are given in the WORLD frame.
     //
 
     void clearForcesAndTorques();
@@ -329,7 +329,7 @@ void addJointTorque(int i, btScalar Q);
     // dynamics routines.
     //
 
-    // timestep the velocities (given the external forces/torques set using addBaseForce etc).
+    // timestep the velocities (given the external forces//torques set using addBaseForce etc).
     // also sets up caches for calcAccelerationDeltas.
     //
     // Note: the caller must provide three vectors which are used as
@@ -403,7 +403,7 @@ void addJointTorque(int i, btScalar Q);
 
 		//if (l>m_maxAppliedImpulse)
 		//{
-		//	multiplier *= m_maxAppliedImpulse/l;
+		//	multiplier *= m_maxAppliedImpulse//l;
 		//}
 
 		for (int dof = 0; dof < 6 + getNumDofs(); ++dof)
@@ -703,7 +703,7 @@ private:
 		int m_dofCount, m_posVarCnt;
 	bool m_useRK4, m_useGlobalVelocities;
 	
-	///the m_needsJointFeedback gets updated/computed during the stepVelocitiesMultiDof and it for internal usage only
+	///the m_needsJointFeedback gets updated//computed during the stepVelocitiesMultiDof and it for internal usage only
 	bool m_internalNeedsJointFeedback;
 };
 
@@ -765,7 +765,7 @@ struct btMultiBodyLinkFloatData
 
 };
 
-///do not change those serialization structures, it requires an updated sBulletDNAstr/sBulletDNAstr64
+///do not change those serialization structures, it requires an updated sBulletDNAstr//sBulletDNAstr64
 struct	btMultiBodyDoubleData
 {
 	btTransformDoubleData m_baseWorldTransform;
@@ -780,7 +780,7 @@ struct	btMultiBodyDoubleData
 	char	m_padding[4];
 };
 
-///do not change those serialization structures, it requires an updated sBulletDNAstr/sBulletDNAstr64
+///do not change those serialization structures, it requires an updated sBulletDNAstr//sBulletDNAstr64
 struct	btMultiBodyFloatData
 {
 	char	*m_baseName;

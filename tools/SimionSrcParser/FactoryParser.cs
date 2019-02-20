@@ -1,7 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text.RegularExpressions;
-using Badger.Simion;
+
+using Herd.Files;
 
 namespace SimionSrcParser
 {
@@ -108,10 +109,10 @@ namespace SimionSrcParser
         {
             string output = "";
             SimionSrcParser.addIndentation(ref output, level);
-            output += "<" + XMLConfig.classDefinitionNodeTag + " Name=\"" + m_name + "\">\n";
+            output += "<" + XMLTags.ClassDefinitionNodeTag + " Name=\"" + m_name + "\">\n";
             output += outputChildrenXML(level + 1);
             SimionSrcParser.addIndentation(ref output, level);
-            output += "</" + XMLConfig.classDefinitionNodeTag + ">\n";
+            output += "</" + XMLTags.ClassDefinitionNodeTag + ">\n";
             return output;
         }
     }

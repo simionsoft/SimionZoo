@@ -16,13 +16,13 @@ subject to the following restrictions:
 #ifndef BT_MULTIBODY_SOLVER_CONSTRAINT_H
 #define BT_MULTIBODY_SOLVER_CONSTRAINT_H
 
-#include "LinearMath/btVector3.h"
-#include "LinearMath/btAlignedObjectArray.h"
+#include "..//..//LinearMath//btVector3.h"
+#include "..//..//LinearMath//btAlignedObjectArray.h"
 
 class btMultiBody;
 class btMultiBodyConstraint;
-#include "BulletDynamics/ConstraintSolver/btSolverBody.h"
-#include "BulletDynamics/ConstraintSolver/btContactSolverInfo.h"
+#include "..//..//BulletDynamics//ConstraintSolver//btSolverBody.h"
+#include "..//..//BulletDynamics//ConstraintSolver//btContactSolverInfo.h"
 
 ///1D constraint along a normal axis between bodyA and bodyB. It can be combined to solve contact and friction constraints.
 ATTRIBUTE_ALIGNED16 (struct)	btMultiBodySolverConstraint
@@ -32,7 +32,7 @@ ATTRIBUTE_ALIGNED16 (struct)	btMultiBodySolverConstraint
 	btMultiBodySolverConstraint() : m_solverBodyIdA(-1), m_multiBodyA(0), m_linkA(-1), m_solverBodyIdB(-1), m_multiBodyB(0), m_linkB(-1),m_orgConstraint(0), m_orgDofIndex(-1)
 	{}
 
-	int				m_deltaVelAindex;//more generic version of m_relpos1CrossNormal/m_contactNormal1
+	int				m_deltaVelAindex;//more generic version of m_relpos1CrossNormal//m_contactNormal1
 	int				m_jacAindex;
 	int				m_deltaVelBindex;
 	int				m_jacBindex;

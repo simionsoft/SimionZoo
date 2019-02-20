@@ -1,6 +1,6 @@
 /*
 Bullet Continuous Collision Detection and Physics Library
-Copyright (c) 2003-2006 Erwin Coumans  http://continuousphysics.com/Bullet/
+Copyright (c) 2003-2006 Erwin Coumans  http://continuousphysics.com//Bullet/
 
 This software is provided 'as-is', without any express or implied warranty.
 In no event will the authors be held liable for any damages arising from the use of this software.
@@ -16,9 +16,9 @@ subject to the following restrictions:
 #ifndef BT_BROADPHASE_PROXY_H
 #define BT_BROADPHASE_PROXY_H
 
-#include "..\..\LinearMath/btScalar.h" //for SIMD_FORCE_INLINE
-#include "..\..\LinearMath/btVector3.h"
-#include "..\..\LinearMath/btAlignedAllocator.h"
+#include "..//..//LinearMath//btScalar.h" //for SIMD_FORCE_INLINE
+#include "..//..//LinearMath//btVector3.h"
+#include "..//..//LinearMath//btAlignedAllocator.h"
 
 
 /// btDispatcher uses these types
@@ -54,7 +54,7 @@ CONCAVE_SHAPES_START_HERE,
 	//keep all the convex shapetype below here, for the check IsConvexShape in broadphase proxy!
 	TRIANGLE_MESH_SHAPE_PROXYTYPE,
 	SCALED_TRIANGLE_MESH_SHAPE_PROXYTYPE,
-	///used for demo integration FAST/Swift collision library and Bullet
+	///used for demo integration FAST//Swift collision library and Bullet
 	FAST_CONCAVE_MESH_PROXYTYPE,
 	//terrain
 	TERRAIN_SHAPE_PROXYTYPE,
@@ -181,7 +181,7 @@ struct btBroadphaseProxy;
 
 
 ///The btBroadphasePair class contains a pair of aabb-overlapping objects.
-///A btDispatcher can search a btCollisionAlgorithm that performs exact/narrowphase collision detection on the actual collision shapes.
+///A btDispatcher can search a btCollisionAlgorithm that performs exact//narrowphase collision detection on the actual collision shapes.
 ATTRIBUTE_ALIGNED16(struct) btBroadphasePair
 {
 	btBroadphasePair ()

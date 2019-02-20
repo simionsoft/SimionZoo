@@ -1,9 +1,9 @@
 #include "stdafx.h"
 #include "ogl-utils.h"
-#include <gl\GL.h>
+#include "../../3rd-party/glew2/include/glew.h"
 #include "../GeometryLib/bounding-box.h"
 
-void drawBoundingBox3D(BoundingBox3D& box)
+void drawBoundingBox3D(const BoundingBox3D& box)
 {
 	glBegin(GL_LINES);
 	//FRONT
@@ -36,7 +36,7 @@ void drawBoundingBox3D(BoundingBox3D& box)
 	glEnd();
 }
 
-void drawBoundingBox2D(BoundingBox2D& box)
+void drawBoundingBox2D(const BoundingBox2D& box)
 {
 	glBegin(GL_LINES);
 	glVertex2d(box.min().x(), box.min().y()); glVertex2d(box.max().x(), box.min().y());

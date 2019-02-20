@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using Caliburn.Micro;
 using Badger.ViewModels;
-using Badger.Simion;
 
 namespace Badger.Data
 {

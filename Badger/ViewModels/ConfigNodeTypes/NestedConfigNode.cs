@@ -1,9 +1,10 @@
 using System;
 using System.IO;
 using System.Xml;
-using Badger.Simion;
-using Badger.ViewModels.ConfigNodeTypes;
+
 using Caliburn.Micro;
+
+using Herd.Files;
 
 namespace Badger.ViewModels
 {
@@ -54,12 +55,12 @@ namespace Badger.ViewModels
             {
                 foreach (XmlNode child in classDefinition.ChildNodes)
                 {
-                    forkNode = getForkChild(child.Attributes[XMLConfig.nameAttribute].Value, configNode);
+                    forkNode = getForkChild(child.Attributes[XMLTags.nameAttribute].Value, configNode);
                     if (forkNode != null)
                     {
                         children.Add(new ForkedNodeViewModel(parentExperiment, this, child, forkNode));
                     }
-                    else if (IsLinked(child.Attributes[XMLConfig.nameAttribute].Value, configNode))
+                    else if (IsLinked(child.Attributes[XMLTags.nameAttribute].Value, configNode))
                     {
                         children.Add(new LinkedNodeViewModel(parentExperiment, this, child, configNode));
                     }
@@ -80,8 +81,8 @@ namespace Badger.ViewModels
 
             foreach (XmlNode configChildNode in configNode)
             {
-                if (configChildNode.Name == XMLConfig.forkedNodeTag
-                    && configChildNode.Attributes[XMLConfig.nameAttribute].Value == childName)
+                if (configChildNode.Name == XMLTags.forkedNodeTag
+                    && configChildNode.Attributes[XMLTags.nameAttribute].Value == childName)
                 {
                     return configChildNode;
                 }
@@ -115,8 +116,8 @@ namespace Badger.ViewModels
 
             foreach (XmlNode configChildNode in configNode)
             {
-                if (configChildNode.Name.Equals(XMLConfig.linkedNodeTag)
-                    && configChildNode.Attributes[XMLConfig.nameAttribute].Value.Equals(nodeName))
+                if (configChildNode.Name.Equals(XMLTags.linkedNodeTag)
+                    && configChildNode.Attributes[XMLTags.nameAttribute].Value.Equals(nodeName))
                     return true;
             }
 

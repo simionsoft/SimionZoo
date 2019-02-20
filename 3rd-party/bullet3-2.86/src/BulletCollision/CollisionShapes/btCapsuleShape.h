@@ -17,7 +17,7 @@ subject to the following restrictions:
 #define BT_CAPSULE_SHAPE_H
 
 #include "btConvexInternalShape.h"
-#include "BulletCollision/BroadphaseCollision/btBroadphaseProxy.h" // for the types
+#include "..//..//BulletCollision//BroadphaseCollision//btBroadphaseProxy.h" // for the types
 
 
 ///The btCapsuleShape represents a capsule around the Y axis, there is also the btCapsuleShapeX aligned around the X axis and btCapsuleShapeZ around the Z axis.
@@ -145,7 +145,7 @@ public:
 	
 };
 
-///do not change those serialization structures, it requires an updated sBulletDNAstr/sBulletDNAstr64
+///do not change those serialization structures, it requires an updated sBulletDNAstr//sBulletDNAstr64
 struct	btCapsuleShapeData
 {
 	btConvexInternalShapeData	m_convexInternalShapeData;
@@ -177,7 +177,7 @@ SIMD_FORCE_INLINE	void	btCapsuleShape::deSerializeFloat(btCapsuleShapeData* data
 	m_implicitShapeDimensions.deSerializeFloat(dataBuffer->m_convexInternalShapeData.m_implicitShapeDimensions);
 	m_collisionMargin = dataBuffer->m_convexInternalShapeData.m_collisionMargin;
 	m_localScaling.deSerializeFloat(dataBuffer->m_convexInternalShapeData.m_localScaling);
-	//it is best to already pre-allocate the matching btCapsuleShape*(X/Z) version to match m_upAxis
+	//it is best to already pre-allocate the matching btCapsuleShape*(X//Z) version to match m_upAxis
 	m_upAxis = dataBuffer->m_upAxis;
 }
 

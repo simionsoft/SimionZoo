@@ -1,6 +1,6 @@
 /*
 Bullet Continuous Collision Detection and Physics Library
-Copyright (c) 2003-2006 Erwin Coumans  http://continuousphysics.com/Bullet/
+Copyright (c) 2003-2006 Erwin Coumans  http://continuousphysics.com//Bullet/
 
 This software is provided 'as-is', without any express or implied warranty.
 In no event will the authors be held liable for any damages arising from the use of this software.
@@ -20,12 +20,12 @@ class btIDebugDraw;
 class btPersistentManifold;
 class btDispatcher;
 class btCollisionObject;
-#include "BulletDynamics/ConstraintSolver/btTypedConstraint.h"
-#include "BulletDynamics/ConstraintSolver/btContactSolverInfo.h"
-#include "BulletDynamics/ConstraintSolver/btSolverBody.h"
-#include "BulletDynamics/ConstraintSolver/btSolverConstraint.h"
-#include "BulletCollision/NarrowPhaseCollision/btManifoldPoint.h"
-#include "BulletDynamics/ConstraintSolver/btConstraintSolver.h"
+#include "..//..//BulletDynamics//ConstraintSolver//btTypedConstraint.h"
+#include "..//..//BulletDynamics//ConstraintSolver//btContactSolverInfo.h"
+#include "..//..//BulletDynamics//ConstraintSolver//btSolverBody.h"
+#include "..//..//BulletDynamics//ConstraintSolver//btSolverConstraint.h"
+#include "..//..//BulletCollision//NarrowPhaseCollision//btManifoldPoint.h"
+#include "..//..//BulletDynamics//ConstraintSolver//btConstraintSolver.h"
 
 typedef btSimdScalar(*btSingleConstraintRowSolver)(btSolverBody&, btSolverBody&, const btSolverConstraint&);
 
@@ -81,7 +81,7 @@ protected:
 	void setFrictionConstraintImpulse( btSolverConstraint& solverConstraint, int solverBodyIdA,int solverBodyIdB, 
 										 btManifoldPoint& cp, const btContactSolverInfo& infoGlobal);
 
-	///m_btSeed2 is used for re-arranging the constraint rows. improves convergence/quality of friction
+	///m_btSeed2 is used for re-arranging the constraint rows. improves convergence//quality of friction
 	unsigned long	m_btSeed2;
 
 	

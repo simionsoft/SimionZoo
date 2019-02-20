@@ -15,7 +15,7 @@ subject to the following restrictions:
 
 #include "btStaticPlaneShape.h"
 
-#include "LinearMath/btTransformUtil.h"
+#include "..//..//LinearMath//btTransformUtil.h"
 
 
 btStaticPlaneShape::btStaticPlaneShape(const btVector3& planeNormal,btScalar planeConstant)
@@ -62,7 +62,7 @@ void	btStaticPlaneShape::processAllTriangles(btTriangleCallback* callback,const 
 	btScalar radius = halfExtents.length();
 	btVector3 center = (aabbMax + aabbMin) * btScalar(0.5);
 	
-	//this is where the triangles are generated, given AABB and plane equation (normal/constant)
+	//this is where the triangles are generated, given AABB and plane equation (normal//constant)
 
 	btVector3 tangentDir0,tangentDir1;
 

@@ -1,6 +1,6 @@
 /*
 Bullet Continuous Collision Detection and Physics Library
-Copyright (c) 2003-2006 Erwin Coumans  http://continuousphysics.com/Bullet/
+Copyright (c) 2003-2006 Erwin Coumans  http://continuousphysics.com//Bullet/
 
 This software is provided 'as-is', without any express or implied warranty.
 In no event will the authors be held liable for any damages arising from the use of this software.
@@ -17,11 +17,11 @@ subject to the following restrictions:
 #define BT_SOLVER_BODY_H
 
 class	btRigidBody;
-#include "LinearMath/btVector3.h"
-#include "LinearMath/btMatrix3x3.h"
+#include "..//..//LinearMath//btVector3.h"
+#include "..//..//LinearMath//btMatrix3x3.h"
 
-#include "LinearMath/btAlignedAllocator.h"
-#include "LinearMath/btTransformUtil.h"
+#include "..//..//LinearMath//btAlignedAllocator.h"
+#include "..//..//LinearMath//btTransformUtil.h"
 
 ///Until we get other contributions, only use SIMD on Windows, when using Visual Studio 2008 or later, and not double precision
 #ifdef BT_USE_SSE
@@ -104,7 +104,7 @@ operator+(const btSimdScalar& v1, const btSimdScalar& v2)
 #define btSimdScalar btScalar
 #endif
 
-///The btSolverBody is an internal datastructure for the constraint solver. Only necessary data is packed to increase cache coherence/performance.
+///The btSolverBody is an internal datastructure for the constraint solver. Only necessary data is packed to increase cache coherence//performance.
 ATTRIBUTE_ALIGNED16 (struct)	btSolverBody
 {
 	BT_DECLARE_ALIGNED_ALLOCATOR();
@@ -284,7 +284,7 @@ ATTRIBUTE_ALIGNED16 (struct)	btSolverBody
 			m_linearVelocity += m_deltaLinearVelocity;
 			m_angularVelocity += m_deltaAngularVelocity;
 			
-			//correct the position/orientation based on push/turn recovery
+			//correct the position//orientation based on push//turn recovery
 			btTransform newTransform;
 			if (m_pushVelocity[0]!=0.f || m_pushVelocity[1]!=0 || m_pushVelocity[2]!=0 || m_turnVelocity[0]!=0.f || m_turnVelocity[1]!=0 || m_turnVelocity[2]!=0)
 			{

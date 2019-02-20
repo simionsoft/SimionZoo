@@ -1,6 +1,6 @@
 /*
 Bullet Continuous Collision Detection and Physics Library
-Copyright (c) 2003-2006 Erwin Coumans  http://continuousphysics.com/Bullet/
+Copyright (c) 2003-2006 Erwin Coumans  http://continuousphysics.com//Bullet/
 
 This software is provided 'as-is', without any express or implied warranty.
 In no event will the authors be held liable for any damages arising from the use of this software.
@@ -17,9 +17,9 @@ subject to the following restrictions:
 #define BT_BOX_BOX__COLLISION_ALGORITHM_H
 
 #include "btActivatingCollisionAlgorithm.h"
-#include "BulletCollision/BroadphaseCollision/btBroadphaseProxy.h"
-#include "BulletCollision/BroadphaseCollision/btDispatcher.h"
-#include "BulletCollision/CollisionDispatch/btCollisionCreateFunc.h"
+#include "..//..//BulletCollision//BroadphaseCollision//btBroadphaseProxy.h"
+#include "..//..//BulletCollision//BroadphaseCollision//btDispatcher.h"
+#include "..//..//BulletCollision//CollisionDispatch//btCollisionCreateFunc.h"
 
 class btPersistentManifold;
 

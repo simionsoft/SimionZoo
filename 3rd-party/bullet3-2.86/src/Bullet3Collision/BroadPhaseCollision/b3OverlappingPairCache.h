@@ -16,8 +16,8 @@ subject to the following restrictions:
 #ifndef B3_OVERLAPPING_PAIR_CACHE_H
 #define B3_OVERLAPPING_PAIR_CACHE_H
 
-#include "Bullet3Common/shared/b3Int2.h"
-#include "Bullet3Common/b3AlignedObjectArray.h"
+#include "..//..//Bullet3Common//shared//b3Int2.h"
+#include "..//..//Bullet3Common//b3AlignedObjectArray.h"
 
 class b3Dispatcher;
 #include "b3OverlappingPair.h"
@@ -195,7 +195,7 @@ private:
 	}
 
 	/*
-	// Thomas Wang's hash, see: http://www.concentric.net/~Ttwang/tech/inthash.htm
+	// Thomas Wang's hash, see: http://www.concentric.net/~Ttwang//tech//inthash.htm
 	// This assumes proxyId1 and proxyId2 are 16-bit.
 	B3_FORCE_INLINE int getHash(int proxyId1, int proxyId2)
 	{
@@ -289,7 +289,7 @@ class	b3SortedOverlappingPairCache : public b3OverlappingPairCache
 		//avoid brute-force finding all the time
 		b3BroadphasePairArray	m_overlappingPairArray;
 
-		//during the dispatch, check that user doesn't destroy/create proxy
+		//during the dispatch, check that user doesn't destroy//create proxy
 		bool		m_blockedForChanges;
 
 		///by default, do the removal during the pair traversal
@@ -387,7 +387,7 @@ class	b3SortedOverlappingPairCache : public b3OverlappingPairCache
 
 
 
-///b3NullPairCache skips add/removal of overlapping pairs. Userful for benchmarking and unit testing.
+///b3NullPairCache skips add//removal of overlapping pairs. Userful for benchmarking and unit testing.
 class b3NullPairCache : public b3OverlappingPairCache
 {
 

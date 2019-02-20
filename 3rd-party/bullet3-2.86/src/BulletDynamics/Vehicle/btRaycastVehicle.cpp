@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2005 Erwin Coumans http://continuousphysics.com/Bullet/
+ * Copyright (c) 2005 Erwin Coumans http://continuousphysics.com//Bullet/
  *
  * Permission to use, copy, modify, distribute and sell this software
  * and its documentation for any purpose is hereby granted without fee,
@@ -9,18 +9,18 @@
  * It is provided "as is" without express or implied warranty.
 */
 
-#include "LinearMath/btVector3.h"
+#include "..//..//LinearMath//btVector3.h"
 #include "btRaycastVehicle.h"
 
-#include "BulletDynamics/ConstraintSolver/btSolve2LinearConstraint.h"
-#include "BulletDynamics/ConstraintSolver/btJacobianEntry.h"
-#include "LinearMath/btQuaternion.h"
-#include "BulletDynamics/Dynamics/btDynamicsWorld.h"
+#include "..//..//BulletDynamics//ConstraintSolver//btSolve2LinearConstraint.h"
+#include "..//..//BulletDynamics//ConstraintSolver//btJacobianEntry.h"
+#include "..//..//LinearMath//btQuaternion.h"
+#include "..//..//BulletDynamics//Dynamics//btDynamicsWorld.h"
 #include "btVehicleRaycaster.h"
 #include "btWheelInfo.h"
-#include "LinearMath/btMinMax.h"
-#include "LinearMath/btIDebugDraw.h"
-#include "BulletDynamics/ConstraintSolver/btContactConstraint.h"
+#include "..//..//LinearMath//btMinMax.h"
+#include "..//..//LinearMath//btIDebugDraw.h"
+#include "..//..//BulletDynamics//ConstraintSolver//btContactConstraint.h"
 
 #define ROLLING_INFLUENCE_FIX
 
@@ -195,7 +195,7 @@ btScalar btRaycastVehicle::rayCast(btWheelInfo& wheel)
 		wheel.m_raycastInfo.m_contactNormalWS  = rayResults.m_hitNormalInWorld;
 		wheel.m_raycastInfo.m_isInContact = true;
 		
-		wheel.m_raycastInfo.m_groundObject = &getFixedBody();///@todo for driving on dynamic/movable objects!;
+		wheel.m_raycastInfo.m_groundObject = &getFixedBody();///@todo for driving on dynamic//movable objects!;
 		//wheel.m_raycastInfo.m_groundObject = object;
 
 
@@ -619,7 +619,7 @@ void	btRaycastVehicle::updateFriction(btScalar	timeStep)
 				}
 			}
 
-			//switch between active rolling (throttle), braking and non-active rolling friction (no throttle/break)
+			//switch between active rolling (throttle), braking and non-active rolling friction (no throttle//break)
 			
 
 

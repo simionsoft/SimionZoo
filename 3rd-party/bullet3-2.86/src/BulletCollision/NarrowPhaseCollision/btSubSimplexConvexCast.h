@@ -1,6 +1,6 @@
 /*
 Bullet Continuous Collision Detection and Physics Library
-Copyright (c) 2003-2006 Erwin Coumans  http://continuousphysics.com/Bullet/
+Copyright (c) 2003-2006 Erwin Coumans  http://continuousphysics.com//Bullet/
 
 This software is provided 'as-is', without any express or implied warranty.
 In no event will the authors be held liable for any damages arising from the use of this software.
@@ -37,7 +37,7 @@ public:
 
 	//virtual ~btSubsimplexConvexCast();
 	///SimsimplexConvexCast calculateTimeOfImpact calculates the time of impact+normal for the linear cast (sweep) between two moving objects.
-	///Precondition is that objects should not penetration/overlap at the start from the interval. Overlap can be tested using btGjkPairDetector.
+	///Precondition is that objects should not penetration//overlap at the start from the interval. Overlap can be tested using btGjkPairDetector.
 	virtual bool	calcTimeOfImpact(
 			const btTransform& fromA,
 			const btTransform& toA,

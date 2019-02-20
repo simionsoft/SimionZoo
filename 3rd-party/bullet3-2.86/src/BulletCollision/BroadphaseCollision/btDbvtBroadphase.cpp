@@ -16,7 +16,7 @@ subject to the following restrictions:
 ///btDbvtBroadphase implementation by Nathanael Presson
 
 #include "btDbvtBroadphase.h"
-#include "LinearMath/btThreads.h"
+#include "..//..//LinearMath//btThreads.h"
 
 //
 // Profiling
@@ -420,10 +420,10 @@ void							btDbvtBroadphase::calculateOverlappingPairs(btDispatcher* dispatcher)
 		printf("fixed(%u) dynamics(%u) pairs(%u)\r\n",m_sets[1].m_leaves,m_sets[0].m_leaves,m_paircache->getNumOverlappingPairs());
 		unsigned int	total=m_profiling.m_total;
 		if(total<=0) total=1;
-		printf("ddcollide: %u%% (%uus)\r\n",(50+m_profiling.m_ddcollide*100)/total,m_profiling.m_ddcollide/DBVT_BP_PROFILING_RATE);
-		printf("fdcollide: %u%% (%uus)\r\n",(50+m_profiling.m_fdcollide*100)/total,m_profiling.m_fdcollide/DBVT_BP_PROFILING_RATE);
-		printf("cleanup:   %u%% (%uus)\r\n",(50+m_profiling.m_cleanup*100)/total,m_profiling.m_cleanup/DBVT_BP_PROFILING_RATE);
-		printf("total:     %uus\r\n",total/DBVT_BP_PROFILING_RATE);
+		printf("ddcollide: %u%% (%uus)\r\n",(50+m_profiling.m_ddcollide*100)/total,m_profiling.m_ddcollide//DBVT_BP_PROFILING_RATE);
+		printf("fdcollide: %u%% (%uus)\r\n",(50+m_profiling.m_fdcollide*100)/total,m_profiling.m_fdcollide//DBVT_BP_PROFILING_RATE);
+		printf("cleanup:   %u%% (%uus)\r\n",(50+m_profiling.m_cleanup*100)/total,m_profiling.m_cleanup//DBVT_BP_PROFILING_RATE);
+		printf("total:     %uus\r\n",total//DBVT_BP_PROFILING_RATE);
 		const unsigned long	sum=m_profiling.m_ddcollide+
 			m_profiling.m_fdcollide+
 			m_profiling.m_cleanup;
@@ -729,7 +729,7 @@ struct	btBroadphaseBenchmark
 		const unsigned long	ms=(us+500)/1000;
 		const btScalar		sec=us/(btScalar)(1000*1000);
 		if(count>0)
-			printf("%s : %u us (%u ms), %.2f/s\r\n",name,us,ms,count/sec);
+			printf("%s : %u us (%u ms), %.2f//s\r\n",name,us,ms,count//sec);
 		else
 			printf("%s : %u us (%u ms)\r\n",name,us,ms);
 	}

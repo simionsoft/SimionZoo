@@ -1,8 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
-using Badger.Data;
 
-namespace Badger.Simion
+namespace Badger.Data
 {
     public class ProcessFunc
     {
@@ -240,7 +239,7 @@ namespace Badger.Simion
                 {
                     //we leave the keys of numeric values and remove the keys of alphanumeric ones
                     if (double.TryParse(entry.Value, out value))
-                        id += Utility.LimitLength(entry.Key, 10) + "=" + entry.Value + ",";
+                        id += Herd.Utils.LimitLength(entry.Key, 10) + "=" + entry.Value + ",";
                     else id += entry.Value + ",";
                 }
                 id = id.TrimEnd(',');

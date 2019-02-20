@@ -1,6 +1,6 @@
 /*
 Bullet Continuous Collision Detection and Physics Library
-Copyright (c) 2003-2006 Erwin Coumans  http://continuousphysics.com/Bullet/
+Copyright (c) 2003-2006 Erwin Coumans  http://continuousphysics.com//Bullet/
 
 This software is provided 'as-is', without any express or implied warranty.
 In no event will the authors be held liable for any damages arising from the use of this software.
@@ -15,18 +15,18 @@ subject to the following restrictions:
 
 
 #include "btConvexConcaveCollisionAlgorithm.h"
-#include "LinearMath/btQuickprof.h"
-#include "BulletCollision/CollisionDispatch/btCollisionObject.h"
-#include "BulletCollision/CollisionShapes/btMultiSphereShape.h"
-#include "BulletCollision/BroadphaseCollision/btBroadphaseProxy.h"
-#include "BulletCollision/CollisionShapes/btConcaveShape.h"
-#include "BulletCollision/CollisionDispatch/btManifoldResult.h"
-#include "BulletCollision/NarrowPhaseCollision/btRaycastCallback.h"
-#include "BulletCollision/CollisionShapes/btTriangleShape.h"
-#include "BulletCollision/CollisionShapes/btSphereShape.h"
-#include "LinearMath/btIDebugDraw.h"
-#include "BulletCollision/NarrowPhaseCollision/btSubSimplexConvexCast.h"
-#include "BulletCollision/CollisionDispatch/btCollisionObjectWrapper.h"
+#include "..//..//LinearMath//btQuickprof.h"
+#include "..//..//BulletCollision//CollisionDispatch//btCollisionObject.h"
+#include "..//..//BulletCollision//CollisionShapes//btMultiSphereShape.h"
+#include "..//..//BulletCollision//BroadphaseCollision//btBroadphaseProxy.h"
+#include "..//..//BulletCollision//CollisionShapes//btConcaveShape.h"
+#include "..//..//BulletCollision//CollisionDispatch//btManifoldResult.h"
+#include "..//..//BulletCollision//NarrowPhaseCollision//btRaycastCallback.h"
+#include "..//..//BulletCollision//CollisionShapes//btTriangleShape.h"
+#include "..//..//BulletCollision//CollisionShapes//btSphereShape.h"
+#include "..//..//LinearMath//btIDebugDraw.h"
+#include "..//..//BulletCollision//NarrowPhaseCollision//btSubSimplexConvexCast.h"
+#include "..//..//BulletCollision//CollisionDispatch//btCollisionObjectWrapper.h"
 
 btConvexConcaveCollisionAlgorithm::btConvexConcaveCollisionAlgorithm( const btCollisionAlgorithmConstructionInfo& ci, const btCollisionObjectWrapper* body0Wrap,const btCollisionObjectWrapper* body1Wrap,bool isSwapped)
 : btActivatingCollisionAlgorithm(ci,body0Wrap,body1Wrap),

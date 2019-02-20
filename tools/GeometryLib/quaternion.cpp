@@ -51,7 +51,6 @@ double Quaternion::yaw() const
 	if (test < -0.499) // singularity at south pole
 		return -2 * atan2(x(), w());
 
-	double sqx = x()*x();
 	double sqy = y()*y();
 	double sqz = z()*z();
 	return atan2(2 * y()*w() - 2 * x()*z(), 1 - 2 * sqy - 2 * sqz);
@@ -69,7 +68,6 @@ double Quaternion::pitch() const
 		return 0.0;
 
 	double sqx = x()*x();
-	double sqy = y()*y();
 	double sqz = z()*z();
 	return atan2(2 * x()*w() - 2 * y()*z(), 1 - 2 * sqx - 2 * sqz);
 }
@@ -186,7 +184,7 @@ Quaternion Quaternion::inverse()
 
 
 
-Quaternion Quaternion::operator+(const Quaternion quat)
+Quaternion Quaternion::operator+(Quaternion quat)
 {
 	if (bUseOrientations())
 		fromOrientations();
@@ -197,7 +195,7 @@ Quaternion Quaternion::operator+(const Quaternion quat)
 	return result;
 }
 
-Quaternion Quaternion::operator-(const Quaternion quat)
+Quaternion Quaternion::operator-(Quaternion quat)
 {
 	if (bUseOrientations())
 		fromOrientations();
@@ -208,7 +206,7 @@ Quaternion Quaternion::operator-(const Quaternion quat)
 	return result;
 }
 
-Quaternion Quaternion::operator*(const Quaternion quat)
+Quaternion Quaternion::operator*(Quaternion quat)
 {
 	if (bUseOrientations())
 		fromOrientations();
@@ -255,7 +253,7 @@ void Quaternion::operator*= (const Quaternion quat)
 	(*this) = result;
 }
 
-Quaternion Quaternion::operator*(const double x)
+Quaternion Quaternion::operator*(double x)
 {
 	if (bUseOrientations())
 		fromOrientations();

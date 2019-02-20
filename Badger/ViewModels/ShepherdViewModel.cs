@@ -1,33 +1,16 @@
 ﻿using System.Collections.Generic;
-using System.Linq;
-using Herd;
-using Caliburn.Micro;
-using System;
-using Badger.Data;
 using System.Runtime.CompilerServices;
+
+using Caliburn.Micro;
+
+using Badger.Data;
+
+using Herd.Network;
 
 namespace Badger.ViewModels
 {
-    public class ShepherdViewModel : PropertyChangedBase//, IDisposable
+    public class ShepherdViewModel : PropertyChangedBase
     {
-        //protected virtual void Dispose(bool disposing)
-        //{
-        //    if (disposing)
-        //    {
-        //        // dispose managed resources
-        //        m_timer.Dispose();
-        //    }
-        //}
-        //public void Dispose()
-        //{
-        //    Dispose(true);
-        //    GC.SuppressFinalize(this);
-        //}
-
-        // const int m_agentTimeoutSeconds = 10;
-        //const int m_updateTimeSeconds = 3;
-        //System.Timers.Timer m_timer;
-
         private Shepherd m_shepherd;
         public Shepherd shepherd { get { return m_shepherd; } set { } }
 
@@ -36,7 +19,7 @@ namespace Badger.ViewModels
             get; set;
         } = new BindableCollection<HerdAgentViewModel>();
 
-        public int getAvailableHerdAgents(ref List<HerdAgentViewModel> outList)
+        public int GetAvailableHerdAgents(ref List<HerdAgentInfo> outList)
         {
             //we assume outList needs no synchronization
             int numAvailableCores = 0;
@@ -47,7 +30,7 @@ namespace Badger.ViewModels
                 {
                     if (agent.IsAvailable && agent.IsSelected)
                     {
-                        outList.Add(agent);
+                        outList.Add(agent.Info);
                         numAvailableCores += agent.NumProcessors;
                     }
                 }
@@ -68,30 +51,27 @@ namespace Badger.ViewModels
             NotifyOfPropertyChange(() => HerdAgentList);
         }
 
-        public void SendAgentDiscoveryBroadcast()
-        {
-            HerdAgentList.Clear();
-            m_shepherd.SendBroadcastHerdAgentQuery();
-        }
+
 
         public void SelectHerdAgents()
         {
-            CaliburnUtility.ShowPopupWindow(new HerdAgentSelectionViewModel(HerdAgentList), "Herd Aget selection tool");
+            CaliburnUtility.ShowPopupWindow(new HerdAgentSelectionViewModel(HerdAgentList), "Herd Agent selection");
+        }
+
+        public JobDispatcherOptions DispatcherOptions { get; } = new JobDispatcherOptions();
+        public void ConfigureJobDispatcher()
+        {
+            CaliburnUtility.ShowPopupWindow(new JobDispatcherSettingsViewModel(DispatcherOptions), "Job Dispathcer settings");
         }
 
 
         public ShepherdViewModel()
         {
+            HerdAgentList.Clear();
+
             m_shepherd = new Shepherd();
             m_shepherd.SetOnHerdAgentDiscoveryFunc(OnHerdAgetDiscovery);
-
-            // m_timer = new System.Timers.Timer(m_updateTimeSeconds * 1000);
-            SendAgentDiscoveryBroadcast();
-            m_shepherd.BeginListeningHerdAgentQueryResponses();
-
-            //m_timer.AutoReset = true;
-            //m_timer.Elapsed += new System.Timers.ElapsedEventHandler(ResendBroadcast);
-            //m_timer.Start();
+            m_shepherd.CallHerd();
         }
     }
 }

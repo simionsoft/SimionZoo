@@ -15,8 +15,8 @@ subject to the following restrictions:
 ///original version written by Erwin Coumans, October 2013
 
 #include "btMLCPSolver.h"
-#include "LinearMath/btMatrixX.h"
-#include "LinearMath/btQuickprof.h"
+#include "..//..//LinearMath//btMatrixX.h"
+#include "..//..//LinearMath//btQuickprof.h"
 #include "btSolveProjectedGaussSeidel.h"
 
 
@@ -184,7 +184,7 @@ void btMLCPSolver::createMLCPFast(const btContactSolverInfo& infoGlobal)
 	m_hi.resize(numConstraintRows);
  
 	{
-		BT_PROFILE("init lo/ho");
+		BT_PROFILE("init lo//ho");
 
 		for (int i=0;i<numConstraintRows;i++)
 		{
@@ -222,7 +222,7 @@ void btMLCPSolver::createMLCPFast(const btContactSolverInfo& infoGlobal)
 	}
     btMatrixXu& JinvM3 = m_scratchJInvM3;
 	{
-		BT_PROFILE("JinvM3.resize/setZero");
+		BT_PROFILE("JinvM3.resize//setZero");
 
 		JinvM3.resize(2*m,8);
 		JinvM3.setZero();
@@ -446,7 +446,7 @@ void btMLCPSolver::createMLCPFast(const btContactSolverInfo& infoGlobal)
 	}
 
 	{
-		BT_PROFILE("resize/init x");
+		BT_PROFILE("resize//init x");
 		m_x.resize(numConstraintRows);
 		m_xSplit.resize(numConstraintRows);
 

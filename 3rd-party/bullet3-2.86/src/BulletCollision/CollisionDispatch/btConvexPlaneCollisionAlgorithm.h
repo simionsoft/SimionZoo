@@ -1,6 +1,6 @@
 /*
 Bullet Continuous Collision Detection and Physics Library
-Copyright (c) 2003-2006 Erwin Coumans  http://continuousphysics.com/Bullet/
+Copyright (c) 2003-2006 Erwin Coumans  http://continuousphysics.com//Bullet/
 
 This software is provided 'as-is', without any express or implied warranty.
 In no event will the authors be held liable for any damages arising from the use of this software.
@@ -16,13 +16,13 @@ subject to the following restrictions:
 #ifndef BT_CONVEX_PLANE_COLLISION_ALGORITHM_H
 #define BT_CONVEX_PLANE_COLLISION_ALGORITHM_H
 
-#include "BulletCollision/BroadphaseCollision/btCollisionAlgorithm.h"
-#include "BulletCollision/BroadphaseCollision/btBroadphaseProxy.h"
-#include "BulletCollision/CollisionDispatch/btCollisionCreateFunc.h"
+#include "..//..//BulletCollision//BroadphaseCollision//btCollisionAlgorithm.h"
+#include "..//..//BulletCollision//BroadphaseCollision//btBroadphaseProxy.h"
+#include "..//..//BulletCollision//CollisionDispatch//btCollisionCreateFunc.h"
 class btPersistentManifold;
 #include "btCollisionDispatcher.h"
 
-#include "LinearMath/btVector3.h"
+#include "..//..//LinearMath//btVector3.h"
 
 /// btSphereBoxCollisionAlgorithm  provides sphere-box collision detection.
 /// Other features are frame-coherency (persistent data) and collision response.

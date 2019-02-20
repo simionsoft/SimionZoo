@@ -1,5 +1,5 @@
-﻿using Badger.Simion;
-using System.Xml;
+﻿using System.Xml;
+using Herd.Files;
 
 namespace Badger.ViewModels
 {
@@ -25,8 +25,8 @@ namespace Badger.ViewModels
             if (configNode == null || configNode[name] == null)
             {
                 //default init
-                content = definitionNode.Attributes[XMLConfig.defaultAttribute].Value;
-                textColor = XMLConfig.colorDefaultValue;
+                content = definitionNode.Attributes[XMLTags.defaultAttribute].Value;
+                textColor = XMLTags.colorDefaultValue;
             }
             else
             {

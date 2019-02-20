@@ -3,7 +3,7 @@
 #ifndef B3_QUANTIZED_BVH_NODE_H
 #define B3_QUANTIZED_BVH_NODE_H
 
-#include "Bullet3Common/shared/b3Float4.h"
+#include "..//..//..//Bullet3Common//shared//b3Float4.h"
 
 #define B3_MAX_NUM_PARTS_IN_BITS 10
 

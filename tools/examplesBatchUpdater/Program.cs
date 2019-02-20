@@ -1,11 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.IO;
 using System.Xml;
-using Badger.Simion;
+
 
 namespace examplesBatchUpdater
 {
@@ -17,7 +14,7 @@ namespace examplesBatchUpdater
             {
                 //process all the experiment files
                 IEnumerable<string> experimentFiles = Directory.EnumerateFiles("../experiments"
-                    , "*" + SimionFileData.ExperimentExtension
+                    , "*" + Herd.Files.Extensions.ExperimentExtension
                     , SearchOption.AllDirectories);
                 foreach (string file in experimentFiles)
                 {
@@ -57,20 +54,20 @@ namespace examplesBatchUpdater
             return -1;
         }
 
-        private delegate bool updateXMLConfigFile(XmlDocument XMLConfigFile);
-        static List<updateXMLConfigFile> updaters = new List<updateXMLConfigFile>()
+        private delegate bool updateXMLTagsFile(XmlDocument XMLTagsFile);
+        static List<updateXMLTagsFile> updaters = new List<updateXMLTagsFile>()
         {update0 , update1};
 
-        static bool update0(XmlDocument XMLConfigFile)
+        static bool update0(XmlDocument XMLTagsFile)
         {
             return true;
         }
-        static bool update1(XmlDocument XMLConfigFile)
+        static bool update1(XmlDocument XMLTagsFile)
         {
             //we move the first state-feature-map below SimGod to be global
-            XmlNode root = XMLConfigFile.FirstChild;
-            XmlNodeList stateFeatureMapNodes = XMLConfigFile.GetElementsByTagName("State-Feature-Map");
-            XmlNodeList simGodNodes = XMLConfigFile.GetElementsByTagName("SimGod");
+            XmlNode root = XMLTagsFile.FirstChild;
+            XmlNodeList stateFeatureMapNodes = XMLTagsFile.GetElementsByTagName("State-Feature-Map");
+            XmlNodeList simGodNodes = XMLTagsFile.GetElementsByTagName("SimGod");
             if (stateFeatureMapNodes.Count != 0 && simGodNodes.Count != 0)
             {
                 //move the first appeareance to all the simion nodes
@@ -82,20 +79,20 @@ namespace examplesBatchUpdater
             }
             else return false;
             //we remove the reward node, it's now hard-coded inside the dynamic model
-            XmlNodeList rewardNodes = XMLConfigFile.GetElementsByTagName("Reward");
+            XmlNodeList rewardNodes = XMLTagsFile.GetElementsByTagName("Reward");
             if (rewardNodes.Count>=0)
                 rewardNodes[0].ParentNode.RemoveChild(rewardNodes[0]);
             return true;
         }
 
-        static void setVersion(XmlDocument XMLConfigFile, int version)
+        static void setVersion(XmlDocument XMLTagsFile, int version)
         {
-            XmlNode root = XMLConfigFile.FirstChild;
+            XmlNode root = XMLTagsFile.FirstChild;
             XmlAttribute versionAttribute;
 
             if (root.Attributes["FileVersion"] == null)
             {
-                versionAttribute = XMLConfigFile.CreateAttribute("FileVersion");
+                versionAttribute = XMLTagsFile.CreateAttribute("FileVersion");
             }
             else
             {

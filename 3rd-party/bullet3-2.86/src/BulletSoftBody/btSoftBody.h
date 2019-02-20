@@ -1,6 +1,6 @@
 /*
 Bullet Continuous Collision Detection and Physics Library
-Copyright (c) 2003-2006 Erwin Coumans  http://continuousphysics.com/Bullet/
+Copyright (c) 2003-2006 Erwin Coumans  http://continuousphysics.com//Bullet/
 
 This software is provided 'as-is', without any express or implied warranty.
 In no event will the authors be held liable for any damages arising from the use of this software.
@@ -17,15 +17,15 @@ subject to the following restrictions:
 #ifndef _BT_SOFT_BODY_H
 #define _BT_SOFT_BODY_H
 
-#include "..\LinearMath/btAlignedObjectArray.h"
-#include "..\LinearMath/btTransform.h"
-#include "..\LinearMath/btIDebugDraw.h"
-#include "..\BulletDynamics/Dynamics/btRigidBody.h"
+#include "..//LinearMath//btAlignedObjectArray.h"
+#include "..//LinearMath//btTransform.h"
+#include "..//LinearMath//btIDebugDraw.h"
+#include "..//BulletDynamics//Dynamics//btRigidBody.h"
 
-#include "..\BulletCollision/CollisionShapes/btConcaveShape.h"
-#include "..\BulletCollision/CollisionDispatch/btCollisionCreateFunc.h"
+#include "..//BulletCollision//CollisionShapes//btConcaveShape.h"
+#include "..//BulletCollision//CollisionDispatch//btCollisionCreateFunc.h"
 #include "btSparseSDF.h"
-#include "..\BulletCollision/BroadphaseCollision/btDbvt.h"
+#include "..//BulletCollision//BroadphaseCollision//btDbvt.h"
 
 //#ifdef BT_USE_DOUBLE_PRECISION
 //#define btRigidBodyData	btRigidBodyDoubleData
@@ -67,7 +67,7 @@ struct	btSoftBodyWorldInfo
 
 
 ///The btSoftBody is an class to simulate cloth and volumetric soft bodies. 
-///There is two-way interaction between btSoftBody and btRigidBody/btCollisionObject.
+///There is two-way interaction between btSoftBody and btRigidBody//btCollisionObject.
 class	btSoftBody : public btCollisionObject
 {
 public:
@@ -208,7 +208,7 @@ public:
 	struct	Material : Element
 	{
 		btScalar				m_kLST;			// Linear stiffness coefficient [0,1]
-		btScalar				m_kAST;			// Area/Angular stiffness coefficient [0,1]
+		btScalar				m_kAST;			// Area//Angular stiffness coefficient [0,1]
 		btScalar				m_kVST;			// Volume stiffness coefficient [0,1]
 		int						m_flags;		// Flags
 	};

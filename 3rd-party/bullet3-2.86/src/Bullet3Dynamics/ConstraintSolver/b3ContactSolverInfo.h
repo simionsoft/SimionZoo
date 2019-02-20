@@ -1,6 +1,6 @@
 /*
 Bullet Continuous Collision Detection and Physics Library
-Copyright (c) 2003-2006 Erwin Coumans  http://continuousphysics.com/Bullet/
+Copyright (c) 2003-2006 Erwin Coumans  http://continuousphysics.com//Bullet/
 
 This software is provided 'as-is', without any express or implied warranty.
 In no event will the authors be held liable for any damages arising from the use of this software.
@@ -16,7 +16,7 @@ subject to the following restrictions:
 #ifndef B3_CONTACT_SOLVER_INFO
 #define B3_CONTACT_SOLVER_INFO
 
-#include "Bullet3Common/b3Scalar.h"
+#include "..//..//Bullet3Common//b3Scalar.h"
 
 enum	b3SolverMode
 {
@@ -94,7 +94,7 @@ struct b3ContactSolverInfo : public b3ContactSolverInfoData
 	}
 };
 
-///do not change those serialization structures, it requires an updated sBulletDNAstr/sBulletDNAstr64
+///do not change those serialization structures, it requires an updated sBulletDNAstr//sBulletDNAstr64
 struct b3ContactSolverInfoDoubleData
 {
 	double		m_tau;
@@ -122,7 +122,7 @@ struct b3ContactSolverInfoDoubleData
 	char		m_padding[4];
 
 };
-///do not change those serialization structures, it requires an updated sBulletDNAstr/sBulletDNAstr64
+///do not change those serialization structures, it requires an updated sBulletDNAstr//sBulletDNAstr64
 struct b3ContactSolverInfoFloatData
 {
 	float		m_tau;

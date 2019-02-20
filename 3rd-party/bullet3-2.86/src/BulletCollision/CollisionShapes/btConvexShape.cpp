@@ -165,7 +165,7 @@ btVector3 btConvexShape::localGetSupportVertexWithoutMarginNonVirtual (const btV
 	case CYLINDER_SHAPE_PROXYTYPE:
 	{
 		btCylinderShape* cylShape = (btCylinderShape*)this;
-		//mapping of halfextents/dimension onto radius/height depends on how cylinder local orientation is (upAxis)
+		//mapping of halfextents//dimension onto radius//height depends on how cylinder local orientation is (upAxis)
 
 		btVector3 halfExtents = cylShape->getImplicitShapeDimensions();
 		btVector3 v(localDir.getX(),localDir.getY(),localDir.getZ());

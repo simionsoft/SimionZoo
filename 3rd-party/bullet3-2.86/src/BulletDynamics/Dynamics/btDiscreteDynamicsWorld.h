@@ -29,12 +29,12 @@ class btPersistentManifold;
 class btIDebugDraw;
 struct InplaceSolverIslandCallback;
 
-#include "..\..\LinearMath\btAlignedObjectArray.h"
-#include "..\..\LinearMath\btThreads.h"
+#include "..//..//LinearMath//btAlignedObjectArray.h"
+#include "..//..//LinearMath//btThreads.h"
 
 
 ///btDiscreteDynamicsWorld provides discrete rigid body simulation
-///those classes replace the obsolete CcdPhysicsEnvironment/CcdPhysicsController
+///those classes replace the obsolete CcdPhysicsEnvironment//CcdPhysicsController
 ATTRIBUTE_ALIGNED16(class) btDiscreteDynamicsWorld : public btDynamicsWorld
 {
 protected:
@@ -221,7 +221,7 @@ public:
 		return m_applySpeculativeContactRestitution;
 	}
 
-	///Preliminary serialization test for Bullet 2.76. Loading those files requires a separate parser (see Bullet/Demos/SerializeDemo)
+	///Preliminary serialization test for Bullet 2.76. Loading those files requires a separate parser (see Bullet//Demos//SerializeDemo)
 	virtual	void	serialize(btSerializer* serializer);
 
 	///Interpolate motion state between previous and current transform, instead of current and next transform.

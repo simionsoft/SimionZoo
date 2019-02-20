@@ -1,6 +1,6 @@
 #include "stdafx.h"
 #include "CppUnitTest.h"
-#include "../../../RLSimion/named-var-set.h"
+#include "../../../RLSimion/Common/named-var-set.h"
 
 using namespace Microsoft::VisualStudio::CppUnitTestFramework;
 

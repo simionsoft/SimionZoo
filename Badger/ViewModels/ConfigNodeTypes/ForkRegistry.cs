@@ -1,8 +1,8 @@
 ﻿
 using System.Collections.Generic;
-using System.IO;
+
 using Caliburn.Micro;
-using Badger.Simion;
+
 
 namespace Badger.ViewModels
 {
@@ -43,9 +43,9 @@ namespace Badger.ViewModels
         //{
         //    foreach(ForkedNodeViewModel fork in m_forks)
         //    {
-        //        writer.WriteLine(leftSpace + "<" + XMLConfig.forkTag + " "
-        //        + XMLConfig.nameAttribute + "=\"" + fork.name.TrimEnd(' ') + "\" " 
-        //        + XMLConfig.aliasAttribute + "=\"" + fork.alias + "\">");
+        //        writer.WriteLine(leftSpace + "<" + XMLTags.forkTag + " "
+        //        + XMLTags.nameAttribute + "=\"" + fork.name.TrimEnd(' ') + "\" " 
+        //        + XMLTags.aliasAttribute + "=\"" + fork.alias + "\">");
 
         //        //save the values
         //        foreach(ForkValueViewModel value in fork.children)
@@ -55,7 +55,7 @@ namespace Badger.ViewModels
 
         //        fork.childForkList.saveForksToStream(writer, leftSpace + "  ");
 
-        //        writer.WriteLine(leftSpace + "</" + XMLConfig.forkTag + ">");
+        //        writer.WriteLine(leftSpace + "</" + XMLTags.forkTag + ">");
         //    }
         //}
     }

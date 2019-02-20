@@ -1,5 +1,5 @@
 #pragma once
-#include "../WindowsUtils/Timer.h"
+#include "../System/Timer.h"
 
 
 class IInputHandler
@@ -8,6 +8,8 @@ protected:
 	static IInputHandler* m_pInstance;
 public:
 	static IInputHandler* get();
+
+	virtual ~IInputHandler() {};
 	
 	virtual void handleInput() = 0;
 };
@@ -43,10 +45,13 @@ class FreeCameraInputHandler: public IInputHandler
 	bool bMoveDown() const;
 	bool bMoveLeft() const;
 	bool bMoveRight() const;
+
+	bool m_bExitRequested = false;
 public:
 	FreeCameraInputHandler();
 	virtual ~FreeCameraInputHandler();
 
 	virtual void handleInput();
+	bool exitRequested() { return m_bExitRequested;	}
 };
 

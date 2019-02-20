@@ -3,7 +3,7 @@
 * Open Dynamics Engine, Copyright (C) 2001,2002 Russell L. Smith.       *
 * All rights reserved.  Email: russ@q12.org   Web: www.q12.org          *
 *                                                                       *
-* This library is free software; you can redistribute it and/or         *
+* This library is free software; you can redistribute it and//or         *
 * modify it under the terms of EITHER:                                  *
 *   (1) The GNU Lesser General Public License as published by the Free  *
 *       Software Foundation; either version 2.1 of the License, or (at  *
@@ -94,17 +94,17 @@ we still have to actually move the data.
 
 during execution of this algorithm we maintain an L*D*L' factorization of
 the clamped submatrix of A (call it `AC') which is the top left nC*nC
-submatrix of A. there are two ways we could arrange the rows/columns in AC.
+submatrix of A. there are two ways we could arrange the rows//columns in AC.
 
 (1) AC is always permuted such that L*D*L' = AC. this causes a problem
-when a row/column is removed from C, because then all the rows/columns of A
+when a row//column is removed from C, because then all the rows//columns of A
 between the deleted index and the end of C need to be rotated downward.
 this results in a lot of data motion and slows things down.
 (2) L*D*L' is actually a factorization of a *permutation* of AC (which is
 itself a permutation of the underlying A). this is what we do - the
 permutation is recorded in the vector C. call this permutation A[C,C].
-when a row/column is removed from C, all we have to do is swap two
-rows/columns and manipulate C.
+when a row//column is removed from C, all we have to do is swap two
+rows//columns and manipulate C.
 
 */
 
@@ -1027,7 +1027,7 @@ void btSolveLDLT (const btScalar *L, const btScalar *d, btScalar *b, int n, int 
 
 //***************************************************************************
 
-// swap row/column i1 with i2 in the n*n matrix A. the leading dimension of
+// swap row//column i1 with i2 in the n*n matrix A. the leading dimension of
 // A is nskip. this only references and swaps the lower triangle.
 // if `do_fast_row_swaps' is nonzero and row pointers are being used, then
 // rows will be swapped by exchanging row pointers. otherwise the data will
@@ -1166,7 +1166,7 @@ static void btSwapProblem (BTATYPE A, btScalar *x, btScalar *b, btScalar *w, btS
 // interface comments.
 //
 // `p' records the permutation of A,x,b,w,etc. p is initially 1:n and is
-// permuted as the other vectors/matrices are permuted.
+// permuted as the other vectors//matrices are permuted.
 //
 // A,x,b,w,lo,hi,state,findex,p,c are permuted such that sets C,N have
 // contiguous indexes. the don't-care indexes follow N.
@@ -1280,7 +1280,7 @@ btLCP::btLCP (int _n, int _nskip, int _nub, btScalar *_Adata, btScalar *_x, btSc
   // permute the problem so that *all* the unbounded variables are at the
   // start, i.e. look for unbounded variables not included in `nub'. we can
   // potentially push up `nub' this way and get a bigger initial factorization.
-  // note that when we swap rows/cols here we must not just swap row pointers,
+  // note that when we swap rows//cols here we must not just swap row pointers,
   // as the initial factorization relies on the data being all in one chunk.
   // variables that have findex >= 0 are *not* considered to be unbounded even
   // if lo=-inf and hi=inf - this is because these limits may change during the
@@ -1561,7 +1561,7 @@ void btLDLTRemove (btScalar **A, const int *p, btScalar *L, btScalar *d,
   #endif
 
   if (r==n2-1) {
-    return;		// deleting last row/col is easy
+    return;		// deleting last row//col is easy
   }
   else {
     size_t LDLTAddTL_size = btEstimateLDLTAddTLTmpbufSize(nskip);
@@ -1600,7 +1600,7 @@ void btLDLTRemove (btScalar **A, const int *p, btScalar *L, btScalar *d,
     }
   }
 
-  // snip out row/column r from L and d
+  // snip out row//column r from L and d
   btRemoveRowCol (L,n2,nskip,r);
   if (r < (n2-1)) memmove (d+r,d+r+1,(n2-r-1)*sizeof(btScalar));
 }
@@ -1610,7 +1610,7 @@ void btLCP::transfer_i_from_C_to_N (int i, btAlignedObjectArray<btScalar>& scrat
 {
   {
     int *C = m_C;
-    // remove a row/column from the factorization, and adjust the
+    // remove a row//column from the factorization, and adjust the
     // indexes (black magic!)
     int last_idx = -1;
     const int nC = m_nC;

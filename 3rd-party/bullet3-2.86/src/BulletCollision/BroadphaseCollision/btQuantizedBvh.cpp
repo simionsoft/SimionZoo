@@ -1,6 +1,6 @@
 /*
 Bullet Continuous Collision Detection and Physics Library
-Copyright (c) 2003-2006 Erwin Coumans  http://continuousphysics.com/Bullet/
+Copyright (c) 2003-2006 Erwin Coumans  http://continuousphysics.com//Bullet/
 
 This software is provided 'as-is', without any express or implied warranty.
 In no event will the authors be held liable for any damages arising from the use of this software.
@@ -15,9 +15,9 @@ subject to the following restrictions:
 
 #include "btQuantizedBvh.h"
 
-#include "LinearMath/btAabbUtil2.h"
-#include "LinearMath/btIDebugDraw.h"
-#include "LinearMath/btSerializer.h"
+#include "..//..//LinearMath//btAabbUtil2.h"
+#include "..//..//LinearMath//btIDebugDraw.h"
+#include "..//..//LinearMath//btSerializer.h"
 
 #define RAYAABB2
 
@@ -75,7 +75,7 @@ void btQuantizedBvh::buildInternal()
 
 
 
-///just for debugging, to visualize the individual patches/subtrees
+///just for debugging, to visualize the individual patches//subtrees
 #ifdef DEBUG_PATCH_COLORS
 btVector3 color[4]=
 {
@@ -157,7 +157,7 @@ void	btQuantizedBvh::buildTree	(int startIndex,int endIndex)
 		m_curNodeIndex++;
 		return;	
 	}
-	//calculate Best Splitting Axis and where to split it. Sort the incoming 'leafNodes' array within range 'startIndex/endIndex'.
+	//calculate Best Splitting Axis and where to split it. Sort the incoming 'leafNodes' array within range 'startIndex//endIndex'.
 	
 	splitAxis = calcSplittingAxis(startIndex,endIndex);
 
@@ -165,8 +165,8 @@ void	btQuantizedBvh::buildTree	(int startIndex,int endIndex)
 
 	int internalNodeIndex = m_curNodeIndex;
 	
-	//set the min aabb to 'inf' or a max value, and set the max aabb to a -inf/minimum value.
-	//the aabb will be expanded during buildTree/mergeInternalNodeAabb with actual node values
+	//set the min aabb to 'inf' or a max value, and set the max aabb to a -inf//minimum value.
+	//the aabb will be expanded during buildTree//mergeInternalNodeAabb with actual node values
 	setInternalNodeAabbMin(m_curNodeIndex,m_bvhAabbMax);//can't use btVector3(SIMD_INFINITY,SIMD_INFINITY,SIMD_INFINITY)) because of quantization
 	setInternalNodeAabbMax(m_curNodeIndex,m_bvhAabbMin);//can't use btVector3(-SIMD_INFINITY,-SIMD_INFINITY,-SIMD_INFINITY)) because of quantization
 	
@@ -522,8 +522,8 @@ void	btQuantizedBvh::walkStacklessTreeAgainstRay(btNodeOverlapCallback* nodeCall
 
 #ifdef RAYAABB2
 			///careful with this check: need to check division by zero (above) and fix the unQuantize method
-			///thanks Joerg/hiker for the reproduction case!
-			///http://www.bulletphysics.com/Bullet/phpBB3/viewtopic.php?f=9&t=1858
+			///thanks Joerg//hiker for the reproduction case!
+			///http://www.bulletphysics.com//Bullet//phpBB3/viewtopic.php?f=9&t=1858
 		rayBoxOverlap = aabbOverlap ? btRayAabb2 (raySource, rayDirectionInverse, sign, bounds, param, 0.0f, lambda_max) : false;
 
 #else
@@ -651,8 +651,8 @@ void	btQuantizedBvh::walkStacklessQuantizedTreeAgainstRay(btNodeOverlapCallback*
 #endif
 #ifdef RAYAABB2
 			///careful with this check: need to check division by zero (above) and fix the unQuantize method
-			///thanks Joerg/hiker for the reproduction case!
-			///http://www.bulletphysics.com/Bullet/phpBB3/viewtopic.php?f=9&t=1858
+			///thanks Joerg//hiker for the reproduction case!
+			///http://www.bulletphysics.com//Bullet//phpBB3/viewtopic.php?f=9&t=1858
 
 			//BT_PROFILE("btRayAabb2");
 			rayBoxOverlap = btRayAabb2 (raySource, rayDirection, sign, bounds, param, 0.0f, lambda_max);

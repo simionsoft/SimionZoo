@@ -17,8 +17,8 @@ subject to the following restrictions:
 #define BT_TRIANGLE_INDEX_VERTEX_ARRAY_H
 
 #include "btStridingMeshInterface.h"
-#include "LinearMath/btAlignedObjectArray.h"
-#include "LinearMath/btScalar.h"
+#include "..//..//LinearMath//btAlignedObjectArray.h"
+#include "..//..//LinearMath//btScalar.h"
 
 
 ///The btIndexedMesh indexes a single vertex and index array. Multiple btIndexedMesh objects can be passed into a btTriangleIndexVertexArray using addIndexedMesh.
@@ -61,9 +61,9 @@ ATTRIBUTE_ALIGNED16( struct)	btIndexedMesh
 
 typedef btAlignedObjectArray<btIndexedMesh>	IndexedMeshArray;
 
-///The btTriangleIndexVertexArray allows to access multiple triangle meshes, by indexing into existing triangle/index arrays.
+///The btTriangleIndexVertexArray allows to access multiple triangle meshes, by indexing into existing triangle//index arrays.
 ///Additional meshes can be added using addIndexedMesh
-///No duplcate is made of the vertex/index data, it only indexes into external vertex/index arrays.
+///No duplcate is made of the vertex//index data, it only indexes into external vertex//index arrays.
 ///So keep those arrays around during the lifetime of this btTriangleIndexVertexArray.
 ATTRIBUTE_ALIGNED16( class) btTriangleIndexVertexArray : public btStridingMeshInterface
 {

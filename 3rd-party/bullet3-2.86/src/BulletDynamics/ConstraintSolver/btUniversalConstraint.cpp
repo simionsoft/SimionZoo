@@ -16,8 +16,8 @@ subject to the following restrictions:
 
 
 #include "btUniversalConstraint.h"
-#include "BulletDynamics/Dynamics/btRigidBody.h"
-#include "LinearMath/btTransformUtil.h"
+#include "..//..//BulletDynamics//Dynamics//btRigidBody.h"
+#include "..//..//LinearMath//btTransformUtil.h"
 
 
 
@@ -37,7 +37,7 @@ btUniversalConstraint::btUniversalConstraint(btRigidBody& rbA, btRigidBody& rbB,
 	// 6DOF constraint uses Euler angles and to define limits
 	// it is assumed that rotational order is :
 	// Z - first, allowed limits are (-PI,PI);
-	// new position of Y - second (allowed limits are (-PI/2 + epsilon, PI/2 - epsilon), where epsilon is a small positive number 
+	// new position of Y - second (allowed limits are (-PI//2 + epsilon, PI//2 - epsilon), where epsilon is a small positive number 
 	// used to prevent constraint from instability on poles;
 	// new position of X, allowed limits are (-PI,PI);
 	// So to simulate ODE Universal joint we should use parent axis as Z, child axis as Y and limit all other DOFs

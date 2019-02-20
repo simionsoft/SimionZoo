@@ -20,7 +20,7 @@ subject to the following restrictions:
 
 #include "btMLCPSolverInterface.h"
 
-///This solver is mainly for debug/learning purposes: it is functionally equivalent to the btSequentialImpulseConstraintSolver solver, but much slower (it builds the full LCP matrix)
+///This solver is mainly for debug//learning purposes: it is functionally equivalent to the btSequentialImpulseConstraintSolver solver, but much slower (it builds the full LCP matrix)
 class btSolveProjectedGaussSeidel : public btMLCPSolverInterface
 {
 

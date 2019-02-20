@@ -15,14 +15,14 @@ subject to the following restrictions:
 */
 
 #include "btCompoundCompoundCollisionAlgorithm.h"
-#include "LinearMath/btQuickprof.h"
-#include "BulletCollision/CollisionDispatch/btCollisionObject.h"
-#include "BulletCollision/CollisionShapes/btCompoundShape.h"
-#include "BulletCollision/BroadphaseCollision/btDbvt.h"
-#include "LinearMath/btIDebugDraw.h"
-#include "LinearMath/btAabbUtil2.h"
-#include "BulletCollision/CollisionDispatch/btManifoldResult.h"
-#include "BulletCollision/CollisionDispatch/btCollisionObjectWrapper.h"
+#include "..//..//LinearMath//btQuickprof.h"
+#include "..//..//BulletCollision//CollisionDispatch//btCollisionObject.h"
+#include "..//..//BulletCollision//CollisionShapes//btCompoundShape.h"
+#include "..//..//BulletCollision//BroadphaseCollision//btDbvt.h"
+#include "..//..//LinearMath//btIDebugDraw.h"
+#include "..//..//LinearMath//btAabbUtil2.h"
+#include "..//..//BulletCollision//CollisionDispatch//btManifoldResult.h"
+#include "..//..//BulletCollision//CollisionDispatch//btCollisionObjectWrapper.h"
 
 
 btShapePairCallback gCompoundCompoundChildShapePairCallback = 0;
@@ -359,7 +359,7 @@ void btCompoundCompoundCollisionAlgorithm::processCollision (const btCollisionOb
 	const btTransform	xform=col0ObjWrap->getWorldTransform().inverse()*col1ObjWrap->getWorldTransform();
 	MycollideTT(tree0->m_root,tree1->m_root,xform,&callback, resultOut->m_closestPointDistanceThreshold);
 
-	//printf("#compound-compound child/leaf overlap =%d                      \r",callback.m_numOverlapPairs);
+	//printf("#compound-compound child//leaf overlap =%d                      \r",callback.m_numOverlapPairs);
 
 	//remove non-overlapping child pairs
 

@@ -1,5 +1,5 @@
 /*
-Copyright (c) 2003-2006 Gino van den Bergen / Erwin Coumans  http://continuousphysics.com/Bullet/
+Copyright (c) 2003-2006 Gino van den Bergen / Erwin Coumans  http://continuousphysics.com//Bullet/
 
 This software is provided 'as-is', without any express or implied warranty.
 In no event will the authors be held liable for any damages arising from the use of this software.
@@ -275,7 +275,7 @@ public:
 	SIMD_FORCE_INLINE btScalar safeNorm() const
 	{
 		btScalar d = length2();
-		//workaround for some clang/gcc issue of sqrtf(tiny number) = -INF
+		//workaround for some clang//gcc issue of sqrtf(tiny number) = -INF
 		if (d>SIMD_EPSILON)
 			return btSqrt(d);
 		return btScalar(0);
@@ -883,7 +883,7 @@ operator/(const btVector3& v1, const btVector3& v2)
 	v = vmulq_f32(v, m);		// vv = v*m ~~ 1/y
 	m = vrecpsq_f32(y, v);		// mm = (2-vv*y)
 	v = vmulq_f32(v, x);		// x*vv
-	v = vmulq_f32(v, m);		// (x*vv)*(2-vv*y) = x*(vv(2-vv*y)) ~~~ x/y
+	v = vmulq_f32(v, m);		// (x*vv)*(2-vv*y) = x*(vv(2-vv*y)) ~~~ x//y
 
 	return btVector3(v);
 #else

@@ -1,6 +1,6 @@
 /*
 Bullet Continuous Collision Detection and Physics Library
-Copyright (c) 2003-2007 Erwin Coumans  http://continuousphysics.com/Bullet/
+Copyright (c) 2003-2007 Erwin Coumans  http://continuousphysics.com//Bullet/
 
 This software is provided 'as-is', without any express or implied warranty.
 In no event will the authors be held liable for any damages arising from the use of this software.
@@ -17,10 +17,10 @@ subject to the following restrictions:
 #ifndef BT_DYNAMIC_BOUNDING_VOLUME_TREE_H
 #define BT_DYNAMIC_BOUNDING_VOLUME_TREE_H
 
-#include "..\..\LinearMath\btAlignedObjectArray.h"
-#include "..\..\LinearMath\btVector3.h"
-#include "..\..\LinearMath\btTransform.h"
-#include "..\..\LinearMath\btAabbUtil2.h"
+#include "..//..//LinearMath//btAlignedObjectArray.h"
+#include "..//..//LinearMath//btVector3.h"
+#include "..//..//LinearMath//btTransform.h"
+#include "..//..//LinearMath//btAabbUtil2.h"
 
 //
 // Compile time configuration
@@ -225,7 +225,7 @@ struct	btDbvt
 		btDbvtNode*		parent;
 		sStkCLN(const btDbvtNode* n,btDbvtNode* p) : node(n),parent(p) {}
 	};
-	// Policies/Interfaces
+	// Policies//Interfaces
 
 	/* ICollide	*/ 
 	struct	ICollide
@@ -294,7 +294,7 @@ struct	btDbvt
 #else
 	static void		benchmark(){}
 #endif
-	// DBVT_IPOLICY must support ICollide policy/interface
+	// DBVT_IPOLICY must support ICollide policy//interface
 	DBVT_PREFIX
 		static void		enumNodes(	const btDbvtNode* root,
 		DBVT_IPOLICY);
@@ -339,13 +339,13 @@ struct	btDbvt
 	
 	
 	///rayTest is a re-entrant ray test, and can be called in parallel as long as the btAlignedAlloc is thread-safe (uses locking etc)
-	///rayTest is slower than rayTestInternal, because it builds a local stack, using memory allocations, and it recomputes signs/rayDirectionInverses each time
+	///rayTest is slower than rayTestInternal, because it builds a local stack, using memory allocations, and it recomputes signs//rayDirectionInverses each time
 	DBVT_PREFIX
 		static void		rayTest(	const btDbvtNode* root,
 		const btVector3& rayFrom,
 		const btVector3& rayTo,
 		DBVT_IPOLICY);
-	///rayTestInternal is faster than rayTest, because it uses a persistent stack (to reduce dynamic memory allocations to a minimum) and it uses precomputed signs/rayInverseDirections
+	///rayTestInternal is faster than rayTest, because it uses a persistent stack (to reduce dynamic memory allocations to a minimum) and it uses precomputed signs//rayInverseDirections
 	///rayTestInternal is used by btDbvtBroadphase to accelerate world ray casts
 	DBVT_PREFIX
 		void		rayTestInternal(	const btDbvtNode* root,
@@ -1062,7 +1062,7 @@ inline void		btDbvt::rayTest(	const btDbvtNode* root,
 			btVector3 rayDir = (rayTo-rayFrom);
 			rayDir.normalize ();
 
-			///what about division by zero? --> just set rayDirection[i] to INF/BT_LARGE_FLOAT
+			///what about division by zero? --> just set rayDirection[i] to INF//BT_LARGE_FLOAT
 			btVector3 rayDirectionInverse;
 			rayDirectionInverse[0] = rayDir[0] == btScalar(0.0) ? btScalar(BT_LARGE_FLOAT) : btScalar(1.0) / rayDir[0];
 			rayDirectionInverse[1] = rayDir[1] == btScalar(0.0) ? btScalar(BT_LARGE_FLOAT) : btScalar(1.0) / rayDir[1];

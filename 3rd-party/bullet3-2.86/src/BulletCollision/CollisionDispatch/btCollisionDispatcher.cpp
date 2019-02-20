@@ -1,6 +1,6 @@
 /*
 Bullet Continuous Collision Detection and Physics Library
-Copyright (c) 2003-2006 Erwin Coumans  http://continuousphysics.com/Bullet/
+Copyright (c) 2003-2006 Erwin Coumans  http://continuousphysics.com//Bullet/
 
 This software is provided 'as-is', without any express or implied warranty.
 In no event will the authors be held liable for any damages arising from the use of this software.
@@ -16,16 +16,16 @@ subject to the following restrictions:
 
 
 #include "btCollisionDispatcher.h"
-#include "LinearMath/btQuickprof.h"
+#include "..//..//LinearMath//btQuickprof.h"
 
-#include "BulletCollision/BroadphaseCollision/btCollisionAlgorithm.h"
+#include "..//..//BulletCollision//BroadphaseCollision//btCollisionAlgorithm.h"
 
-#include "BulletCollision/CollisionShapes/btCollisionShape.h"
-#include "BulletCollision/CollisionDispatch/btCollisionObject.h"
-#include "BulletCollision/BroadphaseCollision/btOverlappingPairCache.h"
-#include "LinearMath/btPoolAllocator.h"
-#include "BulletCollision/CollisionDispatch/btCollisionConfiguration.h"
-#include "BulletCollision/CollisionDispatch/btCollisionObjectWrapper.h"
+#include "..//..//BulletCollision//CollisionShapes//btCollisionShape.h"
+#include "..//..//BulletCollision//CollisionDispatch//btCollisionObject.h"
+#include "..//..//BulletCollision//BroadphaseCollision//btOverlappingPairCache.h"
+#include "..//..//LinearMath//btPoolAllocator.h"
+#include "..//..//BulletCollision//CollisionDispatch//btCollisionConfiguration.h"
+#include "..//..//BulletCollision//CollisionDispatch//btCollisionObjectWrapper.h"
 
 int gNumManifold = 0;
 
@@ -101,7 +101,7 @@ btPersistentManifold*	btCollisionDispatcher::getNewManifold(const btCollisionObj
 		} else
 		{
 			btAssert(0);
-			//make sure to increase the m_defaultMaxPersistentManifoldPoolSize in the btDefaultCollisionConstructionInfo/btDefaultCollisionConfiguration
+			//make sure to increase the m_defaultMaxPersistentManifoldPoolSize in the btDefaultCollisionConstructionInfo//btDefaultCollisionConfiguration
 			return 0;
 		}
 	}
@@ -174,7 +174,7 @@ bool	btCollisionDispatcher::needsResponse(const btCollisionObject* body0,const b
 	//here you can do filtering
 	bool hasResponse = 
 		(body0->hasContactResponse() && body1->hasContactResponse());
-	//no response between two static/kinematic bodies:
+	//no response between two static//kinematic bodies:
 	hasResponse = hasResponse &&
 		((!body0->isStaticOrKinematicObject()) ||(! body1->isStaticOrKinematicObject()));
 	return hasResponse;

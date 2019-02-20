@@ -1,15 +1,19 @@
-﻿using OxyPlot;
-using OxyPlot.Axes;
-using OxyPlot.Wpf;
-using Caliburn.Micro;
-using System.Runtime.Serialization;
-using Badger.Data;
+﻿using System.Runtime.Serialization;
 using System;
 using System.ComponentModel;
-using Badger.Simion;
 using System.Collections.Generic;
 using System.IO;
 using System.Xml;
+
+using OxyPlot;
+using OxyPlot.Axes;
+using OxyPlot.Wpf;
+
+using Caliburn.Micro;
+
+using Badger.Data;
+
+using Herd.Files;
 
 namespace Badger.ViewModels
 {
@@ -108,9 +112,9 @@ namespace Badger.ViewModels
             Plot.LegendBorder = OxyColors.Black;
             Plot.LegendBackground = OxyColors.White;
 
-            Properties.Title = Utility.OxyPlotMathNotation(title);
-            Properties.XAxisName = Utility.OxyPlotMathNotation(xAxisName);
-            Properties.YAxisName = Utility.OxyPlotMathNotation(yAxisName);
+            Properties.Title = Herd.Utils.OxyPlotMathNotation(title);
+            Properties.XAxisName = Herd.Utils.OxyPlotMathNotation(xAxisName);
+            Properties.YAxisName = Herd.Utils.OxyPlotMathNotation(yAxisName);
 
             UpdatePlotProperties();
 
@@ -343,7 +347,7 @@ namespace Badger.ViewModels
 
         public void SaveImage()
         {
-            string outputFolder = Simion.SimionFileData.SelectOutputDirectoryDialog();
+            string outputFolder = Files.SelectOutputDirectoryDialog();
             Dictionary<string, string> outputFiles = new Dictionary<string, string>();
             if (outputFolder!=null)
             {
@@ -358,7 +362,7 @@ namespace Badger.ViewModels
 
         public void Export(string outputFolder, ref Dictionary<string, string> outputFiles)
         {
-            string baseFilename = outputFolder + "\\" + Utility.RemoveSpecialCharacters(name);
+            string baseFilename = outputFolder + "/" + Herd.Utils.RemoveSpecialCharacters(name);
 
             //1st save in common formats: png and svg
             string fileName;
@@ -372,42 +376,42 @@ namespace Badger.ViewModels
             svgExporter.ExportToFile(Plot, fileName);
 
             //2nd save data from the model for importing
-            fileName = baseFilename + SimionFileData.PlotDataExtension;
+            fileName = baseFilename + Herd.Files.Extensions.PlotDataExtension;
 
             using (TextWriter writer = File.CreateText(fileName))
             {
-                writer.WriteLine("<" + XMLConfig.plotNodeTag + " " 
-                    + XMLConfig.nameAttribute + "=\"" + Utility.RemoveSpecialCharacters(name) + "\">");
+                writer.WriteLine("<" + XMLTags.PlotNodeTag + " " 
+                    + XMLTags.nameAttribute + "=\"" + Herd.Utils.RemoveSpecialCharacters(name) + "\">");
                 foreach(OxyPlot.Series.LineSeries lineSeries in Plot.Series)
                 {
-                    writer.WriteLine("  <" + XMLConfig.LineSeriesTag + " " + XMLConfig.nameAttribute + "=\"" + lineSeries.Title + "\">");
+                    writer.WriteLine("  <" + XMLTags.LineSeriesTag + " " + XMLTags.nameAttribute + "=\"" + lineSeries.Title + "\">");
 
                     foreach(DataPoint dataPoint in lineSeries.Points)
                     {
-                        writer.WriteLine("    <" + XMLConfig.DataPointTag + ">");
-                        writer.WriteLine("      <" + XMLConfig.DataPointXTag + ">" + dataPoint.X + "</" + XMLConfig.DataPointXTag + ">");
-                        writer.WriteLine("      <" + XMLConfig.DataPointYTag + ">" + dataPoint.Y + "</" + XMLConfig.DataPointYTag + ">");
-                        writer.WriteLine("    </" + XMLConfig.DataPointTag + ">");
+                        writer.WriteLine("    <" + XMLTags.DataPointTag + ">");
+                        writer.WriteLine("      <" + XMLTags.DataPointXTag + ">" + dataPoint.X + "</" + XMLTags.DataPointXTag + ">");
+                        writer.WriteLine("      <" + XMLTags.DataPointYTag + ">" + dataPoint.Y + "</" + XMLTags.DataPointYTag + ">");
+                        writer.WriteLine("    </" + XMLTags.DataPointTag + ">");
                     }
 
-                    writer.WriteLine("  </" + XMLConfig.LineSeriesTag + ">");
+                    writer.WriteLine("  </" + XMLTags.LineSeriesTag + ">");
                 }
-                writer.WriteLine("</" + XMLConfig.plotNodeTag + ">");
+                writer.WriteLine("</" + XMLTags.PlotNodeTag + ">");
 
-                string relPlotFilename = Utility.RemoveSpecialCharacters(name) + SimionFileData.PlotDataExtension;
-                outputFiles[relPlotFilename] = XMLConfig.plotNodeTag;
+                string relPlotFilename = Herd.Utils.RemoveSpecialCharacters(name) + Herd.Files.Extensions.PlotDataExtension;
+                outputFiles[relPlotFilename] = XMLTags.PlotNodeTag;
             }
         }
 
         public void Import(string inputFolder)
         {
             XmlDocument xmlDoc = new XmlDocument();
-            xmlDoc.Load(inputFolder + Utility.RemoveSpecialCharacters(name) + SimionFileData.PlotDataExtension);
+            xmlDoc.Load(inputFolder + Herd.Utils.RemoveSpecialCharacters(name) + Herd.Files.Extensions.PlotDataExtension);
 
             XmlNode root = xmlDoc.FirstChild;
-            string plotName = root.Attributes[XMLConfig.nameAttribute].Value;
+            string plotName = root.Attributes[XMLTags.nameAttribute].Value;
 
-            if (plotName == Utility.RemoveSpecialCharacters(name))
+            if (plotName == Herd.Utils.RemoveSpecialCharacters(name))
             {
                 Plot = new SafePlotModel();
 
@@ -415,20 +419,20 @@ namespace Badger.ViewModels
 
                 foreach (XmlNode lineSeries in root.ChildNodes)
                 {
-                    if (lineSeries.Name == XMLConfig.LineSeriesTag)
+                    if (lineSeries.Name == XMLTags.LineSeriesTag)
                     {
-                        string lineSeriesTitle = lineSeries.Attributes[XMLConfig.nameAttribute].Value;
+                        string lineSeriesTitle = lineSeries.Attributes[XMLTags.nameAttribute].Value;
 
                         int lineSeriesId = AddLineSeries(lineSeriesTitle);
                         foreach (XmlNode dataPoint in lineSeries.ChildNodes)
                         {
-                            if (dataPoint.Name == XMLConfig.DataPointTag)
+                            if (dataPoint.Name == XMLTags.DataPointTag)
                             {
                                 double x = 0.0, y = 0.0;
                                 foreach (XmlNode coord in dataPoint.ChildNodes)
                                 {
-                                    if (coord.Name == XMLConfig.DataPointXTag) x = Convert.ToDouble(coord.InnerText);
-                                    if (coord.Name == XMLConfig.DataPointYTag) y = Convert.ToDouble(coord.InnerText);
+                                    if (coord.Name == XMLTags.DataPointXTag) x = Convert.ToDouble(coord.InnerText);
+                                    if (coord.Name == XMLTags.DataPointYTag) y = Convert.ToDouble(coord.InnerText);
                                 }
                                 AddLineSeriesValue(lineSeriesId, x, y);
                             }

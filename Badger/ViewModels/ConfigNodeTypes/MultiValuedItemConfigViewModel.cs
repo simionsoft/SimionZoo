@@ -1,6 +1,7 @@
-﻿using System;
-using System.Xml;
-using Badger.Simion;
+﻿using System.Xml;
+
+using Herd.Files;
+
 
 namespace Badger.ViewModels
 {
@@ -14,18 +15,18 @@ namespace Badger.ViewModels
             CommonInitialization(parentExperiment,parent,definitionNode,parentXPath);
 
             m_parent = parent;
-            m_className = definitionNode.Attributes[XMLConfig.classAttribute].Value;
+            m_className = definitionNode.Attributes[XMLTags.classAttribute].Value;
 
             switch (m_className)
             {
-                case XMLConfig.integerNodeTag: children.Add(new IntegerValueConfigViewModel(parentExperiment, this,definitionNode, m_xPath, configNode));break;
-                case XMLConfig.boolNodeTag: children.Add(new BoolValueConfigViewModel(parentExperiment, this, definitionNode, m_xPath, configNode)); break;
-                case XMLConfig.doubleNodeTag: children.Add(new DoubleValueConfigViewModel(parentExperiment, this,definitionNode, m_xPath, configNode));break ;
-                case XMLConfig.stringNodeTag: children.Add(new StringValueConfigViewModel(parentExperiment, this, definitionNode, m_xPath, configNode));break ;
-                case XMLConfig.filePathNodeTag: children.Add(new FilePathValueConfigViewModel(parentExperiment, this,definitionNode, m_xPath, configNode));break ;
-                case XMLConfig.dirPathNodeTag: children.Add(new DirPathValueConfigViewModel(parentExperiment, this,definitionNode, m_xPath, configNode));break ;
-                case XMLConfig.stateVarRefTag: children.Add(new WorldVarRefValueConfigViewModel(parentExperiment, WorldVarType.StateVar, parent, definitionNode, parentXPath, configNode)); break;
-                case XMLConfig.actionVarRefTag: children.Add(new WorldVarRefValueConfigViewModel(parentExperiment, WorldVarType.ActionVar, parent, definitionNode, parentXPath, configNode)); break;
+                case XMLTags.integerNodeTag: children.Add(new IntegerValueConfigViewModel(parentExperiment, this,definitionNode, m_xPath, configNode));break;
+                case XMLTags.boolNodeTag: children.Add(new BoolValueConfigViewModel(parentExperiment, this, definitionNode, m_xPath, configNode)); break;
+                case XMLTags.doubleNodeTag: children.Add(new DoubleValueConfigViewModel(parentExperiment, this,definitionNode, m_xPath, configNode));break ;
+                case XMLTags.stringNodeTag: children.Add(new StringValueConfigViewModel(parentExperiment, this, definitionNode, m_xPath, configNode));break ;
+                case XMLTags.filePathNodeTag: children.Add(new FilePathValueConfigViewModel(parentExperiment, this,definitionNode, m_xPath, configNode));break ;
+                case XMLTags.dirPathNodeTag: children.Add(new DirPathValueConfigViewModel(parentExperiment, this,definitionNode, m_xPath, configNode));break ;
+                case XMLTags.stateVarRefTag: children.Add(new WorldVarRefValueConfigViewModel(parentExperiment, WorldVarType.StateVar, parent, definitionNode, parentXPath, configNode)); break;
+                case XMLTags.actionVarRefTag: children.Add(new WorldVarRefValueConfigViewModel(parentExperiment, WorldVarType.ActionVar, parent, definitionNode, parentXPath, configNode)); break;
                 default:
                     XmlNode classDefinition = parentExperiment.GetClassDefinition(m_className);
                     if (classDefinition != null)

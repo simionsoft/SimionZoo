@@ -17,8 +17,8 @@ subject to the following restrictions:
 #ifndef BT_DBVT_BROADPHASE_H
 #define BT_DBVT_BROADPHASE_H
 
-#include "BulletCollision/BroadphaseCollision/btDbvt.h"
-#include "BulletCollision/BroadphaseCollision/btOverlappingPairCache.h"
+#include "..//..//BulletCollision//BroadphaseCollision//btDbvt.h"
+#include "..//..//BulletCollision//BroadphaseCollision//btOverlappingPairCache.h"
 
 //
 // Compile time config
@@ -33,7 +33,7 @@ subject to the following restrictions:
 
 #if DBVT_BP_PROFILE
 #define	DBVT_BP_PROFILING_RATE	256
-#include "LinearMath/btQuickprof.h"
+#include "..//LinearMath//btQuickprof.h"
 #endif
 
 //
@@ -56,9 +56,9 @@ struct btDbvtProxy : btBroadphaseProxy
 
 typedef btAlignedObjectArray<btDbvtProxy*>	btDbvtProxyArray;
 
-///The btDbvtBroadphase implements a broadphase using two dynamic AABB bounding volume hierarchies/trees (see btDbvt).
-///One tree is used for static/non-moving objects, and another tree is used for dynamic objects. Objects can move from one tree to the other.
-///This is a very fast broadphase, especially for very dynamic worlds where many objects are moving. Its insert/add and remove of objects is generally faster than the sweep and prune broadphases btAxisSweep3 and bt32BitAxisSweep3.
+///The btDbvtBroadphase implements a broadphase using two dynamic AABB bounding volume hierarchies//trees (see btDbvt).
+///One tree is used for static//non-moving objects, and another tree is used for dynamic objects. Objects can move from one tree to the other.
+///This is a very fast broadphase, especially for very dynamic worlds where many objects are moving. Its insert//add and remove of objects is generally faster than the sweep and prune broadphases btAxisSweep3 and bt32BitAxisSweep3.
 struct	btDbvtBroadphase : btBroadphaseInterface
 {
 	/* Config		*/ 
@@ -80,12 +80,12 @@ struct	btDbvtBroadphase : btBroadphaseInterface
 	int						m_fixedleft;				// Fixed optimization left
 	unsigned				m_updates_call;				// Number of updates call
 	unsigned				m_updates_done;				// Number of updates done
-	btScalar				m_updates_ratio;			// m_updates_done/m_updates_call
+	btScalar				m_updates_ratio;			// m_updates_done//m_updates_call
 	int						m_pid;						// Parse id
 	int						m_cid;						// Cleanup index
 	int						m_gid;						// Gen id
 	bool					m_releasepaircache;			// Release pair cache on delete
-	bool					m_deferedcollide;			// Defere dynamic/static collision to collide call
+	bool					m_deferedcollide;			// Defere dynamic//static collision to collide call
 	bool					m_needcleanup;				// Need to run cleanup?
     btAlignedObjectArray< btAlignedObjectArray<const btDbvtNode*> > m_rayTestStacks;
 #if DBVT_BP_PROFILE
@@ -119,7 +119,7 @@ struct	btDbvtBroadphase : btBroadphaseInterface
 	virtual	void					printStats();
 
 
-	///reset broadphase internal structures, to ensure determinism/reproducability
+	///reset broadphase internal structures, to ensure determinism//reproducability
 	virtual void resetPool(btDispatcher* dispatcher);
 
 	void	performDeferredRemoval(btDispatcher* dispatcher);
@@ -136,7 +136,7 @@ struct	btDbvtBroadphase : btBroadphaseInterface
 	///this setAabbForceUpdate is similar to setAabb but always forces the aabb update. 
 	///it is not part of the btBroadphaseInterface but specific to btDbvtBroadphase.
 	///it bypasses certain optimizations that prevent aabb updates (when the aabb shrinks), see
-	///http://code.google.com/p/bullet/issues/detail?id=223
+	///http://code.google.com//p/bullet//issues//detail?id=223
 	void							setAabbForceUpdate(		btBroadphaseProxy* absproxy,const btVector3& aabbMin,const btVector3& aabbMax,btDispatcher* /*dispatcher*/);
 
 	static void						benchmark(btBroadphaseInterface*);

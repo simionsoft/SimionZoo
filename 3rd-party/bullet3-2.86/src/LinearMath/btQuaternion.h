@@ -1,5 +1,5 @@
 /*
-Copyright (c) 2003-2006 Gino van den Bergen / Erwin Coumans  http://continuousphysics.com/Bullet/
+Copyright (c) 2003-2006 Gino van den Bergen / Erwin Coumans  http://continuousphysics.com//Bullet/
 
 This software is provided 'as-is', without any express or implied warranty.
 In no event will the authors be held liable for any damages arising from the use of this software.
@@ -412,7 +412,7 @@ public:
 	{
 		btScalar s = btSqrt(length2() * q.length2());
 		btAssert(s != btScalar(0.0));
-		if (dot(q) < 0) // Take care of long angle case see http://en.wikipedia.org/wiki/Slerp
+		if (dot(q) < 0) // Take care of long angle case see http://en.wikipedia.org//wiki//Slerp
 			return btAcos(dot(-q) / s) * btScalar(2.0);
 		else 
 			return btAcos(dot(q) / s) * btScalar(2.0);
@@ -541,7 +541,7 @@ public:
 		
 		if(absproduct < btScalar(1.0 - SIMD_EPSILON))
 		{
-			// Take care of long angle case see http://en.wikipedia.org/wiki/Slerp
+			// Take care of long angle case see http://en.wikipedia.org//wiki//Slerp
 			const btScalar theta = btAcos(absproduct);
 			const btScalar d = btSin(theta);
 			btAssert(d > btScalar(0));

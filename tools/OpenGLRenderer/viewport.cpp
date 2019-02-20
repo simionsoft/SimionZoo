@@ -1,6 +1,6 @@
 #include "stdafx.h"
 #include "viewport.h"
-#include "Camera.h"
+#include "camera.h"
 #include "light.h"
 #include "graphic-object-3d.h"
 #include "graphic-object-2d.h"
@@ -71,7 +71,7 @@ int ViewPort::draw()
 		drawAxes();
 #endif
 
-	for each(auto object in m_3DgraphicObjects)
+	for (auto object : m_3DgraphicObjects)
 	{
 		if (frustum.isVisible(object->boundingBox()))
 		{
@@ -90,7 +90,7 @@ int ViewPort::draw()
 	//set 2d view
 	if (m_pActiveCamera) m_pActiveCamera->set2DView();
 	//draw 2d objects
-	for each (auto object in m_2DgraphicObjects)
+	for (auto object : m_2DgraphicObjects)
 	{
 		object->setTransform();
 

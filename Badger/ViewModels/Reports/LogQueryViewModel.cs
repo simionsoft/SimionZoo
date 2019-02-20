@@ -1,12 +1,15 @@
 ﻿using System;
 using System.Collections.Generic;
-using Caliburn.Micro;
-using Badger.Simion;
-using Badger.Data;
 using System.ComponentModel;
 using System.Windows.Data;
 using System.Globalization;
 using System.Runtime.Serialization;
+
+using Caliburn.Micro;
+
+using Herd.Files;
+
+using Badger.Data;
 
 namespace Badger.ViewModels
 {
@@ -467,7 +470,7 @@ namespace Badger.ViewModels
         }
 
         public void Execute(BindableCollection<LoggedExperimentViewModel> experiments
-            ,SimionFileData.LoadUpdateFunction loadUpdateFunction, out List<TrackGroup> resultTracks, out List<Report> reports)
+            ,LoadOptions.PerExperimentalUnitFunction OnExpUnitProcessed, out List<TrackGroup> resultTracks, out List<Report> reports)
         {
             TrackGroup resultTrackGroup = null;
 
@@ -518,11 +521,11 @@ namespace Badger.ViewModels
                         resultTrackGroup = null;
                         if (GroupByForks.Count != 0)
                         {
-                            resultTrackGroup = GetTrackGroup(resultTracks, expUnit.forkValues, exp.Name);
+                            resultTrackGroup = GetTrackGroup(resultTracks, expUnit.ForkValues, exp.Name);
                             if (resultTrackGroup != null)
                             {
                                 //the track exists and we are using forks to group results
-                                Track trackData = expUnit.LoadTrackData(reports);
+                                Track trackData = LogFileUtils.LoadTrackData(expUnit, reports);
                                 if (trackData!=null)
                                     resultTrackGroup.AddTrackData(trackData);
 
@@ -542,19 +545,19 @@ namespace Badger.ViewModels
                             TrackGroup newResultTrackGroup = new TrackGroup(exp.Name);
 
                             if (GroupByForks.Count == 0)
-                                newResultTrackGroup.ForkValues= expUnit.forkValues;
+                                newResultTrackGroup.ForkValues= expUnit.ForkValues;
                             else
                                 foreach (string forkName in GroupByForks)
                             {
                                     //an experimental unit may not have a fork used to group
-                                    if (expUnit.forkValues.ContainsKey(forkName))
-                                        newResultTrackGroup.ForkValues[forkName] = expUnit.forkValues[forkName];
+                                    if (expUnit.ForkValues.ContainsKey(forkName))
+                                        newResultTrackGroup.ForkValues[forkName] = expUnit.ForkValues[forkName];
                                     else if (forkName == ReportsWindowViewModel.GroupByExperimentId)
                                         newResultTrackGroup.ForkValues[forkName] = exp.Name;
                             }
 
                             //load data from the log file
-                            Track trackData = expUnit.LoadTrackData(reports);
+                            Track trackData = LogFileUtils.LoadTrackData(expUnit, reports);
 
                             if (trackData != null)
                             {
@@ -581,7 +584,7 @@ namespace Badger.ViewModels
                             }
                         }
                     }
-                    loadUpdateFunction?.Invoke();
+                    OnExpUnitProcessed?.Invoke(expUnit.Model);
                 }
             }
         }

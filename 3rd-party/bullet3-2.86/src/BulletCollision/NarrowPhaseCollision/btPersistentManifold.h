@@ -1,6 +1,6 @@
 /*
 Bullet Continuous Collision Detection and Physics Library
-Copyright (c) 2003-2006 Erwin Coumans  http://continuousphysics.com/Bullet/
+Copyright (c) 2003-2006 Erwin Coumans  http://continuousphysics.com//Bullet/
 
 This software is provided 'as-is', without any express or implied warranty.
 In no event will the authors be held liable for any damages arising from the use of this software.
@@ -17,11 +17,11 @@ subject to the following restrictions:
 #define BT_PERSISTENT_MANIFOLD_H
 
 
-#include "..\..\LinearMath/btVector3.h"
-#include "..\..\LinearMath/btTransform.h"
+#include "..//..//LinearMath//btVector3.h"
+#include "..//..//LinearMath//btTransform.h"
 #include "btManifoldPoint.h"
 class btCollisionObject;
-#include "..\..\LinearMath/btAlignedAllocator.h"
+#include "..//..//LinearMath//btAlignedAllocator.h"
 
 struct btCollisionResult;
 
@@ -45,7 +45,7 @@ enum btContactManifoldTypes
 ///btPersistentManifold is a contact point cache, it stays persistent as long as objects are overlapping in the broadphase.
 ///Those contact points are created by the collision narrow phase.
 ///The cache can be empty, or hold 1,2,3 or 4 points. Some collision algorithms (GJK) might only add one point at a time.
-///updates/refreshes old contact points, and throw them away if necessary (distance becomes too large)
+///updates//refreshes old contact points, and throw them away if necessary (distance becomes too large)
 ///reduces the cache to 4 points, when more then 4 points are added, using following rules:
 ///the contact point with deepest penetration is always kept, and it tries to maximuze the area covered by the points
 ///note that some pairs of objects might have more then one contact manifold.
@@ -107,7 +107,7 @@ public:
 #endif //
 	
 	SIMD_FORCE_INLINE int	getNumContacts() const { return m_cachedPoints;}
-	/// the setNumContacts API is usually not used, except when you gather/fill all contacts manually
+	/// the setNumContacts API is usually not used, except when you gather//fill all contacts manually
 	void setNumContacts(int cachedPoints)
 	{
 		m_cachedPoints = cachedPoints;

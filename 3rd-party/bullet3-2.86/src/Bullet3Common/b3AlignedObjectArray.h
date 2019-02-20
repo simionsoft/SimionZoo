@@ -21,10 +21,10 @@ subject to the following restrictions:
 #include "b3AlignedAllocator.h"
 
 ///If the platform doesn't support placement new, you can disable B3_USE_PLACEMENT_NEW
-///then the b3AlignedObjectArray doesn't support objects with virtual methods, and non-trivial constructors/destructors
+///then the b3AlignedObjectArray doesn't support objects with virtual methods, and non-trivial constructors//destructors
 ///You can enable B3_USE_MEMCPY, then swapping elements in the array will use memcpy instead of operator=
-///see discussion here: http://continuousphysics.com/Bullet/phpBB2/viewtopic.php?t=1231 and
-///http://www.continuousphysics.com/Bullet/phpBB2/viewtopic.php?t=1240
+///see discussion here: http://continuousphysics.com//Bullet//phpBB2/viewtopic.php?t=1231 and
+///http://www.continuousphysics.com//Bullet//phpBB2/viewtopic.php?t=1240
 
 #define B3_USE_PLACEMENT_NEW 1
 //#define B3_USE_MEMCPY 1 //disable, because it is cumbersome to find out for each platform where memcpy is defined. It can be in <memory.h> or <string.h> or otherwise...
@@ -41,7 +41,7 @@ subject to the following restrictions:
 
 
 ///The b3AlignedObjectArray template class uses a subset of the stl::vector interface for its methods
-///It is developed to replace stl::vector to avoid portability issues, including STL alignment issues to add SIMD/SSE data
+///It is developed to replace stl::vector to avoid portability issues, including STL alignment issues to add SIMD//SSE data
 template <typename T> 
 //template <class T> 
 class b3AlignedObjectArray
@@ -378,7 +378,7 @@ protected:
 		}
 
 
-		///heap sort from http://www.csse.monash.edu.au/~lloyd/tildeAlgDS/Sort/Heap/
+		///heap sort from http://www.csse.monash.edu.au/~lloyd//tildeAlgDS//Sort//Heap/
 		template <typename L>
 		void downHeap(T *pArr, int k, int n, const L& CompareFunc)
 		{

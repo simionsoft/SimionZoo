@@ -1,8 +1,10 @@
-﻿using Badger.Simion;
-using System.Xml;
+﻿using System.Xml;
 using System.IO;
 using System.Linq;
+
 using Microsoft.Win32;
+
+using Herd.Files;
 
 namespace Badger.ViewModels
 {
@@ -16,8 +18,8 @@ namespace Badger.ViewModels
             if (configNode == null || configNode[name] == null)
             {
                 //default init
-                content = definitionNode.Attributes[XMLConfig.defaultAttribute].Value;
-                textColor = XMLConfig.colorDefaultValue;
+                content = definitionNode.Attributes[XMLTags.defaultAttribute].Value;
+                textColor = XMLTags.colorDefaultValue;
             }
             else
             {
@@ -70,7 +72,7 @@ namespace Badger.ViewModels
 
                 if (openFileDialog.ShowDialog()==true)
                 {
-                    content = Data.Utility.GetRelativePathTo(Directory.GetCurrentDirectory(), openFileDialog.FileName);
+                    content = Herd.Utils.GetRelativePathTo(Directory.GetCurrentDirectory(), openFileDialog.FileName);
                 }
                 content = content;
             }

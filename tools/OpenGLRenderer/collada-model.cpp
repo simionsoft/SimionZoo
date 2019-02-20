@@ -7,7 +7,7 @@
 #include "mesh.h"
 #include "../GeometryLib/bounding-cylinder.h"
 #include <algorithm>
-#include "../WindowsUtils/FileUtils.h"
+#include "../System/FileUtils.h"
 
 
 unsigned int parseIntArray(const char* pInputString, unsigned int* pValues, unsigned int numValues, unsigned int startOffset= 0)
@@ -286,8 +286,7 @@ string MultiInputDef::getSourceName(string semantic)
 		if ((*it).semantic == semantic)
 			return (*it).source;
 	}
-	throw std::exception((string("Input definition not found: ") + semantic).c_str());
-	return string("Undefined");
+	throw std::runtime_error((string("Input definition not found: ") + semantic).c_str());
 }
 
 bool MultiInputDef::defines(string semantic)
@@ -589,10 +588,11 @@ void ColladaModel::loadFromFile(const char* file)
 
 	string path = Renderer::get()->getDataFolder() + string(file);
 
-
+	Renderer::get()->logMessage("Opening Collada file" + path);
 	doc.LoadFile(path.c_str());
 	if (doc.Error() == tinyxml2::XML_SUCCESS)
 	{
+		Renderer::get()->logMessage("File found. Parsing");
 		tinyxml2::XMLElement *pColladaRoot = doc.FirstChildElement(XML_TAG_COLLADA_ROOT);
 
 		loadVisualScenes(pColladaRoot);
@@ -601,6 +601,7 @@ void ColladaModel::loadFromFile(const char* file)
 		//this is yet one more shortcut to get the geometry loaded
 		loadSkin(pColladaRoot);
 	}
+	else Renderer::get()->logMessage("ERROR: Cound not open Collada file");
 }
 
 const char* ColladaModel::findTexture(tinyxml2::XMLElement* pRootNode, string textureName)
@@ -751,7 +752,6 @@ void ColladaModel::loadMaterialProperties(tinyxml2::XMLElement* pRootNode
 
 const char* ColladaModel::findMaterialFxName(tinyxml2::XMLElement* pRootNode, string materialName)
 {
-	bool bMatFound = false;
 	tinyxml2::XMLElement* pMat, *pInstFX;
 	tinyxml2::XMLElement* pMatLib = pRootNode->FirstChildElement(XML_TAG_COLLADA_MATERIAL_LIB);
 	if (pMatLib)

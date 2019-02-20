@@ -12,19 +12,19 @@ public:
 	virtual ~Matrix44();
 
 	void setIdentity();
-	void setRotation(Quaternion& quat);
-	void setTranslation(Vector3D& translation);
-	void setScale(Vector3D& scale);
+	void setRotation(const Quaternion& quat);
+	void setTranslation(const Vector3D& translation);
+	void setScale(const Vector3D& scale);
 	void setPerspective(double halfWidth, double halfHeight, double nearPlaneDist, double farPlaneDist);
 
-	Matrix44 operator*(Matrix44& mat) const;
-	BoundingBox3D operator*( const BoundingBox3D& box) const;
+	Matrix44 operator*(const Matrix44& mat) const;
+	BoundingBox3D operator*(const BoundingBox3D& box) const;
 
-	Point3D operator*(Point3D& p) const;
-	Vector3D operator*(Vector3D& v) const;
+	Point3D operator*(const Point3D& p) const;
+	Vector3D operator*(const Vector3D& v) const;
 
-	Point2D operator* (Point2D& p) const;
-	Vector2D operator* (Vector2D& v) const;
+	Point2D operator* (const Point2D& p) const;
+	Vector2D operator* (const Vector2D& v) const;
 
 	double* asArray();
 

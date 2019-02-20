@@ -1,7 +1,7 @@
 #include "stdafx.h"
 #include "material.h"
-#include <gl\GL.h>
 #include <algorithm>
+#include <stdexcept>
 
 UnlitLiveTextureMaterial::UnlitLiveTextureMaterial(unsigned int sizeX, unsigned int sizeY)
 {
@@ -32,7 +32,7 @@ UnlitLiveTextureMaterial::~UnlitLiveTextureMaterial()
 void UnlitLiveTextureMaterial::updateTexture(const vector<double>& pBuffer)
 {
 	if (m_numTexels != pBuffer.size())
-		throw exception("Buffer with missmatched size provided to UnlitLiveTextureMaterial::updateTexture()");
+		throw std::runtime_error("Buffer with missmatched size provided to UnlitLiveTextureMaterial::updateTexture()");
 
 	//calculate min and max
 	double value;

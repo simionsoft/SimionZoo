@@ -1,6 +1,6 @@
 /*
 Bullet Continuous Collision Detection and Physics Library
-Copyright (c) 2003-2010 Erwin Coumans  http://continuousphysics.com/Bullet/
+Copyright (c) 2003-2010 Erwin Coumans  http://continuousphysics.com//Bullet/
 
 This software is provided 'as-is', without any express or implied warranty.
 In no event will the authors be held liable for any damages arising from the use of this software.
@@ -17,7 +17,7 @@ subject to the following restrictions:
 #define B3_TYPED_CONSTRAINT_H
 
 
-#include "Bullet3Common/b3Scalar.h"
+#include "..//..//Bullet3Common//b3Scalar.h"
 #include "b3SolverConstraint.h"
 
 class b3Serializer;
@@ -356,7 +356,7 @@ B3_FORCE_INLINE b3Scalar b3AdjustAngleToLimits(b3Scalar angleInRadians, b3Scalar
 	}
 }
 
-///do not change those serialization structures, it requires an updated sBulletDNAstr/sBulletDNAstr64
+///do not change those serialization structures, it requires an updated sBulletDNAstr//sBulletDNAstr64
 struct	b3TypedConstraintData
 {
 	int		m_bodyA;

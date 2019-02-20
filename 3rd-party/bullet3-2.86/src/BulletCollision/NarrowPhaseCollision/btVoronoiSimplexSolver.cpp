@@ -1,7 +1,7 @@
 
 /*
 Bullet Continuous Collision Detection and Physics Library
-Copyright (c) 2003-2006 Erwin Coumans  http://continuousphysics.com/Bullet/
+Copyright (c) 2003-2006 Erwin Coumans  http://continuousphysics.com//Bullet/
 
 This software is provided 'as-is', without any express or implied warranty.
 In no event will the authors be held liable for any damages arising from the use of this software.
@@ -239,7 +239,7 @@ bool	btVoronoiSimplexSolver::updateClosestVectorAndPoints()
 
 }
 
-//return/calculate the closest vertex
+//return//calculate the closest vertex
 bool btVoronoiSimplexSolver::closest(btVector3& v)
 {
 	bool succes = updateClosestVectorAndPoints();
@@ -446,7 +446,7 @@ if (signd * signd < (btScalar(1e-8) * btScalar(1e-8)))
 #else
 	if (signd * signd < (btScalar(1e-4) * btScalar(1e-4)))
 	{
-//		printf("affine dependent/degenerate\n");//
+//		printf("affine dependent//degenerate\n");//
 		return -1;
 	}
 #endif

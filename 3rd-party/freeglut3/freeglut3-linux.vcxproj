@@ -1,0 +1,124 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|x64">
+      <Configuration>Debug</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|x64">
+      <Configuration>Release</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <ProjectGuid>{61d2ac28-eb09-4daa-b717-cea7ba358077}</ProjectGuid>
+    <Keyword>Linux</Keyword>
+    <RootNamespace>freeglut3_linux</RootNamespace>
+    <MinimumVisualStudioVersion>15.0</MinimumVisualStudioVersion>
+    <ApplicationType>Linux</ApplicationType>
+    <ApplicationTypeRevision>1.0</ApplicationTypeRevision>
+    <TargetLinuxPlatform>Generic</TargetLinuxPlatform>
+    <LinuxProjectType>{2238F9CD-F817-4ECC-BD14-2524D2669B35}</LinuxProjectType>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <RemoteRootDir>~/projects</RemoteRootDir>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <RemoteRootDir>~/projects</RemoteRootDir>
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings" />
+  <ImportGroup Label="Shared" />
+  <ImportGroup Label="PropertySheets" />
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <RemoteProjectDir>$(RemoteRootDir)/SimionZoo/3rd-party/freeglut3</RemoteProjectDir>
+    <OutDir>$(SolutionDir)debug\$(Platform)\</OutDir>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <RemoteProjectDir>$(RemoteRootDir)/SimionZoo/3rd-party/freeglut3</RemoteProjectDir>
+    <OutDir>$(SolutionDir)bin\$(Platform)\</OutDir>
+  </PropertyGroup>
+  <ItemGroup>
+    <ClCompile Include="src\fg_callbacks.c" />
+    <ClCompile Include="src\fg_cursor.c" />
+    <ClCompile Include="src\fg_display.c" />
+    <ClCompile Include="src\fg_ext.c" />
+    <ClCompile Include="src\fg_font.c" />
+    <ClCompile Include="src\fg_font_data.c" />
+    <ClCompile Include="src\fg_gamemode.c" />
+    <ClCompile Include="src\fg_geometry.c" />
+    <ClCompile Include="src\fg_gl2.c" />
+    <ClCompile Include="src\fg_init.c" />
+    <ClCompile Include="src\fg_input_devices.c" />
+    <ClCompile Include="src\fg_joystick.c" />
+    <ClCompile Include="src\fg_main.c" />
+    <ClCompile Include="src\fg_menu.c" />
+    <ClCompile Include="src\fg_misc.c" />
+    <ClCompile Include="src\fg_overlay.c" />
+    <ClCompile Include="src\fg_spaceball.c" />
+    <ClCompile Include="src\fg_state.c" />
+    <ClCompile Include="src\fg_stroke_mono_roman.c" />
+    <ClCompile Include="src\fg_stroke_roman.c" />
+    <ClCompile Include="src\fg_structure.c" />
+    <ClCompile Include="src\fg_teapot.c" />
+    <ClCompile Include="src\fg_videoresize.c" />
+    <ClCompile Include="src\fg_window.c" />
+    <ClCompile Include="src\util\xparsegeometry_repl.c" />
+    <ClCompile Include="src\x11\fg_cursor_x11.c" />
+    <ClCompile Include="src\x11\fg_display_x11_glx.c" />
+    <ClCompile Include="src\x11\fg_ext_x11.c" />
+    <ClCompile Include="src\x11\fg_gamemode_x11.c" />
+    <ClCompile Include="src\x11\fg_glutfont_definitions_x11.c" />
+    <ClCompile Include="src\x11\fg_init_x11.c" />
+    <ClCompile Include="src\x11\fg_input_devices_x11.c" />
+    <ClCompile Include="src\x11\fg_joystick_x11.c" />
+    <ClCompile Include="src\x11\fg_main_x11.c" />
+    <ClCompile Include="src\x11\fg_menu_x11.c" />
+    <ClCompile Include="src\x11\fg_spaceball_x11.c" />
+    <ClCompile Include="src\x11\fg_state_x11.c" />
+    <ClCompile Include="src\x11\fg_state_x11_glx.c" />
+    <ClCompile Include="src\x11\fg_structure_x11.c" />
+    <ClCompile Include="src\x11\fg_window_x11.c" />
+    <ClCompile Include="src\x11\fg_window_x11_glx.c" />
+    <ClCompile Include="src\x11\fg_xinput_x11.c" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="include\GL\freeglut.h" />
+    <ClInclude Include="include\GL\freeglut_ext.h" />
+    <ClInclude Include="include\GL\freeglut_std.h" />
+    <ClInclude Include="include\GL\glut.h" />
+    <ClInclude Include="src\fg_gl2.h" />
+    <ClInclude Include="src\fg_init.h" />
+    <ClInclude Include="src\fg_internal.h" />
+    <ClInclude Include="src\fg_teapot_data.h" />
+    <ClInclude Include="src\fg_version.h" />
+    <ClInclude Include="src\util\xparsegeometry_repl.h" />
+    <ClInclude Include="src\x11\fg_internal_x11.h" />
+    <ClInclude Include="src\x11\fg_internal_x11_glx.h" />
+    <ClInclude Include="src\x11\fg_state_x11_glx.h" />
+    <ClInclude Include="src\x11\fg_window_x11_glx.h" />
+  </ItemGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <ClCompile>
+      <WarningLevel>TurnOffAllWarnings</WarningLevel>
+    </ClCompile>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <ClCompile>
+      <UnrollLoops>false</UnrollLoops>
+    </ClCompile>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <ClCompile>
+      <LinkTimeOptimization>false</LinkTimeOptimization>
+    </ClCompile>
+  </ItemDefinitionGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets" />
+</Project>

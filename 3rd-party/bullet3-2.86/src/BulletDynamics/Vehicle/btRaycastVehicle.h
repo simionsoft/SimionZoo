@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2005 Erwin Coumans http://continuousphysics.com/Bullet/
+ * Copyright (c) 2005 Erwin Coumans http://continuousphysics.com//Bullet/
  *
  * Permission to use, copy, modify, distribute and sell this software
  * and its documentation for any purpose is hereby granted without fee,
@@ -11,13 +11,13 @@
 #ifndef BT_RAYCASTVEHICLE_H
 #define BT_RAYCASTVEHICLE_H
 
-#include "BulletDynamics/Dynamics/btRigidBody.h"
-#include "BulletDynamics/ConstraintSolver/btTypedConstraint.h"
+#include "..//..//BulletDynamics//Dynamics//btRigidBody.h"
+#include "..//..//BulletDynamics//ConstraintSolver//btTypedConstraint.h"
 #include "btVehicleRaycaster.h"
 class btDynamicsWorld;
-#include "LinearMath/btAlignedObjectArray.h"
+#include "..//..//LinearMath//btAlignedObjectArray.h"
 #include "btWheelInfo.h"
-#include "BulletDynamics/Dynamics/btActionInterface.h"
+#include "..//..//BulletDynamics//Dynamics//btActionInterface.h"
 
 class btVehicleTuning;
 

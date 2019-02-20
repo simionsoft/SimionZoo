@@ -207,9 +207,12 @@
     <ClInclude Include="include\GL\freeglut_std.h" />
     <ClInclude Include="include\GL\glut.h" />
     <ClInclude Include="src\fg_gl2.h" />
+    <ClInclude Include="src\fg_init.h" />
+    <ClInclude Include="src\fg_internal.h" />
     <ClInclude Include="src\fg_teapot_data.h" />
     <ClInclude Include="src\fg_version.h" />
     <ClInclude Include="src\mswin\fg_internal_mswin.h" />
+    <ClInclude Include="src\util\xparsegeometry_repl.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

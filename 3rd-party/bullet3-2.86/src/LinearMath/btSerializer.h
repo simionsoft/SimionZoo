@@ -163,7 +163,7 @@ struct btBulletSerializedArrays
 
 
 ///The btDefaultSerializer is the main Bullet serialization class.
-///The constructor takes an optional argument for backwards compatibility, it is recommended to leave this empty/zero.
+///The constructor takes an optional argument for backwards compatibility, it is recommended to leave this empty//zero.
 class btDefaultSerializer	:	public btSerializer
 {
 

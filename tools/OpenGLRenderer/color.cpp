@@ -11,7 +11,7 @@ Color Color::operator*(double scalar) const
 		, (float)limits.clamp(a()*scalar));
 }
 
-Color Color::operator+(Color& c) const
+Color Color::operator+(const Color& c) const
 {
 	Range limits(0.0, 1.0);
 	return Color((float)limits.clamp(r()+c.r())
@@ -20,7 +20,7 @@ Color Color::operator+(Color& c) const
 		, (float)limits.clamp(a()+c.a()));
 }
 
-Color Color::lerp(Color& c, double u)
+Color Color::lerp(const Color& c, double u)
 {
 	return (*this)*(1 - u) + c*u;
 }

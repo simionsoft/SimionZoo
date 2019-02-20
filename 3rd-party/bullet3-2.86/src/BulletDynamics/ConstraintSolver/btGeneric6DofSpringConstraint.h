@@ -17,7 +17,7 @@ subject to the following restrictions:
 #define BT_GENERIC_6DOF_SPRING_CONSTRAINT_H
 
 
-#include "LinearMath/btVector3.h"
+#include "..//..//LinearMath//btVector3.h"
 #include "btTypedConstraint.h"
 #include "btGeneric6DofConstraint.h"
 
@@ -59,8 +59,8 @@ public:
 	void enableSpring(int index, bool onOff);
 	void setStiffness(int index, btScalar stiffness);
 	void setDamping(int index, btScalar damping);
-	void setEquilibriumPoint(); // set the current constraint position/orientation as an equilibrium point for all DOF
-	void setEquilibriumPoint(int index);  // set the current constraint position/orientation as an equilibrium point for given DOF
+	void setEquilibriumPoint(); // set the current constraint position//orientation as an equilibrium point for all DOF
+	void setEquilibriumPoint(int index);  // set the current constraint position//orientation as an equilibrium point for given DOF
 	void setEquilibriumPoint(int index, btScalar val);
 
 	bool isSpringEnabled(int index) const

@@ -9,7 +9,7 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>Badger</RootNamespace>
     <AssemblyName>Badger</AssemblyName>
-    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <ProjectTypeGuids>{60dc8134-eba5-43b8-bcc9-bb4bc16c2548};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
     <WarningLevel>4</WarningLevel>
@@ -28,6 +28,7 @@
     <ApplicationVersion>1.0.0.%2a</ApplicationVersion>
     <UseApplicationTrust>false</UseApplicationTrust>
     <BootstrapperEnabled>true</BootstrapperEnabled>
+    <TargetFrameworkProfile />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|Win32' ">
     <PlatformTarget>AnyCPU</PlatformTarget>
@@ -132,7 +133,7 @@
     <Compile Include="Data\DataTrackUtilities.cs" />
     <Compile Include="Data\EnumDescriptionConverter.cs" />
     <Compile Include="Data\EnumerationManager.cs" />
-    <Compile Include="Data\FunctionLog.cs" />
+    <Compile Include="Data\LogFileUtils.cs" />
     <Compile Include="Data\NeuralNetwork\Chain.cs" />
     <Compile Include="Data\NeuralNetwork\InputData.cs" />
     <Compile Include="Data\NeuralNetwork\Links\ActivationLayer.cs" />
@@ -163,14 +164,10 @@
     <Compile Include="Data\NeuralNetwork\Problem.cs" />
     <Compile Include="Data\NeuralNetwork\Tuple.cs" />
     <Compile Include="Data\PlotType.cs" />
-    <Compile Include="Data\Requirements.cs" />
-    <Compile Include="Data\SimionFileData.cs" />
-    <Compile Include="Data\SimionLogDescriptor.cs" />
-    <Compile Include="Data\SimionLogFile.cs" />
+    <Compile Include="Data\Files.cs" />
     <Compile Include="Data\Track.cs" />
     <Compile Include="Data\Utility.cs" />
     <Compile Include="Data\WorldDefinition.cs" />
-    <Compile Include="Data\XMLConfig.cs" />
     <Compile Include="Utils\CustomXmlSerializer.cs" />
     <Compile Include="Utils\ExtensionMethods.cs" />
     <Compile Include="Utils\MultiplyConverter.cs" />
@@ -202,8 +199,10 @@
     <Compile Include="ViewModels\DialogViewModel.cs" />
     <Compile Include="ViewModels\EditorWindowViewModel.cs" />
     <Compile Include="ViewModels\HerdAgentSelectionViewModel.cs" />
+    <Compile Include="ViewModels\JobDispatcherSettingsViewModel.cs" />
+    <Compile Include="ViewModels\MonitoredJobStateViewModel.cs" />
     <Compile Include="ViewModels\MonitoredJobViewModel.cs" />
-    <Compile Include="ViewModels\MultiStateButtonViewModel.cs" />
+    <Compile Include="ViewModels\MonitoredExperimentStateViewModel.cs" />
     <Compile Include="ViewModels\NeuralNetwork\ChainViewModel.cs" />
     <Compile Include="ViewModels\NeuralNetwork\InputDataViewModel.cs" />
     <Compile Include="ViewModels\NeuralNetwork\LinkConnectionViewModel.cs" />
@@ -254,12 +253,14 @@
     <Compile Include="Views\HerdAgentView.xaml.cs">
       <DependentUpon>HerdAgentView.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Views\MonitoredExperimentalUnitView.xaml.cs">
-      <DependentUpon>MonitoredExperimentalUnitView.xaml</DependentUpon>
+    <Compile Include="Views\MonitoredExperimentalUnitView.xaml.cs" />
+    <Compile Include="Views\MonitoredExperimentStateView.xaml.cs">
+      <DependentUpon>MonitoredExperimentStateView.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Views\MonitoredJobView.xaml.cs">
-      <DependentUpon>MonitoredJobView.xaml</DependentUpon>
+    <Compile Include="Views\MonitoredJobStateView.xaml.cs">
+      <DependentUpon>MonitoredJobStateView.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Views\MonitoredJobView.xaml.cs" />
     <Compile Include="Views\NeuralNetwork\ChainView.xaml.cs">
       <DependentUpon>ChainView.xaml</DependentUpon>
     </Compile>
@@ -453,11 +454,19 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="Views\JobDispatcherSettingsView.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Views\MonitoredJobStateView.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
     <Page Include="Views\MonitoredJobView.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="Views\MultiStateButtonView.xaml">
+    <Page Include="Views\MonitoredExperimentStateView.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
@@ -623,12 +632,6 @@
     </Page>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\tools\Herd\Herd.csproj">
-      <Project>{75640896-f22e-4295-bb90-560cb48bb2b2}</Project>
-      <Name>Herd</Name>
-    </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
     <BootstrapperPackage Include=".NETFramework,Version=v4.5">
       <Visible>False</Visible>
       <ProductName>Microsoft .NET Framework 4.5 %28x86 and x64%29</ProductName>
@@ -644,6 +647,12 @@
     <Resource Include="badger.ico">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Resource>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\tools\Herd\Herd.csproj">
+      <Project>{75640896-f22e-4295-bb90-560cb48bb2b2}</Project>
+      <Name>Herd</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

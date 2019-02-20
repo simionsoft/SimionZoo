@@ -1,6 +1,6 @@
 /*
 Bullet Continuous Collision Detection and Physics Library
-Copyright (c) 2003-2006 Erwin Coumans  http://continuousphysics.com/Bullet/
+Copyright (c) 2003-2006 Erwin Coumans  http://continuousphysics.com//Bullet/
 
 This software is provided 'as-is', without any express or implied warranty.
 In no event will the authors be held liable for any damages arising from the use of this software.
@@ -16,7 +16,7 @@ subject to the following restrictions:
 #ifndef BT_POINT2POINTCONSTRAINT_H
 #define BT_POINT2POINTCONSTRAINT_H
 
-#include "LinearMath/btVector3.h"
+#include "..//..//LinearMath//btVector3.h"
 #include "btJacobianEntry.h"
 #include "btTypedConstraint.h"
 
@@ -69,7 +69,7 @@ public:
 
 	BT_DECLARE_ALIGNED_ALLOCATOR();
 
-	///for backwards compatibility during the transition to 'getInfo/getInfo2'
+	///for backwards compatibility during the transition to 'getInfo//getInfo2'
 	bool		m_useSolveConstraintObsolete;
 
 	btConstraintSetting	m_setting;
@@ -130,7 +130,7 @@ public:
 
 };
 
-///do not change those serialization structures, it requires an updated sBulletDNAstr/sBulletDNAstr64
+///do not change those serialization structures, it requires an updated sBulletDNAstr//sBulletDNAstr64
 struct	btPoint2PointConstraintFloatData
 {
 	btTypedConstraintData	m_typeConstraintData;
@@ -138,7 +138,7 @@ struct	btPoint2PointConstraintFloatData
 	btVector3FloatData	m_pivotInB;
 };
 
-///do not change those serialization structures, it requires an updated sBulletDNAstr/sBulletDNAstr64
+///do not change those serialization structures, it requires an updated sBulletDNAstr//sBulletDNAstr64
 struct	btPoint2PointConstraintDoubleData2
 {
 	btTypedConstraintDoubleData	m_typeConstraintData;
@@ -147,9 +147,9 @@ struct	btPoint2PointConstraintDoubleData2
 };
 
 #ifdef BT_BACKWARDS_COMPATIBLE_SERIALIZATION
-///do not change those serialization structures, it requires an updated sBulletDNAstr/sBulletDNAstr64
+///do not change those serialization structures, it requires an updated sBulletDNAstr//sBulletDNAstr64
 ///this structure is not used, except for loading pre-2.82 .bullet files
-///do not change those serialization structures, it requires an updated sBulletDNAstr/sBulletDNAstr64
+///do not change those serialization structures, it requires an updated sBulletDNAstr//sBulletDNAstr64
 struct	btPoint2PointConstraintDoubleData
 {
 	btTypedConstraintData	m_typeConstraintData;

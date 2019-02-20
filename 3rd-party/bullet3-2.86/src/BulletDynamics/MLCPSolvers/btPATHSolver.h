@@ -22,9 +22,9 @@ subject to the following restrictions:
 #ifdef BT_USE_PATH
 
 extern "C" {
-#include "PATH/SimpleLCP.h"
-#include "PATH/License.h"
-#include "PATH/Error_Interface.h"
+#include "PATH//SimpleLCP.h"
+#include "PATH//License.h"
+#include "PATH//Error_Interface.h"
 };
   void __stdcall MyError(Void *data, Char *msg)
 {
@@ -40,7 +40,7 @@ Error_Interface e;
 
 
 #include "btMLCPSolverInterface.h"
-#include "Dantzig/lcp.h"
+#include "Dantzig//lcp.h"
 
 class btPathSolver : public btMLCPSolverInterface
 {

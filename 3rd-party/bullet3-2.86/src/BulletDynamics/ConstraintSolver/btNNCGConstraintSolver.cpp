@@ -1,6 +1,6 @@
 /*
 Bullet Continuous Collision Detection and Physics Library
-Copyright (c) 2003-2006 Erwin Coumans  http://continuousphysics.com/Bullet/
+Copyright (c) 2003-2006 Erwin Coumans  http://continuousphysics.com//Bullet/
 
 This software is provided 'as-is', without any express or implied warranty.
 In no event will the authors be held liable for any damages arising from the use of this software.
@@ -56,7 +56,7 @@ btScalar btNNCGConstraintSolver::solveSingleIteration(int iteration, btCollision
 				m_orderNonContactConstraintPool[swapi] = tmp;
 			}
 
-			//contact/friction constraints are not solved more than 
+			//contact//friction constraints are not solved more than 
 			if (iteration< infoGlobal.m_numIterations)
 			{
 				for (int j=0; j<numConstraintPool; ++j) {

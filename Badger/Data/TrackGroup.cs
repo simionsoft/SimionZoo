@@ -1,10 +1,10 @@
 ﻿using Caliburn.Micro;
 using System.Collections.Generic;
-using Badger.Simion;
-using Badger.ViewModels;
-using System;
 using System.Windows.Data;
 using System.Globalization;
+
+using Badger.ViewModels;
+
 
 namespace Badger.Data
 {

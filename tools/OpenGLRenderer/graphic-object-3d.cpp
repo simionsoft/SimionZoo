@@ -7,7 +7,7 @@
 #include "mesh.h"
 #include "../GeometryLib/bounding-cylinder.h"
 #include <algorithm>
-
+#include <math.h>
 
 
 GraphicObject3D::GraphicObject3D(string name)
@@ -26,15 +26,15 @@ GraphicObject3D::GraphicObject3D(tinyxml2::XMLElement* pNode): SceneActor3D(pNod
 GraphicObject3D* GraphicObject3D::getInstance(tinyxml2::XMLElement* pNode)
 {
 	const char* name = pNode->Name();
-	if (!strcmp(pNode->Name(), XML_TAG_COLLADA_MODEL))
+	if (!strcmp(name, XML_TAG_COLLADA_MODEL))
 		return new ColladaModel(pNode);
-	if (!strcmp(pNode->Name(), XML_TAG_BOX))
+	if (!strcmp(name, XML_TAG_BOX))
 		return new Box(pNode);
-	if (!strcmp(pNode->Name(), XML_TAG_SPHERE))
+	if (!strcmp(name, XML_TAG_SPHERE))
 		return new Sphere(pNode);
-	if (!strcmp(pNode->Name(), XML_TAG_CILINDER))
+	if (!strcmp(name, XML_TAG_CILINDER))
 		return new Cilinder(pNode);
-	if (!strcmp(pNode->Name(), XML_TAG_POLYLINE))
+	if (!strcmp(name, XML_TAG_POLYLINE))
 		return new PolyLine(pNode);
 
 	return nullptr;
@@ -52,7 +52,7 @@ vector<GraphicObject3D*>& GraphicObject3D::getChildren()
 
 void GraphicObject3D::drawChildren()
 {
-	for each(GraphicObject3D* pChild in m_children)
+	for (GraphicObject3D* pChild : m_children)
 	{
 		pChild->setTransform();
 		pChild->draw();
@@ -63,7 +63,7 @@ void GraphicObject3D::drawChildren()
 GraphicObject3D::~GraphicObject3D()
 {
 	//The renderer doesn't know about children, so we have to delete them here
-	for each(GraphicObject3D* pChild in m_children)
+	for (GraphicObject3D* pChild : m_children)
 		delete pChild;
 }
 
@@ -131,18 +131,6 @@ void GraphicObject3D::fitToBoundingCylinder(BoundingCylinder* newBC)
 	
 	//We assume the centroid in the Y=0 plane is (0,0)
 
-	////find the centroid
-	//int numSamples = 0;
-	//for (auto it = m_meshes.begin(); it != m_meshes.end(); ++it)
-	//{
-	//	for (int i = 0; i < (*it)->getNumPositions(); ++it)
-	//	{
-	//		centroid += m_transform*(*it)->getPosition(i);
-	//		++numSamples;
-	//	}
-	//}
-	//centroid /= std::max(1,numSamples);
-
 	//calculate the BC
 	for (auto it = m_meshes.begin(); it != m_meshes.end(); ++it)
 	{
@@ -155,9 +143,11 @@ void GraphicObject3D::fitToBoundingCylinder(BoundingCylinder* newBC)
 	}
 	double scaleFactor = newBC->radius() / sampleRadius;
 	//transform vertices
+	Vector3D min(0, 0, 0);
+	Vector3D scale(scaleFactor, scaleFactor, scaleFactor);
 	for (auto it = m_meshes.begin(); it != m_meshes.end(); ++it)
 	{
-		(*it)->transformVertices(Vector3D(0, 0, 0), Vector3D(scaleFactor, scaleFactor, scaleFactor));
+		(*it)->transformVertices(min, scale);
 	}
 	updateBoundingBox();
 }

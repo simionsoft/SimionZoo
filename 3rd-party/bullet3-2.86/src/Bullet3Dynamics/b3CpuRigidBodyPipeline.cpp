@@ -1,15 +1,15 @@
 #include "b3CpuRigidBodyPipeline.h"
 
-#include "Bullet3Dynamics/shared/b3IntegrateTransforms.h"
-#include "Bullet3Collision/NarrowPhaseCollision/shared/b3RigidBodyData.h"
-#include "Bullet3Collision/BroadPhaseCollision/b3DynamicBvhBroadphase.h"
-#include "Bullet3Collision/NarrowPhaseCollision/b3Config.h"
-#include "Bullet3Collision/NarrowPhaseCollision/b3CpuNarrowPhase.h"
-#include "Bullet3Collision/BroadPhaseCollision/shared/b3Aabb.h"
-#include "Bullet3Collision/NarrowPhaseCollision/shared/b3Collidable.h"
-#include "Bullet3Common/b3Vector3.h"
-#include "Bullet3Dynamics/shared/b3ContactConstraint4.h"
-#include "Bullet3Dynamics/shared/b3Inertia.h"
+#include "..//Bullet3Dynamics//shared//b3IntegrateTransforms.h"
+#include "..//Bullet3Collision//NarrowPhaseCollision//shared//b3RigidBodyData.h"
+#include "..//Bullet3Collision//BroadPhaseCollision//b3DynamicBvhBroadphase.h"
+#include "..//Bullet3Collision//NarrowPhaseCollision//b3Config.h"
+#include "..//Bullet3Collision//NarrowPhaseCollision//b3CpuNarrowPhase.h"
+#include "..//Bullet3Collision//BroadPhaseCollision//shared//b3Aabb.h"
+#include "..//Bullet3Collision//NarrowPhaseCollision//shared//b3Collidable.h"
+#include "..//Bullet3Common//b3Vector3.h"
+#include "..//Bullet3Dynamics//shared//b3ContactConstraint4.h"
+#include "..//Bullet3Dynamics//shared//b3Inertia.h"
 
 
 struct b3CpuRigidBodyPipelineInternalData
@@ -267,7 +267,7 @@ m_start( start ),
 	void run(int tIdx)
 	{
 		b3AlignedObjectArray<int> usedBodies;
-		//printf("run..............\n");
+		//printf("run..............//n");
 
 		
 		for (int bb=0;bb<m_maxNumBatches;bb++)
@@ -425,7 +425,7 @@ void b3CpuRigidBodyPipeline::integrate(float deltaTime)
 	float angDamping=0.f;
 	b3Vector3 gravityAcceleration=b3MakeVector3(0,-9,0);
 
-	//integrate transforms (external forces/gravity should be moved into constraint solver)
+	//integrate transforms (external forces//gravity should be moved into constraint solver)
 	for (int i=0;i<m_data->m_rigidBodies.size();i++)
 	{
 		b3IntegrateTransform(&m_data->m_rigidBodies[i],deltaTime,angDamping,gravityAcceleration);

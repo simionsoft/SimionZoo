@@ -17,37 +17,37 @@ subject to the following restrictions:
 #include "btDiscreteDynamicsWorldMt.h"
 
 //collision detection
-#include "BulletCollision/CollisionDispatch/btCollisionDispatcher.h"
-#include "BulletCollision/BroadphaseCollision/btSimpleBroadphase.h"
-#include "BulletCollision/BroadphaseCollision/btCollisionAlgorithm.h"
-#include "BulletCollision/CollisionShapes/btCollisionShape.h"
+#include "..//..//BulletCollision//CollisionDispatch//btCollisionDispatcher.h"
+#include "..//..//BulletCollision//BroadphaseCollision//btSimpleBroadphase.h"
+#include "..//..//BulletCollision//BroadphaseCollision//btCollisionAlgorithm.h"
+#include "..//..//BulletCollision//CollisionShapes//btCollisionShape.h"
 #include "btSimulationIslandManagerMt.h"
-#include "LinearMath/btTransformUtil.h"
-#include "LinearMath/btQuickprof.h"
+#include "..//..//LinearMath//btTransformUtil.h"
+#include "..//..//LinearMath//btQuickprof.h"
 
 //rigidbody & constraints
-#include "BulletDynamics/Dynamics/btRigidBody.h"
-#include "BulletDynamics/ConstraintSolver/btSequentialImpulseConstraintSolver.h"
-#include "BulletDynamics/ConstraintSolver/btContactSolverInfo.h"
-#include "BulletDynamics/ConstraintSolver/btTypedConstraint.h"
-#include "BulletDynamics/ConstraintSolver/btPoint2PointConstraint.h"
-#include "BulletDynamics/ConstraintSolver/btHingeConstraint.h"
-#include "BulletDynamics/ConstraintSolver/btConeTwistConstraint.h"
-#include "BulletDynamics/ConstraintSolver/btGeneric6DofConstraint.h"
-#include "BulletDynamics/ConstraintSolver/btGeneric6DofSpring2Constraint.h"
-#include "BulletDynamics/ConstraintSolver/btSliderConstraint.h"
-#include "BulletDynamics/ConstraintSolver/btContactConstraint.h"
+#include "..//..//BulletDynamics//Dynamics//btRigidBody.h"
+#include "..//..//BulletDynamics//ConstraintSolver//btSequentialImpulseConstraintSolver.h"
+#include "..//..//BulletDynamics//ConstraintSolver//btContactSolverInfo.h"
+#include "..//..//BulletDynamics//ConstraintSolver//btTypedConstraint.h"
+#include "..//..//BulletDynamics//ConstraintSolver//btPoint2PointConstraint.h"
+#include "..//..//BulletDynamics//ConstraintSolver//btHingeConstraint.h"
+#include "..//..//BulletDynamics//ConstraintSolver//btConeTwistConstraint.h"
+#include "..//..//BulletDynamics//ConstraintSolver//btGeneric6DofConstraint.h"
+#include "..//..//BulletDynamics//ConstraintSolver//btGeneric6DofSpring2Constraint.h"
+#include "..//..//BulletDynamics//ConstraintSolver//btSliderConstraint.h"
+#include "..//..//BulletDynamics//ConstraintSolver//btContactConstraint.h"
 
 
-#include "LinearMath/btIDebugDraw.h"
-#include "BulletCollision/CollisionShapes/btSphereShape.h"
+#include "..//..//LinearMath//btIDebugDraw.h"
+#include "..//..//BulletCollision//CollisionShapes//btSphereShape.h"
 
 
-#include "BulletDynamics/Dynamics/btActionInterface.h"
-#include "LinearMath/btQuickprof.h"
-#include "LinearMath/btMotionState.h"
+#include "..//..//BulletDynamics//Dynamics//btActionInterface.h"
+#include "..//..//LinearMath//btQuickprof.h"
+#include "..//..//LinearMath//btMotionState.h"
 
-#include "LinearMath/btSerializer.h"
+#include "..//..//LinearMath//btSerializer.h"
 
 
 struct InplaceSolverIslandCallbackMt : public btSimulationIslandManagerMt::IslandCallback

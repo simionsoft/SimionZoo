@@ -1,16 +1,20 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Xml;
-using Badger.Simion;
+
+using Herd.Files;
+using Herd.Network;
 
 namespace Badger.ViewModels
 {
     public class LoggedExperimentViewModel : SelectableTreeItem
     {
-        public string Name { get; set; } = "";
+        private Experiment m_model = null;
+        public Experiment Model { get { return m_model; } }
 
-        List<AppVersion> m_appVersions = new List<AppVersion>();
-        public List<AppVersion> AppVersions { get { return m_appVersions; } }
+        public string Name { get { return m_model.Name; } set { m_model.Name = value; } }
+
+        public List<AppVersion> AppVersions { get { return m_model.AppVersions; } }
 
         public List<LoggedForkViewModel> Forks { get; set; } = new List<LoggedForkViewModel>();
 
@@ -30,62 +34,38 @@ namespace Badger.ViewModels
         /// <summary>
         ///     Class constructor.
         /// </summary>
-        /// <param name="configNode">The XML node from which the experiment's parameters hang.</param>
-        /// <param name="baseDirectory">The directory of the parent batch file, if there is one.</param>
-        /// <param name="loadVariablesInLog">True if we are reading the experiment to make a report.</param>
-        /// <param name="loadOnlyUnfinishedExperimentalUnits">True if we only want to load unfinished experimental units</param>
-        /// <param name="updateFunction">Callback function to be called after a load progress event</param>
-        public LoggedExperimentViewModel(XmlNode configNode, string baseDirectory, bool loadVariablesInLog
-            , bool loadOnlyUnfinishedExperimentalUnits, SimionFileData.LoadUpdateFunction updateFunction = null)
+        /// <param name="experiment">The experiment with all the data used in the view model</param>
+
+        public LoggedExperimentViewModel(Experiment experiment)
         {
-            XmlAttributeCollection attrs = configNode.Attributes;
+            m_model = experiment;
 
-            if (attrs != null)
+            //Create the fork view models from the models
+            foreach (Fork fork in experiment.Forks)
             {
-                if (attrs.GetNamedItem(XMLConfig.nameAttribute) != null)
-                    Name = attrs[XMLConfig.nameAttribute].Value;
+                LoggedForkViewModel forkVM = new LoggedForkViewModel(fork);
+                Forks.Add(forkVM);
             }
-
-            foreach (XmlNode child in configNode.ChildNodes)
+            //Create the experimental unit view models from the models
+            foreach (ExperimentalUnit expUnit in experiment.ExperimentalUnits)
             {
-                switch (child.Name)
-                {
-                    case XMLConfig.forkTag:
-                        LoggedForkViewModel newFork = new LoggedForkViewModel(child);
-                        Forks.Add(newFork);
-                        break;
-
-                    case Herd.XmlTags.Version:
-
-                        AppVersion appVersion = new AppVersion(child);
-                        m_appVersions.Add(appVersion);
-                        break;
-
-                    case XMLConfig.experimentalUnitNodeTag:
-                        LoggedExperimentalUnitViewModel newExpUnit = new LoggedExperimentalUnitViewModel(child, baseDirectory, updateFunction);
-                        if (loadVariablesInLog)
-                        {
-                            //We load the list of variables from the log descriptor and add them to the global list
-                            newExpUnit.LoadLogDescriptor();
-                            foreach (string variable in newExpUnit.VariablesInLog) AddVariable(variable);
-                        }
-                        if (!loadOnlyUnfinishedExperimentalUnits || !newExpUnit.PreviousLogExists())
-                            ExperimentalUnits.Add(newExpUnit);
-                        break;
-                }
+                LoggedExperimentalUnitViewModel expUnitVM = new LoggedExperimentalUnitViewModel(expUnit);
+                foreach (string variable in expUnitVM.VariablesInLog)
+                    AddVariable(variable);
+                ExperimentalUnits.Add(expUnitVM);
             }
             //Associate forks and experiment units
-            foreach(LoggedExperimentalUnitViewModel expUnit in ExperimentalUnits)
+            foreach (LoggedExperimentalUnitViewModel expUnit in ExperimentalUnits)
             {
-                TraverseAction(false, (node) => 
+                TraverseAction(false, (node) =>
                 {
                     if (node is LoggedForkValueViewModel forkValue)
                     {
-                        foreach (string forkName in expUnit.forkValues.Keys)
+                        foreach (string forkName in expUnit.ForkValues.Keys)
                         {
-                            if (forkName==forkValue.parent.Name && expUnit.forkValues[forkName]==forkValue.Value)
+                            if (forkName == forkValue.Parent.Name && expUnit.ForkValues[forkName] == forkValue.Value)
                             {
-                                forkValue.expUnits.Add(expUnit);
+                                forkValue.ExpUnits.Add(expUnit);
                             }
                         }
                     }

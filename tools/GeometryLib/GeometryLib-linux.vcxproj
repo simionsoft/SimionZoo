@@ -1,0 +1,74 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|x64">
+      <Configuration>Debug</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|x64">
+      <Configuration>Release</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <ProjectGuid>{5d2a0a84-ac67-4700-8934-a38c01966ad4}</ProjectGuid>
+    <Keyword>Linux</Keyword>
+    <RootNamespace>GeometryLib_linux</RootNamespace>
+    <MinimumVisualStudioVersion>15.0</MinimumVisualStudioVersion>
+    <ApplicationType>Linux</ApplicationType>
+    <ApplicationTypeRevision>1.0</ApplicationTypeRevision>
+    <TargetLinuxPlatform>Generic</TargetLinuxPlatform>
+    <LinuxProjectType>{2238F9CD-F817-4ECC-BD14-2524D2669B35}</LinuxProjectType>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <RemoteRootDir>~/projects</RemoteRootDir>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <RemoteRootDir>~/projects</RemoteRootDir>
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings" />
+  <ImportGroup Label="Shared" />
+  <ImportGroup Label="PropertySheets" />
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <RemoteProjectDir>$(RemoteRootDir)/SimionZoo/tools/GeometryLib</RemoteProjectDir>
+    <OutDir>$(SolutionDir)debug\$(Platform)\</OutDir>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <RemoteProjectDir>$(RemoteRootDir)/SimionZoo/tools/GeometryLib</RemoteProjectDir>
+    <OutDir>$(SolutionDir)bin\$(Platform)\</OutDir>
+  </PropertyGroup>
+  <ItemGroup>
+    <ClCompile Include="bounding-box.cpp" />
+    <ClCompile Include="bounding-cylinder.cpp" />
+    <ClCompile Include="frustum.cpp" />
+    <ClCompile Include="matrix44.cpp" />
+    <ClCompile Include="plane.cpp" />
+    <ClCompile Include="quaternion.cpp" />
+    <ClCompile Include="transform2d.cpp" />
+    <ClCompile Include="transform3d.cpp" />
+    <ClCompile Include="vector2d.cpp" />
+    <ClCompile Include="vector3d.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="bounding-box.h" />
+    <ClInclude Include="bounding-cylinder.h" />
+    <ClInclude Include="frustum.h" />
+    <ClInclude Include="matrix44.h" />
+    <ClInclude Include="plane.h" />
+    <ClInclude Include="quaternion.h" />
+    <ClInclude Include="transform2d.h" />
+    <ClInclude Include="transform3d.h" />
+    <ClInclude Include="vector2d.h" />
+    <ClInclude Include="vector3d.h" />
+  </ItemGroup>
+  <ItemDefinitionGroup />
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets" />
+</Project>

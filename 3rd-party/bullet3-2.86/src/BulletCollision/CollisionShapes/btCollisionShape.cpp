@@ -12,8 +12,8 @@ subject to the following restrictions:
 2. Altered source versions must be plainly marked as such, and must not be misrepresented as being the original software.
 3. This notice may not be removed or altered from any source distribution.
 */
-#include "BulletCollision/CollisionShapes/btCollisionShape.h"
-#include "LinearMath/btSerializer.h"
+#include "..//..//BulletCollision//CollisionShapes//btCollisionShape.h"
+#include "..//..//LinearMath//btSerializer.h"
 
 /*
   Make sure this dummy function never changes so that it
@@ -71,7 +71,7 @@ void btCollisionShape::calculateTemporalAabb(const btTransform& curTrans,const b
 
 	// add linear motion
 	btVector3 linMotion = linvel*timeStep;
-	///@todo: simd would have a vector max/min operation, instead of per-element access
+	///@todo: simd would have a vector max//min operation, instead of per-element access
 	if (linMotion.x() > btScalar(0.))
 		temporalAabbMaxx += linMotion.x(); 
 	else

@@ -1,6 +1,6 @@
 /*
 Bullet Continuous Collision Detection and Physics Library
-Copyright (c) 2003-2006 Erwin Coumans  http://continuousphysics.com/Bullet/
+Copyright (c) 2003-2006 Erwin Coumans  http://continuousphysics.com//Bullet/
 
 This software is provided 'as-is', without any express or implied warranty.
 In no event will the authors be held liable for any damages arising from the use of this software.
@@ -15,11 +15,11 @@ subject to the following restrictions:
 ///btSoftBody implementation by Nathanael Presson
 
 #include "btSoftBodyInternals.h"
-#include "BulletSoftBody/btSoftBodySolvers.h"
+#include "..//BulletSoftBody//btSoftBodySolvers.h"
 #include "btSoftBodyData.h"
-#include "LinearMath/btSerializer.h"
-#include "BulletDynamics/Featherstone/btMultiBodyLinkCollider.h"
-#include "BulletDynamics/Featherstone/btMultiBodyConstraint.h"
+#include "..//LinearMath//btSerializer.h"
+#include "..//BulletDynamics//Featherstone//btMultiBodyLinkCollider.h"
+#include "..//BulletDynamics//Featherstone//btMultiBodyConstraint.h"
 
 
 //

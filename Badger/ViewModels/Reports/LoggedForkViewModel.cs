@@ -1,20 +1,18 @@
 ﻿using System.Xml;
 using System.Collections.Generic;
-using Badger.Simion;
 using System;
-using Caliburn.Micro;
-using System.ComponentModel;
+
+using Herd.Files;
 
 namespace Badger.ViewModels
 {
     public class LoggedForkViewModel : SelectableTreeItem
     {
-        private string m_name = "unnamed";
+        Fork m_model;
 
         public string Name
         {
-            get { return m_name; }
-            set { m_name = value; }
+            get { return m_model.Name; }
         }
 
         private List<LoggedForkValueViewModel> m_values = new List<LoggedForkValueViewModel>();
@@ -22,7 +20,6 @@ namespace Badger.ViewModels
         public List<LoggedForkValueViewModel> Values
         {
             get { return m_values; }
-            set { m_values = value; }
         }
 
         private bool m_bGroupByThis;
@@ -59,27 +56,22 @@ namespace Badger.ViewModels
             set { m_bHasChildrenValues = value; NotifyOfPropertyChange(() => HasChildrenValues); }
         }
 
-        public LoggedForkViewModel(XmlNode configNode)
+        public LoggedForkViewModel(Fork model)
         {
-            if (configNode.Attributes.GetNamedItem(XMLConfig.aliasAttribute) != null)
-                Name = configNode.Attributes[XMLConfig.aliasAttribute].Value;
+            m_model = model;
 
-            foreach (XmlNode child in configNode.ChildNodes)
+            //Build View models from the models
+            foreach (Fork fork in model.Forks)
             {
-                if (child.Name == XMLConfig.forkTag)
-                {
-                    LoggedForkViewModel newFork = new LoggedForkViewModel(child);
-                    Forks.Add(newFork);
-                }
-                else if (child.Name == XMLConfig.forkValueTag)
-                {
-                    LoggedForkValueViewModel newValue = new LoggedForkValueViewModel(child, this);
-                    Values.Add(newValue);
-                }
+                LoggedForkViewModel forkVM = new LoggedForkViewModel(fork);
+                Forks.Add(forkVM);
             }
-
-            //hide the area used to display children forks/values?
             HasChildrenForks = Forks.Count != 0;
+            foreach (ForkValue forkValue in model.Values)
+            {
+                LoggedForkValueViewModel forkValueVM = new LoggedForkValueViewModel(forkValue, this);
+                Values.Add(forkValueVM);
+            }
             HasChildrenValues = Values.Count != 0;
         }
 

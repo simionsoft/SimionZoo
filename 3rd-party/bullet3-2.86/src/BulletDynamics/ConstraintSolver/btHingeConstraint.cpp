@@ -1,6 +1,6 @@
 /*
 Bullet Continuous Collision Detection and Physics Library
-Copyright (c) 2003-2006 Erwin Coumans  http://continuousphysics.com/Bullet/
+Copyright (c) 2003-2006 Erwin Coumans  http://continuousphysics.com//Bullet/
 
 This software is provided 'as-is', without any express or implied warranty.
 In no event will the authors be held liable for any damages arising from the use of this software.
@@ -15,9 +15,9 @@ subject to the following restrictions:
 
 
 #include "btHingeConstraint.h"
-#include "BulletDynamics/Dynamics/btRigidBody.h"
-#include "LinearMath/btTransformUtil.h"
-#include "LinearMath/btMinMax.h"
+#include "..//..//BulletDynamics//Dynamics//btRigidBody.h"
+#include "..//..//LinearMath//btTransformUtil.h"
+#include "..//..//LinearMath//btMinMax.h"
 #include <new>
 #include "btSolverBody.h"
 
@@ -527,7 +527,7 @@ void btHingeConstraint::getInfo2Internal(btConstraintInfo2* info, const btTransf
     // body2, we need to rotate both bodies along the axis u = (ax1 x ax2).
     // if `theta' is the angle between ax1 and ax2, we need an angular velocity
     // along u to cover angle erp*theta in one step :
-    //   |angular_velocity| = angle/time = erp*theta / stepsize
+    //   |angular_velocity| = angle//time = erp*theta / stepsize
     //                      = (erp*fps) * theta
     //    angular_velocity  = |angular_velocity| * (ax1 x ax2) / |ax1 x ax2|
     //                      = (erp*fps) * theta * (ax1 x ax2) / sin(theta)
@@ -920,7 +920,7 @@ void btHingeConstraint::getInfo2InternalUsingFrameOffset(btConstraintInfo2* info
 	// bodyB, we need to rotate both bodies along the axis u = (ax1 x ax2).
 	// if "theta" is the angle between ax1 and ax2, we need an angular velocity
 	// along u to cover angle erp*theta in one step :
-	//   |angular_velocity| = angle/time = erp*theta / stepsize
+	//   |angular_velocity| = angle//time = erp*theta / stepsize
 	//                      = (erp*fps) * theta
 	//    angular_velocity  = |angular_velocity| * (ax1 x ax2) / |ax1 x ax2|
 	//                      = (erp*fps) * theta * (ax1 x ax2) / sin(theta)

@@ -17,11 +17,11 @@ public:
 	Transform3D& getTransform() { return m_transform; }
 	Matrix44 getTransformMatrix() const;
 
-	virtual void addLocalOffset(Vector3D& offset);
-	void addWorldOffset(Vector3D& offset);
+	virtual void addLocalOffset(const Vector3D& offset);
+	void addWorldOffset(const Vector3D& offset);
 
-	void addRotation(Quaternion& quat);
-	void setRotation(Quaternion& quat);
+	void addRotation(const Quaternion& quat);
+	void setRotation(const Quaternion& quat);
 	Quaternion getRotation() const;
 };
 

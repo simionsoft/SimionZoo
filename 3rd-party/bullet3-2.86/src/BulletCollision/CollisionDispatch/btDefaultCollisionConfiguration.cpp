@@ -1,6 +1,6 @@
 /*
 Bullet Continuous Collision Detection and Physics Library
-Copyright (c) 2003-2006 Erwin Coumans  http://continuousphysics.com/Bullet/
+Copyright (c) 2003-2006 Erwin Coumans  http://continuousphysics.com//Bullet/
 
 This software is provided 'as-is', without any express or implied warranty.
 In no event will the authors be held liable for any damages arising from the use of this software.
@@ -15,26 +15,26 @@ subject to the following restrictions:
 
 #include "btDefaultCollisionConfiguration.h"
 
-#include "BulletCollision/CollisionDispatch/btConvexConvexAlgorithm.h"
-#include "BulletCollision/CollisionDispatch/btEmptyCollisionAlgorithm.h"
-#include "BulletCollision/CollisionDispatch/btConvexConcaveCollisionAlgorithm.h"
-#include "BulletCollision/CollisionDispatch/btCompoundCollisionAlgorithm.h"
-#include "BulletCollision/CollisionDispatch/btCompoundCompoundCollisionAlgorithm.h"
+#include "..//..//BulletCollision//CollisionDispatch//btConvexConvexAlgorithm.h"
+#include "..//..//BulletCollision//CollisionDispatch//btEmptyCollisionAlgorithm.h"
+#include "..//..//BulletCollision//CollisionDispatch//btConvexConcaveCollisionAlgorithm.h"
+#include "..//..//BulletCollision//CollisionDispatch//btCompoundCollisionAlgorithm.h"
+#include "..//..//BulletCollision//CollisionDispatch//btCompoundCompoundCollisionAlgorithm.h"
 
-#include "BulletCollision/CollisionDispatch/btConvexPlaneCollisionAlgorithm.h"
-#include "BulletCollision/CollisionDispatch/btBoxBoxCollisionAlgorithm.h"
-#include "BulletCollision/CollisionDispatch/btSphereSphereCollisionAlgorithm.h"
+#include "..//..//BulletCollision//CollisionDispatch//btConvexPlaneCollisionAlgorithm.h"
+#include "..//..//BulletCollision//CollisionDispatch//btBoxBoxCollisionAlgorithm.h"
+#include "..//..//BulletCollision//CollisionDispatch//btSphereSphereCollisionAlgorithm.h"
 #ifdef USE_BUGGY_SPHERE_BOX_ALGORITHM
-#include "BulletCollision/CollisionDispatch/btSphereBoxCollisionAlgorithm.h"
+#include "..//..//BulletCollision//CollisionDispatch//btSphereBoxCollisionAlgorithm.h"
 #endif //USE_BUGGY_SPHERE_BOX_ALGORITHM
-#include "BulletCollision/CollisionDispatch/btSphereTriangleCollisionAlgorithm.h"
-#include "BulletCollision/NarrowPhaseCollision/btGjkEpaPenetrationDepthSolver.h"
-#include "BulletCollision/NarrowPhaseCollision/btMinkowskiPenetrationDepthSolver.h"
-#include "BulletCollision/NarrowPhaseCollision/btVoronoiSimplexSolver.h"
+#include "..//..//BulletCollision//CollisionDispatch//btSphereTriangleCollisionAlgorithm.h"
+#include "..//..//BulletCollision//NarrowPhaseCollision//btGjkEpaPenetrationDepthSolver.h"
+#include "..//..//BulletCollision//NarrowPhaseCollision//btMinkowskiPenetrationDepthSolver.h"
+#include "..//..//BulletCollision//NarrowPhaseCollision//btVoronoiSimplexSolver.h"
 
 
 
-#include "LinearMath/btPoolAllocator.h"
+#include "..//..//LinearMath//btPoolAllocator.h"
 
 
 

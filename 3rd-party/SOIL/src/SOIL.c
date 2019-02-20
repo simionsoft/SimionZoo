@@ -30,7 +30,7 @@
 	#include <GL/glx.h>
 #endif
 
-#include "SOIL.h"
+#include "../include/SOIL.h"
 #include "stb_image_aug.h"
 #include "image_helper.h"
 #include "image_DXT.h"
@@ -1842,7 +1842,7 @@ unsigned int SOIL_direct_load_DDS(
 		result_string_pointer = "NULL filename";
 		return 0;
 	}
-	fopen_s( &f, filename, "rb" );
+	f= fopen( filename, "rb" );
 	if( NULL == f )
 	{
 		/*	the file doesn't seem to exist (or be open-able)	*/

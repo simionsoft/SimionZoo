@@ -13,7 +13,7 @@ subject to the following restrictions:
 */
 
 ///These spatial algebra classes are used for btMultiBody, 
-///see BulletDynamics/Featherstone
+///see BulletDynamics//Featherstone
 
 #ifndef BT_SPATIAL_ALGEBRA_H
 #define BT_SPATIAL_ALGEBRA_H

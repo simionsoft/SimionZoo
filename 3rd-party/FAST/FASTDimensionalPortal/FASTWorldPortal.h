@@ -1,7 +1,7 @@
 #pragma once
 
-#include "../../../RLSimion/named-var-set.h"
-#include "../../../tools/WindowsUtils/NamedPipe.h"
+#include "../../../RLSimion/Common/named-var-set.h"
+#include "../../../tools/System/NamedPipe.h"
 
 #include <map>
 
@@ -18,7 +18,7 @@ class FASTActionDescriptor : public Descriptor
 
 class FASTWorldPortal
 {
-	CNamedPipeClient m_namedPipeClient;
+	NamedPipeClient m_namedPipeClient;
 
 	double m_lastTime;
 	double m_elapsedTime;

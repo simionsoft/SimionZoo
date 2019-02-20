@@ -1,13 +1,13 @@
 ﻿using System;
-using Caliburn.Micro;
 using System.Drawing;
-using Badger.Data;
 using System.Xml;
 using System.IO;
-using Badger.Simion;
 using System.Windows.Media.Imaging;
 using System.Windows.Media;
 
+using Caliburn.Micro;
+
+using Herd.Files;
 
 namespace Badger.ViewModels
 {
@@ -110,13 +110,13 @@ namespace Badger.ViewModels
         string m_outputDirectory;
         public void ExportAll()
         {
-            m_outputDirectory = SimionFileData.SelectOutputDirectoryDialog(m_outputDirectory);
+            m_outputDirectory = Files.SelectOutputDirectoryDialog(m_outputDirectory);
             foreach (Function f in m_functionLog.Functions)
             {
                 foreach (FunctionSample s in f.Samples)
                 {
                     //.png by default
-                    s.Sample.Save(m_outputDirectory + "\\" + f.Name + "." + s.Episode + ".png");
+                    s.Sample.Save(m_outputDirectory + "/" + f.Name + "." + s.Episode + ".png");
                 }
             }
 
@@ -132,15 +132,15 @@ namespace Badger.ViewModels
                     logDescriptorDoc.Load(logDescriptorFileName);
                     XmlNode node = logDescriptorDoc.FirstChild;
                     string functionLogFileName;
-                    if (node.Name == XMLConfig.descriptorRootNodeName)
+                    if (node.Name == XMLTags.descriptorRootNodeName)
                     {
-                        m_outputDirectory = Utility.GetDirectory(logDescriptorFileName);
-                        functionLogFileName = node.Attributes[XMLConfig.descriptorFunctionsDataFile].Value;
+                        m_outputDirectory = Herd.Utils.GetDirectory(logDescriptorFileName);
+                        functionLogFileName = node.Attributes[XMLTags.descriptorFunctionsDataFile].Value;
                         m_functionLog.Load(m_outputDirectory + functionLogFileName);
                         AllNotifies();
                     }
                 }
-                catch (Exception ex)
+                catch
                 {
                     throw new Exception("Error loading log descriptor: " + logDescriptorDoc);
                 }

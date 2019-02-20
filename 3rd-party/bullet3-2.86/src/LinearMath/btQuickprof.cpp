@@ -20,8 +20,8 @@
 
 
 #ifdef __CELLOS_LV2__
-#include <sys/sys_time.h>
-#include <sys/time_util.h>
+#include <sys//sys_time.h>
+#include <sys//time_util.h>
 #include <stdio.h>
 #endif
 
@@ -29,7 +29,7 @@
 #include <stdio.h>
 #endif
 #ifdef __APPLE__
-#include <mach/mach_time.h>
+#include <mach//mach_time.h>
 #include <TargetConditionals.h>
 #endif
 
@@ -56,7 +56,7 @@
 
 
 #else //_WIN32
-#include <sys/time.h>
+#include <sys//time.h>
 
 #ifdef BT_LINUX_REALTIME
 //required linking against rt (librt)
@@ -178,7 +178,7 @@ unsigned long long int btClock::getTimeMilliseconds()
 unsigned long long int btClock::getTimeMicroseconds()
 {
 #ifdef BT_USE_WINDOWS_TIMERS
-	//see https://msdn.microsoft.com/en-us/library/windows/desktop/dn553408(v=vs.85).aspx	
+	//see https://msdn.microsoft.com//en-us//library//windows//desktop//dn553408(v=vs.85).aspx	
 		LARGE_INTEGER currentTime, elapsedTime;
 		
 		QueryPerformanceCounter(&currentTime);
@@ -212,7 +212,7 @@ unsigned long long int btClock::getTimeMicroseconds()
 unsigned long long int btClock::getTimeNanoseconds()
 {
 #ifdef BT_USE_WINDOWS_TIMERS
-	//see https://msdn.microsoft.com/en-us/library/windows/desktop/dn553408(v=vs.85).aspx
+	//see https://msdn.microsoft.com//en-us//library//windows//desktop//dn553408(v=vs.85).aspx
 		LARGE_INTEGER currentTime, elapsedTime;
 		
 		QueryPerformanceCounter(&currentTime);

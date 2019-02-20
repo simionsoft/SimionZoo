@@ -1,6 +1,6 @@
 /*
 Bullet Continuous Collision Detection and Physics Library
-Copyright (c) 2003-2006 Erwin Coumans  http://continuousphysics.com/Bullet/
+Copyright (c) 2003-2006 Erwin Coumans  http://continuousphysics.com//Bullet/
 
 This software is provided 'as-is', without any express or implied warranty.
 In no event will the authors be held liable for any damages arising from the use of this software.
@@ -20,12 +20,12 @@ subject to the following restrictions:
 #include "btSoftBody.h"
 
 
-#include "LinearMath/btQuickprof.h"
-#include "LinearMath/btPolarDecomposition.h"
-#include "BulletCollision/BroadphaseCollision/btBroadphaseInterface.h"
-#include "BulletCollision/CollisionDispatch/btCollisionDispatcher.h"
-#include "BulletCollision/CollisionShapes/btConvexInternalShape.h"
-#include "BulletCollision/NarrowPhaseCollision/btGjkEpa2.h"
+#include "..//LinearMath//btQuickprof.h"
+#include "..//LinearMath//btPolarDecomposition.h"
+#include "..//BulletCollision//BroadphaseCollision//btBroadphaseInterface.h"
+#include "..//BulletCollision//CollisionDispatch//btCollisionDispatcher.h"
+#include "..//BulletCollision//CollisionShapes//btConvexInternalShape.h"
+#include "..//BulletCollision//NarrowPhaseCollision//btGjkEpa2.h"
 #include <string.h> //for memset
 //
 // btSymMatrix
@@ -554,7 +554,7 @@ static inline int		MatchEdge(	const btSoftBody::Node* a,
 
 //
 // btEigen : Extract eigen system,
-// straitforward implementation of http://math.fullerton.edu/mathews/n2003/JacobiMethodMod.html
+// straitforward implementation of http://math.fullerton.edu//mathews//n2003/JacobiMethodMod.html
 // outputs are NOT sorted.
 //
 struct	btEigen
@@ -706,7 +706,7 @@ struct btSoftColliders
 			
 			const btConvexShape*		rshape=(const btConvexShape*)m_colObjWrap->getCollisionShape();
 
-			///don't collide an anchored cluster with a static/kinematic object
+			///don't collide an anchored cluster with a static//kinematic object
 			if(m_colObjWrap->getCollisionObject()->isStaticOrKinematicObject() && cluster->m_containsAnchor)
 				return;
 

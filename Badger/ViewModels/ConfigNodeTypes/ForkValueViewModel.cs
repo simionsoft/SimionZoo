@@ -1,8 +1,7 @@
 ﻿using System.IO;
-using Badger.Simion;
-using Caliburn.Micro;
 using System.Xml;
-using System;
+
+using Herd.Files;
 
 namespace Badger.ViewModels
 {
@@ -31,7 +30,7 @@ namespace Badger.ViewModels
         public ForkValueViewModel(ExperimentViewModel parentExperiment, XmlNode classDefinition,
             ConfigNodeViewModel parentNode, XmlNode configNode)
         {
-            name = configNode.Attributes[XMLConfig.nameAttribute].Value;
+            name = configNode.Attributes[XMLTags.nameAttribute].Value;
             //not sure how to do this in a more elegant way
             this.configNode = getInstance(parentExperiment, parentNode,
                 classDefinition, parentNode.xPath, configNode);
@@ -43,21 +42,21 @@ namespace Badger.ViewModels
         {
             //header
             if (mode == SaveMode.AsProject)
-                writer.WriteLine(leftSpace + "<" + XMLConfig.forkValueTag + ">" + configNode.content + ">");
+                writer.WriteLine(leftSpace + "<" + XMLTags.forkValueTag + ">" + configNode.content + ">");
 
             if (mode == SaveMode.ForkHierarchy)
-                writer.WriteLine(leftSpace + "<" + XMLConfig.forkValueTag
-                    + " " + XMLConfig.valueAttribute + "=\"" + configNode.content + "\">");
+                writer.WriteLine(leftSpace + "<" + XMLTags.forkValueTag
+                    + " " + XMLTags.valueAttribute + "=\"" + configNode.content + "\">");
 
             if (mode == SaveMode.AsExperiment)
-                writer.WriteLine(leftSpace + "<" + XMLConfig.forkValueTag + " "
-                    + XMLConfig.nameAttribute + "=\"" + name + "\">");
+                writer.WriteLine(leftSpace + "<" + XMLTags.forkValueTag + " "
+                    + XMLTags.nameAttribute + "=\"" + name + "\">");
             //body: children
             configNode.outputXML(writer, mode, leftSpace + "\t");
             
             //footer
             if (mode == SaveMode.AsExperiment || mode == SaveMode.ForkHierarchy)
-                writer.WriteLine(leftSpace + "</" + XMLConfig.forkValueTag + ">");
+                writer.WriteLine(leftSpace + "</" + XMLTags.forkValueTag + ">");
         }
 
         public override bool Validate()

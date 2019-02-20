@@ -1,6 +1,6 @@
 /*
 Bullet Continuous Collision Detection and Physics Library
-Copyright (c) 2003-2006 Erwin Coumans  http://continuousphysics.com/Bullet/
+Copyright (c) 2003-2006 Erwin Coumans  http://continuousphysics.com//Bullet/
 
 This software is provided 'as-is', without any express or implied warranty.
 In no event will the authors be held liable for any damages arising from the use of this software.
@@ -20,14 +20,14 @@ subject to the following restrictions:
 class btCollisionObject;
 struct btCollisionObjectWrapper;
 
-#include "..\..\BulletCollision\NarrowPhaseCollision\btPersistentManifold.h"
+#include "..//..//BulletCollision//NarrowPhaseCollision//btPersistentManifold.h"
 class btManifoldPoint;
 
-#include "..\..\BulletCollision\NarrowPhaseCollision\btDiscreteCollisionDetectorInterface.h"
+#include "..//..//BulletCollision//NarrowPhaseCollision//btDiscreteCollisionDetectorInterface.h"
 
-#include "..\..\LinearMath\btTransform.h"
-#include "..\..\BulletCollision\CollisionDispatch\btCollisionObjectWrapper.h"
-#include "..\..\BulletCollision\CollisionDispatch\btCollisionObject.h"
+#include "..//..//LinearMath//btTransform.h"
+#include "..//..//BulletCollision//CollisionDispatch//btCollisionObjectWrapper.h"
+#include "..//..//BulletCollision//CollisionDispatch//btCollisionObject.h"
 
 typedef bool (*ContactAddedCallback)(btManifoldPoint& cp,	const btCollisionObjectWrapper* colObj0Wrap,int partId0,int index0,const btCollisionObjectWrapper* colObj1Wrap,int partId1,int index1);
 extern ContactAddedCallback		gContactAddedCallback;

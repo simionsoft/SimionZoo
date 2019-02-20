@@ -1,0 +1,22 @@
+﻿<Window x:Class="Badger.Views.JobDispatcherSettingsView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:Badger.Views"
+             mc:Ignorable="d" 
+            Icon="../Badger.ico"
+            Title="Herd Agent selection tool"
+             Width="320" Height="240">
+    <Grid>
+
+        <Grid.RowDefinitions>
+            <RowDefinition Height="50"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+        <StackPanel Orientation="Vertical" HorizontalAlignment="Left" VerticalAlignment="Center" Grid.Row="0">
+            <CheckBox IsChecked="{Binding LeaveOneFreeCore}">Leave one free core in each machine</CheckBox>
+            <CheckBox IsChecked="{Binding BalanceLoad}">Balance herd-agent load (TODO)</CheckBox>
+        </StackPanel>
+    </Grid>
+</Window>

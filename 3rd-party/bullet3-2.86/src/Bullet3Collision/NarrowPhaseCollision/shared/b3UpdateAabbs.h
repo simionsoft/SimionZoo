@@ -3,9 +3,9 @@
 
 
 
-#include "Bullet3Collision/BroadPhaseCollision/shared/b3Aabb.h"
-#include "Bullet3Collision/NarrowPhaseCollision/shared/b3Collidable.h"
-#include "Bullet3Collision/NarrowPhaseCollision/shared/b3RigidBodyData.h"
+#include "..//..//..//Bullet3Collision//BroadPhaseCollision//shared//b3Aabb.h"
+#include "..//..//..//Bullet3Collision//NarrowPhaseCollision//shared//b3Collidable.h"
+#include "..//..//..//Bullet3Collision//NarrowPhaseCollision//shared//b3RigidBodyData.h"
 
 
 

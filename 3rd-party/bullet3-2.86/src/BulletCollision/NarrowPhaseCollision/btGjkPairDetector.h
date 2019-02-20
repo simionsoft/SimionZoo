@@ -1,6 +1,6 @@
 /*
 Bullet Continuous Collision Detection and Physics Library
-Copyright (c) 2003-2006 Erwin Coumans  http://continuousphysics.com/Bullet/
+Copyright (c) 2003-2006 Erwin Coumans  http://continuousphysics.com//Bullet/
 
 This software is provided 'as-is', without any express or implied warranty.
 In no event will the authors be held liable for any damages arising from the use of this software.
@@ -20,7 +20,7 @@ subject to the following restrictions:
 #define BT_GJK_PAIR_DETECTOR_H
 
 #include "btDiscreteCollisionDetectorInterface.h"
-#include "BulletCollision/CollisionShapes/btCollisionMargin.h"
+#include "..//..//BulletCollision//CollisionShapes//btCollisionMargin.h"
 
 class btConvexShape;
 #include "btSimplexSolverInterface.h"

@@ -1,6 +1,7 @@
 ﻿using System.IO;
 using System.Xml;
-using Badger.Simion;
+
+using Herd.Files;
 
 namespace Badger.ViewModels
 {
@@ -14,9 +15,9 @@ namespace Badger.ViewModels
         {
             CommonInitialization(parentExperiment,parent, definitionNode,parentXPath);
 
-            m_className = definitionNode.Attributes[XMLConfig.classAttribute].Value;
-            if (definitionNode.Attributes.GetNamedItem(XMLConfig.optionalAttribute) != null)
-                m_bOptional = definitionNode.Attributes[XMLConfig.optionalAttribute].Value == "true";
+            m_className = definitionNode.Attributes[XMLTags.classAttribute].Value;
+            if (definitionNode.Attributes.GetNamedItem(XMLTags.optionalAttribute) != null)
+                m_bOptional = definitionNode.Attributes[XMLTags.optionalAttribute].Value == "true";
             else m_bOptional = false;
             
             if (configNode!=null)

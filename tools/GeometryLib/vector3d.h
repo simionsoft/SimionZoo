@@ -43,4 +43,5 @@ public:
 	Point3D() :Vector3D() {}
 	Point3D(double x,double y, double z): Vector3D(x,y,z){}
 	Point3D(Vector3D& v) : Point3D(v.x(), v.y(), v.z()) {}
+	Point3D(const Vector3D& v) : Point3D(v.x(), v.y(), v.z()) {}
 };

@@ -1,19 +1,22 @@
 #pragma once
 #include <vector>
-#include "../WindowsUtils/Timer.h"
+#include <string>
+using namespace std;
+
+namespace tinyxml2 { class XMLElement; }
+
+#include "../System/Timer.h"
 #include "viewport.h"
+#include "bindings.h"
 
 class GraphicObject3D;
 class GraphicObject2D;
 class TextureManager;
-class Binding;
-class Bindable;
 class Camera;
 class Light;
 class BoundingBox3D;
 class BoundingBox2D;
-using namespace std;
-namespace tinyxml2 { class XMLElement; }
+
 
 class Renderer
 {
@@ -49,6 +52,9 @@ class Renderer
 
 	ViewPort* m_pDefaultViewPort = nullptr;
 	vector<ViewPort*> m_viewPorts;
+
+	bool m_bVerbose = false;
+	
 public:
 	Renderer();
 	virtual ~Renderer();
@@ -57,6 +63,9 @@ public:
 	double getFPS() { return m_fps; }
 	void updateFPS();
 	unsigned int getNum3DObjectsDrawn() { return m_num3DObjectsDrawn; }
+
+	void setVerbose(bool set) { m_bVerbose = set; }
+	void logMessage(string message);
 
 	void setDataFolder(string dataFolder);
 	string getDataFolder();

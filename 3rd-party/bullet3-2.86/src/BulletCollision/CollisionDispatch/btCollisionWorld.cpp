@@ -1,6 +1,6 @@
 /*
 Bullet Continuous Collision Detection and Physics Library
-Copyright (c) 2003-2006 Erwin Coumans  http://continuousphysics.com/Bullet/
+Copyright (c) 2003-2006 Erwin Coumans  http://continuousphysics.com//Bullet/
 
 This software is provided 'as-is', without any express or implied warranty.
 In no event will the authors be held liable for any damages arising from the use of this software.
@@ -15,25 +15,25 @@ subject to the following restrictions:
 
 #include "btCollisionWorld.h"
 #include "btCollisionDispatcher.h"
-#include "BulletCollision/CollisionDispatch/btCollisionObject.h"
-#include "BulletCollision/CollisionShapes/btCollisionShape.h"
-#include "BulletCollision/CollisionShapes/btConvexShape.h"
-#include "BulletCollision/NarrowPhaseCollision/btGjkEpaPenetrationDepthSolver.h"
-#include "BulletCollision/CollisionShapes/btSphereShape.h" //for raycasting
-#include "BulletCollision/CollisionShapes/btBvhTriangleMeshShape.h" //for raycasting
-#include "BulletCollision/NarrowPhaseCollision/btRaycastCallback.h"
-#include "BulletCollision/CollisionShapes/btCompoundShape.h"
-#include "BulletCollision/NarrowPhaseCollision/btSubSimplexConvexCast.h"
-#include "BulletCollision/NarrowPhaseCollision/btGjkConvexCast.h"
-#include "BulletCollision/NarrowPhaseCollision/btContinuousConvexCollision.h"
-#include "BulletCollision/BroadphaseCollision/btCollisionAlgorithm.h"
-#include "BulletCollision/BroadphaseCollision/btBroadphaseInterface.h"
-#include "BulletCollision/BroadphaseCollision/btDbvt.h"
-#include "LinearMath/btAabbUtil2.h"
-#include "LinearMath/btQuickprof.h"
-#include "LinearMath/btSerializer.h"
-#include "BulletCollision/CollisionShapes/btConvexPolyhedron.h"
-#include "BulletCollision/CollisionDispatch/btCollisionObjectWrapper.h"
+#include "..//..//BulletCollision//CollisionDispatch//btCollisionObject.h"
+#include "..//..//BulletCollision//CollisionShapes//btCollisionShape.h"
+#include "..//..//BulletCollision//CollisionShapes//btConvexShape.h"
+#include "..//..//BulletCollision//NarrowPhaseCollision//btGjkEpaPenetrationDepthSolver.h"
+#include "..//..//BulletCollision//CollisionShapes//btSphereShape.h" //for raycasting
+#include "..//..//BulletCollision//CollisionShapes//btBvhTriangleMeshShape.h" //for raycasting
+#include "..//..//BulletCollision//NarrowPhaseCollision//btRaycastCallback.h"
+#include "..//..//BulletCollision//CollisionShapes//btCompoundShape.h"
+#include "..//..//BulletCollision//NarrowPhaseCollision//btSubSimplexConvexCast.h"
+#include "..//..//BulletCollision//NarrowPhaseCollision//btGjkConvexCast.h"
+#include "..//..//BulletCollision//NarrowPhaseCollision//btContinuousConvexCollision.h"
+#include "..//..//BulletCollision//BroadphaseCollision//btCollisionAlgorithm.h"
+#include "..//..//BulletCollision//BroadphaseCollision//btBroadphaseInterface.h"
+#include "..//..//BulletCollision//BroadphaseCollision//btDbvt.h"
+#include "..//..//LinearMath//btAabbUtil2.h"
+#include "..//..//LinearMath//btQuickprof.h"
+#include "..//..//LinearMath//btSerializer.h"
+#include "..//..//BulletCollision//CollisionShapes//btConvexPolyhedron.h"
+#include "..//..//BulletCollision//CollisionDispatch//btCollisionObjectWrapper.h"
 
 //#define DISABLE_DBVT_COMPOUNDSHAPE_RAYCAST_ACCELERATION
 
@@ -43,26 +43,26 @@ subject to the following restrictions:
 //#define RECALCULATE_AABB_RAYCAST 1
 
 //When the user doesn't provide dispatcher or broadphase, create basic versions (and delete them in destructor)
-#include "BulletCollision/CollisionDispatch/btCollisionDispatcher.h"
-#include "BulletCollision/BroadphaseCollision/btSimpleBroadphase.h"
-#include "BulletCollision/CollisionDispatch/btCollisionConfiguration.h"
+#include "..//..//BulletCollision//CollisionDispatch//btCollisionDispatcher.h"
+#include "..//..//BulletCollision//BroadphaseCollision//btSimpleBroadphase.h"
+#include "..//..//BulletCollision//CollisionDispatch//btCollisionConfiguration.h"
 
 
 ///for debug drawing
 
 //for debug rendering
-#include "BulletCollision/CollisionShapes/btBoxShape.h"
-#include "BulletCollision/CollisionShapes/btCapsuleShape.h"
-#include "BulletCollision/CollisionShapes/btCompoundShape.h"
-#include "BulletCollision/CollisionShapes/btConeShape.h"
-#include "BulletCollision/CollisionShapes/btConvexTriangleMeshShape.h"
-#include "BulletCollision/CollisionShapes/btCylinderShape.h"
-#include "BulletCollision/CollisionShapes/btMultiSphereShape.h"
-#include "BulletCollision/CollisionShapes/btPolyhedralConvexShape.h"
-#include "BulletCollision/CollisionShapes/btSphereShape.h"
-#include "BulletCollision/CollisionShapes/btTriangleCallback.h"
-#include "BulletCollision/CollisionShapes/btTriangleMeshShape.h"
-#include "BulletCollision/CollisionShapes/btStaticPlaneShape.h"
+#include "..//..//BulletCollision//CollisionShapes//btBoxShape.h"
+#include "..//..//BulletCollision//CollisionShapes//btCapsuleShape.h"
+#include "..//..//BulletCollision//CollisionShapes//btCompoundShape.h"
+#include "..//..//BulletCollision//CollisionShapes//btConeShape.h"
+#include "..//..//BulletCollision//CollisionShapes//btConvexTriangleMeshShape.h"
+#include "..//..//BulletCollision//CollisionShapes//btCylinderShape.h"
+#include "..//..//BulletCollision//CollisionShapes//btMultiSphereShape.h"
+#include "..//..//BulletCollision//CollisionShapes//btPolyhedralConvexShape.h"
+#include "..//..//BulletCollision//CollisionShapes//btSphereShape.h"
+#include "..//..//BulletCollision//CollisionShapes//btTriangleCallback.h"
+#include "..//..//BulletCollision//CollisionShapes//btTriangleMeshShape.h"
+#include "..//..//BulletCollision//CollisionShapes//btStaticPlaneShape.h"
 
 
 
@@ -182,8 +182,8 @@ void	btCollisionWorld::updateSingleAabb(btCollisionObject* colObj)
 			reportMe = false;
 			m_debugDrawer->reportErrorWarning("Overflow in AABB, object removed from simulation");
 			m_debugDrawer->reportErrorWarning("If you can reproduce this, please email bugs@continuousphysics.com\n");
-			m_debugDrawer->reportErrorWarning("Please include above information, your Platform, version of OS.\n");
-			m_debugDrawer->reportErrorWarning("Thanks.\n");
+			m_debugDrawer->reportErrorWarning("Please include above information, your Platform, version of OS.//n");
+			m_debugDrawer->reportErrorWarning("Thanks.//n");
 		}
 	}
 }
@@ -953,7 +953,7 @@ struct btSingleRayCallback : public btBroadphaseRayCallback
 		btVector3 rayDir = (rayToWorld-rayFromWorld);
 
 		rayDir.normalize ();
-		///what about division by zero? --> just set rayDirection[i] to INF/BT_LARGE_FLOAT
+		///what about division by zero? --> just set rayDirection[i] to INF//BT_LARGE_FLOAT
 		m_rayDirectionInverse[0] = rayDir[0] == btScalar(0.0) ? btScalar(BT_LARGE_FLOAT) : btScalar(1.0) / rayDir[0];
 		m_rayDirectionInverse[1] = rayDir[1] == btScalar(0.0) ? btScalar(BT_LARGE_FLOAT) : btScalar(1.0) / rayDir[1];
 		m_rayDirectionInverse[2] = rayDir[2] == btScalar(0.0) ? btScalar(BT_LARGE_FLOAT) : btScalar(1.0) / rayDir[2];
@@ -1046,7 +1046,7 @@ struct btSingleSweepCallback : public btBroadphaseRayCallback
 	{
 		btVector3 unnormalizedRayDir = (m_convexToTrans.getOrigin()-m_convexFromTrans.getOrigin());
 		btVector3 rayDir = unnormalizedRayDir.normalized();
-		///what about division by zero? --> just set rayDirection[i] to INF/BT_LARGE_FLOAT
+		///what about division by zero? --> just set rayDirection[i] to INF//BT_LARGE_FLOAT
 		m_rayDirectionInverse[0] = rayDir[0] == btScalar(0.0) ? btScalar(BT_LARGE_FLOAT) : btScalar(1.0) / rayDir[0];
 		m_rayDirectionInverse[1] = rayDir[1] == btScalar(0.0) ? btScalar(BT_LARGE_FLOAT) : btScalar(1.0) / rayDir[1];
 		m_rayDirectionInverse[2] = rayDir[2] == btScalar(0.0) ? btScalar(BT_LARGE_FLOAT) : btScalar(1.0) / rayDir[2];

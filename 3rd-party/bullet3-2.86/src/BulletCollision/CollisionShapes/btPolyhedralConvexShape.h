@@ -16,7 +16,7 @@ subject to the following restrictions:
 #ifndef BT_POLYHEDRAL_CONVEX_SHAPE_H
 #define BT_POLYHEDRAL_CONVEX_SHAPE_H
 
-#include "LinearMath/btMatrix3x3.h"
+#include "..//..//LinearMath//btMatrix3x3.h"
 #include "btConvexInternalShape.h"
 class btConvexPolyhedron;
 
@@ -39,8 +39,8 @@ public:
 
 	virtual ~btPolyhedralConvexShape();
 
-	///optional method mainly used to generate multiple contact points by clipping polyhedral features (faces/edges)
-	///experimental/work-in-progress
+	///optional method mainly used to generate multiple contact points by clipping polyhedral features (faces//edges)
+	///experimental//work-in-progress
 	virtual bool	initializePolyhedralFeatures(int shiftVerticesByMargin=0);
 
 	const btConvexPolyhedron*	getConvexPolyhedron() const

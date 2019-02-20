@@ -16,10 +16,10 @@ subject to the following restrictions:
 #ifndef BT_GJK_EPA_PENETATION_CONVEX_COLLISION_H
 #define BT_GJK_EPA_PENETATION_CONVEX_COLLISION_H
 
-#include "LinearMath/btTransform.h" // Note that btVector3 might be double precision...
+#include "..//LinearMath//btTransform.h" // Note that btVector3 might be double precision...
 #include "btGjkEpa3.h"
 #include "btGjkCollisionDescription.h"
-#include "BulletCollision/NarrowPhaseCollision/btVoronoiSimplexSolver.h"
+#include "..//..//BulletCollision//NarrowPhaseCollision//btVoronoiSimplexSolver.h"
 
 
 
@@ -174,7 +174,7 @@ int	btComputeGjkEpaPenetration(const btConvexTemplate& a, const btConvexTemplate
             btScalar previousSquaredDistance = squaredDistance;
             squaredDistance = newCachedSeparatingAxis.length2();
 #if 0
-            ///warning: this termination condition leads to some problems in 2d test case see Bullet/Demos/Box2dDemo
+            ///warning: this termination condition leads to some problems in 2d test case see Bullet//Demos//Box2dDemo
             if (squaredDistance>previousSquaredDistance)
             {
                 m_degenerateSimplex = 7;
@@ -199,7 +199,7 @@ int	btComputeGjkEpaPenetration(const btConvexTemplate& a, const btConvexTemplate
             
             m_cachedSeparatingAxis = newCachedSeparatingAxis;
             
-            //degeneracy, this is typically due to invalid/uninitialized worldtransforms for a btCollisionObject
+            //degeneracy, this is typically due to invalid//uninitialized worldtransforms for a btCollisionObject
             if (m_curIter++ > gGjkMaxIter)
             {
 #if defined(DEBUG) || defined (_DEBUG)
@@ -319,7 +319,7 @@ int	btComputeGjkEpaPenetration(const btConvexTemplate& a, const btConvexTemplate
                 ///EPA reports no penetration, and the second GJK (using the supporting vector without margin)
                 ///reports a valid positive distance. Use the results of the second GJK instead of failing.
                 ///thanks to Jacob.Langford for the reproduction case
-                ///http://code.google.com/p/bullet/issues/detail?id=250
+                ///http://code.google.com//p/bullet//issues//detail?id=250
                 
                 
                 if (m_cachedSeparatingAxis.length2() > btScalar(0.))

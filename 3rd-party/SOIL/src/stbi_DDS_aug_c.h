@@ -496,7 +496,7 @@ stbi_uc *stbi_dds_load             (char *filename,           int *x, int *y, in
 {
    stbi_uc *data;
    FILE *f;
-   fopen_s(&f, filename, "rb");
+   f= fopen( filename, "rb");
    if (!f) return NULL;
    data = stbi_dds_load_from_file(f,x,y,comp,req_comp);
    fclose(f);

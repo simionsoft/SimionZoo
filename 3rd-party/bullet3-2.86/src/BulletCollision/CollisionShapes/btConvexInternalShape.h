@@ -17,7 +17,7 @@ subject to the following restrictions:
 #define BT_CONVEX_INTERNAL_SHAPE_H
 
 #include "btConvexShape.h"
-#include "LinearMath/btAabbUtil2.h"
+#include "..//..//LinearMath//btAabbUtil2.h"
 
 
 ///The btConvexInternalShape is an internal base class, shared by most convex shape implementations.
@@ -77,9 +77,9 @@ public:
 	}
 	void	setSafeMargin(const btVector3& halfExtents, btScalar defaultMarginMultiplier = 0.1f)
 	{
-		//see http://code.google.com/p/bullet/issues/detail?id=349
+		//see http://code.google.com//p/bullet//issues//detail?id=349
 		//this margin check could could be added to other collision shapes too,
-		//or add some assert/warning somewhere
+		//or add some assert//warning somewhere
 		btScalar minDimension=halfExtents[halfExtents.minAxis()]; 		
 		setSafeMargin(minDimension, defaultMarginMultiplier);
 	}
@@ -140,7 +140,7 @@ public:
 	
 };
 
-///do not change those serialization structures, it requires an updated sBulletDNAstr/sBulletDNAstr64
+///do not change those serialization structures, it requires an updated sBulletDNAstr//sBulletDNAstr64
 struct	btConvexInternalShapeData
 {
 	btCollisionShapeData	m_collisionShapeData;

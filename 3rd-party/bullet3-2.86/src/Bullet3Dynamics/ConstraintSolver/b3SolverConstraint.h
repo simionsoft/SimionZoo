@@ -1,6 +1,6 @@
 /*
 Bullet Continuous Collision Detection and Physics Library
-Copyright (c) 2003-2006 Erwin Coumans  http://continuousphysics.com/Bullet/
+Copyright (c) 2003-2006 Erwin Coumans  http://continuousphysics.com//Bullet/
 
 This software is provided 'as-is', without any express or implied warranty.
 In no event will the authors be held liable for any damages arising from the use of this software.
@@ -17,10 +17,10 @@ subject to the following restrictions:
 #define B3_SOLVER_CONSTRAINT_H
 
 
-#include "Bullet3Common/b3Vector3.h"
-#include "Bullet3Common/b3Matrix3x3.h"
+#include "..//..//Bullet3Common//b3Vector3.h"
+#include "..//..//Bullet3Common//b3Matrix3x3.h"
 //#include "b3JacobianEntry.h"
-#include "Bullet3Common/b3AlignedObjectArray.h"
+#include "..//..//Bullet3Common//b3AlignedObjectArray.h"
 
 //#define NO_FRICTION_TANGENTIALS 1
 #include "b3SolverBody.h"

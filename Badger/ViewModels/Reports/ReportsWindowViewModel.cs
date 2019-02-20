@@ -1,12 +1,14 @@
 ﻿using System.Xml;
-using System.Collections.ObjectModel;
-using System.ComponentModel;
-using System.IO;
-using Badger.Data;
-using Caliburn.Micro;
-using Badger.Simion;
 using System.Threading.Tasks;
 using System.Collections.Generic;
+using System.ComponentModel;
+
+using Caliburn.Micro;
+
+using Badger.Data;
+
+using Herd.Files;
+
 
 namespace Badger.ViewModels
 {
@@ -164,26 +166,6 @@ namespace Badger.ViewModels
         }
 
         
-        private int LoadLoggedExperiment(XmlNode node, string baseDirectory
-            , SimionFileData.LoadUpdateFunction loadUpdateFunction)
-        {
-            LoggedExperimentViewModel newExperiment
-                = new LoggedExperimentViewModel(node, baseDirectory, true, false, loadUpdateFunction);
-
-            LoggedExperiments.Add(newExperiment);
-            ExperimentalUnits.AddRange(newExperiment.ExperimentalUnits);
-            Query.AddLogVariables(newExperiment.VariablesInLog);
-            ForksLoaded |= newExperiment.Forks.Count > 0;
-
-            newExperiment.TraverseAction(true, (n)=>
-            {
-                if (n is LoggedForkViewModel fork)
-                    fork.PropertyChanged += OnChildPropertyChanged;
-            });
-
-            return ExperimentalUnits.Count;
-        }
-
         private double m_loadProgress = 0.0;
         public double LoadProgress
         {
@@ -200,7 +182,7 @@ namespace Badger.ViewModels
         }
 
         int m_numProcessedExperimentalUnits = 0;
-        public void OnExperimentalUnitProcessed()
+        public void OnExperimentalUnitProcessed(ExperimentalUnit expUnit)
         {
             m_numProcessedExperimentalUnits++;
             if (m_numExperimentalUnits != 0)
@@ -225,18 +207,18 @@ namespace Badger.ViewModels
         /// </summary>
         public void LoadExperimentBatchOrReport()
         {
-            string filter = SimionFileData.ExperimentBatchOrReportFilter;
-            string filetype = SimionFileData.ExperimentBatchOrReportFileTypeDescription;
+            string filter = Files.ExperimentBatchOrReportFilter;
+            string filetype = Files.ExperimentBatchOrReportFileTypeDescription;
 
-            List<string> filenames = SimionFileData.OpenFileDialogMultipleFiles(filetype, filter, false);
+            List<string> filenames = Files.OpenFileDialogMultipleFiles(filetype, filter, false);
 
             if (filenames.Count>0)
             {
                 string filename = filenames[0];
-                string fileExtension = Utility.GetExtension(filename, 2);
-                if (fileExtension == SimionFileData.ExperimentBatchExtension)
+                string fileExtension = Herd.Utils.GetExtension(filename, 2);
+                if (fileExtension == Herd.Files.Extensions.ExperimentBatchExtension)
                     LoadExperimentBatch(filename);
-                else if (fileExtension == SimionFileData.ReportExtension)
+                else if (fileExtension == Herd.Files.Extensions.ReportExtension)
                     LoadReport(filename);
             }
         }
@@ -247,7 +229,7 @@ namespace Badger.ViewModels
         /// <param name="reportFileName">File where the report was saved using SaveReports()</param>
         public void LoadReport(string reportFileName)
         {
-            int numQueriesRead= SimionFileData.LoadReport(reportFileName, out string readBatchFilename, out BindableCollection<LogQueryResultViewModel> readQueries);
+            int numQueriesRead= Files.LoadReport(reportFileName, out string readBatchFilename, out BindableCollection<LogQueryResultViewModel> readQueries);
 
             if (numQueriesRead>0)
             {
@@ -270,10 +252,10 @@ namespace Badger.ViewModels
             if (LogQueryResults.Count == 0) return;
 
             string outputBaseFolder =
-                CaliburnUtility.SelectFolder(SimionFileData.imageRelativeDir);
+                CaliburnUtility.SelectFolder(Folders.imageRelativeDir);
 
             if (outputBaseFolder != "")
-                SimionFileData.SaveReport(LoadedBatch, LogQueryResults, outputBaseFolder);
+                Files.SaveReport(LoadedBatch, LogQueryResults, outputBaseFolder);
         }
 
         /// <summary>
@@ -286,8 +268,8 @@ namespace Badger.ViewModels
             //Ask the user for the name of the batch
             if (string.IsNullOrEmpty(batchFileName))
             {
-                bool bSuccess = SimionFileData.OpenFileDialog(ref batchFileName
-                    , SimionFileData.ExperimentBatchDescription, SimionFileData.ExperimentBatchFilter);
+                bool bSuccess = Files.OpenFileDialog(ref batchFileName
+                    , Files.ExperimentBatchDescription, Files.ExperimentBatchFilter);
                 if (!bSuccess)
                     return;
             }
@@ -299,15 +281,42 @@ namespace Badger.ViewModels
             //First we load the batch file to cout how many experimental units we have
             StartLongOperation();
             LoadedBatch = "Reading batch file";
-            m_numExperimentalUnits = SimionFileData.LoadExperimentBatchFile(batchFileName
-                , SimionFileData.CountExperimentalUnitsInBatch);
+
+            //first count the total number of experimental units
+            m_numExperimentalUnits = ExperimentBatch.CountExperimentalUnits(batchFileName, LoadOptions.ExpUnitSelection.All);
 
             Task.Run(() =>
             {
-                //load the batch
+                //load finished experimental units from the batch
+                LoadOptions loadOptions = new LoadOptions()
+                {
+                    Selection = LoadOptions.ExpUnitSelection.OnlyFinished,
+                    LoadVariablesInLog = true,
+                    OnExpUnitLoaded = OnExperimentalUnitProcessed
+                };
+
                 LoadedBatch = "Reading experiment files";
-                SimionFileData.LoadExperimentBatchFile(batchFileName, LoadLoggedExperiment, OnExperimentalUnitProcessed);
-            
+                ExperimentBatch batch = new ExperimentBatch();
+                batch.Load(batchFileName, loadOptions);
+
+                //Create ViewModels from LoggedExperimentBatch
+                foreach (Experiment experiment in batch.Experiments)
+                {
+                    LoggedExperimentViewModel newExperiment
+                        = new LoggedExperimentViewModel(experiment);
+
+                    LoggedExperiments.Add(newExperiment);
+                    ExperimentalUnits.AddRange(newExperiment.ExperimentalUnits);
+                    Query.AddLogVariables(newExperiment.VariablesInLog);
+                    ForksLoaded |= newExperiment.Forks.Count > 0;
+
+                    newExperiment.TraverseAction(true, (n) =>
+                    {
+                        if (n is LoggedForkViewModel fork)
+                            fork.PropertyChanged += OnChildPropertyChanged;
+                    });
+                }
+
                 //Update flags use to enable/disable parts of the report generation menu
                 NotifyOfPropertyChange(() => ForksLoaded);
                 NotifyOfPropertyChange(() => VariablesLoaded);

@@ -148,7 +148,7 @@ void TranslucentMaterial::set()
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 	glDisable(GL_CULL_FACE);
 	glEnable(GL_ALPHA_TEST);
-	glAlphaFunc(GL_GREATER, 0.1);
+	glAlphaFunc(GL_GREATER, 0.1f);
 
 	Renderer::get()->getTextureManager()->set(m_textureId);
 

@@ -1,6 +1,6 @@
 /*
 Bullet Continuous Collision Detection and Physics Library
-Copyright (c) 2003-2006 Erwin Coumans  http://continuousphysics.com/Bullet/
+Copyright (c) 2003-2006 Erwin Coumans  http://continuousphysics.com//Bullet/
 
 This software is provided 'as-is', without any express or implied warranty.
 In no event will the authors be held liable for any damages arising from the use of this software.
@@ -16,8 +16,8 @@ subject to the following restrictions:
 #ifndef BT_SOFTBODY_FLOAT_DATA
 #define BT_SOFTBODY_FLOAT_DATA
 
-#include "BulletCollision/CollisionDispatch/btCollisionObject.h"
-#include "BulletDynamics/Dynamics/btRigidBody.h"
+#include "..//BulletCollision//CollisionDispatch//btCollisionObject.h"
+#include "..//BulletDynamics//Dynamics//btRigidBody.h"
 
 
 struct	SoftBodyMaterialData
@@ -187,7 +187,7 @@ struct	btSoftBodyJointData
 	int							m_pad;
 };
 
-///do not change those serialization structures, it requires an updated sBulletDNAstr/sBulletDNAstr64
+///do not change those serialization structures, it requires an updated sBulletDNAstr//sBulletDNAstr64
 struct	btSoftBodyFloatData
 {
 	btCollisionObjectFloatData	m_collisionObjectData;

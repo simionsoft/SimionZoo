@@ -1,6 +1,6 @@
 /*
 Bullet Continuous Collision Detection and Physics Library
-Copyright (c) 2003-2006 Erwin Coumans  http://continuousphysics.com/Bullet/
+Copyright (c) 2003-2006 Erwin Coumans  http://continuousphysics.com//Bullet/
 
 This software is provided 'as-is', without any express or implied warranty.
 In no event will the authors be held liable for any damages arising from the use of this software.
@@ -14,14 +14,14 @@ subject to the following restrictions:
 
 */
 
-#include "BulletCollision/CollisionDispatch/btCompoundCollisionAlgorithm.h"
-#include "BulletCollision/CollisionDispatch/btCollisionObject.h"
-#include "BulletCollision/CollisionShapes/btCompoundShape.h"
-#include "BulletCollision/BroadphaseCollision/btDbvt.h"
-#include "LinearMath/btIDebugDraw.h"
-#include "LinearMath/btAabbUtil2.h"
+#include "..//..//BulletCollision//CollisionDispatch//btCompoundCollisionAlgorithm.h"
+#include "..//..//BulletCollision//CollisionDispatch//btCollisionObject.h"
+#include "..//..//BulletCollision//CollisionShapes//btCompoundShape.h"
+#include "..//..//BulletCollision//BroadphaseCollision//btDbvt.h"
+#include "..//..//LinearMath//btIDebugDraw.h"
+#include "..//..//LinearMath//btAabbUtil2.h"
 #include "btManifoldResult.h"
-#include "BulletCollision/CollisionDispatch/btCollisionObjectWrapper.h"
+#include "..//..//BulletCollision//CollisionDispatch//btCollisionObjectWrapper.h"
 
 btShapePairCallback gCompoundChildShapePairCallback = 0;
 
@@ -360,7 +360,7 @@ btScalar	btCompoundCollisionAlgorithm::calculateTimeOfImpact(btCollisionObject* 
 	btCompoundShape* compoundShape = static_cast<btCompoundShape*>(colObj->getCollisionShape());
 
 	//We will use the OptimizedBVH, AABB tree to cull potential child-overlaps
-	//If both proxies are Compound, we will deal with that directly, by performing sequential/parallel tree traversals
+	//If both proxies are Compound, we will deal with that directly, by performing sequential//parallel tree traversals
 	//given Proxy0 and Proxy1, if both have a tree, Tree0 and Tree1, this means:
 	//determine overlapping nodes of Proxy1 using Proxy0 AABB against Tree1
 	//then use each overlapping node AABB against Tree0

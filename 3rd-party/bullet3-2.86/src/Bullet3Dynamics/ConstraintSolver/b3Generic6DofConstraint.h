@@ -1,6 +1,6 @@
 /*
 Bullet Continuous Collision Detection and Physics Library
-Copyright (c) 2003-2006 Erwin Coumans  http://continuousphysics.com/Bullet/
+Copyright (c) 2003-2006 Erwin Coumans  http://continuousphysics.com//Bullet/
 
 This software is provided 'as-is', without any express or implied warranty.
 In no event will the authors be held liable for any damages arising from the use of this software.
@@ -27,7 +27,7 @@ http://gimpact.sf.net
 #ifndef B3_GENERIC_6DOF_CONSTRAINT_H
 #define B3_GENERIC_6DOF_CONSTRAINT_H
 
-#include "Bullet3Common/b3Vector3.h"
+#include "..//..//Bullet3Common//b3Vector3.h"
 #include "b3JacobianEntry.h"
 #include "b3TypedConstraint.h"
 

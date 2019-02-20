@@ -1,6 +1,6 @@
 /*
 Bullet Continuous Collision Detection and Physics Library
-Copyright (c) 2003-2006 Erwin Coumans  http://continuousphysics.com/Bullet/
+Copyright (c) 2003-2006 Erwin Coumans  http://continuousphysics.com//Bullet/
 
 This software is provided 'as-is', without any express or implied warranty.
 In no event will the authors be held liable for any damages arising from the use of this software.
@@ -19,28 +19,28 @@ subject to the following restrictions:
 //It is not necessary (redundant) to refresh contact manifolds, this refresh has been moved to the collision algorithms.
 
 #include "btSequentialImpulseConstraintSolver.h"
-#include "BulletCollision/NarrowPhaseCollision/btPersistentManifold.h"
+#include "..//..//BulletCollision//NarrowPhaseCollision//btPersistentManifold.h"
 
-#include "LinearMath/btIDebugDraw.h"
-#include "LinearMath/btCpuFeatureUtility.h"
+#include "..//..//LinearMath//btIDebugDraw.h"
+#include "..//..//LinearMath//btCpuFeatureUtility.h"
 
 //#include "btJacobianEntry.h"
-#include "LinearMath/btMinMax.h"
-#include "BulletDynamics/ConstraintSolver/btTypedConstraint.h"
+#include "..//..//LinearMath//btMinMax.h"
+#include "..//..//BulletDynamics//ConstraintSolver//btTypedConstraint.h"
 #include <new>
-#include "LinearMath/btStackAlloc.h"
-#include "LinearMath/btQuickprof.h"
+#include "..//..//LinearMath//btStackAlloc.h"
+#include "..//..//LinearMath//btQuickprof.h"
 //#include "btSolverBody.h"
 //#include "btSolverConstraint.h"
-#include "LinearMath/btAlignedObjectArray.h"
+#include "..//..//LinearMath//btAlignedObjectArray.h"
 #include <string.h> //for memset
 
 int		gNumSplitImpulseRecoveries = 0;
 
-#include "BulletDynamics/Dynamics/btRigidBody.h"
+#include "..//..//BulletDynamics//Dynamics//btRigidBody.h"
 
 //#define VERBOSE_RESIDUAL_PRINTF 1
-///This is the scalar reference implementation of solving a single constraint row, the innerloop of the Projected Gauss Seidel/Sequential Impulse constraint solver
+///This is the scalar reference implementation of solving a single constraint row, the innerloop of the Projected Gauss Seidel//Sequential Impulse constraint solver
 ///Below are optional SSE2 and SSE4/FMA3 versions. We assume most hardware has SSE2. For SSE4/FMA3 we perform a CPU feature check.
 static btSimdScalar gResolveSingleConstraintRowGeneric_scalar_reference(btSolverBody& body1, btSolverBody& body2, const btSolverConstraint& c)
 {
@@ -996,7 +996,7 @@ void btSequentialImpulseConstraintSolver::setupContactConstraint(btSolverConstra
 					if (!infoGlobal.m_splitImpulse || (penetration > infoGlobal.m_splitImpulsePenetrationThreshold))
 					{
 						//combine position and velocity into rhs
-						solverConstraint.m_rhs = penetrationImpulse+velocityImpulse;//-solverConstraint.m_contactNormal1.dot(bodyA->m_externalForce*bodyA->m_invMass-bodyB->m_externalForce/bodyB->m_invMass)*solverConstraint.m_jacDiagABInv;
+						solverConstraint.m_rhs = penetrationImpulse+velocityImpulse;//-solverConstraint.m_contactNormal1.dot(bodyA->m_externalForce*bodyA->m_invMass-bodyB->m_externalForce//bodyB->m_invMass)*solverConstraint.m_jacDiagABInv;
 						solverConstraint.m_rhsPenetration = 0.f;
 
 					} else
@@ -1573,7 +1573,7 @@ btScalar btSequentialImpulseConstraintSolver::solveGroupCacheFriendlySetup(btCol
 	int numConstraintPool = m_tmpSolverContactConstraintPool.size();
 	int numFrictionPool = m_tmpSolverContactFrictionConstraintPool.size();
 
-	///@todo: use stack allocator for such temporarily memory, same for solver bodies/constraints
+	///@todo: use stack allocator for such temporarily memory, same for solver bodies//constraints
 	m_orderNonContactConstraintPool.resizeNoInitialize(numNonContactPool);
 	if ((infoGlobal.m_solverMode & SOLVER_USE_2_FRICTION_DIRECTIONS))
 		m_orderTmpConstraintPool.resizeNoInitialize(numConstraintPool*2);
@@ -1622,7 +1622,7 @@ btScalar btSequentialImpulseConstraintSolver::solveSingleIteration(int iteration
 				m_orderNonContactConstraintPool[swapi] = tmp;
 			}
 
-			//contact/friction constraints are not solved more than
+			//contact//friction constraints are not solved more than
 			if (iteration< infoGlobal.m_numIterations)
 			{
 				for (int j=0; j<numConstraintPool; ++j) {

@@ -1,6 +1,6 @@
 /*
 Bullet Continuous Collision Detection and Physics Library
-Copyright (c) 2003-2006 Erwin Coumans  http://continuousphysics.com/Bullet/
+Copyright (c) 2003-2006 Erwin Coumans  http://continuousphysics.com//Bullet/
 
 This software is provided 'as-is', without any express or implied warranty.
 In no event will the authors be held liable for any damages arising from the use of this software.
@@ -20,9 +20,9 @@ http://gimpact.sf.net
 */
 
 #include "btGeneric6DofConstraint.h"
-#include "BulletDynamics/Dynamics/btRigidBody.h"
-#include "LinearMath/btTransformUtil.h"
-#include "LinearMath/btTransformUtil.h"
+#include "..//..//BulletDynamics//Dynamics//btRigidBody.h"
+#include "..//..//LinearMath//btTransformUtil.h"
+#include "..//..//LinearMath//btTransformUtil.h"
 #include <new>
 
 
@@ -79,7 +79,7 @@ btScalar btGetMatrixElem(const btMatrix3x3& mat, int index)
 
 
 
-///MatrixToEulerXYZ from http://www.geometrictools.com/LibFoundation/Mathematics/Wm4Matrix3.inl.html
+///MatrixToEulerXYZ from http://www.geometrictools.com//LibFoundation//Mathematics//Wm4Matrix3.inl.html
 bool	matrixToEulerXYZ(const btMatrix3x3& mat,btVector3& xyz);
 bool	matrixToEulerXYZ(const btMatrix3x3& mat,btVector3& xyz)
 {

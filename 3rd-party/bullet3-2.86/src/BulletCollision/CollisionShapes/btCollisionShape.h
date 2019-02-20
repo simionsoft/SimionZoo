@@ -16,10 +16,10 @@ subject to the following restrictions:
 #ifndef BT_COLLISION_SHAPE_H
 #define BT_COLLISION_SHAPE_H
 
-#include "..\..\LinearMath\btTransform.h"
-#include "..\..\LinearMath\btVector3.h"
-#include "..\..\LinearMath\btMatrix3x3.h"
-#include "..\..\BulletCollision\BroadphaseCollision\btBroadphaseProxy.h" //for the shape types
+#include "..//..//LinearMath//btTransform.h"
+#include "..//..//LinearMath//btVector3.h"
+#include "..//..//LinearMath//btMatrix3x3.h"
+#include "..//..//BulletCollision//BroadphaseCollision//btBroadphaseProxy.h" //for the shape types
 class btSerializer;
 
 
@@ -112,7 +112,7 @@ public:
 	int		getShapeType() const { return m_shapeType; }
 
 	///the getAnisotropicRollingFrictionDirection can be used in combination with setAnisotropicFriction
-	///See Bullet/Demos/RollingFrictionDemo for an example
+	///See Bullet//Demos//RollingFrictionDemo for an example
 	virtual btVector3	getAnisotropicRollingFrictionDirection() const
 	{
 		return btVector3(1,1,1);
@@ -151,7 +151,7 @@ public:
 
 };	
 
-///do not change those serialization structures, it requires an updated sBulletDNAstr/sBulletDNAstr64
+///do not change those serialization structures, it requires an updated sBulletDNAstr//sBulletDNAstr64
 struct	btCollisionShapeData
 {
 	char	*m_name;

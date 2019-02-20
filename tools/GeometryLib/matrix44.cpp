@@ -19,9 +19,10 @@ void Matrix44::setIdentity()
 }
 
 //http://www.euclideanspace.com/maths/geometry/rotations/conversions/quaternionToMatrix/index.htm
-void Matrix44::setRotation(Quaternion& quat)
+void Matrix44::setRotation(const Quaternion& originalQuat)
 {
-	if (quat.bUseOrientations())
+	Quaternion quat = originalQuat;
+	if (originalQuat.bUseOrientations())
 		quat.fromOrientations();
 
 	double sqw = quat.w()*quat.w();
@@ -57,7 +58,7 @@ void Matrix44::setRotation(Quaternion& quat)
 	set(2, 1, 2.0 * (tmp1 - tmp2)*invs);
 }
 
-void Matrix44::setTranslation(Vector3D& translation)
+void Matrix44::setTranslation(const Vector3D& translation)
 {
 	set(0, 0, 1.0);
 	set(0, 1, 0.0);
@@ -76,7 +77,7 @@ void Matrix44::setTranslation(Vector3D& translation)
 	set(3, 2, translation.z());
 	set(3, 3, 1.0);
 }
-void Matrix44::setScale(Vector3D& scale)
+void Matrix44::setScale(const Vector3D& scale)
 {
 	set(0, 0, scale.x());
 	set(0, 1, 0.0);
@@ -120,11 +121,12 @@ void Matrix44::setPerspective(double halfWidth, double halfHeight, double nearPl
 BoundingBox3D Matrix44::operator*(const BoundingBox3D& box) const
 {
 	BoundingBox3D result;
-	result = BoundingBox3D(*this*box.min(), *this*box.max());
+	result.setMin((*this)*box.min());
+	result.setMax((*this)*box.max());
 	return result;
 }
 
-Matrix44 Matrix44::operator*(Matrix44& mat) const
+Matrix44 Matrix44::operator*(const Matrix44& mat) const
 {
 	Matrix44 result;
 	result.set(0, 0, get(0, 0)*mat.get(0, 0) + get(1, 0)*mat.get(0, 1) + get(2, 0)*mat.get(0, 2) + get(3, 0)*mat.get(0, 3));
@@ -152,7 +154,7 @@ Matrix44 Matrix44::operator*(Matrix44& mat) const
 
 
 
-Point3D Matrix44::operator*(Point3D& v) const
+Point3D Matrix44::operator*(const Point3D& v) const
 {
 	Point3D result;
 	result.setX(get(0, 0)*v.x() + get(1, 0)*v.y() + get(2, 0)*v.z() + get(3, 0));
@@ -161,7 +163,7 @@ Point3D Matrix44::operator*(Point3D& v) const
 	return result;
 }
 
-Vector3D Matrix44::operator*(Vector3D& v) const
+Vector3D Matrix44::operator*(const Vector3D& v) const
 {
 	Vector3D result;
 	result.setX(get(0, 0)*v.x() + get(1, 0)*v.y() + get(2, 0)*v.z());
@@ -170,7 +172,7 @@ Vector3D Matrix44::operator*(Vector3D& v) const
 	return result;
 }
 
-Point2D Matrix44::operator*(Point2D& v) const
+Point2D Matrix44::operator*(const Point2D& v) const
 {
 	Point2D result;
 	result.setX(get(0, 0)*v.x() + get(1, 0)*v.y() + get(3, 0));
@@ -178,7 +180,7 @@ Point2D Matrix44::operator*(Point2D& v) const
 	return result;
 }
 
-Vector2D Matrix44::operator*(Vector2D& v) const
+Vector2D Matrix44::operator*(const Vector2D& v) const
 {
 	Vector2D result;
 	result.setX(get(0, 0)*v.x() + get(1, 0)*v.y() );

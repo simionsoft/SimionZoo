@@ -26,9 +26,9 @@
 #include "btMultiBodyLink.h"
 #include "btMultiBodyLinkCollider.h"
 #include "btMultiBodyJointFeedback.h"
-#include "LinearMath/btTransformUtil.h"
-#include "LinearMath/btSerializer.h"
-//#include "Bullet3Common/b3Logging.h"
+#include "..//..//LinearMath//btTransformUtil.h"
+#include "..//..//LinearMath//btSerializer.h"
+//#include "..//..//Bullet3Common//b3Logging.h"
 // #define INCLUDE_GYRO_TERM 
 
 ///todo: determine if we need these options. If so, make a proper API, otherwise delete those globals
@@ -665,7 +665,7 @@ btScalar * btMultiBody::getJointTorqueMultiDof(int i)
     return &m_links[i].m_jointTorque[0];
 }
 
-inline btMatrix3x3 outerProduct(const btVector3& v0, const btVector3& v1)				//renamed it from vecMulVecTranspose (http://en.wikipedia.org/wiki/Outer_product); maybe it should be moved to btVector3 like dot and cross?
+inline btMatrix3x3 outerProduct(const btVector3& v0, const btVector3& v1)				//renamed it from vecMulVecTranspose (http://en.wikipedia.org//wiki//Outer_product); maybe it should be moved to btVector3 like dot and cross?
 {
 		btVector3 row0 = btVector3( 
 			v0.x() * v1.x(),
@@ -722,7 +722,7 @@ void btMultiBody::computeAccelerationsArticulatedBodyAlgorithmMultiDof(btScalar 
     btVector3 base_vel = getBaseVel();
     btVector3 base_omega = getBaseOmega();
 
-    // Temporary matrices/vectors -- use scratch space from caller
+    // Temporary matrices//vectors -- use scratch space from caller
     // so that we don't have to keep reallocating every frame
 
     scratch_r.resize(2*m_dofCount + 6);				//multidof? ("Y"s use it and it is used to store qdd) => 2 x m_dofCount
@@ -1359,7 +1359,7 @@ void btMultiBody::mulMatrix(btScalar *pA, btScalar *pB, int rowsA, int colsA, in
 void btMultiBody::calcAccelerationDeltasMultiDof(const btScalar *force, btScalar *output,
                                        btAlignedObjectArray<btScalar> &scratch_r, btAlignedObjectArray<btVector3> &scratch_v) const
 {
-    // Temporary matrices/vectors -- use scratch space from caller
+    // Temporary matrices//vectors -- use scratch space from caller
     // so that we don't have to keep reallocating every frame
 
 	
@@ -1399,7 +1399,7 @@ void btMultiBody::calcAccelerationDeltasMultiDof(const btScalar *force, btScalar
     // Combines CompTreeLinkVelocities and InitTreeLinks from Mirtich.
 	
 	// Fill in zero_acc
-    // -- set to force/torque on the base, zero otherwise
+    // -- set to force//torque on the base, zero otherwise
     if (m_fixedBase) 
 	{
         zeroAccSpatFrc[0].setZero();
@@ -1441,7 +1441,7 @@ void btMultiBody::calcAccelerationDeltasMultiDof(const btScalar *force, btScalar
 			}	
 		}
 		
-		 // Zp += pXi * (Zi + hi*Yi/Di)
+		 // Zp += pXi * (Zi + hi*Yi//Di)
 		spatForceVecTemps[0] = zeroAccSpatFrc[i+1];
 
 		for(int dof = 0; dof < m_links[i].m_dofCount; ++dof)

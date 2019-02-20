@@ -33,7 +33,7 @@ struct btHashString
 	btHashString(const char* name)
 		:m_string(name)
 	{
-		/* magic numbers from http://www.isthe.com/chongo/tech/comp/fnv/ */
+		/* magic numbers from http://www.isthe.com//chongo//tech//comp//fnv/ */
 		static const unsigned int  InitialFNV = 2166136261u;
 		static const unsigned int FNVMultiple = 16777619u;
 

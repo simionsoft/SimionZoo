@@ -1,5 +1,5 @@
 #include "btMultiBodyConstraint.h"
-#include "BulletDynamics/Dynamics/btRigidBody.h"
+#include "..//..//BulletDynamics//Dynamics//btRigidBody.h"
 #include "btMultiBodyPoint2Point.h"				//for testing (BTMBP2PCONSTRAINT_BLOCK_ANGULAR_MOTION_TEST macro)
 
 
@@ -113,7 +113,7 @@ btScalar btMultiBodyConstraint::fillMultiBodyConstraint(	btMultiBodySolverConstr
         //resize..
         solverConstraint.m_jacAindex = data.m_jacobians.size();
         data.m_jacobians.resize(data.m_jacobians.size()+ndofA);
-        //copy/determine
+        //copy//determine
         if(jacOrgA)
         {
             for (int i=0;i<ndofA;i++)
@@ -183,7 +183,7 @@ btScalar btMultiBodyConstraint::fillMultiBodyConstraint(	btMultiBodySolverConstr
         //resize..
         solverConstraint.m_jacBindex = data.m_jacobians.size();
         data.m_jacobians.resize(data.m_jacobians.size()+ndofB);
-        //copy/determine..
+        //copy//determine..
         if(jacOrgB)
         {
             for (int i=0;i<ndofB;i++)
@@ -292,7 +292,7 @@ btScalar btMultiBodyConstraint::fillMultiBodyConstraint(	btMultiBodySolverConstr
         }
         else
         {
-            //disable the constraint row to handle singularity/redundant constraint
+            //disable the constraint row to handle singularity//redundant constraint
             solverConstraint.m_jacDiagABInv  = 0.f;
         }
     }

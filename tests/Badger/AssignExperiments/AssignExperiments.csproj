@@ -68,10 +68,6 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\..\Badger\Badger.csproj">
-      <Project>{575c1ff1-8401-4ec8-8e58-4a09d2659ded}</Project>
-      <Name>Badger</Name>
-    </ProjectReference>
     <ProjectReference Include="..\..\..\tools\Herd\Herd.csproj">
       <Project>{75640896-F22E-4295-BB90-560CB48BB2B2}</Project>
       <Name>Herd</Name>

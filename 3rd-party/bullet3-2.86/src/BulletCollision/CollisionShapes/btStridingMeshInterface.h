@@ -16,7 +16,7 @@ subject to the following restrictions:
 #ifndef BT_STRIDING_MESHINTERFACE_H
 #define BT_STRIDING_MESHINTERFACE_H
 
-#include "LinearMath/btVector3.h"
+#include "..//..//LinearMath//btVector3.h"
 #include "btTriangleCallback.h"
 #include "btConcaveShape.h"
 
@@ -26,7 +26,7 @@ subject to the following restrictions:
 
 ///	The btStridingMeshInterface is the interface class for high performance generic access to triangle meshes, used in combination with btBvhTriangleMeshShape and some other collision shapes.
 /// Using index striding of 3*sizeof(integer) it can use triangle arrays, using index striding of 1*sizeof(integer) it can handle triangle strips.
-/// It allows for sharing graphics and collision meshes. Also it provides locking/unlocking of graphics meshes that are in gpu memory.
+/// It allows for sharing graphics and collision meshes. Also it provides locking//unlocking of graphics meshes that are in gpu memory.
 ATTRIBUTE_ALIGNED16(class ) btStridingMeshInterface
 {
 	protected:
@@ -125,7 +125,7 @@ struct	btCharIndexTripletData
 };
 
 
-///do not change those serialization structures, it requires an updated sBulletDNAstr/sBulletDNAstr64
+///do not change those serialization structures, it requires an updated sBulletDNAstr//sBulletDNAstr64
 struct	btMeshPartData
 {
 	btVector3FloatData			*m_vertices3f;
@@ -142,7 +142,7 @@ struct	btMeshPartData
 };
 
 
-///do not change those serialization structures, it requires an updated sBulletDNAstr/sBulletDNAstr64
+///do not change those serialization structures, it requires an updated sBulletDNAstr//sBulletDNAstr64
 struct	btStridingMeshInterfaceData
 {
 	btMeshPartData	*m_meshPartsPtr;

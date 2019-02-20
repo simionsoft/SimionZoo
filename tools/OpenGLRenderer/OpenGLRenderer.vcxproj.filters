@@ -132,9 +132,9 @@
       <Filter>aux</Filter>
     </ClInclude>
     <ClInclude Include="resource.h" />
-  </ItemGroup>
-  <ItemGroup>
-    <Text Include="ReadMe.txt" />
+    <ClInclude Include="xml-tags.h">
+      <Filter>aux</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="graphics">

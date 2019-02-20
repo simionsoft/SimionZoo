@@ -15,7 +15,7 @@ subject to the following restrictions:
 
 #include "btHeightfieldTerrainShape.h"
 
-#include "LinearMath/btTransformUtil.h"
+#include "..//..//LinearMath//btTransformUtil.h"
 
 
 
@@ -63,7 +63,7 @@ PHY_ScalarType hdt, bool flipQuadEdges
 	btAssert(heightStickLength > 1);// && "bad length");
 	btAssert(heightfieldData);// && "null heightfield data");
 	// btAssert(heightScale) -- do we care?  Trust caller here
-	btAssert(minHeight <= maxHeight);// && "bad min/max height");
+	btAssert(minHeight <= maxHeight);// && "bad min//max height");
 	btAssert(upAxis >= 0 && upAxis < 3);// && "bad upAxis--should be in range [0,2]");
 	btAssert(hdt != PHY_UCHAR || hdt != PHY_FLOAT || hdt != PHY_SHORT);// && "Bad height data type enum");
 
@@ -84,7 +84,7 @@ PHY_ScalarType hdt, bool flipQuadEdges
 	m_upAxis = upAxis;
 	m_localScaling.setValue(btScalar(1.), btScalar(1.), btScalar(1.));
 
-	// determine min/max axis-aligned bounding box (aabb) values
+	// determine min//max axis-aligned bounding box (aabb) values
 	switch (m_upAxis)
 	{
 	case 0:
@@ -294,7 +294,7 @@ void	btHeightfieldTerrainShape::processAllTriangles(btTriangleCallback* callback
 	quantizeWithClamp(quantizedAabbMin, localAabbMin,0);
 	quantizeWithClamp(quantizedAabbMax, localAabbMax,1);
 	
-	// expand the min/max quantized values
+	// expand the min//max quantized values
 	// this is to catch the case where the input aabb falls between grid points!
 	for (int i = 0; i < 3; ++i) {
 		quantizedAabbMin[i]--;

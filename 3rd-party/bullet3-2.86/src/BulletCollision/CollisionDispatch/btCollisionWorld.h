@@ -18,7 +18,7 @@ subject to the following restrictions:
  * @mainpage Bullet Documentation
  *
  * @section intro_sec Introduction
- * Bullet is a Collision Detection and Rigid Body Dynamics Library. The Library is Open Source and free for commercial use, under the ZLib license ( http://opensource.org/licenses/zlib-license.php ).
+ * Bullet is a Collision Detection and Rigid Body Dynamics Library. The Library is Open Source and free for commercial use, under the ZLib license ( http://opensource.org//licenses//zlib-license.php ).
  *
  * The main documentation is Bullet_User_Manual.pdf, included in the source code distribution.
  * There is the Physics Forum for feedback and general Collision Detection and Physics discussions.
@@ -27,16 +27,16 @@ subject to the following restrictions:
  * @section install_sec Installation
  *
  * @subsection step1 Step 1: Download
- * You can download the Bullet Physics Library from the github repository: https://github.com/bulletphysics/bullet3/releases 
+ * You can download the Bullet Physics Library from the github repository: https://github.com//bulletphysics//bullet3/releases 
  *
  * @subsection step2 Step 2: Building
  * Bullet has multiple build systems, including premake, cmake and autotools. Premake and cmake support all platforms.
- * Premake is included in the Bullet/build folder for Windows, Mac OSX and Linux. 
- * Under Windows you can click on Bullet/build/vs2010.bat to create Microsoft Visual Studio projects. 
+ * Premake is included in the Bullet//build folder for Windows, Mac OSX and Linux. 
+ * Under Windows you can click on Bullet//build//vs2010.bat to create Microsoft Visual Studio projects. 
  * On Mac OSX and Linux you can open a terminal and generate Makefile, codeblocks or Xcode4 projects:
- * cd Bullet/build
- * ./premake4_osx gmake or ./premake4_linux gmake or ./premake4_linux64 gmake or (for Mac) ./premake4_osx xcode4
- * cd Bullet/build/gmake
+ * cd Bullet//build
+ * .//premake4_osx gmake or .//premake4_linux gmake or .//premake4_linux64 gmake or (for Mac) .//premake4_osx xcode4
+ * cd Bullet//build//gmake
  * make
  * 
  * An alternative to premake is cmake. You can download cmake from http://www.cmake.org
@@ -46,7 +46,7 @@ subject to the following restrictions:
  * cmake . -G "Visual Studio 9 2008"
  * cmake . -G Xcode
  * cmake . -G "Unix Makefiles"
- * Although cmake is recommended, you can also use autotools for UNIX: ./autogen.sh ./configure to create a Makefile and then run make.
+ * Although cmake is recommended, you can also use autotools for UNIX: .//autogen.sh .//configure to create a Makefile and then run make.
  * 
  * @subsection step3 Step 3: Testing demos
  * Try to run and experiment with BasicDemo executable as a starting point.
@@ -57,7 +57,7 @@ subject to the following restrictions:
  * Check out BasicDemo how to create a btDynamicsWorld, btRigidBody and btCollisionShape, Stepping the simulation and synchronizing your graphics object transform.
  * Check out SoftDemo how to use soft body dynamics, using btSoftRigidDynamicsWorld.
  * @subsection step5 Step 5 : Integrate the Collision Detection Library (without Dynamics and other Extras)
- * Bullet Collision Detection can also be used without the Dynamics/Extras.
+ * Bullet Collision Detection can also be used without the Dynamics//Extras.
  * Check out btCollisionWorld and btCollisionObject, and the CollisionInterfaceDemo.
  * @subsection step6 Step 6 : Use Snippets like the GJK Closest Point calculation.
  * Bullet has been designed in a modular way keeping dependencies to a minimum. The ConvexHullDistance demo demonstrates direct use of btGjkPairDetector.
@@ -77,12 +77,12 @@ class btConvexShape;
 class btBroadphaseInterface;
 class btSerializer;
 
-#include "..\..\LinearMath\btVector3.h"
-#include "..\..\LinearMath\btTransform.h"
+#include "..//..//LinearMath//btVector3.h"
+#include "..//..//LinearMath//btTransform.h"
 #include "btCollisionObject.h"
 #include "btCollisionDispatcher.h"
-#include "..\BroadphaseCollision\btOverlappingPairCache.h"
-#include "..\..\LinearMath\btAlignedObjectArray.h"
+#include "..//BroadphaseCollision//btOverlappingPairCache.h"
+#include "..//..//LinearMath//btAlignedObjectArray.h"
 
 ///CollisionWorld is interface and container for the collision detection
 class btCollisionWorld
@@ -109,7 +109,7 @@ protected:
 
 public:
 
-	//this constructor doesn't own the dispatcher and paircache/broadphase
+	//this constructor doesn't own the dispatcher and paircache//broadphase
 	btCollisionWorld(btDispatcher* dispatcher,btBroadphaseInterface* broadphasePairCache, btCollisionConfiguration* collisionConfiguration);
 
 	virtual ~btCollisionWorld();
@@ -150,7 +150,7 @@ public:
 	virtual void	updateAabbs();
 
 	///the computeOverlappingPairs is usually already called by performDiscreteCollisionDetection (or stepSimulation)
-	///it can be useful to use if you perform ray tests without collision detection/simulation
+	///it can be useful to use if you perform ray tests without collision detection//simulation
 	virtual void	computeOverlappingPairs();
 
 	
@@ -519,7 +519,7 @@ public:
 		m_forceUpdateAllAabbs = forceUpdateAllAabbs;
 	}
 
-	///Preliminary serialization test for Bullet 2.76. Loading those files requires a separate parser (Bullet/Demos/SerializeDemo)
+	///Preliminary serialization test for Bullet 2.76. Loading those files requires a separate parser (Bullet//Demos//SerializeDemo)
 	virtual	void	serialize(btSerializer* serializer);
 
 };

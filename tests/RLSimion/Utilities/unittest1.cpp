@@ -1,12 +1,12 @@
 #include "stdafx.h"
 #include "CppUnitTest.h"
-#include "../../../tools/WindowsUtils/FileUtils.h"
+#include "../../../tools/System/FileUtils.h"
 
 using namespace Microsoft::VisualStudio::CppUnitTestFramework;
 
-namespace Utilities
+namespace System
 {		
-	TEST_CLASS(UnitTest1)
+	TEST_CLASS(System_Windows)
 	{
 	public:
 		

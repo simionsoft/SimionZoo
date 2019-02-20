@@ -4,10 +4,14 @@
 
 
 Texture::Texture()
-{}
+{
+	numRefs = 1;
+}
 
 Texture::~Texture()
 {
+	Renderer::get()->logMessage(string("Deleting texture object: ") + to_string(oglId) + string("(")
+		+ to_string(numRefs) + string(" references)"));
 	glDeleteTextures(1, &oglId);
 }
 
@@ -18,21 +22,25 @@ TextureManager::TextureManager()
 
 TextureManager::~TextureManager()
 {
-	for (vector<Texture*>::iterator it = m_textures.begin(); it != m_textures.end(); ++it)
+	for (auto it = m_textures.begin(); it != m_textures.end(); ++it)
 	{
 		delete *it;
 	}
+	Renderer::get()->logMessage("Finished freeing texture objects");
 }
 
 size_t TextureManager::loadTexture(string filename)
 {
 	filename = m_folder + filename;
+
+	Renderer::get()->logMessage(string("Loading texture file: ") + filename);
 	int id = 0;
-	for (vector<Texture*>::iterator it = m_textures.begin(); it != m_textures.end(); ++it)
+	for (auto it = m_textures.begin(); it != m_textures.end(); ++it)
 	{
 		if ((*it)->path == filename)
 		{
 			(*it)->addRef();
+			Renderer::get()->logMessage("Already loaded");
 			return id;
 		}
 		++id;
@@ -43,6 +51,7 @@ size_t TextureManager::loadTexture(string filename)
 		, SOIL_FLAG_POWER_OF_TWO | SOIL_FLAG_MIPMAPS,&numChannelsRead);
 	if (oglId != 0)
 	{
+		Renderer::get()->logMessage("Success");
 		Texture* pTexture = new Texture();
 		pTexture->oglId = oglId;
 		pTexture->path = filename;
@@ -50,6 +59,7 @@ size_t TextureManager::loadTexture(string filename)
 
 		return m_textures.size() - 1; //we return the internal ID instead of the OpenGL id
 	}
+	Renderer::get()->logMessage("Failed: could not find file");
 	return -1;
 }
 

@@ -8,8 +8,11 @@
 #include "light.h"
 #include "xml-load.h"
 #include "../GeometryLib/bounding-box.h"
+#include <algorithm>
+#include <iostream>
 
 using namespace tinyxml2;
+using namespace std;
 
 Renderer* Renderer::m_pInstance = 0;
 
@@ -26,11 +29,17 @@ Renderer::Renderer()
 Renderer::~Renderer()
 {
 	//delete here all the objects handled by the renderer. Viewports have references to them, but they don't own them
-	for each (auto obj in m_3DgraphicObjects) delete obj;
-	for each (auto obj in m_2DgraphicObjects) delete obj;
-	for each (auto camera in m_cameras) delete camera;
-	for each (auto light in m_lights) delete light;
-	for each (auto viewport in m_viewPorts) delete viewport;
+	logMessage("Renderer::~Renderer(): 3D objects");
+	for (auto obj : m_3DgraphicObjects) delete obj;
+	logMessage("Renderer::~Renderer(): 2D objects");
+	for (auto obj : m_2DgraphicObjects) delete obj;
+	logMessage("Renderer::~Renderer(): cameras");
+	for (auto camera : m_cameras) delete camera;
+	logMessage("Renderer::~Renderer(): lights");
+	for (auto light : m_lights) delete light;
+	logMessage("Renderer::~Renderer(): viewports");
+	for (auto viewport : m_viewPorts) delete viewport;
+	logMessage("Renderer::~Renderer(): texture manager");
 	delete m_pTextureManager;
 	m_pInstance = nullptr;
 }
@@ -172,7 +181,7 @@ Camera* Renderer::getActiveCamera()
 
 GraphicObject3D* Renderer::get3DObjectByName(string name)
 {
-	for each (GraphicObject3D* object in m_3DgraphicObjects)
+	for (GraphicObject3D* object : m_3DgraphicObjects)
 	{
 		if (object->name() == name)
 		return object;
@@ -182,7 +191,7 @@ GraphicObject3D* Renderer::get3DObjectByName(string name)
 
 GraphicObject2D* Renderer::get2DObjectByName(string name)
 {
-	for each (GraphicObject2D* object in m_2DgraphicObjects)
+	for (GraphicObject2D* object : m_2DgraphicObjects)
 	{
 		if (object->name() == name)
 			return object;
@@ -190,17 +199,26 @@ GraphicObject2D* Renderer::get2DObjectByName(string name)
 	return nullptr;
 }
 
+void Renderer::logMessage(string message)
+{
+	if (m_bVerbose)
+		cout << message << "\n";
+}
 
 void Renderer::loadScene(const char* file)
 {
 	tinyxml2::XMLDocument doc;
-	doc.LoadFile((m_dataFolder + string(file)).c_str());
+	string fullFilename = m_dataFolder + string(file);
+	doc.LoadFile(fullFilename.c_str());
+	logMessage(string("Opening scene file: ") + fullFilename);
 	if (doc.Error() == tinyxml2::XML_SUCCESS)
 	{
+		logMessage("Success");
 		tinyxml2::XMLElement *pRoot = doc.FirstChildElement(XML_TAG_SCENE);
 		if (pRoot)
 			loadSceneObjects(pRoot);
 	}
+	else logMessage("ERROR: File not found");
 }
 void Renderer::loadSceneObjects(tinyxml2::XMLElement* pNode)
 {
@@ -229,15 +247,21 @@ void Renderer::loadSceneObjects(tinyxml2::XMLElement* pNode)
 	if (pObjects)
 		loadChildren<GraphicObject3D>(pObjects, nullptr, m_3DgraphicObjects);
 	//we need to add loaded objects to the default viewport
-	for each (GraphicObject3D* obj in m_3DgraphicObjects)
+	for (GraphicObject3D* obj : m_3DgraphicObjects)
+	{
+		logMessage(string("Loading 3D object: ") + obj->name());
 		m_pDefaultViewPort->addGraphicObject3D(obj);
+	}
 
 	//2d graphic objects
 	pObjects = pNode->FirstChildElement(XML_TAG_OBJECTS_2D);
 	if (pObjects)
 		loadChildren<GraphicObject2D>(pObjects, nullptr, m_2DgraphicObjects);
-	for each (GraphicObject2D* obj in m_2DgraphicObjects)
+	for (GraphicObject2D* obj : m_2DgraphicObjects)
+	{
+		logMessage(string("Loading 2D object: ") + obj->name());
 		m_pDefaultViewPort->addGraphicObject2D(obj);
+	}
 
 	//cameras
 	loadChildren<Camera>(pNode, XML_TAG_CAMERA, m_cameras);
@@ -294,7 +318,7 @@ void Renderer::drawViewPorts()
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 	m_num3DObjectsDrawn = 0;
-	for each (ViewPort* pViewPort in m_viewPorts)
+	for (ViewPort* pViewPort : m_viewPorts)
 	{
 		m_num3DObjectsDrawn+= pViewPort->draw();
 	}
@@ -309,7 +333,7 @@ void Renderer::reshapeWindow(int w,int h)
 
 Binding* Renderer::getBinding(string externalName)
 {
-	for each (Binding* binding in m_bindings)
+	for (Binding* binding : m_bindings)
 	{
 		if (binding->externalName == externalName)
 			return binding;
@@ -325,7 +349,7 @@ size_t Renderer::getNumBindings()
 
 string Renderer::getBindingExternalName(unsigned int i)
 {
-	if (i >= 0 && i < (int)m_bindings.size())
+	if (i >= 0 && i < (unsigned int)m_bindings.size())
 		return m_bindings[i]->externalName;
 	return string("N/A");
 }
@@ -361,6 +385,6 @@ void Renderer::drawBoundingBoxes(bool enable, ViewPort* pViewPort)
 	if (pViewPort)
 		pViewPort->drawBoundingBoxes(enable);
 	else
-		for each (ViewPort* pViewPort in m_viewPorts)
+		for (ViewPort* pViewPort : m_viewPorts)
 			pViewPort->drawBoundingBoxes(enable);
 }

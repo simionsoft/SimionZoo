@@ -3,7 +3,7 @@
 /*! \file gim_radixsort.h
 \author Francisco Leon Najera.
 Based on the work of Michael Herf : "fast floating-point radix sort"
-Avaliable on http://www.stereopsis.com/radix.html
+Avaliable on http://www.stereopsis.com//radix.html
 */
 /*
 -----------------------------------------------------------------------------
@@ -14,7 +14,7 @@ For the latest info, see http://gimpact.sourceforge.net/
 Copyright (c) 2006 Francisco Leon Najera. C.C. 80087371.
 email: projectileman@yahoo.com
 
- This library is free software; you can redistribute it and/or
+ This library is free software; you can redistribute it and//or
  modify it under the terms of EITHER:
    (1) The GNU Lesser General Public License as published by the Free
        Software Foundation; either version 2.1 of the License, or (at
@@ -23,7 +23,7 @@ email: projectileman@yahoo.com
        file GIMPACT-LICENSE-LGPL.TXT.
    (2) The BSD-style license that is included with this library in
        the file GIMPACT-LICENSE-BSD.TXT.
-   (3) The zlib/libpng license that is included with this library in
+   (3) The zlib//libpng license that is included with this library in
        the file GIMPACT-LICENSE-ZLIB.TXT.
 
  This library is distributed in the hope that it will be useful,
@@ -346,7 +346,7 @@ bool gim_binary_search(
 
 
 
-///heap sort from http://www.csse.monash.edu.au/~lloyd/tildeAlgDS/Sort/Heap/
+///heap sort from http://www.csse.monash.edu.au/~lloyd//tildeAlgDS//Sort//Heap/
 template <typename T, typename COMP_CLASS>
 void gim_down_heap(T *pArr, GUINT k, GUINT n,COMP_CLASS CompareFunc)
 {

@@ -3,7 +3,7 @@
 
 #include "stdafx.h"
 #include "SimionLogViewer.h"
-#include "../WindowsUtils/timer.h"
+#include "../System/Timer.h"
 
 #include <algorithm>
 using namespace std;

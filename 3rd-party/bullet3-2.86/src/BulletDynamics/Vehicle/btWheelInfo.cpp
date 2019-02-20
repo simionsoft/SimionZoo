@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2005 Erwin Coumans http://continuousphysics.com/Bullet/
+ * Copyright (c) 2005 Erwin Coumans http://continuousphysics.com//Bullet/
  *
  * Permission to use, copy, modify, distribute and sell this software
  * and its documentation for any purpose is hereby granted without fee,
@@ -9,7 +9,7 @@
  * It is provided "as is" without express or implied warranty.
 */
 #include "btWheelInfo.h"
-#include "BulletDynamics/Dynamics/btRigidBody.h" // for pointvelocity
+#include "..//..//BulletDynamics//Dynamics//btRigidBody.h" // for pointvelocity
 
 
 btScalar btWheelInfo::getSuspensionRestLength() const

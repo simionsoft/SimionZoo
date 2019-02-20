@@ -3,7 +3,7 @@
 
 #ifdef __cplusplus
 
-#include "Bullet3Common/b3Scalar.h"
+#include "..//..//Bullet3Common//b3Scalar.h"
 
 
 B3_ATTRIBUTE_ALIGNED16(struct) b3UnsignedInt4

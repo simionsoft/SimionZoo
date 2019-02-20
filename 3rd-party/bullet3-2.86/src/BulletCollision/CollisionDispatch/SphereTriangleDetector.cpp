@@ -1,6 +1,6 @@
 /*
 Bullet Continuous Collision Detection and Physics Library
-Copyright (c) 2003-2006 Erwin Coumans  http://continuousphysics.com/Bullet/
+Copyright (c) 2003-2006 Erwin Coumans  http://continuousphysics.com//Bullet/
 
 This software is provided 'as-is', without any express or implied warranty.
 In no event will the authors be held liable for any damages arising from the use of this software.
@@ -13,10 +13,10 @@ subject to the following restrictions:
 3. This notice may not be removed or altered from any source distribution.
 */
 
-#include "LinearMath/btScalar.h"
+#include "..//..//LinearMath//btScalar.h"
 #include "SphereTriangleDetector.h"
-#include "BulletCollision/CollisionShapes/btTriangleShape.h"
-#include "BulletCollision/CollisionShapes/btSphereShape.h"
+#include "..//..//BulletCollision//CollisionShapes//btTriangleShape.h"
+#include "..//..//BulletCollision//CollisionShapes//btSphereShape.h"
 
 
 SphereTriangleDetector::SphereTriangleDetector(btSphereShape* sphere,btTriangleShape* triangle,btScalar contactBreakingThreshold)

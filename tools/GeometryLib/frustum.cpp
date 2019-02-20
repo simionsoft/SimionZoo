@@ -1,4 +1,4 @@
-#include "Frustum.h"
+#include "frustum.h"
 #include "matrix44.h"
 #include "bounding-box.h"
 #include "vector3d.h"
@@ -64,7 +64,7 @@ void Frustum::fromCameraMatrix(Matrix44& cameraMatrix)
 	}
 }
 
-bool Frustum::isVisible(BoundingBox3D& box) const
+bool Frustum::isVisible(const BoundingBox3D& box) const
 {
 	for (unsigned int i = 0; i < NUM_PLANES; i++)
 	{
@@ -127,7 +127,7 @@ bool Frustum::isVisible(BoundingBox3D& box) const
 //	//return true;
 //}
 
-bool Frustum::isVisible(Point3D& point) const
+bool Frustum::isVisible(const Point3D& point) const
 {
 	double dist;
 	for (unsigned int i = 0; i < NUM_PLANES; i++)

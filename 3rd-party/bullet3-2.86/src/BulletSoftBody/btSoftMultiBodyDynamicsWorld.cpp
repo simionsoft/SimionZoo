@@ -1,6 +1,6 @@
 /*
 Bullet Continuous Collision Detection and Physics Library
-Copyright (c) 2003-2006 Erwin Coumans  http://continuousphysics.com/Bullet/
+Copyright (c) 2003-2006 Erwin Coumans  http://continuousphysics.com//Bullet/
 
 This software is provided 'as-is', without any express or implied warranty.
 In no event will the authors be held liable for any damages arising from the use of this software.
@@ -15,14 +15,14 @@ subject to the following restrictions:
 
 
 #include "btSoftMultiBodyDynamicsWorld.h"
-#include "LinearMath/btQuickprof.h"
+#include "..//LinearMath//btQuickprof.h"
 
 //softbody & helpers
-#include "BulletSoftBody/btSoftBody.h"
-#include "BulletSoftBody/btSoftBodyHelpers.h"
-#include "BulletSoftBody/btSoftBodySolvers.h"
-#include "BulletSoftBody/btDefaultSoftBodySolver.h"
-#include "LinearMath/btSerializer.h"
+#include "..//BulletSoftBody//btSoftBody.h"
+#include "..//BulletSoftBody//btSoftBodyHelpers.h"
+#include "..//BulletSoftBody//btSoftBodySolvers.h"
+#include "..//BulletSoftBody//btDefaultSoftBodySolver.h"
+#include "..//LinearMath//btSerializer.h"
 
 
 btSoftMultiBodyDynamicsWorld::btSoftMultiBodyDynamicsWorld(
@@ -209,7 +209,7 @@ struct btSoftSingleRayCallback : public btBroadphaseRayCallback
 		btVector3 rayDir = (rayToWorld-rayFromWorld);
 
 		rayDir.normalize ();
-		///what about division by zero? --> just set rayDirection[i] to INF/1e30
+		///what about division by zero? --> just set rayDirection[i] to INF//1e30
 		m_rayDirectionInverse[0] = rayDir[0] == btScalar(0.0) ? btScalar(1e30) : btScalar(1.0) / rayDir[0];
 		m_rayDirectionInverse[1] = rayDir[1] == btScalar(0.0) ? btScalar(1e30) : btScalar(1.0) / rayDir[1];
 		m_rayDirectionInverse[2] = rayDir[2] == btScalar(0.0) ? btScalar(1e30) : btScalar(1.0) / rayDir[2];

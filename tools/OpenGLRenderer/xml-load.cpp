@@ -42,7 +42,7 @@ namespace XML
 		//https://forums.khronos.org/showthread.php/11010-matrix-and-collada
 		const char* p = pText;
 		size_t charCount = strlen(p);
-		int col = 0, row = 0;
+
 		for (int row = 0; row < 4; ++row)
 		{
 			for (int col = 0; col < 4; ++col)
@@ -185,9 +185,9 @@ namespace XML
 		if (pNode)
 		{
 			if (childExists(pNode,XML_TAG_MIN))
-				load(pNode->FirstChildElement(XML_TAG_MIN), box.min());
+				load(pNode->FirstChildElement(XML_TAG_MIN), box.minAsRef());
 			if (pNode->FirstChildElement(XML_TAG_MAX))
-				load(pNode->FirstChildElement(XML_TAG_MAX), box.max());
+				load(pNode->FirstChildElement(XML_TAG_MAX), box.maxAsRef());
 		}
 	}
 
@@ -196,9 +196,9 @@ namespace XML
 		if (pNode)
 		{
 			if (pNode->FirstChildElement(XML_TAG_MIN))
-				load(pNode->FirstChildElement(XML_TAG_MIN), box.min());
+				load(pNode->FirstChildElement(XML_TAG_MIN), box.minAsRef());
 			if (pNode->FirstChildElement(XML_TAG_MAX))
-				load(pNode->FirstChildElement(XML_TAG_MAX), box.max());
+				load(pNode->FirstChildElement(XML_TAG_MAX), box.maxAsRef());
 		}
 	}
 

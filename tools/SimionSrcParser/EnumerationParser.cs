@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
-using Badger.Simion;
+
+using Herd.Files;
 
 namespace SimionSrcParser
 {
@@ -17,15 +18,15 @@ namespace SimionSrcParser
         {
             string output = "";
             SimionSrcParser.addIndentation(ref output,level);
-            output += "<" + XMLConfig.enumDefinitionNodeTag + " " + XMLConfig.nameAttribute + "=\"" + m_name + "\">\n";
+            output += "<" + XMLTags.EnumDefinitionNodeTag + " " + XMLTags.nameAttribute + "=\"" + m_name + "\">\n";
             output+= outputChildrenXML(level + 1);
             foreach (string value in m_enumerationValues)
             {
                 SimionSrcParser.addIndentation(ref output, level + 1);
-                output += "<" + XMLConfig.enumNodeTag + ">" + value + "</" + XMLConfig.enumNodeTag + ">\n";
+                output += "<" + XMLTags.enumNodeTag + ">" + value + "</" + XMLTags.enumNodeTag + ">\n";
             }
             SimionSrcParser.addIndentation(ref output, level);
-            output += "</" + XMLConfig.enumDefinitionNodeTag + ">\n";
+            output += "</" + XMLTags.EnumDefinitionNodeTag + ">\n";
             return output;
         }
     }

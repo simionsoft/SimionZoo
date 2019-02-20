@@ -2,12 +2,12 @@
 #ifndef B3_MAT3x3_H
 #define B3_MAT3x3_H
 
-#include "Bullet3Common/shared/b3Quat.h"
+#include "..//..//Bullet3Common//shared//b3Quat.h"
 
 
 #ifdef __cplusplus
 
-#include "Bullet3Common/b3Matrix3x3.h"
+#include "..//..//Bullet3Common//b3Matrix3x3.h"
 
 #define b3Mat3x3 b3Matrix3x3
 #define b3Mat3x3ConstArg const b3Matrix3x3&

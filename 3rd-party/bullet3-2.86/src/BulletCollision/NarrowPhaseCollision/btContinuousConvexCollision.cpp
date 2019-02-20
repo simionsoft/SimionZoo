@@ -1,6 +1,6 @@
 /*
 Bullet Continuous Collision Detection and Physics Library
-Copyright (c) 2003-2006 Erwin Coumans  http://continuousphysics.com/Bullet/
+Copyright (c) 2003-2006 Erwin Coumans  http://continuousphysics.com//Bullet/
 
 This software is provided 'as-is', without any express or implied warranty.
 In no event will the authors be held liable for any damages arising from the use of this software.
@@ -15,14 +15,14 @@ subject to the following restrictions:
 
 
 #include "btContinuousConvexCollision.h"
-#include "BulletCollision/CollisionShapes/btConvexShape.h"
-#include "BulletCollision/NarrowPhaseCollision/btSimplexSolverInterface.h"
-#include "LinearMath/btTransformUtil.h"
-#include "BulletCollision/CollisionShapes/btSphereShape.h"
+#include "..//..//BulletCollision//CollisionShapes//btConvexShape.h"
+#include "..//..//BulletCollision//NarrowPhaseCollision//btSimplexSolverInterface.h"
+#include "..//..//LinearMath//btTransformUtil.h"
+#include "..//..//BulletCollision//CollisionShapes//btSphereShape.h"
 
 #include "btGjkPairDetector.h"
 #include "btPointCollector.h"
-#include "BulletCollision/CollisionShapes/btStaticPlaneShape.h"
+#include "..//..//BulletCollision//CollisionShapes//btStaticPlaneShape.h"
 
 
 
@@ -42,7 +42,7 @@ m_convexA(convexA),m_convexB1(0),m_planeShape(plane)
 }
 
 
-/// This maximum should not be necessary. It allows for untested/degenerate cases in production code.
+/// This maximum should not be necessary. It allows for untested//degenerate cases in production code.
 /// You don't want your game ever to lock-up.
 #define MAX_ITERATIONS 64
 

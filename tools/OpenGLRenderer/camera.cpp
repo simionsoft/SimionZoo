@@ -16,8 +16,12 @@ Camera::~Camera()
 Matrix44 Camera::getModelviewMatrix() const
 {
 	Matrix44 mat, rot, trans;
-	rot.setRotation(m_transform.rotation().inverse());
-	trans.setTranslation(m_transform.translation().inverse());
+	Quaternion rotation = m_transform.rotation();
+	rotation = rotation.inverse();
+	rot.setRotation(rotation);
+	Vector3D translation = m_transform.translation();
+	translation = translation.inverse();
+	trans.setTranslation(translation);
 	mat = rot*trans;
 
 	return mat;
@@ -61,7 +65,8 @@ void SimpleCamera::set()
 
 	//The order of the matrix multiplication seems to be wrong in the source paper:
 	//http://gamedevs.org/uploads/fast-extraction-viewing-frustum-planes-from-world-view-projection-matrix.pdf
-	m_frustum.fromCameraMatrix(perspectiveMatrix*modelviewMatrix);
+	Matrix44 cameraMatrix = perspectiveMatrix * modelviewMatrix;
+	m_frustum.fromCameraMatrix(cameraMatrix);
 }
 
 //This method sets an orthogonal view that maps the screen to coordinates [0.0,0.0] - [1.0,1.0]

@@ -31,15 +31,15 @@
 
 /* -- PLATFORM-SPECIFIC INCLUDES ------------------------------------------- */
 #ifdef EGL_VERSION_1_0
-#include "egl/fg_internal_egl.h"
+#include "egl//fg_internal_egl.h"
 #else
-#include <GL/glx.h>
-#include "x11/fg_internal_x11_glx.h"
+#include <GL//glx.h>
+#include "fg_internal_x11_glx.h"
 #endif
-#include <X11/Xlib.h>
-#include <X11/Xatom.h>
-#include <X11/keysym.h>
-#include <X11/extensions/XInput.h>
+#include <X11//Xlib.h>
+#include <X11//Xatom.h>
+#include <X11//keysym.h>
+#include <X11//extensions//XInput.h>
 #ifdef HAVE_X11_EXTENSIONS_XF86VMODE_H
 #    include <X11/extensions/xf86vmode.h>
 #endif

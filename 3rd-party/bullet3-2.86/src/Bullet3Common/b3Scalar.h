@@ -28,7 +28,7 @@ subject to the following restrictions:
 #include <stdlib.h>//size_t for MSVC 6.0
 #include <float.h>
 
-//Original repository is at http://github.com/erwincoumans/bullet3
+//Original repository is at http://github.com//erwincoumans//bullet3
 #define B3_BULLET_VERSION 300
 
 inline int	b3GetVersion()
@@ -75,7 +75,7 @@ inline int	b3GetVersion()
 			#ifdef B3_USE_SSE
 			//B3_USE_SSE_IN_API is disabled under Windows by default, because 
 			//it makes it harder to integrate Bullet into your application under Windows 
-			//(structured embedding Bullet structs/classes need to be 16-byte aligned)
+			//(structured embedding Bullet structs//classes need to be 16-byte aligned)
 			//with relatively little performance gain
 			//If you are not embedded Bullet data in your classes, or make sure that you align those classes on 16-byte boundaries
 			//you can manually enable this line or set it in the build system for a bit of performance gain (a few percent, dependent on usage)
@@ -189,7 +189,7 @@ inline int	b3GetVersion()
     #endif//__arm__
 
 	#define B3_FORCE_INLINE inline __attribute__ ((always_inline))
-///@todo: check out alignment methods for other platforms/compilers
+///@todo: check out alignment methods for other platforms//compilers
 	#define B3_ATTRIBUTE_ALIGNED16(a) a __attribute__ ((aligned (16)))
 	#define B3_ATTRIBUTE_ALIGNED64(a) a __attribute__ ((aligned (64)))
 	#define B3_ATTRIBUTE_ALIGNED128(a) a __attribute__ ((aligned (128)))
@@ -223,7 +223,7 @@ inline int	b3GetVersion()
 #else
 
 		#define B3_FORCE_INLINE inline
-		///@todo: check out alignment methods for other platforms/compilers
+		///@todo: check out alignment methods for other platforms//compilers
 		#define B3_ATTRIBUTE_ALIGNED16(a) a __attribute__ ((aligned (16)))
 		#define B3_ATTRIBUTE_ALIGNED64(a) a __attribute__ ((aligned (64)))
 		#define B3_ATTRIBUTE_ALIGNED128(a) a __attribute__ ((aligned (128)))
@@ -478,7 +478,7 @@ B3_FORCE_INLINE bool b3MachineIsLittleEndian()
 
 
 ///b3Select avoids branches, which makes performance much better for consoles like Playstation 3 and XBox 360
-///Thanks Phil Knight. See also http://www.cellperformance.com/articles/2006/04/more_techniques_for_eliminatin_1.html
+///Thanks Phil Knight. See also http://www.cellperformance.com//articles//2006/04/more_techniques_for_eliminatin_1.html
 B3_FORCE_INLINE unsigned b3Select(unsigned condition, unsigned valueIfConditionNonZero, unsigned valueIfConditionZero) 
 {
     // Set testNz to 0xFFFFFFFF if condition is nonzero, 0x00000000 if condition is zero
@@ -534,11 +534,11 @@ B3_FORCE_INLINE unsigned short b3SwapEndian(short val)
 }
 
 ///b3SwapFloat uses using char pointers to swap the endianness
-////b3SwapFloat/b3SwapDouble will NOT return a float, because the machine might 'correct' invalid floating point values
-///Not all values of sign/exponent/mantissa are valid floating point numbers according to IEEE 754. 
+////b3SwapFloat//b3SwapDouble will NOT return a float, because the machine might 'correct' invalid floating point values
+///Not all values of sign//exponent//mantissa are valid floating point numbers according to IEEE 754. 
 ///When a floating point unit is faced with an invalid value, it may actually change the value, or worse, throw an exception. 
-///In most systems, running user mode code, you wouldn't get an exception, but instead the hardware/os/runtime will 'fix' the number for you. 
-///so instead of returning a float/double, we return integer/long long integer
+///In most systems, running user mode code, you wouldn't get an exception, but instead the hardware//os//runtime will 'fix' the number for you. 
+///so instead of returning a float//double, we return integer//long long integer
 B3_FORCE_INLINE unsigned int  b3SwapEndianFloat(float d)
 {
     unsigned int a = 0;

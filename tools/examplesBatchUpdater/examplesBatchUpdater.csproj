@@ -9,8 +9,9 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>examplesBatchUpdater</RootNamespace>
     <AssemblyName>examplesBatchUpdater</AssemblyName>
-    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
+    <TargetFrameworkProfile />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|Win32' ">
     <PlatformTarget>AnyCPU</PlatformTarget>
@@ -49,9 +50,9 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\Badger\Badger.csproj">
-      <Project>{575c1ff1-8401-4ec8-8e58-4a09d2659ded}</Project>
-      <Name>Badger</Name>
+    <ProjectReference Include="..\Herd\Herd.csproj">
+      <Project>{75640896-f22e-4295-bb90-560cb48bb2b2}</Project>
+      <Name>Herd</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

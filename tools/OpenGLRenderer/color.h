@@ -22,9 +22,9 @@ public:
 	void setA(double a) { _values[3] = (float) a; }
 
 	Color operator*(double scalar) const;
-	Color operator+(Color& c) const;
+	Color operator+(const Color& c) const;
 
 	void set(float r, float g, float b, float a) { _values[0] = r; _values[1] = g; _values[2] = b; _values[3] = a; }
 	float* rgba() { return _values; }
-	Color lerp(Color& c, double u);
+	Color lerp(const Color& c, double u);
 };

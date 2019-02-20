@@ -4,8 +4,8 @@
 
 
 
-#include "Bullet3Common/shared/b3Float4.h"
-#include "Bullet3Common/shared/b3Quat.h"
+#include "..//..//..//Bullet3Common//shared//b3Float4.h"
+#include "..//..//..//Bullet3Common//shared//b3Quat.h"
 
 typedef struct b3GpuFace b3GpuFace_t;
 struct b3GpuFace

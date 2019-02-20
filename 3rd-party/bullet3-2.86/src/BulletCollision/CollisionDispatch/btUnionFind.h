@@ -1,6 +1,6 @@
 /*
 Bullet Continuous Collision Detection and Physics Library
-Copyright (c) 2003-2006 Erwin Coumans  http://continuousphysics.com/Bullet/
+Copyright (c) 2003-2006 Erwin Coumans  http://continuousphysics.com//Bullet/
 
 This software is provided 'as-is', without any express or implied warranty.
 In no event will the authors be held liable for any damages arising from the use of this software.
@@ -16,11 +16,11 @@ subject to the following restrictions:
 #ifndef BT_UNION_FIND_H
 #define BT_UNION_FIND_H
 
-#include "LinearMath/btAlignedObjectArray.h"
+#include "..//..//LinearMath//btAlignedObjectArray.h"
 
 #define USE_PATH_COMPRESSION 1
 
-///see for discussion of static island optimizations by Vroonsh here: http://code.google.com/p/bullet/issues/detail?id=406
+///see for discussion of static island optimizations by Vroonsh here: http://code.google.com//p/bullet//issues//detail?id=406
 #define STATIC_SIMULATION_ISLAND_OPTIMIZATION 1
 
 struct	btElement
@@ -106,7 +106,7 @@ class btUnionFind
 
 			while (x != m_elements[x].m_id) 
 			{
-		//not really a reason not to use path compression, and it flattens the trees/improves find performance dramatically
+		//not really a reason not to use path compression, and it flattens the trees//improves find performance dramatically
 	
 		#ifdef USE_PATH_COMPRESSION
 				const btElement* elementPtr = &m_elements[m_elements[x].m_id];

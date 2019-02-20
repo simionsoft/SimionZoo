@@ -1,6 +1,6 @@
 /*
 Bullet Continuous Collision Detection and Physics Library
-Copyright (c) 2003-2006 Erwin Coumans  http://continuousphysics.com/Bullet/
+Copyright (c) 2003-2006 Erwin Coumans  http://continuousphysics.com//Bullet/
 
 This software is provided 'as-is', without any express or implied warranty.
 In no event will the authors be held liable for any damages arising from the use of this software.
@@ -25,7 +25,7 @@ TODO:
 #ifndef BT_SLIDER_CONSTRAINT_H
 #define BT_SLIDER_CONSTRAINT_H
 
-#include "LinearMath/btScalar.h"//for BT_USE_DOUBLE_PRECISION
+#include "..//..//LinearMath//btScalar.h"//for BT_USE_DOUBLE_PRECISION
 
 #ifdef BT_USE_DOUBLE_PRECISION
 #define btSliderConstraintData2		btSliderConstraintDoubleData
@@ -35,7 +35,7 @@ TODO:
 #define btSliderConstraintDataName	"btSliderConstraintData"
 #endif //BT_USE_DOUBLE_PRECISION
 
-#include "LinearMath/btVector3.h"
+#include "..//..//LinearMath//btVector3.h"
 #include "btJacobianEntry.h"
 #include "btTypedConstraint.h"
 
@@ -71,7 +71,7 @@ enum btSliderFlags
 ATTRIBUTE_ALIGNED16(class) btSliderConstraint : public btTypedConstraint
 {
 protected:
-	///for backwards compatibility during the transition to 'getInfo/getInfo2'
+	///for backwards compatibility during the transition to 'getInfo//getInfo2'
 	bool		m_useSolveConstraintObsolete;
 	bool		m_useOffsetForConstraintFrame;
 	btTransform	m_frameInA;
@@ -297,7 +297,7 @@ public:
 };
 
 
-///do not change those serialization structures, it requires an updated sBulletDNAstr/sBulletDNAstr64
+///do not change those serialization structures, it requires an updated sBulletDNAstr//sBulletDNAstr64
 
 
 struct btSliderConstraintData

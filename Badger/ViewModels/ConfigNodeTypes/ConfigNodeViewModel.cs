@@ -1,11 +1,10 @@
 ﻿using System.IO;
 using System.Xml;
-using Caliburn.Micro;
-using Badger.Simion;
 using System;
-using Badger.ViewModels.ConfigNodeTypes;
-using System.Collections.Generic;
-using System.Linq;
+
+using Caliburn.Micro;
+
+using Herd.Files;
 
 namespace Badger.ViewModels
 {
@@ -46,7 +45,7 @@ namespace Badger.ViewModels
         }
 
 
-        private string m_textColor = XMLConfig.colorDefaultValue;
+        private string m_textColor = XMLTags.colorDefaultValue;
 
 
         public string textColor
@@ -72,8 +71,8 @@ namespace Badger.ViewModels
             set
             {
                 m_bIsValid = value;
-                if (m_bIsValid) textColor = XMLConfig.colorValidValue;
-                else textColor = XMLConfig.colorInvalidValue;
+                if (m_bIsValid) textColor = XMLTags.colorValidValue;
+                else textColor = XMLTags.colorInvalidValue;
                 NotifyOfPropertyChange(() => bIsValid);
             }
         }
@@ -329,20 +328,20 @@ namespace Badger.ViewModels
         protected void CommonInitialization(ExperimentViewModel parentExperiment, ConfigNodeViewModel parent,
             XmlNode definitionNode, string parentXPath)
         {
-            name = definitionNode.Attributes[XMLConfig.nameAttribute].Value;
+            name = definitionNode.Attributes[XMLTags.nameAttribute].Value;
 
             m_parent = parent;
             m_parentExperiment = parentExperiment;
             nodeDefinition = definitionNode;
 
-            xPath = parentXPath + "\\" + name;
-            if (definitionNode.Attributes.GetNamedItem(XMLConfig.defaultAttribute) != null)
+            xPath = parentXPath + "/" + name;
+            if (definitionNode.Attributes.GetNamedItem(XMLTags.defaultAttribute) != null)
             {
-                m_default = definitionNode.Attributes[XMLConfig.defaultAttribute].Value;
+                m_default = definitionNode.Attributes[XMLTags.defaultAttribute].Value;
             }
-            if (definitionNode.Attributes.GetNamedItem(XMLConfig.commentAttribute) != null)
+            if (definitionNode.Attributes.GetNamedItem(XMLTags.commentAttribute) != null)
             {
-                comment = definitionNode.Attributes[XMLConfig.commentAttribute].Value;
+                comment = definitionNode.Attributes[XMLTags.commentAttribute].Value;
             }
         }
 
@@ -353,62 +352,62 @@ namespace Badger.ViewModels
         {
             switch (definitionNode.Name)
             {
-                case XMLConfig.WireTag:
+                case XMLTags.WireTag:
                     return new WireConnectionViewModel(parentExperiment, parent, definitionNode, parentXPath, configNode);
 
-                case XMLConfig.neuralNetworkNodeTag:
+                case XMLTags.neuralNetworkNodeTag:
                     return new NeuralNetworkProblemDescriptionConfigViewModel(parentExperiment, parent, definitionNode,
                         parentXPath, configNode);
 
-                case XMLConfig.integerNodeTag:
+                case XMLTags.integerNodeTag:
                     return new IntegerValueConfigViewModel(parentExperiment, parent, definitionNode,
                         parentXPath, configNode);
 
-                case XMLConfig.boolNodeTag:
+                case XMLTags.boolNodeTag:
                     return new BoolValueConfigViewModel(parentExperiment, parent, definitionNode,
                         parentXPath, configNode);
 
-                case XMLConfig.doubleNodeTag:
+                case XMLTags.doubleNodeTag:
                     return new DoubleValueConfigViewModel(parentExperiment, parent, definitionNode,
                         parentXPath, configNode);
 
-                case XMLConfig.stringNodeTag:
+                case XMLTags.stringNodeTag:
                     return new StringValueConfigViewModel(parentExperiment, parent, definitionNode,
                         parentXPath, configNode);
 
-                case XMLConfig.filePathNodeTag:
+                case XMLTags.filePathNodeTag:
                     return new FilePathValueConfigViewModel(parentExperiment, parent, definitionNode,
                         parentXPath, configNode);
 
-                case XMLConfig.dirPathNodeTag:
+                case XMLTags.dirPathNodeTag:
                     return new DirPathValueConfigViewModel(parentExperiment, parent, definitionNode,
                         parentXPath, configNode);
 
-                case XMLConfig.stateVarRefTag:
+                case XMLTags.stateVarRefTag:
                     return new WorldVarRefValueConfigViewModel(parentExperiment, WorldVarType.StateVar,
                         parent, definitionNode, parentXPath, configNode);
 
-                case XMLConfig.actionVarRefTag:
+                case XMLTags.actionVarRefTag:
                     return new WorldVarRefValueConfigViewModel(parentExperiment, WorldVarType.ActionVar,
                         parent, definitionNode, parentXPath, configNode);
 
-                case XMLConfig.branchNodeTag:
+                case XMLTags.branchNodeTag:
                     return new BranchConfigViewModel(parentExperiment, parent, definitionNode, parentXPath,
                         configNode);
 
-                case XMLConfig.choiceNodeTag:
+                case XMLTags.choiceNodeTag:
                     return new ChoiceConfigViewModel(parentExperiment, parent, definitionNode, parentXPath,
                         configNode);
 
-                case XMLConfig.choiceElementNodeTag:
+                case XMLTags.choiceElementNodeTag:
                     return new ChoiceElementConfigViewModel(parentExperiment, parent, definitionNode,
                         parentXPath, configNode);
 
-                case XMLConfig.enumNodeTag:
+                case XMLTags.enumNodeTag:
                     return new EnumeratedValueConfigViewModel(parentExperiment, parent, definitionNode,
                         parentXPath, configNode);
 
-                case XMLConfig.multiValuedNodeTag:
+                case XMLTags.multiValuedNodeTag:
                     return new MultiValuedConfigViewModel(parentExperiment, parent, definitionNode,
                         parentXPath, configNode);
 

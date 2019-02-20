@@ -1,0 +1,64 @@
+#include "CrossPlatform.h"
+#include <algorithm>
+
+namespace CrossPlatform
+{
+	void ForceUseFolderCharacter(string& commandLine)
+	{
+#ifdef _WIN32
+		replace(commandLine.begin(), commandLine.end(), '/', '\\');
+#else
+		replace(commandLine.begin(), commandLine.end(), '\\', '/');
+#endif
+
+	}
+
+	void Fopen_s(FILE** pOutFile, const char* filename, const char* mode)
+	{
+#ifdef _WIN32
+		fopen_s(pOutFile, filename, mode);
+#else
+		*pOutFile = fopen(filename, mode);
+#endif
+	}
+
+	size_t Fread_s(void *buffer, size_t bufferSize, size_t elementSize, size_t count, FILE *stream)
+	{
+#ifdef _WIN32
+		return fread_s(buffer, bufferSize, elementSize, count, stream);
+#else
+		return fread(buffer, elementSize, count, stream);
+#endif
+	}
+
+
+
+	char* Strcpy_s(char* dst, size_t dstSize, const char *src)
+	{
+#ifdef _WIN32
+		strcpy_s(dst, dstSize, src);
+		return dst;
+#else
+		return strcpy(dst, src);
+#endif
+	}
+
+	void Strcat_s(char* dst, size_t dstSize, const char* src)
+	{
+#ifdef _WIN32
+		strcat_s(dst, dstSize, src);
+#else
+		strcat(dst, src);
+#endif
+	}
+
+	void Memcpy_s(void* dst, size_t dstSize, const void* src, size_t numBytes)
+	{
+#ifdef _WIN32
+		memcpy_s(dst, dstSize, src, numBytes);
+#else
+		memcpy(dst, src, numBytes);
+#endif
+	}
+
+}

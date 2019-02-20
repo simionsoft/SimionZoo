@@ -29,7 +29,7 @@ class DirectionalLight : public Light
 {
 	Vector3D m_direction;
 public:
-	DirectionalLight() : m_direction(Vector3D(0.0, -1.0, 0.0)), Light(){}
+	DirectionalLight() : Light(), m_direction(Vector3D(0.0, -1.0, 0.0)) {}
 	DirectionalLight(tinyxml2::XMLElement* pNode);
 
 	void setDirection(Vector3D dir) { m_direction= dir; }

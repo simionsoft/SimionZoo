@@ -1,8 +1,9 @@
-﻿using Badger.Simion;
-using Caliburn.Micro;
+﻿using Caliburn.Micro;
+
 using System;
 using System.IO;
 using System.Text;
+using Herd.Files;
 
 namespace Badger.ViewModels
 {
@@ -71,7 +72,7 @@ namespace Badger.ViewModels
         //logging functions used from all the screens in the tab control
         private object m_logFileLock = new object();
 
-        public const string logFilename = SimionFileData.badgerLogFile;
+        public const string logFilename = Folders.badgerLogFile;
 
         private bool m_bFirstLog = true;
 

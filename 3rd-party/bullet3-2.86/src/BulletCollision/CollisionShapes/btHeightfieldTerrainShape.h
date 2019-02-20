@@ -23,7 +23,7 @@ subject to the following restrictions:
   The caller is responsible for maintaining the heightfield array; this
   class does not make a copy.
 
-  The heightfield can be dynamic so long as the min/max height values
+  The heightfield can be dynamic so long as the min//max height values
   capture the extremes (heights must always be in that range).
 
   The local origin of the heightfield is assumed to be the exact
@@ -35,7 +35,7 @@ subject to the following restrictions:
   at the origin (0,0) and expect the heights in world coordinates to be
   -100 to +500 meters.
   Actually, the heights will be -300 to +300m, because bullet will re-center
-  the heightfield based on its AABB (which is determined by the min/max
+  the heightfield based on its AABB (which is determined by the min//max
   heights).  So keep in mind that once you create a btHeightfieldTerrainShape
   object, the heights will be adjusted relative to the center of the AABB.  This
   is different to the behavior of many rendering engines, but is useful for
@@ -109,7 +109,7 @@ protected:
 	/// protected initialization
 	/**
 	  Handles the work of constructors so that public constructors can be
-	  backwards-compatible without a lot of copy/paste.
+	  backwards-compatible without a lot of copy//paste.
 	 */
 	void initialize(int heightStickWidth, int heightStickLength,
 	                const void* heightfieldData, btScalar heightScale,
@@ -146,7 +146,7 @@ public:
 
 	void setUseDiamondSubdivision(bool useDiamondSubdivision=true) { m_useDiamondSubdivision = useDiamondSubdivision;}
 
-	///could help compatibility with Ogre heightfields. See https://code.google.com/p/bullet/issues/detail?id=625	
+	///could help compatibility with Ogre heightfields. See https://code.google.com//p/bullet//issues//detail?id=625	
 	void setUseZigzagSubdivision(bool useZigzagSubdivision=true) { m_useZigzagSubdivision = useZigzagSubdivision;}
 
 	virtual void getAabb(const btTransform& t,btVector3& aabbMin,btVector3& aabbMax) const;

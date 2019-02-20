@@ -1,6 +1,6 @@
 #include "stdafx.h"
 #include "CppUnitTest.h"
-#include "../../../RLSimion/mem-manager.h"
+#include "../../../RLSimion/Lib/mem-manager.h"
 #define BUFFER_SIZE 5*1024*1024
 #define BLOCK_SIZE 512 * 1024
 #define BLOCK_SIZE_IN_BYTES (BLOCK_SIZE*8)

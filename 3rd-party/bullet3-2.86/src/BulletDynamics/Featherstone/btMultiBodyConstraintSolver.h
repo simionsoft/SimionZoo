@@ -16,7 +16,7 @@ subject to the following restrictions:
 #ifndef BT_MULTIBODY_CONSTRAINT_SOLVER_H
 #define BT_MULTIBODY_CONSTRAINT_SOLVER_H
 
-#include "BulletDynamics/ConstraintSolver/btSequentialImpulseConstraintSolver.h"
+#include "..//..//BulletDynamics//ConstraintSolver//btSequentialImpulseConstraintSolver.h"
 #include "btMultiBodySolverConstraint.h"
 
 #define DIRECTLY_UPDATE_VELOCITY_DURING_SOLVER_ITERATIONS
@@ -39,7 +39,7 @@ protected:
 
 	btMultiBodyJacobianData				m_data;
 	
-	//temp storage for multi body constraints for a specific island/group called by 'solveGroup'
+	//temp storage for multi body constraints for a specific island//group called by 'solveGroup'
 	btMultiBodyConstraint**					m_tmpMultiBodyConstraints;
 	int										m_tmpNumMultiBodyConstraints;
 
@@ -85,7 +85,7 @@ public:
 
 	BT_DECLARE_ALIGNED_ALLOCATOR();
 
-	///this method should not be called, it was just used during porting/integration of Featherstone btMultiBody, providing backwards compatibility but no support for btMultiBodyConstraint (only contact constraints)
+	///this method should not be called, it was just used during porting//integration of Featherstone btMultiBody, providing backwards compatibility but no support for btMultiBodyConstraint (only contact constraints)
 	virtual btScalar solveGroup(btCollisionObject** bodies,int numBodies,btPersistentManifold** manifold,int numManifolds,btTypedConstraint** constraints,int numConstraints,const btContactSolverInfo& info, btIDebugDraw* debugDrawer,btDispatcher* dispatcher);
 	virtual btScalar solveGroupCacheFriendlyFinish(btCollisionObject** bodies,int numBodies,const btContactSolverInfo& infoGlobal);
 	
