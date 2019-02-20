@@ -1,3 +1,5 @@
+[![Build Status](https://borjafdezgauna.visualstudio.com/SimionZoo-nightly-build/_apis/build/status/SimionZoo-nightly-build%20(Windows)?branchName=develop)](https://borjafdezgauna.visualstudio.com/SimionZoo-nightly-build/_build/latest?definitionId=2&branchName=develop)
+
 # SimionZoo
 
 This project is mantained by the Group of Computational Intelligence (University of the Basque Country - UPV/EHU): http://www.ehu.eus/ccwintco
