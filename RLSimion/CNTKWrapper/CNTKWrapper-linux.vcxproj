@@ -5,6 +5,14 @@
       <Configuration>Debug</Configuration>
       <Platform>x64</Platform>
     </ProjectConfiguration>
+    <ProjectConfiguration Include="Linux-Debug|x64">
+      <Configuration>Linux-Debug</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Linux-Release|x64">
+      <Configuration>Linux-Release</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
     <ProjectConfiguration Include="Release|x64">
       <Configuration>Release</Configuration>
       <Platform>x64</Platform>
@@ -25,9 +33,16 @@
     <UseDebugLibraries>true</UseDebugLibraries>
     <ConfigurationType>DynamicLibrary</ConfigurationType>
   </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Linux-Debug|x64'" Label="Configuration">
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+  </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
     <UseDebugLibraries>false</UseDebugLibraries>
     <ConfigurationType>DynamicLibrary</ConfigurationType>
+  </PropertyGroup>
+  <PropertyGroup Label="Configuration" Condition="'$(Configuration)|$(Platform)'=='Linux-Release|x64'">
+    <PlatformToolset>Remote_GCC_1_0</PlatformToolset>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
   <ImportGroup Label="ExtensionSettings" />
@@ -35,6 +50,13 @@
   <ImportGroup Label="PropertySheets" />
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <RemoteProjectDir>$(RemoteRootDir)/SimionZoo/RLSimion/CNTKWrapper</RemoteProjectDir>
+    <OutDir>$(SolutionDir)debug\</OutDir>
+    <TargetName>$(ProjectName)</TargetName>
+    <AdditionalSourcesToCopyMapping>../../bin/cntk-linux/libCntk.Core-2.5.1.so:=~/projects/SimionZoo/debug/libCntk.Core-2.5.1.so;../../bin/cntk-linux/libCntk.Math-2.5.1.so:=~/projects/SimionZoo/debug/libCntk.Math-2.5.1.so;../../bin/cntk-linux/libCntk.PerformanceProfiler-2.5.1.so:=~/projects/SimionZoo/debug/libCntk.PerformanceProfiler-2.5.1.so;../../bin/cntk-linux/libiomp5.so:=~/projects/SimionZoo/debug/libiomp5.so;../../bin/cntk-linux/libmklml_intel.so:=~/projects/SimionZoo/debug/libmklml_intel.so;../../bin/cntk-linux/libmpi.so:=~/projects/SimionZoo/debug/libmpi.so;../../bin/cntk-linux/libmpi_cxx.so:=~/projects/SimionZoo/debug/libmpi_cxx.so;../../bin/cntk-linux/libopen-pal.so:=~/projects/SimionZoo/debug/libopen-pal.so;../../bin/cntk-linux/libopen-rte.so:=~/projects/SimionZoo/debug/libopen-rte.so;</AdditionalSourcesToCopyMapping>
+    <PreBuildEventUseInBuild>false</PreBuildEventUseInBuild>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Linux-Debug|x64'">
     <RemoteProjectDir>$(RemoteRootDir)/SimionZoo/RLSimion/CNTKWrapper</RemoteProjectDir>
     <OutDir>$(SolutionDir)debug\</OutDir>
     <TargetName>$(ProjectName)</TargetName>
@@ -94,6 +116,24 @@
     </ProjectReference>
   </ItemGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <ClCompile>
+      <PreprocessorDefinitions>BUILD_CNTK_WRAPPER</PreprocessorDefinitions>
+    </ClCompile>
+    <Link>
+      <LibraryDependencies>Cntk.Core-2.5.1;Cntk.Math-2.5.1;Cntk.PerformanceProfiler-2.5.1;iomp5;mklml_intel;mpi_cxx;mpi;open-rte;open-pal;pthread;</LibraryDependencies>
+      <AdditionalLibraryDirectories>../../debug;%(Link.AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>$(StlAdditionalDependencies);%(Link.AdditionalDependencies)</AdditionalDependencies>
+      <UnresolvedSymbolReferences>true</UnresolvedSymbolReferences>
+      <AdditionalOptions>-Wl,-rpath .</AdditionalOptions>
+    </Link>
+    <PreBuildEvent>
+      <Command>
+      </Command>
+      <Message>
+      </Message>
+    </PreBuildEvent>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Linux-Debug|x64'">
     <ClCompile>
       <PreprocessorDefinitions>BUILD_CNTK_WRAPPER</PreprocessorDefinitions>
     </ClCompile>
