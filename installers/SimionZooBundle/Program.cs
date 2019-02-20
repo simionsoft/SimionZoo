@@ -66,7 +66,6 @@ namespace Portable_Badger
             files.Add(inBaseRelPath + @"bin/cudnn64_7.dll");
             files.Add(inBaseRelPath + @"bin/libiomp5md.dll");
             files.Add(inBaseRelPath + @"bin/mklml.dll");
-            //files.Add(inBaseRelPath + @"bin/mkl_cntk_p.dll");
             files.Add(inBaseRelPath + @"bin/mkldnn.dll");
             files.Add(inBaseRelPath + @"bin/nvml.dll");
             //linux:
