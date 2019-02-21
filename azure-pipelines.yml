@@ -1,8 +1,3 @@
-# .NET Desktop
-# Build and run tests for .NET Desktop or Windows classic desktop solutions.
-# Add steps that publish symbols, save build artifacts, and more:
-# https://docs.microsoft.com/azure/devops/pipelines/apps/windows/dot-net
-
 trigger:
 - develop
 
@@ -11,23 +6,39 @@ pool:
 
 variables:
   solution: '**/*.sln'
-  buildPlatform: 'x86'
-  buildConfiguration: 'Release'
 
 steps:
+
 - task: NuGetToolInstaller@0
+  displayName: 'Use NuGet 4.4.1'
+  inputs:
+    versionSpec: 4.4.1
 
 - task: NuGetCommand@2
+  displayName: 'NuGet restore'
   inputs:
-    restoreSolution: '$(solution)'
+    restoreSolution: '$(Parameters.solution)'
 
 - task: VSBuild@1
+  displayName: 'Build all the Win32 projects'
   inputs:
-    solution: '$(solution)'
-    platform: '$(buildPlatform)'
-    configuration: '$(buildConfiguration)'
+    platform: x86
+    configuration: release
+
+- task: VSBuild@1
+  displayName: 'Build all the Win64 projects'
+  inputs:
+    platform: x64
+    configuration: release
 
 - task: VSTest@2
+  displayName: 'Run x86 tests'
   inputs:
-    platform: '$(buildPlatform)'
-    configuration: '$(buildConfiguration)'
+    platform: x86
+    configuration: release
+
+- task: VSTest@2
+  displayName: 'Run x64 tests'
+  inputs:
+    platform: x64
+    configuration: release
