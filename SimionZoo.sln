@@ -973,7 +973,6 @@ Global
 		{E89BFD36-B3E0-4361-B4AE-59C68FB7A124}.Linux-Release|x86.ActiveCfg = Linux-Release|x64
 		{E89BFD36-B3E0-4361-B4AE-59C68FB7A124}.Release|x64.ActiveCfg = Linux-Release|x64
 		{E89BFD36-B3E0-4361-B4AE-59C68FB7A124}.Release|x86.ActiveCfg = Linux-Release|x64
-		{E89BFD36-B3E0-4361-B4AE-59C68FB7A124}.Release|x86.Build.0 = Linux-Release|x64
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
