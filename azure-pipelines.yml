@@ -5,7 +5,7 @@ pool:
   vmImage: 'VS2017-Win2016'
 
 variables:
-  solution: '**/*.sln'
+  solution: 'SimionZoo.sln'
 
 steps:
 
@@ -17,28 +17,32 @@ steps:
 - task: NuGetCommand@2
   displayName: 'NuGet restore'
   inputs:
-    restoreSolution: 'SimionZoo.sln'
+    restoreSolution: '$(solution)'
 
 - task: VSBuild@1
   displayName: 'Build all the Win32 projects'
   inputs:
+    solution: '$(solution)' 
     platform: x86
     configuration: release
 
 - task: VSBuild@1
   displayName: 'Build all the Win64 projects'
   inputs:
+    solution: '$(solution)'
     platform: x64
     configuration: release
 
 - task: VSTest@2
   displayName: 'Run x86 tests'
   inputs:
+    solution: '$(solution)' 
     platform: x86
     configuration: release
 
 - task: VSTest@2
   displayName: 'Run x64 tests'
   inputs:
+    solution: '$(solution)'
     platform: x64
     configuration: release
