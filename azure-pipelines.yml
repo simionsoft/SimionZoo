@@ -17,7 +17,7 @@ steps:
 - task: NuGetCommand@2
   displayName: 'NuGet restore'
   inputs:
-    restoreSolution: '$(Parameters.solution)'
+    restoreSolution: 'SimionZoo.sln'
 
 - task: VSBuild@1
   displayName: 'Build all the Win32 projects'
