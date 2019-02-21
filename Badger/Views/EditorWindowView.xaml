@@ -5,7 +5,7 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:vm="clr-namespace:Badger.ViewModels"
              xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
-            xmlns:cal="http://www.caliburnproject.org"
+            xmlns:cal="clr-namespace:Caliburn.Micro;assembly=Caliburn.Micro.Platform"
             xmlns:v="clr-namespace:Badger.Views"
              xmlns:local="clr-namespace:Badger.Views"
              mc:Ignorable="d" 

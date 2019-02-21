@@ -6,8 +6,6 @@
              xmlns:vm="clr-namespace:Badger.ViewModels"
              xmlns:views="clr-namespace:Badger.Views"
              xmlns:dd="urn:gong-wpf-dragdrop"
-             xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
-             xmlns:cal="http://www.caliburnproject.org"
              mc:Ignorable="d"  
              d:DesignHeight="300" d:DesignWidth="300">
 
