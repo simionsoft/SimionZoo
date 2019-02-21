@@ -23,26 +23,26 @@ steps:
   displayName: 'Build all the Win32 projects'
   inputs:
     solution: '$(solution)' 
-    platform: x86
-    configuration: Release
+    platform: 'x86'
+    configuration: 'Release'
 
 - task: VSBuild@1
   displayName: 'Build all the Win64 projects'
   inputs:
     solution: '$(solution)'
-    platform: x64
-    configuration: Release
+    platform: 'x64'
+    configuration: 'Release'
 
 - task: VSTest@2
   displayName: 'Run x86 tests'
   inputs:
     solution: '$(solution)' 
-    platform: x86
-    configuration: Release
+    platform: 'x86'
+    configuration: 'Release'
 
 - task: VSTest@2
   displayName: 'Run x64 tests'
   inputs:
     solution: '$(solution)'
-    platform: x64
-    configuration: Release
+    platform: 'x64'
+    configuration: 'Release'
