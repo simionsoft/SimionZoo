@@ -1,20 +1,12 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project DefaultTargets="Build" ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup Label="ProjectConfigurations">
-    <ProjectConfiguration Include="Debug|x64">
-      <Configuration>Debug</Configuration>
-      <Platform>x64</Platform>
-    </ProjectConfiguration>
     <ProjectConfiguration Include="Linux-Debug|x64">
       <Configuration>Linux-Debug</Configuration>
       <Platform>x64</Platform>
     </ProjectConfiguration>
     <ProjectConfiguration Include="Linux-Release|x64">
       <Configuration>Linux-Release</Configuration>
-      <Platform>x64</Platform>
-    </ProjectConfiguration>
-    <ProjectConfiguration Include="Release|x64">
-      <Configuration>Release</Configuration>
       <Platform>x64</Platform>
     </ProjectConfiguration>
   </ItemGroup>
@@ -29,14 +21,8 @@
     <LinuxProjectType>{D51BCBC9-82E9-4017-911E-C93873C4EA2B}</LinuxProjectType>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
-    <UseDebugLibraries>true</UseDebugLibraries>
-  </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Linux-Debug|x64'" Label="Configuration">
     <UseDebugLibraries>true</UseDebugLibraries>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
-    <UseDebugLibraries>false</UseDebugLibraries>
   </PropertyGroup>
   <PropertyGroup Label="Configuration" Condition="'$(Configuration)|$(Platform)'=='Linux-Release|x64'">
     <PlatformToolset>Remote_GCC_1_0</PlatformToolset>
@@ -46,22 +32,17 @@
   <ImportGroup Label="Shared" />
   <ImportGroup Label="PropertySheets" />
   <PropertyGroup Label="UserMacros" />
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
-    <RemoteProjectDir>$(RemoteRootDir)/SimionZoo/tests/OpenGLRenderer/Renderer-test</RemoteProjectDir>
-    <OutDir>$(ProjectDir)Debug/</OutDir>
-    <TargetName>RendererTest</TargetName>
-    <AdditionalSourcesToCopyMapping>
-    </AdditionalSourcesToCopyMapping>
-  </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Linux-Debug|x64'">
     <RemoteProjectDir>$(RemoteRootDir)/SimionZoo/tests/OpenGLRenderer/Renderer-test</RemoteProjectDir>
-    <OutDir>$(ProjectDir)Debug/</OutDir>
+    <OutDir>$(SolutionDir)debug/</OutDir>
     <TargetName>RendererTest</TargetName>
     <AdditionalSourcesToCopyMapping />
+    <TargetExt>.exe</TargetExt>
   </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Linux-Release|x64'">
+    <OutDir>$(SolutionDir)bin/</OutDir>
+    <TargetExt>.exe</TargetExt>
     <RemoteProjectDir>$(RemoteRootDir)/SimionZoo/tests/OpenGLRenderer/Renderer-test</RemoteProjectDir>
-    <OutDir>$(ProjectDir)bin/</OutDir>
     <TargetName>RendererTest</TargetName>
   </PropertyGroup>
   <ItemGroup>
@@ -84,19 +65,13 @@
       <Project>{11efdd7d-a557-4cc7-ab52-46d850f67a1e}</Project>
     </ProjectReference>
   </ItemGroup>
-  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
-    <Link>
-      <LibraryDependencies>GL;X11;GLU</LibraryDependencies>
-      <VerboseOutput>false</VerboseOutput>
-    </Link>
-  </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Linux-Debug|x64'">
     <Link>
       <LibraryDependencies>GL;X11;GLU</LibraryDependencies>
       <VerboseOutput>false</VerboseOutput>
     </Link>
   </ItemDefinitionGroup>
-  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Linux-Release|x64'">
     <Link>
       <LibraryDependencies>GL;X11;GLU</LibraryDependencies>
     </Link>
