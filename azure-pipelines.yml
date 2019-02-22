@@ -42,3 +42,4 @@ steps:
   inputs:
     platform: x64
     configuration: release
+    PathtoPublish: '$(build.artifactstagingdirectory)'
