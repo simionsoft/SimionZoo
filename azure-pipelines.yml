@@ -39,6 +39,9 @@ steps:
     solution: '$(solution)' 
     platform: 'x86'
     configuration: 'Release'
+    testAssemblyVer2: '*.dll'
+    searchFolder: tests\bin\Release\Win32
+
 
 - task: VSTest@2
   displayName: 'Run x64 tests'
@@ -46,3 +49,5 @@ steps:
     solution: '$(solution)'
     platform: 'x64'
     configuration: 'Release'
+    testAssemblyVer2: '*.dll'
+    searchFolder: tests\bin\Release\x64
