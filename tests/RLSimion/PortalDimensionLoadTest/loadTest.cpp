@@ -1,6 +1,6 @@
 #include "stdafx.h"
 #include "CppUnitTest.h"
-#include "../FASTDimensionalPortal/FASTDimensionalPortalDLL.h"
+#include "../../../3rd-party/FAST/FASTDimensionalPortal/FASTDimensionalPortalDLL.h"
 
 using namespace Microsoft::VisualStudio::CppUnitTestFramework;
 
