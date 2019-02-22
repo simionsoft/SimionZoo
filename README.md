@@ -1,4 +1,4 @@
-[![Build Status](https://borjafdezgauna.visualstudio.com/SimionZoo-nightly-build/_apis/build/status/simionsoft.SimionZoo?branchName=master)](https://borjafdezgauna.visualstudio.com/SimionZoo-nightly-build/_build/latest?definitionId=3&branchName=master)
+[![Build Status](https://borjafdezgauna.visualstudio.com/SimionZoo-nightly-build/_apis/build/status/simionsoft.SimionZoo?branchName=develop)](https://borjafdezgauna.visualstudio.com/SimionZoo-nightly-build/_build/latest?definitionId=3&branchName=develop)
 
 # SimionZoo
 
