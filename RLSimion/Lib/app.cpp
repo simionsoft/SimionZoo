@@ -123,7 +123,7 @@ bool SimionApp::flagPassed(int argc, char** argv, const char* flagName)
 
 void SimionApp::printRequirements()
 {
-		printf("</%s>\n", APP_REQUIREMENTS_XML_TAG);
+	printf("<%s>\n", APP_REQUIREMENTS_XML_TAG);
 	m_commonRequirements.printXML();
 
 	//other requirements: #CPU cores

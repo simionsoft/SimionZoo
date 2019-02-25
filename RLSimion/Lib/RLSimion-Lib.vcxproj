@@ -116,7 +116,7 @@
     </PostBuildEvent>
     <CustomBuildStep>
       <Command>..\..\Debug\SimionSrcParser.exe $(ProjectDir) ..\..\config\definitions.xml</Command>
-      <Outputs>..\..\..\config\definitions.xml</Outputs>
+      <Outputs>..\..\config\definitions.xml</Outputs>
       <Inputs>$(ProjectDir)*.cpp;$(ProjectDir)*.h</Inputs>
       <TreatOutputAsContent>false</TreatOutputAsContent>
       <Message>RLSimion source code parser (debug)</Message>
@@ -147,7 +147,7 @@
     </PostBuildEvent>
     <CustomBuildStep>
       <Command>..\..\Debug\SimionSrcParser.exe $(ProjectDir) ..\..\config\definitions.xml</Command>
-      <Outputs>..\..\..\config\definitions.xml</Outputs>
+      <Outputs>..\..\config\definitions.xml</Outputs>
       <Inputs>$(ProjectDir)*.cpp;$(ProjectDir)*.h</Inputs>
       <TreatOutputAsContent>false</TreatOutputAsContent>
       <Message>RLSimion source code parser (debug)</Message>
@@ -177,7 +177,7 @@
       <Command>..\..\bin\SimionSrcParser.exe $(ProjectDir) ..\..\config\definitions.xml</Command>
       <Message>RLSimion source code parser</Message>
       <TreatOutputAsContent>false</TreatOutputAsContent>
-      <Outputs>..\..\..\config\definitions.xml</Outputs>
+      <Outputs>..\..\config\definitions.xml</Outputs>
       <Inputs>$(ProjectDir)*.cpp;$(ProjectDir)*.h</Inputs>
     </CustomBuildStep>
     <ProjectReference>
@@ -206,7 +206,7 @@
       <Command>..\..\bin\SimionSrcParser.exe $(ProjectDir) ..\..\config\definitions.xml</Command>
       <Message>RLSimion source code parser</Message>
       <TreatOutputAsContent>false</TreatOutputAsContent>
-      <Outputs>..\..\..\config\definitions.xml</Outputs>
+      <Outputs>..\..\config\definitions.xml</Outputs>
       <Inputs>$(ProjectDir)*.cpp;$(ProjectDir)*.h</Inputs>
     </CustomBuildStep>
     <ProjectReference />
