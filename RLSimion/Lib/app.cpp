@@ -132,7 +132,7 @@ void SimionApp::printRequirements()
 	//target-platform requirements: architecture
 	for (auto it = m_targetPlatformRequirements.begin(); it != m_targetPlatformRequirements.end(); it++)
 	{
-		printf("  <%s %s=\"%s\">\n", TARGET_PLATFORM_REQUIREMENTS_XML_TAG, TARGET_PLATFORM_NAME_ATTR_TAG, (*it).first);
+		printf("  <%s %s=\"%s\">\n", TARGET_PLATFORM_REQUIREMENTS_XML_TAG, TARGET_PLATFORM_NAME_ATTR_TAG, (*it).first.c_str());
 		(*it).second->printXML();
 		printf("  </%s>\n", TARGET_PLATFORM_REQUIREMENTS_XML_TAG);
 	}
@@ -213,7 +213,7 @@ Wire* SimionApp::wireGet(string name)
 	return nullptr;
 }
 
-void SimionApp::addPlatform(const char* targetPlatform)
+void SimionApp::addPlatform(string targetPlatform)
 {
 	if (m_targetPlatformRequirements.find(targetPlatform) == m_targetPlatformRequirements.end())
 	{
@@ -223,13 +223,13 @@ void SimionApp::addPlatform(const char* targetPlatform)
 
 void SimionApp::registerTargetPlatformInputFile(const char* targetPlatform, const char* filepath, const char* rename)
 {
-	addPlatform(targetPlatform);
+	addPlatform(string(targetPlatform));
 	m_targetPlatformRequirements[targetPlatform]->addInputFile(filepath, rename);
 }
 
 void SimionApp::registerTargetPlatformOutputFile(const char* targetPlatform, const char* filepath)
 {
-	addPlatform(targetPlatform);
+	addPlatform(string(targetPlatform));
 	m_targetPlatformRequirements[targetPlatform]->addOutputFile(filepath);
 }
 

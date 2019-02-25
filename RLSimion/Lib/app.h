@@ -46,8 +46,7 @@ private:
 	unsigned int m_numCPUCores = 1;
 
 	RunTimeRequirements m_commonRequirements;
-	unordered_map<const char*, RunTimeRequirements*> m_targetPlatformRequirements;
-	vector<const char*> m_outputFiles;
+	unordered_map<string, RunTimeRequirements*> m_targetPlatformRequirements;
 
 	unordered_map<string, StateActionFunction*> m_pStateActionFunctions = {};
 	unordered_map<string, Wire*> m_wires = {};
@@ -61,7 +60,7 @@ private:
 	bool m_bRemoteExecution = true;
 #endif
 
-	void addPlatform(const char* platform);
+	void addPlatform(string platform);
 
 public:
 	SimionApp(ConfigNode* pParameters);
