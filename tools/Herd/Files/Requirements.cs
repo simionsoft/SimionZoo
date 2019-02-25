@@ -154,15 +154,31 @@ namespace Herd.Files
 
     public class RunTimeRequirements : Requirements
     {
-        private string m_architecture = PropValues.None;
-        public string Architecture { get { return m_architecture; } set { m_architecture = value; } }
-        private int m_numCPUCores = 0;
-        public int NumCPUCores { get { return m_numCPUCores; } set { m_numCPUCores = value; } }
+        public Dictionary<string, Requirements> TargetPlatformRequirements { get; set; }
+            = new Dictionary<string, Requirements>();
 
-        public RunTimeRequirements(int numCPUCores, string architecture = PropValues.None)
+        public void AddTargetPlatformRequirement(string platform, Requirements requirements)
         {
-            m_numCPUCores = numCPUCores;
-            m_architecture = architecture;
+            TargetPlatformRequirements[platform] = requirements;
+        }
+
+        public bool CanBeRunOnArchitecture(string architecture)
+        {
+            if (TargetPlatformRequirements.Keys.Count == 0 //no target-platform requirements means it can be run anywhere
+                || TargetPlatformRequirements.ContainsKey(architecture))
+                return true;
+            return false;
+        }
+        
+        public int NumCPUCores { get; set; } = 0;
+
+        /// <summary>
+        /// Used only for testing
+        /// </summary>
+        /// <param name="numCPUCores"></param>
+        public RunTimeRequirements(int numCPUCores)
+        {
+            NumCPUCores = numCPUCores;
         }
 
         public RunTimeRequirements(XmlNode node)
@@ -175,8 +191,13 @@ namespace Herd.Files
                 if (child.Name == PropNames.NumCPUCores)
                     //parse "NumCPUCores" property
                     NumCPUCores = int.Parse(child.InnerText);
-                if (child.Name == PropNames.Architecture)
-                    Architecture = child.InnerText;
+                else if (child.Name == XmlTags.TargetPlatformRequirements)
+                {
+                    string platformName = child.Attributes[XmlTags.TargetPlatformNameAttr].Value;
+                    Requirements targetPlatformRequirements = new Requirements();
+                    targetPlatformRequirements.CommonInit(child);
+                    TargetPlatformRequirements[platformName] = targetPlatformRequirements;
+                }
             }
         }
 
@@ -185,7 +206,7 @@ namespace Herd.Files
             string commonProperties = base.ToString();
             string xml = "<" + XmlTags.Requirements + ">\n";
             xml += commonProperties + "\n";
-            xml += "<" + XmlTags.NumCPUCores + ">" + m_numCPUCores + "</" + XmlTags.NumCPUCores + ">\n";
+            xml += "<" + XmlTags.NumCPUCores + ">" + NumCPUCores + "</" + XmlTags.NumCPUCores + ">\n";
             xml += "</" + XmlTags.Requirements + ">\n";
             return xml;
         }

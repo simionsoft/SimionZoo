@@ -50,49 +50,5 @@ namespace Badger.Data
             return sb.ToString();
         }
 
-
-        //this function is called from several tasks and needs to be synchronized
-        [MethodImpl(MethodImplOptions.Synchronized)]
-        public static RunTimeRequirements GetRunTimeRequirements(string exe, string args)
-        {
-            object o = new object();
-            Monitor.Enter(o);
-            var process = new Process
-            {
-                StartInfo = new ProcessStartInfo
-                {
-                    FileName = exe,
-                    Arguments = args + " -requirements",
-                    UseShellExecute = false,
-                    RedirectStandardOutput = true,
-                    CreateNoWindow = true
-                }
-            };
-
-            string processOutput = "";
-            process.Start();
-            while (!process.StandardOutput.EndOfStream)
-            {
-                processOutput += process.StandardOutput.ReadLine();
-            }
-
-            //Parse the output
-            RunTimeRequirements runTimeRequirements = null;
-            int startPos = processOutput.IndexOf("<" + Herd.Network.XmlTags.Requirements + ">");
-            int endPos = processOutput.IndexOf("</" + Herd.Network.XmlTags.Requirements + ">");
-            if (startPos >= 0 && endPos > 0)
-            {
-                string xml = processOutput.Substring(startPos, endPos - startPos + ("</" + Herd.Network.XmlTags.Requirements + ">").Length);
-
-                XmlDocument doc = new XmlDocument();
-                doc.LoadXml(xml);
-
-                runTimeRequirements = new RunTimeRequirements(doc.FirstChild);
-
-            }
-            Monitor.Exit(o);
-            return runTimeRequirements;
-        }
-
     }
 }

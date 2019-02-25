@@ -28,6 +28,8 @@ namespace Herd.Network
     public class XmlTags
     {
         public const string Requirements = "Requirements";
+        public const string TargetPlatformRequirements = "Target-Platform";
+        public const string TargetPlatformNameAttr = "Name";
         public const string Input = "Input-File";
         public const string Output = "Output-File";
         public const string Architecture = "Architecture";

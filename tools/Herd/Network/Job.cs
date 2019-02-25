@@ -98,12 +98,20 @@ namespace Herd.Network
                 //Input files
                 AddInputFiles(experiment.RunTimeReqs.InputFiles);
                 AddOutputFiles(experiment.RunTimeReqs.OutputFiles);
-
+                if (experiment.RunTimeReqs.TargetPlatformRequirements != null)
+                {
+                    string targetPlatformName = experiment.SelectedVersion.Requirements.Architecture;
+                    Requirements targetPlatformRequirements = experiment.RunTimeReqs.TargetPlatformRequirements[targetPlatformName];
+                    AddInputFiles(targetPlatformRequirements.InputFiles);
+                    AddRenameRules(targetPlatformRequirements.RenameRules);
+                    AddOutputFiles(targetPlatformRequirements.OutputFiles);
+                }
 
                 /////Fix relative paths outside RLSimion's folder structure
                 //we add rename rules:
                 //  -for the experiment file itself
-                if (experiment.ExperimentFileName != experiment.RelativeExperimentFileName && !RenameRules.Keys.Contains(experiment.ExperimentFileName))
+                if (experiment.ExperimentFileName != experiment.RelativeExperimentFileName
+                    && !RenameRules.Keys.Contains(experiment.ExperimentFileName))
                     RenameRules.Add(experiment.ExperimentFileName, experiment.RelativeExperimentFileName);
                 //  -for the output files
                 foreach (string outputFile in OutputFiles)

@@ -113,7 +113,7 @@
     <Link>
       <AdditionalLibraryDirectories>../../bin;%(Link.AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <LibraryDependencies>Cntk.Core-2.5.1;Cntk.Math-2.5.1;Cntk.PerformanceProfiler-2.5.1;iomp5;mklml_intel;mpi_cxx;mpi;open-rte;open-pal;pthread;</LibraryDependencies>
-      <AdditionalOptions>-Wl,-rpath .</AdditionalOptions>
+      <AdditionalOptions>-Wl,-rpath='${ORIGIN}'</AdditionalOptions>
     </Link>
   </ItemDefinitionGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

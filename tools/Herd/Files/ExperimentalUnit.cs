@@ -97,6 +97,7 @@ namespace Herd.Files
                     ForkValues[forkName] = forkValue;
                 }
             }
+
             //update progress
             loadOptions.OnExpUnitLoaded?.Invoke(this);
         }
@@ -125,18 +126,21 @@ namespace Herd.Files
         public AppVersion SelectedVersion { get; set; }
         public RunTimeRequirements RunTimeReqs { get; set; }
 
-        public void GetRuntimeRequirements(AppVersion selectedVersion, List<AppVersion> appVersions)
+        public void RequestRuntimeRequirements()
         {
             //Added for testing purposes: this avoids using real experiments
             if (RunTimeReqs == null)
             {
-                //We can only get the runtime requirements of an app compatible with the current architecture
-                if (IsHostArchitectureCompatible(selectedVersion))
-                    RunTimeReqs = GetRunTimeRequirements(selectedVersion.ExeFile, ExperimentFileName);
-                else
+                foreach(AppVersion appVersion in AppVersions)
                 {
-                    AppVersion compatibleVersion = BestHostArchitectureMatch(appVersions);
-                    RunTimeReqs = GetRunTimeRequirements(compatibleVersion.ExeFile, ExperimentFileName);
+                    if (IsHostArchitectureCompatible(appVersion))
+                    {
+                        RunTimeReqs = GetRunTimeRequirements(appVersion.ExeFile, ExperimentFileName);
+                        if (RunTimeReqs != null)
+                        {
+                            break;
+                        }
+                    }
                 }
             }
         }
@@ -189,17 +193,18 @@ namespace Herd.Files
 
             //Parse the output
             RunTimeRequirements runTimeRequirements = null;
-            int startPos = processOutput.IndexOf("<" + Herd.Network.XmlTags.Requirements + ">");
-            int endPos = processOutput.IndexOf("</" + Herd.Network.XmlTags.Requirements + ">");
+            if (processOutput == "")
+                return null; //something went wrong, possibly the experiment cannot be run with this AppVersion
+            int startPos = processOutput.IndexOf("<" + XmlTags.Requirements + ">");
+            int endPos = processOutput.IndexOf("</" + XmlTags.Requirements + ">");
             if (startPos >= 0 && endPos > 0)
             {
-                string xml = processOutput.Substring(startPos, endPos - startPos + ("</" + Herd.Network.XmlTags.Requirements + ">").Length);
+                string xml = processOutput.Substring(startPos, endPos - startPos + ("</" + XmlTags.Requirements + ">").Length);
 
                 XmlDocument doc = new XmlDocument();
                 doc.LoadXml(xml);
 
                 runTimeRequirements = new RunTimeRequirements(doc.FirstChild);
-
             }
             Monitor.Exit(o);
             return runTimeRequirements;

@@ -114,9 +114,11 @@ namespace Herd.Network
             List<Task<Job>> monitoredJobTasks = new List<Task<Job>>();
             int numExperimentalUnitsRun = 0;
 
+            // Calculate run-time requirements
+            foreach (ExperimentalUnit experimentalUnit in experiments) experimentalUnit.RequestRuntimeRequirements();
 
             // Assign experiments to free agents
-            JobDispatcher.AssignExperiments(ref experiments, ref freeHerdAgents, ref assignedJobs, jobDispatcherOptions);
+            AssignExperiments(ref experiments, ref freeHerdAgents, ref assignedJobs, jobDispatcherOptions);
 
             if (assignedJobs.Count == 0)
                 return 0;
@@ -198,25 +200,13 @@ namespace Herd.Network
         {
             foreach (ExperimentalUnit experiment in pendingExperiments)
             {
-                AppVersion bestMatchingVersion = agent.BestMatch(experiment.AppVersions);
-                if (bestMatchingVersion != null)
+                experiment.SelectedVersion = agent.BestMatch(experiment);
+                if (experiment.SelectedVersion != null)
                 {
-                    //run-time requirements are calculated when a version is selected
-                    experiment.SelectedVersion = agent.BestMatch(experiment.AppVersions);
-                    if (experiment.SelectedVersion == null) return null;
-
-                    experiment.GetRuntimeRequirements(experiment.SelectedVersion, experiment.AppVersions);
-                    if (experiment.RunTimeReqs == null) return null;
-
-
-                    //Check that the version chosen for the agent supports the architecture requested by the run-time 
-                    if ((experiment.RunTimeReqs.Architecture == Herd.Network.PropValues.None
-                        || experiment.RunTimeReqs.Architecture == experiment.SelectedVersion.Requirements.Architecture)
-                        &&
-                        //If NumCPUCores = "all", then the experiment only fits the agent in case it hasn't been given any other experimental unit
-                        ((experiment.RunTimeReqs.NumCPUCores == 0 && !bAgentUsed)
+                    //If NumCPUCores = "all", then the experiment only fits the agent in case it hasn't been given any other experimental unit
+                    if ( (experiment.RunTimeReqs.NumCPUCores == 0 && !bAgentUsed)
                         //If NumCPUCores != "all", then experiment only fits the agent if the number of cpu cores used is less than those available
-                        || (experiment.RunTimeReqs.NumCPUCores > 0 && experiment.RunTimeReqs.NumCPUCores <= numFreeCores)))
+                        || (experiment.RunTimeReqs.NumCPUCores > 0 && experiment.RunTimeReqs.NumCPUCores <= numFreeCores) )
                         return experiment;
                 }
             }

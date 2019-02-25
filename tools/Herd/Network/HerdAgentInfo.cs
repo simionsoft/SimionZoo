@@ -231,11 +231,12 @@ namespace Herd.Network
             set { }
         }
 
-        public AppVersion BestMatch(List<AppVersion> appVersions)
+        public AppVersion BestMatch(ExperimentalUnit experimentalUnit)
         {
-            foreach (AppVersion version in appVersions)
+            foreach (AppVersion version in experimentalUnit.AppVersions)
             {
-                if (version.Requirements.Architecture == ProcessorArchitecture)
+                if (version.Requirements.Architecture == ProcessorArchitecture
+                    && experimentalUnit.RunTimeReqs.CanBeRunOnArchitecture(ProcessorArchitecture))
                     return version;
             }
             return null;

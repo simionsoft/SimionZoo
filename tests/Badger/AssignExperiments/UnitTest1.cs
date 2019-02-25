@@ -261,9 +261,12 @@ namespace AssignExperiments
             List<AppVersion> appVersions = new List<AppVersion>() { x32Version, x64Version };
 
             //create run-time requirements
-            RunTimeRequirements cores_all = new RunTimeRequirements(0, PropValues.Win64);
-            RunTimeRequirements cores_2 = new RunTimeRequirements(2, PropValues.Win64);
-            RunTimeRequirements cores_1 = new RunTimeRequirements(1, PropValues.Win64);
+            RunTimeRequirements cores_all = new RunTimeRequirements(0);
+            cores_all.AddTargetPlatformRequirement(PropValues.Win64, new Requirements());
+            RunTimeRequirements cores_2 = new RunTimeRequirements(2);
+            cores_2.AddTargetPlatformRequirement(PropValues.Win64, new Requirements());
+            RunTimeRequirements cores_1 = new RunTimeRequirements(1);
+            cores_1.AddTargetPlatformRequirement(PropValues.Win64, new Requirements());
             //create experiments
             List<ExperimentalUnit> pendingExperiments = new List<ExperimentalUnit>()
             {
@@ -323,9 +326,12 @@ namespace AssignExperiments
             List<AppVersion> appVersions = new List<AppVersion>() { win32Version, win64Version, linux64Version };
 
             //create run-time requirements
-            RunTimeRequirements cores_2_win32 = new RunTimeRequirements(0, PropValues.Win32);
-            RunTimeRequirements cores_2_linux64 = new RunTimeRequirements(2, PropValues.Linux64);
-            RunTimeRequirements cores_1 = new RunTimeRequirements(1, PropValues.Linux64);
+            RunTimeRequirements cores_2_win32 = new RunTimeRequirements(0);
+            cores_2_win32.AddTargetPlatformRequirement(PropValues.Win32, new Requirements());
+            RunTimeRequirements cores_2_linux64 = new RunTimeRequirements(2);
+            cores_2_linux64.AddTargetPlatformRequirement(PropValues.Linux64, new Requirements());
+            RunTimeRequirements cores_1 = new RunTimeRequirements(1);
+            cores_1.AddTargetPlatformRequirement(PropValues.Linux64, new Requirements());
             //create experiments
             List<ExperimentalUnit> pendingExperiments = new List<ExperimentalUnit>()
             {
@@ -380,9 +386,12 @@ namespace AssignExperiments
             List<AppVersion> appVersions = new List<AppVersion>() { win32Version, win64Version, linux64Version };
 
             //create run-time requirements
-            RunTimeRequirements cores_2_win32 = new RunTimeRequirements(0, PropValues.Win32);
-            RunTimeRequirements cores_2_linux64 = new RunTimeRequirements(2, PropValues.Linux64);
-            RunTimeRequirements cores_1 = new RunTimeRequirements(1, PropValues.Linux64);
+            RunTimeRequirements cores_2_win32 = new RunTimeRequirements(0);
+            cores_2_win32.AddTargetPlatformRequirement(PropValues.Win32, new Requirements());
+            RunTimeRequirements cores_2_linux64 = new RunTimeRequirements(2);
+            cores_2_linux64.AddTargetPlatformRequirement(PropValues.Linux64, new Requirements());
+            RunTimeRequirements cores_1 = new RunTimeRequirements(1);
+            cores_1.AddTargetPlatformRequirement(PropValues.Linux64, new Requirements());
             //create experiments
             List<ExperimentalUnit> pendingExperiments = new List<ExperimentalUnit>()
             {
@@ -411,6 +420,68 @@ namespace AssignExperiments
             Assert.IsTrue(assignedJobs[1].ExperimentalUnits.Count == 1);
             Assert.IsTrue(assignedJobs[1].ExperimentalUnits[0].Name == "Experiment-1");
             Assert.IsTrue(assignedJobs[1].ExperimentalUnits[0].SelectedVersion.Requirements.Architecture == PropValues.Win32);
+
+            //  -used agents are removed
+            Assert.IsTrue(herdAgents.Count == 1);
+            //  -assigned experiments are removed
+            Assert.IsTrue(pendingExperiments.Count == 1);
+        }
+        [TestMethod]
+        public void Badger_AssignExperiments7()
+        {
+            //create herd agents
+            List<HerdAgentInfo> herdAgents = new List<HerdAgentInfo>
+            {
+                new HerdAgentInfo("Agent-1", 4, PropValues.Linux64, PropValues.None, "1.1.0"),
+                new HerdAgentInfo("Agent-2", 2, PropValues.Win32, "8.1.2", "1.1.0"),
+                new HerdAgentInfo("Agent-3", 2, PropValues.Win64, "8.1.2", "1.1.0")
+            };
+
+            //create app versions
+            AppVersionRequirements win64Reqs = new AppVersionRequirements(PropValues.Win64);
+            AppVersionRequirements win32Reqs = new AppVersionRequirements(PropValues.Win32);
+            AppVersionRequirements linux64Reqs = new AppVersionRequirements(PropValues.Linux64);
+            AppVersion win32Version = new AppVersion("win-x32", "RLSimion.exe", win32Reqs);
+            AppVersion win64Version = new AppVersion("win-x64", "RLSimion-linux-x64.exe", win64Reqs);
+            AppVersion linux64Version = new AppVersion("linux-x64", "RLSimion-x64.exe", linux64Reqs);
+            List<AppVersion> appVersions = new List<AppVersion>() { win32Version, win64Version, linux64Version };
+
+            //create run-time requirements
+            RunTimeRequirements cntkRequirements = new RunTimeRequirements(0);
+            Requirements cntkLinuxInputFiles = new Requirements();
+            cntkLinuxInputFiles.AddInputFile("cntk-linux.so");
+            cntkRequirements.AddTargetPlatformRequirement(PropValues.Linux64, cntkLinuxInputFiles);
+            Requirements cntkWindowsInputFiles = new Requirements();
+            cntkWindowsInputFiles.AddInputFile("cntk-windows.dll");
+            cntkRequirements.AddTargetPlatformRequirement(PropValues.Win64, cntkWindowsInputFiles);
+            //create experiments
+            List<ExperimentalUnit> pendingExperiments = new List<ExperimentalUnit>()
+            {
+                new ExperimentalUnit("Experiment-1", appVersions, cntkRequirements),
+                new ExperimentalUnit("Experiment-2", appVersions, cntkRequirements),
+                new ExperimentalUnit("Experiment-3", appVersions, cntkRequirements),
+            };
+
+            //create output list to receive assigned jobs
+            List<Job> assignedJobs = new List<Job>();
+
+            //Assign experiments
+            JobDispatcherOptions options = new JobDispatcherOptions();
+            options.LeaveOneFreeCore = true;
+
+            JobDispatcher.AssignExperiments(ref pendingExperiments, ref herdAgents, ref assignedJobs, options);
+
+            //Check everything went as expected
+            Assert.IsTrue(assignedJobs.Count == 2);
+            //  -assigned experimental units and agents
+            Assert.IsTrue(assignedJobs[0].HerdAgent.ProcessorId == "Agent-1");
+            Assert.IsTrue(assignedJobs[0].ExperimentalUnits.Count == 1);
+            Assert.IsTrue(assignedJobs[0].ExperimentalUnits[0].Name == "Experiment-1");
+            Assert.IsTrue(assignedJobs[0].ExperimentalUnits[0].SelectedVersion.Requirements.Architecture == PropValues.Linux64);
+            Assert.IsTrue(assignedJobs[1].HerdAgent.ProcessorId == "Agent-3");
+            Assert.IsTrue(assignedJobs[1].ExperimentalUnits.Count == 1);
+            Assert.IsTrue(assignedJobs[1].ExperimentalUnits[0].Name == "Experiment-2");
+            Assert.IsTrue(assignedJobs[1].ExperimentalUnits[0].SelectedVersion.Requirements.Architecture == PropValues.Win64);
 
             //  -used agents are removed
             Assert.IsTrue(herdAgents.Count == 1);
