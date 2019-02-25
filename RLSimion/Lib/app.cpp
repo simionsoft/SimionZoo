@@ -46,11 +46,9 @@
 
 //Properties and xml tags
 #define APP_REQUIREMENTS_XML_TAG "Requirements"
+#define TARGET_PLATFORM_REQUIREMENTS_XML_TAG "Target-Platform"
+#define TARGET_PLATFORM_NAME_ATTR_TAG "Name"
 #define NUM_CPU_CORES_XML_TAG "NumCPUCores"
-#define ARCHITECTURE_XML_TAG "Architecture"
-#define INPUT_FILE_XML_TAG "Input-File"
-#define OUTPUT_FILE_XML_TAG "Output-File"
-#define RENAME_XML_ATTR "Rename"
 
 SimionApp* SimionApp::m_pAppInstance = 0;
 
@@ -87,16 +85,12 @@ SimionApp::~SimionApp()
 	for (pair<string, Wire*> p : m_wires) delete p.second;
 
 	m_pAppInstance = 0;
-	for (auto it = m_inputFiles.begin(); it != m_inputFiles.end(); it++) delete (*it);
-	m_inputFiles.clear();
-	for (auto it = m_outputFiles.begin(); it != m_outputFiles.end(); it++) delete (*it);
-	m_outputFiles.clear();
-	for (auto it = m_inputFilesRenamed.begin(); it != m_inputFilesRenamed.end(); it++)
+
+	//delete target platform-specific requirements
+	for (auto it = m_targetPlatformRequirements.begin(); it != m_targetPlatformRequirements.end(); it++)
 	{
-		if (*it != 0)
-			delete *it;
+		delete (*it).second;
 	}
-	m_inputFilesRenamed.clear();
 }
 
 const char* SimionApp::getArgValue(int argc,char** argv,const char* argName)
@@ -129,30 +123,19 @@ bool SimionApp::flagPassed(int argc, char** argv, const char* flagName)
 
 void SimionApp::printRequirements()
 {
-	const char *pFileName, *pFileRename;
-	printf("<%s>\n", APP_REQUIREMENTS_XML_TAG);
-
-	for (unsigned int i = 0; i < getNumInputFiles(); i++)
-	{
-		pFileName = getInputFile(i);
-		pFileRename = getInputFileRename(i);
-		if (pFileRename==0)
-			printf("  <%s>%s</%s>\n", INPUT_FILE_XML_TAG, pFileName, INPUT_FILE_XML_TAG);
-		else
-			printf("  <%s %s=\"%s\">%s</%s>\n", INPUT_FILE_XML_TAG, RENAME_XML_ATTR, pFileRename, pFileName, INPUT_FILE_XML_TAG);
-	}
-
-	for (unsigned int i = 0; i < getNumOutputFiles(); i++)
-	{
-		pFileName = getOutputFile(i);
-		printf("  <%s>%s</%s>\n", OUTPUT_FILE_XML_TAG, pFileName, OUTPUT_FILE_XML_TAG);
-	}
+		printf("</%s>\n", APP_REQUIREMENTS_XML_TAG);
+	m_commonRequirements.printXML();
 
 	//other requirements: #CPU cores
 	printf("  <%s>%d</%s>\n", NUM_CPU_CORES_XML_TAG, m_numCPUCores, NUM_CPU_CORES_XML_TAG);
-	//other requirements: architecture
-	if (m_architecture != "")
-		printf("  <%s>%s</%s>\n", ARCHITECTURE_XML_TAG, m_architecture.c_str(), ARCHITECTURE_XML_TAG);
+	
+	//target-platform requirements: architecture
+	for (auto it = m_targetPlatformRequirements.begin(); it != m_targetPlatformRequirements.end(); it++)
+	{
+		printf("  <%s %s=\"%s\">\n", TARGET_PLATFORM_REQUIREMENTS_XML_TAG, TARGET_PLATFORM_NAME_ATTR_TAG, (*it).first);
+		(*it).second->printXML();
+		printf("  </%s>\n", TARGET_PLATFORM_REQUIREMENTS_XML_TAG);
+	}
 
 	printf("</%s>\n", APP_REQUIREMENTS_XML_TAG);
 }
@@ -230,61 +213,35 @@ Wire* SimionApp::wireGet(string name)
 	return nullptr;
 }
 
+void SimionApp::addPlatform(const char* targetPlatform)
+{
+	if (m_targetPlatformRequirements.find(targetPlatform) == m_targetPlatformRequirements.end())
+	{
+		m_targetPlatformRequirements[targetPlatform] = new RunTimeRequirements();
+	}
+}
+
+void SimionApp::registerTargetPlatformInputFile(const char* targetPlatform, const char* filepath, const char* rename)
+{
+	addPlatform(targetPlatform);
+	m_targetPlatformRequirements[targetPlatform]->addInputFile(filepath, rename);
+}
+
+void SimionApp::registerTargetPlatformOutputFile(const char* targetPlatform, const char* filepath)
+{
+	addPlatform(targetPlatform);
+	m_targetPlatformRequirements[targetPlatform]->addOutputFile(filepath);
+}
 
 void SimionApp::registerInputFile(const char* filepath, const char* rename)
 {
-	char* copy = new char[strlen(filepath) + 1];
-	CrossPlatform::Strcpy_s(copy, strlen(filepath) + 1, filepath);
-	m_inputFiles.push_back(copy);
-	if (rename != 0)
-	{
-		copy = new char[strlen(rename) + 1];
-		CrossPlatform::Strcpy_s(copy, strlen(rename) + 1, rename);
-		m_inputFilesRenamed.push_back(copy);
-	}
-	else m_inputFilesRenamed.push_back(0);
+	m_commonRequirements.addInputFile(filepath, rename);
 }
-
-unsigned int SimionApp::getNumInputFiles()
-{
-	return (unsigned int) m_inputFiles.size();
-}
-
-const char* SimionApp::getInputFile(unsigned int i)
-{
-	if (i<m_inputFiles.size())
-		return m_inputFiles[i];
-	return 0;
-}
-
-const char* SimionApp::getInputFileRename(unsigned int i)
-{
-	if (i<m_inputFilesRenamed.size())
-		return m_inputFilesRenamed[i];
-	return 0;
-}
-
-unsigned int SimionApp::getNumOutputFiles()
-{
-	return (unsigned int) m_outputFiles.size();
-}
-
-const char* SimionApp::getOutputFile(unsigned int i)
-{
-	if (i<m_outputFiles.size())
-		return m_outputFiles[i];
-	return 0;
-}
-
 
 void SimionApp::registerOutputFile(const char* filepath)
 {
-	char* copy = new char[strlen(filepath) + 1];
-	CrossPlatform::Strcpy_s(copy, strlen(filepath) + 1, filepath);
-	m_outputFiles.push_back(copy);
+	m_commonRequirements.addOutputFile(filepath);
 }
-
-
 
 void SimionApp::run()
 {

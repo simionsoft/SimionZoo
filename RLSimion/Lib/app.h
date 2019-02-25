@@ -6,6 +6,7 @@ using namespace std;
 
 #include "parameters.h"
 #include "mem-manager.h"
+#include "run-time-requirements.h"
 #include "../Common/named-var-set.h"
 #include "../Common/wire-handler.h"
 
@@ -30,6 +31,7 @@ class Wire;
 enum Device{ CPU, GPU };
 
 
+
 class SimionApp: public WireHandler
 {
 
@@ -40,10 +42,12 @@ private:
 	string m_directory;
 	string m_configFile;
 
-	//Input/Output files
-	std::vector<const char*> m_inputFiles;
-	std::vector<const char*> m_inputFilesRenamed; // names to be given in the remote machines to input files
-	std::vector<const char*> m_outputFiles;
+	//Run-time requirements/support
+	unsigned int m_numCPUCores = 1;
+
+	RunTimeRequirements m_commonRequirements;
+	unordered_map<const char*, RunTimeRequirements*> m_targetPlatformRequirements;
+	vector<const char*> m_outputFiles;
 
 	unordered_map<string, StateActionFunction*> m_pStateActionFunctions = {};
 	unordered_map<string, Wire*> m_wires = {};
@@ -57,12 +61,9 @@ private:
 	bool m_bRemoteExecution = true;
 #endif
 
-	//requirements/support
-	unsigned int m_numCPUCores = 1;
-	string m_architecture = ""; //required architecture. None if not set
+	void addPlatform(const char* platform);
 
 public:
-
 	SimionApp(ConfigNode* pParameters);
 	virtual ~SimionApp();
 
@@ -85,21 +86,21 @@ public:
 	void wireRegister(string name, double minimum, double maximum);
 	Wire* wireGet(string name);
 
-	//Input/Output file registering member functions
+	//Run-time requirements
 	//Subclasses should call these methods to let know what input/output files will be required at run-time
-	//in order to be remotely executed
+	//in order to be executed remotely
+	//The first two methods should be used to register platform-specific files, and the latter two should be
+	//used to register files common to all platforms
+	void registerTargetPlatformInputFile(const char* targetPlatform, const char* filepath, const char* rename = 0);
+	void registerTargetPlatformOutputFile(const char* targetPlatform, const char* filepath);
 	void registerInputFile(const char* filepath, const char* rename= 0);
 	void registerOutputFile(const char* filepath);
-	unsigned int getNumInputFiles();
-	const char* getInputFile(unsigned int i);
-	const char* getInputFileRename(unsigned int i);
-	unsigned int getNumOutputFiles();
-	const char* getOutputFile(unsigned int i);
+
+	void printRequirements();
 
 	void setConfigFile(string);
 	string getOutputDirectory();
 	string getConfigFile();
-	void printRequirements();
 
 	static const char* getArgValue(int argc, char** argv, const char* argName);
 	static bool flagPassed(int argc, char** argv, const char* flagName);
@@ -109,8 +110,6 @@ public:
 
 	void setNumCPUCores(unsigned int numCPUCores) { m_numCPUCores = numCPUCores; }
 	unsigned int getNumCPUCores() { return m_numCPUCores; }
-
-	void setRequiredArchitecture(string architecture) { m_architecture = architecture; }
 	
 	void setPreferredDevice(Device device);
 

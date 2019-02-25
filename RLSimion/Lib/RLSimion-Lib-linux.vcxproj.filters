@@ -205,6 +205,9 @@
     <ClCompile Include="utils.cpp">
       <Filter>worlds</Filter>
     </ClCompile>
+    <ClCompile Include="run-time-requirements.cpp">
+      <Filter>main-classes</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="app.h">
@@ -392,6 +395,9 @@
     </ClInclude>
     <ClInclude Include="single-dimension-grid.h">
       <Filter>linear-vfa</Filter>
+    </ClInclude>
+    <ClInclude Include="run-time-requirements.h">
+      <Filter>main-classes</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

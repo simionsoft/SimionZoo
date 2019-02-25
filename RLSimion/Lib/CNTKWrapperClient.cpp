@@ -76,12 +76,6 @@ namespace CNTK
 		{
 			//Set the number of CPU threads to "all"
 			SimionApp::get()->setNumCPUCores(0);
-#ifdef __linux__
-			SimionApp::get()->setRequiredArchitecture("Linux-64");
-#else
-			SimionApp::get()->setRequiredArchitecture("Win-64");
-#endif
-
 
 			//Load the wrapper library
 			Logger::logMessage(MessageType::Info, "Loading CNTK library");
@@ -104,34 +98,31 @@ namespace CNTK
 		}
 #endif
 
-#ifdef __WIN64
 		//register dependencies
-		SimionApp::get()->registerInputFile("../bin/CNTKWrapper.dll");
+		SimionApp::get()->registerTargetPlatformInputFile("Win-64", "../bin/CNTKWrapper.dll");
 
-		SimionApp::get()->registerInputFile("../bin/Cntk.Composite-2.5.1.dll");
-		SimionApp::get()->registerInputFile("../bin/Cntk.Core-2.5.1.dll");
-		SimionApp::get()->registerInputFile("../bin/Cntk.Math-2.5.1.dll");
-		SimionApp::get()->registerInputFile("../bin/Cntk.PerformanceProfiler-2.5.1.dll");
+		SimionApp::get()->registerTargetPlatformInputFile("Win-64", "../bin/Cntk.Composite-2.5.1.dll");
+		SimionApp::get()->registerTargetPlatformInputFile("Win-64", "../bin/Cntk.Core-2.5.1.dll");
+		SimionApp::get()->registerTargetPlatformInputFile("Win-64", "../bin/Cntk.Math-2.5.1.dll");
+		SimionApp::get()->registerTargetPlatformInputFile("Win-64", "../bin/Cntk.PerformanceProfiler-2.5.1.dll");
 
-		SimionApp::get()->registerInputFile("../bin/cublas64_90.dll");
-		SimionApp::get()->registerInputFile("../bin/cudart64_90.dll");
-		SimionApp::get()->registerInputFile("../bin/cudnn64_7.dll");
+		SimionApp::get()->registerTargetPlatformInputFile("Win-64", "../bin/cublas64_90.dll");
+		SimionApp::get()->registerTargetPlatformInputFile("Win-64", "../bin/cudart64_90.dll");
+		SimionApp::get()->registerTargetPlatformInputFile("Win-64", "../bin/cudnn64_7.dll");
 
-		SimionApp::get()->registerInputFile("../bin/libiomp5md.dll");
-		SimionApp::get()->registerInputFile("../bin/mklml.dll");
-		SimionApp::get()->registerInputFile("../bin/mkl_cntk_p.dll");
-		SimionApp::get()->registerInputFile("../bin/mkldnn.dll");
-		SimionApp::get()->registerInputFile("../bin/nvml.dll");
-#endif
-#ifdef __linux__
-		SimionApp::get()->registerInputFile("../bin/CNTKWrapper-linux.so");
+		SimionApp::get()->registerTargetPlatformInputFile("Win-64", "../bin/libiomp5md.dll");
+		SimionApp::get()->registerTargetPlatformInputFile("Win-64", "../bin/mklml.dll");
+		SimionApp::get()->registerTargetPlatformInputFile("Win-64", "../bin/mkl_cntk_p.dll");
+		SimionApp::get()->registerTargetPlatformInputFile("Win-64", "../bin/mkldnn.dll");
+		SimionApp::get()->registerTargetPlatformInputFile("Win-64", "../bin/nvml.dll");
 
-		SimionApp::get()->registerInputFile("../bin/cntk-linux/libCntk.Core-2.5.1.so", "../bin/libCntk.Core-2.5.1.so");
-		SimionApp::get()->registerInputFile("../bin/cntk-linux/libCntk.Math-2.5.1.so", "../bin/libCntk.Math-2.5.1.so");
-		SimionApp::get()->registerInputFile("../bin/cntk-linux/libCntk.PerformanceProfiler-2.5.1.so", "../bin/libCntk.PerformanceProfiler-2.5.1.so");
-		SimionApp::get()->registerInputFile("../bin/cntk-linux/libmklml_intel.so", "../bin/libmklml_intel.so");
-		SimionApp::get()->registerInputFile("../bin/cntk-linux/libiomp5.so", "../bin/libiomp5.so");
-#endif
+		SimionApp::get()->registerTargetPlatformInputFile("Linux-64", "../bin/CNTKWrapper-linux.so");
+
+		SimionApp::get()->registerTargetPlatformInputFile("Linux-64", "../bin/cntk-linux/libCntk.Core-2.5.1.so", "../bin/libCntk.Core-2.5.1.so");
+		SimionApp::get()->registerTargetPlatformInputFile("Linux-64", "../bin/cntk-linux/libCntk.Math-2.5.1.so", "../bin/libCntk.Math-2.5.1.so");
+		SimionApp::get()->registerTargetPlatformInputFile("Linux-64", "../bin/cntk-linux/libCntk.PerformanceProfiler-2.5.1.so", "../bin/libCntk.PerformanceProfiler-2.5.1.so");
+		SimionApp::get()->registerTargetPlatformInputFile("Linux-64", "../bin/cntk-linux/libmklml_intel.so", "../bin/libmklml_intel.so");
+		SimionApp::get()->registerTargetPlatformInputFile("Linux-64", "../bin/cntk-linux/libiomp5.so", "../bin/libiomp5.so");
 	}
 
 	void WrapperClient::UnLoad()
