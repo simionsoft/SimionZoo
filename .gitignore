@@ -290,5 +290,9 @@ $RECYCLE.BIN/
 !bin/cntk-linux/libCntk.PerformanceProfiler-2.5.1.so
 !bin/cntk-linux/libmklml_intel.so
 !bin/cntk-linux/libiomp5.so
+!bin/cntk-linux/libmpi.so.12
+!bin/cntk-linux/libmpi_cxx.so.1
+!bin/cntk-linux/libopen-pal.so.13
+!bin/cntk-linux/libopen-rte.so.12
 
 *.functions
