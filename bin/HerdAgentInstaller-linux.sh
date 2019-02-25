@@ -6,24 +6,25 @@ DAEMON_INIT_FILE=herd-agent-daemon
 
 if [ -f $DAEMON_INIT_DIR/$DAEMON_INIT_FILE ]; then
   if [ -f $LOCK ]; then
-    $DAEMON_INIT_DIR/$DAEMON_INIT_FILE stop
+    sudo $DAEMON_INIT_DIR/$DAEMON_INIT_FILE stop
   fi
 
-  rm -r $HERD_AGENT_INSTALL_DIR
-  mkdir $HERD_AGENT_INSTALL_DIR
-  mkdir $HERD_AGENT_TEMP_DIR
+  sudo rm -r $HERD_AGENT_INSTALL_DIR
+  sudo mkdir $HERD_AGENT_INSTALL_DIR
+  sudo mkdir $HERD_AGENT_TEMP_DIR
 fi
 
-echo "Installing dependencies..."
-apt-get install mono-complete
+echo "Installing dependecies..."
+sudo apt-get install mono-complete
 
-echo "Copying files to /usr/bin..."
-cp Herd.dll $HERD_AGENT_INSTALL_DIR
-cp HerdAgent.exe $HERD_AGENT_INSTALL_DIR
+echo "Copying files to installation dir..."
+sudo cp Herd.dll $HERD_AGENT_INSTALL_DIR
+sudo cp HerdAgent.exe $HERD_AGENT_INSTALL_DIR
+sudo chmod 770 $HERD_AGENT_INSTALL_DIR/HerdAgent.exe
 
-echo "Installing daemon initialisation file..."
+echo "Installling daemon initialisation file..."
 cp $DAEMON_INIT_FILE $DAEMON_INIT_DIR
-update-rc.d $DAEMON_INIT_FILE defaults
+sudo update-rc.d $DAEMON_INIT_FILE defaults
 
-echo "Starting daemon"
-$DAEMON_INIT_DIR/$DAEMON_INIT_FILE start
+echo "Starting daemon..."
+sudo $DAEMON_INIT_DIR/$DAEMON_INIT_FILE start
