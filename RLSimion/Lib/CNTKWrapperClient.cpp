@@ -123,6 +123,10 @@ namespace CNTK
 		SimionApp::get()->registerTargetPlatformInputFile("Linux-64", "../bin/cntk-linux/libCntk.PerformanceProfiler-2.5.1.so", "../bin/libCntk.PerformanceProfiler-2.5.1.so");
 		SimionApp::get()->registerTargetPlatformInputFile("Linux-64", "../bin/cntk-linux/libmklml_intel.so", "../bin/libmklml_intel.so");
 		SimionApp::get()->registerTargetPlatformInputFile("Linux-64", "../bin/cntk-linux/libiomp5.so", "../bin/libiomp5.so");
+		SimionApp::get()->registerTargetPlatformInputFile("Linux-64", "../bin/cntk-linux/libmpi.so.12", "../bin/libmpi.so.12");
+		SimionApp::get()->registerTargetPlatformInputFile("Linux-64", "../bin/cntk-linux/libmpi_cxx.so.1", "../bin/libmpi_cxx.so.1");
+		SimionApp::get()->registerTargetPlatformInputFile("Linux-64", "../bin/cntk-linux/libopen-pal.so.13", "../bin/libopen-pal.so.13");
+		SimionApp::get()->registerTargetPlatformInputFile("Linux-64", "../bin/cntk-linux/libopen-rte.so.12", "../bin/libopen-rte.so.12");
 	}
 
 	void WrapperClient::UnLoad()
