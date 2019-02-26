@@ -98,7 +98,8 @@ namespace Herd.Network
                 //Input files
                 AddInputFiles(experiment.RunTimeReqs.InputFiles);
                 AddOutputFiles(experiment.RunTimeReqs.OutputFiles);
-                if (experiment.RunTimeReqs.TargetPlatformRequirements != null)
+                if (experiment.RunTimeReqs.TargetPlatformRequirements != null
+                    && experiment.RunTimeReqs.TargetPlatformRequirements.ContainsKey(experiment.SelectedVersion.Requirements.Architecture))
                 {
                     string targetPlatformName = experiment.SelectedVersion.Requirements.Architecture;
                     Requirements targetPlatformRequirements = experiment.RunTimeReqs.TargetPlatformRequirements[targetPlatformName];
