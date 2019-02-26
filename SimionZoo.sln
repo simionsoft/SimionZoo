@@ -226,7 +226,6 @@ Global
 		{75640896-F22E-4295-BB90-560CB48BB2B2}.Release|x86.Build.0 = Release|Win32
 		{BA24F453-E770-410D-B644-1BE1A12CD3CF}.Debug|x64.ActiveCfg = Release
 		{BA24F453-E770-410D-B644-1BE1A12CD3CF}.Debug|x86.ActiveCfg = Release
-		{BA24F453-E770-410D-B644-1BE1A12CD3CF}.Debug|x86.Build.0 = Release
 		{BA24F453-E770-410D-B644-1BE1A12CD3CF}.Linux-Debug|x64.ActiveCfg = Release
 		{BA24F453-E770-410D-B644-1BE1A12CD3CF}.Linux-Debug|x86.ActiveCfg = Release
 		{BA24F453-E770-410D-B644-1BE1A12CD3CF}.Linux-Debug|x86.Build.0 = Release
@@ -457,7 +456,6 @@ Global
 		{F9AC2430-D1A0-4AE3-9AD9-77BDF172B6A7}.Debug|x64.ActiveCfg = Debug|x64
 		{F9AC2430-D1A0-4AE3-9AD9-77BDF172B6A7}.Debug|x64.Build.0 = Debug|x64
 		{F9AC2430-D1A0-4AE3-9AD9-77BDF172B6A7}.Debug|x86.ActiveCfg = Debug|Win32
-		{F9AC2430-D1A0-4AE3-9AD9-77BDF172B6A7}.Debug|x86.Build.0 = Debug|Win32
 		{F9AC2430-D1A0-4AE3-9AD9-77BDF172B6A7}.Linux-Debug|x64.ActiveCfg = Debug|x64
 		{F9AC2430-D1A0-4AE3-9AD9-77BDF172B6A7}.Linux-Debug|x86.ActiveCfg = Debug|Win32
 		{F9AC2430-D1A0-4AE3-9AD9-77BDF172B6A7}.Linux-Debug|x86.Build.0 = Debug|Win32
@@ -467,7 +465,6 @@ Global
 		{F9AC2430-D1A0-4AE3-9AD9-77BDF172B6A7}.Release|x64.ActiveCfg = Release|x64
 		{F9AC2430-D1A0-4AE3-9AD9-77BDF172B6A7}.Release|x64.Build.0 = Release|x64
 		{F9AC2430-D1A0-4AE3-9AD9-77BDF172B6A7}.Release|x86.ActiveCfg = Release|Win32
-		{F9AC2430-D1A0-4AE3-9AD9-77BDF172B6A7}.Release|x86.Build.0 = Release|Win32
 		{18972F02-DD58-4B32-A48A-ABEE2EB3B7DF}.Debug|x64.ActiveCfg = Debug|Win32
 		{18972F02-DD58-4B32-A48A-ABEE2EB3B7DF}.Debug|x64.Build.0 = Debug|Win32
 		{18972F02-DD58-4B32-A48A-ABEE2EB3B7DF}.Debug|x86.ActiveCfg = Debug|Win32
@@ -534,7 +531,6 @@ Global
 		{7E769838-3158-4696-8423-62CB5BEEAB5F}.Release|x86.Build.0 = Release|Win32
 		{61D2AC28-EB09-4DAA-B717-CEA7BA358077}.Debug|x64.ActiveCfg = Linux-Debug|x64
 		{61D2AC28-EB09-4DAA-B717-CEA7BA358077}.Debug|x86.ActiveCfg = Linux-Release|x64
-		{61D2AC28-EB09-4DAA-B717-CEA7BA358077}.Debug|x86.Build.0 = Linux-Release|x64
 		{61D2AC28-EB09-4DAA-B717-CEA7BA358077}.Linux-Debug|x64.ActiveCfg = Linux-Debug|x64
 		{61D2AC28-EB09-4DAA-B717-CEA7BA358077}.Linux-Debug|x64.Build.0 = Linux-Debug|x64
 		{61D2AC28-EB09-4DAA-B717-CEA7BA358077}.Linux-Debug|x86.ActiveCfg = Linux-Debug|x64
@@ -559,7 +555,6 @@ Global
 		{C474717F-F37A-4201-AE32-871219C77803}.Release|x86.Build.0 = Release|Win32
 		{5A78B024-AC4B-444C-95E3-6E3F15D84DBA}.Debug|x64.ActiveCfg = Linux-Debug|x64
 		{5A78B024-AC4B-444C-95E3-6E3F15D84DBA}.Debug|x86.ActiveCfg = Linux-Release|x64
-		{5A78B024-AC4B-444C-95E3-6E3F15D84DBA}.Debug|x86.Build.0 = Linux-Release|x64
 		{5A78B024-AC4B-444C-95E3-6E3F15D84DBA}.Linux-Debug|x64.ActiveCfg = Linux-Debug|x64
 		{5A78B024-AC4B-444C-95E3-6E3F15D84DBA}.Linux-Debug|x64.Build.0 = Linux-Debug|x64
 		{5A78B024-AC4B-444C-95E3-6E3F15D84DBA}.Linux-Debug|x86.ActiveCfg = Linux-Debug|x64
@@ -570,7 +565,6 @@ Global
 		{5A78B024-AC4B-444C-95E3-6E3F15D84DBA}.Release|x86.ActiveCfg = Linux-Release|x64
 		{5D2A0A84-AC67-4700-8934-A38C01966AD4}.Debug|x64.ActiveCfg = Linux-Debug|x64
 		{5D2A0A84-AC67-4700-8934-A38C01966AD4}.Debug|x86.ActiveCfg = Linux-Release|x64
-		{5D2A0A84-AC67-4700-8934-A38C01966AD4}.Debug|x86.Build.0 = Linux-Release|x64
 		{5D2A0A84-AC67-4700-8934-A38C01966AD4}.Linux-Debug|x64.ActiveCfg = Linux-Debug|x64
 		{5D2A0A84-AC67-4700-8934-A38C01966AD4}.Linux-Debug|x64.Build.0 = Linux-Debug|x64
 		{5D2A0A84-AC67-4700-8934-A38C01966AD4}.Linux-Debug|x86.ActiveCfg = Linux-Debug|x64
@@ -581,7 +575,6 @@ Global
 		{5D2A0A84-AC67-4700-8934-A38C01966AD4}.Release|x86.ActiveCfg = Linux-Release|x64
 		{6561176D-8E7C-4399-A133-CA9C36C143C5}.Debug|x64.ActiveCfg = Linux-Debug|x64
 		{6561176D-8E7C-4399-A133-CA9C36C143C5}.Debug|x86.ActiveCfg = Linux-Release|x64
-		{6561176D-8E7C-4399-A133-CA9C36C143C5}.Debug|x86.Build.0 = Linux-Release|x64
 		{6561176D-8E7C-4399-A133-CA9C36C143C5}.Linux-Debug|x64.ActiveCfg = Linux-Debug|x64
 		{6561176D-8E7C-4399-A133-CA9C36C143C5}.Linux-Debug|x64.Build.0 = Linux-Debug|x64
 		{6561176D-8E7C-4399-A133-CA9C36C143C5}.Linux-Debug|x86.ActiveCfg = Linux-Debug|x64
@@ -606,7 +599,6 @@ Global
 		{F32419BF-F083-4552-AA39-610898F34DBB}.Release|x86.Build.0 = Release|Win32
 		{11EFDD7D-A557-4CC7-AB52-46D850F67A1E}.Debug|x64.ActiveCfg = Linux-Debug|x64
 		{11EFDD7D-A557-4CC7-AB52-46D850F67A1E}.Debug|x86.ActiveCfg = Linux-Release|x64
-		{11EFDD7D-A557-4CC7-AB52-46D850F67A1E}.Debug|x86.Build.0 = Linux-Release|x64
 		{11EFDD7D-A557-4CC7-AB52-46D850F67A1E}.Linux-Debug|x64.ActiveCfg = Linux-Debug|x64
 		{11EFDD7D-A557-4CC7-AB52-46D850F67A1E}.Linux-Debug|x64.Build.0 = Linux-Debug|x64
 		{11EFDD7D-A557-4CC7-AB52-46D850F67A1E}.Linux-Debug|x86.ActiveCfg = Linux-Debug|x64
@@ -631,7 +623,6 @@ Global
 		{105470B1-8256-4A66-A35E-2D7D5745B853}.Release|x86.Build.0 = Release|Win32
 		{91BD863B-4BFF-4783-9F3C-1D3C138787B7}.Debug|x64.ActiveCfg = Linux-Debug|x64
 		{91BD863B-4BFF-4783-9F3C-1D3C138787B7}.Debug|x86.ActiveCfg = Linux-Release|x64
-		{91BD863B-4BFF-4783-9F3C-1D3C138787B7}.Debug|x86.Build.0 = Linux-Release|x64
 		{91BD863B-4BFF-4783-9F3C-1D3C138787B7}.Linux-Debug|x64.ActiveCfg = Linux-Debug|x64
 		{91BD863B-4BFF-4783-9F3C-1D3C138787B7}.Linux-Debug|x64.Build.0 = Linux-Debug|x64
 		{91BD863B-4BFF-4783-9F3C-1D3C138787B7}.Linux-Debug|x86.ActiveCfg = Linux-Debug|x64
@@ -656,7 +647,6 @@ Global
 		{77AF1C15-9862-4774-86D6-08E542B159C4}.Release|x86.Build.0 = Release|Win32
 		{6D41EEBC-F715-4DFE-B6C2-41AD65723324}.Debug|x64.ActiveCfg = Linux-Debug|x64
 		{6D41EEBC-F715-4DFE-B6C2-41AD65723324}.Debug|x86.ActiveCfg = Linux-Release|x64
-		{6D41EEBC-F715-4DFE-B6C2-41AD65723324}.Debug|x86.Build.0 = Linux-Release|x64
 		{6D41EEBC-F715-4DFE-B6C2-41AD65723324}.Linux-Debug|x64.ActiveCfg = Linux-Debug|x64
 		{6D41EEBC-F715-4DFE-B6C2-41AD65723324}.Linux-Debug|x64.Build.0 = Linux-Debug|x64
 		{6D41EEBC-F715-4DFE-B6C2-41AD65723324}.Linux-Debug|x86.ActiveCfg = Linux-Debug|x64
@@ -681,7 +671,6 @@ Global
 		{588EA9F4-F816-4950-9E68-777D875E86E8}.Release|x86.Build.0 = Release|Win32
 		{C64FA860-E38A-48B0-9D6F-C6391FC9539A}.Debug|x64.ActiveCfg = Linux-Debug|x64
 		{C64FA860-E38A-48B0-9D6F-C6391FC9539A}.Debug|x86.ActiveCfg = Linux-Release|x64
-		{C64FA860-E38A-48B0-9D6F-C6391FC9539A}.Debug|x86.Build.0 = Linux-Release|x64
 		{C64FA860-E38A-48B0-9D6F-C6391FC9539A}.Linux-Debug|x64.ActiveCfg = Linux-Debug|x64
 		{C64FA860-E38A-48B0-9D6F-C6391FC9539A}.Linux-Debug|x64.Build.0 = Linux-Debug|x64
 		{C64FA860-E38A-48B0-9D6F-C6391FC9539A}.Linux-Debug|x86.ActiveCfg = Linux-Debug|x64
@@ -765,7 +754,6 @@ Global
 		{4A0A4634-66FC-47A3-A6B7-C1A53158E9C7}.Release|x86.Build.0 = Release|Win32
 		{0407C160-B25C-4A40-ACF8-F8CEC04ADD6B}.Debug|x64.ActiveCfg = Linux-Debug|x64
 		{0407C160-B25C-4A40-ACF8-F8CEC04ADD6B}.Debug|x86.ActiveCfg = Linux-Release|x64
-		{0407C160-B25C-4A40-ACF8-F8CEC04ADD6B}.Debug|x86.Build.0 = Linux-Release|x64
 		{0407C160-B25C-4A40-ACF8-F8CEC04ADD6B}.Linux-Debug|x64.ActiveCfg = Linux-Debug|x64
 		{0407C160-B25C-4A40-ACF8-F8CEC04ADD6B}.Linux-Debug|x64.Build.0 = Linux-Debug|x64
 		{0407C160-B25C-4A40-ACF8-F8CEC04ADD6B}.Linux-Debug|x86.ActiveCfg = Linux-Debug|x64
@@ -790,7 +778,6 @@ Global
 		{C32FB2B4-500C-43CD-A099-EECCE079D3F1}.Release|x86.Build.0 = Release|Win32
 		{FC7BEC9B-7C66-4AD3-A2DE-8441046DBE08}.Debug|x64.ActiveCfg = Linux-Debug|x64
 		{FC7BEC9B-7C66-4AD3-A2DE-8441046DBE08}.Debug|x86.ActiveCfg = Linux-Release|x64
-		{FC7BEC9B-7C66-4AD3-A2DE-8441046DBE08}.Debug|x86.Build.0 = Linux-Release|x64
 		{FC7BEC9B-7C66-4AD3-A2DE-8441046DBE08}.Linux-Debug|x64.ActiveCfg = Linux-Debug|x64
 		{FC7BEC9B-7C66-4AD3-A2DE-8441046DBE08}.Linux-Debug|x64.Build.0 = Linux-Debug|x64
 		{FC7BEC9B-7C66-4AD3-A2DE-8441046DBE08}.Linux-Debug|x86.ActiveCfg = Linux-Debug|x64
@@ -815,7 +802,6 @@ Global
 		{E70C61BB-6B5C-4D0C-A203-9E2C04995BEF}.Release|x86.Build.0 = Release|Win32
 		{C83DBC2A-7D20-492E-AA68-AB054F00D793}.Debug|x64.ActiveCfg = Linux-Debug|x64
 		{C83DBC2A-7D20-492E-AA68-AB054F00D793}.Debug|x86.ActiveCfg = Linux-Release|x64
-		{C83DBC2A-7D20-492E-AA68-AB054F00D793}.Debug|x86.Build.0 = Linux-Release|x64
 		{C83DBC2A-7D20-492E-AA68-AB054F00D793}.Linux-Debug|x64.ActiveCfg = Linux-Debug|x64
 		{C83DBC2A-7D20-492E-AA68-AB054F00D793}.Linux-Debug|x64.Build.0 = Linux-Debug|x64
 		{C83DBC2A-7D20-492E-AA68-AB054F00D793}.Linux-Debug|x86.ActiveCfg = Linux-Debug|x64
@@ -840,7 +826,6 @@ Global
 		{E62AAC98-A3AA-4F77-BEB3-3D6E4B3C6EA5}.Release|x86.Build.0 = Release|Win32
 		{1999E3BF-D76E-4347-802D-B9C0B1E014D5}.Debug|x64.ActiveCfg = Linux-Debug|x64
 		{1999E3BF-D76E-4347-802D-B9C0B1E014D5}.Debug|x86.ActiveCfg = Linux-Release|x64
-		{1999E3BF-D76E-4347-802D-B9C0B1E014D5}.Debug|x86.Build.0 = Linux-Release|x64
 		{1999E3BF-D76E-4347-802D-B9C0B1E014D5}.Linux-Debug|x64.ActiveCfg = Linux-Debug|x64
 		{1999E3BF-D76E-4347-802D-B9C0B1E014D5}.Linux-Debug|x64.Build.0 = Linux-Debug|x64
 		{1999E3BF-D76E-4347-802D-B9C0B1E014D5}.Linux-Debug|x86.ActiveCfg = Linux-Debug|x64
@@ -865,7 +850,6 @@ Global
 		{A97CFEAC-DBE2-433C-9454-6D1D2749C591}.Release|x86.Build.0 = Release|Win32
 		{193A615A-B241-47A3-A144-A095679ED2B1}.Debug|x64.ActiveCfg = Linux-Debug|x64
 		{193A615A-B241-47A3-A144-A095679ED2B1}.Debug|x86.ActiveCfg = Linux-Release|x64
-		{193A615A-B241-47A3-A144-A095679ED2B1}.Debug|x86.Build.0 = Linux-Release|x64
 		{193A615A-B241-47A3-A144-A095679ED2B1}.Linux-Debug|x64.ActiveCfg = Linux-Debug|x64
 		{193A615A-B241-47A3-A144-A095679ED2B1}.Linux-Debug|x64.Build.0 = Linux-Debug|x64
 		{193A615A-B241-47A3-A144-A095679ED2B1}.Linux-Debug|x86.ActiveCfg = Linux-Debug|x64
@@ -888,7 +872,6 @@ Global
 		{3341003C-95AB-48CC-9AF0-EFA05A9D905E}.Release|x86.ActiveCfg = Release|x64
 		{A16E7EEE-9C81-4966-B58F-DA1268F00CFE}.Debug|x64.ActiveCfg = Linux-Debug|x64
 		{A16E7EEE-9C81-4966-B58F-DA1268F00CFE}.Debug|x86.ActiveCfg = Linux-Release|x64
-		{A16E7EEE-9C81-4966-B58F-DA1268F00CFE}.Debug|x86.Build.0 = Linux-Release|x64
 		{A16E7EEE-9C81-4966-B58F-DA1268F00CFE}.Linux-Debug|x64.ActiveCfg = Linux-Debug|x64
 		{A16E7EEE-9C81-4966-B58F-DA1268F00CFE}.Linux-Debug|x64.Build.0 = Linux-Debug|x64
 		{A16E7EEE-9C81-4966-B58F-DA1268F00CFE}.Linux-Debug|x86.ActiveCfg = Linux-Debug|x64
@@ -913,7 +896,6 @@ Global
 		{55258748-663F-49F6-A6B8-125D6D80A444}.Release|x86.Build.0 = Release|Win32
 		{E89BFD36-B3E0-4361-B4AE-59C68FB7A124}.Debug|x64.ActiveCfg = Linux-Debug|x64
 		{E89BFD36-B3E0-4361-B4AE-59C68FB7A124}.Debug|x86.ActiveCfg = Linux-Release|x64
-		{E89BFD36-B3E0-4361-B4AE-59C68FB7A124}.Debug|x86.Build.0 = Linux-Release|x64
 		{E89BFD36-B3E0-4361-B4AE-59C68FB7A124}.Linux-Debug|x64.ActiveCfg = Linux-Debug|x64
 		{E89BFD36-B3E0-4361-B4AE-59C68FB7A124}.Linux-Debug|x64.Build.0 = Linux-Debug|x64
 		{E89BFD36-B3E0-4361-B4AE-59C68FB7A124}.Linux-Debug|x86.ActiveCfg = Linux-Debug|x64

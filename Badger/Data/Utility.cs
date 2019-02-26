@@ -29,7 +29,6 @@ using System.Runtime.CompilerServices;
 using System.Threading;
 using System.Security.Cryptography;
 using System.Xml;
-using Herd.Files;
 
 namespace Badger.Data
 {

@@ -76,7 +76,7 @@
       </Command>
     </PostBuildEvent>
     <PreBuildEvent>
-      <Command>xcopy /d $(SolutionDir)$(Configuration)\FASTDimensionalPortal.dll $(OutDir)</Command>
+      <Command>xcopy /d /y $(SolutionDir)$(Configuration)\FASTDimensionalPortal.dll $(OutDir)</Command>
       <Message>Copying FASTDimensionalPortal.dll to output folder</Message>
     </PreBuildEvent>
   </ItemDefinitionGroup>
@@ -85,7 +85,7 @@
       <AdditionalIncludeDirectories>$(VCInstallDir)UnitTest\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <PreBuildEvent>
-      <Command>xcopy /d $(SolutionDir)bin\FASTDimensionalPortal.dll $(OutDir)</Command>
+      <Command>xcopy /d /y $(SolutionDir)bin\FASTDimensionalPortal.dll $(OutDir)</Command>
       <Message>Copying FASTDimensionalPortal.dll to output folder</Message>
     </PreBuildEvent>
   </ItemDefinitionGroup>
