@@ -96,7 +96,7 @@
       <PreprocessorDefinitions>BUILD_CNTK_WRAPPER</PreprocessorDefinitions>
     </ClCompile>
     <Link>
-      <LibraryDependencies>Cntk.Core-2.5.1;Cntk.Math-2.5.1;Cntk.PerformanceProfiler-2.5.1;iomp5;mklml_intel;mpi_cxx;mpi;open-rte;open-pal;pthread;</LibraryDependencies>
+      <LibraryDependencies>Cntk.Core-2.5.1;Cntk.Math-2.5.1;Cntk.PerformanceProfiler-2.5.1;iomp5;mklml_intel;pthread;</LibraryDependencies>
       <AdditionalLibraryDirectories>../../debug;%(Link.AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <AdditionalDependencies>$(StlAdditionalDependencies);%(Link.AdditionalDependencies)</AdditionalDependencies>
       <UnresolvedSymbolReferences>true</UnresolvedSymbolReferences>
@@ -112,7 +112,7 @@
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Linux-Release|x64'">
     <Link>
       <AdditionalLibraryDirectories>../../bin;%(Link.AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <LibraryDependencies>Cntk.Core-2.5.1;Cntk.Math-2.5.1;Cntk.PerformanceProfiler-2.5.1;iomp5;mklml_intel;mpi_cxx;mpi;open-rte;open-pal;pthread;</LibraryDependencies>
+      <LibraryDependencies>Cntk.Core-2.5.1;Cntk.Math-2.5.1;Cntk.PerformanceProfiler-2.5.1;iomp5;mklml_intel;pthread;</LibraryDependencies>
       <AdditionalOptions>-Wl,-rpath='${ORIGIN}'</AdditionalOptions>
     </Link>
   </ItemDefinitionGroup>
