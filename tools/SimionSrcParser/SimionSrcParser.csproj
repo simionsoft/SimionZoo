@@ -43,10 +43,12 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="ClassMethod.cs" />
     <Compile Include="ConstructorParser.cs" />
     <Compile Include="EnumerationParser.cs" />
     <Compile Include="FactoryParser.cs" />
     <Compile Include="main.cs" />
+    <Compile Include="ObjectClass.cs" />
     <Compile Include="ParameterizedObject.cs" />
     <Compile Include="ParameterParser.cs" />
     <Compile Include="Parameters.cs" />

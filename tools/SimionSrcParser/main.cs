@@ -38,39 +38,43 @@ namespace SimionSrcParser
             Thread.CurrentThread.CurrentCulture = System.Globalization.CultureInfo.InvariantCulture;
 
             SimionSrcParser sourceProcessor = new SimionSrcParser();
-            int numargs = args.GetLength(0);
-            if (args.GetLength(0) < 2)
+            int numargs = args.Length;
+            if (numargs < 3)
             {
-                Console.WriteLine("ERROR. Usage: SimionSrcParser <input-directory> <output-file>");
+                Console.WriteLine("ERROR. Usage: SimionSrcParser <input-directory> <output-config-file (.xml)> <output-docs-file (.md)>");
                 return 0;
             }
 
-            string outputFile = args[1];
             string inputDir = args[0];
-
-            Console.WriteLine("SimionSrcParser: " + args[0] + "->" + args[1]);
+            string outputConfigFile = args[1];
+            string outputDocsFile = args[2];
+            string outputDocsFolder = Herd.Utils.GetDirectory(outputDocsFile);
+            string projectName = Herd.Utils.RemoveExtension(Herd.Utils.GetFilename(outputDocsFile));
 
             //Parse .cpp files for constructor and factory definition
             List<string> sourceFiles = new List<string>(Directory.EnumerateFiles(inputDir, "*.cpp", SearchOption.AllDirectories));
             foreach (var file in sourceFiles)
             {
-                sourceProcessor.parseSrcFile(file);
+                sourceProcessor.ParseSrcFile(file);
             }
             //Parse .h files for enumerated types
             List<string> headerFiles = new List<string>(Directory.EnumerateFiles(inputDir, "*.h", SearchOption.AllDirectories));
             foreach (var file in headerFiles)
             {
-                sourceProcessor.parseHeaderFile(file);
+                sourceProcessor.ParseHeaderFile(file);
             }
 
 
-            int numErrors = sourceProcessor.postProcess();
+            int numErrors = sourceProcessor.PostProcess();
 
             if (numErrors==0)
             {
-                sourceProcessor.saveDefinitions(outputFile);
+                Console.WriteLine("Saving GUI Parameters configuration file: " + inputDir + "->" + outputConfigFile);
+                sourceProcessor.SaveGUIParameters(outputConfigFile);
+                Console.WriteLine("Saving source code documentation as Markdown files: " + inputDir + "->" + outputDocsFile);
+                sourceProcessor.SaveDocumentationAsMarkdown(outputDocsFolder, projectName);
 
-                Console.WriteLine("Source code correctly parsed and XML configuration succesfully built. {0} Kbs of code read.", sourceProcessor.numCharsProcessed / 1000);
+                Console.WriteLine("Finished: {0} Kbs of code read.", sourceProcessor.numCharsProcessed / 1000);
             }
             return 0;
         }

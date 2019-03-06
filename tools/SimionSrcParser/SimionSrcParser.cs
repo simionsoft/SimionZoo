@@ -68,7 +68,7 @@ namespace SimionSrcParser
             for (int i = 0; i < level; i++) definition += "  ";
         }
 
-        void parseConstructors(string content)
+        void ParseConstructors(string content)
         {
             string sPattern = @"(\w+)::\1\(\s*ConfigNode\s*\*\s*([^)]+)\)";
 
@@ -83,7 +83,7 @@ namespace SimionSrcParser
                 m_parameterizedObjects.Add(new Constructor(className, paramName, definition, prefix));
             }
         }
-        void parseFactories(string content)
+        void ParseFactories(string content)
         {
             string sPattern = @"(\w+)::getInstance\(\s*ConfigNode\s*\*\s*([^)]+)\)";
 
@@ -98,7 +98,7 @@ namespace SimionSrcParser
                 m_parameterizedObjects.Add(new Factory(className, paramName, definition, prefix));
             }
         }
-        void parseEnumerations(string content)
+        void ParseEnumerations(string content)
         {
             string sPattern = @"enum class\s*(\w+)\s*{([^}]+)}";
 
@@ -109,38 +109,66 @@ namespace SimionSrcParser
                 m_parameterizedObjects.Add(new Enumeration(match.Groups[1].Value, match.Groups[2].Value));
             }
         }
+
+        List<ObjectClass> Classes = new List<ObjectClass>();
+
+        void ParseAllMethodsAndComments(string filename, string content)
+        {
+            //We only process comments starting with ///
+            string sPattern = @"(///[^\r\n]+\r\n)+(\w+)\s+(\w+)::(\w+)\(([^\)]*)\)";
+            string className, methodName, returnType, arguments;
+            CaptureCollection comments;
+            foreach (Match match in Regex.Matches(content, sPattern))
+            {
+                comments = match.Groups[1].Captures;
+                returnType = match.Groups[2].Value;
+                className = match.Groups[3].Value;
+                methodName = match.Groups[4].Value;
+                arguments = match.Groups[5].Value;
+
+                ObjectClass objClass = Classes.Find(c => c.Name == className);
+                if (objClass == null)
+                {
+                    objClass = new ObjectClass(filename, className);
+                    Classes.Add(objClass);
+                }
+                objClass.AddMethod(new ClassMethod(methodName, comments, arguments, returnType, ClassMethod.MethodType.Regular));
+            }
+        }
         //PUBLIC methods//////////////////////////////////////////////////
         public int numCharsProcessed = 0;
         public SimionSrcParser() { }
-        public void parseSrcFile(string filename)
+        public void ParseSrcFile(string filename)
         {
             //Console.WriteLine("Parsing source file " + filename);
             m_currentFile = filename;
-            string fileContents = File.ReadAllText(filename, Encoding.UTF8);
-            fileContents = fileContents.Replace('\r', ' ');
-            fileContents = fileContents.Replace('\n', ' ');
+            string originalFileContents = File.ReadAllText(filename, Encoding.UTF8);
+            string processedFileContents = originalFileContents.Replace('\r', ' ');
+            processedFileContents = processedFileContents.Replace('\n', ' ');
 
-            numCharsProcessed += fileContents.Length;
-            parseConstructors(fileContents);
-            parseFactories(fileContents);
-            parseEnumerations(fileContents);
+            numCharsProcessed += originalFileContents.Length;
+            ParseConstructors(processedFileContents);
+            ParseFactories(processedFileContents);
+            ParseEnumerations(processedFileContents);
+
+            ParseAllMethodsAndComments(Herd.Utils.GetFilename(filename), originalFileContents);
         }
-        public void parseHeaderFile(string filename)
+        public void ParseHeaderFile(string filename)
         {
             //Console.WriteLine("Parsing header file " + filename);
             m_currentFile = filename;
-            string fileContents = File.ReadAllText(filename, Encoding.UTF8);
-            fileContents = fileContents.Replace('\r', ' ');
-            fileContents = fileContents.Replace('\n', ' ');
+            string originalFileContent = File.ReadAllText(filename, Encoding.UTF8);
+            string processedFileContent = originalFileContent.Replace('\r', ' ');
+            processedFileContent = processedFileContent.Replace('\n', ' ');
 
-            numCharsProcessed += fileContents.Length;
-            parseEnumerations(fileContents);
+            numCharsProcessed += originalFileContent.Length;
+            ParseEnumerations(processedFileContent);
         }
-        public int postProcess()
+        public int PostProcess()
         {
             return 0;
         }
-        public void saveDefinitions(string filename)
+        public void SaveGUIParameters(string filename)
         {
             FileStream file = new FileStream(filename,FileMode.Create);
             StreamWriter outputFile = new StreamWriter(file);
@@ -151,6 +179,80 @@ namespace SimionSrcParser
                 outputFile.Write(paramObj.outputXML(1));
             outputFile.Write(@"</DEFINITIONS>");
             outputFile.Close();
+        }
+        void ExportMethod(StreamWriter writer, ClassMethod method)
+        {
+            writer.WriteLine("### ``" + method.ReturnType + " " + method.Name + " (" + method.Arguments + ")``");
+
+            if (method.MethodSummary != null)
+            {
+                writer.WriteLine("* **Summary**:  ");
+                writer.WriteLine("  " + method.MethodSummary + "  ");
+            }
+            //export inputs and their descriptions
+            if (method.ArgumentDescriptions.Keys.Count > 0)
+            {
+                writer.WriteLine("* **Parameters**:  ");
+                foreach (string argument in method.ArgumentDescriptions.Keys)
+                {
+                    writer.Write("  * _" + argument + "_");
+                    if (method.ArgumentDescriptions[argument] != null)
+                        writer.WriteLine(": " + method.ArgumentDescriptions[argument]);
+                    else writer.WriteLine("  ");
+                }
+            }
+            //export output
+            if (method.ReturnValueDescription != null)
+            {
+                writer.WriteLine("* **Return Value**:  ");
+                if (method.ReturnValueDescription != null)
+                    writer.WriteLine(": " + method.ReturnValueDescription);
+                else writer.WriteLine("  ");
+            }
+        }
+        public void SaveDocumentationAsMarkdown(string outputDir, string projectName)
+        {
+            if (!outputDir.EndsWith("\\") && !outputDir.EndsWith("/"))
+                outputDir += "/";
+            string outputIndexFile = outputDir + projectName + ".md";
+
+            Classes= Classes.OrderBy(x => x.Name).ToList();
+
+            Directory.CreateDirectory(outputDir + projectName);
+            using (StreamWriter indexWriter = File.CreateText(outputIndexFile))
+            {
+                indexWriter.WriteLine("# Project: " + projectName);
+                indexWriter.WriteLine("## API Reference");
+                foreach (ObjectClass objClass in Classes)
+                {
+                    indexWriter.WriteLine("* [" + objClass.Name + "](" + projectName + "/" + objClass.Name + ")");
+                    string outputMdFile = outputDir + projectName + "/" + objClass.Name + ".md";
+                    using (StreamWriter classWriter = File.CreateText(outputMdFile))
+                    {
+                        classWriter.WriteLine("# Class " + objClass.Name);
+                        classWriter.WriteLine("> Source: " + objClass.SrcFileName);
+
+                        if (objClass.Constructors.Count > 0)
+                        {
+                            classWriter.WriteLine("## Constructors");
+                            foreach (ClassMethod method in objClass.Constructors)
+                                ExportMethod(classWriter, method);
+                        }
+                        if (objClass.Destructors.Count > 0)
+                        {
+                            classWriter.WriteLine("## Destructors");
+                            foreach (ClassMethod method in objClass.Destructors)
+                                ExportMethod(classWriter, method);
+                        }
+                        if (objClass.Methods.Count > 0)
+                        {
+                            classWriter.WriteLine("## Methods");
+                            foreach (ClassMethod method in objClass.Methods)
+                                ExportMethod(classWriter, method);
+                        }
+                    }
+                }
+            }
         }
     }
 }
