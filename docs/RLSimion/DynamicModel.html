@@ -1,0 +1,87 @@
+<html>
+<body>
+<h1>Class DynamicModel</h1>
+<em>Source: world.cpp</em>
+<h2>Methods</h2>
+<h3><code>size_t addStateVariable(const char* name, const char* units, double min, double max, bool bCircular)</code></h3>
+<ul>
+<li><b>Summary</b></li>
+<p>This method must be called from the constructor of DynamicModel subclasses to register state variables. Calls are parsed by the source code parser and listed beside the parameters of the class in the class definition file (config.xml)</p>
+<li><b>Parameters</b></li>
+<ul>
+<li><i>name</i>: Name of the variable (i.e. "speed")</li>
+<li><i>units</i>: Metrical unit (i.e., "m/s")</li>
+<li><i>min</i>: Minimum value this variable may get. Below this, values are clamped</li>
+<li><i>max</i>: Maximum value this variable may get. Above this, values are clamped</li>
+<li><i>bCircular</i>: This flag indicates whether the variable is circular (as angles)</li>
+</ul>
+<li><b>Return Value</b></li>
+<p>This method must be called from the constructor of DynamicModel subclasses to register state variables. Calls are parsed by the source code parser and listed beside the parameters of the class in the class definition file (config.xml)</p>
+</ul>
+<h3><code>size_t addActionVariable(const char* name, const char* units, double min, double max, bool bCircular)</code></h3>
+<ul>
+<li><b>Summary</b></li>
+<p>This method must be called from the constructor of DynamicModel subclasses to register action variables. Calls are parsed by the source code parser and listed beside the parameters of the class in the class definition file (config.xml)</p>
+<li><b>Parameters</b></li>
+<ul>
+<li><i>name</i>: Name of the variable (i.e. "speed")</li>
+<li><i>units</i>: Metrical unit (i.e., "m/s")</li>
+<li><i>min</i>: Minimum value this variable may get. Below this, values are clamped</li>
+<li><i>max</i>: Maximum value this variable may get. Above this, values are clamped</li>
+<li><i>bCircular</i>: This flag indicates whether the variable is circular (as angles)</li>
+</ul>
+<li><b>Return Value</b></li>
+<p>This method must be called from the constructor of DynamicModel subclasses to register action variables. Calls are parsed by the source code parser and listed beside the parameters of the class in the class definition file (config.xml)</p>
+</ul>
+<h3><code>void addConstant(const char* name, double value)</code></h3>
+<ul>
+<li><b>Summary</b></li>
+<p>This method can be called from the constructor of DynamicModel subclasses to register constants. These are also parsed</p>
+<li><b>Parameters</b></li>
+<ul>
+<li><i>name</i>: Name of the constant</li>
+<li><i>value</i>: Literal value (i.e. 6.5). The parser will not recognise but literal values</li>
+</ul>
+</ul>
+<h3><code>int getNumConstants()</code></h3>
+<ul>
+<li><b>Summary</b></li>
+<p>Returns the number of constants defined in the current DynamicModel subclass</p>
+</ul>
+<h3><code>double getConstant(int i)</code></h3>
+<ul>
+<li><b>Summary</b></li>
+<p>Returns the value of the i-th constant</p>
+<li><b>Parameters</b></li>
+<ul>
+<li><i>i</i>: Index of the constant to be retrieved</li>
+</ul>
+<li><b>Return Value</b></li>
+<p>Returns the value of the i-th constant</p>
+</ul>
+<h3><code>double getConstant(const char* constantName)</code></h3>
+<ul>
+<li><b>Summary</b></li>
+<p>An alternative version of getConstant() that uses the name as input</p>
+<li><b>Parameters</b></li>
+<ul>
+<li><i>constantName</i>: The name of the constant</li>
+</ul>
+<li><b>Return Value</b></li>
+<p>An alternative version of getConstant() that uses the name as input</p>
+</ul>
+<h3><code>double getReward(const State *s, const Action *a, const State *s_p)</code></h3>
+<ul>
+<li><b>Summary</b></li>
+<p>This method calculates the reward associated with tuple {s,a,s_p}</p>
+<li><b>Parameters</b></li>
+<ul>
+<li><i>s</i>: Initial state</li>
+<li><i>a</i>: Action</li>
+<li><i>s_p</i>: Resultant state</li>
+</ul>
+<li><b>Return Value</b></li>
+<p>This method calculates the reward associated with tuple {s,a,s_p}</p>
+</ul>
+</body>
+</html>

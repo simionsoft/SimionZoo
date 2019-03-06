@@ -1,0 +1,35 @@
+<html>
+<body>
+<h1>Class ExperienceReplay</h1>
+<em>Source: experience-replay.cpp</em>
+<h2>Methods</h2>
+<h3><code>bool bUsing()</code></h3>
+<ul>
+<li><b>Summary</b></li>
+<p>Returns whether Experience-Replay is enabled or not</p>
+</ul>
+<h3><code>size_t getUpdateBatchSize()</code></h3>
+<ul>
+<li><b>Summary</b></li>
+<p>Returns the size of each update batch</p>
+</ul>
+<h3><code>bool bHaveEnoughTuples()</code></h3>
+<ul>
+<li><b>Summary</b></li>
+<p>Returns whether there are enough tuples in the buffer to run a batch</p>
+</ul>
+<h3><code>void addTuple(const State* s, const  Action* a, const State* s_p, double r, double probability)</code></h3>
+<ul>
+<li><b>Summary</b></li>
+<p>Adds an experience tuple to the circular buffer used</p>
+<li><b>Parameters</b></li>
+<ul>
+<li><i>s</i>: Initial state</li>
+<li><i>a</i>: Action</li>
+<li><i>s_p</i>: Resultant state</li>
+<li><i>r</i>: Reward</li>
+<li><i>probability</i>: Probability by which the action was taken</li>
+</ul>
+</ul>
+</body>
+</html>

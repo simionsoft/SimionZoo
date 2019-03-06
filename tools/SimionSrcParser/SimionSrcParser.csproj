@@ -47,6 +47,7 @@
     <Compile Include="ConstructorParser.cs" />
     <Compile Include="EnumerationParser.cs" />
     <Compile Include="FactoryParser.cs" />
+    <Compile Include="ReferenceDocExporter.cs" />
     <Compile Include="main.cs" />
     <Compile Include="ObjectClass.cs" />
     <Compile Include="ParameterizedObject.cs" />

@@ -45,7 +45,7 @@ namespace SimionSrcParser
             }
 
             //Add return description if there is one
-            XmlNode returnDescription = doc.SelectSingleNode("doc/return");
+            XmlNode returnDescription = doc.SelectSingleNode("doc/returns");
             if (returnDescription != null)
                 ReturnValueDescription = summary.InnerText.Trim(trimmedChars);
         }

@@ -1,0 +1,118 @@
+<BADGER-PROJECT FileVersion="1.0.0.0">
+  <EXPERIMENT Name="Tutorial-2-QLearning-mountain-car">
+    <RLSimion FileVersion="1.0.0.0">
+    <RLSimion>
+      <Log>
+        <Num-Functions-Logged>10</Num-Functions-Logged>
+        <Log-Freq>0.25</Log-Freq>
+        <Log-Eval-Episodes>true</Log-Eval-Episodes>
+        <Log-Training-Episodes>false</Log-Training-Episodes>
+        <Log-Functions>true</Log-Functions>
+      </Log>
+      <World>
+        <Num-Integration-Steps>4</Num-Integration-Steps>
+        <Delta-T>0.01</Delta-T>
+        <Dynamic-Model>
+          <Model>
+            <Rain-car>
+            </Rain-car>
+            </Model>
+        </Dynamic-Model>
+      </World>
+      <Experiment>
+        <Random-Seed>1</Random-Seed>
+        <Num-Episodes>100</Num-Episodes>
+        <Eval-Freq>10</Eval-Freq>
+        <Progress-Update-Freq>1.0</Progress-Update-Freq>
+        <Episode-Length>60</Episode-Length>
+      </Experiment>
+      <SimGod>
+        <Target-Function-Update-Freq>100</Target-Function-Update-Freq>
+        <Gamma>0.9</Gamma>
+        <Freeze-Target-Function>false</Freeze-Target-Function>
+        <Use-Importance-Weights>false</Use-Importance-Weights>
+        <State-Feature-Map>
+          <Input-State>
+            <Input-State>position-deviation</Input-State>
+          </Input-State>
+          <Input-State>
+            <Input-State>velocity</Input-State>
+          </Input-State>
+          <Num-Features-Per-Dimension>20</Num-Features-Per-Dimension>
+          <Feature-Mapper>
+            <Type>
+              <Discrete-Grid>
+              </Discrete-Grid>
+              </Type>
+          </Feature-Mapper>
+        </State-Feature-Map>
+        <Action-Feature-Map>
+          <Input-Action>
+            <Input-Action>acceleration</Input-Action>
+          </Input-Action>
+          <Num-Features-Per-Dimension>20</Num-Features-Per-Dimension>
+          <Feature-Mapper>
+            <Type>
+              <Discrete-Grid>
+              </Discrete-Grid>
+              </Type>
+          </Feature-Mapper>
+        </Action-Feature-Map>
+        <Experience-Replay>
+          <Buffer-Size>1000</Buffer-Size>
+          <Update-Batch-Size>10</Update-Batch-Size>
+        </Experience-Replay>
+        <Simion>
+          <Type>
+            <Q-Learning>
+              <Policy>
+                <Policy>
+                  <Epsilon-Greedy>
+                    <Epsilon>
+                      <Schedule>
+                        <Constant>
+                          <FORKED-NODE Name="Value" Alias="Epsilon">
+                            <FORK-VALUE Name="Value-0">
+                            	<Value>0.1</Value>
+                            </FORK-VALUE>
+                            <FORK-VALUE Name="Value-1">
+                            	<Value>0.2</Value>
+                            </FORK-VALUE>
+                            <FORK-VALUE Name="Value-2">
+                            	<Value>0.3</Value>
+                            </FORK-VALUE>
+                          </FORKED-NODE>
+                        </Constant>
+                        </Schedule>
+                    </Epsilon>
+                  </Epsilon-Greedy>
+                  </Policy>
+              </Policy>
+              <Q-Function>
+                <Init-Value>0.0</Init-Value>
+              </Q-Function>
+              <Alpha>
+                <Schedule>
+                  <Constant>
+                    <FORKED-NODE Name="Value" Alias="Alpha">
+                      <FORK-VALUE Name="Value-0">
+                      	<Value>0.001</Value>
+                      </FORK-VALUE>
+                      <FORK-VALUE Name="Value-1">
+                      	<Value>0.005</Value>
+                      </FORK-VALUE>
+                      <FORK-VALUE Name="Value-2">
+                      	<Value>0.01</Value>
+                      </FORK-VALUE>
+                    </FORKED-NODE>
+                  </Constant>
+                  </Schedule>
+              </Alpha>
+            </Q-Learning>
+            </Type>
+        </Simion>
+      </SimGod>
+    </RLSimion>
+    </RLSimion>
+  </EXPERIMENT>
+</BADGER-PROJECT>

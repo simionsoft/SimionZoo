@@ -1,0 +1,140 @@
+<html>
+<body>
+<h1>Class FeatureList</h1>
+<em>Source: features.cpp</em>
+<h2>Methods</h2>
+<h3><code>void resize(size_t newSize, bool bKeepFeatures)</code></h3>
+<ul>
+<li><b>Summary</b></li>
+<p>Resizes the feature list, allocating more memory</p>
+<li><b>Parameters</b></li>
+<ul>
+<li><i>newSize</i>: New size</li>
+<li><i>bKeepFeatures</i>: true if we want to preserve the features on the list</li>
+</ul>
+</ul>
+<h3><code>void mult(double factor)</code></h3>
+<ul>
+<li><b>Summary</b></li>
+<p>Multiplies all the features by a factor</p>
+<li><b>Parameters</b></li>
+<ul>
+<li><i>factor</i>: The factor value</li>
+</ul>
+</ul>
+<h3><code>double getFactor(size_t index)</code></h3>
+<ul>
+<li><b>Summary</b></li>
+<p>Returns the factor of a given feature on the list</p>
+<li><b>Parameters</b></li>
+<ul>
+<li><i>index</i>: The index of the feature</li>
+</ul>
+<li><b>Return Value</b></li>
+<p>Returns the factor of a given feature on the list</p>
+</ul>
+<h3><code>double innerProduct(const FeatureList *inList)</code></h3>
+<ul>
+<li><b>Summary</b></li>
+<p>Implements an inner-product operation</p>
+<li><b>Parameters</b></li>
+<ul>
+<li><i>inList</i>: Second operand of the multiply operation</li>
+</ul>
+<li><b>Return Value</b></li>
+<p>Implements an inner-product operation</p>
+</ul>
+<h3><code>void copyMult(double factor, const FeatureList *inList)</code></h3>
+<ul>
+<li><b>Summary</b></li>
+<p>Copies a list multiplied by a factor on this feature list. Resizes the list if needed</p>
+<li><b>Parameters</b></li>
+<ul>
+<li><i>factor</i>: The factor to multiply by</li>
+<li><i>inList</i>: The feature list to copy</li>
+</ul>
+</ul>
+<h3><code>void addFeatureList(const FeatureList *inList, double factor)</code></h3>
+<ul>
+<li><b>Summary</b></li>
+<p>Adds feature to this list, multiplied by a factor</p>
+<li><b>Parameters</b></li>
+<ul>
+<li><i>inList</i>: Feature list to be added</li>
+<li><i>factor</i>: Factor used to multiply</li>
+</ul>
+</ul>
+<h3><code>void add(size_t index, double value)</code></h3>
+<ul>
+<li><b>Summary</b></li>
+<p>Adds a single feature</p>
+<li><b>Parameters</b></li>
+<ul>
+<li><i>index</i>: The index of the feature</li>
+<li><i>value</i>: The value of the feature</li>
+</ul>
+</ul>
+<h3><code>void spawn(const FeatureList *inList, size_t indexOffset)</code></h3>
+<ul>
+<li><b>Summary</b></li>
+<p>All features (indices and values) are spawned by those in inList. This means that this list contains 2 features a 5-feature space, and inList contains 3 features a 6-feature space, after this operation, this list will contain 2*3= 6 features from a 5*6= 30 feature space</p>
+<li><b>Parameters</b></li>
+<ul>
+<li><i>inList</i>: Second list used as an operand</li>
+<li><i>indexOffset</i>: Feature-index offset used for the second list</li>
+</ul>
+</ul>
+<h3><code>void applyThreshold(double threshold)</code></h3>
+<ul>
+<li><b>Summary</b></li>
+<p>Removes any feature with an activation factor under the threshold</p>
+<li><b>Parameters</b></li>
+<ul>
+<li><i>threshold</i>: Threshold value</li>
+</ul>
+</ul>
+<h3><code>void normalize()</code></h3>
+<ul>
+<li><b>Summary</b></li>
+<p>Normalizes features so that the sum of all the activation factors are 1</p>
+</ul>
+<h3><code>void copy(const FeatureList* inList)</code></h3>
+<ul>
+<li><b>Summary</b></li>
+<p>Copies in this list the given one</p>
+<li><b>Parameters</b></li>
+<ul>
+<li><i>inList</i>: Source feature list to copy</li>
+</ul>
+</ul>
+<h3><code>void offsetIndices(size_t offset)</code></h3>
+<ul>
+<li><b>Summary</b></li>
+<p>Adds an offset to all the feature indices</p>
+<li><b>Parameters</b></li>
+<ul>
+<li><i>offset</i>: Offset value</li>
+</ul>
+</ul>
+<h3><code>void split(FeatureList *outList1, FeatureList *outList2, size_t splitOffset)</code></h3>
+<ul>
+<li><b>Summary</b></li>
+<p>Splits this feature list in two lists: features with an index below splitOffset go to the first output list, and those above go to the second output list</p>
+<li><b>Parameters</b></li>
+<ul>
+<li><i>outList1</i>: Output list 1</li>
+<li><i>outList2</i>: Output list 2</li>
+<li><i>splitOffset</i>: Index used to split the feature list</li>
+</ul>
+</ul>
+<h3><code>void multIndices(int mult)</code></h3>
+<ul>
+<li><b>Summary</b></li>
+<p>Multiplies all the feature indices by mult</p>
+<li><b>Parameters</b></li>
+<ul>
+<li><i>mult</i>: Value used to multiply</li>
+</ul>
+</ul>
+</body>
+</html>

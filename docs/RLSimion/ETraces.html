@@ -1,0 +1,26 @@
+<html>
+<body>
+<h1>Class ETraces</h1>
+<em>Source: etraces.cpp</em>
+<h2>Methods</h2>
+<h3><code>void update(double factor)</code></h3>
+<ul>
+<li><b>Summary</b></li>
+<p>Etraces implement a technique that updates recently visited states with the current reward. This method updates the factor of each trace, so that they decay with time according to parameter Lambda. Not compatible with Experience-Replay, which is currently favored.</p>
+<li><b>Parameters</b></li>
+<ul>
+<li><i>factor</i>: Update factor (depends on the learning algorithm)</li>
+</ul>
+</ul>
+<h3><code>void addFeatureList(FeatureList* inList, double factor)</code></h3>
+<ul>
+<li><b>Summary</b></li>
+<p>This method adds current state's features to the traces</p>
+<li><b>Parameters</b></li>
+<ul>
+<li><i>inList</i>: Features of the current state</li>
+<li><i>factor</i>: Factor given to these features</li>
+</ul>
+</ul>
+</body>
+</html>

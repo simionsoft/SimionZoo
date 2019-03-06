@@ -32,36 +32,36 @@ using System.Text.RegularExpressions;
 
 namespace SimionSrcParser
 {
-    
+
     class SimionSrcParser
     {
         //PRIVATE stuff///////////////////////////////////////////////////
         string m_currentFile = "";
-        static List<ParameterizedObject> m_parameterizedObjects= new List<ParameterizedObject>();
+        static List<ParameterizedObject> m_parameterizedObjects = new List<ParameterizedObject>();
         public static ParameterizedObject getNamedParamObject(string name)
         {
-            return m_parameterizedObjects.Find(obj=>obj.name==name);
+            return m_parameterizedObjects.Find(obj => obj.name == name);
         }
 
-        public static void getEnclosedBody(string content, int startIndex,string openChar,string closeChar
+        public static void getEnclosedBody(string content, int startIndex, string openChar, string closeChar
             , out string definition, out string prefix)
         {
             int contentLength = content.Length;
-            int numOpenChars= 0;
+            int numOpenChars = 0;
             int firstOpenPos = content.IndexOf(openChar, startIndex);
-            prefix = content.Substring(startIndex, firstOpenPos-startIndex);
-            int pos = firstOpenPos+1;
+            prefix = content.Substring(startIndex, firstOpenPos - startIndex);
+            int pos = firstOpenPos + 1;
             string c = content.Substring(pos, 1);
-            while (pos<contentLength && (c!=closeChar || numOpenChars!=0))
+            while (pos < contentLength && (c != closeChar || numOpenChars != 0))
             {
-                if (c ==openChar)
+                if (c == openChar)
                     numOpenChars++;
                 if (c == closeChar)
                     numOpenChars--;
                 pos++;
                 c = content.Substring(pos, 1);
             }
-            definition = content.Substring(firstOpenPos + 1, pos -firstOpenPos- 1);
+            definition = content.Substring(firstOpenPos + 1, pos - firstOpenPos - 1);
         }
         public static void addIndentation(ref string definition, int level)
         {
@@ -72,13 +72,13 @@ namespace SimionSrcParser
         {
             string sPattern = @"(\w+)::\1\(\s*ConfigNode\s*\*\s*([^)]+)\)";
 
-            string className, paramName, prefix,definition;
+            string className, paramName, prefix, definition;
             foreach (Match match in Regex.Matches(content, sPattern))
             {
                 className = match.Groups[1].Value;
                 //Console.WriteLine("Found constructor definition: " + className);
                 paramName = match.Groups[2].Value;
-                getEnclosedBody(content,match.Index + match.Length,"{","}"
+                getEnclosedBody(content, match.Index + match.Length, "{", "}"
                     , out definition, out prefix);
                 m_parameterizedObjects.Add(new Constructor(className, paramName, definition, prefix));
             }
@@ -170,7 +170,7 @@ namespace SimionSrcParser
         }
         public void SaveGUIParameters(string filename)
         {
-            FileStream file = new FileStream(filename,FileMode.Create);
+            FileStream file = new FileStream(filename, FileMode.Create);
             StreamWriter outputFile = new StreamWriter(file);
 
             //// encoding=\"utf-8\"
@@ -180,79 +180,92 @@ namespace SimionSrcParser
             outputFile.Write(@"</DEFINITIONS>");
             outputFile.Close();
         }
-        void ExportMethod(StreamWriter writer, ClassMethod method)
+        void ExportMethod(StreamWriter writer, ClassMethod method, ReferenceDocExporter.Format format)
         {
-            writer.WriteLine("### ``" + method.ReturnType + " " + method.Name + " (" + method.Arguments + ")``");
+            ReferenceDocExporter.Title3(writer, ReferenceDocExporter.InlineCode(method.ReturnType + " " + method.Name + "(" + method.Arguments + ")", format), format);
 
+            ReferenceDocExporter.OpenList(writer, format);
             if (method.MethodSummary != null)
             {
-                writer.WriteLine("* **Summary**:  ");
-                writer.WriteLine("  " + method.MethodSummary + "  ");
+                ReferenceDocExporter.ListItem(writer, ReferenceDocExporter.InlineBold("Summary", format), format);
+                ReferenceDocExporter.PlainText(writer, method.MethodSummary, format);
             }
             //export inputs and their descriptions
             if (method.ArgumentDescriptions.Keys.Count > 0)
             {
-                writer.WriteLine("* **Parameters**:  ");
+                ReferenceDocExporter.ListItem(writer, ReferenceDocExporter.InlineBold("Parameters", format), format);
+                ReferenceDocExporter.OpenList(writer, format);
                 foreach (string argument in method.ArgumentDescriptions.Keys)
                 {
-                    writer.Write("  * _" + argument + "_");
-                    if (method.ArgumentDescriptions[argument] != null)
-                        writer.WriteLine(": " + method.ArgumentDescriptions[argument]);
-                    else writer.WriteLine("  ");
+                    ReferenceDocExporter.Tab(writer, ReferenceDocExporter.InlineListItem(
+                        ReferenceDocExporter.InlineItalic(argument, format) + ": " + method.ArgumentDescriptions[argument], format), format);
                 }
+                ReferenceDocExporter.CloseList(writer, format);
             }
             //export output
             if (method.ReturnValueDescription != null)
             {
-                writer.WriteLine("* **Return Value**:  ");
-                if (method.ReturnValueDescription != null)
-                    writer.WriteLine(": " + method.ReturnValueDescription);
-                else writer.WriteLine("  ");
+                ReferenceDocExporter.ListItem(writer, ReferenceDocExporter.InlineBold("Return Value", format), format);
+                ReferenceDocExporter.PlainText(writer, method.ReturnValueDescription, format);
             }
+            ReferenceDocExporter.CloseList(writer, format);
         }
-        public void SaveDocumentationAsMarkdown(string outputDir, string projectName)
+
+
+        public void SaveDocumentation(string outputDir, string projectName, ReferenceDocExporter.Format format= ReferenceDocExporter.Format.Markdown)
         {
             if (!outputDir.EndsWith("\\") && !outputDir.EndsWith("/"))
                 outputDir += "/";
-            string outputIndexFile = outputDir + projectName + ".md";
 
-            Classes= Classes.OrderBy(x => x.Name).ToList();
+            string extension= ReferenceDocExporter.FormatExtension(format);
+
+            string outputIndexFile = outputDir + projectName + extension;
+
+            Classes = Classes.OrderBy(x => x.Name).ToList();
 
             Directory.CreateDirectory(outputDir + projectName);
             using (StreamWriter indexWriter = File.CreateText(outputIndexFile))
             {
-                indexWriter.WriteLine("# Project: " + projectName);
-                indexWriter.WriteLine("> This file has been automatically generated. Please do not edit it");
-                indexWriter.WriteLine("## API Reference");
+                ReferenceDocExporter.OpeningSection(indexWriter, format);
+                ReferenceDocExporter.Title1(indexWriter, "Project: " + projectName, format);
+                ReferenceDocExporter.Comment(indexWriter, "This file has been automatically generated. Please do not edit it", format);
+                ReferenceDocExporter.Title2(indexWriter, "API Reference", format);
+                ReferenceDocExporter.OpenList(indexWriter, format);
                 foreach (ObjectClass objClass in Classes)
                 {
-                    indexWriter.WriteLine("* [" + objClass.Name + "](" + projectName + "/" + objClass.Name + ".md)");
-                    string outputMdFile = outputDir + projectName + "/" + objClass.Name + ".md";
+                    ReferenceDocExporter.ListItem(indexWriter
+                        , ReferenceDocExporter.InlineLink(objClass.Name,  projectName + "/" + objClass.Name + extension
+                        , format), format);
+                    string outputMdFile = outputDir + projectName + "/" + objClass.Name + extension;
                     using (StreamWriter classWriter = File.CreateText(outputMdFile))
                     {
-                        classWriter.WriteLine("# Class " + objClass.Name);
-                        classWriter.WriteLine("> Source: " + objClass.SrcFileName);
+                        ReferenceDocExporter.OpeningSection(classWriter, format);
+                        ReferenceDocExporter.Title1(classWriter, "Class " + objClass.Name, format);
+                        ReferenceDocExporter.Comment(classWriter, "Source: " + objClass.SrcFileName, format);
 
                         if (objClass.Constructors.Count > 0)
                         {
-                            classWriter.WriteLine("## Constructors");
+                            ReferenceDocExporter.Title2(classWriter, "Constructors", format);
                             foreach (ClassMethod method in objClass.Constructors)
-                                ExportMethod(classWriter, method);
+                                ExportMethod(classWriter, method, format);
                         }
                         if (objClass.Destructors.Count > 0)
                         {
-                            classWriter.WriteLine("## Destructors");
+                            ReferenceDocExporter.Title2(classWriter, "Destructors", format);
                             foreach (ClassMethod method in objClass.Destructors)
-                                ExportMethod(classWriter, method);
+                                ExportMethod(classWriter, method, format);
                         }
                         if (objClass.Methods.Count > 0)
                         {
-                            classWriter.WriteLine("## Methods");
+                            ReferenceDocExporter.Title2(classWriter, "Methods", format);
                             foreach (ClassMethod method in objClass.Methods)
-                                ExportMethod(classWriter, method);
+                                ExportMethod(classWriter, method, format);
                         }
+                        ReferenceDocExporter.ClosingSection(classWriter, format);
                     }
                 }
+                ReferenceDocExporter.CloseList(indexWriter, format);
+                ReferenceDocExporter.ClosingSection(indexWriter, format);
             }
         }
     }

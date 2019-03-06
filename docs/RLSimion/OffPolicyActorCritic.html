@@ -1,0 +1,34 @@
+<html>
+<body>
+<h1>Class OffPolicyActorCritic</h1>
+<em>Source: actor-critic-offpac.cpp</em>
+<h2>Methods</h2>
+<h3><code>double update(const State *s, const Action *a, const State *s_p, double r, double behaviorProb)</code></h3>
+<ul>
+<li><b>Summary</b></li>
+<p>Updates the policy and the value function using the Incremental Natural Actor Critic algorithm in "Off-Policy Actor-Critic" (Thomas Degris, Martha White, Richard S. Sutton), Proceedings of the 29 th International Conference on Machine Learning, Edinburgh, Scotland, UK, 2012. arXiv:1205.4839v5 [cs.LG] 20 Jun 2013</p>
+<li><b>Parameters</b></li>
+<ul>
+<li><i>s</i>: Initial state</li>
+<li><i>a</i>: Action</li>
+<li><i>s_p</i>: Resultant state</li>
+<li><i>r</i>: Reward</li>
+<li><i>behaviorProb</i>: Probability by which the actor selected the action</li>
+</ul>
+<li><b>Return Value</b></li>
+<p>Updates the policy and the value function using the Incremental Natural Actor Critic algorithm in "Off-Policy Actor-Critic" (Thomas Degris, Martha White, Richard S. Sutton), Proceedings of the 29 th International Conference on Machine Learning, Edinburgh, Scotland, UK, 2012. arXiv:1205.4839v5 [cs.LG] 20 Jun 2013</p>
+</ul>
+<h3><code>double selectAction(const State *s, Action *a)</code></h3>
+<ul>
+<li><b>Summary</b></li>
+<p>The actor selects an action following the policies it is learning</p>
+<li><b>Parameters</b></li>
+<ul>
+<li><i>s</i>: Initial state</li>
+<li><i>a</i>: Action</li>
+</ul>
+<li><b>Return Value</b></li>
+<p>The actor selects an action following the policies it is learning</p>
+</ul>
+</body>
+</html>

@@ -1,0 +1,86 @@
+<html>
+<body>
+<h1>Class Logger</h1>
+<em>Source: logger-functions.cpp</em>
+<h2>Methods</h2>
+<h3><code>void openFunctionLogFile(const char* filename)</code></h3>
+<ul>
+<li><b>Summary</b></li>
+<p>Creates a file where functions will be logged</p>
+<li><b>Parameters</b></li>
+<ul>
+<li><i>filename</i>: Path to the output file</li>
+</ul>
+</ul>
+<h3><code>void closeFunctionLogFile()</code></h3>
+<ul>
+<li><b>Summary</b></li>
+<p>Closes the file used for logging functions</p>
+</ul>
+<h3><code>void writeFunctionLogSample()</code></h3>
+<ul>
+<li><b>Summary</b></li>
+<p>Adds a sample from each function to the log file</p>
+</ul>
+<h3><code>void setOutputFilenames()</code></h3>
+<ul>
+<li><b>Summary</b></li>
+<p>Registers the output files</p>
+</ul>
+<h3><code>bool isEpisodeTypeLogged(bool evalEpisode)</code></h3>
+<ul>
+<li><b>Summary</b></li>
+<p>Returns whether the given type of episode is being logged</p>
+<li><b>Parameters</b></li>
+<ul>
+<li><i>evalEpisode</i>: true if we want to query about evaluation episodes, false otherwise</li>
+</ul>
+</ul>
+<h3><code>void writeLogFileXMLDescriptor(const char* filename)</code></h3>
+<ul>
+<li><b>Summary</b></li>
+<p>Creates an XML file with the description of the log file: variables, scene file...</p>
+<li><b>Parameters</b></li>
+<ul>
+<li><i>filename</i>: </li>
+</ul>
+</ul>
+<h3><code>void firstEpisode()</code></h3>
+<ul>
+<li><b>Summary</b></li>
+<p>Must be called before the first episode begins to initialize log files, timers,...</p>
+</ul>
+<h3><code>void firstStep()</code></h3>
+<ul>
+<li><b>Summary</b></li>
+<p>Must be called before the first step to write episode headers and the initial state in the log file. It also takes a snapshot of the functions and logs them if we are logging functions</p>
+</ul>
+<h3><code>void lastStep()</code></h3>
+<ul>
+<li><b>Summary</b></li>
+<p>Must be called after the last step in an episode has finished. The episode is marked as finished in the log file and, if the current is an evaluation episode, the progress is updated</p>
+</ul>
+<h3><code>void timestep(State* s, Action* a, State* s_p, Reward* r)</code></h3>
+<ul>
+<li><b>Summary</b></li>
+<p>Logs if needed a new step {s,a,s_p,r}, and adds a new sample to statistics</p>
+<li><b>Parameters</b></li>
+<ul>
+<li><i>s</i>: Initial state</li>
+<li><i>a</i>: Action</li>
+<li><i>s_p</i>: Resultant state</li>
+<li><i>r</i>: Reward</li>
+</ul>
+</ul>
+<h3><code>void logMessage(MessageType type, const char* message)</code></h3>
+<ul>
+<li><b>Summary</b></li>
+<p>Logging function that formats and dispatches different types of messages: info/warnings/errors, progress, and evaluation. Depending on whether the app is connected via a named pipe, the message is either sent via the pipe or printed on the system console. Error log messages throw an exception to terminate the program</p>
+<li><b>Parameters</b></li>
+<ul>
+<li><i>type</i>: </li>
+<li><i>message</i>: </li>
+</ul>
+</ul>
+</body>
+</html>

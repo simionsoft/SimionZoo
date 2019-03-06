@@ -1,0 +1,32 @@
+<html>
+<body>
+<h1>Class Actor</h1>
+<em>Source: actor.cpp</em>
+<h2>Methods</h2>
+<h3><code>double selectAction(const State *s, Action *a)</code></h3>
+<ul>
+<li><b>Summary</b></li>
+<p>Iterates over the actor's policy learners so that every one determines its output action</p>
+<li><b>Parameters</b></li>
+<ul>
+<li><i>s</i>: Input initial state</li>
+<li><i>a</i>: Output action</li>
+</ul>
+<li><b>Return Value</b></li>
+<p>Iterates over the actor's policy learners so that every one determines its output action</p>
+</ul>
+<h3><code>void update(const State* s, const Action* a, const State* s_p, double r, double td)</code></h3>
+<ul>
+<li><b>Summary</b></li>
+<p>Iterates over all the actor's policy learners so that every one learns from an experience tuple {s,a,s_p,r,td}</p>
+<li><b>Parameters</b></li>
+<ul>
+<li><i>s</i>: Initial state</li>
+<li><i>a</i>: Action</li>
+<li><i>s_p</i>: Resultant state</li>
+<li><i>r</i>: Reward</li>
+<li><i>td</i>: Temporal-Difference error calculated by the critic</li>
+</ul>
+</ul>
+</body>
+</html>

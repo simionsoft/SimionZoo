@@ -1,0 +1,27 @@
+<html>
+<body>
+<h1>Class DeterministicPolicyGaussianNoise</h1>
+<em>Source: vfa-policy.cpp</em>
+<h2>Methods</h2>
+<h3><code>double selectAction(const State *s, Action *a)</code></h3>
+<ul>
+<li><b>Summary</b></li>
+<p>A DeterministicPolicyGaussianNoise policy uses a single function representing the deterministic output. In training episodes, the noise signal used for exploration is sampled and added to the deterministic output</p>
+<li><b>Parameters</b></li>
+<ul>
+<li><i>s</i>: Initial state</li>
+<li><i>a</i>: Output state</li>
+</ul>
+</ul>
+<h3><code>void getFeatures(const State* state, FeatureList* outFeatureList)</code></h3>
+<ul>
+<li><b>Summary</b></li>
+<p>Uses the policy's feature map to return the features representing the state</p>
+<li><b>Parameters</b></li>
+<ul>
+<li><i>state</i>: State</li>
+<li><i>outFeatureList</i>: Output feature list</li>
+</ul>
+</ul>
+</body>
+</html>

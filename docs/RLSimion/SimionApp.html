@@ -1,0 +1,119 @@
+<html>
+<body>
+<h1>Class SimionApp</h1>
+<em>Source: app.cpp</em>
+<h2>Methods</h2>
+<h3><code>void printRequirements()</code></h3>
+<ul>
+<li><b>Summary</b></li>
+<p>This method prints the run-time requirements of an experiment instead of running it</p>
+</ul>
+<h3><code>void registerStateActionFunction(string name, StateActionFunction* pFunction)</code></h3>
+<ul>
+<li><b>Summary</b></li>
+<p>Called from function-learning objects to register an instance of a function to log (if configured to do so)</p>
+<li><b>Parameters</b></li>
+<ul>
+<li><i>name</i>: Name of the function</li>
+<li><i>pFunction</i>: Pointer to the function</li>
+</ul>
+</ul>
+<h3><code>void wireRegister(string name)</code></h3>
+<ul>
+<li><b>Summary</b></li>
+<p>Wires allow us to connect inputs with outputs. This method registers a wire by name</p>
+<li><b>Parameters</b></li>
+<ul>
+<li><i>name</i>: The new wire's name</li>
+</ul>
+</ul>
+<h3><code>void wireRegister(string name, double minimum, double maximum)</code></h3>
+<ul>
+<li><b>Summary</b></li>
+<p>This method registers a wire by name and also sets its value range</p>
+<li><b>Parameters</b></li>
+<ul>
+<li><i>name</i>: </li>
+<li><i>minimum</i>: </li>
+<li><i>maximum</i>: </li>
+</ul>
+</ul>
+<h3><code>void registerTargetPlatformInputFile(const char* targetPlatform, const char* filepath, const char* rename)</code></h3>
+<ul>
+<li><b>Summary</b></li>
+<p>Used to register input files to a specific platform.</p>
+<li><b>Parameters</b></li>
+<ul>
+<li><i>targetPlatform</i>: Target platform: Win-32, Win-64, Linux-64,...</li>
+<li><i>filepath</i>: Path to the required file (exe, dll, data file, ...)</li>
+<li><i>rename</i>: Name given to the required file in the host machine</li>
+</ul>
+</ul>
+<h3><code>void registerTargetPlatformOutputFile(const char* targetPlatform, const char* filepath)</code></h3>
+<ul>
+<li><b>Summary</b></li>
+<p>Used to register output files to a specific platform</p>
+<li><b>Parameters</b></li>
+<ul>
+<li><i>targetPlatform</i>: Target platform: Win-32, Win-64, Linux-64,...</li>
+<li><i>filepath</i>: Path to the required file (exe, dll, data file, ...)</li>
+</ul>
+</ul>
+<h3><code>void registerInputFile(const char* filepath, const char* rename)</code></h3>
+<ul>
+<li><b>Summary</b></li>
+<p>Used to register input files common to all the target platforms</p>
+<li><b>Parameters</b></li>
+<ul>
+<li><i>filepath</i>: Path to the required file (exe, dll, data file, ...)</li>
+<li><i>rename</i>: Name given to the required file in the host machine</li>
+</ul>
+</ul>
+<h3><code>void registerOutputFile(const char* filepath)</code></h3>
+<ul>
+<li><b>Summary</b></li>
+<p>Used to register output files common to all the target platforms</p>
+<li><b>Parameters</b></li>
+<ul>
+<li><i>filepath</i>: Path to the required file (exe, dll, data file, ...)</li>
+<li><i>rename</i>: Name given to the required file in the host machine</li>
+</ul>
+</ul>
+<h3><code>void run()</code></h3>
+<ul>
+<li><b>Summary</b></li>
+<p>The app's main-loop that starts the simulation and runs until it finishes.</p>
+</ul>
+<h3><code>void initRenderer(string sceneFile, State* s, Action* a)</code></h3>
+<ul>
+<li><b>Summary</b></li>
+<p>This method is called from run() and initializes the real-time rendering window (if configured to do so)</p>
+<li><b>Parameters</b></li>
+<ul>
+<li><i>sceneFile</i>: Name of the file with the definition of the scene</li>
+<li><i>s</i>: Current state</li>
+<li><i>a</i>: Current action</li>
+</ul>
+</ul>
+<h3><code>void initFunctionSamplers(State* s, Action* a)</code></h3>
+<ul>
+<li><b>Summary</b></li>
+<p>After adding all the StateActionFunctions to be logged/drawn, this method is called to initialize them</p>
+<li><b>Parameters</b></li>
+<ul>
+<li><i>s</i>: State</li>
+<li><i>a</i>: Action</li>
+</ul>
+</ul>
+<h3><code>void updateScene(State* s, Action* a)</code></h3>
+<ul>
+<li><b>Summary</b></li>
+<p>Updates the graphical objects bound in the scene file using the current value of their bounded state/action variables</p>
+<li><b>Parameters</b></li>
+<ul>
+<li><i>s</i>: </li>
+<li><i>a</i>: </li>
+</ul>
+</ul>
+</body>
+</html>

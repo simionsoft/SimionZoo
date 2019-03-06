@@ -1,0 +1,68 @@
+<html>
+<body>
+<h1>Class SimGod</h1>
+<em>Source: simgod.cpp</em>
+<h2>Methods</h2>
+<h3><code>double selectAction(State* s, Action* a)</code></h3>
+<ul>
+<li><b>Summary</b></li>
+<p>Iterates over all the Simions to let each of them select their actions</p>
+<li><b>Parameters</b></li>
+<ul>
+<li><i>s</i>: Initial state</li>
+<li><i>a</i>: Action variable where Simions write their selected actions</li>
+</ul>
+<li><b>Return Value</b></li>
+<p>Iterates over all the Simions to let each of them select their actions</p>
+</ul>
+<h3><code>void update(State* s, Action* a, State* s_p, double r, double probability)</code></h3>
+<ul>
+<li><b>Summary</b></li>
+<p>Iterates over all the Simions to let them learn from the last real-time experience tuple</p>
+<li><b>Parameters</b></li>
+<ul>
+<li><i>s</i>: Initial state</li>
+<li><i>a</i>: Action</li>
+<li><i>s_p</i>: Resultant state</li>
+<li><i>r</i>: Reward</li>
+<li><i>probability</i>: Probability by which the action was taken. Should be ignored</li>
+</ul>
+</ul>
+<h3><code>void postUpdate()</code></h3>
+<ul>
+<li><b>Summary</b></li>
+<p>If Experience-Replay is enabled, several tuples are taken from the buffer and given to the Simions to learn from them</p>
+</ul>
+<h3><code>void deferredLoad()</code></h3>
+<ul>
+<li><b>Summary</b></li>
+<p>Iterates over all the objects implementing DeferredLoad to do all the heavyweight-lifting stuff</p>
+</ul>
+<h3><code>double getGamma()</code></h3>
+<ul>
+<li><b>Summary</b></li>
+<p>Returns the value of gamma</p>
+</ul>
+<h3><code>int getTargetFunctionUpdateFreq()</code></h3>
+<ul>
+<li><b>Summary</b></li>
+<p>Returns the number of steps after which deferred V-Function updates are to be done. 0 if we don't use Freeze-V-Function</p>
+<li><b>Return Value</b></li>
+<p>Returns the number of steps after which deferred V-Function updates are to be done. 0 if we don't use Freeze-V-Function</p>
+</ul>
+<h3><code>bool bUpdateFrozenWeightsNow()</code></h3>
+<ul>
+<li><b>Summary</b></li>
+<p>Returns whether we need to update the "frozen" copies of any function using Freeze-Target-Function</p>
+<li><b>Return Value</b></li>
+<p>Returns whether we need to update the "frozen" copies of any function using Freeze-Target-Function</p>
+</ul>
+<h3><code>size_t getExperienceReplayUpdateSize()</code></h3>
+<ul>
+<li><b>Summary</b></li>
+<p>Returns the number of each update batch using Experience-Replay</p>
+<li><b>Return Value</b></li>
+<p>Returns the number of each update batch using Experience-Replay</p>
+</ul>
+</body>
+</html>

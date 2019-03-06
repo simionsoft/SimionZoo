@@ -71,8 +71,12 @@ namespace SimionSrcParser
             {
                 Console.WriteLine("Saving GUI Parameters configuration file: " + inputDir + "->" + outputConfigFile);
                 sourceProcessor.SaveGUIParameters(outputConfigFile);
-                Console.WriteLine("Saving source code documentation as Markdown files: " + inputDir + "->" + outputDocsFile);
-                sourceProcessor.SaveDocumentationAsMarkdown(outputDocsFolder, projectName);
+                Console.WriteLine("Saving source code documentation as Markdown: " + inputDir + "->" 
+                    + projectName + ReferenceDocExporter.FormatExtension(ReferenceDocExporter.Format.Markdown));
+                sourceProcessor.SaveDocumentation(outputDocsFolder, projectName, ReferenceDocExporter.Format.Markdown);
+                Console.WriteLine("Saving source code documentation as Html: " + inputDir + "->"
+                    + projectName + ReferenceDocExporter.FormatExtension(ReferenceDocExporter.Format.Html));
+                sourceProcessor.SaveDocumentation(outputDocsFolder, projectName, ReferenceDocExporter.Format.Html);
 
                 Console.WriteLine("Finished: {0} Kbs of code read.", sourceProcessor.numCharsProcessed / 1000);
             }

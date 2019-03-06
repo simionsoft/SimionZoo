@@ -1,0 +1,81 @@
+<BADGER-PROJECT FileVersion="1.0.0.0">
+  <EXPERIMENT Name="Tutorial-1-PID-mountain-car">
+    <RLSimion FileVersion="1.0.0.0">
+    <RLSimion>
+      <Log>
+        <Num-Functions-Logged>0</Num-Functions-Logged>
+        <Log-Freq>0.25</Log-Freq>
+        <Log-Eval-Episodes>true</Log-Eval-Episodes>
+        <Log-Training-Episodes>false</Log-Training-Episodes>
+        <Log-Functions>false</Log-Functions>
+      </Log>
+      <World>
+        <Num-Integration-Steps>4</Num-Integration-Steps>
+        <Delta-T>0.01</Delta-T>
+        <Dynamic-Model>
+          <Model>
+            <Rain-car>
+            </Rain-car>
+            </Model>
+        </Dynamic-Model>
+      </World>
+      <Experiment>
+        <Random-Seed>1</Random-Seed>
+        <Num-Episodes>0</Num-Episodes>
+        <Eval-Freq>1</Eval-Freq>
+        <Progress-Update-Freq>1.0</Progress-Update-Freq>
+        <Episode-Length>60.0</Episode-Length>
+      </Experiment>
+      <SimGod>
+        <Target-Function-Update-Freq>100</Target-Function-Update-Freq>
+        <Gamma>0.9</Gamma>
+        <Freeze-Target-Function>false</Freeze-Target-Function>
+        <Use-Importance-Weights>false</Use-Importance-Weights>
+        <Simion>
+          <Type>
+            <Controller>
+              <Controller>
+                <PID>
+                  <Input-Variable>position-deviation</Input-Variable>
+                  <Output-Action>acceleration</Output-Action>
+                  <KP>
+                    <Schedule>
+                      <Constant>
+                        <FORKED-NODE Name="Value" Alias="Value">
+                          <FORK-VALUE Name="Value-0">
+                          	<Value>1.0</Value>
+                          </FORK-VALUE>
+                          <FORK-VALUE Name="Value-1">
+                          	<Value>0.5</Value>
+                          </FORK-VALUE>
+                          <FORK-VALUE Name="Value-2">
+                          	<Value>0.1</Value>
+                          </FORK-VALUE>
+                        </FORKED-NODE>
+                      </Constant>
+                      </Schedule>
+                  </KP>
+                  <KI>
+                    <Schedule>
+                      <Constant>
+                        <Value>0.0</Value>
+                      </Constant>
+                      </Schedule>
+                  </KI>
+                  <KD>
+                    <Schedule>
+                      <Constant>
+                        <Value>0.0</Value>
+                      </Constant>
+                      </Schedule>
+                  </KD>
+                </PID>
+                </Controller>
+            </Controller>
+            </Type>
+        </Simion>
+      </SimGod>
+    </RLSimion>
+    </RLSimion>
+  </EXPERIMENT>
+</BADGER-PROJECT>
