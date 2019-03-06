@@ -222,6 +222,7 @@ namespace SimionSrcParser
             using (StreamWriter indexWriter = File.CreateText(outputIndexFile))
             {
                 indexWriter.WriteLine("# Project: " + projectName);
+                indexWriter.WriteLine("> This file has been automatically generated. Please do not edit it");
                 indexWriter.WriteLine("## API Reference");
                 foreach (ObjectClass objClass in Classes)
                 {
