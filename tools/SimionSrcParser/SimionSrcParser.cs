@@ -226,7 +226,7 @@ namespace SimionSrcParser
                 indexWriter.WriteLine("## API Reference");
                 foreach (ObjectClass objClass in Classes)
                 {
-                    indexWriter.WriteLine("* [" + objClass.Name + "](" + projectName + "/" + objClass.Name + ")");
+                    indexWriter.WriteLine("* [" + objClass.Name + "](" + projectName + "/" + objClass.Name + ".md)");
                     string outputMdFile = outputDir + projectName + "/" + objClass.Name + ".md";
                     using (StreamWriter classWriter = File.CreateText(outputMdFile))
                     {
