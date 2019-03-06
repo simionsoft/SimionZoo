@@ -90,6 +90,11 @@ void DQN::deferredLoadStep()
 	m_pMinibatch = m_pNNDefinition->createMinibatch(minibatchSize);
 }
 
+/// <summary>
+/// Implements the action selection algorithm for a Q-based Deep RL algorithm
+/// </summary>
+/// <param name="s">State</param>
+/// <param name="a">Output action</param>
 double DQN::selectAction(const State * s, Action * a)
 {
 	vector<double>& m_Q_s = m_pOnlineQNetwork->evaluate(s, a);
@@ -107,6 +112,13 @@ INetwork* DQN::getQNetworkForTargetActionSelection()
 	return m_pTargetQNetwork;
 }
 
+/// <summary>
+/// Implements DQL algorithm update using only one Neural Network for both evaluation and update
+/// </summary>
+/// <param name="s">Initial state</param>
+/// <param name="a">Action</param>
+/// <param name="s_p">Resultant state</param>
+/// <param name="r">Reward</param>
 double DQN::update(const State * s, const Action * a, const State * s_p, double r, double behaviorProb)
 {
 	if (SimionApp::get()->pSimGod->bReplayingExperience())

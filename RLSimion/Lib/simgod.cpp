@@ -41,6 +41,10 @@ std::vector<std::pair<DeferredLoad*, unsigned int>> SimGod::m_deferredLoadSteps;
 CHILD_OBJECT<StateFeatureMap> SimGod::m_pGlobalStateFeatureMap;
 CHILD_OBJECT<ActionFeatureMap> SimGod::m_pGlobalActionFeatureMap;
 
+/// <summary>
+/// Main constructor of the object SimGod that initializes all the parameterized objects hold by it
+/// </summary>
+/// <param name="pConfigNode">Node in the configuration file with the SimGod's parameters</param>
 SimGod::SimGod(ConfigNode* pConfigNode)
 {
 	if (!pConfigNode) return;
@@ -64,7 +68,12 @@ SimGod::~SimGod()
 {
 }
 
-
+/// <summary>
+/// Iterates over all the Simions to let each of them select their actions
+/// </summary>
+/// <param name="s">Initial state</param>
+/// <param name="a">Action variable where Simions write their selected actions</param>
+/// <returns>It returns the probability by which the action was chosen. Should be ignored</returns>
 double SimGod::selectAction(State* s, Action* a)
 {
 	double probability = 1.0;
@@ -75,6 +84,14 @@ double SimGod::selectAction(State* s, Action* a)
 	return probability;
 }
 
+/// <summary>
+/// Iterates over all the Simions to let them learn from the last real-time experience tuple
+/// </summary>
+/// <param name="s">Initial state</param>
+/// <param name="a">Action</param>
+/// <param name="s_p">Resultant state</param>
+/// <param name="r">Reward</param>
+/// <param name="probability">Probability by which the action was taken. Should be ignored</param>
 void SimGod::update(State* s, Action* a, State* s_p, double r, double probability)
 {
 	if (SimionApp::get()->pExperiment->isEvaluationEpisode()) return;
@@ -89,6 +106,9 @@ void SimGod::update(State* s, Action* a, State* s_p, double r, double probabilit
 		m_pExperienceReplay->addTuple(s, a, s_p, r, probability);
 }
 
+/// <summary>
+/// If Experience-Replay is enabled, several tuples are taken from the buffer and given to the Simions to learn from them
+/// </summary>
 void SimGod::postUpdate()
 {
 	ExperienceTuple* pExperienceTuple;
@@ -121,6 +141,9 @@ bool myComparison(const std::pair<DeferredLoad*, unsigned int> &a, const std::pa
 	return a.second < b.second;
 }
 
+/// <summary>
+/// Iterates over all the objects implementing DeferredLoad to do all the heavyweight-lifting stuff
+/// </summary>
 void SimGod::deferredLoad()
 {
 	std::sort(m_deferredLoadSteps.begin(), m_deferredLoadSteps.end(), myComparison);
@@ -141,14 +164,19 @@ std::shared_ptr<ActionFeatureMap> SimGod::getGlobalActionFeatureMap()
 	return m_pGlobalActionFeatureMap.sharedPtr();
 }
 
-
+/// <summary>
+/// Returns the value of gamma
+/// </summary>
 double SimGod::getGamma()
 {
 	return m_gamma.get();
 }
 
-//Returns the number of steps after which deferred V-Function updates are to be done
-//0 if we don't use Freeze-V-Function
+
+/// <summary>
+/// Returns the number of steps after which deferred V-Function updates are to be done. 0 if we don't use Freeze-V-Function
+/// </summary>
+/// <returns></returns>
 int SimGod::getTargetFunctionUpdateFreq()
 {
 	if (m_bFreezeTargetFunctions.get())
@@ -156,10 +184,13 @@ int SimGod::getTargetFunctionUpdateFreq()
 	return 0;
 }
 
-//We return true if:
-//	-freeze target functions is enabled
-//	-current step is a multiple of the update freq
-//	-we are not replaying experience
+/// <summary>
+/// Returns whether we need to update the "frozen" copies of any function using Freeze-Target-Function
+/// </summary>
+/// <returns>It returns true if:
+/// -freeze target functions is enabled
+/// -current step is a multiple of the update freq
+/// -we are not replaying experience</returns>
 bool SimGod::bUpdateFrozenWeightsNow()
 {
 	int updateFreq = getTargetFunctionUpdateFreq();
@@ -173,6 +204,10 @@ bool SimGod::useSampleImportanceWeights()
 	return m_bUseImportanceWeights.get();
 }
 
+/// <summary>
+/// Returns the number of each update batch using Experience-Replay
+/// </summary>
+/// <returns></returns>
 size_t SimGod::getExperienceReplayUpdateSize()
 {
 	return (size_t)m_pExperienceReplay->getUpdateBatchSize();

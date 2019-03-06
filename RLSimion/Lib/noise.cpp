@@ -53,6 +53,12 @@ int chooseRandomInteger(vector<double>& probability)
 	return index - 1;
 }
 
+/// <summary>
+/// Returns a sample from a Gaussian distribution function. Used to generate noise
+/// </summary>
+/// <param name="mean">Mean value of the distribution</param>
+/// <param name="sigma">Sigma of the distribution</param>
+/// <returns>The sample</returns>
 double GaussianNoise::getNormalDistributionSample(double mean, double sigma)
 {
 	if (sigma == 0.0) return mean;
@@ -122,6 +128,10 @@ GaussianNoise::GaussianNoise(double sigma, double alpha, NumericValue* scale)
 	m_scale= CHILD_OBJECT_FACTORY<NumericValue>(scale);
 }
 
+/// <summary>
+/// Returns a sample from a Gaussian distribution function. Used to generate noise
+/// </summary>
+/// <returns>The sample</returns>
 double GaussianNoise::getSample()
 {
 	double randValue = 0.0;
@@ -175,6 +185,10 @@ double SinusoidalNoise::unscale(double noise)
 	return noise / width;
 }
 
+/// <summary>
+/// Returns a sample from a sinusoidal signal. Used to generate noise
+/// </summary>
+/// <returns>The sample</returns>
 double SinusoidalNoise::getSample()
 {
 	if (m_scale->get() == 0.0) return 0.0;
@@ -230,6 +244,12 @@ double OrnsteinUhlenbeckNoise::unscale(double noise)
 	//does this method really make sense????
 	return 1.0;
 }
+
+/// <summary>
+/// Returns a sample from an Ornstein Uhlenbeck process: https://en.wikipedia.org/wiki/Ornstein%E2%80%93Uhlenbeck_process
+/// Used to generate temporally-correlated noise
+/// </summary>
+/// <returns>The sample</returns>
 double OrnsteinUhlenbeckNoise::getSample()
 {
 	//http://math.stackexchange.com/questions/1287634/implementing-ornstein-uhlenbeck-in-matlab

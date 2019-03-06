@@ -61,7 +61,12 @@ TileCodingFeatureMap::~TileCodingFeatureMap()
 }
 
 
-//https://www.cs.utexas.edu/~pstone/Papers/bib2html-links/SARA05.slides.pdf
+/// <summary>
+/// Implements a Tile-Coding feature mapping function that maps state-actions to feature: https://www.cs.utexas.edu/~pstone/Papers/bib2html-links/SARA05.slides.pdf
+/// </summary>
+/// <param name="grids">Input grids for every state-variable used</param>
+/// <param name="values">The values of every state-variable used</param>
+/// <param name="outFeatures">The output list of features</param>
 void TileCodingFeatureMap::map(vector<SingleDimensionGrid*>& grids, const vector<double>& values, FeatureList* outFeatures)
 {
 	//initialize outFeatures with the right size
@@ -99,7 +104,12 @@ void TileCodingFeatureMap::map(vector<SingleDimensionGrid*>& grids, const vector
 	outFeatures->normalize();
 }
 
-
+/// <summary>
+/// Inverse of the feature mapping operation. Given a feature it returns the state-action to which it corresponds.
+/// </summary>
+/// <param name="feature">The index of the feature</param>
+/// <param name="grids">The set of grids used to discretize each variable</param>
+/// <param name="outValues">The set of output values for every state-action variable</param>
 void TileCodingFeatureMap::unmap(size_t feature, vector<SingleDimensionGrid*>& grids, vector<double>& outValues)
 {
 	//tiles overlap and there is no easy way to invert the feature map

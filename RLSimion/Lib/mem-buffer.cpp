@@ -39,6 +39,7 @@ SimpleMemBuffer::~SimpleMemBuffer()
 	if (m_pBuffer != nullptr) delete[] m_pBuffer;
 }
 
+
 double& SimpleMemBuffer::operator[](BUFFER_SIZE index)
 {
 	return m_pBuffer[index];
@@ -58,11 +59,20 @@ SimionMemBuffer::~SimionMemBuffer()
 {
 }
 
+/// <summary>
+/// Accessor method
+/// </summary>
+/// <param name="index">Index of the element</param>
+/// <returns>A reference to the element that can be used to read or write the element</returns>
 double& SimionMemBuffer::operator[](BUFFER_SIZE index)
 {
 	return m_pPool->get((int)index,m_offset);
 }
 
+/// <summary>
+/// Returns the size of a memory block in the parent memory pool
+/// </summary>
+/// <returns></returns>
 BUFFER_SIZE SimionMemBuffer::getBlockSizeInBytes()
 {
 	return m_pPool->getBlockSize()*sizeof(double);

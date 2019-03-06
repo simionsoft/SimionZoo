@@ -63,9 +63,12 @@ namespace CNTK
 	WrapperClient::getNetworkDefinitionDLL WrapperClient::getNetworkDefinition = 0;
 	WrapperClient::setDeviceDLL WrapperClient::setDevice = 0;
 
-	//We want to be able to know the requirements even if we are running Badger on a Win-32 machine
-	//so, the only thing we actually don't do on Win-32 is load the dll and retrieve the access point
-
+/// <summary>
+/// This loads the Cntk libraries. Only usable by x64 versions. We want to be able to know the requirements even
+/// if we are running Badger on a Win-32 machine so, the only thing we actually don't do on Win-32 is load the dll
+/// and retrieve the access point. Otherwise, it adds all the target-specific requirements with disregard to the
+/// platform on which the executable is being run
+/// </summary>
 	void WrapperClient::Load()
 	{
 #if defined(__linux__) || defined(_WIN64)
@@ -129,6 +132,11 @@ namespace CNTK
 		SimionApp::get()->registerTargetPlatformInputFile("Linux-64", "../bin/cntk-linux/libopen-rte.so.12", "../bin/libopen-rte.so.12");
 	}
 
+/// <summary>
+/// Unloads Cntk libraries if all instances of the client have been destroyed. We need to keep track of them
+/// because in an experiment we may be using more than one instance of Neural Network and we only want to unload
+/// the libraries once al Neural Networks have been destroyed
+/// </summary>
 	void WrapperClient::UnLoad()
 	{
 #if defined(__linux__) || defined(_WIN64)

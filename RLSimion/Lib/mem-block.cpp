@@ -28,6 +28,14 @@
 #include "../../tools/System/CrossPlatform.h"
 #include <limits>
 
+
+/// <summary>
+/// MemBlock constructor. Each memory pool contains several interleaved buffers of the same size and it 
+/// is divided in smaller blocks. This object class represents a memory block that holds a part
+/// </summary>
+/// <param name="pPool">Parent pool</param>
+/// <param name="id">Id of this MemBlock</param>
+/// <param name="blockSize">Size of each block in this pool (in elements)</param>
 MemBlock::MemBlock(SimionMemPool* pPool, int id, size_t blockSize)
 	: m_pPool(pPool), m_blockSize(blockSize), m_id (id)
 {
@@ -57,6 +65,9 @@ double* MemBlock::deallocate()
 	return pBuffer;
 }
 
+/// <summary>
+/// Saves the contents of the memory block to a temporary file.
+/// </summary>
 void MemBlock::dumpToFile()
 {
 	FILE* pFile;
@@ -74,6 +85,9 @@ void MemBlock::dumpToFile()
 	}
 }
 
+/// <summary>
+/// Restores the contents of a memory block from file
+/// </summary>
 void MemBlock::restoreFromFile()
 {
 	if (!m_bDumped) return;

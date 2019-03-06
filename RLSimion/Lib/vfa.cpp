@@ -52,6 +52,12 @@ void LinearVFA::setCanUseDeferredUpdates(bool bCanUseDeferredUpdates)
 	m_bCanBeFrozen = bCanUseDeferredUpdates;
 }
 
+/// <summary>
+/// Returns the value of the linear Value Function Approximator for the input state-action given as a list of features.
+/// </summary>
+/// <param name="pFeatures">Input list of features</param>
+/// <param name="bUseFrozenWeights">Flag used to determine whether to use the online or target function</param>
+/// <returns>The evaluated value of the function</returns>
 double LinearVFA::get(const FeatureList *pFeatures,bool bUseFrozenWeights)
 {
 	double value = 0.0;
@@ -77,6 +83,9 @@ double LinearVFA::get(const FeatureList *pFeatures,bool bUseFrozenWeights)
 	return value;
 }
 
+/// <summary>
+/// Sets the function to saturate its output in range [min,max]
+/// </summary>
 void LinearVFA::saturateOutput(double min, double max)
 {
 	m_bSaturateOutput = true;
@@ -84,6 +93,12 @@ void LinearVFA::saturateOutput(double min, double max)
 	m_maxOutput = max;
 }
 
+
+/// <summary>
+/// Sets the index offset used. Handy if we want to represent f(s,a) with two different feature maps: one for the state
+/// and another one for the action
+/// </summary>
+/// <param name="offset">Offset added to feature indices</param>
 void LinearVFA::setIndexOffset(unsigned int offset)
 {
 	m_minIndex = offset;
@@ -91,6 +106,12 @@ void LinearVFA::setIndexOffset(unsigned int offset)
 }
 
 
+/// <summary>
+/// Adds a feature list (each feature has an index and a factor) to the weights in the function. Some of the indices
+/// might not belong to this function
+/// </summary>
+/// <param name="pFeatures">Feature list to be added</param>
+/// <param name="alpha">Gain parameter used to move current weights toward those in the feature list</param>
 void LinearVFA::add(const FeatureList* pFeatures, double alpha)
 {
 	int vUpdateFreq = 0;
@@ -144,6 +165,9 @@ void LinearVFA::add(const FeatureList* pFeatures, double alpha)
 	}
 }
 
+/// <summary>
+/// Sets the value of a function weight
+/// </summary>
 void LinearVFA::set(size_t feature, double value)
 {
 	(*m_pWeights)[feature] = value;
@@ -183,6 +207,10 @@ void LinearStateVFA::deferredLoadStep()
 	}
 }
 
+/// <summary>
+/// Sets the initial value of the function
+/// </summary>
+/// <param name="initValue"></param>
 void LinearStateVFA::setInitValue(double initValue)
 {
 	m_initValue.set(initValue);
@@ -202,7 +230,9 @@ LinearStateVFA::~LinearStateVFA()
 	if (m_pAux) delete m_pAux;
 }
 
-
+/// <summary>
+/// Uses the state feature map to calculate the features of a state
+/// </summary>
 void LinearStateVFA::getFeatures(const State* s, FeatureList* outFeatures)
 {
 	assert (s);
@@ -211,12 +241,18 @@ void LinearStateVFA::getFeatures(const State* s, FeatureList* outFeatures)
 	outFeatures->offsetIndices(m_minIndex);
 }
 
+/// <summary>
+/// Given a feature, it uses the state feature map to return the state variable's value in s
+/// </summary>
 void LinearStateVFA::getFeatureState(size_t feature, State* s)
 {
 	if (feature>=m_minIndex && feature<m_maxIndex)
 		m_pStateFeatureMap->getFeatureStateAction(feature, nullptr ,s);
 }
 
+/// <summary>
+/// Evaluates V(s)
+/// </summary>
 double LinearStateVFA::get(const State *s)
 {
 	getFeatures(s, m_pAux);
@@ -224,11 +260,21 @@ double LinearStateVFA::get(const State *s)
 	return LinearVFA::get(m_pAux);
 }
 
+/// <summary>
+/// Returns the number of outputs
+/// </summary>
 unsigned int LinearStateVFA::getNumOutputs()
 {
 	return 1;
 }
 
+/// <summary>
+/// Implements StateActionFunction::evaluate function. As per the interface definition, returns a 1-element vector with
+/// the evaluated value
+/// </summary>
+/// <param name="s">Input state</param>
+/// <param name="a">Input action (ignored)</param>
+/// <returns>A 1-element vector</returns>
 vector<double>& LinearStateVFA::evaluate(const State* s, const Action* a)
 {
 	m_output[0] = get(s);
@@ -297,6 +343,7 @@ void LinearStateActionVFA::setInitValue(double initValue)
 	m_initValue.set(initValue);
 }
 
+
 void LinearStateActionVFA::deferredLoadStep()
 {
 	//weights
@@ -314,6 +361,15 @@ void LinearStateActionVFA::deferredLoadStep()
 	m_pArgMaxTies = new int[m_numActionWeights];
 }
 
+
+/// <summary>
+/// Given a state-action pair, it calculates the features for each feature map separately (state and action)
+/// and then combines using spawn() and offsetIndices() so that the resultant features belong to the full
+/// state-action feature space
+/// </summary>
+/// <param name="s">State</param>
+/// <param name="a">Action</param>
+/// <param name="outFeatures">Output feature list</param>
 void LinearStateActionVFA::getFeatures(const State* s, const Action* a, FeatureList* outFeatures)
 {
 	assert(outFeatures);
@@ -337,6 +393,12 @@ void LinearStateActionVFA::getFeatures(const State* s, const Action* a, FeatureL
 		Logger::logMessage(MessageType::Error, "LinearStateActionVFA::getFeatures() called with neither a state nor an action");
 }
 
+/// <summary>
+/// Given a feature index, it returns in s and a the values of the variables to which the feature corresponds
+/// </summary>
+/// <param name="feature">Index of the feature</param>
+/// <param name="s">Output state</param>
+/// <param name="a">Output action</param>
 void LinearStateActionVFA::getFeatureStateAction(size_t feature, State* s, Action* a)
 {
 	if (feature >= m_minIndex && feature < m_maxIndex)
@@ -349,7 +411,9 @@ void LinearStateActionVFA::getFeatureStateAction(size_t feature, State* s, Actio
 }
 
 
-
+/// <summary>
+/// Evaluates Q(s,a)
+/// </summary>
 double LinearStateActionVFA::get(const State *s, const Action* a)
 {
 	getFeatures(s, a, m_pAux);
@@ -357,8 +421,12 @@ double LinearStateActionVFA::get(const State *s, const Action* a)
 	return LinearVFA::get(m_pAux);
 }
 
-
-
+/// <summary>
+/// Calculates the action a that maximizes Q(s,a)
+/// </summary>
+/// <param name="s">State</param>
+/// <param name="a">Output action that maximizes Q(s,a)</param>
+/// <param name="bSolveTiesRandomly">In case of tie, this flag sets whether return a random action or the first one</param>
 void LinearStateActionVFA::argMax(const State *s, Action* a, bool bSolveTiesRandomly)
 {
 	int numTies = 0;
@@ -400,6 +468,12 @@ void LinearStateActionVFA::argMax(const State *s, Action* a, bool bSolveTiesRand
 	m_pActionFeatureMap->getFeatureStateAction(arg, nullptr, a);
 }
 
+/// <summary>
+/// Calculates the maximum value of Q(s,a) for state s
+/// </summary>
+/// <param name="s">State</param>
+/// <param name="bUseFrozenWeights">If set and it makes sense, will use the target function</param>
+/// <returns>The maximum value of the function at the state</returns>
 double LinearStateActionVFA::max(const State* s, bool bUseFrozenWeights)
 {
 	//state features in aux list
@@ -421,6 +495,11 @@ double LinearStateActionVFA::max(const State* s, bool bUseFrozenWeights)
 	return maxValue;
 }
 
+/// <summary>
+/// Returns an array with the values for each action feature
+/// </summary>
+/// <param name="s">State</param>
+/// <param name="outActionValues">Output action values, one for every feature in the action feature map</param>
 void LinearStateActionVFA::getActionValues(const State* s,double *outActionValues)
 {
 	if (!outActionValues)
@@ -443,6 +522,13 @@ unsigned int LinearStateActionVFA::getNumOutputs()
 	return 1;
 }
 
+/// <summary>
+/// Implements StateActionFunction::evaluate function. As per the interface definition, returns a 1-element vector with
+/// the evaluated value
+/// </summary>
+/// <param name="s">Input state</param>
+/// <param name="a">Input action</param>
+/// <returns>A 1-element vector</returns>
 vector<double>& LinearStateActionVFA::evaluate(const State* s, const Action* a)
 {
 	m_output[0] = get(s, a);

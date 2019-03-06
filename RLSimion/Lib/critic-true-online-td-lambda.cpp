@@ -48,6 +48,16 @@ TrueOnlineTDLambdaCritic::~TrueOnlineTDLambdaCritic()
 	delete m_aux;
 }
 
+/// <summary>
+/// Updates the value function using the True-Online TD(Lambda) update rule in "True Online TD(lambda)"
+/// (Harm van Seijen, Richard Sutton), Proceedings of the 31st International Conference on Machine learning
+/// </summary>
+/// <param name="s">Initial state</param>
+/// <param name="a">Action</param>
+/// <param name="s_p">Resultant state</param>
+/// <param name="r">Reward</param>
+/// <param name="rho">Importance sampling</param>
+/// <returns>The Temporal-Difference error</returns>
 double TrueOnlineTDLambdaCritic::update(const State *s,const  Action *a,const State *s_p, double r, double rho)
 {
 	double v_s_p;

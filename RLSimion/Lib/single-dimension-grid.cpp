@@ -55,7 +55,11 @@ SingleDimensionGrid::~SingleDimensionGrid()
 {
 }
 
-
+/// <summary>
+/// Within the one-dimension grid, this method returns the index of the feature closest to the given value
+/// </summary>
+/// <param name="value">Value of the variable to which this grid corresponds</param>
+/// <returns>Index of the closest feature</returns>
 size_t SingleDimensionGrid::getClosestFeature(double value) const
 {
 	unsigned int nearestIndex = 0;
@@ -91,6 +95,11 @@ size_t SingleDimensionGrid::getClosestFeature(double value) const
 	return nearestIndex;
 }
 
+/// <summary>
+/// Given a feature index, it returns the value of the variable to which this single-dimension grid corresponds
+/// </summary>
+/// <param name="feature"></param>
+/// <returns></returns>
 double SingleDimensionGrid::getFeatureValue(size_t feature) const
 {
 	return m_values[feature];

@@ -60,7 +60,12 @@ void GaussianRBFGridFeatureMap::init(vector<SingleDimensionGrid*>& grids)
 	}
 }
 
-
+/// <summary>
+/// Implements a Gaussian Radial-Basis feature mapping function that maps state-actions to feature.
+/// </summary>
+/// <param name="grids">Input grids for every state-variable used</param>
+/// <param name="values">The values of every state-variable used</param>
+/// <param name="outFeatures">The output list of features</param>
 void GaussianRBFGridFeatureMap::map(vector<SingleDimensionGrid*>& grids, const vector<double>& values, FeatureList* outFeatures)
 {
 	size_t offset = 1;
@@ -87,7 +92,12 @@ void GaussianRBFGridFeatureMap::map(vector<SingleDimensionGrid*>& grids, const v
 	}
 }
 
-
+/// <summary>
+/// Inverse of the feature mapping operation. Given a feature it returns the state-action to which it corresponds.
+/// </summary>
+/// <param name="feature">The index of the feature</param>
+/// <param name="grids">The set of grids used to discretize each variable</param>
+/// <param name="outValues">The set of output values for every state-action variable</param>
 void GaussianRBFGridFeatureMap::unmap(size_t feature, vector<SingleDimensionGrid*>& grids, vector<double>& outValues)
 {
 	size_t dimFeature;

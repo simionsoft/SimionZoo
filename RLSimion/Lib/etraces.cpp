@@ -54,7 +54,12 @@ ETraces::ETraces():FeatureList("ETraces")
 ETraces::~ETraces()
 {}
 
-
+/// <summary>
+/// Etraces implement a technique that updates recently visited states with the current reward. This method updates
+/// the factor of each trace, so that they decay with time according to parameter Lambda. Not compatible with
+/// Experience-Replay, which is currently favored.
+/// </summary>
+/// <param name="factor">Update factor (depends on the learning algorithm)</param>
 void ETraces::update(double factor)
 {
 	if (!SimionApp::get()->pExperiment->isFirstStep() && m_bUse)
@@ -66,6 +71,12 @@ void ETraces::update(double factor)
 		clear();
 }
 
+
+/// <summary>
+/// This method adds current state's features to the traces
+/// </summary>
+/// <param name="inList">Features of the current state</param>
+/// <param name="factor">Factor given to these features</param>
 void ETraces::addFeatureList(FeatureList* inList, double factor)
 {
 	if (m_bUse)

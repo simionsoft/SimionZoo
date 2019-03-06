@@ -67,20 +67,33 @@ FunctionSampler::FunctionSampler(string functionId, StateActionFunction* pFuncti
 		m_pAction->set(i, m_pAction->getDescriptor()[i].getMin() + m_pAction->getDescriptor()[i].getRangeWidth()*0.5);
 }
 
+/// <summary>
+/// Returns the name of the function
+/// </summary>
 string FunctionSampler3D::getFunctionId() const
 {
 	return m_functionId + "(" + m_xVarName + "," + m_yVarName + ")";
 }
 
+/// <summary>
+/// Returns the number of samples in X (the image's width)
+/// </summary>
 size_t FunctionSampler3D::getNumSamplesX()
 {
 	return m_samplesPerDimension;
 }
+
+/// <summary>
+/// Returns the number of samples in Y (the image's height)
+/// </summary>
 size_t FunctionSampler3D::getNumSamplesY()
 {
 	return m_samplesPerDimension;
 }
 
+/// <summary>
+/// Returns the number of outputs of the sampler
+/// </summary>
 size_t FunctionSampler::getNumOutputs() const
 {
 	return m_numOutputs;
@@ -96,6 +109,12 @@ FunctionSampler3D::FunctionSampler3D(string functionId, StateActionFunction* pFu
 	m_yVarSource = Source(yVarSource);
 }
 
+
+/// <summary>
+/// Samples the function and returns a vector with all the samples
+/// </summary>
+/// <param name="outputIndex">Index of the output (the sampler may have more than one output)</param>
+/// <returns>A vector with getNumSamplesX()*getNumSamplesY() samples from the function</returns>
 const vector<double>& FunctionSampler3D::sample(unsigned int outputIndex)
 {
 	if (outputIndex >= m_numOutputs)
@@ -140,6 +159,12 @@ FunctionSampler2D::FunctionSampler2D(string functionId, StateActionFunction* pFu
 	m_xVarSource = Source(xVarSource);
 }
 
+
+/// <summary>
+/// Samples the function and returns a vector with all the samples
+/// </summary>
+/// <param name="outputIndex">Output index (the sampler may have more than one output)</param>
+/// <returns>A vector with getNumSamplesX() samples from the function</returns>
 const vector<double>& FunctionSampler2D::sample(unsigned int outputIndex)
 {
 	if (outputIndex >= m_numOutputs)
@@ -166,15 +191,25 @@ const vector<double>& FunctionSampler2D::sample(unsigned int outputIndex)
 	return m_sampledValues;
 }
 
+/// <summary>
+/// Returns the name of the function
+/// </summary>
 string FunctionSampler2D::getFunctionId() const
 {
 	return m_functionId + "(" + m_xVarName + ")";
 }
 
+/// <summary>
+/// Returns the number of samples in X (the image's width)
+/// </summary>
 size_t FunctionSampler2D::getNumSamplesX()
 {
 	return m_samplesPerDimension;
 }
+
+/// <summary>
+/// Returns the number of samples in Y (the image's height)
+/// </summary>
 size_t FunctionSampler2D::getNumSamplesY()
 {
 	return 1;

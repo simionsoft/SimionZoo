@@ -66,6 +66,10 @@ struct FunctionSampleHeader
 	long long int id;
 };
 
+/// <summary>
+/// Creates a file where functions will be logged
+/// </summary>
+/// <param name="filename">Path to the output file</param>
 void Logger::openFunctionLogFile(const char* filename)
 {
 	CrossPlatform::Fopen_s(&m_functionLogFile, m_outputFunctionLogBinary.c_str(), "wb");
@@ -94,13 +98,18 @@ void Logger::openFunctionLogFile(const char* filename)
 	else Logger::logMessage(MessageType::Warning, "Function log file couldn't be opened, so no function info will be saved.");
 }
 
+/// <summary>
+/// Closes the file used for logging functions
+/// </summary>
 void Logger::closeFunctionLogFile()
 {
 	if (m_functionLogFile)
 		fclose(m_functionLogFile);
 }
 
-
+/// <summary>
+/// Adds a sample from each function to the log file
+/// </summary>
 void Logger::writeFunctionLogSample()
 {
 	if (!m_functionLogFile)

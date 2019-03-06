@@ -58,6 +58,15 @@ TDCLambdaCritic::~TDCLambdaCritic()
 	delete m_omega;
 }
 
+/// <summary>
+/// Updates the value function using the TDC update rule
+/// </summary>
+/// <param name="s">Initial state</param>
+/// <param name="a">Action</param>
+/// <param name="s_p">Resultant state</param>
+/// <param name="r">Reward</param>
+/// <param name="rho">Importance sampling</param>
+/// <returns>The Temporal-Difference error</returns>
 double TDCLambdaCritic::update(const State *s, const Action *a, const State *s_p, double r, double rho)
 {
 	if (m_pAlpha->get()==0.0) return 0.0;

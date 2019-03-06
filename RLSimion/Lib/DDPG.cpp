@@ -117,6 +117,11 @@ void DDPG::deferredLoadStep()
 	m_pActorMinibatch = m_ActorNetworkDefinition->createMinibatch(minibatchSize, m_outputAction.size());
 }
 
+/// <summary>
+/// Implements action selection for the DDPG algorithm adding the output of the actor and exploration noise signal
+/// </summary>
+/// <param name="s">State</param>
+/// <param name="a">Output action</param>
 double DDPG::selectAction(const State * s, Action * a)
 {
 	double policyOutput;
@@ -131,6 +136,14 @@ double DDPG::selectAction(const State * s, Action * a)
 	return 1.0;
 }
 
+
+/// <summary>
+/// Updates the critic and actor using the DDPG algorithm
+/// </summary>
+/// <param name="s">Initial state</param>
+/// <param name="a">Action</param>
+/// <param name="s_p">Resultant state</param>
+/// <param name="r">Reward</param>
 double DDPG::update(const State * s, const Action * a, const State * s_p, double r, double behaviorProb)
 {
 	updateCritic(s, a, s_p, r);

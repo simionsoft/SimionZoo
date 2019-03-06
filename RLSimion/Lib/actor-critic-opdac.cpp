@@ -132,6 +132,18 @@ void OffPolicyDeterministicActorCritic::updatePolicy(const State* s, const State
 	}
 }
 
+/// <summary>
+/// Updates the policy and the value function using the Incremental Natural Actor Critic algorithm in
+/// "Off-policy deterministic actorcritic (OPDAC)" in "Deterministic Policy Gradient Algorithms"
+/// (David Silver, Guy Lever, Nicolas Heess, Thomas Degris, Daan Wierstra, Martin Riedmiller).
+/// Proceedings of the 31 st International Conference on Machine Learning, Beijing, China, 2014. JMLR: WCP volume 32
+/// </summary>
+/// <param name="s">Initial state</param>
+/// <param name="a">Action</param>
+/// <param name="s_p">Resultant state</param>
+/// <param name="r">Reward</param>
+/// <param name="behaviorProb">Probability by which the actor selected the action</param>
+/// <returns>Should return the TD error. Currently unused</returns>
 double OffPolicyDeterministicActorCritic::update(const State *s, const Action *a, const State *s_p, double r, double behaviorProb)
 {
 	updateValue(s, a, s_p, r);
@@ -139,6 +151,12 @@ double OffPolicyDeterministicActorCritic::update(const State *s, const Action *a
 	return 1.0;
 }
 
+/// <summary>
+/// The actor selects an action following the policies it is learning
+/// </summary>
+/// <param name="s">Initial state</param>
+/// <param name="a">Action</param>
+/// <returns>The probability by which the action was selected</returns>
 double OffPolicyDeterministicActorCritic::selectAction(const State *s, Action *a)
 {
 	double prob = 1.0;

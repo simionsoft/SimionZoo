@@ -84,6 +84,12 @@ void Actor::deferredLoadStep()
 	delete a;
 }
 
+/// <summary>
+/// Iterates over the actor's policy learners so that every one determines its output action
+/// </summary>
+/// <param name="s">Input initial state</param>
+/// <param name="a">Output action</param>
+/// <returns>The probability by which the action was selected. Should be ignored</returns>
 double Actor::selectAction(const State *s, Action *a)
 {
 	double prob = 1.0;
@@ -111,6 +117,14 @@ double Actor::getActionProbability(const State *s, const Action *a, bool bStocha
 	return prob;
 }
 
+/// <summary>
+/// Iterates over all the actor's policy learners so that every one learns from an experience tuple {s,a,s_p,r,td}
+/// </summary>
+/// <param name="s">Initial state</param>
+/// <param name="a">Action</param>
+/// <param name="s_p">Resultant state</param>
+/// <param name="r">Reward</param>
+/// <param name="td">Temporal-Difference error calculated by the critic</param>
 void Actor::update(const State* s, const Action* a, const State* s_p, double r, double td)
 {
 	for (unsigned int i = 0; i<m_policyLearners.size(); i++)

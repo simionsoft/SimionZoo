@@ -58,6 +58,12 @@ size_t FeatureMap::getMaxNumActiveFeatures() const
 	return m_featureMapper->getMaxNumActiveFeatures();
 }
 
+/// <summary>
+/// Calculates the features for any given state-action
+/// </summary>
+/// <param name="s">State</param>
+/// <param name="a">Action</param>
+/// <param name="outFeatures">Output feature list</param>
 void FeatureMap::getFeatures(const State* s, const Action* a, FeatureList* outFeatures)
 {
 	//copy input variable values to the internal buffer
@@ -68,6 +74,14 @@ void FeatureMap::getFeatures(const State* s, const Action* a, FeatureList* outFe
 	m_featureMapper->map(m_grids, m_variableValues, outFeatures);
 }
 
+
+/// <summary>
+/// Given a feature index, this method returns the state-action to which the feature corresponds. If the feature
+/// map uses only states, the output action is left unmodified
+/// </summary>
+/// <param name="feature">Index of the feature</param>
+/// <param name="s">Output state</param>
+/// <param name="a">Output action</param>
 void FeatureMap::getFeatureStateAction(size_t feature, State* s, Action* a)
 {
 	//get the unmapped values in the internal buffer

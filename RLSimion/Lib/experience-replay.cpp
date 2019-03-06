@@ -72,6 +72,9 @@ ExperienceReplay::ExperienceReplay() : DeferredLoad()
 	m_numTuples = 0;
 }
 
+/// <summary>
+/// Returns whether Experience-Replay is enabled or not
+/// </summary>
 bool ExperienceReplay::bUsing()
 {
 	return m_bufferSize.get() != 0;
@@ -88,11 +91,17 @@ ExperienceReplay::~ExperienceReplay()
 		delete[] m_pTupleBuffer;
 }
 
+/// <summary>
+/// Returns the size of each update batch
+/// </summary>
 size_t ExperienceReplay::getUpdateBatchSize() const
 {
 	return m_updateBatchSize.get();
 }
 
+/// <summary>
+/// Returns whether there are enough tuples in the buffer to run a batch
+/// </summary>
 bool ExperienceReplay::bHaveEnoughTuples() const
 {
 	size_t minNumTuplesForUpdate = 
@@ -101,6 +110,14 @@ bool ExperienceReplay::bHaveEnoughTuples() const
 	return m_numTuples >= minNumTuplesForUpdate;
 }
 
+/// <summary>
+/// Adds an experience tuple to the circular buffer used
+/// </summary>
+/// <param name="s">Initial state</param>
+/// <param name="a">Action</param>
+/// <param name="s_p">Resultant state</param>
+/// <param name="r">Reward</param>
+/// <param name="probability">Probability by which the action was taken</param>
 void ExperienceReplay::addTuple(const State* s, const  Action* a, const State* s_p, double r, double probability)
 {
 	//add the experience tuple to the buffer
@@ -120,6 +137,9 @@ void ExperienceReplay::addTuple(const State* s, const  Action* a, const State* s
 	m_currentPosition = ++m_currentPosition % (size_t) m_bufferSize.get();
 }
 
+/// <summary>
+/// Returns a random tuple from the buffer
+/// </summary>
 ExperienceTuple* ExperienceReplay::getRandomTupleFromBuffer()
 {
 	int randomIndex = rand() % (size_t) m_numTuples;

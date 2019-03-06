@@ -68,7 +68,7 @@ std::shared_ptr<Controller> Controller::getInstance(ConfigNode* pConfigNode)
 
 
 //LQR//////////////////////////////////////////////////////////////////////////
-///////////////////////////////////////////////////////////////////////////////
+
 LQRGain::LQRGain(ConfigNode* pConfigNode)
 {
 	m_variable = STATE_VARIABLE(pConfigNode, "Variable", "The input state variable");
@@ -89,6 +89,13 @@ LQRController::LQRController(ConfigNode* pConfigNode)
 
 LQRController::~LQRController(){}
 
+/// <summary>
+/// Calculates one of the outputs of the LQR controller
+/// </summary>
+/// <param name="s">Initial state</param>
+/// <param name="a">Action</param>
+/// <param name="index">Index of the output</param>
+/// <returns>The output value</returns>
 double LQRController::evaluate(const State* s, const Action* a, unsigned int index)
 {
 	//ignore index
@@ -147,6 +154,13 @@ const char* PIDController::getOutputAction(size_t output)
 	throw std::runtime_error("LQRController. Invalid action output given.");
 }
 
+/// <summary>
+/// Calculates one of the outputs of the PID controller
+/// </summary>
+/// <param name="s">Initial state</param>
+/// <param name="a">Action</param>
+/// <param name="index">Index of the output</param>
+/// <returns>The output value</returns>
 double PIDController::evaluate(const State* s, const Action* a, unsigned int output)
 {
 	if (SimionApp::get()->pWorld->getEpisodeSimTime()== 0.0)
@@ -210,6 +224,14 @@ double WindTurbineVidalController::sgn(double value)
 	return 0.0;
 }
 
+
+/// <summary>
+/// Calculates one of the outputs of the Variable-Speed Wind Turbine by Vidal
+/// </summary>
+/// <param name="s">Initial state</param>
+/// <param name="a">Action</param>
+/// <param name="index">Index of the output</param>
+/// <returns>The output value</returns>
 double WindTurbineVidalController::evaluate(const State* s, const Action* a, unsigned int output)
 {
 	//initialise m_lastT_g if we have to, controllers don't implement reset()
@@ -286,7 +308,13 @@ const char* WindTurbineBoukhezzarController::getOutputAction(size_t output)
 	throw std::runtime_error("LQRController. Invalid action output given.");
 }
 
-
+/// <summary>
+/// Calculates one of the outputs of the Variable-Speed Wind Turbine by Boukhezzar
+/// </summary>
+/// <param name="s">Initial state</param>
+/// <param name="a">Action</param>
+/// <param name="index">Index of the output</param>
+/// <returns>The output value</returns>
 double WindTurbineBoukhezzarController::evaluate(const State *s,const Action *a, unsigned int output)
 {
 	//initialise m_lastT_g if we have to, controllers don't implement reset()
@@ -386,6 +414,13 @@ const char* WindTurbineJonkmanController::getOutputAction(size_t output)
 	throw std::runtime_error("LQRController. Invalid action output given.");
 }
 
+/// <summary>
+/// Calculates one of the outputs of the Variable-Speed Wind Turbine by Jonkman
+/// </summary>
+/// <param name="s">Initial state</param>
+/// <param name="a">Action</param>
+/// <param name="index">Index of the output</param>
+/// <returns>The output value</returns>
 double WindTurbineJonkmanController::evaluate(const State *s,const Action *a, unsigned int output)
 {
 	switch (output)

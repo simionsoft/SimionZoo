@@ -52,6 +52,11 @@ SimpleEpisodeLinearSchedule::SimpleEpisodeLinearSchedule(double startValue, doub
 	m_endValue.set(endValue);
 }
 
+/// <summary>
+/// Returns a sample of a linear function determined by a starting value, an ending value and the current experiment
+/// progress
+/// </summary>
+/// <returns>The sampled value</returns>
 double SimpleEpisodeLinearSchedule::get()
 {
 	if (SimionApp::get()->pExperiment->isEvaluationEpisode()) return 0.0;
@@ -87,6 +92,11 @@ InterpolatedValue::InterpolatedValue(double startOffset, double endTime, double 
 	m_timeReference.set(timeReference);
 }
 
+/// <summary>
+/// Returns a sample from a linear function determined by linear interpolation between (x1,y1) and (x2,y2),
+/// where x1 are x2 are given as normalized experiment progress
+/// </summary>
+/// <returns></returns>
 double InterpolatedValue::get()
 {
 	double progress;
@@ -143,7 +153,9 @@ BhatnagarSchedule::BhatnagarSchedule(double alpha_0, double alpha_c, double t_ex
 	m_timeReference.set(timeReference);
 }
 
-
+/// <summary>
+/// Implements the schedule function proposed by Bhatnagar
+/// </summary>
 double BhatnagarSchedule::get()
 {
 	double t;
@@ -172,6 +184,10 @@ WireConnection::WireConnection(const char* name)
 	m_wire = WIRE_CONNECTION (name);
 }
 
+
+/// <summary>
+/// Returns the current value of a wire connection
+/// </summary>
 double WireConnection::get()
 {
 	return m_wire.get();

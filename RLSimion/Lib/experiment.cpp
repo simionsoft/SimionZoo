@@ -45,6 +45,9 @@ bool ExperimentTime::operator==(ExperimentTime& exp)
 	return m_step == exp.m_step && m_episodeIndex == exp.m_episodeIndex;
 }
 
+/// <summary>
+/// Returns the progress of the experiment (normalized in range [0,1])
+/// </summary>
 double Experiment::getExperimentProgress()
 {
 	double progress = ((double)m_step - 1 + (m_episodeIndex - 1)*m_numSteps)
@@ -52,6 +55,10 @@ double Experiment::getExperimentProgress()
 	return progress;
 }
 
+
+/// <summary>
+/// The normalized progress taking only into account the training episodes (normalized in range [0,1])
+/// </summary>
 double Experiment::getTrainingProgress()
 {
 	if (m_trainingEpisodeIndex == 0) //not a single training episode yet
@@ -61,6 +68,9 @@ double Experiment::getTrainingProgress()
 	return progress;
 }
 
+/// <summary>
+/// Normalized progress with respect to the current episode in range [0,1]
+/// </summary>
 double Experiment::getEpisodeProgress()
 {
 	double progress = ((double)m_step - 1) / ((double)m_numSteps - 1);
@@ -102,6 +112,9 @@ void Experiment::setNumSteps(int numSteps)
 	reset();
 }
 
+/// <summary>
+/// Returns whether the current is an evaluation episode
+/// </summary>
 bool Experiment::isEvaluationEpisode()
 {
 	if (m_evalFreq.get() > 0)
@@ -113,6 +126,9 @@ bool Experiment::isEvaluationEpisode()
 	return true;
 }
 
+/// <summary>
+/// Returns the index of the last evaluation episode done. Training episodes are ignored to calculate the index
+/// </summary>
 unsigned int Experiment::getEpisodeInEvaluationIndex()
 {
 	//the index of the last evaluation (1-based index)
@@ -130,6 +146,10 @@ unsigned int Experiment::getRelativeEpisodeIndex()
 	return getEvaluationIndex();
 }
 
+
+/// <summary>
+/// Resets the experiment to the starting conditions
+/// </summary>
 void Experiment::reset()
 {
 	m_trainingEpisodeIndex = 0; //[1..m_numTrainingEpisodes]
@@ -170,7 +190,9 @@ void Experiment::reset()
 	}
 }
 
-
+/// <summary>
+/// Increments the current step
+/// </summary>
 void Experiment::nextStep()
 {
 	m_experimentStep++;
@@ -180,16 +202,25 @@ void Experiment::nextStep()
 	else m_step = 0;
 }
 
+/// <summary>
+/// Returns whether the current step is valid or we have already finished the episode
+/// </summary>
 bool Experiment::isValidStep()
 {
 	return !m_bTerminalState && m_step > 0 && m_step <= m_numSteps;
 }
 
+/// <summary>
+/// Returns whether the current episode is valid or we have already finished the experiment
+/// </summary>
 bool Experiment::isValidEpisode()
 {
 	return m_episodeIndex > 0 && m_episodeIndex <= m_totalNumEpisodes;
 }
 
+/// <summary>
+/// Used to advance the simulation to the next episode
+/// </summary>
 void Experiment::nextEpisode()
 {
 	//reset the terminal state flag at the beginning of every episode
@@ -206,11 +237,17 @@ void Experiment::nextEpisode()
 	}
 }
 
+/// <summary>
+/// Is this the first episode?
+/// </summary>
 bool Experiment::isFirstEpisode()
 {
 	return m_episodeIndex == 1;
 }
 
+/// <summary>
+/// Is this the last episode?
+/// </summary>
 bool Experiment::isLastEpisode()
 {
 	if (isEvaluationEpisode())
@@ -224,6 +261,10 @@ Experiment::~Experiment()
 		delete m_pProgressTimer;
 }
 
+/// <summary>
+/// Main constructor of Experiment. Initializes all the parameterized objects
+/// </summary>
+/// <param name="pConfigNode">Node in the configuration file</param>
 Experiment::Experiment(ConfigNode* pConfigNode)
 {
 	if (!pConfigNode) return;
@@ -244,7 +285,14 @@ Experiment::Experiment(ConfigNode* pConfigNode)
 	srand((unsigned int)m_randomSeed.get());
 }
 
-
+/// <summary>
+/// Called every time-step. Controls when and what information to log, and also the timers to decide if the progress
+/// must be udated
+/// </summary>
+/// <param name="s">Initial state of the last tuple</param>
+/// <param name="a">Action in the last tuple</param>
+/// <param name="s_p">Resultant state of the last tuple</param>
+/// <param name="r">Reward of the last tuple</param>
 void Experiment::timestep(State* s, Action* a, State* s_p, Reward* r)
 {
 	char msg[1024];

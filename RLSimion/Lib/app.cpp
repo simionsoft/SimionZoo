@@ -52,6 +52,10 @@
 
 SimionApp* SimionApp::m_pAppInstance = 0;
 
+/// <summary>
+/// Main constructor of the app. All the object hierarchy is initialized here from the configuration file
+/// </summary>
+/// <param name="pConfigNode">The root node of the configuration file</param>
 SimionApp::SimionApp(ConfigNode* pConfigNode)
 {
 	m_pAppInstance = this;
@@ -121,6 +125,10 @@ bool SimionApp::flagPassed(int argc, char** argv, const char* flagName)
 	return false;
 }
 
+
+/// <summary>
+/// This method prints the run-time requirements of an experiment instead of running it
+/// </summary>
 void SimionApp::printRequirements()
 {
 	printf("<%s>\n", APP_REQUIREMENTS_XML_TAG);
@@ -174,7 +182,11 @@ string SimionApp::getOutputDirectory()
 	return m_directory;
 }
 
-
+/// <summary>
+/// Called from function-learning objects to register an instance of a function to log (if configured to do so)
+/// </summary>
+/// <param name="name">Name of the function</param>
+/// <param name="pFunction">Pointer to the function</param>
 void SimionApp::registerStateActionFunction(string name, StateActionFunction* pFunction)
 {
 	string finalName = name;
@@ -187,12 +199,22 @@ void SimionApp::registerStateActionFunction(string name, StateActionFunction* pF
 	m_pStateActionFunctions[finalName] = pFunction;
 }
 
+/// <summary>
+/// Wires allow us to connect inputs with outputs. This method registers a wire by name
+/// </summary>
+/// <param name="name">The new wire's name</param>
 void SimionApp::wireRegister(string name)
 {
 	if (m_wires.find(name) == m_wires.end())
 		m_wires[name] = new Wire(name);
 }
 
+/// <summary>
+/// This method registers a wire by name and also sets its value range
+/// </summary>
+/// <param name="name"></param>
+/// <param name="minimum"></param>
+/// <param name="maximum"></param>
 void SimionApp::wireRegister(string name, double minimum, double maximum)
 {
 	auto wire = m_wires.find(name);
@@ -205,6 +227,11 @@ void SimionApp::wireRegister(string name, double minimum, double maximum)
 	}
 }
 
+/// <summary>
+/// Given the name of the wire, this method returns its current value
+/// </summary>
+/// <param name="name">Name of the wire</param>
+/// <returns>Its current value</returns>
 Wire* SimionApp::wireGet(string name)
 {
 	auto wire = m_wires.find(name);
@@ -212,6 +239,7 @@ Wire* SimionApp::wireGet(string name)
 		return wire->second;
 	return nullptr;
 }
+
 
 void SimionApp::addPlatform(string targetPlatform)
 {
@@ -221,28 +249,53 @@ void SimionApp::addPlatform(string targetPlatform)
 	}
 }
 
+/// <summary>
+/// Used to register input files to a specific platform.
+/// </summary>
+/// <param name="targetPlatform">Target platform: Win-32, Win-64, Linux-64,...</param>
+/// <param name="filepath">Path to the required file (exe, dll, data file, ...)</param>
+/// <param name="rename">Name given to the required file in the host machine</param>
 void SimionApp::registerTargetPlatformInputFile(const char* targetPlatform, const char* filepath, const char* rename)
 {
 	addPlatform(string(targetPlatform));
 	m_targetPlatformRequirements[targetPlatform]->addInputFile(filepath, rename);
 }
 
+/// <summary>
+/// Used to register output files to a specific platform
+/// </summary>
+/// <param name="targetPlatform">Target platform: Win-32, Win-64, Linux-64,...</param>
+/// <param name="filepath">Path to the required file (exe, dll, data file, ...)</param>
 void SimionApp::registerTargetPlatformOutputFile(const char* targetPlatform, const char* filepath)
 {
 	addPlatform(string(targetPlatform));
 	m_targetPlatformRequirements[targetPlatform]->addOutputFile(filepath);
 }
 
+/// <summary>
+/// Used to register input files common to all the target platforms
+/// </summary>
+/// <param name="filepath">Path to the required file (exe, dll, data file, ...)</param>
+/// <param name="rename">Name given to the required file in the host machine</param>
 void SimionApp::registerInputFile(const char* filepath, const char* rename)
 {
 	m_commonRequirements.addInputFile(filepath, rename);
 }
 
+/// <summary>
+/// Used to register output files common to all the target platforms
+/// </summary>
+/// <param name="filepath">Path to the required file (exe, dll, data file, ...)</param>
+/// <param name="rename">Name given to the required file in the host machine</param>
 void SimionApp::registerOutputFile(const char* filepath)
 {
 	m_commonRequirements.addOutputFile(filepath);
 }
 
+
+/// <summary>
+/// The app's main-loop that starts the simulation and runs until it finishes.
+/// </summary>
 void SimionApp::run()
 {
 	Logger::logMessage(MessageType::Info, "Simulation starting");
@@ -313,6 +366,12 @@ void SimionApp::run()
 	delete a;
 }
 
+/// <summary>
+/// This method is called from run() and initializes the real-time rendering window (if configured to do so)
+/// </summary>
+/// <param name="sceneFile">Name of the file with the definition of the scene</param>
+/// <param name="s">Current state</param>
+/// <param name="a">Current action</param>
 void SimionApp::initRenderer(string sceneFile, State* s, Action* a)
 {
 	char arguments[] = "RLSimion";
@@ -417,6 +476,11 @@ void SimionApp::initRenderer(string sceneFile, State* s, Action* a)
 	m_timer.start();
 }
 
+/// <summary>
+/// After adding all the StateActionFunctions to be logged/drawn, this method is called to initialize them
+/// </summary>
+/// <param name="s">State</param>
+/// <param name="a">Action</param>
 void SimionApp::initFunctionSamplers(State* s, Action* a)
 {
 	vector<pair<VariableSource, string>> m_sampledVariables;
@@ -457,6 +521,11 @@ void SimionApp::initFunctionSamplers(State* s, Action* a)
 	}
 }
 
+/// <summary>
+/// Updates the graphical objects bound in the scene file using the current value of their bounded state/action variables
+/// </summary>
+/// <param name="s"></param>
+/// <param name="a"></param>
 void SimionApp::updateScene(State* s, Action* a)
 {
 	//check the renderer has been initialized
@@ -515,6 +584,7 @@ void SimionApp::update2DMeters(State* s, Action* a)
 }
 
 #include "CNTKWrapperClient.h"
+
 void SimionApp::setPreferredDevice(Device device)
 {
 	//need to check whether CNTK has been loaded. Might not be used

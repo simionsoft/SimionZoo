@@ -62,6 +62,13 @@ QEGreedyPolicy::~QEGreedyPolicy()
 {
 }
 
+/// <summary>
+/// Implements an epsilon-greedy action selection policy, selecting the action with the maximum Q(s,a) value
+/// </summary>
+/// <param name="pQFunction">The Q-function</param>
+/// <param name="s">Current state</param>
+/// <param name="a">Output action</param>
+/// <returns>Probability by which the action was selected</returns>
 double QEGreedyPolicy::selectAction(LinearStateActionVFA* pQFunction, const State* s, Action* a)
 {
 	double epsilon = m_pEpsilon->get();
@@ -93,6 +100,13 @@ QSoftMaxPolicy::~QSoftMaxPolicy()
 	if (m_pProbabilities) delete[] m_pProbabilities;
 }
 
+/// <summary>
+/// Implements a Soft-Max action selection policy controlled by temperature parameter Tau
+/// </summary>
+/// <param name="pQFunction">The Q-function</param>
+/// <param name="s">Current state</param>
+/// <param name="a">Output action</param>
+/// <returns>Probability by which the action was selected</returns>
 double QSoftMaxPolicy::selectAction(LinearStateActionVFA* pQFunction, const State* s, Action* a)
 {
 	if (SimionApp::get()->pExperiment->isEvaluationEpisode() || m_pTau->get() == 0.0)
@@ -143,6 +157,14 @@ GreedyQPlusNoisePolicy::GreedyQPlusNoisePolicy(ConfigNode* pConfigNode)
 GreedyQPlusNoisePolicy::~GreedyQPlusNoisePolicy()
 {}
 
+
+/// <summary>
+/// Implements an action selection policy that adds noise to the greedily selected action
+/// </summary>
+/// <param name="pQFunction">The Q-function</param>
+/// <param name="s">Current state</param>
+/// <param name="a">Output action</param>
+/// <returns>Probability by which the action was selected</returns>
 double GreedyQPlusNoisePolicy::selectAction(LinearStateActionVFA* pQFunction, const State* s, Action* a)
 {
 	if (m_noise.size() != pQFunction->getInputActionVariables().size())
@@ -189,6 +211,14 @@ QLearningCritic::~QLearningCritic()
 	delete m_pAux;
 }
 
+/// <summary>
+/// Updates the estimate of the Q-function using the Q-Learning update rule with tuple {s,a,s_p,r}
+/// </summary>
+/// <param name="s">Initial state</param>
+/// <param name="a">Action</param>
+/// <param name="s_p">Resultant state</param>
+/// <param name="r">Reward</param>
+/// <returns>The Temporal-Difference error</returns>
 double QLearningCritic::update(const State *s, const Action *a, const State *s_p, double r, double probability)
 {
 	//https://webdocs.cs.ualberta.ca/~sutton/book/ebook/node78.html
@@ -244,6 +274,17 @@ DoubleQLearning::~DoubleQLearning()
 	delete m_pQFunction2;
 }
 
+/// <summary>
+/// Updates the estimate of the Q-function using the Double Q-Learning update rule with tuple {s,a,s_p,r}.
+/// The main difference with respect to Q-function is that it uses two different sets of weights for the function,
+/// updating a random set of weights toward the other set of weights. Should offer better stability than regular
+/// Q-Learning
+/// </summary>
+/// <param name="s">Initial state</param>
+/// <param name="a">Action</param>
+/// <param name="s_p">Resultant state</param>
+/// <param name="r">Reward</param>
+/// <returns>The Temporal-Difference error</returns>
 double DoubleQLearning::update(const State *s, const Action *a, const State *s_p, double r, double probability)
 {
 	double gamma= SimionApp::get()->pSimGod->getGamma();
@@ -283,6 +324,12 @@ SARSA::~SARSA()
 	delete m_nextA;
 }
 
+
+/// <summary>
+/// implements SARSA On-policy action selection algorithm
+/// </summary>
+/// <param name="s">Initial state</param>
+/// <param name="a">Output action</param>
 double SARSA::selectAction(const State *s, Action *a)
 {
 	if (m_bNextActionSelected)
@@ -297,6 +344,14 @@ double SARSA::selectAction(const State *s, Action *a)
 	}
 }
 
+/// <summary>
+/// Updates the estimate of the Q-function using the SARSA update rule with tuple {s,a,s_p,r}
+/// </summary>
+/// <param name="s">Initial state</param>
+/// <param name="a">Action</param>
+/// <param name="s_p">Resultant state</param>
+/// <param name="r">Reward</param>
+/// <returns>The Temporal-Difference error</returns>
 double SARSA::update(const State* s, const Action* a, const State* s_p, double r, double probability)
 {
 	//https://webdocs.cs.ualberta.ca/~sutton/book/ebook/node77.html

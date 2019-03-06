@@ -45,6 +45,15 @@ CACLALearner::~CACLALearner()
 	delete m_pStateFeatures;
 }
 
+
+/// <summary>
+/// Updates the policy using the CACLA update rule
+/// </summary>
+/// <param name="s">Initial state</param>
+/// <param name="a">Action</param>
+/// <param name="s_p">Resultant state</param>
+/// <param name="r">Reward</param>
+/// <param name="td">Temporal-Difference error</param>
 void CACLALearner::update(const State *s, const Action *a, const State *s_p, double r, double td)
 {
 	double lastNoise;

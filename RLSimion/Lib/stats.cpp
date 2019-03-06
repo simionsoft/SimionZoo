@@ -34,6 +34,9 @@ StatsInfo::StatsInfo()
 	reset();
 }
 
+/// <summary>
+/// Resets the stats
+/// </summary>
 void StatsInfo::reset()
 {
 	m_min = std::numeric_limits<double>::max();
@@ -63,6 +66,11 @@ void StatsInfo::reset()
 //	return sqrt(stdDevSum / (elements - 1));
 //}
 
+
+/// <summary>
+/// Adds a sample to the collection of values
+/// </summary>
+/// <param name="value">New sample</param>
 void StatsInfo::addSample(double value)
 {
 	m_min = std::min(value, m_min);
@@ -77,13 +85,28 @@ void StatsInfo::addSample(double value)
 	m_stdDevSum += stepMean * stepSum;
 }
 
+/// <summary>
+/// Returns the maximum sampled value
+/// </summary>
 double StatsInfo::getMin(){ return m_min; }
+
+/// <summary>
+/// Returns the minimum sampled value
+/// </summary>
 double StatsInfo::getMax(){ return m_max; }
+
+/// <summary>
+/// Returns the mean value of all samples
+/// </summary>
 double StatsInfo::getAvg()
 {
 	if (m_numSamples > 0) return m_sum / m_numSamples;
 	return 0.0;
 }
+
+/// <summary>
+/// Returns the standard deviation of all the samples
+/// </summary>
 double StatsInfo::getStdDev()
 {
 	if (m_numSamples > 1) return sqrt(fabs(m_stdDevSum / (m_numSamples - 1)));

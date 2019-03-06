@@ -116,6 +116,7 @@ OffPolicyActorCritic::~OffPolicyActorCritic()
 }
 
 #include <iostream>
+
 void OffPolicyActorCritic::updateValue(const State *s, const Action *a, const State *s_p, double r)
 {
 	//td = r + gamma*V(s') - V(s)
@@ -187,6 +188,18 @@ void OffPolicyActorCritic::updatePolicy(const State* s, const State* a, const St
 	}
 }
 
+/// <summary>
+/// Updates the policy and the value function using the Incremental Natural Actor Critic algorithm in
+/// "Off-Policy Actor-Critic" (Thomas Degris, Martha White, Richard S. Sutton),
+/// Proceedings of the 29 th International Conference on Machine Learning, Edinburgh, Scotland, UK, 2012.
+/// arXiv:1205.4839v5 [cs.LG] 20 Jun 2013
+/// </summary>
+/// <param name="s">Initial state</param>
+/// <param name="a">Action</param>
+/// <param name="s_p">Resultant state</param>
+/// <param name="r">Reward</param>
+/// <param name="behaviorProb">Probability by which the actor selected the action</param>
+/// <returns>Should return the TD error. Currently unused</returns>
 double OffPolicyActorCritic::update(const State *s, const Action *a, const State *s_p, double r, double behaviorProb)
 {
 	updateValue(s, a, s_p, r);
@@ -194,6 +207,12 @@ double OffPolicyActorCritic::update(const State *s, const Action *a, const State
 	return 1.0;
 }
 
+/// <summary>
+/// The actor selects an action following the policies it is learning
+/// </summary>
+/// <param name="s">Initial state</param>
+/// <param name="a">Action</param>
+/// <returns>The probability by which the action was selected</returns>
 double OffPolicyActorCritic::selectAction(const State *s, Action *a)
 {
 	double prob = 1.0;

@@ -42,11 +42,27 @@ ActorCritic::ActorCritic(ConfigNode* pConfigNode)
 	m_pCritic = CHILD_OBJECT_FACTORY<ICritic>(pConfigNode, "Critic", "The critic");
 }
 
+/// <summary>
+/// Objects that implement both an actor and a critic call the actor's selectAction() method
+/// </summary>
+/// <param name="s">Initial state</param>
+/// <param name="a">Output action</param>
+/// <returns>Probability by which the action was taken. Should be ignored</returns>
 double ActorCritic::selectAction(const State *s, Action *a)
 {
 	return m_pActor->selectAction(s, a);
 }
 
+
+/// <summary>
+/// Encapsulates the basic Actor-Critic update: the critic calculates the TD error and the actor updates its policy accordingly
+/// </summary>
+/// <param name="s">Initial state</param>
+/// <param name="a">Action</param>
+/// <param name="s_p">Resultant state</param>
+/// <param name="r">Reward</param>
+/// <param name="behaviorProb">Probability by which the actor selected the action. Should be ignored</param>
+/// <returns>The Temporal-Difference error</returns>
 double ActorCritic::update(const State *s, const Action *a, const State *s_p, double r, double behaviorProb)
 {
 	//sample importance weigthing: rho= pi(a_t|x_t) / mu(a_t|x_t)

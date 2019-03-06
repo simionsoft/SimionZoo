@@ -54,6 +54,12 @@ DiscreteFeatureMap::~DiscreteFeatureMap()
 
 }
 
+/// <summary>
+/// Implements a feature mapping function that maps state-actions to boxes. Only one feature will be active
+/// </summary>
+/// <param name="grids">Input grids for every state-variable used</param>
+/// <param name="values">The values of every state-variable used</param>
+/// <param name="outFeatures">The output list of features</param>
 void DiscreteFeatureMap::map(vector<SingleDimensionGrid*>& grids, const vector<double>& values, FeatureList* outFeatures)
 {
 	size_t offset = 1, featureIndex = 0;
@@ -73,7 +79,12 @@ void DiscreteFeatureMap::map(vector<SingleDimensionGrid*>& grids, const vector<d
 	outFeatures->add(featureIndex, 1.0);
 }
 
-
+/// <summary>
+/// Inverse of the feature mapping operation. Given a feature it returns the state-action to which it corresponds.
+/// </summary>
+/// <param name="feature">The index of the feature</param>
+/// <param name="grids">The set of grids used to discretize each variable</param>
+/// <param name="outValues">The set of output values for every state-action variable</param>
 void DiscreteFeatureMap::unmap(size_t feature, vector<SingleDimensionGrid*>& grids, vector<double>& outValues)
 {
 	size_t dimFeature;

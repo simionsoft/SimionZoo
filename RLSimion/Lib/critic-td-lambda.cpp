@@ -48,6 +48,15 @@ TDLambdaCritic::~TDLambdaCritic()
 	delete m_aux;
 }
 
+/// <summary>
+/// Updates the value function using the popular TD(lambda) update rule
+/// </summary>
+/// <param name="s">Initial state</param>
+/// <param name="a">Action</param>
+/// <param name="s_p">Resultant state</param>
+/// <param name="r">Reward</param>
+/// <param name="rho">Importance sampling</param>
+/// <returns>The Temporal-Difference error</returns>
 double TDLambdaCritic::update(const State *s, const Action *a, const State *s_p, double r, double rho)
 {
 	double alpha = m_pAlpha->get();

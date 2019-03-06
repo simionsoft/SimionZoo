@@ -28,6 +28,12 @@
 #include "logger.h"
 #include "../../tools/System/CrossPlatform.h"
 
+/// <summary>
+/// Loads a configuration file and returns its root node. If not found throws an exception
+/// </summary>
+/// <param name="fileName">The path to the configuration file</param>
+/// <param name="nodeName">The name of the root node</param>
+/// <returns>A pointer to the configuration root node. nullptr if the name given wasn't found</returns>
 ConfigNode* ConfigFile::loadFile(const char* fileName, const char* nodeName)
 {
 	LoadFile(fileName);
@@ -44,7 +50,9 @@ const char* ConfigFile::getError()
 	return ErrorName();
 }
 
-
+/// <summary>
+/// Returns the number of children this node has with the given name
+/// </summary>
 int ConfigNode::countChildren(const char* name)
 {
 	int count = 0;
@@ -64,8 +72,12 @@ int ConfigNode::countChildren(const char* name)
 	return count;
 }
 
-
-
+/// <summary>
+/// Retrieves the value of a parameter as a boolean
+/// </summary>
+/// <param name="paramName">The name of the parameter</param>
+/// <param name="defaultValue">Its default value (will be used if the parameter is not found)</param>
+/// <returns>The parameter's value</returns>
 bool ConfigNode::getConstBoolean(const char* paramName, bool defaultValue)
 {
 	tinyxml2::XMLElement* pParameter;
@@ -89,6 +101,12 @@ bool ConfigNode::getConstBoolean(const char* paramName, bool defaultValue)
 	return defaultValue;
 }
 
+/// <summary>
+/// Retrieves the value of a parameter as an integer
+/// </summary>
+/// <param name="paramName">The name of the parameter</param>
+/// <param name="defaultValue">Its default value (will be used if the parameter is not found)</param>
+/// <returns>The parameter's value</returns>
 int ConfigNode::getConstInteger(const char* paramName, int defaultValue)
 {
 	tinyxml2::XMLElement* pParameter;
@@ -108,6 +126,12 @@ int ConfigNode::getConstInteger(const char* paramName, int defaultValue)
 	return defaultValue;
 }
 
+/// <summary>
+/// Retrieves the value of a parameter as a double
+/// </summary>
+/// <param name="paramName">The name of the parameter</param>
+/// <param name="defaultValue">Its default value (will be used if the parameter is not found)</param>
+/// <returns>The parameter's value</returns>
 double ConfigNode::getConstDouble(const char* paramName, double defaultValue)
 {
 	ConfigNode* pParameter;
@@ -128,6 +152,12 @@ double ConfigNode::getConstDouble(const char* paramName, double defaultValue)
 	return defaultValue;
 }
 
+/// <summary>
+/// Retrieves the value of a parameter as a C-style string
+/// </summary>
+/// <param name="paramName">The name of the parameter</param>
+/// <param name="defaultValue">Its default value (will be used if the parameter is not found)</param>
+/// <returns>The parameter's value</returns>
 const char* ConfigNode::getConstString(const char* paramName, const char* defaultValue)
 {
 	ConfigNode* pParameter;
@@ -148,33 +178,59 @@ const char* ConfigNode::getConstString(const char* paramName, const char* defaul
 	return defaultValue;
 }
 
+/// <summary>
+/// Returns the first child with the given name
+/// </summary>
+/// <param name="paramName">The child's name</param>
+/// <returns>A pointer to the child ConfigNode. Might be nullptr if not found</returns>
 ConfigNode* ConfigNode::getChild(const char* paramName)
 {
 	tinyxml2::XMLElement* child = FirstChildElement(paramName);
 	return static_cast<ConfigNode*> (child);
 }
 
+/// <summary>
+/// Returns the next parameter on the level of the current node with the given name
+/// </summary>
+/// <param name="paramName">The parameter's name</param>
+/// <returns>A pointer to the parameter node. Might be nullptr if not found</returns>
 ConfigNode* ConfigNode::getNextSibling(const char* paramName)
 {
 	tinyxml2::XMLElement* child = NextSiblingElement(paramName);
 	return static_cast<ConfigNode*> (child);
 }
 
+/// <summary>
+/// Returns the name of this ConfigNode
+/// </summary>
 const char* ConfigNode::getName()
 {
 	return Name();
 }
 
+/// <summary>
+/// Saves all the configuration nodes below the current to a file
+/// </summary>
+/// <param name="pFilename">The path to the file</param>
 void ConfigNode::saveFile(const char* pFilename)
 {
 	SaveFile(pFilename, false);
 }
 
+/// <summary>
+/// Saves all the configuration nodes below the current to an already open file
+/// </summary>
+/// <param name="pFile">The handle to the already open file</param>
 void ConfigNode::saveFile(FILE* pFile)
 {
 	SaveFile(pFile, false);
 }
 
+
+/// <summary>
+/// Makes a shallow copy of the a configuration file
+/// </summary>
+/// <param name="parameterFile"></param>
 void ConfigNode::clone(ConfigFile* parameterFile)
 {
 	this->DeleteChildren();

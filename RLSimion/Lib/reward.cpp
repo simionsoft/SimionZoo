@@ -41,6 +41,14 @@ ToleranceRegionReward::ToleranceRegionReward(string variable, double tolerance, 
 	m_tolerance = tolerance;
 	m_scale = scale;
 }
+
+/// <summary>
+/// This reward function returns a reward depending on the value of an error variable with respect to its tolerance region
+/// </summary>
+/// <param name="s">Initial state</param>
+/// <param name="a">Action</param>
+/// <param name="s_p">Resultant state</param>
+/// <returns></returns>
 double ToleranceRegionReward::getReward(const State *s, const Action* a, const State *s_p)
 {
 	double rew, error;
@@ -70,11 +78,24 @@ RewardFunction::~RewardFunction()
 	for (auto it = m_rewardComponents.begin(); it != m_rewardComponents.end(); ++it) delete *it;
 }
 
+/// <summary>
+/// RewardFunction can use more than one scalar reward and they are added using this method. Scalar rewards
+/// must derive from IRewardComponent
+/// </summary>
+/// <param name="rewardComponent">The new scalar reward to be added</param>
 void RewardFunction::addRewardComponent(IRewardComponent* rewardComponent)
 {
 	m_rewardComponents.push_back(rewardComponent);
 }
 
+/// <summary>
+/// Calculates the total reward based on the different scalar rewards. If we only define one reward function, its value
+/// will be returned
+/// </summary>
+/// <param name="s">Initial state</param>
+/// <param name="a">Action</param>
+/// <param name="s_p">Resultant state</param>
+/// <returns>The (scalarized) final reward calculated from all the different reward signals</returns>
 double RewardFunction::getReward(const State* s, const Action* a, const State* s_p)
 {
 	if (!m_bInitialized)
@@ -98,6 +119,9 @@ double RewardFunction::getReward(const State* s, const Action* a, const State* s
 	return reward;
 }
 
+/// <summary>
+/// DynamicModel subclasses should call this initialization method after adding the reward functions
+/// </summary>
 void RewardFunction::initialize()
 {
 	size_t numComponents;
@@ -131,6 +155,12 @@ Reward* RewardFunction::getRewardVector()
 	return m_pRewardVector;
 }
 
+
+/// <summary>
+/// If we want to override the final reward in some special states (i.e. a negative reward if FAST simulator crashed)
+/// we can call this method from the DynamicModel
+/// </summary>
+/// <param name="reward">The reward we want to give the agent</param>
 void RewardFunction::override(double reward)
 {
 	m_bOverride = true;

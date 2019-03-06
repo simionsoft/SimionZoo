@@ -27,6 +27,12 @@
 #include "simgod.h"
 #include "app.h"
 
+/// <summary>
+/// This constructor registers automatically any class implementing DeferredLoad so that the heavyweight
+/// initialization is delayed until SimionApp::run() is executed. This prevents loading unnecessary data
+/// if we are only outputting the run-time requirements
+/// </summary>
+/// <param name="loadOrder"></param>
 DeferredLoad::DeferredLoad(unsigned int loadOrder)
 {
 	SimGod::registerDeferredLoadStep(this,loadOrder);

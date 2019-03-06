@@ -58,6 +58,11 @@ DiscreteSoftmaxDeepPolicy::DiscreteSoftmaxDeepPolicy(ConfigNode * pConfigNode) :
 	m_temperature = CHILD_OBJECT_FACTORY<NumericValue>(pConfigNode, "temperature", "Tempreature");
 }
 
+/// <summary>
+/// Deep RL version of the epsilon-greedy action selection algorithm
+/// </summary>
+/// <param name="values">Estimated Q(s,a) for each discrete action. Size should equal the number of discrete actions</param>
+/// <returns>The index of the selected value</returns>
 int DiscreteEpsilonGreedyDeepPolicy::selectAction(const std::vector<double>& values)
 {
 	double randomValue = getRandomValue();
@@ -80,6 +85,11 @@ int DiscreteEpsilonGreedyDeepPolicy::selectAction(const std::vector<double>& val
 	return (int) resultingActionIndex;
 }
 
+/// <summary>
+/// Deep-RL version of the Soft-Max action selection policy
+/// </summary>
+/// <param name="values">Estimated Q(s,a) for each discrete action. Size should equal the number of discrete actions</param>
+/// <returns>The index of the selected value</returns>
 int DiscreteSoftmaxDeepPolicy::selectAction(const std::vector<double>& values)
 {
 	//this is not cool, but we can safely overwrite the output values of the function

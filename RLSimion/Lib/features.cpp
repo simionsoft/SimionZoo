@@ -63,6 +63,12 @@ void FeatureList::clear()
 	m_numFeatures = 0;
 }
 
+
+/// <summary>
+/// Resizes the feature list, allocating more memory
+/// </summary>
+/// <param name="newSize">New size</param>
+/// <param name="bKeepFeatures">true if we want to preserve the features on the list</param>
 void FeatureList::resize(size_t newSize, bool bKeepFeatures)
 {
 	//make the newSize a multiple of the block size
@@ -80,6 +86,10 @@ void FeatureList::resize(size_t newSize, bool bKeepFeatures)
 	m_numAllocFeatures = newSize;
 }
 
+/// <summary>
+/// Multiplies all the features by a factor
+/// </summary>
+/// <param name="factor">The factor value</param>
 void FeatureList::mult(double factor)
 {
 	for (size_t i = 0; i < m_numFeatures; i++)
@@ -88,7 +98,11 @@ void FeatureList::mult(double factor)
 	}
 }
 
-
+/// <summary>
+/// Returns the factor of a given feature on the list
+/// </summary>
+/// <param name="index">The index of the feature</param>
+/// <returns>The factor of the feature</returns>
 double FeatureList::getFactor(size_t index) const
 {
 	double factor = 0.0;
@@ -105,6 +119,11 @@ double FeatureList::getFactor(size_t index) const
 	return factor;
 }
 
+/// <summary>
+/// Implements an inner-product operation
+/// </summary>
+/// <param name="inList">Second operand of the multiply operation</param>
+/// <returns>The result of the inner-product</returns>
 double FeatureList::innerProduct(const FeatureList *inList)
 {
 	double innerprod = 0.0;
@@ -115,6 +134,11 @@ double FeatureList::innerProduct(const FeatureList *inList)
 	return innerprod;
 }
 
+/// <summary>
+/// Copies a list multiplied by a factor on this feature list. Resizes the list if needed
+/// </summary>
+/// <param name="factor">The factor to multiply by</param>
+/// <param name="inList">The feature list to copy</param>
 void FeatureList::copyMult(double factor, const FeatureList *inList)
 {
 	if (m_numAllocFeatures < inList->m_numFeatures)
@@ -128,6 +152,11 @@ void FeatureList::copyMult(double factor, const FeatureList *inList)
 	}
 }
 
+/// <summary>
+/// Adds feature to this list, multiplied by a factor
+/// </summary>
+/// <param name="inList">Feature list to be added</param>
+/// <param name="factor">Factor used to multiply</param>
 void FeatureList::addFeatureList(const FeatureList *inList, double factor)
 {
 	//if (m_numFeatures+inList->m_numFeatures >m_numAllocFeatures)
@@ -148,6 +177,12 @@ long long FeatureList::getFeaturePos(size_t index)
 	return -1;
 }
 
+
+/// <summary>
+/// Adds a single feature
+/// </summary>
+/// <param name="index">The index of the feature</param>
+/// <param name="value">The value of the feature</param>
 void FeatureList::add(size_t index, double value)
 {
 	bool bCheckIfExists = m_overwriteMode != OverwriteMode::AllowDuplicates;
@@ -189,7 +224,13 @@ long long FeatureList::maxFactorFeature()
 	return maxFactorFeature;
 }
 
-//spawn: all features (indices and values) are spawned by those in inList
+/// <summary>
+/// All features (indices and values) are spawned by those in inList. This means that this list contains 2 features
+/// a 5-feature space, and inList contains 3 features a 6-feature space, after this operation, this list will contain
+/// 2*3= 6 features from a 5*6= 30 feature space
+/// </summary>
+/// <param name="inList">Second list used as an operand</param>
+/// <param name="indexOffset">Feature-index offset used for the second list</param>
 void FeatureList::spawn(const FeatureList *inList, size_t indexOffset)
 {
 	size_t newNumFeatures = inList->m_numFeatures * m_numFeatures;
@@ -212,6 +253,10 @@ void FeatureList::spawn(const FeatureList *inList, size_t indexOffset)
 	m_numFeatures = newNumFeatures;
 }
 
+/// <summary>
+/// Removes any feature with an activation factor under the threshold
+/// </summary>
+/// <param name="threshold">Threshold value</param>
 void FeatureList::applyThreshold(double threshold)
 {
 	size_t oldNumFeatures = m_numFeatures;
@@ -235,6 +280,9 @@ void FeatureList::applyThreshold(double threshold)
 	}
 }
 
+/// <summary>
+/// Normalizes features so that the sum of all the activation factors are 1
+/// </summary>
 void FeatureList::normalize()
 {
 	double sum = 0.0;
@@ -247,6 +295,11 @@ void FeatureList::normalize()
 		m_pFeatures[i].m_factor *= sum;
 }
 
+
+/// <summary>
+/// Copies in this list the given one
+/// </summary>
+/// <param name="inList">Source feature list to copy</param>
 void FeatureList::copy(const FeatureList* inList)
 {
 	if (m_numAllocFeatures < inList->m_numFeatures)
@@ -261,6 +314,10 @@ void FeatureList::copy(const FeatureList* inList)
 	}
 }
 
+/// <summary>
+/// Adds an offset to all the feature indices
+/// </summary>
+/// <param name="offset">Offset value</param>
 void FeatureList::offsetIndices(size_t offset)
 {
 	if (offset == 0) return;
@@ -268,6 +325,14 @@ void FeatureList::offsetIndices(size_t offset)
 		m_pFeatures[i].m_index += offset;
 }
 
+
+/// <summary>
+/// Splits this feature list in two lists: features with an index below splitOffset go to the first output list,
+/// and those above go to the second output list
+/// </summary>
+/// <param name="outList1">Output list 1</param>
+/// <param name="outList2">Output list 2</param>
+/// <param name="splitOffset">Index used to split the feature list</param>
 void FeatureList::split(FeatureList *outList1, FeatureList *outList2, size_t splitOffset) const
 {
 	for (size_t i = 0; i < m_numFeatures; i++)
@@ -279,7 +344,10 @@ void FeatureList::split(FeatureList *outList1, FeatureList *outList2, size_t spl
 	}
 }
 
-
+/// <summary>
+/// Multiplies all the feature indices by mult
+/// </summary>
+/// <param name="mult">Value used to multiply</param>
 void FeatureList::multIndices(int mult)
 {
 	if (mult <= 1) return;

@@ -48,6 +48,11 @@
 
 CHILD_OBJECT_FACTORY<DynamicModel> World::m_pDynamicModel;
 
+
+/// <summary>
+/// Common constructor of the base class called before the subclass constructor
+/// </summary>
+/// <param name="pConfigNode"></param>
 World::World(ConfigNode* pConfigNode)
 {
 	if (!pConfigNode) return;
@@ -65,6 +70,11 @@ World::~World()
 {
 }
 
+
+/// <summary>
+/// This method returns the Delta_t used in the experiment
+/// </summary>
+/// <returns>The Delta_t used in the experiment</returns>
 double World::getDT()
 {
 	return m_dt.get();
@@ -90,6 +100,10 @@ Reward* World::getRewardVector()
 	return m_pDynamicModel->getRewardVector();
 }
 
+/// <summary>
+/// Reset state variables to the initial state from which simulations begin (it may be random)
+/// </summary>
+/// <param name="s">State variable that holds the initial state</param>
 void World::reset(State *s)
 {
 	m_episodeSimTime = 0.0;
@@ -97,6 +111,15 @@ void World::reset(State *s)
 		m_pDynamicModel->reset(s);
 }
 
+
+/// <summary>
+/// Method called every control time-step. Internally it calculates calculates the length
+/// of the integration steps and calls several times DynamicModel::executeAction()
+/// </summary>
+/// <param name="s">The variable with the current state values</param>
+/// <param name="a">The action to be executed</param>
+/// <param name="s_p">The variable that will hold the resultant state</param>
+/// <returns>The reward obtained in this step</returns>
 double World::executeAction(State *s, Action *a, State *s_p)
 {
 	double dt = m_dt.get() / (double)m_numIntegrationSteps.get();
@@ -118,7 +141,9 @@ double World::executeAction(State *s, Action *a, State *s_p)
 }
 
 
-
+/// <summary>
+/// Base-class destructor
+/// </summary>
 DynamicModel::~DynamicModel()
 {
 	if (m_pStateDescriptor) delete m_pStateDescriptor;
@@ -127,7 +152,9 @@ DynamicModel::~DynamicModel()
 }
 
 
-
+/// <summary>
+/// Base-class constructor
+/// </summary>
 DynamicModel::DynamicModel()
 {
 	SimionApp* pSimionApp = SimionApp::get();
@@ -138,26 +165,60 @@ DynamicModel::DynamicModel()
 	m_pRewardFunction = new RewardFunction();
 }
 
+/// <summary>
+/// This method must be called from the constructor of DynamicModel subclasses to register state variables. Calls are parsed
+/// by the source code parser and listed beside the parameters of the class in the class definition file (config.xml)
+/// </summary>
+/// <param name="name">Name of the variable (i.e. "speed")</param>
+/// <param name="units">Metrical unit (i.e., "m/s")</param>
+/// <param name="min">Minimum value this variable may get. Below this, values are clamped</param>
+/// <param name="max">Maximum value this variable may get. Above this, values are clamped</param>
+/// <param name="bCircular">This flag indicates whether the variable is circular (as angles)</param>
+/// <returns>The index of the state variable. This index may be used instead of the name for faster access</returns>
 size_t DynamicModel::addStateVariable(const char* name, const char* units, double min, double max, bool bCircular)
 {
 	return m_pStateDescriptor->addVariable(name, units, min, max, bCircular);
 }
 
+/// <summary>
+/// This method must be called from the constructor of DynamicModel subclasses to register action variables. Calls are
+/// parsed by the source code parser and listed beside the parameters of the class in the class definition file (config.xml)
+/// </summary>
+/// <param name="name">Name of the variable (i.e. "speed")</param>
+/// <param name="units">Metrical unit (i.e., "m/s")</param>
+/// <param name="min">Minimum value this variable may get. Below this, values are clamped</param>
+/// <param name="max">Maximum value this variable may get. Above this, values are clamped</param>
+/// <param name="bCircular">This flag indicates whether the variable is circular (as angles)</param>
+/// <returns>The index of the action variable. This index may be used instead of the name for faster access</returns>
 size_t DynamicModel::addActionVariable(const char* name, const char* units, double min, double max, bool bCircular)
 {
 	return m_pActionDescriptor->addVariable(name, units, min, max, bCircular);
 }
 
+/// <summary>
+/// This method can be called from the constructor of DynamicModel subclasses to register constants. These are also parsed
+/// </summary>
+/// <param name="name">Name of the constant</param>
+/// <param name="value">Literal value (i.e. 6.5). The parser will not recognise but literal values</param>
 void DynamicModel::addConstant(const char* name, double value)
 {
 	m_pConstants[name] = value;
 }
 
+/// <summary>
+/// Returns the number of constants defined in the current DynamicModel subclass
+/// </summary>
 int DynamicModel::getNumConstants()
 {
 	return (int)m_pConstants.size();
 }
 
+
+/// <summary>
+/// Returns the value of the i-th constant
+/// </summary>
+/// <param name="i">Index of the constant to be retrieved</param>
+/// <returns>The value of the constant</returns>
 double DynamicModel::getConstant(int i)
 {
 	int j = 0;
@@ -170,6 +231,11 @@ double DynamicModel::getConstant(int i)
 	return 0.0;
 }
 
+/// <summary>
+/// This method returns a constant's name
+/// </summary>
+/// <param name="i">Index of the constant</param>
+/// <returns>The constant's name</returns>
 const char* DynamicModel::getConstantName(int i)
 {
 	int j = 0;
@@ -182,6 +248,12 @@ const char* DynamicModel::getConstantName(int i)
 	return "";
 }
 
+
+/// <summary>
+/// An alternative version of getConstant() that uses the name as input
+/// </summary>
+/// <param name="constantName">The name of the constant</param>
+/// <returns>Its value</returns>
 double DynamicModel::getConstant(const char* constantName)
 {
 	if (m_pConstants.find(constantName) != m_pConstants.end())
@@ -237,6 +309,14 @@ std::shared_ptr<DynamicModel> DynamicModel::getInstance(ConfigNode* pConfigNode)
 	});
 }
 
+
+/// <summary>
+/// This method calculates the reward associated with tuple {s,a,s_p}
+/// </summary>
+/// <param name="s">Initial state</param>
+/// <param name="a">Action</param>
+/// <param name="s_p">Resultant state</param>
+/// <returns>The reward</returns>
 double DynamicModel::getReward(const State *s, const Action *a, const State *s_p)
 {
 	return m_pRewardFunction->getReward(s, a, s_p);

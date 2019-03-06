@@ -71,7 +71,7 @@ StochasticPolicy::StochasticPolicy(ConfigNode* pConfigNode) : Policy(pConfigNode
 
 
 //CDetPolicyGaussianNoise////////////////////////////////
-/////////////////////////////////////////////////////////
+
 DeterministicPolicyGaussianNoise::DeterministicPolicyGaussianNoise(ConfigNode* pConfigNode)
 	: DeterministicPolicy(pConfigNode)
 {
@@ -110,6 +110,13 @@ void DeterministicPolicyGaussianNoise::getParameterGradient(const State* s, cons
 	pOutGradient->mult(factor);
 }
 
+
+/// <summary>
+/// A DeterministicPolicyGaussianNoise policy uses a single function representing the deterministic output. In training episodes, the
+/// noise signal used for exploration is sampled and added to the deterministic output
+/// </summary>
+/// <param name="s">Initial state</param>
+/// <param name="a">Output state</param>
 double DeterministicPolicyGaussianNoise::selectAction(const State *s, Action *a)
 {
 	if (!SimionApp::get()->pExperiment->isEvaluationEpisode())
@@ -136,6 +143,12 @@ double DeterministicPolicyGaussianNoise::getProbability(const State* s, const Ac
 	return 1.0;
 }
 
+
+/// <summary>
+/// Uses the policy's feature map to return the features representing the state 
+/// </summary>
+/// <param name="state">State</param>
+/// <param name="outFeatureList">Output feature list</param>
 void DeterministicPolicyGaussianNoise::getFeatures(const State* state, FeatureList* outFeatureList)
 {
 	m_pDeterministicVFA->getFeatures(state, outFeatureList);
@@ -153,7 +166,7 @@ double DeterministicPolicyGaussianNoise::getDeterministicOutput(const FeatureLis
 
 
 //CStoPolicyGaussianNoise//////////////////////////
-////////////////////////////////////////////////
+
 StochasticGaussianPolicy::StochasticGaussianPolicy(ConfigNode* pConfigNode)
 	: StochasticPolicy(pConfigNode)
 {
@@ -185,6 +198,14 @@ double clip(double n, double lower, double upper)
 	return std::max(lower, std::min(n, upper));
 }
 
+/// <summary>
+/// A DeterministicPolicyGaussianNoise policy uses a function to represent the mean value of the function at each state
+/// and a second function to represent the variance of the output at each state. To calculate the policy's output,
+/// the two functions are evaluated for a state, and then the values used to sample a normal distribution, which is
+/// the actual output of the policy
+/// </summary>
+/// <param name="s">Initial state</param>
+/// <param name="a">Output state</param>
 double StochasticGaussianPolicy::selectAction(const State *s, Action *a)
 {
 	double mean = m_pMeanVFA->get(s);
@@ -252,6 +273,11 @@ void StochasticGaussianPolicy::getParameterGradient(const State* s, const Action
 	pOutGradient->addFeatureList(m_pSigmaFeatures, factor);
 }
 
+/// <summary>
+/// Uses the policy's feature map to return the features representing the state 
+/// </summary>
+/// <param name="state">State</param>
+/// <param name="outFeatureList">Output feature list</param>
 void StochasticGaussianPolicy::getFeatures(const State* state, FeatureList* outFeatureList)
 {
 	m_pMeanVFA->getFeatures(state, outFeatureList);

@@ -61,9 +61,10 @@ void SimpleMemPool::copy(IMemBuffer* pSrc, IMemBuffer* pDst)
 
 
 
-//Interleaved Memory Pool
-//a set arrays with the same size are interleaved to improve cache hits
-
+/// <summary>
+/// This is the Memory Pool used in RLSimion. It uses a set of interleaved arrays to improve cache hits
+/// </summary>
+/// <param name="numElements">The size of the buffer</param>
 SimionMemPool::SimionMemPool(BUFFER_SIZE numElements)
 {
 	m_numElements = numElements;
@@ -89,6 +90,11 @@ void SimionMemPool::addMemBufferHandler(SimionMemBuffer* pMemBufferHandler)
 	m_memBufferHandlers.push_back(pMemBufferHandler);
 }
 
+/// <summary>
+/// This method creates a new buffer interfaced via IMemBuffer
+/// </summary>
+/// <param name="elementCount">Size of the buffer</param>
+/// <returns>The interface to IMemBuffer to handle the buffer</returns>
 IMemBuffer* SimionMemPool::getHandler(BUFFER_SIZE elementCount)
 {
 	SimionMemBuffer* pHandler 
@@ -97,7 +103,12 @@ IMemBuffer* SimionMemPool::getHandler(BUFFER_SIZE elementCount)
 	return pHandler;
 }
 
-
+/// <summary>
+/// This method is used to access an element inside the memory pool
+/// </summary>
+/// <param name="elementIndex">Index of the element</param>
+/// <param name="bufferOffset">Offset of the specific buffer within the pool</param>
+/// <returns></returns>
 double& SimionMemPool::get(BUFFER_SIZE elementIndex, BUFFER_SIZE bufferOffset)
 {
 	++m_accessCounter;
@@ -149,6 +160,11 @@ bool compare_lastAccess(MemBlock* pFirst, MemBlock* pSecond)
 	return (pFirst->getLastAccess() > pSecond->getLastAccess());
 }
 
+
+/// <summary>
+/// If we run out of memory, this method is called to save a block to disk and recycle it
+/// </summary>
+/// <returns>The pointer to the recycled memory</returns>
 double* SimionMemPool::recycleMem()
 {
 	std::sort(m_allocatedMemBlocks.begin(),m_allocatedMemBlocks.end(),compare_lastAccess);
@@ -173,6 +189,10 @@ void SimionMemPool::resetAccessCounter()
 	m_accessCounter = 0;
 }
 
+/// <summary>
+/// This method resets each interleaved buffer within a MemBlock to its initial value
+/// </summary>
+/// <param name="pBlock">Memory block</param>
 void SimionMemPool::initialize(MemBlock* pBlock)
 {
 	BUFFER_SIZE blockId = pBlock->getId();
@@ -206,6 +226,11 @@ double* SimionMemPool::tryToAllocateMem(BUFFER_SIZE blockSize)
 	}
 }
 
+/// <summary>
+/// After adding all the requested buffers, this method initializes all the necessary data so that several MemBlocks are
+/// allocated
+/// </summary>
+/// <param name="blockSize">Desired MemBlock size (element count)</param>
 void SimionMemPool::init(BUFFER_SIZE blockSize)
 {
 	MemBlock* pNewMemBlock;
@@ -234,6 +259,12 @@ void SimionMemPool::init(BUFFER_SIZE blockSize)
 		m_memLimit = std::max(m_memLimit, (BUFFER_SIZE)(m_memBlockSize * sizeof(double)));
 }
 
+
+/// <summary>
+/// Copies data from one buffer to another. They must belong to the same MemPool
+/// </summary>
+/// <param name="pSrc">Source buffer</param>
+/// <param name="pDst">Destination buffer</param>
 void SimionMemPool::copy(IMemBuffer* pSrc, IMemBuffer* pDst)
 {
 	SimionMemBuffer* pSrcBuffer = dynamic_cast<SimionMemBuffer*>(pSrc);

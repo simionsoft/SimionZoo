@@ -96,6 +96,11 @@ struct StepHeader
 	}
 };
 
+
+/// <summary>
+/// Main constructor of the Logger object. Initializes all the parameters
+/// </summary>
+/// <param name="pConfigNode">Node in the config file with the object's parameters</param>
 Logger::Logger(ConfigNode* pConfigNode)
 {
 	if (!pConfigNode) return;
@@ -118,6 +123,9 @@ Logger::Logger(ConfigNode* pConfigNode)
 #define LOG_BINARY_EXTENSION ".log.bin"
 #define FUNCTION_LOG_BINARY_EXTENSION ".log.functions"
 
+/// <summary>
+/// Registers the output files
+/// </summary>
 void Logger::setOutputFilenames()
 {
 	string inputConfigFile = removeExtension(SimionApp::get()->getConfigFile());
@@ -157,14 +165,19 @@ Logger::~Logger()
 	closeFunctionLogFile();
 }
 
-
+/// <summary>
+/// Returns whether the given type of episode is being logged
+/// </summary>
+/// <param name="evalEpisode">true if we want to query about evaluation episodes, false otherwise</param>
 bool Logger::isEpisodeTypeLogged(bool evalEpisode)
 {
 	return (evalEpisode && m_bLogEvaluationEpisodes.get()) || (!evalEpisode && m_bLogTrainingEpisodes.get());
 }
 
-
-
+/// <summary>
+/// Creates an XML file with the description of the log file: variables, scene file...
+/// </summary>
+/// <param name="filename"></param>
 void Logger::writeLogFileXMLDescriptor(const char* filename)
 {
 	char buffer[BUFFER_SIZE];
@@ -231,6 +244,10 @@ void Logger::writeNamedVarSetDescriptorToBuffer(char* pOutBuffer, const char* id
 	}
 }
 
+
+/// <summary>
+/// Must be called before the first episode begins to initialize log files, timers,...
+/// </summary>
 void Logger::firstEpisode()
 {
 	//set episode start time
@@ -250,6 +267,11 @@ void Logger::lastEpisode()
 {
 }
 
+
+/// <summary>
+/// Must be called before the first step to write episode headers and the initial state in the log file. It also takes
+/// a snapshot of the functions and logs them if we are logging functions
+/// </summary>
 void Logger::firstStep()
 {
 	//initialise the episode reward
@@ -286,6 +308,10 @@ void Logger::firstStep()
 	}
 }
 
+/// <summary>
+/// Must be called after the last step in an episode has finished. The episode is marked as finished in the log
+/// file and, if the current is an evaluation episode, the progress is updated
+/// </summary>
 void Logger::lastStep()
 {
 	Experiment* pExperiment = SimionApp::get()->pExperiment.ptr();
@@ -312,6 +338,14 @@ void Logger::lastStep()
 	}
 }
 
+
+/// <summary>
+/// Logs if needed a new step {s,a,s_p,r}, and adds a new sample to statistics
+/// </summary>
+/// <param name="s">Initial state</param>
+/// <param name="a">Action</param>
+/// <param name="s_p">Resultant state</param>
+/// <param name="r">Reward</param>
 void Logger::timestep(State* s, Action* a, State* s_p, Reward* r)
 {
 	bool bEvalEpisode = SimionApp::get()->pExperiment->isEvaluationEpisode();
@@ -479,6 +513,14 @@ void Logger::enableLogMessages(bool enable)
 	m_bLogMessagesEnabled = enable;
 }
 
+
+/// <summary>
+/// Logging function that formats and dispatches different types of messages: info/warnings/errors, progress, and evaluation.
+/// Depending on whether the app is connected via a named pipe, the message is either sent via the pipe or printed
+/// on the system console. Error log messages throw an exception to terminate the program
+/// </summary>
+/// <param name="type"></param>
+/// <param name="message"></param>
 void Logger::logMessage(MessageType type, const char* message)
 {
 	char messageLine[1024];

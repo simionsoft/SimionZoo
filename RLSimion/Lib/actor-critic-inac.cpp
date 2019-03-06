@@ -222,6 +222,17 @@ void IncrementalNaturalActorCritic::updatePolicy(const State* s, const State* a,
 	}
 }
 
+/// <summary>
+/// Updates the policy and the value function using the Incremental Natural Actor Critic algorithm in
+/// "Model-free Reinforcement Learning with Continuous Action in Practice" (Thomas Degris, Patrick M. Pilarski
+/// , Richard S. Sutton), 2012 American Control Conference
+/// </summary>
+/// <param name="s">Initial state</param>
+/// <param name="a">Action</param>
+/// <param name="s_p">Resultant state</param>
+/// <param name="r">Reward</param>
+/// <param name="behaviorProb">Probability by which the actor selected the action</param>
+/// <returns>Should return the TD error. Currently unused</returns>
 double IncrementalNaturalActorCritic::update(const State *s, const Action *a, const State *s_p, double r, double behaviorProb)
 {
 	updateValue(s, a, s_p, r);
@@ -229,6 +240,12 @@ double IncrementalNaturalActorCritic::update(const State *s, const Action *a, co
 	return 1.0;
 }
 
+/// <summary>
+/// The actor selects an action following the policies it is learning
+/// </summary>
+/// <param name="s">Initial state</param>
+/// <param name="a">Action</param>
+/// <returns>The probability by which the action was selected</returns>
 double IncrementalNaturalActorCritic::selectAction(const State *s, Action *a)
 {
 	double prob = 1.0;
