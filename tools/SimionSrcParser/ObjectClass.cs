@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace SimionSrcParser
 {
-    class ObjectClass
+    public class ObjectClass
     {
         public string Name { get; }
         public string SrcFileName { get; }

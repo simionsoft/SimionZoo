@@ -1,0 +1,679 @@
+<html>
+<body>
+<ul>
+<li>CACLALearner</li>
+<ul>
+<li><i>Alpha</i>: Learning gain [0..1]</li>
+<li><i>Policy</i>: The policy to be learned</li>
+</ul>
+<li>IncrementalNaturalActorCritic</li>
+<ul>
+<li><i>VFunction</i>: The Value-function</li>
+<li><i>V-ETraces</i>: Traces used by the critic</li>
+<li><i>Alpha-v</i>: Learning gain used by the critic</li>
+<li><i>Alpha-r</i>: Learning gain used to average the reward</li>
+<li><i>Alpha-u</i>: Learning gain used by the actor</li>
+<li><i>Policy</i>: The policy</li>
+</ul>
+<li>OffPolicyActorCritic</li>
+<ul>
+<li><i>VFunction</i>: The Value-function</li>
+<li><i>ETraces</i>: Traces used by the critic and the actor</li>
+<li><i>Alpha-v</i>: Learning gain used by the critic</li>
+<li><i>Alpha-w</i>: Learning gain used to average the reward</li>
+<li><i>Alpha-u</i>: Learning gain used by the actor</li>
+<li><i>Policy</i>: The policy</li>
+</ul>
+<li>OffPolicyDeterministicActorCritic</li>
+<ul>
+<li><i>QFunction</i>: The Q-function</li>
+<li><i>Alpha-w</i>: Learning gain used by the critic</li>
+<li><i>Alpha-theta</i>: Learning gain used by the actor</li>
+<li><i>Policy</i>: The deterministic policy</li>
+</ul>
+<li>ActorCritic</li>
+<ul>
+<li><i>Actor</i>: The actor</li>
+<li><i>Critic</i>: The critic</li>
+</ul>
+<li>RegularPolicyGradientLearner</li>
+<ul>
+<li><i>Alpha</i>: The learning gain</li>
+<li><i>Policy</i>: The policy to be learned</li>
+</ul>
+<li>Actor</li>
+<ul>
+<li><i>Base-Controller</i>: The base controller used to initialize the weights of the actor</li>
+<li><i>Output</i>: The outputs of the actor. One for each output dimension</li>
+</ul>
+<li>SimionApp</li>
+<ul>
+<li><i>Log</i>: The logger class</li>
+<li><i>World</i>: The simulation environment and its parameters</li>
+<li><i>Experiment</i>: The parameters of the experiment</li>
+<li><i>SimGod</i>: The omniscient class that controls all aspects of the simulation process</li>
+</ul>
+<li>AsyncQLearning</li>
+<ul>
+<li><i>i-async-update</i>: Steps before the network's weights are updated by the optimizer with the accumulated DeltaTheta</li>
+<li><i>i-target</i>: Steps before the target network's weights are updated</li>
+<li><i>neural-network</i>: Neural Network Architecture</li>
+<li><i>experience-replay</i>: Experience replay</li>
+<li><i>Policy</i>: The policy</li>
+<li><i>Output-Action</i>: The output action variable</li>
+</ul>
+<li>LQRGain</li>
+<ul>
+<li><i>Gain</i>: The gain applied to the input state variable</li>
+<li><i>Variable</i>: The input state variable</li>
+</ul>
+<li>LQRController</li>
+<ul>
+<li><i>Output-Action</i>: The output action</li>
+<li><i>LQR-Gain</i>: An LQR gain on an input state variable</li>
+</ul>
+<li>PIDController</li>
+<ul>
+<li><i>KP</i>: Proportional gain</li>
+<li><i>KI</i>: Integral gain</li>
+<li><i>KD</i>: Derivative gain</li>
+<li><i>Input-Variable</i>: The input state variable</li>
+<li><i>Output-Action</i>: The output action</li>
+</ul>
+<li>WindTurbineVidalController</li>
+<ul>
+<li><i>A</i>: A parameter of the torque controller</li>
+<li><i>K_alpha</i>: K_alpha parameter of the torque controller</li>
+<li><i>KP</i>: Proportional gain of the pitch controller</li>
+<li><i>KI</i>: Integral gain of the pitch controller</li>
+</ul>
+<li>WindTurbineBoukhezzarController</li>
+<ul>
+<li><i>C_0</i>: C_0 parameter</li>
+<li><i>KP</i>: Proportional gain of the pitch controller</li>
+<li><i>KI</i>: Integral gain of the pitch controller</li>
+</ul>
+<li>WindTurbineJonkmanController</li>
+<ul>
+<li><i>CornerFreq</i>: Corner Freq. parameter</li>
+<li><i>VS_SlPc</i>: SIPc parameter</li>
+<li><i>VS_Rgn2K</i>: Rgn2K parameter</li>
+<li><i>VS_Rgn2Sp</i>: Rgn2Sp parameter</li>
+<li><i>VS_CtInSp</i>: CtlnSp parameter</li>
+<li><i>VS_Rgn3MP</i>: Rgn3MP parameter</li>
+<li><i>PC_RefSpd</i>: Pitch control reference speed</li>
+<li><i>PC_KK</i>: Pitch angle were the the derivative of the...</li>
+<li><i>PC_KP</i>: Proportional gain of the pitch controller</li>
+<li><i>PC_KI</i>: Integral gain of the pitch controller</li>
+</ul>
+<li>Controller-Factory</li>
+<ul>
+<li><i>Controller</i>: The specific controller to be used</li>
+</ul>
+<li>TDLambdaCritic</li>
+<ul>
+<li><i>E-Traces</i>: Eligibility traces of the critic</li>
+<li><i>Alpha</i>: Learning gain</li>
+<li><i>V-Function</i>: The V-function to be learned</li>
+</ul>
+<li>TDCLambdaCritic</li>
+<ul>
+<li><i>E-Traces</i>: Elilgibility traces of the critic</li>
+<li><i>Alpha</i>: Learning gain of the critic</li>
+<li><i>Beta</i>: Learning gain applied to the omega vector</li>
+<li><i>V-Function</i>: The V-function to be learned</li>
+</ul>
+<li>TrueOnlineTDLambdaCritic</li>
+<ul>
+<li><i>E-Traces</i>: Eligibility traces of the critic</li>
+<li><i>Alpha</i>: Learning gain of the critic</li>
+<li><i>V-Function</i>: The V-function to be learned</li>
+</ul>
+<li>VLearnerCritic</li>
+<ul>
+<li><i>V-Function</i>: The V-function to be learned</li>
+</ul>
+<li>ICritic-Factory</li>
+<ul>
+<li><i>Critic</i>: Critic type</li>
+</ul>
+<li>DDPG</li>
+<ul>
+<li><i>Tau</i>: The rate by which the target weights approach the online weights</li>
+<li><i>Learning-Rate</i>: The learning rate at which the agent learns</li>
+<li><i>Critic-Network</i>: Neural Network for the Critic -a Q function-</li>
+<li><i>Actor-Network</i>: Neural Network for the Actor -deterministic policy-</li>
+<li><i>Exploration-Noise</i>: Noise added to the output of the policy</li>
+<li><i>Input-State</i>: Set of state variables used as input</li>
+<li><i>Output-Action</i>: The output action variable</li>
+</ul>
+<li>DiscreteDeepPolicy</li>
+<ul>
+</ul>
+<li>DiscreteEpsilonGreedyDeepPolicy</li>
+<ul>
+<li><i>epsilon</i>: Epsilon</li>
+</ul>
+<li>DiscreteSoftmaxDeepPolicy</li>
+<ul>
+<li><i>temperature</i>: Tempreature</li>
+</ul>
+<li>DiscreteDeepPolicy-Factory</li>
+<ul>
+<li><i>Policy</i>: The policy type</li>
+</ul>
+<li>DQN</li>
+<ul>
+<li><i>Num-Action-Steps</i>: Number of discrete values used for the output action</li>
+<li><i>Learning-Rate</i>: The learning rate at which the agent learns</li>
+<li><i>neural-network</i>: Neural Network Architecture</li>
+<li><i>Policy</i>: The policy</li>
+<li><i>Output-Action</i>: The output action variable</li>
+<li><i>Input-State</i>: Set of variables used as input of the QNetwork</li>
+</ul>
+<li>DoubleDQN</li>
+<ul>
+<li><i>Num-Action-Steps</i>: Number of discrete values used for the output action</li>
+<li><i>Learning-Rate</i>: The learning rate at which the agent learns</li>
+<li><i>neural-network</i>: Neural Network Architecture</li>
+<li><i>Policy</i>: The policy</li>
+<li><i>Output-Action</i>: The output action variable</li>
+<li><i>Input-State</i>: Set of variables used as input of the QNetwork</li>
+</ul>
+<li>ETraces</li>
+<ul>
+<li><i>Threshold</i>: Threshold applied to trace factors</li>
+<li><i>Lambda</i>: Lambda parameter</li>
+<li><i>Replace</i>: Replace existing traces? Or add?</li>
+</ul>
+<li>ExperienceReplay</li>
+<ul>
+<li><i>Buffer-Size</i>: Size of the buffer used to store experience tuples</li>
+<li><i>Update-Batch-Size</i>: Number of tuples used each time-step in the update</li>
+</ul>
+<li>Experiment</li>
+<ul>
+<li><i>Random-Seed</i>: Random seed used to generate random sequences of numbers</li>
+<li><i>Num-Episodes</i>: Number of episodes. Zero if we only want to run one evaluation episode</li>
+<li><i>Eval-Freq</i>: Evaluation frequency (in episodes). If zero then only training episodes will be run</li>
+<li><i>Progress-Update-Freq</i>: Progress update frequency (seconds)</li>
+<li><i>Episode-Length</i>: Length of an episode(seconds)</li>
+</ul>
+<li>DiscreteFeatureMap</li>
+<ul>
+</ul>
+<li>GaussianRBFGridFeatureMap</li>
+<ul>
+</ul>
+<li>TileCodingFeatureMap</li>
+<ul>
+<li><i>Num-Tiles</i>: Number of tile layers of the grid</li>
+<li><i>Tile-Offset</i>: Offset of each tile relative to the previous one. It is scaled by the value range of the input variable</li>
+</ul>
+<li>FeatureMap</li>
+<ul>
+<li><i>Num-Features-Per-Dimension</i>: Number of features per input variable</li>
+</ul>
+<li>StateFeatureMap</li>
+<ul>
+<li><i>Feature-Mapper</i>: The feature calculator used to map/unmap features</li>
+<li><i>Input-State</i>: State variables used as input of the feature map</li>
+<li><i>Num-Features-Per-Dimension</i>: Number of features per input variable</li>
+</ul>
+<li>ActionFeatureMap</li>
+<ul>
+<li><i>Feature-Mapper</i>: The feature calculator used to map/unmap features</li>
+<li><i>Input-Action</i>: Action variables used as input of the feature map</li>
+<li><i>Num-Features-Per-Dimension</i>: Number of features per input variable</li>
+</ul>
+<li>FeatureMapper-Factory</li>
+<ul>
+<li><i>Type</i>: Feature map type</li>
+</ul>
+<li>Logger</li>
+<ul>
+<li><i>Num-Functions-Logged</i>: How many times per experiment save logged functions</li>
+<li><i>Log-Freq</i>: Log frequency. Simulation time in seconds.</li>
+<li><i>Log-Eval-Episodes</i>: Log evaluation episodes?</li>
+<li><i>Log-Training-Episodes</i>: Log training episodes?</li>
+<li><i>Log-Functions</i>: Log functions learned?</li>
+</ul>
+<li>GaussianNoise</li>
+<ul>
+<li><i>Sigma</i>: Width of the gaussian bell</li>
+<li><i>Alpha</i>: Low-pass first-order filter's gain [0...1]. 1=no filter</li>
+<li><i>Scale</i>: Scale factor applied to the noise signal before adding it to the policy's output</li>
+</ul>
+<li>SinusoidalNoise</li>
+<ul>
+<li><i>Time-Frequency</i>: Frequency of the signal in 1/simulation seconds</li>
+<li><i>Amplitude-Scale</i>: Scaling factor applied to the sinusoidal</li>
+</ul>
+<li>OrnsteinUhlenbeckNoise</li>
+<ul>
+<li><i>Mu</i>: Mean value of the generated noise</li>
+<li><i>Sigma</i>: Degree of volatility around it caused by shocks</li>
+<li><i>Theta</i>: Rate by which noise shocks dissipate and the variable reverts towards the mean</li>
+<li><i>Scale</i>: Scale factor applied to the noise signal before adding it to the policy's output</li>
+</ul>
+<li>Noise-Factory</li>
+<ul>
+<li><i>Noise</i>: Noise type</li>
+</ul>
+<li>ConstantValue</li>
+<ul>
+<li><i>Value</i>: Constant value</li>
+</ul>
+<li>SimpleEpisodeLinearSchedule</li>
+<ul>
+<li><i>Initial-Value</i>: Value at the beginning of the experiment</li>
+<li><i>End-Value</i>: Value at the end of the experiment</li>
+</ul>
+<li>InterpolatedValue</li>
+<ul>
+<li><i>Start-Offset</i>: Normalized time from which the schedule will begin [0...1]</li>
+<li><i>End-Offset</i>: Normalized time at which the schedule will end and only return the End-Value [0...1]</li>
+<li><i>Pre-Offset-Value</i>: Output value before the schedule begins</li>
+<li><i>Initial-Value</i>: Output value at the beginning of the schedule</li>
+<li><i>End-Value</i>: Output value at the end of the schedule</li>
+<li><i>Evaluation-Value</i>: Output value during evaluation episodes</li>
+<li><i>Interpolation</i>: Interpolation type</li>
+<li><i>Time-reference</i>: The time-reference type</li>
+</ul>
+<li>BhatnagarSchedule</li>
+<ul>
+<li><i>Alpha-0</i>: Alpha-0 parameter in Bhatnagar's schedule</li>
+<li><i>Alpha-c</i>: Alpha-c parameter in Bhatnagar's schedule</li>
+<li><i>Time-Exponent</i>: Time exponent in Bhatnagar's schedule</li>
+<li><i>Evaluation-Value</i>: Output value during evaluation episodes</li>
+<li><i>Time-reference</i>: The time reference</li>
+</ul>
+<li>WireConnection</li>
+<ul>
+<li><i>Wire</i>: Wire connection from which the value comes</li>
+</ul>
+<li>NumericValue-Factory</li>
+<ul>
+<li><i>Schedule</i>: Schedule-type</li>
+</ul>
+<li>STATE_VARIABLE</li>
+<ul>
+</ul>
+<li>ACTION_VARIABLE</li>
+<ul>
+</ul>
+<li>WIRE_CONNECTION</li>
+<ul>
+</ul>
+<li>NN_DEFINITION</li>
+<ul>
+</ul>
+<li>PolicyLearner</li>
+<ul>
+<li><i>Policy</i>: The policy to be learned</li>
+</ul>
+<li>PolicyLearner-Factory</li>
+<ul>
+<li><i>Policy-Learner</i>: The algorithm used to learn the policy</li>
+</ul>
+<li>QEGreedyPolicy</li>
+<ul>
+<li><i>Epsilon</i>: The epsilon parameter that balances exploitation and exploration</li>
+</ul>
+<li>QSoftMaxPolicy</li>
+<ul>
+<li><i>Tau</i>: Temperature parameter</li>
+</ul>
+<li>GreedyQPlusNoisePolicy</li>
+<ul>
+<li><i>Noise</i>: Noise signal added to the typical greedy action selection. The number of noise signals should match the number of actions in the action feature amp</li>
+</ul>
+<li>QLearningCritic</li>
+<ul>
+<li><i>Q-Function</i>: The parameterization of the Q-Function</li>
+<li><i>E-Traces</i>: E-Traces</li>
+<li><i>Alpha</i>: The learning gain [0-1]</li>
+</ul>
+<li>QLearning</li>
+<ul>
+<li><i>Policy</i>: The policy to be followed</li>
+<li><i>Q-Function</i>: The parameterization of the Q-Function</li>
+<li><i>E-Traces</i>: E-Traces</li>
+<li><i>Alpha</i>: The learning gain [0-1]</li>
+</ul>
+<li>DoubleQLearning</li>
+<ul>
+<li><i>Policy</i>: The policy to be followed</li>
+<li><i>Q-Function</i>: The parameterization of the Q-Function</li>
+<li><i>E-Traces</i>: E-Traces</li>
+<li><i>Alpha</i>: The learning gain [0-1]</li>
+</ul>
+<li>SARSA</li>
+<ul>
+<li><i>Policy</i>: The policy to be followed</li>
+<li><i>Q-Function</i>: The parameterization of the Q-Function</li>
+<li><i>E-Traces</i>: E-Traces</li>
+<li><i>Alpha</i>: The learning gain [0-1]</li>
+</ul>
+<li>QPolicy-Factory</li>
+<ul>
+<li><i>Policy</i>: The exploration policy used to learn</li>
+</ul>
+<li>SimGod</li>
+<ul>
+<li><i>Target-Function-Update-Freq</i>: Update frequency at which target functions will be updated. Only used if Freeze-Target-Function=true</li>
+<li><i>Gamma</i>: Gamma parameter</li>
+<li><i>Freeze-Target-Function</i>: Defers updates on the V-functions to improve stability</li>
+<li><i>Use-Importance-Weights</i>: Use sample importance weights to allow off-policy learning -experimental-</li>
+<li><i>State-Feature-Map</i>: The state feature map</li>
+<li><i>Action-Feature-Map</i>: The state feature map</li>
+<li><i>Experience-Replay</i>: The experience replay parameters</li>
+<li><i>Simion</i>: Simions: learning agents and controllers</li>
+</ul>
+<li>Simion-Factory</li>
+<ul>
+<li><i>Type</i>: The Simion class</li>
+</ul>
+<li>Policy</li>
+<ul>
+<li><i>Output-Action</i>: The output action variable</li>
+</ul>
+<li>DeterministicPolicy</li>
+<ul>
+<li><i>Output-Action</i>: The output action variable</li>
+</ul>
+<li>StochasticPolicy</li>
+<ul>
+<li><i>Output-Action</i>: The output action variable</li>
+</ul>
+<li>DeterministicPolicyGaussianNoise</li>
+<ul>
+<li><i>Deterministic-Policy-VFA</i>: The parameterized VFA that approximates the function</li>
+<li><i>Exploration-Noise</i>: Parameters of the noise used as exploration</li>
+<li><i>Output-Action</i>: The output action variable</li>
+</ul>
+<li>StochasticGaussianPolicy</li>
+<ul>
+<li><i>Mean-VFA</i>: The parameterized VFA that approximates the function</li>
+<li><i>Sigma-VFA</i>: The parameterized VFA that approximates variance(s)</li>
+<li><i>Output-Action</i>: The output action variable</li>
+</ul>
+<li>Policy-Factory</li>
+<ul>
+<li><i>Policy</i>: The policy type</li>
+</ul>
+<li>LinearStateVFA</li>
+<ul>
+<li><i>Init-Value</i>: The initial value given to the weights on initialization</li>
+</ul>
+<li>LinearStateActionVFA</li>
+<ul>
+<li><i>Init-Value</i>: The initial value given to the weights on initialization</li>
+</ul>
+<li>BalancingPole</li>
+<ul>
+<li><i>x</i></li>
+<li><i>x_dot</i></li>
+<li><i>theta</i></li>
+<li><i>theta_dot</i></li>
+<li><i>force</i></li>
+</ul>
+<li>DoublePendulum</li>
+<ul>
+<li><i>theta_1</i></li>
+<li><i>theta_1-dot</i></li>
+<li><i>theta_2</i></li>
+<li><i>theta_2-dot</i></li>
+<li><i>torque_1</i></li>
+<li><i>torque_2</i></li>
+<li><i>s_1</i></li>
+<li><i>s_2</i></li>
+<li><i>m_1</i></li>
+<li><i>m_2</i></li>
+<li><i>g</i></li>
+</ul>
+<li>FASTWindTurbine</li>
+<ul>
+<li><i>Training-Mean-Wind-Speeds</i>: Mean wind speeds used in training episodes</li>
+<li><i>Evaluation-Mean-Wind-Speeds</i>: Mean wind speeds in evaluation episodes</li>
+<li><i>T_a</i></li>
+<li><i>P_a</i></li>
+<li><i>P_s</i></li>
+<li><i>P_e</i></li>
+<li><i>E_p</i></li>
+<li><i>v</i></li>
+<li><i>omega_r</i></li>
+<li><i>d_omega_r</i></li>
+<li><i>E_omega_r</i></li>
+<li><i>omega_g</i></li>
+<li><i>d_omega_g</i></li>
+<li><i>E_omega_g</i></li>
+<li><i>beta</i></li>
+<li><i>d_beta</i></li>
+<li><i>T_g</i></li>
+<li><i>d_T_g</i></li>
+<li><i>E_int_omega_r</i></li>
+<li><i>E_int_omega_g</i></li>
+<li><i>theta</i></li>
+<li><i>beta</i></li>
+<li><i>T_g</i></li>
+<li><i>RatedPower</i></li>
+<li><i>HubHeight</i></li>
+<li><i>CutInWindSpeed</i></li>
+<li><i>RatedWindSpeed</i></li>
+<li><i>CutOutWindSpeed</i></li>
+<li><i>CutInRotorSpeed</i></li>
+<li><i>CutOutRotorSpeed</i></li>
+<li><i>RatedRotorSpeed</i></li>
+<li><i>RatedTipSpeed</i></li>
+<li><i>RatedGeneratorSpeed</i></li>
+<li><i>RatedGeneratorTorque</i></li>
+<li><i>GearBoxRatio</i></li>
+<li><i>ElectricalGeneratorEfficiency</i></li>
+<li><i>TotalTurbineInertia</i></li>
+<li><i>GeneratorInertia</i></li>
+<li><i>HubInertia</i></li>
+<li><i>TotalTurbineTorsionalDamping</i></li>
+<li><i>RotorDiameter</i></li>
+<li><i>AirDensity</i></li>
+</ul>
+<li>MountainCar</li>
+<ul>
+<li><i>position</i></li>
+<li><i>velocity</i></li>
+<li><i>height</i></li>
+<li><i>angle</i></li>
+<li><i>pedal</i></li>
+</ul>
+<li>PitchControl</li>
+<ul>
+<li><i>Set-Point-File</i>: The setpoint file</li>
+<li><i>setpoint-pitch</i></li>
+<li><i>attack-angle</i></li>
+<li><i>pitch</i></li>
+<li><i>pitch-rate</i></li>
+<li><i>control-deviation</i></li>
+<li><i>pitch</i></li>
+</ul>
+<li>PullBox1</li>
+<ul>
+<li><i>target-x</i></li>
+<li><i>target-y</i></li>
+<li><i>robot1-x</i></li>
+<li><i>robot1-y</i></li>
+<li><i>box-x</i></li>
+<li><i>box-y</i></li>
+<li><i>robot1-theta</i></li>
+<li><i>box-theta</i></li>
+<li><i>box-to-target-x</i></li>
+<li><i>box-to-target-y</i></li>
+<li><i>robot1-to-box-x</i></li>
+<li><i>robot1-to-box-y</i></li>
+<li><i>robot1-v</i></li>
+<li><i>robot1-omega</i></li>
+</ul>
+<li>PullBox2</li>
+<ul>
+<li><i>target-x</i></li>
+<li><i>target-y</i></li>
+<li><i>robot1-x</i></li>
+<li><i>robot1-y</i></li>
+<li><i>robot2-x</i></li>
+<li><i>robot2-y</i></li>
+<li><i>box-x</i></li>
+<li><i>box-y</i></li>
+<li><i>robot1-theta</i></li>
+<li><i>robot2-theta</i></li>
+<li><i>box-theta</i></li>
+<li><i>box-to-target-x</i></li>
+<li><i>box-to-target-y</i></li>
+<li><i>robot1-to-box-x</i></li>
+<li><i>robot1-to-box-y</i></li>
+<li><i>robot2-to-box-x</i></li>
+<li><i>robot2-to-box-y</i></li>
+<li><i>robot1-v</i></li>
+<li><i>robot1-omega</i></li>
+<li><i>robot2-v</i></li>
+<li><i>robot2-omega</i></li>
+</ul>
+<li>PushBox1</li>
+<ul>
+<li><i>target-x</i></li>
+<li><i>target-y</i></li>
+<li><i>robot1-x</i></li>
+<li><i>robot1-y</i></li>
+<li><i>box-x</i></li>
+<li><i>box-y</i></li>
+<li><i>robot1-to-box-x</i></li>
+<li><i>robot1-to-box-y</i></li>
+<li><i>box-to-target-x</i></li>
+<li><i>box-to-target-y</i></li>
+<li><i>robot1-theta</i></li>
+<li><i>box-theta</i></li>
+<li><i>robot1-v</i></li>
+<li><i>robot1-omega</i></li>
+</ul>
+<li>PushBox2</li>
+<ul>
+<li><i>target-x</i></li>
+<li><i>target-y</i></li>
+<li><i>robot1-x</i></li>
+<li><i>robot1-y</i></li>
+<li><i>robot2-x</i></li>
+<li><i>robot2-y</i></li>
+<li><i>box-x</i></li>
+<li><i>box-y</i></li>
+<li><i>robot1-to-box-x</i></li>
+<li><i>robot1-to-box-y</i></li>
+<li><i>robot2-to-box-x</i></li>
+<li><i>robot2-to-box-y</i></li>
+<li><i>box-to-target-x</i></li>
+<li><i>box-to-target-y</i></li>
+<li><i>robot1-theta</i></li>
+<li><i>robot2-theta</i></li>
+<li><i>box-theta</i></li>
+<li><i>robot1-v</i></li>
+<li><i>robot1-omega</i></li>
+<li><i>robot2-v</i></li>
+<li><i>robot2-omega</i></li>
+</ul>
+<li>RainCar</li>
+<ul>
+<li><i>position</i></li>
+<li><i>velocity</i></li>
+<li><i>position-deviation</i></li>
+<li><i>acceleration</i></li>
+<li><i>goal-position</i></li>
+</ul>
+<li>RobotControl</li>
+<ul>
+<li><i>target-x</i></li>
+<li><i>target-y</i></li>
+<li><i>robot1-x</i></li>
+<li><i>robot1-y</i></li>
+<li><i>robot1-theta</i></li>
+<li><i>robot1-v</i></li>
+<li><i>robot1-omega</i></li>
+</ul>
+<li>SwingupPendulum</li>
+<ul>
+<li><i>angle</i></li>
+<li><i>angular-velocity</i></li>
+<li><i>torque</i></li>
+</ul>
+<li>UnderwaterVehicle</li>
+<ul>
+<li><i>Set-Point-File</i>: The setpoint file</li>
+<li><i>v-setpoint</i></li>
+<li><i>v</i></li>
+<li><i>v-deviation</i></li>
+<li><i>u-thrust</i></li>
+</ul>
+<li>WindTurbine</li>
+<ul>
+<li><i>Evaluation-Wind-Data</i>: The wind file used for evaluation</li>
+<li><i>Power-Set-Point</i>: The power setpoint file</li>
+<li><i>Training-Wind-Data</i>: The wind files used for training</li>
+<li><i>T_a</i></li>
+<li><i>P_a</i></li>
+<li><i>P_s</i></li>
+<li><i>P_e</i></li>
+<li><i>E_p</i></li>
+<li><i>v</i></li>
+<li><i>omega_r</i></li>
+<li><i>d_omega_r</i></li>
+<li><i>E_omega_r</i></li>
+<li><i>omega_g</i></li>
+<li><i>d_omega_g</i></li>
+<li><i>E_omega_g</i></li>
+<li><i>beta</i></li>
+<li><i>d_beta</i></li>
+<li><i>T_g</i></li>
+<li><i>d_T_g</i></li>
+<li><i>E_int_omega_r</i></li>
+<li><i>E_int_omega_g</i></li>
+<li><i>theta</i></li>
+<li><i>beta</i></li>
+<li><i>T_g</i></li>
+<li><i>RatedPower</i></li>
+<li><i>HubHeight</i></li>
+<li><i>CutInWindSpeed</i></li>
+<li><i>RatedWindSpeed</i></li>
+<li><i>CutOutWindSpeed</i></li>
+<li><i>CutInRotorSpeed</i></li>
+<li><i>CutOutRotorSpeed</i></li>
+<li><i>RatedRotorSpeed</i></li>
+<li><i>RatedTipSpeed</i></li>
+<li><i>RatedGeneratorSpeed</i></li>
+<li><i>RatedGeneratorTorque</i></li>
+<li><i>GearBoxRatio</i></li>
+<li><i>ElectricalGeneratorEfficiency</i></li>
+<li><i>TotalTurbineInertia</i></li>
+<li><i>GeneratorInertia</i></li>
+<li><i>HubInertia</i></li>
+<li><i>TotalTurbineTorsionalDamping</i></li>
+<li><i>RotorDiameter</i></li>
+<li><i>AirDensity</i></li>
+</ul>
+<li>World</li>
+<ul>
+<li><i>Num-Integration-Steps</i>: The number of integration steps performed each simulation time-step</li>
+<li><i>Delta-T</i>: The delta-time between simulation steps</li>
+<li><i>Dynamic-Model</i>: The dynamic model</li>
+</ul>
+<li>DynamicModel-Factory</li>
+<ul>
+<li><i>Model</i>: The world</li>
+</ul>
+<li>Distribution</li>
+<ul>
+</ul>
+<li>Interpolation</li>
+<ul>
+</ul>
+<li>TimeReference</li>
+<ul>
+</ul>
+</ul>
+</body>
+</html>

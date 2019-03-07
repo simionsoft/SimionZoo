@@ -5,7 +5,7 @@
 * **Summary**
   Sets the initial value of the function
 * **Parameters**
-  * _initValue_: 
+* * _initValue_: 
 ### ``void getFeatures(const State* s, FeatureList* outFeatures)``
 * **Summary**
   Uses the state feature map to calculate the features of a state

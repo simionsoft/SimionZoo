@@ -33,12 +33,14 @@ namespace SimionSrcParser
 
     public interface IParameter
     {
-        string outputXML(int level);
-        int parameterClassSortValue();
-        void setParameterIndexInCode(int index);
-        string getName();
+        string GetParameterType();
+        string GetDescription();
+        string AsXML(int level);
+        int ParameterClassSortValue();
+        void SetParameterIndexInCode(int index);
+        string GetName();
     }
-    public class SimpleParameter : IParameter
+    public abstract class SimpleParameter : IParameter
     {
         protected string m_xmlTag;
         protected string m_name;
@@ -46,13 +48,15 @@ namespace SimionSrcParser
         protected string m_default;
         public int m_parameterIndexInCode;
 
-        public void setParameterIndexInCode(int index) { m_parameterIndexInCode = index; }
-        public int parameterClassSortValue() { return m_parameterIndexInCode + XMLTags.sortingValueSimpleParameter; } //default value
-        public string getName() { return m_name; }
-        public string outputXML(int level)
+        public void SetParameterIndexInCode(int index) { m_parameterIndexInCode = index; }
+        public int ParameterClassSortValue() { return m_parameterIndexInCode + XMLTags.sortingValueSimpleParameter; } //default value
+        public string GetName() { return m_name; }
+        public string GetDescription() { return m_comment; }
+        public abstract string GetParameterType();
+        public string AsXML(int level)
         {
             string output = "";
-            SimionSrcParser.addIndentation(ref output, level);
+            FileFormatter.AddIndentation(ref output, level);
             output += "<" + m_xmlTag + " Name=\"" + m_name + "\" Comment=\"" + m_comment + "\" Default=\""
                 + m_default + "\"/>\n";
             return output;
@@ -67,6 +71,7 @@ namespace SimionSrcParser
             m_default = defaultValue;
             m_xmlTag = XMLTags.integerNodeTag;
         }
+        public override string GetParameterType() { return "int"; }
     }
     public class DoubleParameter : SimpleParameter
     {
@@ -77,6 +82,7 @@ namespace SimionSrcParser
             m_default = defaultValue;
             m_xmlTag = XMLTags.doubleNodeTag;
         }
+        public override string GetParameterType() { return "double"; }
     }
     public class BoolParameter : SimpleParameter
     {
@@ -87,6 +93,7 @@ namespace SimionSrcParser
             m_default = defaultValue;
             m_xmlTag = XMLTags.boolNodeTag;
         }
+        public override string GetParameterType() { return "bool"; }
     }
     public class StringParameter : SimpleParameter
     {
@@ -97,6 +104,7 @@ namespace SimionSrcParser
             m_default = defaultValue;
             m_xmlTag = XMLTags.stringNodeTag;
         }
+        public override string GetParameterType() { return "string"; }
     }
     public class FilePathParameter : SimpleParameter
     {
@@ -107,6 +115,7 @@ namespace SimionSrcParser
             m_default = defaultValue;
             m_xmlTag = XMLTags.filePathNodeTag;
         }
+        public override string GetParameterType() { return "File"; }
     }
     public class DirPathParameter : SimpleParameter
     {
@@ -117,6 +126,7 @@ namespace SimionSrcParser
             m_default = defaultValue;
             m_xmlTag = XMLTags.dirPathNodeTag;
         }
+        public override string GetParameterType() { return "Dir"; }
     }
     public class NeuralNetworkProblemDescriptionParameter : SimpleParameter
     {
@@ -127,6 +137,7 @@ namespace SimionSrcParser
             m_default = "";
             m_xmlTag = XMLTags.neuralNetworkNodeTag;
         }
+        public override string GetParameterType() { return "NN Definition"; }
     }
     public class EnumParameter : IParameter
     {
@@ -138,15 +149,17 @@ namespace SimionSrcParser
             m_comment = comment;
             m_default = defaultValue;
         }
+        public string GetParameterType() { return m_className; }
         public int m_parameterIndexInCode;
 
-        public void setParameterIndexInCode(int index) { m_parameterIndexInCode = index; }
-        public int parameterClassSortValue() { return m_parameterIndexInCode + XMLTags.sortingValueSimpleParameter; } //default value
-        public string getName() { return m_name; }
-        public string outputXML(int level)
+        public void SetParameterIndexInCode(int index) { m_parameterIndexInCode = index; }
+        public int ParameterClassSortValue() { return m_parameterIndexInCode + XMLTags.sortingValueSimpleParameter; } //default value
+        public string GetName() { return m_name; }
+        public string GetDescription() { return m_comment; }
+        public string AsXML(int level)
         {
             string output = "";
-            SimionSrcParser.addIndentation(ref output, level);
+            FileFormatter.AddIndentation(ref output, level);
             output += "<" + XMLTags.enumNodeTag + " " + XMLTags.nameAttribute + "=\"" + m_name
                 + "\" " + XMLTags.classAttribute + "=\"" + m_className
                 + "\" " + XMLTags.commentAttribute + "=\"" + m_comment + "\" " + XMLTags.defaultAttribute
@@ -169,17 +182,19 @@ namespace SimionSrcParser
         }
         public int m_parameterIndexInCode;
 
-        public void setParameterIndexInCode(int index) { m_parameterIndexInCode = index; }
-        public int parameterClassSortValue()
+        public void SetParameterIndexInCode(int index) { m_parameterIndexInCode = index; }
+        public int ParameterClassSortValue()
         {
             return m_parameterIndexInCode + XMLTags.sortingValueChildClass;
         }
-        public string getName() { return m_name; }
+        public string GetName() { return m_name; }
+        public string GetParameterType() { return m_className; }
+        public string GetDescription() { return m_comment; }
 
-        public string outputXML(int level)
+        public string AsXML(int level)
         {
             string output = "";
-            SimionSrcParser.addIndentation(ref output, level);
+            FileFormatter.AddIndentation(ref output, level);
             output += "<" + XMLTags.branchNodeTag + " " + XMLTags.nameAttribute + "=\"" + m_name
                 + "\" " + XMLTags.classAttribute + "=\"" + m_className + "\" " + XMLTags.commentAttribute
                 + "=\"" + m_comment + "\"";
@@ -203,20 +218,22 @@ namespace SimionSrcParser
             m_badgerMetadata = badgerMetadata;
             m_bOptional = optional;
         }
-        public string getName() { return m_name; }
+        public string GetName() { return m_name; }
+        public string GetParameterType() { return m_className + " subclass"; }
+        public string GetDescription() { return m_comment; }
         public int m_parameterIndexInCode;
 
-        public void setParameterIndexInCode(int index) { m_parameterIndexInCode = index; }
-        public int parameterClassSortValue()
+        public void SetParameterIndexInCode(int index) { m_parameterIndexInCode = index; }
+        public int ParameterClassSortValue()
         {
             return m_parameterIndexInCode + XMLTags.sortingValueChildClass;
         }
 
 
-        public string outputXML(int level)
+        public string AsXML(int level)
         {
             string output = "";
-            SimionSrcParser.addIndentation(ref output, level);
+            FileFormatter.AddIndentation(ref output, level);
             output += "<" + XMLTags.branchNodeTag + " " + XMLTags.nameAttribute + "=\"" + m_name
                 + "\" " + XMLTags.classAttribute + "=\"" + m_className + "-Factory\" " + XMLTags.commentAttribute
                 + "=\"" + m_comment + "\"";
@@ -240,16 +257,27 @@ namespace SimionSrcParser
             m_name = name;
             m_comment = comment;
         }
-        public string getName() { return m_name; }
+        public string GetName() { return m_name; }
+        public string GetParameterType()
+        {
+            switch (m_type)
+            {
+                case VarType.StateVariable: return "State";
+                case VarType.ActionVariable: return "Action";
+                case VarType.WireConnection: return "Wire";
+            }
+            return null;
+        }
+        public string GetDescription() { return m_comment; }
         public int m_parameterIndexInCode;
 
-        public void setParameterIndexInCode(int index) { m_parameterIndexInCode = index; }
-        public int parameterClassSortValue() { return m_parameterIndexInCode + XMLTags.sortingValueSimpleParameter; }
+        public void SetParameterIndexInCode(int index) { m_parameterIndexInCode = index; }
+        public int ParameterClassSortValue() { return m_parameterIndexInCode + XMLTags.sortingValueSimpleParameter; }
 
-        public string outputXML(int level)
+        public string AsXML(int level)
         {
             string output = "";
-            SimionSrcParser.addIndentation(ref output, level);
+            FileFormatter.AddIndentation(ref output, level);
             if (m_type == VarType.StateVariable) output += "<" + XMLTags.stateVarRefTag;
             else if (m_type == VarType.ActionVariable) output += "<" + XMLTags.actionVarRefTag;
             else
@@ -282,19 +310,21 @@ namespace SimionSrcParser
             m_comment = comment;
             m_bOptional = optional;
         }
-        public string getName() { return m_name; }
+        public string GetName() { return m_name; }
+        public string GetParameterType() { return "Multiple " + m_className; }
+        public string GetDescription() { return m_comment; }
         public int m_parameterIndexInCode;
 
-        public void setParameterIndexInCode(int index) { m_parameterIndexInCode = index; }
-        public int parameterClassSortValue()
+        public void SetParameterIndexInCode(int index) { m_parameterIndexInCode = index; }
+        public int ParameterClassSortValue()
         {
             return m_parameterIndexInCode + XMLTags.sortingValueMultiParameter;
         }
 
-        public string outputXML(int level)
+        public string AsXML(int level)
         {
             string output = "";
-            SimionSrcParser.addIndentation(ref output, level);
+            FileFormatter.AddIndentation(ref output, level);
             output += "<" + XMLTags.multiValuedNodeTag + " " + XMLTags.nameAttribute + "=\"" + m_name
                 + "\" " + XMLTags.classAttribute + "=\"" + m_className + "\" " + XMLTags.commentAttribute
                 + "=\"" + m_comment + "\"";
@@ -315,19 +345,21 @@ namespace SimionSrcParser
             m_comment = comment;
             m_bOptional = optional;
         }
-        public string getName() { return m_name; }
+        public string GetName() { return m_name; }
+        public string GetParameterType() { return "Multiple " + m_className + " subclass"; }
+        public string GetDescription() { return m_comment; }
         public int m_parameterIndexInCode;
 
-        public void setParameterIndexInCode(int index) { m_parameterIndexInCode = index; }
-        public int parameterClassSortValue()
+        public void SetParameterIndexInCode(int index) { m_parameterIndexInCode = index; }
+        public int ParameterClassSortValue()
         {
             return m_parameterIndexInCode + XMLTags.sortingValueMultiParameter;
         }
 
-        public string outputXML(int level)
+        public string AsXML(int level)
         {
             string output = "";
-            SimionSrcParser.addIndentation(ref output, level);
+            FileFormatter.AddIndentation(ref output, level);
             output += "<" + XMLTags.multiValuedNodeTag + " " + XMLTags.nameAttribute + "=\"" + m_name
                 + "\" " + XMLTags.classAttribute + "=\"" + m_className + "-Factory\" " + XMLTags.commentAttribute
                 + "=\"" + m_comment + "\"";
@@ -341,29 +373,32 @@ namespace SimionSrcParser
     public class MultiVariableParameter : IParameter
     {
         string m_className, m_name, m_comment;
+        WorldParser.WorldParameterType m_type;
 
         public MultiVariableParameter(string className, string objectName, string comment)
         {
             switch (className)
             {
-                case "ACTION_VARIABLE": m_className = XMLTags.actionVarRefTag; break;
+                case "ACTION_VARIABLE": m_className = XMLTags.actionVarRefTag; m_type = WorldParser.WorldParameterType.ActionVariable; break;
                 default:
-                case "STATE_VARIABLE": m_className = XMLTags.stateVarRefTag; break;
+                case "STATE_VARIABLE": m_className = XMLTags.stateVarRefTag; m_type = WorldParser.WorldParameterType.StateVariable; break;
             }
 
             m_name = objectName;
             m_comment = comment;
         }
-        public string getName() { return m_name; }
+        public string GetName() { return m_name; }
+        public string GetParameterType() { return "Multiple " + WorldParser.GetVariableType(m_type); }
+        public string GetDescription() { return m_comment; }
         public int m_parameterIndexInCode;
 
-        public void setParameterIndexInCode(int index) { m_parameterIndexInCode = index; }
-        public int parameterClassSortValue() { return m_parameterIndexInCode + XMLTags.sortingValueSimpleParameter; }
+        public void SetParameterIndexInCode(int index) { m_parameterIndexInCode = index; }
+        public int ParameterClassSortValue() { return m_parameterIndexInCode + XMLTags.sortingValueSimpleParameter; }
 
-        public string outputXML(int level)
+        public string AsXML(int level)
         {
             string output = "";
-            SimionSrcParser.addIndentation(ref output, level);
+            FileFormatter.AddIndentation(ref output, level);
             output += "<" + XMLTags.multiValuedNodeTag + " " + XMLTags.nameAttribute + "=\"" + m_name
                 + "\" " + XMLTags.classAttribute + "=\"" + m_className + "\" " + XMLTags.commentAttribute
                 + "=\"" + m_comment + "\"/>\n";
@@ -391,16 +426,30 @@ namespace SimionSrcParser
             m_comment = comment;
             m_default = defaultValue;
         }
-        public string getName() { return m_name; }
+        public string GetName() { return m_name; }
+        public string GetParameterType()
+        {
+            switch (m_className)
+            {
+                case "DOUBLE_PARAM": return "Multiple (double)";
+                case "BOOL_PARAM": return "Multiple (bool)";
+                case "INT_PARAM": return "Multiple (int)";
+                case "STRING_PARAM": return "Multiple (string)";
+                case "FILE_PATH_PARAM": return "Multiple (File)";
+                default:
+                case "DIR_PATH_PARAM": return "Multiple (Dir)";
+            }
+        }
+        public string GetDescription() { return m_comment; }
         public int m_parameterIndexInCode;
 
-        public void setParameterIndexInCode(int index) { m_parameterIndexInCode = index; }
-        public int parameterClassSortValue() { return m_parameterIndexInCode + XMLTags.sortingValueSimpleParameter; }
+        public void SetParameterIndexInCode(int index) { m_parameterIndexInCode = index; }
+        public int ParameterClassSortValue() { return m_parameterIndexInCode + XMLTags.sortingValueSimpleParameter; }
 
-        public string outputXML(int level)
+        public string AsXML(int level)
         {
             string output = "";
-            SimionSrcParser.addIndentation(ref output, level);
+            FileFormatter.AddIndentation(ref output, level);
             output += "<" + XMLTags.multiValuedNodeTag + " " + XMLTags.nameAttribute + "=\"" + m_name
                 + "\" " + XMLTags.classAttribute + "=\"" + m_className + "\" " + XMLTags.commentAttribute
                 + "=\"" + m_comment + "\" " + XMLTags.defaultAttribute + "=\"" + m_default + "\"/>\n";
@@ -427,16 +476,19 @@ namespace SimionSrcParser
             m_type = type;
             m_name = name;
         }
-        public string getName() { return m_name; }
+        public string GetName() { return m_name; }
+        public string GetParameterType() { return WorldParser.GetVariableType(m_type);}
+        public WorldParser.WorldParameterType GetWorldParameterType() { return m_type; }
+        public string GetDescription() { return null; }
         public int m_parameterIndexInCode;
 
-        public void setParameterIndexInCode(int index) { m_parameterIndexInCode = index; }
-        public int parameterClassSortValue() { return m_parameterIndexInCode + XMLTags.sortingValueWorldVariable; }
+        public void SetParameterIndexInCode(int index) { m_parameterIndexInCode = index; }
+        public int ParameterClassSortValue() { return m_parameterIndexInCode + XMLTags.sortingValueWorldVariable; }
 
-        public string outputXML(int level)
+        public string AsXML(int level)
         {
             string output = "";
-            SimionSrcParser.addIndentation(ref output, level);
+            FileFormatter.AddIndentation(ref output, level);
             string typeTag;
             switch (m_type)
             {
@@ -463,29 +515,31 @@ namespace SimionSrcParser
             m_name = name;
             m_comment = comment;
         }
-        public void addParameter(IParameter parameter)
+        public void AddParameter(IParameter parameter)
         {
-            parameter.setParameterIndexInCode(m_parameters.Count);
+            parameter.SetParameterIndexInCode(m_parameters.Count);
             m_parameters.Add(parameter);
         }
-        public string getName() { return m_name; }
+        public string GetName() { return m_name; }
+        public string GetParameterType() { return m_className + " subclass"; }
+        public string GetDescription() { return m_comment; }
         public int m_parameterIndexInCode;
 
-        public void setParameterIndexInCode(int index) { m_parameterIndexInCode = index; }
-        public int parameterClassSortValue() { return m_parameterIndexInCode + XMLTags.sortingValueSimpleParameter; }
+        public void SetParameterIndexInCode(int index) { m_parameterIndexInCode = index; }
+        public int ParameterClassSortValue() { return m_parameterIndexInCode + XMLTags.sortingValueSimpleParameter; }
 
-        public string outputXML(int level)
+        public string AsXML(int level)
         {
             string output = "";
-            SimionSrcParser.addIndentation(ref output, level);
+            FileFormatter.AddIndentation(ref output, level);
             output += "<" + XMLTags.choiceNodeTag + " " + XMLTags.nameAttribute + "=\"" + m_name
                 + "\" " + XMLTags.classAttribute + "=\"" + m_className + "\" " + XMLTags.commentAttribute
                 + "=\"" + m_comment + "\">\n";
             foreach (IParameter parameter in m_parameters)
             {
-                output += parameter.outputXML(level + 1);
+                output += parameter.AsXML(level + 1);
             }
-            SimionSrcParser.addIndentation(ref output, level);
+            FileFormatter.AddIndentation(ref output, level);
             output += "</" + XMLTags.choiceNodeTag + ">\n";
             return output;
         }
@@ -497,11 +551,13 @@ namespace SimionSrcParser
         Type m_type;
         string m_badgerMetadata;
 
-        public string getName() { return m_name; }
+        public string GetName() { return m_name; }
+        public string GetParameterType() { return m_className + " subclass"; }
+        public string GetDescription() { return null; }
         public int m_parameterIndexInCode;
 
-        public void setParameterIndexInCode(int index) { m_parameterIndexInCode = index; }
-        public int parameterClassSortValue() { return m_parameterIndexInCode + XMLTags.sortingValueSimpleParameter; }
+        public void SetParameterIndexInCode(int index) { m_parameterIndexInCode = index; }
+        public int ParameterClassSortValue() { return m_parameterIndexInCode + XMLTags.sortingValueSimpleParameter; }
 
         public ChoiceElementParameter(string name, string className, Type type)
         {
@@ -516,10 +572,10 @@ namespace SimionSrcParser
             m_type = type;
             m_badgerMetadata = badgerMetadata;
         }
-        public string outputXML(int level)
+        public string AsXML(int level)
         {
             string output = "";
-            SimionSrcParser.addIndentation(ref output, level);
+            FileFormatter.AddIndentation(ref output, level);
             string className = m_className;
             if (m_type == Type.Factory)
                 className += "-Factory";

@@ -250,10 +250,21 @@ namespace SimionSrcParser
         {
             m_type = type;
         }
+        public static string GetVariableType(WorldParameterType type)
+        {
+            switch (type)
+            {
+                case WorldParameterType.StateVariable: return "State";
+                case WorldParameterType.ActionVariable: return "Action";
+                case WorldParameterType.Constant: return "Constant";
+            }
+            return null;
+        }
     }
     public class StateVariableParser : WorldParser
     {
         public StateVariableParser() : base(WorldParser.WorldParameterType.StateVariable, "addStateVariable") { }
+
         public override void processParameter(ParameterizedObject parent)
         {
             try
@@ -312,7 +323,10 @@ namespace SimionSrcParser
         {
             Constructor parentConstructor = parent as Constructor;
             if (parsedArguments[0] == "World" && parentConstructor != null)
+            {
                 parentConstructor.m_world = parsedArguments[1];
+                parentConstructor.ImplementsWorld = true;
+            }
         }
     }
 }

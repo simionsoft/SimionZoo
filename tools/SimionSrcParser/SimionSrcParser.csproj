@@ -24,7 +24,7 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|Win32' ">
-    <PlatformTarget>AnyCPU</PlatformTarget>
+    <PlatformTarget>x86</PlatformTarget>
     <DebugType>pdbonly</DebugType>
     <Optimize>true</Optimize>
     <OutputPath>..\..\bin\</OutputPath>
@@ -45,9 +45,11 @@
   <ItemGroup>
     <Compile Include="ClassMethod.cs" />
     <Compile Include="ConstructorParser.cs" />
+    <Compile Include="CppSourceParser.cs" />
+    <Compile Include="DocumentationExporter.cs" />
     <Compile Include="EnumerationParser.cs" />
     <Compile Include="FactoryParser.cs" />
-    <Compile Include="ReferenceDocExporter.cs" />
+    <Compile Include="FileFormatter.cs" />
     <Compile Include="main.cs" />
     <Compile Include="ObjectClass.cs" />
     <Compile Include="ParameterizedObject.cs" />

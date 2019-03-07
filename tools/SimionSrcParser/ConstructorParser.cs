@@ -34,7 +34,13 @@ namespace SimionSrcParser
 {
     public class Constructor: ParameterizedObject
     {
+        public bool ImplementsWorld = false;
         public string m_world;
+        public override bool IsWorld()
+        {
+            return ImplementsWorld;
+        }
+
         private List<string> m_baseClasses= new List<string>();
         static ConstructorParameterParser g_parameterParser = new ConstructorParameterParser();
 
@@ -51,27 +57,27 @@ namespace SimionSrcParser
             }
         }
 
-        public override string outputXML(int level)
+        public override string OutputXML(int level)
         {
             string output = "";
-            SimionSrcParser.addIndentation(ref output,level);
+            FileFormatter.AddIndentation(ref output,level);
             output += "<" + XMLTags.ClassDefinitionNodeTag + " Name=\"" + m_name + "\"";
-            if (m_world!=null)
+            if (ImplementsWorld)
                 output+= " " + XMLTags.worldAttribute + "=\"" + m_world + "\"";
             output += ">\n";
 
             foreach(string baseClass in m_baseClasses)
             {
-                ParameterizedObject baseClassObject= SimionSrcParser.getNamedParamObject(baseClass);
+                ParameterizedObject baseClassObject= CppSourceParser.GetNamedParamObject(baseClass);
                 if (baseClassObject != null)
-                    foreach (IParameter param in baseClassObject.parameters)
+                    foreach (IParameter param in baseClassObject.Parameters)
                         base.addParameter(param);//output += baseClassObject.outputChildrenXML(level + 1);
                 else
                     Console.WriteLine("Warning." + m_name + " class extends base class " + baseClass
                     + " but definition has not been found. Ignore if the base class is a template class without any parameters.");
             }
-            output += outputChildrenXML(level + 1);
-            SimionSrcParser.addIndentation(ref output, level);
+            output += OutputChildrenXML(level + 1);
+            FileFormatter.AddIndentation(ref output, level);
             output += "</" + XMLTags.ClassDefinitionNodeTag + ">\n";
             return output;
         }

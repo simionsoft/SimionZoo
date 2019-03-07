@@ -5,19 +5,19 @@
 * **Summary**
   Iterates over all the Simions to let each of them select their actions
 * **Parameters**
-  * _s_: Initial state
-  * _a_: Action variable where Simions write their selected actions
+* * _s_: Initial state
+* * _a_: Action variable where Simions write their selected actions
 * **Return Value**
   Iterates over all the Simions to let each of them select their actions
 ### ``void update(State* s, Action* a, State* s_p, double r, double probability)``
 * **Summary**
   Iterates over all the Simions to let them learn from the last real-time experience tuple
 * **Parameters**
-  * _s_: Initial state
-  * _a_: Action
-  * _s_p_: Resultant state
-  * _r_: Reward
-  * _probability_: Probability by which the action was taken. Should be ignored
+* * _s_: Initial state
+* * _a_: Action
+* * _s_p_: Resultant state
+* * _r_: Reward
+* * _probability_: Probability by which the action was taken. Should be ignored
 ### ``void postUpdate()``
 * **Summary**
   If Experience-Replay is enabled, several tuples are taken from the buffer and given to the Simions to learn from them

@@ -36,21 +36,22 @@ namespace SimionSrcParser
         protected string m_name;
         public string name { get { return m_name; } }
         private List<IParameter> m_parameters = new List<IParameter>();
-        public List<IParameter> parameters { get { return m_parameters; } }
+        public List<IParameter> Parameters { get { return m_parameters; } }
         public void addParameter(IParameter parameter)
         {
-            parameter.setParameterIndexInCode(m_parameters.Count);
+            parameter.SetParameterIndexInCode(m_parameters.Count);
             m_parameters.Add(parameter);
         }
 
-        public abstract string outputXML(int level);
-        public string outputChildrenXML(int level)
+        public abstract string OutputXML(int level);
+        public string OutputChildrenXML(int level)
         {
             string output = "";
-            var orderedList = m_parameters.OrderBy(param => param.parameterClassSortValue()).ThenBy(param=>param.getName());
+            var orderedList = m_parameters.OrderBy(param => param.ParameterClassSortValue()).ThenBy(param=>param.GetName());
             foreach (IParameter parameter in orderedList)
-                output += parameter.outputXML(level);
+                output += parameter.AsXML(level);
             return output;
         }
+        public virtual bool IsWorld() { return false; }
     }
 }

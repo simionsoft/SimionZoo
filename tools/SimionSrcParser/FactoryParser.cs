@@ -55,7 +55,7 @@ namespace SimionSrcParser
 
                 ChoiceElementParameter choiceElement = new ChoiceElementParameter(choiceElementName
                     , choiceElementClass, type);
-                parent.addParameter(choiceElement);
+                parent.AddParameter(choiceElement);
             }
         }
     }
@@ -83,7 +83,7 @@ namespace SimionSrcParser
 
                 ChoiceElementParameter choiceElement = new ChoiceElementParameter(choiceElementName
                     , choiceElementClass, type, badgerMetadata);
-                parent.addParameter(choiceElement);
+                parent.AddParameter(choiceElement);
             }
         }
     }
@@ -107,7 +107,7 @@ namespace SimionSrcParser
                 string comment = match.Groups[4].Value.Trim(' ', '"');
                 string choiceElements,prefix;
                 choiceElements = match.Groups[5].Value.Trim(' ', '"', '\t', '\n');
-                SimionSrcParser.getEnclosedBody(match.Groups[5].Value.Trim(' ', '"','\t','\n'),0,"{","}",out choiceElements,out prefix);
+                CppSourceParser.GetEnclosedBody(match.Groups[5].Value.Trim(' ', '"','\t','\n'),0,"{","}",out choiceElements,out prefix);
                 choiceElements= choiceElements.Trim(' ', '"', '\t', '\n');
                 ChoiceParameter newChoice = new ChoiceParameter(className,choiceName, comment);
 
@@ -130,13 +130,13 @@ namespace SimionSrcParser
             m_choiceParser.parse(this, body);
         }
 
-        public override string outputXML(int level)
+        public override string OutputXML(int level)
         {
             string output = "";
-            SimionSrcParser.addIndentation(ref output, level);
+            FileFormatter.AddIndentation(ref output, level);
             output += "<" + XMLTags.ClassDefinitionNodeTag + " Name=\"" + m_name + "\">\n";
-            output += outputChildrenXML(level + 1);
-            SimionSrcParser.addIndentation(ref output, level);
+            output += OutputChildrenXML(level + 1);
+            FileFormatter.AddIndentation(ref output, level);
             output += "</" + XMLTags.ClassDefinitionNodeTag + ">\n";
             return output;
         }

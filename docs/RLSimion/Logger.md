@@ -5,7 +5,7 @@
 * **Summary**
   Creates a file where functions will be logged
 * **Parameters**
-  * _filename_: Path to the output file
+* * _filename_: Path to the output file
 ### ``void closeFunctionLogFile()``
 * **Summary**
   Closes the file used for logging functions
@@ -19,12 +19,12 @@
 * **Summary**
   Returns whether the given type of episode is being logged
 * **Parameters**
-  * _evalEpisode_: true if we want to query about evaluation episodes, false otherwise
+* * _evalEpisode_: true if we want to query about evaluation episodes, false otherwise
 ### ``void writeLogFileXMLDescriptor(const char* filename)``
 * **Summary**
   Creates an XML file with the description of the log file: variables, scene file...
 * **Parameters**
-  * _filename_: 
+* * _filename_: 
 ### ``void firstEpisode()``
 * **Summary**
   Must be called before the first episode begins to initialize log files, timers,...
@@ -38,13 +38,13 @@
 * **Summary**
   Logs if needed a new step {s,a,s_p,r}, and adds a new sample to statistics
 * **Parameters**
-  * _s_: Initial state
-  * _a_: Action
-  * _s_p_: Resultant state
-  * _r_: Reward
+* * _s_: Initial state
+* * _a_: Action
+* * _s_p_: Resultant state
+* * _r_: Reward
 ### ``void logMessage(MessageType type, const char* message)``
 * **Summary**
   Logging function that formats and dispatches different types of messages: info/warnings/errors, progress, and evaluation. Depending on whether the app is connected via a named pipe, the message is either sent via the pipe or printed on the system console. Error log messages throw an exception to terminate the program
 * **Parameters**
-  * _type_: 
-  * _message_: 
+* * _type_: 
+* * _message_: 

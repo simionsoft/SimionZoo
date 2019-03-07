@@ -39,18 +39,18 @@ namespace SimionSrcParser
             m_name = name;
             enumerationParser.parse(content, ref m_enumerationValues);
         }
-        public override string outputXML(int level)
+        public override string OutputXML(int level)
         {
             string output = "";
-            SimionSrcParser.addIndentation(ref output,level);
+            FileFormatter.AddIndentation(ref output,level);
             output += "<" + XMLTags.EnumDefinitionNodeTag + " " + XMLTags.nameAttribute + "=\"" + m_name + "\">\n";
-            output+= outputChildrenXML(level + 1);
+            output+= OutputChildrenXML(level + 1);
             foreach (string value in m_enumerationValues)
             {
-                SimionSrcParser.addIndentation(ref output, level + 1);
+                FileFormatter.AddIndentation(ref output, level + 1);
                 output += "<" + XMLTags.enumNodeTag + ">" + value + "</" + XMLTags.enumNodeTag + ">\n";
             }
-            SimionSrcParser.addIndentation(ref output, level);
+            FileFormatter.AddIndentation(ref output, level);
             output += "</" + XMLTags.EnumDefinitionNodeTag + ">\n";
             return output;
         }

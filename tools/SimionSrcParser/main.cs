@@ -30,55 +30,80 @@ using System.Threading;
 
 namespace SimionSrcParser
 {
-    class main
+    class MainApp
     {
+        const string argSourcePrefix = "lang=";
+        const string argSourceDirPrefix = "source-dir=";
+        const string argOutDefsPrefix = "out-defs=";
+        const string argOutDocsPrefix = "out-docs=";
+
+        static string sourcesLanguage = "cpp"; //default value
+        static string sourcesDir = null;
+        static string outDefinitionsFile = null;
+        static string outDocumentationFile = null;
+
+        static bool ParseArguments(string [] args)
+        {
+            //lang=[cpp|csharp] source-dir=<dir> [out-defs=<path-to-xml>] [out-docs=<path-to-md>]
+            foreach (string arg in args)
+            {
+                if (arg.StartsWith(argSourcePrefix)) sourcesLanguage = arg.Substring(argSourcePrefix.Length);
+                else if (arg.StartsWith(argSourceDirPrefix)) sourcesDir = arg.Substring(argSourceDirPrefix.Length);
+                else if (arg.StartsWith(argOutDefsPrefix)) outDefinitionsFile = arg.Substring(argOutDefsPrefix.Length);
+                else if (arg.StartsWith(argOutDocsPrefix)) outDocumentationFile = arg.Substring(argOutDocsPrefix.Length);
+            }
+            if (sourcesDir == null || (outDefinitionsFile == null && outDocumentationFile == null))
+                return false;   //all required arguments were not provided
+            return true;        //all required arguments were provided
+        }
         static int Main(string[] args)
         {
             //not to read 23.232 as 23232
             Thread.CurrentThread.CurrentCulture = System.Globalization.CultureInfo.InvariantCulture;
 
-            SimionSrcParser sourceProcessor = new SimionSrcParser();
-            int numargs = args.Length;
-            if (numargs < 3)
+            if (!ParseArguments(args))
             {
-                Console.WriteLine("ERROR. Usage: SimionSrcParser <input-directory> <output-config-file (.xml)> <output-docs-file (.md)>");
+                Console.WriteLine("ERROR. Usage: SimionSrcParser lang=[cpp|csharp] source-dir=<dir> [out-defs=<path-to-xml>] [out-docs=<path-to-md>]");
                 return 0;
             }
 
-            string inputDir = args[0];
-            string outputConfigFile = args[1];
-            string outputDocsFile = args[2];
-            string outputDocsFolder = Herd.Utils.GetDirectory(outputDocsFile);
-            string projectName = Herd.Utils.RemoveExtension(Herd.Utils.GetFilename(outputDocsFile));
+            string outputDocsFolder = Herd.Utils.GetDirectory(outDocumentationFile);
+            string projectName = Herd.Utils.RemoveExtension(Herd.Utils.GetFilename(outDocumentationFile));
 
-            //Parse .cpp files for constructor and factory definition
-            List<string> sourceFiles = new List<string>(Directory.EnumerateFiles(inputDir, "*.cpp", SearchOption.AllDirectories));
-            foreach (var file in sourceFiles)
-            {
-                sourceProcessor.ParseSrcFile(file);
-            }
-            //Parse .h files for enumerated types
-            List<string> headerFiles = new List<string>(Directory.EnumerateFiles(inputDir, "*.h", SearchOption.AllDirectories));
-            foreach (var file in headerFiles)
-            {
-                sourceProcessor.ParseHeaderFile(file);
-            }
+            //if (sourcesLanguage == "cpp")
+                SimionSrcParser parser = new CppSourceParser();
 
-
-            int numErrors = sourceProcessor.PostProcess();
+            parser.ParseSourceFilesInDir(sourcesDir);
+            int numErrors = parser.PostProcess();
 
             if (numErrors==0)
             {
-                Console.WriteLine("Saving GUI Parameters configuration file: " + inputDir + "->" + outputConfigFile);
-                sourceProcessor.SaveGUIParameters(outputConfigFile);
-                Console.WriteLine("Saving source code documentation as Markdown: " + inputDir + "->" 
-                    + projectName + ReferenceDocExporter.FormatExtension(ReferenceDocExporter.Format.Markdown));
-                sourceProcessor.SaveDocumentation(outputDocsFolder, projectName, ReferenceDocExporter.Format.Markdown);
-                Console.WriteLine("Saving source code documentation as Html: " + inputDir + "->"
-                    + projectName + ReferenceDocExporter.FormatExtension(ReferenceDocExporter.Format.Html));
-                sourceProcessor.SaveDocumentation(outputDocsFolder, projectName, ReferenceDocExporter.Format.Html);
+                if (parser.GetParameterizedObjects() != null)
+                {
+                    Console.WriteLine("Saving object definitions for Badger: " + sourcesDir + "->" + outDefinitionsFile);
+                    DocumentationExporter.ExportGUIParameters(outDefinitionsFile, parser.GetParameterizedObjects());
 
-                Console.WriteLine("Finished: {0} Kbs of code read.", sourceProcessor.numCharsProcessed / 1000);
+                    HtmlExporter htmlExporter = new HtmlExporter();
+                    string outputConfigFileForHumans = Herd.Utils.RemoveExtension(outDefinitionsFile) + htmlExporter.FormatExtension();
+                    Console.WriteLine("Saving object definitions as Html : " + sourcesDir + "->" + outputConfigFileForHumans);
+                    DocumentationExporter.ExportGUIParametersForHumans(outputConfigFileForHumans, htmlExporter, parser.GetParameterizedObjects());
+                }
+                if (parser.GetObjectClasses() != null)
+                {
+                    //Save documentation as markdown
+                    MarkdownExporter markdownExporter = new MarkdownExporter();
+                    Console.WriteLine("Saving source code documentation as Markdown: " + sourcesDir + "->"
+                        + projectName + markdownExporter.FormatExtension());
+                    DocumentationExporter.ExportDocumentation(outputDocsFolder, projectName, markdownExporter, parser.GetObjectClasses());
+
+                    //Save documentation as html
+                    HtmlExporter htmlExporter = new HtmlExporter();
+                    Console.WriteLine("Saving source code documentation as Html: " + sourcesDir + "->"
+                        + projectName + htmlExporter.FormatExtension());
+                    DocumentationExporter.ExportDocumentation(outputDocsFolder, projectName, htmlExporter, parser.GetObjectClasses());
+                }
+
+                Console.WriteLine("Finished: {0} Kbs of code read.", parser.GetNumBytesProcessed() / 1000);
             }
             return 0;
         }
