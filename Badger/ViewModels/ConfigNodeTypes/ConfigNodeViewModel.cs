@@ -107,6 +107,10 @@ namespace Badger.ViewModels
 
         public bool bCanBeForked { get { return m_bCanBeForked; } set { m_bCanBeForked = value; NotifyOfPropertyChange(() => bCanBeForked); } }
 
+        /// <summary>
+        /// Forks this node
+        /// </summary>
+        /// <param name="originNode">The origin node.</param>
         public void ForkThisNode(ConfigNodeViewModel originNode)
         {
             bCanBeForked = false;

@@ -81,6 +81,12 @@ namespace Badger.ViewModels
 
         public DateTime LastHeartbeat = DateTime.Now;
 
+        /// <summary>
+        /// Callback method that is called from the job dispatcher when a message is received
+        /// </summary>
+        /// <param name="experimentId">The experiment identifier</param>
+        /// <param name="messageId">The message identifier</param>
+        /// <param name="messageContent">Content of the message</param>
         public void OnMessageReceived(string experimentId, string messageId, string messageContent)
         {
             MonitoredExperimentalUnitViewModel experimentVM = ViewModelFromName[experimentId];
@@ -138,18 +144,31 @@ namespace Badger.ViewModels
             }
         }
 
+        /// <summary>
+        /// Called method executed when the state of an experimental unit changes
+        /// </summary>
+        /// <param name="experimentId">The experiment identifier</param>
+        /// <param name="state">The state</param>
         public void OnStateChanged(string experimentId, Monitoring.State state)
         {
             MonitoredExperimentalUnitViewModel experimentVM = ViewModelFromName[experimentId];
             experimentVM.State = state;
         }
 
+        /// <summary>
+        /// Callback method called when the state of all the experimental unit in a job changes
+        /// </summary>
+        /// <param name="state">The state.</param>
         public void OnAllStatesChanged(Monitoring.State state)
         {
             foreach (MonitoredExperimentalUnitViewModel experimentVM in MonitoredExperimentalUnits)
                 experimentVM.State = state;
         }
 
+        /// <summary>
+        /// Callback method executed when an experimental unit is launched
+        /// </summary>
+        /// <param name="expUnit">The expererimental unit</param>
         public void OnExperimentalUnitLaunched(ExperimentalUnit expUnit)
         {
             MonitoredExperimentalUnitViewModel expUnitVM= new MonitoredExperimentalUnitViewModel(expUnit,m_evaluationPlot);

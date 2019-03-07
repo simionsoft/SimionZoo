@@ -185,7 +185,7 @@ namespace Badger.ViewModels
         /// Constructor
         /// </summary>
         /// <param name="expUnit">The model: an instance of ExperimentalUnit</param>
-        /// <param name="plot">The plot used to monitor data</param
+        /// <param name="plot">The plot used to monitor data</param>
         public MonitoredExperimentalUnitViewModel(ExperimentalUnit expUnit, PlotViewModel plot)
         {
             StateButton.Icon = "Sending";
@@ -206,6 +206,11 @@ namespace Badger.ViewModels
         private int m_seriesId = -1;
         public PlotViewModel m_plotEvaluationMonitor;
 
+        /// <summary>
+        /// Adds a (xNorm,y) value to the series of evaluations.
+        /// </summary>
+        /// <param name="xNorm">The normalized value in x (0 is the beginning and 1 the end of the experiment)</param>
+        /// <param name="y">The average reward obtained in this evaluation</param>
         public void AddEvaluationValue(double xNorm, double y)
         {
             if (m_seriesId == -1) //series not yet added

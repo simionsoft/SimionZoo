@@ -1,0 +1,87 @@
+<html>
+<body>
+<h1>Class Badger.ViewModels.LogQueryViewModel</h1>
+<em>Source: LogQueryViewModel.cs</em>
+<h2>Methods</h2>
+<h3><code>void AddGroupByFork(string forkName)</code></h3>
+<ul>
+<li><b>Summary</b></li>
+<p>Adds the fork to the list of group-by forks</p>
+<li><b>Parameters</b></li>
+<ul>
+<li><i>forkName</i>: Name of the fork.</li>
+</ul>
+</ul>
+<h3><code>bool IsForkUsedToGroup(string forkName)</code></h3>
+<ul>
+<li><b>Summary</b></li>
+<p>Returns whether a fork is used to group tracks or not</p>
+<li><b>Parameters</b></li>
+<ul>
+<li><i>forkName</i>: Name of the fork</li>
+</ul>
+</ul>
+<h3><code>void ResetGroupBy()</code></h3>
+<ul>
+<li><b>Summary</b></li>
+<p>Resets the forks used to group tracks</p>
+</ul>
+<h3><code>string GetVariableProcessFunc(string variable)</code></h3>
+<ul>
+<li><b>Summary</b></li>
+<p>Gets the process function used for the variable</p>
+<li><b>Parameters</b></li>
+<ul>
+<li><i>variable</i>: The variable.</li>
+</ul>
+<li><b>Return Value</b></li>
+<p>Gets the process function used for the variable</p>
+</ul>
+<h3><code>bool IsVariableSelected(string variable, string reportType)</code></h3>
+<ul>
+<li><b>Summary</b></li>
+<p>Returns whether the specified variable-reportType is selected</p>
+<li><b>Parameters</b></li>
+<ul>
+<li><i>variable</i>: The variable</li>
+<li><i>reportType</i>: Type of the report</li>
+</ul>
+</ul>
+<h3><code>void AddLogVariables(List<string> variables)</code></h3>
+<ul>
+<li><b>Summary</b></li>
+<p>Adds the variables to the list of variables in the log. Called when loading a logged experimental unit</p>
+<li><b>Parameters</b></li>
+<ul>
+<li><i>variables</i>: The variables</li>
+</ul>
+</ul>
+<h3><code>bool LogVariableExists(string variable)</code></h3>
+<ul>
+<li><b>Summary</b></li>
+<p>Returns whether the variable exists in th elog or not</p>
+<li><b>Parameters</b></li>
+<ul>
+<li><i>variable</i>: The variable.</li>
+</ul>
+</ul>
+<h3><code>void Validate()</code></h3>
+<ul>
+<li><b>Summary</b></li>
+<p>This function validates the current query and sets CanGenerateReports accordingly</p>
+</ul>
+<h3><code>void Execute(BindableCollection<LoggedExperimentViewModel> experiments
+            ,LoadOptions.PerExperimentalUnitFunction OnExpUnitProcessed, out List<TrackGroup> resultTracks, out List<Report> reports)</code></h3>
+<ul>
+<li><b>Summary</b></li>
+<p>Executes the specified query.</p>
+<li><b>Parameters</b></li>
+<ul>
+<li><i>experiments</i>: The list of logged experiments on which the query will be processed</li>
+<li><i>OnExpUnitProcessed</i>: Callback function called when an exp unit is processed. Used to update the progress</li>
+<li><i>resultTracks</i>: Output list of track groups</li>
+<li><i>reports</i>: Output list of reports</li>
+</ul>
+</ul>
+</body>
+</html>

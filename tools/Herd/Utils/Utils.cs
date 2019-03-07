@@ -36,6 +36,10 @@ namespace Herd
 {
     public class Utils
     {
+        /// <summary>
+        /// Returns whether the file exists and is not empty.
+        /// </summary>
+        /// <param name="fileName">Name of the file.</param>
         public static bool FileExistsAndNotEmpty(string fileName)
         {
             if (File.Exists(fileName))
@@ -47,12 +51,23 @@ namespace Herd
             return false;
         }
 
+        /// <summary>
+        /// Sets the execution permission of a file. Needed in the Linux version of the herd agent after receiving
+        /// an executable
+        /// </summary>
+        /// <param name="filename">The path to the executable file</param>
         public static void SetExecutionPermission(string filename)
         {
             Process.Start("chmod", "770 " + filename);
         }
 
-        static public string GetLogFilePath(string experimentFilePath, bool descriptor = true)
+        /// <summary>
+        /// Gets the log file path that will be created from an experimental unit file
+        /// </summary>
+        /// <param name="experimentFilePath">The experimental unit file path</param>
+        /// <param name="descriptor">If true, the path to the descriptor will be returned. Otherwise, the path to the binary file</param>
+        /// <returns>The path to the log file</returns>
+        public static string GetLogFilePath(string experimentFilePath, bool descriptor = true)
         {
             if (experimentFilePath != "")
             {
@@ -65,6 +80,12 @@ namespace Herd
             return "";
         }
 
+        /// <summary>
+        /// Calculates the relative path of an absolute path with respect to a second path
+        /// </summary>
+        /// <param name="absPath">The abssolute path</param>
+        /// <param name="relTo">The path to which we want the relative path</param>
+        /// <returns>The relative path</returns>
         public static string GetRelativePathTo(string absPath, string relTo)
         {
             string[] absDirs = absPath.Split('/');
@@ -108,12 +129,12 @@ namespace Herd
 
         /// <summary>
         /// Given the path (relative or absolute) of a file, this function removes all but "allowedLevels" levels of directories
+        /// For example:
+        // -removeDirectories("c:\jander\clander\more.txt",2) -> "jander\clander\more.txt"
+        // -removeDirectories("c:\jander\clander\more.txt",0) -> "more.txt"
         ///<param name="fileName">path to a file from which directories must be removed</param>
         ///<param name="allowedLevels">number of directory levels to be left in the returned path</param>
         /// </summary>
-        //For example:
-        //-removeDirectories("c:\jander\clander\more.txt",2) -> "jander\clander\more.txt"
-        //-removeDirectories("c:\jander\clander\more.txt",0) -> "more.txt"
         public static string RemoveDirectories(string fileName, uint allowedLevels = 0)
         {
             if (fileName != "")
@@ -141,9 +162,13 @@ namespace Herd
             return fileName;
         }
 
-        //Returns the number of parts in a string, using separator as delimiter of the parts
-        //For example, NumParts("harl.demore.pitikan",'.') should return 3
-        //For simplicity, we assume the separator is neither the first nor the last char in the string
+        /// Returns the number of parts in a string, using separator as delimiter of the parts.
+        /// For example, NumParts("harl.demore.pitikan",'.') should return 3
+        /// For simplicity, we assume the separator is neither the first nor the last char in the string
+        /// </summary>
+        /// <param name="filename">The filename</param>
+        /// <param name="separator">The separator character</param>
+        /// <returns>The number of parts</returns>
         public static int NumParts(string filename, char separator)
         {
             int numSeparators = filename.Count(c => c == separator);
@@ -153,8 +178,14 @@ namespace Herd
             return numSeparators + 1;
         }
 
-        //given the path to a file, this function returns [numExtensions] extensions of the file
-        //if not enough extensions are found, nothing is changed from the input path
+
+        /// <summary>
+        /// Given the path to a file, this function returns [numExtensions] extensions of the file.
+        /// If not enough extensions are found, nothing is changed from the input path
+        /// </summary>
+        /// <param name="filename">The filename.</param>
+        /// <param name="numExtensions">The number extensions.</param>
+        /// <returns>The file's extension</returns>
         public static string GetExtension(string filename, uint numExtensions = 1)
         {
             string result = filename;
@@ -174,8 +205,13 @@ namespace Herd
         }
 
 
-        //given the path to a file, this function removes [numExtensions] extensions of the file
-        //if not enough extensions are found, nothing is changed from the input path
+        /// <summary>
+        /// Given the path to a file, this function removes [numExtensions] extensions of the file.
+        /// If not enough extensions are found, nothing is changed from the input path
+        /// </summary>
+        /// <param name="filename">The filename.</param>
+        /// <param name="numExtensions">The number extensions.</param>
+        /// <returns>The filename without the extensions</returns>
         public static string RemoveExtension(string filename, int numExtensions = 1)
         {
             string result = filename;

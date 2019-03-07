@@ -48,6 +48,10 @@ namespace Badger.ViewModels
             IsSelected = !m_bLocalAgent;
         }
 
+        /// <summary>
+        /// Determines whether an IP address is local
+        /// </summary>
+        /// <param name="host">The IP address</param>
         public static bool IsLocalIpAddress(string host)
         {
             try

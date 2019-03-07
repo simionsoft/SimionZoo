@@ -107,7 +107,7 @@ namespace Herd.Files
         /// </summary>
         /// <param name="logFileName"></param>
         /// <returns></returns>
-        static public bool LogFileExists(string relExplUnitPath, string baseDirectory)
+        public static bool LogFileExists(string relExplUnitPath, string baseDirectory)
         {
             string experimentFileName = baseDirectory + relExplUnitPath;
             string logDescriptorFileName = Utils.GetLogFilePath(experimentFileName, true);
@@ -126,6 +126,9 @@ namespace Herd.Files
         public AppVersion SelectedVersion { get; set; }
         public RunTimeRequirements RunTimeReqs { get; set; }
 
+        /// <summary>
+        /// Executes the app to retrive the runtime requirements
+        /// </summary>
         public void RequestRuntimeRequirements()
         {
             //Added for testing purposes: this avoids using real experiments
@@ -145,6 +148,10 @@ namespace Herd.Files
             }
         }
 
+        /// <summary>
+        /// Returns whether an app version is compatible with the host architecture
+        /// </summary>
+        /// <param name="version">The appversion.</param>
         public bool IsHostArchitectureCompatible(AppVersion version)
         {
             string hostArchitecture = HerdAgent.ArchitectureId();
@@ -155,6 +162,11 @@ namespace Herd.Files
                 return false;
         }
 
+        /// <summary>
+        /// Returns the app version from the list that best matches the host architecture
+        /// </summary>
+        /// <param name="appVersions">The application versions.</param>
+        /// <returns></returns>
         public AppVersion BestHostArchitectureMatch(List<AppVersion> appVersions)
         {
             string hostArchitecture = HerdAgent.ArchitectureId();

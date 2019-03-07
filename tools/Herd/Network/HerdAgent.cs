@@ -86,7 +86,7 @@ namespace Herd.Network
         private PerformanceCounter m_ramCounter;
 
         /// <summary>
-        ///     HerdAgent class constructor
+        /// HerdAgent class constructor
         /// </summary>
         /// <param name="cancelTokenSource"></param>
         public HerdAgent(CancellationTokenSource cancelTokenSource)
@@ -123,14 +123,21 @@ namespace Herd.Network
 
         public string DirPath { get { return m_dirPath; } }
 
-
-
+        /// <summary>
+        /// Sends the outputs of the job to the client (Badger)
+        /// </summary>
+        /// <param name="cancelToken">The cancel token.</param>
         public void SendJobResult(CancellationToken cancelToken)
         {
             SendJobHeader(cancelToken);
             SendOutputFiles(true, cancelToken);
             SendJobFooter(cancelToken);
         }
+        /// <summary>
+        /// Async method that receives a job query.
+        /// </summary>
+        /// <param name="cancelToken">The cancel token.</param>
+        /// <returns>An awaitable task returning a bool</returns>
         public async Task<bool> ReceiveJobQuery(CancellationToken cancelToken)
         {
             bool bFooterPeeked = false;
@@ -180,7 +187,12 @@ namespace Herd.Network
             return true;
         }
 
-
+        /// <summary>
+        /// Waits for the process to exit asynchronously
+        /// </summary>
+        /// <param name="process">The process</param>
+        /// <param name="cancellationToken">The cancellation token</param>
+        /// <returns>An awaitable task</returns>
         public static Task WaitForExitAsync(Process process, CancellationToken cancellationToken)
         {
             var tcs = new TaskCompletionSource<object>();
@@ -191,7 +203,12 @@ namespace Herd.Network
             return tcs.Task;
         }
 
-
+        /// <summary>
+        /// Runs the task asynchronous
+        /// </summary>
+        /// <param name="task">The task</param>
+        /// <param name="cancelToken">The cancel token</param>
+        /// <returns>An awaitable task returning an int with the return code</returns>
         public async Task<int> RunTaskAsync(HerdTask task, CancellationToken cancelToken)
         {
             int returnCode = m_noErrorCode;

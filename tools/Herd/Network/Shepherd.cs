@@ -73,6 +73,9 @@ namespace Herd.Network
             m_notifyAgentListChanged = null;
         }
 
+        /// <summary>
+        /// Determines whether if the local IP address is local
+        /// </summary>
         public static bool IsLocalIpAddress(string host)
         {
             try
@@ -197,6 +200,9 @@ namespace Herd.Network
             }
         }
 
+        /// <summary>
+        /// Calls the herd using a UDP broadcast. Any agent in the same subnet should reply with its properties
+        /// </summary>
         public void CallHerd()
         {
             byte[] DiscoveryMessage = Encoding.ASCII.GetBytes(m_discoveryMessage);
@@ -224,7 +230,11 @@ namespace Herd.Network
 
         }
 
-
+        /// <summary>
+        /// Connects to a herd agent via TCP
+        /// </summary>
+        /// <param name="endPoint">The end point of the agent</param>
+        /// <returns>A boolean indicating if the connection was succesful or not</returns>
         public bool ConnectToHerdAgent(IPEndPoint endPoint)
         {
             try
@@ -243,7 +253,9 @@ namespace Herd.Network
             return true;
         }
 
-
+        /// <summary>
+        /// Disconnects from the herd agent
+        /// </summary>
         public void Disconnect()
         {
             if (m_netStream != null) m_netStream.Dispose();
@@ -251,7 +263,11 @@ namespace Herd.Network
             m_tcpClient = null;
         }
 
-
+        /// <summary>
+        /// Gets a list of the herd agent discovered last time the herd was called
+        /// </summary>
+        /// <param name="outHerdAgentList">The out herd agent list</param>
+        /// <param name="timeoutSeconds">The timeout seconds</param>
         public void GetHerdAgentList(ref List<HerdAgentInfo> outHerdAgentList, int timeoutSeconds = 10)
         {
             lock (m_listLock)
@@ -276,6 +292,11 @@ namespace Herd.Network
             }
         }
 
+        /// <summary>
+        /// Sends a job query to the herd agent we connected to
+        /// </summary>
+        /// <param name="job">The job</param>
+        /// <param name="cancelToken">The cancel token</param>
         public void SendJobQuery(Job job, CancellationToken cancelToken)
         {
             m_job = job;

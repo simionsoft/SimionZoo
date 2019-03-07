@@ -60,6 +60,9 @@ namespace Herd.Network
 
         public List<ExperimentalUnit> FailedExperimentalUnits { get; set; }
 
+        /// <summary>
+        /// Prepares the job for execution, creating the appropriate tasks from the experimental units in the job
+        /// </summary>
         public void PrepareForExecution()
         {
             FailedExperimentalUnits = new List<ExperimentalUnit>();
@@ -130,7 +133,13 @@ namespace Herd.Network
 
         //input files
         List<string> m_inputFiles = new List<string>();
+        /// <summary>
+        /// Adds a list of input files
+        /// </summary>
         public void AddInputFiles(List<string> source) { foreach (string file in source) AddInputFile(file); }
+        /// <summary>
+        /// Adds one input file.
+        /// </summary>
         public bool AddInputFile(string file)
         {
             if (!m_inputFiles.Contains(file))
@@ -145,6 +154,9 @@ namespace Herd.Network
         //output files
         List<string> m_outputFiles = new List<string>();
         public void AddOutputFiles(List<string> source) { foreach (string file in source) AddOutputFile(file); }
+        /// <summary>
+        /// Adds one output file
+        /// </summary>
         public bool AddOutputFile(string file)
         {
             if (!m_outputFiles.Contains(file))
@@ -170,12 +182,22 @@ namespace Herd.Network
             return ret;
         }
 
+        /// <summary>
+        /// Returns the filename renamed according to the renaming rules
+        /// </summary>
+        /// <param name="filename">The filename.</param>
+        /// <returns>The renamed file</returns>
         public string RenamedFilename(string filename)
         {
             if (RenameRules != null && RenameRules.ContainsKey(filename))
                 return RenameRules[filename];
             return filename;
         }
+        /// <summary>
+        /// Returns the original name of a renamed file
+        /// </summary>
+        /// <param name="filename">The renamed filename</param>
+        /// <returns>The original name</returns>
         public string OriginalFilename(string filename)
         {
             if (RenameRules != null)
@@ -195,7 +217,12 @@ namespace Herd.Network
         public bool Cancelled { get { return m_bCancelled; } }
         public bool Running { get { return !(Finished || Cancelled); } }
 
-        //Remote execution and monitoring of the job
+        /// <summary>
+        /// Async method that sends the job to the herd agent and monitors its evolution, using the
+        /// callback funciton in dispatcher to notify the client of any event
+        /// </summary>
+        /// <param name="dispatcher">The event dispatching data</param>
+        /// <returns>An awaitable task that returns the finished job</returns>
         public async Task<Job> SendJobAndMonitor(Monitoring.MsgDispatcher dispatcher)
         {
             Shepherd shepherd = new Shepherd();

@@ -51,7 +51,7 @@
     <Compile Include="EnumerationParser.cs" />
     <Compile Include="FactoryParser.cs" />
     <Compile Include="FileFormatter.cs" />
-    <Compile Include="main.cs" />
+    <Compile Include="MainApp.cs" />
     <Compile Include="ObjectClass.cs" />
     <Compile Include="ParameterizedObject.cs" />
     <Compile Include="ParameterParser.cs" />

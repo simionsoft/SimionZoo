@@ -129,6 +129,9 @@ namespace Badger.ViewModels
             }
         }
 
+        /// <summary>
+        /// Creates a new experiment and adds it to the Editor tab
+        /// </summary>
         public void NewExperiment()
         {
             if (m_selectedAppName == null) return;
@@ -171,6 +174,9 @@ namespace Badger.ViewModels
             NotifyOfPropertyChange(() => AppNames);
         }
 
+        /// <summary>
+        /// Saves the selected experiment or project
+        /// </summary>
         public void SaveSelectedExperimentOrProject()
         {
             if (SelectedExperiment == null || !SelectedExperiment.Validate())
@@ -189,7 +195,11 @@ namespace Badger.ViewModels
                 SelectedExperiment.Name = Herd.Utils.GetFilename(savedFilename, true, 2);
         }
 
-        //This method can be used from any child window to load experimental units (i.e, from the ReportViewer)
+        /// <summary>
+        /// Loads an experimental unit on the Editor tab. This method can be used from any child window to load
+        /// experimental units (i.e, from the ReportViewer)
+        /// </summary>
+        /// <param name="experimentalUnitConfigFile">The experimental unit file.</param>
         public void LoadExperimentalUnit(string experimentalUnitConfigFile)
         {
             ExperimentViewModel newExperiment =
@@ -203,6 +213,9 @@ namespace Badger.ViewModels
             }
         }
 
+        /// <summary>
+        /// Shows a dialog window where the user can select an experiment or project for loading
+        /// </summary>
         public void LoadExperimentOrProject()
         {
             string extension = Files.ProjectDescription;
@@ -243,6 +256,9 @@ namespace Badger.ViewModels
             CanLaunchExperiment = m_bIsExperimentListNotEmpty;
         }
 
+        /// <summary>
+        /// Clears the experiments tab
+        /// </summary>
         public void ClearExperiments()
         {
             SelectedExperiment = null;
@@ -250,7 +266,7 @@ namespace Badger.ViewModels
         }
 
         /// <summary>
-        ///     Close a tab (experiment view) and remove it from experiments list.
+        ///     Close a tab (experiment view) and removes it from experiments list.
         /// </summary>
         /// <param name="e">The experiment to be removed</param>
         public void Close(ExperimentViewModel e)

@@ -1,0 +1,53 @@
+<html>
+<body>
+<h1>Class Herd.Network.Shepherd</h1>
+<em>Source: Shepherd.cs</em>
+<h2>Methods</h2>
+<h3><code>bool IsLocalIpAddress(string host)</code></h3>
+<ul>
+<li><b>Summary</b></li>
+<p>Determines whether if the local IP address is local</p>
+</ul>
+<h3><code>void CallHerd()</code></h3>
+<ul>
+<li><b>Summary</b></li>
+<p>Calls the herd using a UDP broadcast. Any agent in the same subnet should reply with its properties</p>
+</ul>
+<h3><code>bool ConnectToHerdAgent(IPEndPoint endPoint)</code></h3>
+<ul>
+<li><b>Summary</b></li>
+<p>Connects to a herd agent via TCP</p>
+<li><b>Parameters</b></li>
+<ul>
+<li><i>endPoint</i>: The end point of the agent</li>
+</ul>
+<li><b>Return Value</b></li>
+<p>Connects to a herd agent via TCP</p>
+</ul>
+<h3><code>void Disconnect()</code></h3>
+<ul>
+<li><b>Summary</b></li>
+<p>Disconnects from the herd agent</p>
+</ul>
+<h3><code>void GetHerdAgentList(ref List<HerdAgentInfo> outHerdAgentList, int timeoutSeconds = 10)</code></h3>
+<ul>
+<li><b>Summary</b></li>
+<p>Gets a list of the herd agent discovered last time the herd was called</p>
+<li><b>Parameters</b></li>
+<ul>
+<li><i>outHerdAgentList</i>: The out herd agent list</li>
+<li><i>timeoutSeconds</i>: The timeout seconds</li>
+</ul>
+</ul>
+<h3><code>void SendJobQuery(Job job, CancellationToken cancelToken)</code></h3>
+<ul>
+<li><b>Summary</b></li>
+<p>Sends a job query to the herd agent we connected to</p>
+<li><b>Parameters</b></li>
+<ul>
+<li><i>job</i>: The job</li>
+<li><i>cancelToken</i>: The cancel token</li>
+</ul>
+</ul>
+</body>
+</html>

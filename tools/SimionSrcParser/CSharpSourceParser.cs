@@ -14,21 +14,21 @@ namespace SimionSrcParser
         {
             //We only process comments starting with ///
             //and public methods
-            string sPattern = @"(\s*///[^\r\n]+\r*\n*)+\s*public\s+(?:static\s+)?(\w+)\s+(\w+)\(([^\)]*)\)";
+            string sPattern = @"(\s*///[^\r\n]+\r*\n*)+\s*(?:public|protected)?\s+(?:async\s+)?(?:static\s+)?(\w+)\s+(\w+)\(([^\)]*)\)";
             string methodName, returnType, arguments;
             CaptureCollection comments;
             foreach (Match match in Regex.Matches(classDefinition, sPattern))
             {
                 comments = match.Groups[1].Captures;
                 returnType = match.Groups[2].Value;
-                className = match.Groups[3].Value;
-                methodName = match.Groups[4].Value;
-                arguments = match.Groups[5].Value;
+                methodName = match.Groups[3].Value;
+                arguments = match.Groups[4].Value;
 
-                ObjectClass objClass = ParsedObjectClasses.Find(c => c.Name == className);
+                string fullClassName = namespaceName + "." + className;
+                ObjectClass objClass = ParsedObjectClasses.Find(c => c.Name == fullClassName);
                 if (objClass == null)
                 {
-                    objClass = new ObjectClass(filename, namespaceName + "." + className);
+                    objClass = new ObjectClass(filename, fullClassName);
                     ParsedObjectClasses.Add(objClass);
                 }
                 objClass.AddMethod(new ClassMethod(methodName, comments, arguments, returnType, ClassMethod.MethodType.Regular));
@@ -37,10 +37,14 @@ namespace SimionSrcParser
         void ParseNamespace(string filename, string namespaceName, string namespaceContent)
         {
             //Extract every namespace
-            string extractNamespaceExpReg = @"(?:public)?\s+(?:static\s+)?class\s+(\w+)\s*\{((?:[^{}]|(?<open>\{)|(?<-open>\}))+(?(open)(?!)))\}";
+            string extractNamespaceExpReg = @"(?:public)?\s+(?:static\s+)?class\s+(\w+)\s*(?:\:\s*[\w\.]+(?:\s*,\s*\w+)?)?[\r\n\s]*\{((?:[^{}]|(?<open>\{)|(?<-open>\}))+(?(open)(?!)))\}";
             foreach (Match match in Regex.Matches(namespaceContent, extractNamespaceExpReg))
             {
                 string className = match.Groups[1].Value;
+                //if the class inherits remove that part
+                int pos = className.IndexOf(':');
+                if (pos > 0)
+                    className = className.Substring(0, pos);
                 string classContent = match.Groups[2].Value;
 
                 ParseClass(filename, namespaceName, className, classContent);

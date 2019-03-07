@@ -1,0 +1,41 @@
+<html>
+<body>
+<h1>Class Herd.Files.FunctionSample</h1>
+<em>Source: FunctionLog.cs</em>
+<h2>Methods</h2>
+<h3><code>void ReadData(BinaryReader binaryReader, int sizeX, int sizeY)</code></h3>
+<ul>
+<li><b>Summary</b></li>
+<p>Reads the data of a function sample with size= sizeX*sizeY</p>
+<li><b>Parameters</b></li>
+<ul>
+<li><i>binaryReader</i>: The binary reader</li>
+<li><i>sizeX</i>: The size x</li>
+<li><i>sizeY</i>: The size y</li>
+</ul>
+</ul>
+<h3><code>void CalculateValueRange(int sizeX, int sizeY, ref double minValue, ref double maxValue)</code></h3>
+<ul>
+<li><b>Summary</b></li>
+<p>Calculates the value range of the function</p>
+<li><b>Parameters</b></li>
+<ul>
+<li><i>sizeX</i>: The size x</li>
+<li><i>sizeY</i>: The size y</li>
+<li><i>minValue</i>: The minimum value. By reference so that we can use it to calculate the absolute min</li>
+<li><i>maxValue</i>: The maximum value. By reference so that we can use it to calculate the absolute max</li>
+</ul>
+</ul>
+<h3><code>void GenerateBitmap(int sizeX, int sizeY, double minValue, double maxValue)</code></h3>
+<ul>
+<li><b>Summary</b></li>
+<p>This method must be called after reading the sample header and finding the declaration of the function to request the size of the function.</p>
+<li><b>Parameters</b></li>
+<ul>
+<li><i>binaryReader</i>: </li>
+<li><i>sizeX</i>: </li>
+<li><i>sizeY</i>: </li>
+</ul>
+</ul>
+</body>
+</html>

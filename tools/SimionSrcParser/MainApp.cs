@@ -38,7 +38,7 @@ namespace SimionSrcParser
         const string argOutDocsPrefix = "out-docs=";
 
         static string sourcesLanguage = "cpp"; //default value
-        static string sourcesDir = null;
+        static List<string> sourceDirectories = new List<string>();
         static string outDefinitionsFile = null;
         static string outDocumentationFile = null;
 
@@ -48,11 +48,11 @@ namespace SimionSrcParser
             foreach (string arg in args)
             {
                 if (arg.StartsWith(argSourcePrefix)) sourcesLanguage = arg.Substring(argSourcePrefix.Length);
-                else if (arg.StartsWith(argSourceDirPrefix)) sourcesDir = arg.Substring(argSourceDirPrefix.Length);
+                else if (arg.StartsWith(argSourceDirPrefix)) sourceDirectories.Add(arg.Substring(argSourceDirPrefix.Length));
                 else if (arg.StartsWith(argOutDefsPrefix)) outDefinitionsFile = arg.Substring(argOutDefsPrefix.Length);
                 else if (arg.StartsWith(argOutDocsPrefix)) outDocumentationFile = arg.Substring(argOutDocsPrefix.Length);
             }
-            if (sourcesDir == null || (outDefinitionsFile == null && outDocumentationFile == null))
+            if (sourceDirectories.Count == 0 || (outDefinitionsFile == null && outDocumentationFile == null))
                 return false;   //all required arguments were not provided
             return true;        //all required arguments were provided
         }
@@ -76,32 +76,34 @@ namespace SimionSrcParser
                 parser = new CSharpSourceParser();
             else parser = new CppSourceParser();
 
-            parser.ParseSourceFilesInDir(sourcesDir);
+            foreach(string sourceDir in sourceDirectories)
+                parser.ParseSourceFilesInDir(sourceDir);
+
             int numErrors = parser.PostProcess();
 
             if (numErrors==0)
             {
                 if (parser.GetParameterizedObjects() != null)
                 {
-                    Console.WriteLine("Saving object definitions for Badger: " + sourcesDir + "->" + outDefinitionsFile);
+                    Console.WriteLine("Saving object definitions for Badger: " + sourceDirectories + "->" + outDefinitionsFile);
                     DocumentationExporter.ExportGUIParameters(outDefinitionsFile, parser.GetParameterizedObjects());
 
                     HtmlExporter htmlExporter = new HtmlExporter();
                     string outputConfigFileForHumans = Herd.Utils.RemoveExtension(outDefinitionsFile) + htmlExporter.FormatExtension();
-                    Console.WriteLine("Saving object definitions as Html : " + sourcesDir + "->" + outputConfigFileForHumans);
+                    Console.WriteLine("Saving object definitions as Html : " + sourceDirectories + "->" + outputConfigFileForHumans);
                     DocumentationExporter.ExportGUIParametersForHumans(outputConfigFileForHumans, htmlExporter, parser.GetParameterizedObjects());
                 }
                 if (parser.GetObjectClasses() != null)
                 {
                     //Save documentation as markdown
                     MarkdownExporter markdownExporter = new MarkdownExporter();
-                    Console.WriteLine("Saving source code documentation as Markdown: " + sourcesDir + "->"
+                    Console.WriteLine("Saving source code documentation as Markdown: " + sourceDirectories + "->"
                         + projectName + markdownExporter.FormatExtension());
                     DocumentationExporter.ExportDocumentation(outputDocsFolder, projectName, markdownExporter, parser.GetObjectClasses());
 
                     //Save documentation as html
                     HtmlExporter htmlExporter = new HtmlExporter();
-                    Console.WriteLine("Saving source code documentation as Html: " + sourcesDir + "->"
+                    Console.WriteLine("Saving source code documentation as Html: " + sourceDirectories + "->"
                         + projectName + htmlExporter.FormatExtension());
                     DocumentationExporter.ExportDocumentation(outputDocsFolder, projectName, htmlExporter, parser.GetObjectClasses());
                 }

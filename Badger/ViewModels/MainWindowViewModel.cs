@@ -101,6 +101,12 @@ namespace Badger.ViewModels
 
         private bool m_bFirstLog = true;
 
+
+        /// <summary>
+        /// Logs a message with the current time-date. If the Badger log file doesn't exist, it creates it.
+        /// Uses a lock to avoid multi-thread issues
+        /// </summary>
+        /// <param name="logMessage">The log message.</param>
         public void LogToFile(string logMessage)
         {
             lock (m_logFileLock)

@@ -1,0 +1,53 @@
+<html>
+<body>
+<h1>Class Herd.Network.HerdAgentInfo</h1>
+<em>Source: HerdAgentInfo.cs</em>
+<h2>Methods</h2>
+<h3><code>public HerdAgentInfo(string processorId, int numCPUCores, string architecture, string CUDAVersion, string herdAgentVersion)</code></h3>
+<ul>
+<li><b>Summary</b></li>
+<p>Constructor used for testing purposes</p>
+</ul>
+<h3><code>void AddProperty(string name, string value)</code></h3>
+<ul>
+<li><b>Summary</b></li>
+<p>Adds a property to the agent description</p>
+<li><b>Parameters</b></li>
+<ul>
+<li><i>name</i>: The name of the property</li>
+<li><i>value</i>: The value of the property</li>
+</ul>
+</ul>
+<h3><code>string Property(string name)</code></h3>
+<ul>
+<li><b>Summary</b></li>
+<p>Gets the value of the specified property</p>
+<li><b>Parameters</b></li>
+<ul>
+<li><i>name</i>: The name of the property</li>
+</ul>
+<li><b>Return Value</b></li>
+<p>Gets the value of the specified property</p>
+</ul>
+<h3><code>void Parse(XElement xmlDescription)</code></h3>
+<ul>
+<li><b>Summary</b></li>
+<p>Parses the specified XML herd agent description filling the properties of the herd agent</p>
+<li><b>Parameters</b></li>
+<ul>
+<li><i>xmlDescription</i>: The XML description.</li>
+</ul>
+</ul>
+<h3><code>AppVersion BestMatch(ExperimentalUnit experimentalUnit)</code></h3>
+<ul>
+<li><b>Summary</b></li>
+<p>Returns the app version of an experimental unit that best matches the herd agent</p>
+<li><b>Parameters</b></li>
+<ul>
+<li><i>experimentalUnit</i>: The experimental unit</li>
+</ul>
+<li><b>Return Value</b></li>
+<p>Returns the app version of an experimental unit that best matches the herd agent</p>
+</ul>
+</body>
+</html>

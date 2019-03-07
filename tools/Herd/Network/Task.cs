@@ -42,6 +42,10 @@ namespace Herd.Network
             Pipe = "";
             AuthenticationToken = "";
         }
+
+        /// <summary>
+        /// Converts the task to a string
+        /// </summary>
         public override string ToString()
         {
             string ret = "Task = " + Name + "\n" + "Exe= " + Exe + "\n" + "Arguments= " + Arguments + "\n";

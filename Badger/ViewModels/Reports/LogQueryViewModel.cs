@@ -228,6 +228,10 @@ namespace Badger.ViewModels
         [DataMember]
         public BindableCollection<string> GroupByForks { get; set; } = new BindableCollection<string>();
 
+        /// <summary>
+        /// Adds the fork to the list of group-by forks
+        /// </summary>
+        /// <param name="forkName">Name of the fork.</param>
         public void AddGroupByFork(string forkName)
         {
             if (!GroupByForks.Contains(forkName))
@@ -237,11 +241,18 @@ namespace Badger.ViewModels
             GroupsEnabled = true;
         }
 
+        /// <summary>
+        /// Returns whether a fork is used to group tracks or not
+        /// </summary>
+        /// <param name="forkName">Name of the fork</param>
         public bool IsForkUsedToGroup(string forkName)
         {
             return GroupByForks.Contains(forkName);
         }
 
+        /// <summary>
+        /// Resets the forks used to group tracks
+        /// </summary>
         public void ResetGroupBy()
         {
             //If several experiments have been loaded we do not remove the experiment-id from the list
@@ -327,6 +338,11 @@ namespace Badger.ViewModels
             PropertyChanged += OnChildPropertyChanged;
         }
 
+        /// <summary>
+        /// Gets all the different tracks parameters in a list of TrackGroup objects
+        /// </summary>
+        /// <param name="resultTracks">The result tracks.</param>
+        /// <returns>A list with all the reports created</returns>
         public List<Report> GetTracksParameters(List<TrackGroup> resultTracks)
         {
             List<Report> list = new List<Report>();
@@ -383,6 +399,11 @@ namespace Badger.ViewModels
         public BindableCollection<LoggedVariableViewModel> VariablesVM { get; set; }
             = new BindableCollection<LoggedVariableViewModel>();
 
+        /// <summary>
+        /// Gets the process function used for the variable
+        /// </summary>
+        /// <param name="variable">The variable.</param>
+        /// <returns>The function to be applied: Abs, None</returns>
         string GetVariableProcessFunc(string variable)
         {
             foreach (LoggedVariableViewModel variableVM in VariablesVM)
@@ -394,6 +415,11 @@ namespace Badger.ViewModels
             }
             return null;
         }
+        /// <summary>
+        /// Returns whether the specified variable-reportType is selected
+        /// </summary>
+        /// <param name="variable">The variable</param>
+        /// <param name="reportType">Type of the report</param>
         bool IsVariableSelected(string variable, string reportType)
         {
             foreach (LoggedVariableViewModel variableVM in VariablesVM)
@@ -423,6 +449,10 @@ namespace Badger.ViewModels
             }
         }
 
+        /// <summary>
+        /// Adds the variables to the list of variables in the log. Called when loading a logged experimental unit
+        /// </summary>
+        /// <param name="variables">The variables</param>
         public void AddLogVariables(List<string> variables)
         {
             foreach (string variable in variables)
@@ -438,6 +468,10 @@ namespace Badger.ViewModels
             }
         }
 
+        /// <summary>
+        /// Returns whether the variable exists in th elog or not
+        /// </summary>
+        /// <param name="variable">The variable.</param>
         public bool LogVariableExists(string variable)
         {
             foreach (LoggedVariableViewModel variableVM in VariablesVM)
@@ -494,6 +528,13 @@ namespace Badger.ViewModels
 
         }
 
+        /// <summary>
+        /// Executes the specified query.
+        /// </summary>
+        /// <param name="experiments">The list of logged experiments on which the query will be processed</param>
+        /// <param name="OnExpUnitProcessed">Callback function called when an exp unit is processed. Used to update the progress</param>
+        /// <param name="resultTracks">Output list of track groups</param>
+        /// <param name="reports">Output list of reports</param>
         public void Execute(BindableCollection<LoggedExperimentViewModel> experiments
             ,LoadOptions.PerExperimentalUnitFunction OnExpUnitProcessed, out List<TrackGroup> resultTracks, out List<Report> reports)
         {

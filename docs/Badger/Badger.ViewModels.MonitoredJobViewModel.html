@@ -1,0 +1,46 @@
+<html>
+<body>
+<h1>Class Badger.ViewModels.MonitoredJobViewModel</h1>
+<em>Source: MonitoredJobViewModel.cs</em>
+<h2>Methods</h2>
+<h3><code>void OnMessageReceived(string experimentId, string messageId, string messageContent)</code></h3>
+<ul>
+<li><b>Summary</b></li>
+<p>Callback method that is called from the job dispatcher when a message is received</p>
+<li><b>Parameters</b></li>
+<ul>
+<li><i>experimentId</i>: The experiment identifier</li>
+<li><i>messageId</i>: The message identifier</li>
+<li><i>messageContent</i>: Content of the message</li>
+</ul>
+</ul>
+<h3><code>void OnStateChanged(string experimentId, Monitoring.State state)</code></h3>
+<ul>
+<li><b>Summary</b></li>
+<p>Called method executed when the state of an experimental unit changes</p>
+<li><b>Parameters</b></li>
+<ul>
+<li><i>experimentId</i>: The experiment identifier</li>
+<li><i>state</i>: The state</li>
+</ul>
+</ul>
+<h3><code>void OnAllStatesChanged(Monitoring.State state)</code></h3>
+<ul>
+<li><b>Summary</b></li>
+<p>Callback method called when the state of all the experimental unit in a job changes</p>
+<li><b>Parameters</b></li>
+<ul>
+<li><i>state</i>: The state.</li>
+</ul>
+</ul>
+<h3><code>void OnExperimentalUnitLaunched(ExperimentalUnit expUnit)</code></h3>
+<ul>
+<li><b>Summary</b></li>
+<p>Callback method executed when an experimental unit is launched</p>
+<li><b>Parameters</b></li>
+<ul>
+<li><i>expUnit</i>: The expererimental unit</li>
+</ul>
+</ul>
+</body>
+</html>

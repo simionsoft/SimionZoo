@@ -216,6 +216,9 @@ namespace Badger.ViewModels
             set { m_loggedExperiments = value; NotifyOfPropertyChange(() => LoggedExperiments); }
         }
 
+        /// <summary>
+        /// Shows a dialog to select which experiment batch file to load and loads it
+        /// </summary>
         public void SelectExperimentBatchFile()
         {
             string fileName = null;
@@ -345,30 +348,59 @@ namespace Badger.ViewModels
 
         readonly Dictionary<Job, MonitoredJobViewModel> ViewModelFromModel = new Dictionary<Job, MonitoredJobViewModel>();
 
+        /// <summary>
+        /// Callback method on message received. It dispatches it to the job view model of the job passes as argument
+        /// </summary>
+        /// <param name="job">The job</param>
+        /// <param name="experimentId">The identifier of the experimental unit</param>
+        /// <param name="messageId">The message identifier</param>
+        /// <param name="messageContent">Content of the message</param>
         public void DispatchOnMessageReceived(Job job, string experimentId, string messageId, string messageContent)
         {
             MonitoredJobViewModel jobVM = ViewModelFromModel[job];
             jobVM.OnMessageReceived(experimentId, messageId, messageContent);
         }
 
+        /// <summary>
+        /// Callback method executed when the state of an experimental unit changes. This method dispatches it
+        /// to the correct job view model handling that job
+        /// </summary>
+        /// <param name="job">The job</param>
+        /// <param name="experimentId">The experiment identifier</param>
+        /// <param name="state">The state</param>
         public void DispatchOnStateChanged(Job job, string experimentId, Monitoring.State state)
         {
             MonitoredJobViewModel jobVM = ViewModelFromModel[job];
             jobVM.OnStateChanged(experimentId, state);
         }
 
+        /// <summary>
+        /// Callback method called when all the states of a job change. It dispatches the change to the correct
+        /// job view model handling that job
+        /// </summary>
+        /// <param name="job">The job</param>
+        /// <param name="state">The state</param>
         public void DispatchOnAllStatesChanged(Job job, Monitoring.State state)
         {
             MonitoredJobViewModel jobVM = ViewModelFromModel[job];
             jobVM.OnAllStatesChanged(state);
         }
 
+        /// <summary>
+        /// Callback method on experimental unit launched that dispatches the event to the correct job view model
+        /// </summary>
+        /// <param name="job">The job</param>
+        /// <param name="expUnit">The exp unit</param>
         public void DispatchOnExperimentalUnitLaunched(Job job, ExperimentalUnit expUnit)
         {
             MonitoredJobViewModel jobVM = ViewModelFromModel[job];
             jobVM.OnExperimentalUnitLaunched(expUnit);
         }
 
+        /// <summary>
+        /// Callback method used to inform the monitor window view model when that a job has been assigned
+        /// </summary>
+        /// <param name="job">The job.</param>
         public void OnJobAssigned(Job job)
         {
             MonitoredJobViewModel monitoredJob
@@ -377,12 +409,19 @@ namespace Badger.ViewModels
             ViewModelFromModel[job] = monitoredJob;
         }
 
+        /// <summary>
+        /// Callback method executed when a job is finished
+        /// </summary>
+        /// <param name="job">The job.</param>
         public void OnJobFinished(Job job)
         {
             NumFinishedExperimentalUnitsAfterStart += job.ExperimentalUnits.Count
             - job.FailedExperimentalUnits.Count;
         }
 
+        /// <summary>
+        /// Sets the state as running
+        /// </summary>
         void SetRunning(bool running)
         {
             m_progressUpdateTimer.Enabled = running;
@@ -400,6 +439,10 @@ namespace Badger.ViewModels
             }
         }
 
+        /// <summary>
+        /// Async method that runs all the experiments using the free herd agents
+        /// </summary>
+        /// <param name="freeHerdAgents">The free herd agents.</param>
         public async void RunExperimentsAsync(List<HerdAgentInfo> freeHerdAgents)
         {
             SetRunning(true);
@@ -419,7 +462,7 @@ namespace Badger.ViewModels
 
 
         /// <summary>
-        ///     Check whether a required file to run an experiment exits or not.
+        ///     Checks whether a required file to run an experiment exits or not.
         /// </summary>
         /// <param name="file">The file to check</param>
         /// <returns>A boolean value indicating the existance of the file</returns>
@@ -435,11 +478,12 @@ namespace Badger.ViewModels
             return true;
         }
 
+
+        object m_globalProgressUpdateObj = new object();
         /// <summary>
         ///     Calculate the global progress of experiments in queue.
         /// </summary>
         /// <returns>The progress as a percentage.</returns>
-        object m_globalProgressUpdateObj = new object();
         public double CalculateGlobalProgress()
         {
             lock (m_globalProgressUpdateObj)

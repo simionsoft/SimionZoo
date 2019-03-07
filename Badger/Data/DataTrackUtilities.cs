@@ -32,6 +32,12 @@ namespace Badger.Data
 {
     class DataTrackUtilities
     {
+        /// <summary>
+        /// Creates a list of report definitions from a list of LoggedVariableViewModel. One report for every
+        /// variable-reportType combination
+        /// </summary>
+        /// <param name="loggedVariables">The list logged variables.</param>
+        /// <returns>A list of Report definitions</returns>
         public static List<Report> FromLoggedVariables(BindableCollection<LoggedVariableViewModel> loggedVariables)
         {
             List<Report> trackParameterList = new List<Report>();

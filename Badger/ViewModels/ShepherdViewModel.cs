@@ -44,6 +44,11 @@ namespace Badger.ViewModels
             get; set;
         } = new BindableCollection<HerdAgentViewModel>();
 
+        /// <summary>
+        /// Gets the available herd agents.
+        /// </summary>
+        /// <param name="outList">The out list where the herd agents are added.</param>
+        /// <returns></returns>
         public int GetAvailableHerdAgents(ref List<HerdAgentInfo> outList)
         {
             //we assume outList needs no synchronization
@@ -76,19 +81,22 @@ namespace Badger.ViewModels
             NotifyOfPropertyChange(() => HerdAgentList);
         }
 
-
-
+        /// <summary>
+        /// Shows a pop-up window where the user to select/deselect herd agents
+        /// </summary>
         public void SelectHerdAgents()
         {
             CaliburnUtility.ShowPopupWindow(new HerdAgentSelectionViewModel(HerdAgentList), "Herd Agent selection");
         }
 
         public JobDispatcherOptions DispatcherOptions { get; } = new JobDispatcherOptions();
+        /// <summary>
+        /// Shows a pop-up window where the user can configure the job dispatcher
+        /// </summary>
         public void ConfigureJobDispatcher()
         {
             CaliburnUtility.ShowPopupWindow(new JobDispatcherSettingsViewModel(DispatcherOptions), "Job Dispathcer settings");
         }
-
 
         public ShepherdViewModel()
         {

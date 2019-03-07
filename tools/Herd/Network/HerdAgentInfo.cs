@@ -82,6 +82,11 @@ namespace Herd.Network
             };
         }
 
+        /// <summary>
+        /// Adds a property to the agent description
+        /// </summary>
+        /// <param name="name">The name of the property</param>
+        /// <param name="value">The value of the property</param>
         public void AddProperty(string name, string value)
         {
             if (!m_properties.ContainsKey(name))
@@ -89,6 +94,11 @@ namespace Herd.Network
             else m_properties[name] = value;
         }
 
+        /// <summary>
+        /// Gets the value of the specified property
+        /// </summary>
+        /// <param name="name">The name of the property</param>
+        /// <returns>Its value</returns>
         public string Property(string name)
         {
             if (m_properties.ContainsKey(name))
@@ -97,7 +107,10 @@ namespace Herd.Network
             return PropValues.None;
         }
 
-
+        /// <summary>
+        /// Parses the specified XML herd agent description filling the properties of the herd agent
+        /// </summary>
+        /// <param name="xmlDescription">The XML description.</param>
         public void Parse(XElement xmlDescription)
         {
             if (xmlDescription.Name.ToString() == XmlTags.HerdAgentDescription)
@@ -109,7 +122,9 @@ namespace Herd.Network
             }
         }
 
-
+        /// <summary>
+        /// Converts the list of properties to a string
+        /// </summary>
         public override string ToString()
         {
             string res = "";
@@ -231,6 +246,11 @@ namespace Herd.Network
             set { }
         }
 
+        /// <summary>
+        /// Returns the app version of an experimental unit that best matches the herd agent
+        /// </summary>
+        /// <param name="experimentalUnit">The experimental unit</param>
+        /// <returns>The best matching app version</returns>
         public AppVersion BestMatch(ExperimentalUnit experimentalUnit)
         {
             foreach (AppVersion version in experimentalUnit.AppVersions)

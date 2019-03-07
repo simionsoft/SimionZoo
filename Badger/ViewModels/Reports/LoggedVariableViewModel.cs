@@ -134,7 +134,10 @@ namespace Badger.ViewModels
         [DataMember]
         public string SelectedProcessFunc { get; set; } = ProcessFunc.None;
 
-
+        /// <summary>
+        /// Sets the notifying property. Needs to be used after loading a view model from a file
+        /// </summary>
+        /// <param name="notifying">the value to be set</param>
         public void SetNotifying(bool notifying)
         {
             IsNotifying = notifying;

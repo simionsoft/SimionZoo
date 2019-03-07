@@ -76,6 +76,11 @@ namespace Herd.Network
         }
 
         public enum FileType { INPUT, OUTPUT };
+        /// <summary>
+        /// Gets the file type's XML tag
+        /// </summary>
+        /// <param name="type">The file type</param>
+        /// <returns>XML tag used for this type of files</returns>
         public string getFileTypeXMLTag(FileType type)
         {
             if (type == FileType.INPUT)
@@ -99,6 +104,10 @@ namespace Herd.Network
 
         public void SetTCPClient(TcpClient client) { m_tcpClient = client; m_netStream = client.GetStream(); }
 
+        /// <summary>
+        /// Sets the log message handler
+        /// </summary>
+        /// <param name="logMessageHandler">The log message handler that will be used from now on</param>
         public void SetLogMessageHandler(Action<string> logMessageHandler)
         {
             m_logMessageHandler = logMessageHandler;
@@ -125,6 +134,14 @@ namespace Herd.Network
             { }// { LogMessage("async read operation cancelled"); } //<- this logged too many messages on cancellation
             return numBytesRead;
         }
+        /// <summary>
+        /// Writes asynchronous on the network stream
+        /// </summary>
+        /// <param name="buffer">The buffer</param>
+        /// <param name="offset">The start offset within the buffer</param>
+        /// <param name="length">The length</param>
+        /// <param name="cancelToken">The cancel token</param>
+        /// <returns></returns>
         public bool WriteAsync(byte[] buffer, int offset, int length, CancellationToken cancelToken)
         {
             if (!m_bEnqueueAsyncWrites)
@@ -139,13 +156,20 @@ namespace Herd.Network
             }
             return true;
         }
+        /// <summary>
+        /// Waits for the pending asynchronous write operations to finish.
+        /// </summary>
         public void waitAsyncWriteOpsToFinish()
         {
             Task.WhenAll(m_pendingAsyncWrites).Wait();
             m_pendingAsyncWrites.Clear();
             m_bEnqueueAsyncWrites = false;
         }
-
+        /// <summary>
+        /// Sends the input files to the client
+        /// </summary>
+        /// <param name="sendContent">true if the contents of the files must also be sent</param>
+        /// <param name="cancelToken">The cancel token</param>
         protected void SendInputFiles(bool sendContent, CancellationToken cancelToken)
         {
             foreach (string file in m_job.InputFiles)
@@ -153,6 +177,11 @@ namespace Herd.Network
                 SendFile(file, FileType.INPUT, sendContent, false, cancelToken, m_job.RenamedFilename(file));
             }
         }
+        /// <summary>
+        /// Sends the output files to the client
+        /// </summary>
+        /// <param name="sendContent">true if the content of the file must be sent too</param>
+        /// <param name="cancelToken">The cancel token</param>
         protected void SendOutputFiles(bool sendContent, CancellationToken cancelToken)
         {
             List<string> unknownFiles = new List<string>();
@@ -176,6 +205,12 @@ namespace Herd.Network
             foreach (HerdTask task in m_job.Tasks)
                 SendTask(task, cancelToken);
         }
+
+        /// <summary>
+        /// Sends the task to the client
+        /// </summary>
+        /// <param name="task">The task</param>
+        /// <param name="cancelToken">The cancel token</param>
         protected void SendTask(HerdTask task, CancellationToken cancelToken)
         {
             string taskXML = "<Task Name=\"" + task.Name + "\"";
@@ -204,19 +239,35 @@ namespace Herd.Network
             m_job.Tasks.Add(task);
             return true;
         }
-
+        /// <summary>
+        /// Sends the job header
+        /// </summary>
+        /// <param name="cancelToken">The cancel token</param>
         protected void SendJobHeader(CancellationToken cancelToken)
         {
             string header = "<Job Name=\"" + m_job.Name + "\">";
             byte[] headerbytes = Encoding.ASCII.GetBytes(header);
             WriteAsync(headerbytes, 0, headerbytes.Length, cancelToken);
         }
+        /// <summary>
+        /// Sends the job footer.
+        /// </summary>
+        /// <param name="cancelToken">The cancel token.</param>
         protected void SendJobFooter(CancellationToken cancelToken)
         {
             string footer = "</Job>";
             byte[] footerbytes = Encoding.ASCII.GetBytes(footer);
             WriteAsync(footerbytes, 0, footerbytes.Length, cancelToken);
         }
+        /// <summary>
+        /// Sends the file
+        /// </summary>
+        /// <param name="fileName">Name of the file</param>
+        /// <param name="type">The type: input or output</param>
+        /// <param name="sendContent">If true, the content is also sent</param>
+        /// <param name="fromCachedDir">If true, it will be read from the temp dir</param>
+        /// <param name="cancelToken">The cancel token</param>
+        /// <param name="rename">The name given to the file remotely</param>
         protected void SendFile(string fileName, FileType type, bool sendContent
             , bool fromCachedDir, CancellationToken cancelToken, string rename = null)
         {

@@ -109,6 +109,9 @@ namespace Badger.ViewModels
             InitPlot(title, xAxisName, yAxisName);
         }
 
+        /// <summary>
+        /// Resets the axes of the plot to the default range [0,1]
+        /// </summary>
         void ResetAxes()
         {
             foreach (OxyPlot.Axes.Axis axis in Plot.Axes)
@@ -120,6 +123,12 @@ namespace Badger.ViewModels
             }
         }
 
+        /// <summary>
+        /// Initializes the plot
+        /// </summary>
+        /// <param name="title">The title</param>
+        /// <param name="xAxisName">Name of the x axis</param>
+        /// <param name="yAxisName">Name of the y axis</param>
         void InitPlot(string title, string xAxisName, string yAxisName)
         {
             var xAxis = new OxyPlot.Axes.LinearAxis();
@@ -205,6 +214,13 @@ namespace Badger.ViewModels
 
         private object m_lineSeriesLock = new object();
 
+        /// <summary>
+        /// Adds a line series to the plot
+        /// </summary>
+        /// <param name="title">The title of the series</param>
+        /// <param name="description">The description of the series</param>
+        /// <param name="isVisible">Initial visibility given to the series</param>
+        /// <returns>The id given to the new line series. -1 if it fails</returns>
         public int AddLineSeries(string title, string description ="", bool isVisible = true)
         {
             //TODO: improve how to limit the number of plots
@@ -232,6 +248,12 @@ namespace Badger.ViewModels
             return -1;
         }
 
+        /// <summary>
+        /// Adds a vale to a given line series
+        /// </summary>
+        /// <param name="seriesIndex">Index of the series</param>
+        /// <param name="xValue">The x value</param>
+        /// <param name="yValue">The y value</param>
         public void AddLineSeriesValue(int seriesIndex, double xValue, double yValue)
         {
             if (seriesIndex < 0 || seriesIndex >= Plot.Series.Count)
@@ -245,6 +267,9 @@ namespace Badger.ViewModels
             series.Points.Add(new DataPoint(xValue, yValue));
         }
 
+        /// <summary>
+        /// Clears the line series.
+        /// </summary>
         public void ClearLineSeries()
         {
             Plot.Series.Clear();

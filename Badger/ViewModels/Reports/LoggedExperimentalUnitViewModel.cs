@@ -77,7 +77,7 @@ namespace Badger.ViewModels
         /// <summary>
         /// Fake constructor for testing purposes
         /// </summary>
-        /// <param name="filename"></param>
+        /// <param name="filename">path to the experimental unit</param>
         public LoggedExperimentalUnitViewModel(string filename)
         {
             //ExperimentFileName = filename;
@@ -90,7 +90,6 @@ namespace Badger.ViewModels
         /// <param name="configNode"></param>
         /// <param name="baseDirectory"></param>
         /// <param name="updateFunction"></param>
-
         public LoggedExperimentalUnitViewModel(ExperimentalUnit model)
         {
             m_model = model;
@@ -101,6 +100,11 @@ namespace Badger.ViewModels
             //In the fork hierarchy, experimental units are leave nodes, no nothing to be done here
         }
 
+        /// <summary>
+        /// Gets the index of a variable
+        /// </summary>
+        /// <param name="variableName">Name of the variable</param>
+        /// <returns>Its index in the log file</returns>
         public int GetVariableIndex(string variableName)
         {
             int index = 0;

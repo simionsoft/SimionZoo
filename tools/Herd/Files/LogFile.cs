@@ -36,7 +36,7 @@ namespace Herd.Files
         /// This method returns the list of variables in the log file from the log descriptor
         /// in the same order as they are defined in the descriptor
         /// </summary>
-        /// <returns></returns>
+        /// <returns>The list of variables read from the log descriptor</returns>
         static public List<string> LoadLogDescriptor(string logDescriptorFileName)
         {
             List<string> variableList = new List<string>();
@@ -79,8 +79,13 @@ namespace Herd.Files
             public double expRealTime, episodeSimTime, episodeRealTime;
             public double[] data;
 
-            //this function return whether there is more data to read from the current episode or not
-            public bool readStep(BinaryReader logReader, int numLoggedVariables)
+            /// <summary>
+            /// Reads the data from a single step from the log file
+            /// </summary>
+            /// <param name="logReader">The log reader</param>
+            /// <param name="numLoggedVariables">The number of variables in the log file</param>
+            /// <returns>true if there more steps to read from the current episode, else false</returns>
+            public bool ReadStep(BinaryReader logReader, int numLoggedVariables)
             {
                 int magicNumber = (int)logReader.ReadInt64();
                 stepIndex = (int)logReader.ReadInt64();
@@ -112,6 +117,11 @@ namespace Herd.Files
             public int numVariablesLogged = 0;
             public List<StepData> steps = new List<StepData>();
             public EpisodesData() { }
+
+            /// <summary>
+            /// Reads the episode header.
+            /// </summary>
+            /// <param name="logReader">The log reader.</param>
             public void ReadEpisodeHeader(BinaryReader logReader)
             {
                 int magicNumber = (int)logReader.ReadInt64();
@@ -182,7 +192,7 @@ namespace Herd.Files
                                     TrainingEpisodes.Add(episodeData);
 
                                 StepData stepData = new StepData();
-                                bool bLastStep = stepData.readStep(binaryReader, episodeData.numVariablesLogged);
+                                bool bLastStep = stepData.ReadStep(binaryReader, episodeData.numVariablesLogged);
 
                                 while (!bLastStep)
                                 {
@@ -191,7 +201,7 @@ namespace Herd.Files
                                     episodeData.steps.Add(stepData);
 
                                     stepData = new StepData();
-                                    bLastStep = stepData.readStep(binaryReader, episodeData.numVariablesLogged);
+                                    bLastStep = stepData.ReadStep(binaryReader, episodeData.numVariablesLogged);
                                 }
                             }
                             SuccessfulLoad = true;

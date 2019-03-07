@@ -42,10 +42,9 @@ namespace Herd.Network
 
         static int jobId = 0;
         /// <summary>
-        ///     Assigns experiments to availables herd agents.
+        /// Assigns experiments to available herd agents.
         /// </summary>
         /// <param name="freeHerdAgents"></param>
-        /// 
         public static void AssignExperiments(ref List<ExperimentalUnit> pendingExperiments
             , ref List<HerdAgentInfo> freeHerdAgents, ref List<Job> assignedJobs, JobDispatcherOptions options= null)
         {
@@ -196,6 +195,14 @@ namespace Herd.Network
             return numExperimentalUnitsRun;
         }
 
+        /// <summary>
+        /// Returns the first experimental unit that fits the agent
+        /// </summary>
+        /// <param name="pendingExperiments">The pending experimental units</param>
+        /// <param name="numFreeCores">The number agent's free cores</param>
+        /// <param name="bAgentUsed">Is the agent already being used for another experimental unit?</param>
+        /// <param name="agent">The herd agent</param>
+        /// <returns></returns>
         static ExperimentalUnit FirstFittingExperiment(List<ExperimentalUnit> pendingExperiments, int numFreeCores, bool bAgentUsed, HerdAgentInfo agent)
         {
             foreach (ExperimentalUnit experiment in pendingExperiments)

@@ -76,7 +76,7 @@ namespace Herd.Files
         /// <summary>
         /// Returns the best match (assuming versions are ordered by preference) to the local machine's architecture
         /// </summary>
-        /// <param name="versions"></param>
+        /// <param name="versions">Input list of app versions</param>
         public static AppVersion BestMatch(List<AppVersion> versions)
         {
             foreach (AppVersion version in versions)

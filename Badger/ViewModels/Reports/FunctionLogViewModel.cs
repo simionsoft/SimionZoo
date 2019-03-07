@@ -79,6 +79,7 @@ namespace Badger.ViewModels
                 return null;
             }
         }
+
         public string CurrentFunctionAsString
         {
             get
@@ -110,29 +111,44 @@ namespace Badger.ViewModels
                 return null;
             }
         }
+        /// <summary>
+        /// Shows the first sample of the next function in the log
+        /// </summary>
         public void NextFunction()
         {
             m_currentFunction = (++m_currentFunction) % m_functionLog.Functions.Count;
             m_currentSample = 0;
             AllNotifies();
         }
+        /// <summary>
+        /// Shows the next sample of the current function
+        /// </summary>
         public void NextSample()
         {
             m_currentSample = (++m_currentSample) % m_functionLog.Functions[m_currentFunction].Samples.Count;
             AllNotifies();
         }
+        /// <summary>
+        /// Shows the first sample of the previous the function in the log
+        /// </summary>
         public void PreviousFunction()
         {
             m_currentFunction = Math.Max(0, --m_currentFunction);
             m_currentSample = 0;
             AllNotifies();
         }
+        /// <summary>
+        /// Shows the previous the sample of the current function
+        /// </summary>
         public void PreviousSample()
         {
             m_currentSample = Math.Max(0, --m_currentSample);
             AllNotifies();
         }
         string m_outputDirectory;
+        /// <summary>
+        /// Exports all the function samples, each one in a different "png" file
+        /// </summary>
         public void ExportAll()
         {
             m_outputDirectory = Files.SelectOutputDirectoryDialog(m_outputDirectory);

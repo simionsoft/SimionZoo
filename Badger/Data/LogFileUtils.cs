@@ -33,6 +33,13 @@ namespace Badger.Data
 {
     public class LogFileUtils
     {
+        /// <summary>
+        /// Gets the data of a variable from an episode using the parameters of the target track
+        /// </summary>
+        /// <param name="episode">The episode</param>
+        /// <param name="trackParameters">The track parameters</param>
+        /// <param name="variableIndex">Index of the variable</param>
+        /// <returns>A Series objetct with the requested data or null if something fails</returns>
         public static Series GetVariableData(Log.EpisodesData episode, Report trackParameters, int variableIndex)
         {
 
@@ -58,6 +65,13 @@ namespace Badger.Data
             return data;
         }
 
+        /// <summary>
+        /// Gets the average value of a variable in an episode using the track parameters
+        /// </summary>
+        /// <param name="episode">The episode</param>
+        /// <param name="variableIndex">Index of the variable</param>
+        /// <param name="trackParameters">The track parameters</param>
+        /// <returns>The averaged value</returns>
         public static double GetEpisodeAverage(Log.EpisodesData episode, int variableIndex, Report trackParameters)
         {
             double avg = 0.0;
@@ -74,6 +88,13 @@ namespace Badger.Data
             return avg / count;
         }
 
+        /// <summary>
+        /// Gets the averaged data of the given variable from a list of episodes using the track parameters
+        /// </summary>
+        /// <param name="episodes">The episode list</param>
+        /// <param name="trackParameters">The track parameters</param>
+        /// <param name="variableIndex">Index of the variable</param>
+        /// <returns>A SeriesGroup object with the requested data</returns>
         public static SeriesGroup GetAveragedData(List<Log.EpisodesData> episodes, Report trackParameters, int variableIndex)
         {
             SeriesGroup data = new SeriesGroup(trackParameters);
@@ -92,9 +113,10 @@ namespace Badger.Data
         }
 
         /// <summary>
-        /// Reads the log file and returns in a track the data for each of the reports.
+        /// Creates a Track object from a logged experimental unit and a list of reports
         /// </summary>
-        /// <param name="reports">Parameters of each of the reporters: variable, type, ...</param>
+        /// <param name="expUnit">The logged experimental unit</param>
+        /// <param name="reports">The list of reports we want</param>
         /// <returns></returns>
         public static Track LoadTrackData(LoggedExperimentalUnitViewModel expUnit, List<Report> reports)
         {

@@ -63,125 +63,8 @@ namespace Badger
         //relative to the batch file, instead of relative to the RLSimion folder structure
         public delegate int XmlNodeFunction(XmlNode node, string baseDirectory,LoadUpdateFunction loadUpdateFunction);
 
-        ///// <summary>
-        ///// This function cleans the log files
-        ///// </summary>
-        ///// <param name="node">The node used in each call of the function</param>
-        ///// <param name="baseDirectory">Base directory</param>
-        ///// <param name="loadUpdateFunction">Callback function called after processing an experimental unit</param>
-        ///// <returns></returns>
-        //public static int CountFinishedExperimentalUnitsInBatch(XmlNode node, string baseDirectory
-        //        , LoadUpdateFunction loadUpdateFunction)
-        //{
-        //    int finishedExperimentalUnits = 0;
-        //    foreach (XmlNode child in node.ChildNodes)
-        //    {
-        //        if (child.Name == XMLTags.ExperimentalUnitNodeTag)
-        //        {
-        //            string pathToExpUnit = baseDirectory + child.Attributes[XMLTags.pathAttribute].Value;
-        //            string pathToLogFile = Herd.Utils.GetLogFilePath(pathToExpUnit, false);
-        //            if (File.Exists(pathToLogFile))
-        //            {
-        //                FileInfo fileInfo = new FileInfo(pathToLogFile);
-        //                if (fileInfo.Length > 0)
-        //                    finishedExperimentalUnits++;
-        //            }
-        //        }
-        //        else
-        //            finishedExperimentalUnits+= CountFinishedExperimentalUnitsInBatch(child, baseDirectory, loadUpdateFunction);
-        //    }
-        //    return finishedExperimentalUnits;
-        //}
-
-        ///// <summary>
-        ///// This function cleans the log files
-        ///// </summary>
-        ///// <param name="node">The node used in each call of the function</param>
-        ///// <param name="baseDirectory">Base directory</param>
-        ///// <param name="loadUpdateFunction">Callback function called after processing an experimental unit</param>
-        ///// <returns></returns>
-        //public static int CleanExperimentalUnitLogFiles(XmlNode node, string baseDirectory
-        //        , LoadUpdateFunction loadUpdateFunction)
-        //{
-        //    int numFilesDeleted = 0;
-        //    foreach (XmlNode child in node.ChildNodes)
-        //    {
-        //        if (child.Name == XMLTags.ExperimentalUnitNodeTag)
-        //        {
-        //            string pathToExpUnit = baseDirectory + child.Attributes[XMLTags.pathAttribute].Value;
-        //            string pathToLogFile = Herd.Utils.GetLogFilePath(pathToExpUnit, false);
-        //            if (File.Exists(pathToLogFile))
-        //            {
-        //                File.Delete(pathToLogFile);
-        //                numFilesDeleted++;
-        //            }
-        //            string pathToLogFileDesc = Herd.Utils.GetLogFilePath(pathToExpUnit, true);
-        //            if (File.Exists(pathToLogFileDesc))
-        //            {
-        //                File.Delete(pathToLogFileDesc);
-        //                numFilesDeleted++;
-        //            }
-        //        }
-        //        else
-        //            numFilesDeleted+= CleanExperimentalUnitLogFiles(child, baseDirectory, loadUpdateFunction);
-        //    }
-        //    return numFilesDeleted;
-        //}
-        ///// <summary>
-        ///// This function can be passed as an argument to LoadExperimentBatch to quickly count the number
-        ///// of experimental units in a batch
-        ///// </summary>
-        ///// <param name="node">The node used in each call of the function</param>
-        ///// <param name="baseDirectory">Base directory</param>
-        ///// <param name="loadUpdateFunction">Callback function called after processing an experimental unit</param>
-        ///// <returns></returns>
-        //public static int CountExperimentalUnitsInBatch(XmlNode node, string baseDirectory
-        //        , LoadUpdateFunction loadUpdateFunction)
-        //{
-        //    int ExperimentalUnitCount = 0;
-        //    foreach (XmlNode child in node.ChildNodes)
-        //    {
-        //        if (child.Name == XMLTags.ExperimentalUnitNodeTag)
-        //            ExperimentalUnitCount++;
-        //        else ExperimentalUnitCount += CountExperimentalUnitsInBatch(child, null, loadUpdateFunction);
-        //    }
-        //    return ExperimentalUnitCount;
-        //}
-
-        
-        ///// <summary>
-        /////     Load experiment batch file.
-        ///// </summary>
-        ///// <param name="perExperimentFunction"></param>
-        ///// <param name="batchFilename"></param>
-        //static public int LoadExperimentBatchFile(string batchFilename, LoadOptions loadOptions)
-        //{
-        //    LoggedExperimentBatch batch = new LoggedExperimentBatch(batchFilename, loadOptions);
-        //    int retValue = 0;
-        //    // Load the experiment batch in queue
-        //    XmlDocument batchDoc = new XmlDocument();
-        //    batchDoc.Load(batchFilename);
-        //    XmlElement fileRoot = batchDoc.DocumentElement;
-
-        //    if (fileRoot != null && fileRoot.Name == XMLTags.ExperimentBatchNodeTag)
-        //    {
-        //        foreach (XmlNode experiment in fileRoot.ChildNodes)
-        //        {
-        //            if (experiment.Name == XMLTags.ExperimentNodeTag)
-        //                retValue+= perExperimentFunction(experiment, Herd.Utils.GetDirectory(batchFilename), onExperimentLoaded);
-        //        }
-        //    }
-        //    else
-        //    {
-        //        CaliburnUtility.ShowWarningDialog("Malformed XML in experiment queue file. No badger node.", "ERROR");
-        //        return retValue;
-        //    }
-
-        //    return retValue;
-        //}
-
         /// <summary>
-        ///     SAVE EXPERIMENT BATCH: the list of (possibly forked) experiments is saved a as set of experiments
+        ///     Save an experiment batch: the list of (possibly forked) experiments is saved a as set of experiments
         ///     without forks and a .exp-batch file in the root directory referencing them all and the forks/values
         ///     each one took.
         /// </summary>
@@ -304,7 +187,13 @@ namespace Badger
         }
 
 
-        //BADGER project: LOAD
+        /// <summary>
+        /// Loads a project in the Editor, creating one experiment view model for every experiment in the project
+        /// </summary>
+        /// <param name="experiments">The list of experiments where loaded experiments are added</param>
+        /// <param name="appDefinitions">The application definitions</param>
+        /// <param name="log">The log function used to log messages</param>
+        /// <param name="filename">The filename of the input project</param>
         static public void LoadExperiments(ref BindableCollection<ExperimentViewModel> experiments,
             Dictionary<string, string> appDefinitions, LogFunction log, string filename= null)
         {
@@ -343,10 +232,10 @@ namespace Badger
         }
 
         /// <summary>
-        ///     Save multiple experiments as a Badger project. Useful when we need to load a bunch
-        ///     of experiments later.
+        /// Saves multiple (potentially forked) experiment view models as a Badger project
         /// </summary>
-        /// <param name="experiments"></param>
+        /// <param name="experiments">Experiment view models to be saved</param>
+        /// <param name="outputFile">Path to the output project file</param>
         static public string SaveExperiments(BindableCollection<ExperimentViewModel> experiments, string outputFile = null)
         {
             //set culture as invariant to write numbers as in english
@@ -392,11 +281,11 @@ namespace Badger
             return outputFile;
         }
 
-        //EXPERIMENT file: LOAD
         /// <summary>
-        /// 
+        /// Loads an experiment view model
         /// </summary>
-        /// <param name="appDefinitions"></param>
+        /// <param name="appDefinitions">App definitions. Needed to load the experiment correctly</param>
+        /// <param name="filename">The path to the input experiment file. If null, a dialgo window will be displayed</param>
         /// <returns></returns>
         static public ExperimentViewModel LoadExperiment(Dictionary<string, string> appDefinitions, string filename= null)
         {
@@ -418,7 +307,11 @@ namespace Badger
             return newExperiment;
         }
 
-
+        /// <summary>
+        /// Saves an experiment view model. The output filename will be asked using a dialog window
+        /// </summary>
+        /// <param name="experiment">The experiment to be saved</param>
+        /// <returns>Path to the file saved. Null if something failed</returns>
         static public string SaveExperiment(ExperimentViewModel experiment)
         {
             //set culture as invariant to write numbers as in english
@@ -450,9 +343,10 @@ namespace Badger
         /// <summary>
         ///     Show a dialog used to save a file with an specific extension.
         /// </summary>
-        /// <param name="description">The description of the file type</param>
-        /// <param name="extension">The extension of the file</param>
-        /// <returns></returns>
+        /// <param name="description">Short description of the file type</param>
+        /// <param name="filter">Extension</param>
+        /// <param name="suggestedFileName">Name suggested for output. Null by default</param>
+        /// <returns>Returns the SavedFileDialog structure with all the info</returns>
         public static SaveFileDialog SaveFileDialog(string description, string filter, string suggestedFileName= null)
         {
             SaveFileDialog sfd = new SaveFileDialog();
@@ -481,11 +375,10 @@ namespace Badger
         }
 
         /// <summary>
-        ///     Show a dialog used to select a directory where files are to be saved. If something goes wrong, null is returned
+        ///     Shows a dialog used to select a directory where files are to be saved. If something goes wrong, null is returned
         /// </summary>
-        /// <param name="description">The description of the file type</param>
-        /// <param name="extension">The extension of the file</param>
-        /// <returns></returns>
+        /// <param name="initialDirectory">The directory from which to being browsing</param>
+        /// <returns>The name of the selected folder. Null if something goes wrong</returns>
         public static string SelectOutputDirectoryDialog(string initialDirectory= null)
         {
             
@@ -616,6 +509,13 @@ namespace Badger
             }
         }
 
+        /// <summary>
+        /// Loads a previously saved report
+        /// </summary>
+        /// <param name="reportFilename">The report filename</param>
+        /// <param name="batchFilename">The batch filename to which the report was generated</param>
+        /// <param name="logQueryResults">The loaded log query results</param>
+        /// <returns></returns>
         static public int LoadReport(string reportFilename, out string batchFilename, out BindableCollection<LogQueryResultViewModel> logQueryResults)
         {
             logQueryResults = new BindableCollection<LogQueryResultViewModel>();

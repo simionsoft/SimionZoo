@@ -1,0 +1,101 @@
+<html>
+<body>
+<h1>Class Herd.Network.XMLStream</h1>
+<em>Source: XMLStream.cs</em>
+<h2>Methods</h2>
+<h3><code>void discardProcessedData()</code></h3>
+<ul>
+<li><b>Summary</b></li>
+<p>Discards all already processed data in the buffer</p>
+</ul>
+<h3><code>void WriteMessage(NetworkStream stream, string message, bool addDefaultMessageType = false)</code></h3>
+<ul>
+<li><b>Summary</b></li>
+<p>Writes on the network stream</p>
+<li><b>Parameters</b></li>
+<ul>
+<li><i>stream</i>: The stream.</li>
+<li><i>message</i>: The message.</li>
+<li><i>addDefaultMessageType</i>: If true, a default header is added to the message</li>
+</ul>
+</ul>
+<h3><code>Task WriteMessageAsync(NetworkStream stream, string message, CancellationToken cancelToken, bool addDefaultMessageType = false)</code></h3>
+<ul>
+<li><b>Summary</b></li>
+<p>Writes on the network stream asynchronously</p>
+<li><b>Parameters</b></li>
+<ul>
+<li><i>stream</i>: The stream</li>
+<li><i>message</i>: The message</li>
+<li><i>cancelToken</i>: The cancel token</li>
+<li><i>addDefaultMessageType</i>: If true, a default header is added to the message</li>
+</ul>
+<li><b>Return Value</b></li>
+<p>Writes on the network stream asynchronously</p>
+</ul>
+<h3><code>void writeMessage(NamedPipeServerStream stream, string message, bool addDefaultMessageType = false)</code></h3>
+<ul>
+<li><b>Summary</b></li>
+<p>Writes the message on the named pipe stream</p>
+<li><b>Parameters</b></li>
+<ul>
+<li><i>stream</i>: The stream</li>
+<li><i>message</i>: The message</li>
+<li><i>addDefaultMessageType</i>: If true, a default header is added to the message</li>
+</ul>
+</ul>
+<h3><code>Task writeMessageAsync(NamedPipeServerStream stream, string message, CancellationToken cancelToken, bool addDefaultMessageType = false)</code></h3>
+<ul>
+<li><b>Summary</b></li>
+<p>Writes a message on the named pipe stream asynchronously</p>
+<li><b>Parameters</b></li>
+<ul>
+<li><i>stream</i>: The stream</li>
+<li><i>message</i>: The message</li>
+<li><i>cancelToken</i>: The cancel token</li>
+<li><i>addDefaultMessageType</i>: If true, a default header is added to the message</li>
+</ul>
+<li><b>Return Value</b></li>
+<p>Writes a message on the named pipe stream asynchronously</p>
+</ul>
+<h3><code>string peekNextXMLItem()</code></h3>
+<ul>
+<li><b>Summary</b></li>
+<p>Peeks the next XML item without advancing on the buffer</p>
+<li><b>Return Value</b></li>
+<p>Peeks the next XML item without advancing on the buffer</p>
+</ul>
+<h3><code>string processNextXMLItem(bool bMarkAsProcessed = true)</code></h3>
+<ul>
+<li><b>Summary</b></li>
+<p>returns the next complete xml element (NO ATTRIBUTES!!) in the stream empty string if there was none</p>
+<li><b>Parameters</b></li>
+<ul>
+<li><i>bMarkAsProcessed</i>: if true, the element is marked as processed</li>
+</ul>
+<li><b>Return Value</b></li>
+<p>returns the next complete xml element (NO ATTRIBUTES!!) in the stream empty string if there was none</p>
+</ul>
+<h3><code>string peekNextXMLTag()</code></h3>
+<ul>
+<li><b>Summary</b></li>
+<p>If message "harry potter" is received this method should return "pipe1", not marking those bytes as processed</p>
+<li><b>Return Value</b></li>
+<p>If message "harry potter" is received this method should return "pipe1", not marking those bytes as processed</p>
+</ul>
+<h3><code>string processNextXMLTag()</code></h3>
+<ul>
+<li><b>Summary</b></li>
+<p>Returns the next complete xml element (NO ATTRIBUTES!!) in the stream, or an empty string if there was none</p>
+<li><b>Return Value</b></li>
+<p>Returns the next complete xml element (NO ATTRIBUTES!!) in the stream, or an empty string if there was none</p>
+</ul>
+<h3><code>string getLastXMLItemContent()</code></h3>
+<ul>
+<li><b>Summary</b></li>
+<p>Instead of parsing pending info in the buffer, it parses m_lastXMLItem , which is set after a call to processNextXMLTag()</p>
+<li><b>Return Value</b></li>
+<p>Instead of parsing pending info in the buffer, it parses m_lastXMLItem , which is set after a call to processNextXMLTag()</p>
+</ul>
+</body>
+</html>

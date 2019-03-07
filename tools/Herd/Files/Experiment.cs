@@ -40,6 +40,10 @@ namespace Herd.Files
 
         List<string> m_variables = new List<string>();
 
+        /// <summary>
+        /// Adds the variable.
+        /// </summary>
+        /// <param name="variable">The variable.</param>
         void AddVariable(string variable)
         {
             if (!m_variables.Contains(variable))

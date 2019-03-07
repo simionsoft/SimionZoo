@@ -63,6 +63,10 @@ namespace Herd.Network
         public byte[] getBuffer() { return m_buffer; }
         public void addBytesRead(int bytesReadInBuffer) { m_bytesInBuffer += bytesReadInBuffer; }
         public void addProcessedBytes(int processedBytes) { m_bufferOffset += processedBytes; }
+
+        /// <summary>
+        /// Discards all already processed data in the buffer
+        /// </summary>
         public void discardProcessedData()
         {
             //shift left unprocessed bytes to discard processed data
@@ -73,6 +77,12 @@ namespace Herd.Network
                 m_bufferOffset = 0;
             }
         }
+        /// <summary>
+        /// Writes on the network stream
+        /// </summary>
+        /// <param name="stream">The stream.</param>
+        /// <param name="message">The message.</param>
+        /// <param name="addDefaultMessageType">If true, a default header is added to the message</param>
         public void WriteMessage(NetworkStream stream, string message, bool addDefaultMessageType = false)
         {
             byte[] msg;
@@ -82,6 +92,14 @@ namespace Herd.Network
                 msg = Encoding.ASCII.GetBytes(message);
             stream.Write(msg, 0, msg.Length);
         }
+        /// <summary>
+        /// Writes on the network stream asynchronously
+        /// </summary>
+        /// <param name="stream">The stream</param>
+        /// <param name="message">The message</param>
+        /// <param name="cancelToken">The cancel token</param>
+        /// <param name="addDefaultMessageType">If true, a default header is added to the message</param>
+        /// <returns></returns>
         public async Task WriteMessageAsync(NetworkStream stream, string message, CancellationToken cancelToken, bool addDefaultMessageType = false)
         {
             byte[] msg;
@@ -103,6 +121,12 @@ namespace Herd.Network
                 logMessage(ex.ToString());
             }
         }
+        /// <summary>
+        /// Writes the message on the named pipe stream
+        /// </summary>
+        /// <param name="stream">The stream</param>
+        /// <param name="message">The message</param>
+        /// <param name="addDefaultMessageType">If true, a default header is added to the message</param>
         public void writeMessage(NamedPipeServerStream stream, string message, bool addDefaultMessageType = false)
         {
             byte[] msg;
@@ -112,6 +136,14 @@ namespace Herd.Network
                 msg = Encoding.ASCII.GetBytes(message);
             stream.Write(msg, 0, msg.Length);
         }
+        /// <summary>
+        /// Writes a message on the named pipe stream asynchronously
+        /// </summary>
+        /// <param name="stream">The stream</param>
+        /// <param name="message">The message</param>
+        /// <param name="cancelToken">The cancel token</param>
+        /// <param name="addDefaultMessageType">If true, a default header is added to the message</param>
+        /// <returns></returns>
         public async Task writeMessageAsync(NamedPipeServerStream stream, string message, CancellationToken cancelToken, bool addDefaultMessageType = false)
         {
             byte[] msg;
@@ -164,12 +196,22 @@ namespace Herd.Network
             }
             return numBytesRead;
         }
+
+        /// <summary>
+        /// Peeks the next XML item without advancing on the buffer
+        /// </summary>
+        /// <returns>The next XML on the buffer</returns>
         public string peekNextXMLItem()
         {
             return processNextXMLItem(false);
         }
-        //returns the next complete xml element (NO ATTRIBUTES!!) in the stream
-        //empty string if there was none
+
+        /// <summary>
+        /// returns the next complete xml element (NO ATTRIBUTES!!) in the stream
+        /// empty string if there was none
+        /// </summary>
+        /// <param name="bMarkAsProcessed">if true, the element is marked as processed</param>
+        /// <returns></returns>
         public string processNextXMLItem(bool bMarkAsProcessed = true)
         {
             if (m_bytesInBuffer > 0)
@@ -190,8 +232,12 @@ namespace Herd.Network
             }
             return "";
         }
-        //If message "<pipe1><message>kasjdlfj kljasdkljf </message></pipe1>" is received
-        ////this method should return "pipe1", not marking those bytes as processed
+
+        /// <summary>
+        /// If message "<pipe1><message>harry potter</message></pipe1>" is received
+        /// this method should return "pipe1", not marking those bytes as processed
+        /// </summary>
+        /// <returns></returns>
         public string peekNextXMLTag()
         {
             if (m_bytesInBuffer > 0)
@@ -208,8 +254,12 @@ namespace Herd.Network
             }
             return "";
         }
-        //returns the next complete xml element (NO ATTRIBUTES!!) in the stream
-        //empty string if there was none
+       
+        /// <summary>
+        /// Returns the next complete xml element (NO ATTRIBUTES!!) in the stream, or an empty string if
+        /// there was none
+        /// </summary>
+        /// <returns></returns>
         public string processNextXMLTag()
         {
             if (m_bytesInBuffer > 0)
@@ -231,8 +281,12 @@ namespace Herd.Network
             }
             return "";
         }
-        //instead of parsing pending info in the buffer, it parses m_lastXMLItem
-        //, which is set after a call to processNextXMLTag()
+     
+        /// <summary>
+        /// Instead of parsing pending info in the buffer, it parses m_lastXMLItem
+        /// , which is set after a call to processNextXMLTag()
+        /// </summary>
+        /// <returns></returns>
         public string getLastXMLItemContent()
         {
             if (m_lastXMLItem != "")

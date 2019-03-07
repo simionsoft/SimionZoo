@@ -100,6 +100,12 @@ namespace Herd.Files
         }
         double[] m_functionData;
 
+        /// <summary>
+        /// Reads the data of a function sample with size= sizeX*sizeY
+        /// </summary>
+        /// <param name="binaryReader">The binary reader</param>
+        /// <param name="sizeX">The size x</param>
+        /// <param name="sizeY">The size y</param>
         public void ReadData(BinaryReader binaryReader, int sizeX, int sizeY)
         {
             //Read data from file
@@ -108,6 +114,13 @@ namespace Herd.Files
                 m_functionData[i] = binaryReader.ReadDouble();
         }
 
+        /// <summary>
+        /// Calculates the value range of the function
+        /// </summary>
+        /// <param name="sizeX">The size x</param>
+        /// <param name="sizeY">The size y</param>
+        /// <param name="minValue">The minimum value. By reference so that we can use it to calculate the absolute min</param>
+        /// <param name="maxValue">The maximum value. By reference so that we can use it to calculate the absolute max</param>
         public void CalculateValueRange(int sizeX, int sizeY, ref double minValue, ref double maxValue)
         {
             for (int i = 0; i < sizeX * sizeY; ++i)
@@ -171,6 +184,10 @@ namespace Herd.Files
             m_numSamplesY = numSamplesY;
             m_numSamplesZ = numSamplesZ;
         }
+
+        /// <summary>
+        /// Generates all the bitmaps for all the samples
+        /// </summary>
         public void GenerateBitmaps()
         {
             double minValue = double.MaxValue;
@@ -211,7 +228,12 @@ namespace Herd.Files
         //    __int64 magicNumber = FUNCTION_LOG_FILE_HEADER;
         //    __int64 fileVersion = FUNCTION_LOG_FILE_VERSION;
         //    __int64 numFunctions = 0;
-        //};
+        //};        
+
+        /// <summary>
+        /// Loads the specified function log file
+        /// </summary>
+        /// <param name="filename">The filename</param>
         public void Load(string filename)
         {
             Functions.Clear();
@@ -259,6 +281,11 @@ namespace Herd.Files
                 }
             }
         }
+        /// <summary>
+        /// Gets a function from an identifier
+        /// </summary>
+        /// <param name="id">The identifier</param>
+        /// <returns>The function</returns>
         Function GetFunctionFromId(int id)
         {
             foreach (Function function in m_functions)
@@ -266,6 +293,12 @@ namespace Herd.Files
                     return function;
             return null;
         }
+
+        /// <summary>
+        /// Reads a function declaration from the function log file
+        /// </summary>
+        /// <param name="binaryReader">The binary reader</param>
+        /// <returns>The function object with the parameters read</returns>
         Function ReadFunctionDeclaration(BinaryReader binaryReader)
         {
             //struct FunctionDeclarationHeader
