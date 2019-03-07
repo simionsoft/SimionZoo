@@ -46,6 +46,7 @@
     <Compile Include="ClassMethod.cs" />
     <Compile Include="ConstructorParser.cs" />
     <Compile Include="CppSourceParser.cs" />
+    <Compile Include="CSharpSourceParser.cs" />
     <Compile Include="DocumentationExporter.cs" />
     <Compile Include="EnumerationParser.cs" />
     <Compile Include="FactoryParser.cs" />

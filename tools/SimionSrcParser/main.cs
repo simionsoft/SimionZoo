@@ -70,8 +70,11 @@ namespace SimionSrcParser
             string outputDocsFolder = Herd.Utils.GetDirectory(outDocumentationFile);
             string projectName = Herd.Utils.RemoveExtension(Herd.Utils.GetFilename(outDocumentationFile));
 
-            //if (sourcesLanguage == "cpp")
-                SimionSrcParser parser = new CppSourceParser();
+            //Create the appropriate parser
+            SimionSrcParser parser = null;
+            if (sourcesLanguage == "csharp")
+                parser = new CSharpSourceParser();
+            else parser = new CppSourceParser();
 
             parser.ParseSourceFilesInDir(sourcesDir);
             int numErrors = parser.PostProcess();

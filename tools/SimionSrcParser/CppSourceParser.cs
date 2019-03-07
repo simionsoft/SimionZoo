@@ -81,7 +81,7 @@ namespace SimionSrcParser
             }
         }
 
-        List<ObjectClass> Classes = new List<ObjectClass>();
+        List<ObjectClass> ParsedObjectClasses = new List<ObjectClass>();
 
         void ParseAllMethodsAndComments(string filename, string content)
         {
@@ -97,11 +97,11 @@ namespace SimionSrcParser
                 methodName = match.Groups[4].Value;
                 arguments = match.Groups[5].Value;
 
-                ObjectClass objClass = Classes.Find(c => c.Name == className);
+                ObjectClass objClass = ParsedObjectClasses.Find(c => c.Name == className);
                 if (objClass == null)
                 {
                     objClass = new ObjectClass(filename, className);
-                    Classes.Add(objClass);
+                    ParsedObjectClasses.Add(objClass);
                 }
                 objClass.AddMethod(new ClassMethod(methodName, comments, arguments, returnType, ClassMethod.MethodType.Regular));
             }
@@ -164,7 +164,7 @@ namespace SimionSrcParser
 
         public override List<ObjectClass> GetObjectClasses()
         {
-            return Classes;
+            return ParsedObjectClasses;
         }
         public override int GetNumBytesProcessed()
         {
