@@ -83,21 +83,25 @@ namespace SimionSrcParser
 
             if (numErrors==0)
             {
+                string inputSourceDirectories = "{";
+                foreach (string sourceDir in sourceDirectories) inputSourceDirectories += sourceDir + ";";
+                inputSourceDirectories += "}";
+
                 if (outDefinitionsFile != null && parser.GetParameterizedObjects() != null)
                 {
-                    Console.WriteLine("Saving object definitions for Badger: " + sourceDirectories + "->" + outDefinitionsFile);
+                    Console.WriteLine("Saving object definitions for Badger: " + inputSourceDirectories + "->" + outDefinitionsFile);
                     DocumentationExporter.ExportGUIParameters(outDefinitionsFile, parser.GetParameterizedObjects());
 
                     HtmlExporter htmlExporter = new HtmlExporter();
                     string outputConfigFileForHumans = Herd.Utils.RemoveExtension(outDefinitionsFile) + htmlExporter.FormatExtension();
-                    Console.WriteLine("Saving object definitions as Html : " + sourceDirectories + "->" + outputConfigFileForHumans);
+                    Console.WriteLine("Saving object definitions as Html : " + inputSourceDirectories + "->" + outputConfigFileForHumans);
                     DocumentationExporter.ExportGUIParametersForHumans(outputConfigFileForHumans, htmlExporter, parser.GetParameterizedObjects());
                 }
                 if (parser.GetObjectClasses() != null)
                 {
                     //Save documentation as markdown
                     MarkdownExporter markdownExporter = new MarkdownExporter();
-                    Console.WriteLine("Saving source code documentation as Markdown: " + sourceDirectories + "->"
+                    Console.WriteLine("Saving source code documentation as Markdown: " + inputSourceDirectories + "->"
                         + projectName + markdownExporter.FormatExtension());
                     DocumentationExporter.ExportDocumentation(outputDocsFolder, projectName, markdownExporter, parser.GetObjectClasses());
 

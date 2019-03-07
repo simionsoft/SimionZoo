@@ -174,7 +174,7 @@
       <OutputFile>$(OutDir)$(TargetName)$(TargetExt)</OutputFile>
     </Lib>
     <CustomBuildStep>
-      <Command>..\..\Debug\SimionSrcParser.exe lang=cpp source-dir=$(ProjectDir) out-defs=..\..\config\definitions.xml out-docs=..\..\docs\RLSimion.md</Command>
+      <Command>..\..\bin\SimionSrcParser.exe lang=cpp source-dir=$(ProjectDir) out-defs=..\..\config\definitions.xml out-docs=..\..\docs\RLSimion.md</Command>
       <Message>RLSimion source code parser</Message>
       <TreatOutputAsContent>false</TreatOutputAsContent>
       <Outputs>..\..\config\definitions.xml</Outputs>
@@ -203,7 +203,7 @@
       <LinkTimeCodeGeneration>true</LinkTimeCodeGeneration>
     </Lib>
     <CustomBuildStep>
-      <Command>..\..\Debug\SimionSrcParser.exe lang=cpp source-dir=$(ProjectDir) out-defs=..\..\config\definitions.xml out-docs=..\..\docs\RLSimion.md</Command>
+      <Command>..\..\bin\SimionSrcParser.exe lang=cpp source-dir=$(ProjectDir) out-defs=..\..\config\definitions.xml out-docs=..\..\docs\RLSimion.md</Command>
       <Message>RLSimion source code parser</Message>
       <TreatOutputAsContent>false</TreatOutputAsContent>
       <Outputs>..\..\config\definitions.xml</Outputs>
