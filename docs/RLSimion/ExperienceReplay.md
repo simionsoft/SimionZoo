@@ -14,8 +14,8 @@
 * **Summary**
   Adds an experience tuple to the circular buffer used
 * **Parameters**
-* * _s_: Initial state
-* * _a_: Action
-* * _s_p_: Resultant state
-* * _r_: Reward
-* * _probability_: Probability by which the action was taken
+  * _s_: Initial state
+  * _a_: Action
+  * _s_p_: Resultant state
+  * _r_: Reward
+  * _probability_: Probability by which the action was taken

@@ -5,8 +5,8 @@
 * **Summary**
   Updates the policy using the CACLA update rule
 * **Parameters**
-* * _s_: Initial state
-* * _a_: Action
-* * _s_p_: Resultant state
-* * _r_: Reward
-* * _td_: Temporal-Difference error
+  * _s_: Initial state
+  * _a_: Action
+  * _s_p_: Resultant state
+  * _r_: Reward
+  * _td_: Temporal-Difference error

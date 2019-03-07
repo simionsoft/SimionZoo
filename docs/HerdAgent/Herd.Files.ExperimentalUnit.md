@@ -5,19 +5,19 @@
 * **Summary**
   Minimal constructor for testing
 * **Parameters**
-* * _name_: 
+  * _name_: 
 ### ``public ExperimentalUnit(XmlNode configNode, string baseDirectory, LoadOptions loadOptions)``
 * **Summary**
   Constructor used to load the experimental unit from a file
 * **Parameters**
-* * _configNode_: 
-* * _baseDirectory_: 
-* * _loadOptions_: 
+  * _configNode_: 
+  * _baseDirectory_: 
+  * _loadOptions_: 
 ### ``bool LogFileExists(string relExplUnitPath, string baseDirectory)``
 * **Summary**
   Use this if you want to load an experimental unit only depending on whether the log file exists or not
 * **Parameters**
-* * _logFileName_: 
+  * _logFileName_: 
 * **Return Value**
   Use this if you want to load an experimental unit only depending on whether the log file exists or not
 ### ``void RequestRuntimeRequirements()``
@@ -27,11 +27,11 @@
 * **Summary**
   Returns whether an app version is compatible with the host architecture
 * **Parameters**
-* * _version_: The appversion.
+  * _version_: The appversion.
 ### ``AppVersion BestHostArchitectureMatch(List<AppVersion> appVersions)``
 * **Summary**
   Returns the app version from the list that best matches the host architecture
 * **Parameters**
-* * _appVersions_: The application versions.
+  * _appVersions_: The application versions.
 * **Return Value**
   Returns the app version from the list that best matches the host architecture

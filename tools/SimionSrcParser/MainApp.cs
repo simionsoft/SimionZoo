@@ -83,7 +83,7 @@ namespace SimionSrcParser
 
             if (numErrors==0)
             {
-                if (parser.GetParameterizedObjects() != null)
+                if (outDefinitionsFile != null && parser.GetParameterizedObjects() != null)
                 {
                     Console.WriteLine("Saving object definitions for Badger: " + sourceDirectories + "->" + outDefinitionsFile);
                     DocumentationExporter.ExportGUIParameters(outDefinitionsFile, parser.GetParameterizedObjects());

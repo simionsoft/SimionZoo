@@ -5,4 +5,4 @@
 * **Summary**
   Adds the variable.
 * **Parameters**
-* * _variable_: The variable.
+  * _variable_: The variable.

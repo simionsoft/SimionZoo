@@ -23,13 +23,13 @@
 * **Summary**
   Returns the filename renamed according to the renaming rules
 * **Parameters**
-* * _filename_: The filename.
+  * _filename_: The filename.
 * **Return Value**
   Returns the filename renamed according to the renaming rules
 ### ``string OriginalFilename(string filename)``
 * **Summary**
   Returns the original name of a renamed file
 * **Parameters**
-* * _filename_: The renamed filename
+  * _filename_: The renamed filename
 * **Return Value**
   Returns the original name of a renamed file

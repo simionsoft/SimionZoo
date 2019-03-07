@@ -8,34 +8,34 @@
 * **Summary**
   Writes on the network stream
 * **Parameters**
-* * _stream_: The stream.
-* * _message_: The message.
-* * _addDefaultMessageType_: If true, a default header is added to the message
+  * _stream_: The stream.
+  * _message_: The message.
+  * _addDefaultMessageType_: If true, a default header is added to the message
 ### ``Task WriteMessageAsync(NetworkStream stream, string message, CancellationToken cancelToken, bool addDefaultMessageType = false)``
 * **Summary**
   Writes on the network stream asynchronously
 * **Parameters**
-* * _stream_: The stream
-* * _message_: The message
-* * _cancelToken_: The cancel token
-* * _addDefaultMessageType_: If true, a default header is added to the message
+  * _stream_: The stream
+  * _message_: The message
+  * _cancelToken_: The cancel token
+  * _addDefaultMessageType_: If true, a default header is added to the message
 * **Return Value**
   Writes on the network stream asynchronously
 ### ``void writeMessage(NamedPipeServerStream stream, string message, bool addDefaultMessageType = false)``
 * **Summary**
   Writes the message on the named pipe stream
 * **Parameters**
-* * _stream_: The stream
-* * _message_: The message
-* * _addDefaultMessageType_: If true, a default header is added to the message
+  * _stream_: The stream
+  * _message_: The message
+  * _addDefaultMessageType_: If true, a default header is added to the message
 ### ``Task writeMessageAsync(NamedPipeServerStream stream, string message, CancellationToken cancelToken, bool addDefaultMessageType = false)``
 * **Summary**
   Writes a message on the named pipe stream asynchronously
 * **Parameters**
-* * _stream_: The stream
-* * _message_: The message
-* * _cancelToken_: The cancel token
-* * _addDefaultMessageType_: If true, a default header is added to the message
+  * _stream_: The stream
+  * _message_: The message
+  * _cancelToken_: The cancel token
+  * _addDefaultMessageType_: If true, a default header is added to the message
 * **Return Value**
   Writes a message on the named pipe stream asynchronously
 ### ``string peekNextXMLItem()``
@@ -47,7 +47,7 @@
 * **Summary**
   returns the next complete xml element (NO ATTRIBUTES!!) in the stream empty string if there was none
 * **Parameters**
-* * _bMarkAsProcessed_: if true, the element is marked as processed
+  * _bMarkAsProcessed_: if true, the element is marked as processed
 * **Return Value**
   returns the next complete xml element (NO ATTRIBUTES!!) in the stream empty string if there was none
 ### ``string peekNextXMLTag()``

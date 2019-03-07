@@ -5,4 +5,4 @@
 * **Summary**
   Returns the best match (assuming versions are ordered by preference) to the local machine's architecture
 * **Parameters**
-* * _versions_: Input list of app versions
+  * _versions_: Input list of app versions

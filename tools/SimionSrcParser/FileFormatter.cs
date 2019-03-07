@@ -48,7 +48,7 @@ namespace SimionSrcParser
         public override void OpenList(StreamWriter writer) { }
         public override void CloseList(StreamWriter writer) { }
         public override void ListItem(StreamWriter writer, string input) { writer.WriteLine("* " + input); }
-        public override void Tab(StreamWriter writer, string input) { writer.WriteLine("* " + input); }
+        public override void Tab(StreamWriter writer, string input) { writer.WriteLine("  " + input); }
         public override void OpeningSection(StreamWriter writer) { }
         public override void ClosingSection(StreamWriter writer) { }
         public override string InlineListItem(string input) { return "* " + input; }

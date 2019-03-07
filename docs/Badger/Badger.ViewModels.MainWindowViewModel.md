@@ -17,4 +17,4 @@
 * **Summary**
   Logs a message with the current time-date. If the Badger log file doesn't exist, it creates it. Uses a lock to avoid multi-thread issues
 * **Parameters**
-* * _logMessage_: The log message.
+  * _logMessage_: The log message.

@@ -5,14 +5,14 @@
 * **Summary**
   Highlight a series
 * **Parameters**
-* * _seriesId_: 
+  * _seriesId_: 
 ### ``void DimLineSeriesColor(PlotLineSeriesPropertiesViewModel lineSeriesProperties)``
 * **Summary**
   Apply some opacity to the original color of the LineSeries.
 * **Parameters**
-* * _lineSeriesProperties_: 
+  * _lineSeriesProperties_: 
 ### ``void ResetLineSeriesOpacity(PlotLineSeriesPropertiesViewModel lineSeriesProperties)``
 * **Summary**
   Restore the original color of the LineSeries.
 * **Parameters**
-* * _lineSeriesProperties_: 
+  * _lineSeriesProperties_: 

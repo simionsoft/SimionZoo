@@ -5,7 +5,7 @@
 * **Summary**
   Gets the available herd agents.
 * **Parameters**
-* * _outList_: The out list where the herd agents are added.
+  * _outList_: The out list where the herd agents are added.
 * **Return Value**
   Gets the available herd agents.
 ### ``void SelectHerdAgents()``

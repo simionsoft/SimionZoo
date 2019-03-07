@@ -11,7 +11,7 @@
 * **Summary**
   Connects to a herd agent via TCP
 * **Parameters**
-* * _endPoint_: The end point of the agent
+  * _endPoint_: The end point of the agent
 * **Return Value**
   Connects to a herd agent via TCP
 ### ``void Disconnect()``
@@ -21,11 +21,11 @@
 * **Summary**
   Gets a list of the herd agent discovered last time the herd was called
 * **Parameters**
-* * _outHerdAgentList_: The out herd agent list
-* * _timeoutSeconds_: The timeout seconds
+  * _outHerdAgentList_: The out herd agent list
+  * _timeoutSeconds_: The timeout seconds
 ### ``void SendJobQuery(Job job, CancellationToken cancelToken)``
 * **Summary**
   Sends a job query to the herd agent we connected to
 * **Parameters**
-* * _job_: The job
-* * _cancelToken_: The cancel token
+  * _job_: The job
+  * _cancelToken_: The cancel token

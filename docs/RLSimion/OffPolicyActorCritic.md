@@ -5,18 +5,18 @@
 * **Summary**
   Updates the policy and the value function using the Incremental Natural Actor Critic algorithm in "Off-Policy Actor-Critic" (Thomas Degris, Martha White, Richard S. Sutton), Proceedings of the 29 th International Conference on Machine Learning, Edinburgh, Scotland, UK, 2012. arXiv:1205.4839v5 [cs.LG] 20 Jun 2013
 * **Parameters**
-* * _s_: Initial state
-* * _a_: Action
-* * _s_p_: Resultant state
-* * _r_: Reward
-* * _behaviorProb_: Probability by which the actor selected the action
+  * _s_: Initial state
+  * _a_: Action
+  * _s_p_: Resultant state
+  * _r_: Reward
+  * _behaviorProb_: Probability by which the actor selected the action
 * **Return Value**
   Updates the policy and the value function using the Incremental Natural Actor Critic algorithm in "Off-Policy Actor-Critic" (Thomas Degris, Martha White, Richard S. Sutton), Proceedings of the 29 th International Conference on Machine Learning, Edinburgh, Scotland, UK, 2012. arXiv:1205.4839v5 [cs.LG] 20 Jun 2013
 ### ``double selectAction(const State *s, Action *a)``
 * **Summary**
   The actor selects an action following the policies it is learning
 * **Parameters**
-* * _s_: Initial state
-* * _a_: Action
+  * _s_: Initial state
+  * _a_: Action
 * **Return Value**
   The actor selects an action following the policies it is learning

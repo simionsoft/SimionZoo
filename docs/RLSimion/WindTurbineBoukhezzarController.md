@@ -5,8 +5,8 @@
 * **Summary**
   Calculates one of the outputs of the Variable-Speed Wind Turbine by Boukhezzar
 * **Parameters**
-* * _s_: Initial state
-* * _a_: Action
-* * _index_: Index of the output
+  * _s_: Initial state
+  * _a_: Action
+  * _index_: Index of the output
 * **Return Value**
   Calculates one of the outputs of the Variable-Speed Wind Turbine by Boukhezzar

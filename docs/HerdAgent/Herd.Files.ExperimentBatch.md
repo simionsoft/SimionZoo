@@ -10,14 +10,14 @@
 * **Summary**
   This method loads the batch file and deletes any log file found
 * **Parameters**
-* * _batchFilename_: 
+  * _batchFilename_: 
 * **Return Value**
   This method loads the batch file and deletes any log file found
 ### ``int CountExperimentalUnits(string batchFilename, LoadOptions.ExpUnitSelection selection)``
 * **Summary**
   This method loads the experiment batch file and counts the type of experimental units required: All, only finished, or only unfinished
 * **Parameters**
-* * _batchFilename_: 
-* * _selection_: 
+  * _batchFilename_: 
+  * _selection_: 
 * **Return Value**
   This method loads the experiment batch file and counts the type of experimental units required: All, only finished, or only unfinished

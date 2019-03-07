@@ -5,4 +5,4 @@
 * **Summary**
   Used only for testing
 * **Parameters**
-* * _numCPUCores_: 
+  * _numCPUCores_: 

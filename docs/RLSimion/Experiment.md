@@ -38,7 +38,7 @@
 * **Summary**
   Called every time-step. Controls when and what information to log, and also the timers to decide if the progress must be udated
 * **Parameters**
-* * _s_: Initial state of the last tuple
-* * _a_: Action in the last tuple
-* * _s_p_: Resultant state of the last tuple
-* * _r_: Reward of the last tuple
+  * _s_: Initial state of the last tuple
+  * _a_: Action in the last tuple
+  * _s_p_: Resultant state of the last tuple
+  * _r_: Reward of the last tuple
