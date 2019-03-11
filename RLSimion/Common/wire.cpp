@@ -51,16 +51,29 @@ NamedVarProperties* Wire::getProperties()
 	return nullptr;
 }
 
+/// <summary>
+/// Returns the name of the wire
+/// </summary>
+/// <returns>The name</returns>
 string Wire::getName()
 {
 	return m_name;
 }
 
+
+/// <summary>
+/// Returns the current value of the wire
+/// </summary>
+/// <returns>The wire's name</returns>
 double Wire::getValue()
 {
 	return m_value;
 }
 
+/// <summary>
+/// Sets the name of the wire
+/// </summary>
+/// <param name="value">New value given</param>
 void Wire::setValue(double value)
 {
 	if (!m_bPropertiesSet)
@@ -69,6 +82,12 @@ void Wire::setValue(double value)
 		m_value = std::min(m_properties.getMax(), std::max(m_properties.getMin(), value));
 }
 
+
+/// <summary>
+/// Sets the value range of the wire
+/// </summary>
+/// <param name="minimum">Minimum value</param>
+/// <param name="maximum">Maximum value</param>
 void Wire::setLimits(double minimum, double maximum)
 {
 	m_bPropertiesSet = true;

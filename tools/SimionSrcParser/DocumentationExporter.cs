@@ -62,7 +62,7 @@ namespace SimionSrcParser
                 foreach (ObjectClass objClass in classes)
                 {
                     exporter.ListItem(indexWriter
-                        , exporter.InlineLink(objClass.Name, projectName + "/" + objClass.Name + extension));
+                        , exporter.InlineLink(objClass.Name, projectName + "/" + objClass.Name));
                     string outputMdFile = outputDir + projectName + "/" + objClass.Name + extension;
                     using (StreamWriter classWriter = File.CreateText(outputMdFile))
                     {

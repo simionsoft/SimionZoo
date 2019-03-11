@@ -55,8 +55,8 @@ namespace SimionSrcParser
         public override string InlineLink(string text, string link) { return "[" + text + "](" + link + ")"; }
         public override string InlineItalic(string input) { return "_" + input + "_"; }
         public override string InlineTab(string input) { return "  " + input; }
-        public override string InlineCode(string input) { return "``" + input + "``"; }
-        public override string InlineBold(string input) { return "**" + input + "**"; }
+        public override string InlineCode(string input) { return "`" + input + "`"; }
+        public override string InlineBold(string input) { return "*" + input + "*"; }
     }
     public class HtmlExporter: FileFormatter
     {

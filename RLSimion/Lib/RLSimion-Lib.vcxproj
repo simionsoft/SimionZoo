@@ -115,7 +115,7 @@
       </Message>
     </PostBuildEvent>
     <CustomBuildStep>
-      <Command>..\..\Debug\SimionSrcParser.exe lang=cpp source-dir=$(ProjectDir) out-defs=..\..\config\definitions.xml out-docs=..\..\docs\RLSimion.md</Command>
+      <Command>..\..\Debug\SimionSrcParser.exe lang=cpp source-dir=$(ProjectDir) out-defs=..\..\config\definitions.xml</Command>
       <Outputs>..\..\config\definitions.xml</Outputs>
       <Inputs>$(ProjectDir)*.cpp;$(ProjectDir)*.h</Inputs>
       <TreatOutputAsContent>false</TreatOutputAsContent>
@@ -146,7 +146,7 @@
       </Message>
     </PostBuildEvent>
     <CustomBuildStep>
-      <Command>..\..\Debug\SimionSrcParser.exe lang=cpp source-dir=$(ProjectDir) out-defs=..\..\config\definitions.xml out-docs=..\..\docs\RLSimion.md</Command>
+      <Command>..\..\Debug\SimionSrcParser.exe lang=cpp source-dir=$(ProjectDir) out-defs=..\..\config\definitions.xml</Command>
       <Outputs>..\..\config\definitions.xml</Outputs>
       <Inputs>$(ProjectDir)*.cpp;$(ProjectDir)*.h</Inputs>
       <TreatOutputAsContent>false</TreatOutputAsContent>
@@ -174,7 +174,7 @@
       <OutputFile>$(OutDir)$(TargetName)$(TargetExt)</OutputFile>
     </Lib>
     <CustomBuildStep>
-      <Command>..\..\bin\SimionSrcParser.exe lang=cpp source-dir=$(ProjectDir) out-defs=..\..\config\definitions.xml out-docs=..\..\docs\RLSimion.md</Command>
+      <Command>..\..\bin\SimionSrcParser.exe lang=cpp source-dir=$(ProjectDir) out-defs=..\..\config\definitions.xml</Command>
       <Message>RLSimion source code parser</Message>
       <TreatOutputAsContent>false</TreatOutputAsContent>
       <Outputs>..\..\config\definitions.xml</Outputs>
@@ -203,7 +203,7 @@
       <LinkTimeCodeGeneration>true</LinkTimeCodeGeneration>
     </Lib>
     <CustomBuildStep>
-      <Command>..\..\bin\SimionSrcParser.exe lang=cpp source-dir=$(ProjectDir) out-defs=..\..\config\definitions.xml out-docs=..\..\docs\RLSimion.md</Command>
+      <Command>..\..\bin\SimionSrcParser.exe lang=cpp source-dir=$(ProjectDir) out-defs=..\..\config\definitions.xml</Command>
       <Message>RLSimion source code parser</Message>
       <TreatOutputAsContent>false</TreatOutputAsContent>
       <Outputs>..\..\config\definitions.xml</Outputs>
