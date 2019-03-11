@@ -40,7 +40,7 @@ namespace Herd.Files
         public const string experimentRelativeDir = "../" + experimentDir;
         public const string imageRelativeDir = "../" + imageDir;
         public const string badgerLogFile = "badger-log.txt";
-        public const string tempRelativeDir = "../temp/";
+        public const string tempRelativeDir = "../tmp/";
         public const string logViewerExePath = "../" + binDir + "/SimionLogViewer.exe";
     }
 }
