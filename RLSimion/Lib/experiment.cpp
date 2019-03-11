@@ -123,7 +123,7 @@ bool Experiment::isEvaluationEpisode()
 			% (m_numEpisodesPerEvaluation + m_evalFreq.get());
 		return episodeInEvalTrainingCycle < m_numEpisodesPerEvaluation;
 	}
-	return true;
+	return false;
 }
 
 /// <summary>
