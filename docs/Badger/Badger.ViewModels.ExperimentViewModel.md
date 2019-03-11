@@ -1,28 +1,28 @@
 # Class Badger.ViewModels.ExperimentViewModel
 > Source: ExperimentViewModel.cs
 ## Methods
-### ``public ExperimentViewModel(string appDefinitionFileName, string configFilename)``
-* **Summary**
+### `public ExperimentViewModel(string appDefinitionFileName, string configFilename)`
+* *Summary*
   This constructor builds the whole tree of ConfigNodes either - with default values ("New") or - with a configuration file ("Load")
-* **Parameters**
+* *Parameters*
   * _appDefinitionFileName_: 
   * _configFilename_: 
-### ``void ShowWires()``
-* **Summary**
+### `void ShowWires()`
+* *Summary*
   Shows a new window with the wires used in the experiment
-### ``ConfigNodeViewModel DepthFirstSearch(string nodeName, string alias = "")``
-* **Summary**
+### `ConfigNodeViewModel DepthFirstSearch(string nodeName, string alias = "")`
+* *Summary*
   Implementation of depth first search algorithm for experiment tree.
-* **Parameters**
+* *Parameters*
   * _targetNode_: 
-### ``ConfigNodeViewModel DepthFirstSearch(ConfigNodeViewModel targetNode)``
-* **Summary**
+### `ConfigNodeViewModel DepthFirstSearch(ConfigNodeViewModel targetNode)`
+* *Summary*
   Implementation of depth first search algorithm for experiment tree.
-* **Parameters**
+* *Parameters*
   * _targetNode_: 
-### ``void CheckLinkableNodes(ConfigNodeViewModel originNode, bool link = true)``
-* **Summary**
+### `void CheckLinkableNodes(ConfigNodeViewModel originNode, bool link = true)`
+* *Summary*
   
-* **Parameters**
+* *Parameters*
   * _originNode_: 
   * _link_: 

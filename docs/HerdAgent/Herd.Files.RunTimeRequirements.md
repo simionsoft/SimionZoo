@@ -1,8 +1,8 @@
 # Class Herd.Files.RunTimeRequirements
 > Source: Requirements.cs
 ## Methods
-### ``public RunTimeRequirements(int numCPUCores)``
-* **Summary**
+### `public RunTimeRequirements(int numCPUCores)`
+* *Summary*
   Used only for testing
-* **Parameters**
+* *Parameters*
   * _numCPUCores_: 

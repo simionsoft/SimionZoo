@@ -1,8 +1,8 @@
 # Class SinusoidalNoise
 > Source: noise.cpp
 ## Methods
-### ``double getSample()``
-* **Summary**
+### `double getSample()`
+* *Summary*
   Returns a sample from a sinusoidal signal. Used to generate noise
-* **Return Value**
+* *Return Value*
   Returns a sample from a sinusoidal signal. Used to generate noise

@@ -1,45 +1,45 @@
 # Class ConfigNode
 > Source: config.cpp
 ## Methods
-### ``int countChildren(const char* name)``
-* **Summary**
+### `int countChildren(const char* name)`
+* *Summary*
   Returns the number of children this node has with the given name
-### ``bool getConstBoolean(const char* paramName, bool defaultValue)``
-* **Summary**
+### `bool getConstBoolean(const char* paramName, bool defaultValue)`
+* *Summary*
   Retrieves the value of a parameter as a boolean
-* **Parameters**
+* *Parameters*
   * _paramName_: The name of the parameter
   * _defaultValue_: Its default value (will be used if the parameter is not found)
-* **Return Value**
+* *Return Value*
   Retrieves the value of a parameter as a boolean
-### ``int getConstInteger(const char* paramName, int defaultValue)``
-* **Summary**
+### `int getConstInteger(const char* paramName, int defaultValue)`
+* *Summary*
   Retrieves the value of a parameter as an integer
-* **Parameters**
+* *Parameters*
   * _paramName_: The name of the parameter
   * _defaultValue_: Its default value (will be used if the parameter is not found)
-* **Return Value**
+* *Return Value*
   Retrieves the value of a parameter as an integer
-### ``double getConstDouble(const char* paramName, double defaultValue)``
-* **Summary**
+### `double getConstDouble(const char* paramName, double defaultValue)`
+* *Summary*
   Retrieves the value of a parameter as a double
-* **Parameters**
+* *Parameters*
   * _paramName_: The name of the parameter
   * _defaultValue_: Its default value (will be used if the parameter is not found)
-* **Return Value**
+* *Return Value*
   Retrieves the value of a parameter as a double
-### ``void saveFile(const char* pFilename)``
-* **Summary**
+### `void saveFile(const char* pFilename)`
+* *Summary*
   Saves all the configuration nodes below the current to a file
-* **Parameters**
+* *Parameters*
   * _pFilename_: The path to the file
-### ``void saveFile(FILE* pFile)``
-* **Summary**
+### `void saveFile(FILE* pFile)`
+* *Summary*
   Saves all the configuration nodes below the current to an already open file
-* **Parameters**
+* *Parameters*
   * _pFile_: The handle to the already open file
-### ``void clone(ConfigFile* parameterFile)``
-* **Summary**
+### `void clone(ConfigFile* parameterFile)`
+* *Summary*
   Makes a shallow copy of the a configuration file
-* **Parameters**
+* *Parameters*
   * _parameterFile_: 

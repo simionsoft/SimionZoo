@@ -1,17 +1,17 @@
 # Class LinearStateVFA
 > Source: vfa.cpp
 ## Methods
-### ``void setInitValue(double initValue)``
-* **Summary**
+### `void setInitValue(double initValue)`
+* *Summary*
   Sets the initial value of the function
-* **Parameters**
+* *Parameters*
   * _initValue_: 
-### ``void getFeatures(const State* s, FeatureList* outFeatures)``
-* **Summary**
+### `void getFeatures(const State* s, FeatureList* outFeatures)`
+* *Summary*
   Uses the state feature map to calculate the features of a state
-### ``void getFeatureState(size_t feature, State* s)``
-* **Summary**
+### `void getFeatureState(size_t feature, State* s)`
+* *Summary*
   Given a feature, it uses the state feature map to return the state variable's value in s
-### ``double get(const State *s)``
-* **Summary**
+### `double get(const State *s)`
+* *Summary*
   Evaluates V(s)

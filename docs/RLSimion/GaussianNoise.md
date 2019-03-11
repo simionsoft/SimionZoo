@@ -1,16 +1,16 @@
 # Class GaussianNoise
 > Source: noise.cpp
 ## Methods
-### ``double getNormalDistributionSample(double mean, double sigma)``
-* **Summary**
+### `double getNormalDistributionSample(double mean, double sigma)`
+* *Summary*
   Returns a sample from a Gaussian distribution function. Used to generate noise
-* **Parameters**
+* *Parameters*
   * _mean_: Mean value of the distribution
   * _sigma_: Sigma of the distribution
-* **Return Value**
+* *Return Value*
   Returns a sample from a Gaussian distribution function. Used to generate noise
-### ``double getSample()``
-* **Summary**
+### `double getSample()`
+* *Summary*
   Returns a sample from a Gaussian distribution function. Used to generate noise
-* **Return Value**
+* *Return Value*
   Returns a sample from a Gaussian distribution function. Used to generate noise

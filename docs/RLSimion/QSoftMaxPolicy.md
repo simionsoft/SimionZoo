@@ -1,12 +1,12 @@
 # Class QSoftMaxPolicy
 > Source: q-learners.cpp
 ## Methods
-### ``double selectAction(LinearStateActionVFA* pQFunction, const State* s, Action* a)``
-* **Summary**
+### `double selectAction(LinearStateActionVFA* pQFunction, const State* s, Action* a)`
+* *Summary*
   Implements a Soft-Max action selection policy controlled by temperature parameter Tau
-* **Parameters**
+* *Parameters*
   * _pQFunction_: The Q-function
   * _s_: Current state
   * _a_: Output action
-* **Return Value**
+* *Return Value*
   Implements a Soft-Max action selection policy controlled by temperature parameter Tau

@@ -1,18 +1,18 @@
 # Class Badger.ViewModels.PlotPropertiesViewModel
 > Source: PlotPropertiesViewModel.cs
 ## Methods
-### ``void HighlightSeries(int seriesId)``
-* **Summary**
+### `void HighlightSeries(int seriesId)`
+* *Summary*
   Highlight a series
-* **Parameters**
+* *Parameters*
   * _seriesId_: 
-### ``void DimLineSeriesColor(PlotLineSeriesPropertiesViewModel lineSeriesProperties)``
-* **Summary**
+### `void DimLineSeriesColor(PlotLineSeriesPropertiesViewModel lineSeriesProperties)`
+* *Summary*
   Apply some opacity to the original color of the LineSeries.
-* **Parameters**
+* *Parameters*
   * _lineSeriesProperties_: 
-### ``void ResetLineSeriesOpacity(PlotLineSeriesPropertiesViewModel lineSeriesProperties)``
-* **Summary**
+### `void ResetLineSeriesOpacity(PlotLineSeriesPropertiesViewModel lineSeriesProperties)`
+* *Summary*
   Restore the original color of the LineSeries.
-* **Parameters**
+* *Parameters*
   * _lineSeriesProperties_: 

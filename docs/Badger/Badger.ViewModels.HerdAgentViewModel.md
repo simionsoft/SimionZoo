@@ -1,8 +1,8 @@
 # Class Badger.ViewModels.HerdAgentViewModel
 > Source: HerdAgentViewModel.cs
 ## Methods
-### ``bool IsLocalIpAddress(string host)``
-* **Summary**
+### `bool IsLocalIpAddress(string host)`
+* *Summary*
   Determines whether an IP address is local
-* **Parameters**
+* *Parameters*
   * _host_: The IP address
