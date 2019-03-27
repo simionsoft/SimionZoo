@@ -32,36 +32,24 @@ namespace SimionSrcParser
 {
     class MainApp
     {
-        const string argSourcePrefix = "lang=";
         const string argSourceDirPrefix = "source-dir=";
         const string argOutDefsPrefix = "out-defs=";
-        const string argOutDocsPrefix = "out-docs=";
 
-        static string sourcesLanguage = "cpp"; //default value
         static List<string> sourceDirectories = new List<string>();
         static string outDefinitionsFile = null;
-        static string outDocumentationFile = null;
-
-        static string outputDocsFolder = null;
-        static string projectName = null;
 
         static bool ParseArguments(string [] args)
         {
             //lang=[cpp|csharp] source-dir=<dir> [out-defs=<path-to-xml>] [out-docs=<path-to-md>]
             foreach (string arg in args)
             {
-                if (arg.StartsWith(argSourcePrefix)) sourcesLanguage = arg.Substring(argSourcePrefix.Length);
-                else if (arg.StartsWith(argSourceDirPrefix)) sourceDirectories.Add(arg.Substring(argSourceDirPrefix.Length));
+                if (arg.StartsWith(argSourceDirPrefix)) sourceDirectories.Add(arg.Substring(argSourceDirPrefix.Length));
                 else if (arg.StartsWith(argOutDefsPrefix)) outDefinitionsFile = arg.Substring(argOutDefsPrefix.Length);
-                else if (arg.StartsWith(argOutDocsPrefix)) outDocumentationFile = arg.Substring(argOutDocsPrefix.Length);
+
             }
-            if (sourceDirectories.Count == 0 || (outDefinitionsFile == null && outDocumentationFile == null))
+            if (sourceDirectories.Count == 0 || outDefinitionsFile == null)
                 return false;   //all required arguments were not provided
-            if (outDocumentationFile != null)
-            {
-                outputDocsFolder = Herd.Utils.GetDirectory(outDocumentationFile);
-                projectName = Herd.Utils.RemoveExtension(Herd.Utils.GetFilename(outDocumentationFile));
-            }
+
             return true;        //all required arguments were provided
         }
         static int Main(string[] args)
@@ -71,15 +59,13 @@ namespace SimionSrcParser
 
             if (!ParseArguments(args))
             {
-                Console.WriteLine("ERROR. Usage: SimionSrcParser lang=[cpp|csharp] source-dir=<dir> [out-defs=<path-to-xml>] [out-docs=<path-to-md>]");
+                Console.WriteLine("ERROR. Usage: SimionSrcParser lang=[cpp|csharp] source-dir=<dir> [out-defs=<path-to-xml>]");
                 return 0;
             }
 
             //Create the appropriate parser
             SimionSrcParser parser = null;
-            if (sourcesLanguage == "csharp")
-                parser = new CSharpSourceParser();
-            else parser = new CppSourceParser();
+            parser = new CppSourceParser();
 
             foreach(string sourceDir in sourceDirectories)
                 parser.ParseSourceFilesInDir(sourceDir);
@@ -96,19 +82,6 @@ namespace SimionSrcParser
                 {
                     Console.WriteLine("Saving object definitions for Badger: " + inputSourceDirectories + " ->" + outDefinitionsFile);
                     DocumentationExporter.ExportGUIParameters(outDefinitionsFile, parser.GetParameterizedObjects());
-
-                    MarkdownExporter markdownExporter = new MarkdownExporter();
-                    string outputConfigFileForHumans = Herd.Utils.RemoveExtension(outDefinitionsFile) + markdownExporter.FormatExtension();
-                    Console.WriteLine("Saving object definitions as Html : " + inputSourceDirectories + " ->" + outputConfigFileForHumans);
-                    DocumentationExporter.ExportGUIParametersForHumans(outputConfigFileForHumans, markdownExporter, parser.GetParameterizedObjects());
-                }
-                if (outDocumentationFile != null && parser.GetObjectClasses() != null)
-                {
-                    //Save documentation as markdown
-                    MarkdownExporter markdownExporter = new MarkdownExporter();
-                    Console.WriteLine("Saving source code documentation as Markdown: " + inputSourceDirectories + " ->"
-                        + projectName + markdownExporter.FormatExtension());
-                    DocumentationExporter.ExportDocumentation(outputDocsFolder, projectName, markdownExporter, parser.GetObjectClasses());
                 }
 
                 Console.WriteLine("Finished: {0} Kbs of code read.", parser.GetNumBytesProcessed() / 1000);

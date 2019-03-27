@@ -40,8 +40,6 @@ namespace SimionSrcParser
         public abstract int PostProcess();
         public abstract int GetNumBytesProcessed();
 
-        public abstract List<ObjectClass> GetObjectClasses();
-
         public abstract List<ParameterizedObject> GetParameterizedObjects();
     }
 }

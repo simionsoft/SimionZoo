@@ -81,31 +81,7 @@ namespace SimionSrcParser
             }
         }
 
-        List<ObjectClass> ParsedObjectClasses = new List<ObjectClass>();
 
-        void ParseAllMethodsAndComments(string filename, string content)
-        {
-            //We only process comments starting with ///
-            string sPattern = @"(///[^\r\n]+\r\n)+(\w+)\s+(\w+)::(\w+)\(([^\)]*)\)";
-            string className, methodName, returnType, arguments;
-            CaptureCollection comments;
-            foreach (Match match in Regex.Matches(content, sPattern))
-            {
-                comments = match.Groups[1].Captures;
-                returnType = match.Groups[2].Value;
-                className = match.Groups[3].Value;
-                methodName = match.Groups[4].Value;
-                arguments = match.Groups[5].Value;
-
-                ObjectClass objClass = ParsedObjectClasses.Find(c => c.Name == className);
-                if (objClass == null)
-                {
-                    objClass = new ObjectClass(filename, className);
-                    ParsedObjectClasses.Add(objClass);
-                }
-                objClass.AddMethod(new ClassMethod(methodName, comments, arguments, returnType, ClassMethod.MethodType.Regular));
-            }
-        }
         //PUBLIC methods//////////////////////////////////////////////////
         public int numCharsProcessed = 0;
         public CppSourceParser() { }
@@ -121,8 +97,6 @@ namespace SimionSrcParser
             ParseConstructors(processedFileContents);
             ParseFactories(processedFileContents);
             ParseEnumerations(processedFileContents);
-
-            ParseAllMethodsAndComments(Herd.Utils.GetFilename(filename), originalFileContents);
         }
         public void ParseHeaderFile(string filename)
         {
@@ -162,10 +136,6 @@ namespace SimionSrcParser
             return 0;
         }
 
-        public override List<ObjectClass> GetObjectClasses()
-        {
-            return ParsedObjectClasses;
-        }
         public override int GetNumBytesProcessed()
         {
             return numCharsProcessed;
