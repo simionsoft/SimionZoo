@@ -229,13 +229,12 @@ namespace Herd.Network
             try
             {
                 //not to read 23.232 as 23232
-                Thread.CurrentThread.CurrentCulture = System.Globalization.CultureInfo.InvariantCulture;
+                Thread.CurrentThread.CurrentCulture = CultureInfo.InvariantCulture;
 
                 myProcess.StartInfo.FileName = getCachedFilename(task.Exe);
                 myProcess.StartInfo.Arguments = task.Arguments;
                 myProcess.StartInfo.WorkingDirectory = Path.GetDirectoryName(myProcess.StartInfo.FileName);
-                myProcess.StartInfo.RedirectStandardOutput = true;
-                myProcess.StartInfo.UseShellExecute = false;
+                myProcess.StartInfo.WindowStyle = ProcessWindowStyle.Hidden;
 
                 if (myProcess.Start())
                     LogToFile("Running command: " + myProcess.StartInfo.FileName + " " + myProcess.StartInfo.Arguments);
