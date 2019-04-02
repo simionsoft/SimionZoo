@@ -84,10 +84,15 @@ void DQN::deferredLoadStep()
 	//create the minibatch
 	//The size of the minibatch is the experience replay update size
 	//This is because we only perform updates in replaying-experience mode
-	size_t minibatchSize = SimionApp::get()->pSimGod->getExperienceReplayUpdateSize();
-	if (minibatchSize == 0)
+	m_minibatchSize = SimionApp::get()->pSimGod->getExperienceReplayUpdateSize();
+	if (m_minibatchSize == 0)
 		Logger::logMessage(MessageType::Error, "Both DQN and Double-DQN require the use of the Experience Replay Buffer technique");
-	m_pMinibatch = m_pNNDefinition->createMinibatch(minibatchSize);
+	if (m_minibatchSize <100)
+		Logger::logMessage(MessageType::Warning, "Small Experience Replay Buffer sizes can be expected to perform worse. Tests with Cntk suggest using about 10^3 tuples");
+	m_pMinibatch = m_pNNDefinition->createMinibatch(m_minibatchSize);
+
+	m_Q_s_p = vector<double>(m_minibatchSize * m_numActionSteps.get());
+	m_argMax = vector<int>(m_minibatchSize);
 }
 
 /// <summary>
@@ -121,53 +126,62 @@ INetwork* DQN::getQNetworkForTargetActionSelection()
 /// <param name="r">Reward</param>
 double DQN::update(const State * s, const Action * a, const State * s_p, double r, double behaviorProb)
 {
-	if (SimionApp::get()->pSimGod->bReplayingExperience())
+	if (!m_pMinibatch->isFull())
 	{
+		m_pMinibatch->addTuple(s, a, s_p, r);
+	}
+	else
+	{
+		//minibatch is full: ready for training
 		double gamma = SimionApp::get()->pSimGod->getGamma();
 
-		//get Q(s_p) for the current tuple (target/online-weights)
-		vector<double> & m_Q_s_p = getQNetworkForTargetActionSelection()->evaluate(s_p, a);
+		//get Q(s_p) for all the tuples in the minibatch (target/online-weights)
+		getQNetworkForTargetActionSelection()->evaluate(m_pMinibatch->s_p(), m_pMinibatch->a(), m_Q_s_p);
 
-		//calculate argmaxQ(s_p)
-		size_t argmaxQ = distance(m_Q_s_p.begin(), max_element(m_Q_s_p.begin(), m_Q_s_p.end()));
+		//for each tuple in the minibatch
+		for (int i = 0; i < m_minibatchSize; i++)
+		{
+			//calculate arg max Q(s_p, a)
+			vector<double>::iterator itBegin = m_Q_s_p.begin() + i * m_numActionSteps.get();
+			vector<double>::iterator itEnd = m_Q_s_p.begin() + (i+1) * m_numActionSteps.get();
+			m_argMax[i] = distance(itBegin, max_element(itBegin, itEnd));
+		}
 
 		//estimate Q(s_p, argMaxQ; target-weights or online-weights)
 		//THIS is the only real difference between DQN and Double-DQN
 		//We do the prediction step again only if using Double-DQN (the prediction network
 		//will be different to the online network)
 		if (getQNetworkForTargetActionSelection() != m_pTargetQNetwork)
-			m_Q_s_p= m_pTargetQNetwork->evaluate(s_p, a);
+			m_pTargetQNetwork->evaluate(m_pMinibatch->s_p(), m_pMinibatch->a(), m_Q_s_p);
 
-		//calculate targetvalue= r + gamma*Q(s_p,a)
-		double targetValue = r + gamma * m_Q_s_p[argmaxQ];
+		//get the value of Q(s) for each tuple
+		m_pOnlineQNetwork->evaluate(m_pMinibatch->s(), m_pMinibatch->a(), m_pMinibatch->target());
 
-		//get the current value of Q(s)
-		vector<double> & m_Q_s = m_pOnlineQNetwork->evaluate(s, a);
-
-		//change the target value only for the selecte action, the rest remain the same
-		//store the index of the action taken
-		size_t selectedActionId =
-			m_pNNDefinition->getClosestOutputIndex(a->get(m_outputAction.get()));
-		m_Q_s[selectedActionId] = targetValue;
-
-		m_pMinibatch->addTuple(s, a, m_Q_s);
-	}
-	//We only train the network in direct-experience updates to simplify mini-batching
-	else if (m_pMinibatch->isFull())
-	{
-		SimGod* pSimGod = SimionApp::get()->pSimGod.ptr();
-
-		//update the network finally
-		m_pOnlineQNetwork->train(m_pMinibatch);
-
-		//update the prediction network
-		if (pSimGod->bUpdateFrozenWeightsNow())
+		//for each tuple in the minibatch
+		for (int i = 0; i < m_minibatchSize; i++)
 		{
-			if (m_pTargetQNetwork)
-				m_pTargetQNetwork->destroy();
-			m_pTargetQNetwork = m_pOnlineQNetwork->clone();
+			//calculate targetvalue= r + gamma*Q(s_p,a)
+			double targetValue = m_pMinibatch->r()[i] + gamma * m_Q_s_p[m_argMax[i]];
+
+			//change the target value only for the selected action, the rest remain the same
+			//store the index of the action taken
+			size_t selectedActionId = m_pNNDefinition->getClosestOutputIndex(m_pMinibatch->a()[i]);
+			m_pMinibatch->target()[i*m_numActionSteps.get() + selectedActionId] = targetValue;
 		}
+
+		//train the network
+		m_pOnlineQNetwork->train(m_pMinibatch);
 	}
+
+	SimGod* pSimGod = SimionApp::get()->pSimGod.ptr();
+
+	if (!pSimGod->bReplayingExperience() && pSimGod->bUpdateFrozenWeightsNow())
+	{
+		if (m_pTargetQNetwork)
+			m_pTargetQNetwork->destroy();
+			m_pTargetQNetwork = m_pOnlineQNetwork->clone();
+	}
+
 	return 1.0; //TODO: Estimate the TD-error??
 }
 

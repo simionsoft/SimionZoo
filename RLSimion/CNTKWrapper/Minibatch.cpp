@@ -32,8 +32,14 @@ Minibatch::Minibatch(size_t size, NetworkDefinition* pNetworkDefinition, size_t 
 {
 	m_pNetworkDefinition = pNetworkDefinition;
 	m_size = size;
-	m_inputState = vector<double>(size*pNetworkDefinition->getInputStateVariables().size());
-	m_inputAction = vector<double>(size*pNetworkDefinition->getInputActionVariables().size());
+	m_s = vector<double>(size*pNetworkDefinition->getInputStateVariables().size());
+	size_t numActions = pNetworkDefinition->getInputActionVariables().size();
+	if (numActions == 0)
+		numActions = 1; //even if the network doesn't use any action as input, we may want to store the action taken by the agent each time-step. Only 1 output is assumed
+
+	m_a = vector<double>(size*numActions);
+	m_s_p = vector<double>(size*pNetworkDefinition->getInputStateVariables().size());
+	m_r = vector<double>(size);
 
 	if (outputSize == 0)
 		//if not overriden, use the network's output size. This is the general case
@@ -41,7 +47,7 @@ Minibatch::Minibatch(size_t size, NetworkDefinition* pNetworkDefinition, size_t 
 	else
 		m_outputSize = outputSize;
 
-	m_output = vector<double>(size*m_outputSize);
+	m_target = vector<double>(size*m_outputSize);
 }
 
 
@@ -54,57 +60,63 @@ void Minibatch::clear()
 	m_numTuples = 0;
 }
 
-//Added for convenience to avoid vectors on the DLL client side when possible
-void Minibatch::addTuple(const State* s, const Action* a, double targetValue)
-{
-	if (m_outputSize != 1)
-		throw std::runtime_error("Cannot use a scalar target value with multiple-output networks");
-
-	vector<double> targetValues = vector<double>(1);
-	targetValues[0] = targetValue;
-	addTuple(s, a, targetValues);
-}
-
-void Minibatch::addTuple(const State* s, const Action* a, const vector<double>& targetValues)
+void Minibatch::addTuple(const State* s, const Action* a, const State* s_p, double r)
 {
 	if (m_numTuples >= m_size)
 		return;
 
-	if (targetValues.size() != m_outputSize)
-		throw std::runtime_error("Missmatched tuple output size and minibatch output size");
-
-	//copy state input
+	//copy input state s
 	const vector<string>& stateVars= m_pNetworkDefinition->getInputStateVariables();
 	size_t stateInputSize = stateVars.size();
-	for (size_t i= 0; i<stateInputSize; i++)
-		m_inputState[m_numTuples*stateInputSize + i] = s->getNormalized(stateVars[i].c_str());
+	for (size_t i = 0; i < stateInputSize; i++)
+	{
+		m_s[m_numTuples*stateInputSize + i] = s->getNormalized(stateVars[i].c_str());
+		m_s_p[m_numTuples*stateInputSize + i] = s_p->getNormalized(stateVars[i].c_str());
+	}
 
-	//copy action input
+	//copy input action a
 	const vector<string>& actionVars = m_pNetworkDefinition->getInputActionVariables();
 	size_t actionInputSize = actionVars.size();
-	for (size_t i = 0; i<actionInputSize; i++)
-		m_inputAction[m_numTuples*actionInputSize + i] = a->getNormalized(actionVars[i].c_str());
+	if (actionInputSize > 0)
+	{
+		for (size_t i = 0; i < actionInputSize; i++)
+			m_a[m_numTuples*actionInputSize + i] = a->getNormalized(actionVars[i].c_str());
+	}
+	else
+	{	//no input action, we just save the action selected by the agent
+		//for now, we assume only one action
+		m_a[m_numTuples] = a->get((size_t) 0);
+	}
 
-	//copy target values
-	for (size_t i = 0; i < targetValues.size(); i++)
-		m_output[m_numTuples*m_outputSize + i] = targetValues[i];
+	//copy reward r
+	m_r[m_numTuples] = r;
 	
 	m_numTuples++;
 }
 
-vector<double>& Minibatch::getInputState()
+vector<double>& Minibatch::s()
 {
-	return m_inputState;
+	return m_s;
 }
 
-vector<double>& Minibatch::getInputAction()
+vector<double>& Minibatch::a()
 {
-	return m_inputAction;
+	return m_a;
 }
 
-vector<double>& Minibatch::getOutput()
+vector<double>& Minibatch::s_p()
 {
-	return m_output;
+	return m_s_p;
+}
+
+vector<double>& Minibatch::r()
+{
+	return m_r;
+}
+
+vector<double>& Minibatch::target()
+{
+	return m_target;
 }
 
 void Minibatch::destroy()

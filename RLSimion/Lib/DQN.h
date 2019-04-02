@@ -24,10 +24,15 @@ protected:
 	ACTION_VARIABLE m_outputAction;
 	DOUBLE_PARAM m_learningRate;
 
+	int m_minibatchSize = 1;
+
 	NN_DEFINITION m_pNNDefinition;
 	INetwork* m_pTargetQNetwork= nullptr;
 	INetwork* m_pOnlineQNetwork= nullptr;
 	IMinibatch* m_pMinibatch = nullptr;
+
+	vector<double> m_Q_s_p;
+	vector<int> m_argMax;
 
 	CHILD_OBJECT_FACTORY<DiscreteDeepPolicy> m_policy;
 

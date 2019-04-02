@@ -11,21 +11,26 @@ class Minibatch: public IMinibatch
 	NetworkDefinition* m_pNetworkDefinition;
 	size_t m_numTuples = 0;
 	size_t m_size = 0;
-	vector<double> m_inputState;
-	vector<double> m_inputAction;
+	vector<double> m_s;
+	vector<double> m_a;
+	vector<double> m_s_p;
+	vector<double> m_r;
 
 	size_t m_outputSize = 0;
-	vector<double> m_output;
+	vector<double> m_target;
 public:
 	Minibatch(size_t size, NetworkDefinition* pNetworkDefinition, size_t outputSize= 0);
 	virtual ~Minibatch();
 
 	void clear();
-	void addTuple(const State* s, const Action* a, const vector<double>& targetValues);
-	void addTuple(const State* s, const Action* a, double targetValue);
-	vector<double>& getInputState();
-	vector<double>& getInputAction();
-	vector<double>& getOutput();
+	void addTuple(const State* s, const Action* a, const State* s_p, double r);
+
+	vector<double>& s();
+	vector<double>& a();
+	vector<double>& s_p();
+	vector<double>& r();
+	vector<double>& target();
+
 	void destroy();
 	bool isFull() const;
 	size_t size() const;

@@ -19,9 +19,9 @@ class Network:public INetwork
 	void findInputsAndOutputs();
 protected:
 	bool m_bInputStateUsed = false;
-	CNTK::Variable m_inputState;
+	CNTK::Variable m_s;
 	bool m_bInputActionUsed = false;
-	CNTK::Variable m_inputAction;
+	CNTK::Variable m_a;
 
 	CNTK::FunctionPtr m_networkFunctionPtr;
 
@@ -61,6 +61,9 @@ public:
 	//StateActionFunction interface
 	unsigned int getNumOutputs();
 	vector<double>& evaluate(const State* s, const Action* a);
+
+	void evaluate(const vector<double>& s, const vector<double>& a, vector<double>& output);
+
 	const vector<string>& getInputStateVariables();
 	const vector<string>& getInputActionVariables();
 };

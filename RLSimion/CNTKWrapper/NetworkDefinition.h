@@ -42,7 +42,7 @@ public:
 	void destroy();
 
 	NetworkArchitecture* getNetworkArchitecture() { return m_pNetworkArchitecture; }
-	const LinkConnection* getOutput() const { return m_pOutput; }
+	const LinkConnection* output() const { return m_pOutput; }
 	const OptimizerSettings* getOptimizerSettings() const { return m_pOptimizerSetting; }
 
 	void setStateInputLayer(wstring name);

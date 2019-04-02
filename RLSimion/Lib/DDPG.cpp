@@ -153,7 +153,7 @@ double DDPG::update(const State * s, const Action * a, const State * s_p, double
 }
 
 void DDPG::updateActor(const State* s, const Action* a, const State* s_p, double r)
-{
+{/*
 	if (SimionApp::get()->pSimGod->bReplayingExperience())
 	{
 		double gamma = SimionApp::get()->pSimGod->getGamma();
@@ -185,11 +185,11 @@ void DDPG::updateActor(const State* s, const Action* a, const State* s_p, double
 		//}
 
 		m_pActorTargetNetwork->softUpdate(m_pActorOnlineNetwork);
-	}
+	}*/
 }
 
 void DDPG::updateCritic(const State* s, const Action* a, const State* s_p, double r)
-{
+{/*
 	if (SimionApp::get()->pSimGod->bReplayingExperience())
 	{
 		double gamma = SimionApp::get()->pSimGod->getGamma();
@@ -226,7 +226,7 @@ void DDPG::updateCritic(const State* s, const Action* a, const State* s_p, doubl
 			m_pCriticTargetNetwork->destroy();
 			m_pCriticTargetNetwork = m_pCriticOnlineNetwork->clone();
 		}
-	}
+	}*/
 
 }
 

@@ -76,6 +76,7 @@ public:
 	//StateActionFunction interface
 	virtual unsigned int getNumOutputs() = 0;
 	virtual vector<double>& evaluate(const State* s, const Action* a) = 0;
+	virtual void evaluate(const vector<double>& s, const vector<double>& a, vector<double>& output) = 0;
 	virtual const vector<string>& getInputStateVariables() = 0;
 	virtual const vector<string>& getInputActionVariables() = 0;
 };
@@ -86,11 +87,14 @@ public:
 	virtual void destroy() = 0;
 
 	virtual void clear() = 0;
-	virtual void addTuple(const State* s, const Action* a, const vector<double>& targetValues) = 0;
-	virtual void addTuple(const State* s, const Action* a, double targetValue) = 0;
-	virtual vector<double>& getInputState() = 0;
-	virtual vector<double>& getInputAction() = 0;
-	virtual vector<double>& getOutput() = 0;
+	virtual void addTuple(const State* s, const Action* a, const State* s_p, double r) = 0;
+
+	virtual vector<double>& s() = 0;
+	virtual vector<double>& a() = 0;
+	virtual vector<double>& s_p() = 0;
+	virtual vector<double>& r() = 0;
+	virtual vector<double>& target() = 0;
+
 	virtual bool isFull() const = 0;
 	virtual size_t size() const = 0;
 	virtual size_t outputSize() const = 0;

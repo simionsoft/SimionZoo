@@ -83,12 +83,12 @@ INetwork* Network::clone(bool bFreezeWeights) const
 		wstring name = input.Name();
 		if (m_pNetworkDefinition->getStateInputLayer() == name)
 		{
-			result->m_inputState = input;
+			result->m_s = input;
 			result->m_bInputStateUsed = true;
 		}
 		else if (m_pNetworkDefinition->getActionInputLayer() == name)
 		{
-			result->m_inputAction = input;
+			result->m_a = input;
 			result->m_bInputActionUsed = true;
 		}
 		else //target layer
@@ -164,12 +164,12 @@ void Network::findInputsAndOutputs()
 		//This avoids the "Target" layer to be added to the list
 		if (m_pNetworkDefinition->getStateInputLayer() == inputVariable.Name())
 		{
-			m_inputState = inputVariable;
+			m_s = inputVariable;
 			m_bInputStateUsed = true;
 		}
 		else if (m_pNetworkDefinition->getActionInputLayer() == inputVariable.Name())
 		{
-			m_inputAction = inputVariable;
+			m_a = inputVariable;
 			m_bInputActionUsed = true;
 		}
 	}
@@ -191,18 +191,18 @@ void Network::train(IMinibatch* pMinibatch)
 	//set inputs
 	if (m_bInputStateUsed)
 	{
-		arguments[m_inputState] = CNTK::Value::CreateBatch(m_inputState.Shape()
-			, pMinibatch->getInputState(), CNTK::DeviceDescriptor::UseDefaultDevice());
+		arguments[m_s] = CNTK::Value::CreateBatch(m_s.Shape()
+			, pMinibatch->s(), CNTK::DeviceDescriptor::UseDefaultDevice());
 	}
 	if (m_bInputActionUsed)
 	{
-		arguments[m_inputAction] = CNTK::Value::CreateBatch(m_inputAction.Shape()
-			, pMinibatch->getInputAction(), CNTK::DeviceDescriptor::UseDefaultDevice());
+		arguments[m_a] = CNTK::Value::CreateBatch(m_a.Shape()
+			, pMinibatch->a(), CNTK::DeviceDescriptor::UseDefaultDevice());
 	}
 
 	//set target outputs
 	arguments[m_targetVariable] = CNTK::Value::CreateBatch(m_targetVariable.Shape()
-		, pMinibatch->getOutput(), CNTK::DeviceDescriptor::UseDefaultDevice());
+		, pMinibatch->target(), CNTK::DeviceDescriptor::UseDefaultDevice());
 	//train the network using the minibatch
 	m_trainer->TrainMinibatch(arguments, DeviceDescriptor::UseDefaultDevice());
 
@@ -233,15 +233,38 @@ void Network::actionToVector(const Action* a, vector<double>& actionVector)
 		actionVector[i] = a->getNormalized(actionVars[i].c_str());
 }
 
+void Network::evaluate(const vector<double>& s, const vector<double>& a, vector<double>& output)
+{
+	ValuePtr outputValue;
+
+	unordered_map<CNTK::Variable, CNTK::ValuePtr> outputs =	{ { m_FunctionPtr->Output(), outputValue } };
+
+	unordered_map<CNTK::Variable, CNTK::ValuePtr> inputs = {};
+
+	if (m_bInputStateUsed)
+		inputs[m_s] = CNTK::Value::CreateBatch(m_s.Shape(), s, CNTK::DeviceDescriptor::UseDefaultDevice());
+
+	vector<double> inputAction;
+	if (m_bInputActionUsed)
+		inputs[m_a] = CNTK::Value::CreateBatch(m_a.Shape(), a, CNTK::DeviceDescriptor::UseDefaultDevice());
+
+	m_FunctionPtr->Evaluate(inputs, outputs, CNTK::DeviceDescriptor::UseDefaultDevice());
+
+	outputValue = outputs[m_FunctionPtr];
+
+	CNTK::NDShape outputShape = m_FunctionPtr->Output().Shape().AppendShape({ 1
+		, output.size() / m_FunctionPtr->Output().Shape().TotalSize() });
+
+	CNTK::NDArrayViewPtr cpuArrayOutput = CNTK::MakeSharedObject<CNTK::NDArrayView>(outputShape
+		, output, false);
+	cpuArrayOutput->CopyFrom(*outputValue->Data());
+}
+
 vector<double>& Network::evaluate(const State* s, const Action* a)
 {
 	ValuePtr outputValue;
 
-	if (m_output.size() % m_FunctionPtr->Output().Shape().TotalSize())
-		throw runtime_error("output vector does not have the right size.");
-
-	unordered_map<CNTK::Variable, CNTK::ValuePtr> outputs =
-		{ { m_FunctionPtr->Output(), outputValue } };
+	unordered_map<CNTK::Variable, CNTK::ValuePtr> outputs =	{ { m_FunctionPtr->Output(), outputValue } };
 
 	unordered_map<CNTK::Variable, CNTK::ValuePtr> inputs = {};
 
@@ -249,14 +272,14 @@ vector<double>& Network::evaluate(const State* s, const Action* a)
 	if (m_bInputStateUsed)
 	{
 		stateToVector(s, inputState);
-		inputs[m_inputState] = CNTK::Value::CreateBatch(m_inputState.Shape()
+		inputs[m_s] = CNTK::Value::CreateBatch(m_s.Shape()
 			, inputState, CNTK::DeviceDescriptor::UseDefaultDevice());
 	}
 	vector<double> inputAction;
 	if (m_bInputActionUsed)
 	{
 		actionToVector(a, inputAction);
-		inputs[m_inputAction] = CNTK::Value::CreateBatch(m_inputAction.Shape()
+		inputs[m_a] = CNTK::Value::CreateBatch(m_a.Shape()
 			, inputAction, CNTK::DeviceDescriptor::UseDefaultDevice());
 	}
 
@@ -284,19 +307,19 @@ void Network::gradientWrtAction(const State* s, const Action* a, vector<double>&
 
 	vector<double> inputState;
 	stateToVector(s, inputState);
-	arguments[m_inputState] = CNTK::Value::CreateBatch(m_inputState.Shape()
+	arguments[m_s] = CNTK::Value::CreateBatch(m_s.Shape()
 		, inputState, CNTK::DeviceDescriptor::UseDefaultDevice());
 	vector<double> inputAction;
 	actionToVector(a, inputAction);
-	arguments[m_inputAction] = CNTK::Value::CreateBatch(m_inputAction.Shape()
+	arguments[m_a] = CNTK::Value::CreateBatch(m_a.Shape()
 		, inputAction, CNTK::DeviceDescriptor::UseDefaultDevice());
 
-	gradients[m_inputAction] = nullptr;
+	gradients[m_a] = nullptr;
 
 	m_FunctionPtr->Gradients(arguments, gradients);
 
 	//copy gradient to cpu vector
-	ValuePtr gradient = gradients[m_inputAction];
+	ValuePtr gradient = gradients[m_a];
 	if (gradient->Shape().TotalSize() != outputGradient.size())
 		throw std::runtime_error("Missmatched length for output vector in gradients()");
 
@@ -314,13 +337,13 @@ void Network::applyGradient(IMinibatch* pMinibatch)
 	unordered_map<Variable, ValuePtr> output = {};
 	if (m_bInputStateUsed)
 	{
-		arguments[m_inputState] = CNTK::Value::CreateBatch(m_inputState.Shape()
-			, pMinibatch->getInputState(), CNTK::DeviceDescriptor::UseDefaultDevice());
+		arguments[m_s] = CNTK::Value::CreateBatch(m_s.Shape()
+			, pMinibatch->s(), CNTK::DeviceDescriptor::UseDefaultDevice());
 	}
 	if (m_bInputActionUsed)
 	{
-		arguments[m_inputAction] = CNTK::Value::CreateBatch(m_inputAction.Shape()
-			, pMinibatch->getInputAction(), CNTK::DeviceDescriptor::UseDefaultDevice());
+		arguments[m_a] = CNTK::Value::CreateBatch(m_a.Shape()
+			, pMinibatch->a(), CNTK::DeviceDescriptor::UseDefaultDevice());
 	}
 	output[m_FunctionPtr] = nullptr;
 	auto backPropState = m_FunctionPtr->Forward(arguments, output, DeviceDescriptor::UseDefaultDevice(), { m_FunctionPtr });
@@ -332,7 +355,7 @@ void Network::applyGradient(IMinibatch* pMinibatch)
 		, RootValue, false));
 
 	for (int i = 0; i < pMinibatch->outputSize()*pMinibatch->size(); i++)
-		RootValue[i] = pMinibatch->getOutput()[i];
+		RootValue[i] = pMinibatch->target()[i];
 
 	unordered_map<Variable, ValuePtr> parameterGradients = {};
 	for (const LearnerPtr& learner : m_trainer->ParameterLearners())
