@@ -33,7 +33,7 @@ public:
 	virtual ~FunctionSampler();
 
 	size_t getNumOutputs() const;
-	virtual const vector<double>& sample(unsigned int outputIndex = 0) = 0;
+	virtual const vector<double>& sample() = 0;
 
 	virtual string getFunctionId() const = 0;
 	virtual size_t getNumSamplesX() = 0;
@@ -51,7 +51,7 @@ public:
 		, Descriptor& stateDescriptor, Descriptor& actionDescriptor
 		, VariableSource xVarSource, string xVarName, VariableSource yVarSource, string yVarName);
 	
-	const vector<double>& sample(unsigned int outputIndex = 0);
+	const vector<double>& sample();
 
 	string getFunctionId() const;
 	size_t getNumSamplesX();
@@ -66,7 +66,7 @@ public:
 	FunctionSampler2D(string functionId, StateActionFunction* pFunction, size_t outputIndex, size_t samplesPerDimension
 		, Descriptor& stateDescriptor, Descriptor& actionDescriptor, VariableSource xVarSource, string xVarName);
 
-	const vector<double>& sample(unsigned int outputIndex = 0);
+	const vector<double>& sample();
 
 	string getFunctionId() const;
 	size_t getNumSamplesX();

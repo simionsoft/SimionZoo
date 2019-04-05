@@ -115,11 +115,8 @@ FunctionSampler3D::FunctionSampler3D(string functionId, StateActionFunction* pFu
 /// </summary>
 /// <param name="outputIndex">Index of the output (the sampler may have more than one output)</param>
 /// <returns>A vector with getNumSamplesX()*getNumSamplesY() samples from the function</returns>
-const vector<double>& FunctionSampler3D::sample(unsigned int outputIndex)
+const vector<double>& FunctionSampler3D::sample()
 {
-	if (outputIndex >= m_numOutputs)
-		throw runtime_error("FunctionSampler3D::sample() was given an incorrect output index");
-
 	double xValue, yValue;
 	double xMinValue, xRangeStep, xRange;
 	NamedVarProperties* pXProperties = m_xVarSource->getProperties(m_xVarName.c_str());// m_sampledVariableSources[0]->getProperties(m_sampledVariableNames[0].c_str());
@@ -143,7 +140,7 @@ const vector<double>& FunctionSampler3D::sample(unsigned int outputIndex)
 			m_xVarSource->set(m_xVarName.c_str(), xValue);// m_sampledVariableSources[0]->set(m_sampledVariableNames[0].c_str(), xValue);
 			vector<double>& output= m_pFunction->evaluate(m_pState, m_pAction);
 
-			m_sampledValues[i] = output[outputIndex];
+			m_sampledValues[i] = output[m_outputIndex];
 			++i;
 		}
 	}
@@ -165,11 +162,8 @@ FunctionSampler2D::FunctionSampler2D(string functionId, StateActionFunction* pFu
 /// </summary>
 /// <param name="outputIndex">Output index (the sampler may have more than one output)</param>
 /// <returns>A vector with getNumSamplesX() samples from the function</returns>
-const vector<double>& FunctionSampler2D::sample(unsigned int outputIndex)
+const vector<double>& FunctionSampler2D::sample()
 {
-	if (outputIndex >= m_numOutputs)
-		throw runtime_error("FunctionSampler2D::sample() was given an incorrect output index");
-
 	double xValue, xMinValue, xRangeStep, xRange;
 	NamedVarProperties* pXProperties = m_xVarSource->getProperties(m_xVarName.c_str());
 	xMinValue = pXProperties->getMin();
@@ -185,7 +179,7 @@ const vector<double>& FunctionSampler2D::sample(unsigned int outputIndex)
 
 		vector<double>& output = m_pFunction->evaluate(m_pState, m_pAction);
 
-		m_sampledValues[i] = output[outputIndex];
+		m_sampledValues[i] = output[m_outputIndex];
 		++i;
 	}
 	return m_sampledValues;
