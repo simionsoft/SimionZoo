@@ -34,3 +34,14 @@ public:
 
 	virtual int selectAction(const std::vector<double>& values);
 };
+
+class DiscreteExplorationDeepPolicy : public DiscreteDeepPolicy
+{
+protected:
+	int m_lastAction = 0;
+	double m_epsilon = 0.98;
+public:
+	DiscreteExplorationDeepPolicy(ConfigNode* pConfigNode);
+
+	virtual int selectAction(const std::vector<double>& values);
+};

@@ -40,7 +40,8 @@ std::shared_ptr<DiscreteDeepPolicy> DiscreteDeepPolicy::getInstance(ConfigNode* 
 	return CHOICE<DiscreteDeepPolicy>(pConfigNode, "Policy", "The policy type",
 	{
 		{ "Discrete-Epsilon-Greedy-Deep-Policy",CHOICE_ELEMENT_NEW<DiscreteEpsilonGreedyDeepPolicy> },
-		{ "Discrete-Softmax-Deep-Policy",CHOICE_ELEMENT_NEW<DiscreteSoftmaxDeepPolicy> }
+		{ "Discrete-Softmax-Deep-Policy",CHOICE_ELEMENT_NEW<DiscreteSoftmaxDeepPolicy> },
+		{ "Discrete-Exploration", CHOICE_ELEMENT_NEW<DiscreteExplorationDeepPolicy>}
 	});
 }
 
@@ -107,3 +108,25 @@ int DiscreteSoftmaxDeepPolicy::selectAction(const std::vector<double>& values)
 	return chooseRandomInteger(newValues);
 }
 
+DiscreteExplorationDeepPolicy::DiscreteExplorationDeepPolicy(ConfigNode * pConfigNode) : DiscreteDeepPolicy(pConfigNode)
+{
+}
+
+int DiscreteExplorationDeepPolicy::selectAction(const vector<double>& values)
+{
+	//greedy action policy on evaluation
+	if (SimionApp::get()->pExperiment->isEvaluationEpisode())
+		return (int) std::distance(values.begin(), std::max_element(values.begin(), values.end()));
+
+	double randomNormNumber = (double)(rand() % 1000) / (double) 1000.0;
+	if (randomNormNumber < m_epsilon)
+		return m_lastAction; //take the same action with probability epsilon
+	if (randomNormNumber < (0.5 *(1.0 + m_epsilon)) && m_lastAction>0) //shift the output to the previous action step with probability (1-epsilon)*0.5
+	{
+		m_lastAction--;
+		return m_lastAction;
+	}
+	if (m_lastAction < values.size() - 1) //shift the output to the next action
+		m_lastAction++;
+	return m_lastAction;
+}

@@ -1,47 +1,49 @@
 <RLSimion FileVersion="1.0.0.0">
 <RLSimion>
 	<Log>
-		<Log-Freq>0.25</Log-Freq>
-		<Log-eval-episodes>true</Log-eval-episodes>
-		<Log-training-episodes>false</Log-training-episodes>
+		<Num-Functions-Logged>10</Num-Functions-Logged>
+		<Log-Freq>0.1</Log-Freq>
+		<Log-Eval-Episodes>true</Log-Eval-Episodes>
+		<Log-Training-Episodes>false</Log-Training-Episodes>
+		<Log-Functions>true</Log-Functions>
 	</Log>
 	<World>
 		<Num-Integration-Steps>4</Num-Integration-Steps>
-		<Delta-T>0.25</Delta-T>
+		<Delta-T>0.02</Delta-T>
 		<Dynamic-Model>
 			<Model>
-		<Mountain-car>
-		</Mountain-car>
+		<Rain-car>
+		</Rain-car>
 		</Model>
 		</Dynamic-Model>
 	</World>
 	<Experiment>
 		<Random-Seed>1</Random-Seed>
-		<Num-Episodes>1000</Num-Episodes>
-		<Eval-Freq>50</Eval-Freq>
-		<Progress-Update-Freq>1.0</Progress-Update-Freq>
-		<Episode-Length>100.0</Episode-Length>
+		<Num-Episodes>10000</Num-Episodes>
+		<Eval-Freq>100</Eval-Freq>
+		<Progress-Update-Freq>0.5</Progress-Update-Freq>
+		<Episode-Length>100</Episode-Length>
 	</Experiment>
 	<SimGod>
 		<Target-Function-Update-Freq>100</Target-Function-Update-Freq>
 		<Gamma>0.9</Gamma>
-		<Freeze-Target-Function>false</Freeze-Target-Function>
+		<Freeze-Target-Function>true</Freeze-Target-Function>
 		<Use-Importance-Weights>false</Use-Importance-Weights>
-                <Experience-Replay>
-	          <Buffer-Size>5000</Buffer-Size>
-	          <Update-Batch-Size>10</Update-Batch-Size>
-                </Experience-Replay>
+		<Experience-Replay>
+			<Buffer-Size>5000</Buffer-Size>
+			<Update-Batch-Size>20</Update-Batch-Size>
+		</Experience-Replay>
 		<Simion>
 			<Type>
 		<DDPG>
 	                <Input-State>
-	                  <Input-State>position</Input-State>
+	                  <Input-State>position-deviation</Input-State>
 	                </Input-State>
 	                <Input-State>
 	                  <Input-State>velocity</Input-State>
 	                </Input-State>
 			<Output-Action>
-			  <Output-Action>pedal</Output-Action>
+			  <Output-Action>acceleration</Output-Action>
 			</Output-Action>
 			<Learning-Rate>0.0001</Learning-Rate>
 			<Tau>0.001</Tau>
