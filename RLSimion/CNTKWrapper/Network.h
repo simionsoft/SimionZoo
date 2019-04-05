@@ -53,10 +53,10 @@ public:
 	void initSoftUpdate(double u, INetwork* pTargetNetwork);
 	void softUpdate(INetwork* pTargetNetwork);
 
-	void train(IMinibatch* pMinibatch);
+	void train(IMinibatch* pMinibatch, const vector<double>& target);
 
-	void gradientWrtAction(const State* s, const Action* a, vector<double>& outputValues);
-	void applyGradient(IMinibatch* pMinibatch);
+	void gradientWrtAction(const vector<double>& s, const vector<double>& a, vector<double>& outputGradient);
+	void applyGradient(IMinibatch* pMinibatch, const vector<double>& target);
 
 	//StateActionFunction interface
 	unsigned int getNumOutputs();

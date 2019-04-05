@@ -40,21 +40,17 @@ DDPG::~DDPG()
 		m_pCriticOnlineNetwork->destroy();
 	if (m_pCriticTargetNetwork!=nullptr)
 		m_pCriticTargetNetwork->destroy();
-	if (m_pCriticMinibatch!=nullptr)
-		m_pCriticMinibatch->destroy();
 
 	m_ActorNetworkDefinition->destroy();
 	if (m_pActorOnlineNetwork !=nullptr)
-	m_pActorOnlineNetwork->destroy();
+		m_pActorOnlineNetwork->destroy();
 	if (m_pActorTargetNetwork!=nullptr)
 		m_pActorTargetNetwork->destroy();
-	if (m_pActorMinibatch!=nullptr)
-		m_pActorMinibatch->destroy();
+
+	if (m_pMinibatch != nullptr)
+		m_pMinibatch->destroy();
 
 	CNTK::WrapperClient::UnLoad();
-
-	if (m_pActorOutput != nullptr)
-		delete m_pActorOutput;
 }
 
 
@@ -75,11 +71,9 @@ DDPG::DDPG(ConfigNode * pConfigNode)
 
 void DDPG::deferredLoadStep()
 {
-	size_t minibatchSize = SimionApp::get()->pSimGod->getExperienceReplayUpdateSize();
-	if (minibatchSize == 0)
+	m_minibatchSize = SimionApp::get()->pSimGod->getExperienceReplayUpdateSize();
+	if (m_minibatchSize == 0)
 		Logger::logMessage(MessageType::Error, "DDPG requires the use of the Experience Replay Buffer technique");
-
-	m_pActorOutput = SimionApp::get()->pWorld->getDynamicModel()->getActionInstance();
 
 	//Set the state-input
 	for (size_t stateVarIndex = 0; stateVarIndex < m_inputState.size(); stateVarIndex++)
@@ -88,12 +82,10 @@ void DDPG::deferredLoadStep()
 		m_ActorNetworkDefinition->addInputStateVar(m_inputState[stateVarIndex]->get());
 	}
 
-	//Set the action-input: for now, only the one used as output of the policy
+	//Set the action-input: only the one used as output of the policy
 	for (size_t actionVarIndex = 0; actionVarIndex < m_outputAction.size(); actionVarIndex++)
-	{
 		m_CriticNetworkDefinition->addInputActionVar(m_outputAction[actionVarIndex]->get());
-	}
-	m_gradientWrtAction = vector<double>(m_outputAction.size());
+	m_gradientWrtAction = vector<double>(m_outputAction.size()*m_minibatchSize);
 
 	//Set critic networks as single-output
 	m_CriticNetworkDefinition->setScalarOutput();
@@ -105,16 +97,21 @@ void DDPG::deferredLoadStep()
 	SimionApp::get()->registerStateActionFunction("Q", m_pCriticOnlineNetwork);
 	m_pCriticTargetNetwork = m_pCriticOnlineNetwork->clone(false);
 	m_pCriticTargetNetwork->initSoftUpdate(m_tau.get(), m_pCriticOnlineNetwork);
-	m_pCriticMinibatch = m_CriticNetworkDefinition->createMinibatch(minibatchSize);
+	m_criticTarget = vector<double>(m_minibatchSize);
 
 	//Actor initialization
 	m_pActorOnlineNetwork = m_ActorNetworkDefinition->createNetwork(m_learningRate.get());
 	SimionApp::get()->registerStateActionFunction("Policy", m_pActorOnlineNetwork);
 	m_pActorTargetNetwork = m_pActorOnlineNetwork->clone(false);
 	m_pActorTargetNetwork->initSoftUpdate(m_tau.get(), m_pActorOnlineNetwork);
-	
-	//The size of the target in the minibatch has to match the number of actions to save the gradient wrt an action
-	m_pActorMinibatch = m_ActorNetworkDefinition->createMinibatch(minibatchSize, m_outputAction.size());
+	m_actorTarget = vector<double>(m_outputAction.size() * m_minibatchSize);
+
+	//Use the number of outputs of the actor
+	m_pMinibatch = m_ActorNetworkDefinition->createMinibatch(m_minibatchSize, m_outputAction.size());
+
+	m_pi_s = vector<double>(m_outputAction.size() * m_minibatchSize);
+	m_pi_s_p = vector<double>(m_outputAction.size() * m_minibatchSize);
+	m_Q_pi_s_p = vector<double>(m_outputAction.size() * m_minibatchSize);
 }
 
 /// <summary>
@@ -146,87 +143,76 @@ double DDPG::selectAction(const State * s, Action * a)
 /// <param name="r">Reward</param>
 double DDPG::update(const State * s, const Action * a, const State * s_p, double r, double behaviorProb)
 {
-	updateCritic(s, a, s_p, r);
-	updateActor(s, a, s_p, r);
+	if (!m_pMinibatch->isFull())
+		m_pMinibatch->addTuple(s, a, s_p, r);
+
+	if (m_pMinibatch->isFull())
+	{
+		updateCritic(s, a, s_p, r);
+		updateActor(s, a, s_p, r);
+
+		m_pMinibatch->clear();
+	}
 	
 	return 0.0;
 }
 
 void DDPG::updateActor(const State* s, const Action* a, const State* s_p, double r)
-{/*
-	if (SimionApp::get()->pSimGod->bReplayingExperience())
+{
+	SimGod* pSimGod = SimionApp::get()->pSimGod.ptr();
+
+	double gamma = SimionApp::get()->pSimGod->getGamma();
+
+	//get pi(s)
+	m_pActorTargetNetwork->evaluate( m_pMinibatch->s(), m_pMinibatch->a(), m_pi_s);
+
+	//gradient = critic->gradient(s, pi(s))
+	m_pCriticTargetNetwork->gradientWrtAction( m_pMinibatch->s(), m_pi_s, m_actorTarget);
+
+	//gradient = -gradient
+	for (size_t i = 0; i < m_outputAction.size()*m_minibatchSize; i++)
+		m_actorTarget[i] *= -1.0;
+
+	m_pActorOnlineNetwork->applyGradient(m_pMinibatch, m_actorTarget);
+
+	if (!pSimGod->bReplayingExperience() && pSimGod->bUpdateFrozenWeightsNow())
 	{
-		double gamma = SimionApp::get()->pSimGod->getGamma();
-
-		//get pi(s)
-		vector<double>& actionValues = m_pActorTargetNetwork->evaluate(s, a);
-
-		//a' = pi(s)
-		for (size_t i = 0; i < m_outputAction.size(); i++)
-			m_pActorOutput->set(m_outputAction[i]->get(), actionValues[i]);
-
-		//gradient = critic->gradient(s, pi(s))
-		m_pCriticTargetNetwork->gradientWrtAction(s, m_pActorOutput, m_gradientWrtAction);
-
-		//gradient = -gradient
-		for (size_t i = 0; i < m_outputAction.size(); i++)
-			m_gradientWrtAction[i] *= -1.0;
-
-		m_pActorMinibatch->addTuple(s, m_pActorOutput, m_gradientWrtAction);
+		m_pActorTargetNetwork->destroy();
+		m_pActorTargetNetwork = m_pActorOnlineNetwork->clone();
 	}
-	else if (m_pActorMinibatch->isFull())
-	{
-		m_pActorOnlineNetwork->applyGradient(m_pActorMinibatch);
 
-		//if (SimionApp::get()->pExperiment->getExperimentStep() % 10)
-		//{
-		//	m_pActorTargetNetwork->destroy();
-		//	m_pActorTargetNetwork = m_pActorOnlineNetwork->clone();
-		//}
-
-		m_pActorTargetNetwork->softUpdate(m_pActorOnlineNetwork);
-	}*/
+	//m_pActorTargetNetwork->softUpdate(m_pActorOnlineNetwork);
 }
 
 void DDPG::updateCritic(const State* s, const Action* a, const State* s_p, double r)
-{/*
-	if (SimionApp::get()->pSimGod->bReplayingExperience())
+{
+	SimGod* pSimGod = SimionApp::get()->pSimGod.ptr();
+
+	double gamma = pSimGod->getGamma();
+
+	//calculate pi(s_p)
+	m_pActorTargetNetwork->evaluate(m_pMinibatch->s_p(), m_pMinibatch->a(), m_pi_s_p);
+
+	m_pCriticTargetNetwork->evaluate(m_pMinibatch->s_p(), m_pi_s_p, m_Q_pi_s_p);
+
+	//for each tuple in the minibatch
+	for (int i = 0; i < m_minibatchSize; i++)
 	{
-		double gamma = SimionApp::get()->pSimGod->getGamma();
-
-		//calculate pi(s_p)
-		vector<double>& actionValues = m_pActorTargetNetwork->evaluate(s_p, a);
-
-		//a' = pi(s_p)
-		for (size_t i = 0; i < m_outputAction.size(); i++)
-			m_pActorOutput->set(m_outputAction[i]->get(), actionValues[i]);
-		
-		//calculate Q'(mu'(s_p))
-		double s_p_value = m_pCriticTargetNetwork->evaluate(s_p, m_pActorOutput)[0]; //we assume only the critic will have only one output
-
 		//calculate targetvalue= r + gamma*Q(s_p,a)
-		double targetValue = r + gamma * s_p_value;
-
-		//add a new tuple to the minibatch
-		m_pCriticMinibatch->addTuple(s, a, targetValue);
+		m_criticTarget[i] = r + gamma * m_Q_pi_s_p[i];
 	}
-	//We only train the network in direct-experience updates to simplify mini-batching
-	else if (m_pCriticMinibatch->isFull())
+
+	//update the network finally
+	m_pCriticOnlineNetwork->train(m_pMinibatch, m_criticTarget);
+
+	//move the target weights toward the online weights
+	//m_pCriticTargetNetwork->softUpdate(m_pCriticOnlineNetwork);
+
+	if (!pSimGod->bReplayingExperience() && pSimGod->bUpdateFrozenWeightsNow())
 	{
-		SimGod* pSimGod = SimionApp::get()->pSimGod.ptr();
-
-		//update the network finally
-		m_pCriticOnlineNetwork->train(m_pCriticMinibatch);
-
-		//move the target weights toward the online weights
-		//m_pCriticTargetNetwork->softUpdate(m_pCriticOnlineNetwork);
-
-		if (SimionApp::get()->pExperiment->getExperimentStep() % 10)
-		{
-			m_pCriticTargetNetwork->destroy();
-			m_pCriticTargetNetwork = m_pCriticOnlineNetwork->clone();
-		}
-	}*/
+		m_pCriticTargetNetwork->destroy();
+		m_pCriticTargetNetwork = m_pCriticOnlineNetwork->clone();
+	}
 
 }
 

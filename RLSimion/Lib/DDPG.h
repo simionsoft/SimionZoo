@@ -26,23 +26,25 @@ class DDPG : public Simion, DeferredLoad
 	NN_DEFINITION m_CriticNetworkDefinition;
 	INetwork* m_pCriticOnlineNetwork= nullptr;
 	INetwork* m_pCriticTargetNetwork= nullptr;
-	IMinibatch* m_pCriticMinibatch= nullptr;
+	vector<double> m_criticTarget;
 
 	NN_DEFINITION m_ActorNetworkDefinition;
 	INetwork* m_pActorOnlineNetwork= nullptr;
 	INetwork* m_pActorTargetNetwork= nullptr;
-	IMinibatch* m_pActorMinibatch= nullptr;
+	vector<double> m_actorTarget;
 
 	IMinibatch* m_pMinibatch = nullptr;
+	size_t m_minibatchSize;
 
+	vector<double> m_pi_s;
+	vector<double> m_pi_s_p;
+	vector<double> m_Q_pi_s_p;
+	
 	vector<double> m_gradientWrtAction;
 
 	CHILD_OBJECT_FACTORY<Noise> m_policyNoise;
 	DOUBLE_PARAM m_tau;
 
-	//used to hold the actor's output
-	Action* m_pActorOutput = nullptr;
-	
 	//update policy network
 	void updateActor(const State* s, const Action* a, const State* s_p, double r);
 

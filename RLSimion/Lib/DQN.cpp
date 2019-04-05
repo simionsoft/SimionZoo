@@ -84,15 +84,15 @@ void DQN::deferredLoadStep()
 	//create the minibatch
 	//The size of the minibatch is the experience replay update size
 	//This is because we only perform updates in replaying-experience mode
-	m_minibatchSize = SimionApp::get()->pSimGod->getExperienceReplayUpdateSize();
+	m_minibatchSize = (int) SimionApp::get()->pSimGod->getExperienceReplayUpdateSize();
 	if (m_minibatchSize == 0)
 		Logger::logMessage(MessageType::Error, "Both DQN and Double-DQN require the use of the Experience Replay Buffer technique");
-	if (m_minibatchSize <100)
-		Logger::logMessage(MessageType::Warning, "Small Experience Replay Buffer sizes can be expected to perform worse. Tests with Cntk suggest using about 10^3 tuples");
+
 	m_pMinibatch = m_pNNDefinition->createMinibatch(m_minibatchSize);
 
 	m_Q_s_p = vector<double>(m_minibatchSize * m_numActionSteps.get());
 	m_argMax = vector<int>(m_minibatchSize);
+	m_target = vector<double>(m_minibatchSize * m_numActionSteps.get());
 }
 
 /// <summary>
@@ -130,7 +130,8 @@ double DQN::update(const State * s, const Action * a, const State * s_p, double 
 	{
 		m_pMinibatch->addTuple(s, a, s_p, r);
 	}
-	else
+
+	if (m_pMinibatch->isFull())
 	{
 		//minibatch is full: ready for training
 		double gamma = SimionApp::get()->pSimGod->getGamma();
@@ -155,7 +156,7 @@ double DQN::update(const State * s, const Action * a, const State * s_p, double 
 			m_pTargetQNetwork->evaluate(m_pMinibatch->s_p(), m_pMinibatch->a(), m_Q_s_p);
 
 		//get the value of Q(s) for each tuple
-		m_pOnlineQNetwork->evaluate(m_pMinibatch->s(), m_pMinibatch->a(), m_pMinibatch->target());
+		m_pOnlineQNetwork->evaluate(m_pMinibatch->s(), m_pMinibatch->a(), m_target);
 
 		//for each tuple in the minibatch
 		for (int i = 0; i < m_minibatchSize; i++)
@@ -166,11 +167,13 @@ double DQN::update(const State * s, const Action * a, const State * s_p, double 
 			//change the target value only for the selected action, the rest remain the same
 			//store the index of the action taken
 			size_t selectedActionId = m_pNNDefinition->getClosestOutputIndex(m_pMinibatch->a()[i]);
-			m_pMinibatch->target()[i*m_numActionSteps.get() + selectedActionId] = targetValue;
+			m_target[i*m_numActionSteps.get() + selectedActionId] = targetValue;
 		}
 
 		//train the network
-		m_pOnlineQNetwork->train(m_pMinibatch);
+		m_pOnlineQNetwork->train(m_pMinibatch, m_target);
+
+		m_pMinibatch->clear();
 	}
 
 	SimGod* pSimGod = SimionApp::get()->pSimGod.ptr();

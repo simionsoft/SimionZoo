@@ -17,7 +17,7 @@ class Minibatch: public IMinibatch
 	vector<double> m_r;
 
 	size_t m_outputSize = 0;
-	vector<double> m_target;
+
 public:
 	Minibatch(size_t size, NetworkDefinition* pNetworkDefinition, size_t outputSize= 0);
 	virtual ~Minibatch();
@@ -29,7 +29,6 @@ public:
 	vector<double>& a();
 	vector<double>& s_p();
 	vector<double>& r();
-	vector<double>& target();
 
 	void destroy();
 	bool isFull() const;

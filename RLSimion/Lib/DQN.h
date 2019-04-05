@@ -32,6 +32,7 @@ protected:
 	IMinibatch* m_pMinibatch = nullptr;
 
 	vector<double> m_Q_s_p;
+	vector<double> m_target;
 	vector<int> m_argMax;
 
 	CHILD_OBJECT_FACTORY<DiscreteDeepPolicy> m_policy;

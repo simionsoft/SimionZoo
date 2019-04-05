@@ -184,7 +184,7 @@ void Network::save(string fileName)
 }
 
 
-void Network::train(IMinibatch* pMinibatch)
+void Network::train(IMinibatch* pMinibatch, const vector<double>& target)
 {
 	unordered_map<CNTK::Variable, CNTK::MinibatchData> arguments =
 		unordered_map<CNTK::Variable, CNTK::MinibatchData>();
@@ -202,12 +202,9 @@ void Network::train(IMinibatch* pMinibatch)
 
 	//set target outputs
 	arguments[m_targetVariable] = CNTK::Value::CreateBatch(m_targetVariable.Shape()
-		, pMinibatch->target(), CNTK::DeviceDescriptor::UseDefaultDevice());
+		, target, CNTK::DeviceDescriptor::UseDefaultDevice());
 	//train the network using the minibatch
 	m_trainer->TrainMinibatch(arguments, DeviceDescriptor::UseDefaultDevice());
-
-	//clear the minibatch
-	pMinibatch->clear();
 }
 
 void Network::setOutputLayer(CNTK::FunctionPtr outputLayer)
@@ -297,7 +294,7 @@ vector<double>& Network::evaluate(const State* s, const Action* a)
 	return m_output;
 }
 
-void Network::gradientWrtAction(const State* s, const Action* a, vector<double>& outputGradient)
+void Network::gradientWrtAction(const vector<double>& s, const vector<double>& a, vector<double>& outputGradient)
 {
 	unordered_map<Variable, ValuePtr> arguments = {};
 	unordered_map<Variable, ValuePtr> gradients = {};
@@ -305,14 +302,11 @@ void Network::gradientWrtAction(const State* s, const Action* a, vector<double>&
 	if (!m_bInputStateUsed || !m_bInputActionUsed)
 		throw std::runtime_error("Can only use gradient() with f(s,a)-form functions");
 
-	vector<double> inputState;
-	stateToVector(s, inputState);
 	arguments[m_s] = CNTK::Value::CreateBatch(m_s.Shape()
-		, inputState, CNTK::DeviceDescriptor::UseDefaultDevice());
-	vector<double> inputAction;
-	actionToVector(a, inputAction);
+		, s, CNTK::DeviceDescriptor::UseDefaultDevice());
+
 	arguments[m_a] = CNTK::Value::CreateBatch(m_a.Shape()
-		, inputAction, CNTK::DeviceDescriptor::UseDefaultDevice());
+		, a, CNTK::DeviceDescriptor::UseDefaultDevice());
 
 	gradients[m_a] = nullptr;
 
@@ -328,7 +322,7 @@ void Network::gradientWrtAction(const State* s, const Action* a, vector<double>&
 	qParameterGradientCpuArrayView->CopyFrom(*gradient->Data());
 }
 
-void Network::applyGradient(IMinibatch* pMinibatch)
+void Network::applyGradient(IMinibatch* pMinibatch, const vector<double>& target)
 {
 	//Similar to the actual training function in https://github.com/Microsoft/CNTK/blob/94e6582d2f63ce3bb048b9da01679abeacda877f/Source/CNTKv2LibraryDll/Trainer.cpp#L193
 	//but with a different root value (taken from the minibatch) that, in the case of DDPG, should be -dQ(s,a)/da
@@ -355,7 +349,7 @@ void Network::applyGradient(IMinibatch* pMinibatch)
 		, RootValue, false));
 
 	for (int i = 0; i < pMinibatch->outputSize()*pMinibatch->size(); i++)
-		RootValue[i] = pMinibatch->target()[i];
+		RootValue[i] = target[i];
 
 	unordered_map<Variable, ValuePtr> parameterGradients = {};
 	for (const LearnerPtr& learner : m_trainer->ParameterLearners())

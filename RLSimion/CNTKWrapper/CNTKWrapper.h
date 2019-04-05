@@ -68,10 +68,10 @@ public:
 	virtual void initSoftUpdate(double u, INetwork* pTargetNetwork) = 0;
 	virtual void softUpdate(INetwork* pTargetNetwork) = 0;
 
-	virtual void train(IMinibatch* pMinibatch) = 0;
+	virtual void train(IMinibatch* pMinibatch, const vector<double>& target) = 0;
 
-	virtual void gradientWrtAction(const State* s, const Action* a, vector<double>& outputValues) = 0;
-	virtual void applyGradient(IMinibatch* pMinibatch) = 0;
+	virtual void gradientWrtAction(const vector<double>& s, const vector<double>& a, vector<double>& outputValues) = 0;
+	virtual void applyGradient(IMinibatch* pMinibatch, const vector<double>& target) = 0;
 
 	//StateActionFunction interface
 	virtual unsigned int getNumOutputs() = 0;
@@ -93,7 +93,6 @@ public:
 	virtual vector<double>& a() = 0;
 	virtual vector<double>& s_p() = 0;
 	virtual vector<double>& r() = 0;
-	virtual vector<double>& target() = 0;
 
 	virtual bool isFull() const = 0;
 	virtual size_t size() const = 0;

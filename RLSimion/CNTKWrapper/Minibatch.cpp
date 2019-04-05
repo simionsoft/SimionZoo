@@ -46,8 +46,6 @@ Minibatch::Minibatch(size_t size, NetworkDefinition* pNetworkDefinition, size_t 
 		m_outputSize = pNetworkDefinition->getOutputSize();
 	else
 		m_outputSize = outputSize;
-
-	m_target = vector<double>(size*m_outputSize);
 }
 
 
@@ -112,11 +110,6 @@ vector<double>& Minibatch::s_p()
 vector<double>& Minibatch::r()
 {
 	return m_r;
-}
-
-vector<double>& Minibatch::target()
-{
-	return m_target;
 }
 
 void Minibatch::destroy()
