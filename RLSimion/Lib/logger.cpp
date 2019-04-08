@@ -195,7 +195,10 @@ void Logger::writeLogFileXMLDescriptor(const char* filename)
 			CrossPlatform::Sprintf_s(buffer, BUFFER_SIZE, "<ExperimentLogDescriptor BinaryDataFile=\"%s\" SceneFile=\"%s\">\n"
 				, getFilename(m_outputLogBinary).c_str()
 				, (SimionApp::get()->pWorld->getDynamicModel()->getName() + string(".scene")).c_str());
-		writeEpisodeTypesToBuffer(buffer);
+		//write the types of episodes
+		if (m_bLogEvaluationEpisodes.get()) CrossPlatform::Strcat_s(buffer, BUFFER_SIZE, "  <Episode-Type Id=\"0\">Evaluation</Episode-Type>\n");
+		if (m_bLogTrainingEpisodes.get()) CrossPlatform::Strcat_s(buffer, BUFFER_SIZE, "  <Episode-Type Id=\"1\">Training</Episode-Type>\n");
+		//write the variable descriptors: state, action, reward and stats
 		writeNamedVarSetDescriptorToBuffer(buffer, "State", SimionApp::get()->pWorld->getDynamicModel()->getStateDescriptorPtr()); //state
 		writeNamedVarSetDescriptorToBuffer(buffer, "Action", SimionApp::get()->pWorld->getDynamicModel()->getActionDescriptorPtr()); //action
 		writeNamedVarSetDescriptorToBuffer(buffer, "Reward", SimionApp::get()->pWorld->getRewardVector()->getDescriptorPtr());
@@ -206,14 +209,6 @@ void Logger::writeLogFileXMLDescriptor(const char* filename)
 		fclose(logXMLDescriptorFile);
 	}
 	else logMessage(MessageType::Warning, "Couldn't save experiment log descriptor");
-}
-
-void Logger::writeEpisodeTypesToBuffer(char* pOutBuffer)
-{
-	if (m_bLogEvaluationEpisodes.get()) CrossPlatform::Strcat_s(pOutBuffer, BUFFER_SIZE
-		, "  <Episode-Type Id=\"0\">Evaluation</Episode-Type>\n");
-	if (m_bLogTrainingEpisodes.get()) CrossPlatform::Strcat_s(pOutBuffer, BUFFER_SIZE
-		, "  <Episode-Type Id=\"1\">Training</Episode-Type>\n");
 }
 
 void Logger::writeStatDescriptorToBuffer(char* pOutBuffer)
@@ -250,6 +245,13 @@ void Logger::writeNamedVarSetDescriptorToBuffer(char* pOutBuffer, const char* id
 /// </summary>
 void Logger::firstEpisode()
 {
+	//allocate memory to store and calculate averaged data
+	m_numLoggedVars = World::getDynamicModel()->getStateDescriptor().size() + World::getDynamicModel()->getActionDescriptor().size()
+		+ World::getDynamicModel()->getRewardVector()->getNumVars();
+
+	m_avgLogData = vector<double>(m_numLoggedVars);
+	resetAvgLogData();
+
 	//set episode start time
 	m_pEpisodeTimer->start();
 
@@ -352,26 +354,47 @@ void Logger::timestep(State* s, Action* a, State* s_p, Reward* r)
 	//we add the scalar reward in evaluation episodes for monitoring purposes, no matter if we are logging this type of episode or not
 	if (bEvalEpisode) m_episodeRewardSum += r->getSumValue();
 
-	//update experiment stats
-	for (auto iterator = m_stats.begin(); iterator != m_stats.end(); iterator++)
-	{
-		(*iterator)->addSample();
-	}
-
+	addLogDataSample(s_p, a, r); //We log s_p instead of s to log a coherent state-reward: r= f(s_p)
+	
 	if (!isEpisodeTypeLogged(bEvalEpisode)) return;
 
 	//output episode log data
 	if (SimionApp::get()->pWorld->getStepStartSimTime() - m_lastLogSimulationT >= m_logFreq.get()
 		|| SimionApp::get()->pExperiment->isFirstStep() || SimionApp::get()->pExperiment->isLastStep())
 	{
-		writeStepData(s, a, s_p, r);
-		//reset stats
-		for (auto it = m_stats.begin(); it != m_stats.end(); it++) (*it)->reset();
+		writeLogData();
+
+		resetAvgLogData();
+
 		m_lastLogSimulationT = SimionApp::get()->pWorld->getStepStartSimTime();
 	}
 }
 
-void Logger::writeStepData(State* s, Action* a, State* s_p, Reward* r)
+void Logger::addLogDataSample(State* s, Action* a, Reward* r)
+{
+	m_numSamples++;
+
+	size_t variableIndex = 0;
+	//state
+	for (size_t i = 0; i < s->getNumVars(); i++) { m_avgLogData[variableIndex] += s->get(i); variableIndex++; }
+	//action
+	for (size_t i = 0; i < a->getNumVars(); i++) { m_avgLogData[variableIndex] += a->get(i); variableIndex++; }
+	//reward
+	for (size_t i = 0; i < r->getNumVars(); i++) { m_avgLogData[variableIndex] += r->get(i); variableIndex++; }
+	//stats
+	for (auto iterator = m_stats.begin(); iterator != m_stats.end(); iterator++) (*iterator)->addSample();
+}
+
+void Logger::resetAvgLogData()
+{
+	//reset averaged data
+	m_numSamples = 0;
+	for (size_t i = 0; i < m_numLoggedVars; i++) m_avgLogData[i] = 0.0;
+	//reset stats
+	for (auto it = m_stats.begin(); it != m_stats.end(); it++) (*it)->reset();
+}
+
+void Logger::writeLogData()
 {
 	int offset = 0;
 	char buffer[BUFFER_SIZE];
@@ -379,10 +402,8 @@ void Logger::writeStepData(State* s, Action* a, State* s_p, Reward* r)
 
 	offset += writeStepHeaderToBuffer(buffer, offset);
 
-	//We log s_p instead of s to log a coherent state-reward: r= f(s_p)
-	offset += writeNamedVarSetToBuffer(buffer, offset, s_p);
-	offset += writeNamedVarSetToBuffer(buffer, offset, a);
-	offset += writeNamedVarSetToBuffer(buffer, offset, r);
+	offset += writeAvgLogData(buffer, offset);
+
 	offset += writeStatsToBuffer(buffer, offset);
 
 	writeLogBuffer(buffer, offset);
@@ -444,13 +465,17 @@ int Logger::writeStepHeaderToBuffer(char* buffer, int offset)
 	return sizeof(header);
 }
 
-int Logger::writeNamedVarSetToBuffer(char* buffer, int offset, const NamedVarSet* pNamedVarSet)
+int Logger::writeAvgLogData(char* buffer, int offset)
 {
-	size_t numVars = pNamedVarSet->getNumVars();
 	double* pDoubleBuffer = (double*)(buffer + offset);
-	for (size_t i = 0; i < numVars; ++i)
-		pDoubleBuffer[i] = pNamedVarSet->get(i);
-	return (int) (numVars * sizeof(double));
+	for (size_t i = 0; i < m_numLoggedVars; ++i)
+	{
+		//Because we may not be logging all the steps, we need to save the average values instead of only the current value
+		if (m_numSamples > 0)
+			pDoubleBuffer[i] = m_avgLogData[i] / m_numSamples;
+		else pDoubleBuffer[i] = 0.0;
+	}
+	return (int) (m_numLoggedVars * sizeof(double));
 }
 
 int Logger::writeStatsToBuffer(char* buffer, int offset)
@@ -460,8 +485,7 @@ int Logger::writeStatsToBuffer(char* buffer, int offset)
 	int i = 0;
 	for (auto it = m_stats.begin(); it != m_stats.end(); ++it)
 	{
-		//Because we may not be logging all the steps, we need to save the average value from the last logged step
-		//instead of only the current value
+		//Because we may not be logging all the steps, we need to save the average values instead of only the current value
 		pDoubleBuffer[i] = (*it)->getStatsInfo()->getAvg();
 		++i;
 	}

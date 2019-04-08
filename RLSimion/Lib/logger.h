@@ -1,6 +1,8 @@
 #pragma once
 
 #include <vector>
+using namespace std;
+
 #include "parameters.h"
 #include "../../tools/System/NamedPipe.h"
 #include "stats.h"
@@ -58,18 +60,24 @@ private:
 
 	void writeNamedVarSetDescriptorToBuffer(char* buffer, const char* id, const Descriptor* pNamedVarSet);
 	void writeStatDescriptorToBuffer(char* buffer);
-	void writeEpisodeTypesToBuffer(char* buffer);
 
 	void writeExperimentHeader();
 	void writeEpisodeHeader();
 	void writeEpisodeEndHeader();
 	int writeStepHeaderToBuffer(char* buffer, int offset);
-	void writeStepData(State* s, Action* a, State* s_p, Reward* r);
-	int writeNamedVarSetToBuffer(char* buffer, int offset, const NamedVarSet* pNamedVarSet);
+	int writeAvgLogData(char* buffer, int offset);
 	int writeStatsToBuffer(char* buffer, int offset);
 
+	void writeLogData();
+	void addLogDataSample(State* s, Action* a, Reward* r);
+	void resetAvgLogData();
+
 	//stats
-	std::vector<IStats *> m_stats;
+	vector<IStats *> m_stats;
+	//Variables used to log averaged data (state/action/reward)
+	size_t m_numSamples = 0;
+	size_t m_numLoggedVars = 0;
+	vector<double> m_avgLogData;
 public:
 	static const unsigned int BIN_FILE_VERSION = 2;
 

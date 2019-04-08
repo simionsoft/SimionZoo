@@ -132,10 +132,10 @@ void RewardFunction::initialize()
 		
 		for (size_t i = 0; i < numComponents; ++i)
 		{
-			rewardDescriptor.addVariable(m_rewardComponents[i]->getName(), "unitless"
+			m_rewardDescriptor.addVariable(m_rewardComponents[i]->getName(), "unitless"
 				, m_rewardComponents[i]->getMin(), m_rewardComponents[i]->getMax());
 		}
-		m_pRewardVector = rewardDescriptor.getInstance();
+		m_pRewardVector = m_rewardDescriptor.getInstance();
 		for (unsigned int i= 0; i<numComponents; ++i)
 		{
 			m_pRewardVector->getProperties(i)->setName(m_rewardComponents[i]->getName());
@@ -155,6 +155,13 @@ Reward* RewardFunction::getRewardVector()
 	return m_pRewardVector;
 }
 
+Reward* RewardFunction::getRewardInstance()
+{
+	if (!m_bInitialized)
+		SimionApp::get()->pLogger->logMessage(MessageType::Error, "Reward has not been initialized, can't use it");
+
+	return m_rewardDescriptor.getInstance();
+}
 
 /// <summary>
 /// If we want to override the final reward in some special states (i.e. a negative reward if FAST simulator crashed)

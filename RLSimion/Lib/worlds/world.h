@@ -48,6 +48,7 @@ public:
 
 	double getReward(const State *s, const Action *a, const State *s_p);
 	Reward* getRewardVector();
+	Reward* getRewardInstance();
 
 	Descriptor& getStateDescriptor();
 	Descriptor* getStateDescriptorPtr();

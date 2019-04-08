@@ -288,6 +288,12 @@ Action* DynamicModel::getActionInstance()
 	return m_pActionDescriptor->getInstance();
 }
 
+Reward* DynamicModel::getRewardInstance()
+{
+	return m_pRewardFunction->getRewardInstance();
+}
+
+
 std::shared_ptr<DynamicModel> DynamicModel::getInstance(ConfigNode* pConfigNode)
 {
 	return CHOICE<DynamicModel>(pConfigNode, "Model", "The world",

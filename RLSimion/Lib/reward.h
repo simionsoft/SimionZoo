@@ -45,7 +45,7 @@ class RewardFunction
 {
 	std::vector<IRewardComponent*> m_rewardComponents;
 
-	Descriptor rewardDescriptor;
+	Descriptor m_rewardDescriptor;
 	Reward* m_pRewardVector;
 	bool m_bInitialized;
 
@@ -60,6 +60,7 @@ public:
 	virtual ~RewardFunction();
 
 	Reward* getRewardVector();
+	Reward* getRewardInstance();
 	double getReward(const State *s, const Action *a, const State *s_p);
 	
 	//This method can be used to, instead of calculating the next reward, return the given value
