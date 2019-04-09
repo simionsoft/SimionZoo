@@ -307,7 +307,6 @@ void SimionApp::run()
 
 	double r;
 	double probability;
-	pLogger->addVarToStats<double>("reward", "r", r);
 
 	//load stuff we don't want to be loaded in the constructors for faster construction
 	pSimGod->deferredLoad();
@@ -379,7 +378,7 @@ void SimionApp::initRenderer(string sceneFile, State* s, Action* a)
 
 	//initialize the render if a scene file can be found
 	string sceneDir = "../config/scenes/";
-	if (!bFileExists(sceneDir + sceneFile))
+	if (!fileExists(sceneDir + sceneFile))
 		return;
 
 	m_pRenderer = new Renderer();
