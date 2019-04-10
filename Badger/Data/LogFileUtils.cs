@@ -120,8 +120,8 @@ namespace Badger.Data
         /// <returns></returns>
         public static Track LoadTrackData(LoggedExperimentalUnitViewModel expUnit, List<Report> reports)
         {
-            Log.SimionLog Log = new Log.SimionLog();
-            Log.LoadBinaryLog(expUnit.LogFileName);
+            Log.Data Log = new Log.Data();
+            Log.Load(expUnit.LogFileName);
 
             if (!Log.SuccessfulLoad || Log.TotalNumEpisodes == 0) return null;
 

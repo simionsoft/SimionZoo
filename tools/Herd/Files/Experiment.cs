@@ -83,7 +83,14 @@ namespace Herd.Files
                             if (loadOptions.LoadVariablesInLog)
                             {
                                 //We load the list of variables from the log descriptor and add them to the global list
-                                newExpUnit.Variables = Log.LoadLogDescriptor(newExpUnit.LogDescriptorFileName);
+                                Log.Descriptor logDescriptor = new Log.Descriptor(newExpUnit.LogDescriptorFileName);
+                                newExpUnit.Variables.AddRange(logDescriptor.StateVariables);
+                                newExpUnit.Variables.AddRange(logDescriptor.ActionVariables);
+                                newExpUnit.Variables.AddRange(logDescriptor.RewardVariables);
+                                newExpUnit.Variables.AddRange(logDescriptor.StatVariables);
+                                //these two must be added manually
+                                newExpUnit.Variables.Add(Log.Data.EpisodeRealTimeVariable);
+                                newExpUnit.Variables.Add(Log.Data.ExperimentRealTimeVariable);
                                 foreach (string variable in newExpUnit.Variables) AddVariable(variable);
                             }
                             ExperimentalUnits.Add(newExpUnit);

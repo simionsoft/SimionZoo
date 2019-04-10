@@ -32,45 +32,56 @@ namespace Herd.Files
 {
     public class Log
     {
-        /// <summary>
-        /// This method returns the list of variables in the log file from the log descriptor
-        /// in the same order as they are defined in the descriptor
-        /// </summary>
-        /// <returns>The list of variables read from the log descriptor</returns>
-        static public List<string> LoadLogDescriptor(string logDescriptorFileName)
+        public class Descriptor
         {
-            List<string> variableList = new List<string>();
-            XmlDocument logDescriptor = new XmlDocument();
-            if (File.Exists(logDescriptorFileName))
+            public List<string> StateVariables { get; } = new List<string>();
+            public List<string> ActionVariables { get; } = new List<string>();
+            public List<string> RewardVariables { get; } = new List<string>();
+            public List<string> StatVariables { get; } = new List<string>();
+            public string BinaryLogFile { get; } = null;
+            public string SceneFile { get; } = null;
+
+            /// <summary>
+            /// This method returns the list of variables in the log file from the log descriptor
+            /// in the same order as they are defined in the descriptor
+            /// </summary>
+            /// <returns>The list of variables read from the log descriptor</returns>
+            public Descriptor(string logDescriptorFileName)
             {
-                try
+                List<string> variableList = new List<string>();
+                XmlDocument logDescriptor = new XmlDocument();
+                if (File.Exists(logDescriptorFileName))
                 {
-                    logDescriptor.Load(logDescriptorFileName);
-                    XmlNode node = logDescriptor.FirstChild;
-                    if (node.Name == XMLTags.descriptorRootNodeName)
+                    try
                     {
-                        foreach (XmlNode child in node.ChildNodes)
+                        logDescriptor.Load(logDescriptorFileName);
+                        XmlNode node = logDescriptor.FirstChild;
+                        if (node.Name == XMLTags.descriptorRootNodeName)
                         {
-                            if (child.Name == XMLTags.descriptorStateVarNodeName
-                                || child.Name == XMLTags.descriptorActionVarNodeName
-                                || child.Name == XMLTags.descriptorRewardVarNodeName
-                                || child.Name == XMLTags.descriptorStatVarNodeName)
+                            if (node.Attributes.GetNamedItem(XMLTags.descriptorBinaryDataFile) != null)
+                                BinaryLogFile = node.Attributes[XMLTags.descriptorBinaryDataFile].Value;
+                            if (node.Attributes.GetNamedItem(XMLTags.descriptorSceneFile) != null)
+                                SceneFile = node.Attributes[XMLTags.descriptorSceneFile].Value;
+
+                            foreach (XmlNode child in node.ChildNodes)
                             {
                                 string variableName = child.InnerText;
-                                variableList.Add(variableName);
+                                switch (child.Name)
+                                {
+                                    case XMLTags.descriptorStateVarNodeName: StateVariables.Add(variableName); break;
+                                    case XMLTags.descriptorActionVarNodeName: ActionVariables.Add(variableName); break;
+                                    case XMLTags.descriptorRewardVarNodeName: RewardVariables.Add(variableName); break;
+                                    case XMLTags.descriptorStatVarNodeName: StatVariables.Add(variableName); break;
+                                }
                             }
                         }
-                        //Add manually a variable representing the real time
-                        variableList.Add(SimionLog.ExperimentRealTimeVariable);
-                        variableList.Add(SimionLog.EpisodeRealTimeVariable);
+                    }
+                    catch (Exception ex)
+                    {
+                        throw new Exception("Error loading log descriptor: " + logDescriptorFileName + ex.Message);
                     }
                 }
-                catch (Exception ex)
-                {
-                    throw new Exception("Error loading log descriptor: " + logDescriptorFileName + ex.Message);
-                }
             }
-            return variableList;
         }
 
         public class StepData
@@ -92,8 +103,8 @@ namespace Herd.Files
                 expRealTime = logReader.ReadDouble();
                 episodeSimTime = logReader.ReadDouble();
                 episodeRealTime = logReader.ReadDouble();
-                logReader.ReadChars(sizeof(double) * (SimionLog.HEADER_MAX_SIZE - 5));
-                if (magicNumber == SimionLog.EPISODE_END_HEADER) return true;
+                logReader.ReadChars(sizeof(double) * (Data.HEADER_MAX_SIZE - 5));
+                if (magicNumber == Data.EPISODE_END_HEADER) return true;
 
                 //not the final step, we have to read the logged variables
                 byte[] buffer = logReader.ReadBytes(sizeof(double) * (int)numLoggedVariables);
@@ -129,10 +140,10 @@ namespace Herd.Files
                 index = (int)logReader.ReadInt64();
                 numVariablesLogged = (int)logReader.ReadInt64();
                 subIndex = (int)logReader.ReadInt64();
-                byte[] padding = logReader.ReadBytes(sizeof(double) * (SimionLog.HEADER_MAX_SIZE - 5));
+                byte[] padding = logReader.ReadBytes(sizeof(double) * (Data.HEADER_MAX_SIZE - 5));
             }
         }
-        public class SimionLog
+        public class Data
         {
             public const string ExperimentRealTimeVariable = "Experiment-RealTime";
             public const string EpisodeRealTimeVariable = "Episode-RealTime";
@@ -163,7 +174,7 @@ namespace Herd.Files
             /// or not, BinFileLoadSuccess can be checked after calling this method.
             /// </summary>
             /// <returns></returns>
-            public bool LoadBinaryLog(string LogFileName)
+            public bool Load(string LogFileName)
             {
                 try
                 {
@@ -210,7 +221,7 @@ namespace Herd.Files
                 }
                 catch (Exception ex)
                 {
-                    Console.WriteLine(ex.ToString());
+                    Console.WriteLine("ERROR. Could not open log file: " + LogFileName);
                     SuccessfulLoad = false;
                 }
                 return SuccessfulLoad;
@@ -226,7 +237,7 @@ namespace Herd.Files
                 int magicNumber = (int)logReader.ReadInt64();
                 FileFormatVersion = (int)logReader.ReadInt64();
                 TotalNumEpisodes = (int)logReader.ReadInt64();
-                byte[] padding = logReader.ReadBytes(sizeof(double) * (SimionLog.HEADER_MAX_SIZE - 3));
+                byte[] padding = logReader.ReadBytes(sizeof(double) * (Data.HEADER_MAX_SIZE - 3));
             }
         }
 
