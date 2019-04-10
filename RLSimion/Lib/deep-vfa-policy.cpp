@@ -126,7 +126,7 @@ int DiscreteExplorationDeepPolicy::selectAction(const vector<double>& values)
 		m_lastAction--;
 		return m_lastAction;
 	}
-	if (m_lastAction < values.size() - 1) //shift the output to the next action
+	if (m_lastAction < (int) values.size() - 1) //shift the output to the next action
 		m_lastAction++;
 	return m_lastAction;
 }
