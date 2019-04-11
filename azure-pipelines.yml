@@ -21,21 +21,37 @@ steps:
     restoreSolution: '$(solution)'
 
 - task: VSBuild@1
-  displayName: 'Build all the Win32 projects'
+  displayName: 'Build all the C# projects'
+  inputs:
+    solution: '$(solution)' 
+    platform: 'AnyCPU'
+    configuration: 'Release'
+
+- task: VSBuild@1
+  displayName: 'Build all the C++ projects (x86)'
   inputs:
     solution: '$(solution)' 
     platform: 'x86'
     configuration: 'Release'
 
 - task: VSBuild@1
-  displayName: 'Build all the Win64 projects'
+  displayName: 'Build all the C++ projects (x64)'
   inputs:
     solution: '$(solution)'
     platform: 'x64'
     configuration: 'Release'
 
 - task: VSTest@2
-  displayName: 'Run x86 tests'
+  displayName: 'Run C# tests'
+  inputs:
+    solution: '$(solution)' 
+    platform: 'AnyCPU'
+    configuration: 'Release'
+    testAssemblyVer2: '*.dll'
+    searchFolder: tests\bin\Release\AnyCPU
+
+- task: VSTest@2
+  displayName: 'Run C++ tests (x86)'
   inputs:
     solution: '$(solution)' 
     platform: 'x86'
@@ -45,7 +61,7 @@ steps:
 
 
 - task: VSTest@2
-  displayName: 'Run x64 tests'
+  displayName: 'Run C++ tests (x64)'
   inputs:
     solution: '$(solution)'
     platform: 'x64'
