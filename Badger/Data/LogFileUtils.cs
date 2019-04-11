@@ -40,7 +40,7 @@ namespace Badger.Data
         /// <param name="trackParameters">The track parameters</param>
         /// <param name="variableIndex">Index of the variable</param>
         /// <returns>A Series objetct with the requested data or null if something fails</returns>
-        public static Series GetVariableData(Log.EpisodesData episode, Report trackParameters, int variableIndex)
+        public static Series GetVariableData(Log.Episode episode, Report trackParameters, int variableIndex)
         {
 
             if (episode.steps[episode.steps.Count - 1].episodeSimTime < trackParameters.MinEpisodeLength)
@@ -48,7 +48,7 @@ namespace Badger.Data
 
             Series data = new Series();
 
-            foreach (Log.StepData step in episode.steps)
+            foreach (Log.Step step in episode.steps)
             {
                 if (step.episodeSimTime >= trackParameters.TimeOffset)
                     data.AddValue(step.episodeSimTime
@@ -72,12 +72,12 @@ namespace Badger.Data
         /// <param name="variableIndex">Index of the variable</param>
         /// <param name="trackParameters">The track parameters</param>
         /// <returns>The averaged value</returns>
-        public static double GetEpisodeAverage(Log.EpisodesData episode, int variableIndex, Report trackParameters)
+        public static double GetEpisodeAverage(Log.Episode episode, int variableIndex, Report trackParameters)
         {
             double avg = 0.0;
             int count = 0;
             if (episode.steps.Count == 0) return 0.0;
-            foreach (Log.StepData step in episode.steps)
+            foreach (Log.Step step in episode.steps)
             {
                 if (step.episodeSimTime >= trackParameters.TimeOffset)
                 {
@@ -95,12 +95,12 @@ namespace Badger.Data
         /// <param name="trackParameters">The track parameters</param>
         /// <param name="variableIndex">Index of the variable</param>
         /// <returns>A SeriesGroup object with the requested data</returns>
-        public static SeriesGroup GetAveragedData(List<Log.EpisodesData> episodes, Report trackParameters, int variableIndex)
+        public static SeriesGroup GetAveragedData(List<Log.Episode> episodes, Report trackParameters, int variableIndex)
         {
             SeriesGroup data = new SeriesGroup(trackParameters);
             Series xYSeries = new Series();
 
-            foreach (Log.EpisodesData episode in episodes)
+            foreach (Log.Episode episode in episodes)
             {
                 xYSeries.AddValue(episode.index
                     , GetEpisodeAverage(episode, variableIndex, trackParameters));
@@ -134,7 +134,7 @@ namespace Badger.Data
                 switch (report.Type)
                 {
                     case ReportType.LastEvaluation:
-                        Log.EpisodesData lastEpisode = Log.EvaluationEpisodes[Log.EvaluationEpisodes.Count - 1];
+                        Log.Episode lastEpisode = Log.EvaluationEpisodes[Log.EvaluationEpisodes.Count - 1];
                         dataSeries = new SeriesGroup(report);
                         Series series = LogFileUtils.GetVariableData(lastEpisode, report, variableIndex);
                         if (series != null)
@@ -150,11 +150,11 @@ namespace Badger.Data
                     case ReportType.AllEvaluationEpisodes:
                     case ReportType.AllTrainingEpisodes:
                         dataSeries = new SeriesGroup(report);
-                        List<Log.EpisodesData> episodes;
+                        List<Log.Episode> episodes;
                         if (report.Type == ReportType.AllEvaluationEpisodes)
                             episodes = Log.EvaluationEpisodes;
                         else episodes = Log.TrainingEpisodes;
-                        foreach (Log.EpisodesData episode in episodes)
+                        foreach (Log.Episode episode in episodes)
                         {
                             Series subSeries = LogFileUtils.GetVariableData(episode, report, variableIndex);
                             if (subSeries != null)

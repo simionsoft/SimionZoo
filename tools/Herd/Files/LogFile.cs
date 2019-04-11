@@ -84,7 +84,7 @@ namespace Herd.Files
             }
         }
 
-        public class StepData
+        public class Step
         {
             public int stepIndex;
             public double expRealTime, episodeSimTime, episodeRealTime;
@@ -117,7 +117,7 @@ namespace Herd.Files
                 return false;
             }
         }
-        public class EpisodesData
+        public class Episode
         {
             public const int episodeTypeEvaluation = 0;
             public const int episodeTypeTraining = 1;
@@ -126,8 +126,8 @@ namespace Herd.Files
             public int index = 0;
             public int subIndex = 0;
             public int numVariablesLogged = 0;
-            public List<StepData> steps = new List<StepData>();
-            public EpisodesData() { }
+            public List<Step> steps = new List<Step>();
+            public Episode() { }
 
             /// <summary>
             /// Reads the episode header.
@@ -163,9 +163,9 @@ namespace Herd.Files
             int FileFormatVersion = 0;
             public bool SuccessfulLoad = false; //true if the binary file was correctly loaded
 
-            public List<EpisodesData> EvaluationEpisodes = new List<EpisodesData>();
-            public List<EpisodesData> TrainingEpisodes = new List<EpisodesData>();
-            public EpisodesData[] Episodes = null;
+            public List<Episode> EvaluationEpisodes = new List<Episode>();
+            public List<Episode> TrainingEpisodes = new List<Episode>();
+            public Episode[] Episodes = null;
 
 
 
@@ -183,12 +183,12 @@ namespace Herd.Files
                         using (BinaryReader binaryReader = new BinaryReader(logFile))
                         {
                             ReadExperimentLogHeader(binaryReader);
-                            Episodes = new EpisodesData[TotalNumEpisodes];
+                            Episodes = new Episode[TotalNumEpisodes];
 
                             for (int i = 0; i < TotalNumEpisodes; i++)
                             {
-                                Episodes[i] = new EpisodesData();
-                                EpisodesData episodeData = Episodes[i];
+                                Episodes[i] = new Episode();
+                                Episode episodeData = Episodes[i];
 
                                 episodeData.ReadEpisodeHeader(binaryReader);
                                 //if we find an episode subindex greater than the current max, we update it
@@ -202,7 +202,7 @@ namespace Herd.Files
                                 else
                                     TrainingEpisodes.Add(episodeData);
 
-                                StepData stepData = new StepData();
+                                Step stepData = new Step();
                                 bool bLastStep = stepData.ReadStep(binaryReader, episodeData.numVariablesLogged);
 
                                 while (!bLastStep)
@@ -211,7 +211,7 @@ namespace Herd.Files
                                     //last steps don't contain any info but the end marker
                                     episodeData.steps.Add(stepData);
 
-                                    stepData = new StepData();
+                                    stepData = new Step();
                                     bLastStep = stepData.ReadStep(binaryReader, episodeData.numVariablesLogged);
                                 }
                             }
@@ -229,7 +229,7 @@ namespace Herd.Files
 
             public delegate void StepAction(int auxId, int stepIndex, double value);
             public delegate void ScalarValueAction(double action);
-            public delegate double EpisodeFunc(EpisodesData episode, int varIndex);
+            public delegate double EpisodeFunc(Episode episode, int varIndex);
 
 
              private void ReadExperimentLogHeader(BinaryReader logReader)
