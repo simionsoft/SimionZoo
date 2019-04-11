@@ -11,17 +11,17 @@ namespace SimionLogToOfflineTraining
     {
         public class Tuple
         {
-            public double[] s { get; } = null;
-            public double[] a { get; } = null;
-            public double[] s_p { get; } = null;
-            public double[] r { get; } = null;
+            public double[] State { get; } = null;
+            public double[] Action { get; } = null;
+            public double[] State_p { get; } = null;
+            public double[] Reward { get; } = null;
 
             public Tuple(Log.Descriptor descriptor)
             {
-                s = new double[descriptor.StateVariables.Count];
-                a = new double[descriptor.ActionVariables.Count];
-                s_p = new double[descriptor.StateVariables.Count];
-                r = new double[descriptor.RewardVariables.Count];
+                State = new double[descriptor.StateVariables.Count];
+                Action = new double[descriptor.ActionVariables.Count];
+                State_p = new double[descriptor.StateVariables.Count];
+                Reward = new double[descriptor.RewardVariables.Count];
             }
 
             public bool DrawRandomSample(Log.Data logData)
@@ -41,30 +41,30 @@ namespace SimionLogToOfflineTraining
                 Log.Step step = episode.steps[stepIndex]; //%(numSteps-1) because we need s and s_p
                 int dataOffset = 0;
                 //copy s
-                for (int i= 0; i<s.Length; i++) { s[i] = step.data[i]; }
+                for (int i= 0; i<State.Length; i++) { State[i] = step.data[i]; }
                 //copy a
-                dataOffset = s.Length;
-                for (int i = 0; i < a.Length; i++) { a[i] = step.data[dataOffset + i]; }
+                dataOffset = State.Length;
+                for (int i = 0; i < Action.Length; i++) { Action[i] = step.data[dataOffset + i]; }
                 //copy r
-                dataOffset += a.Length;
-                for (int i = 0; i < r.Length; i++) { r[i] = step.data[dataOffset + i]; }
+                dataOffset += Action.Length;
+                for (int i = 0; i < Reward.Length; i++) { Reward[i] = step.data[dataOffset + i]; }
 
                 //copy s_p from next step
                 step = episode.steps[stepIndex + 1];
                 dataOffset = 0;
-                for (int i = 0; i < s_p.Length; i++) { s_p[i] = step.data[i]; }
+                for (int i = 0; i < State_p.Length; i++) { State_p[i] = step.data[i]; }
 
                 return true;
             }
 
             public void SaveToFile(BinaryWriter writer)
             {
-                int numElementsPerTuple = 2 * s.Length + a.Length + r.Length;
+                int numElementsPerTuple = 2 * State.Length + Action.Length + Reward.Length;
                 byte[] buffer = new byte[sizeof(double) * numElementsPerTuple];
-                Buffer.BlockCopy(s, 0, buffer, 0, sizeof(double) * s.Length);
-                Buffer.BlockCopy(a, 0, buffer, 0, sizeof(double) * a.Length);
-                Buffer.BlockCopy(s_p, 0, buffer, 0, sizeof(double) * s_p.Length);
-                Buffer.BlockCopy(r, 0, buffer, 0, sizeof(double) * r.Length);
+                Buffer.BlockCopy(State, 0, buffer, 0, sizeof(double) * State.Length);
+                Buffer.BlockCopy(Action, 0, buffer, 0, sizeof(double) * Action.Length);
+                Buffer.BlockCopy(State_p, 0, buffer, 0, sizeof(double) * State_p.Length);
+                Buffer.BlockCopy(Reward, 0, buffer, 0, sizeof(double) * Reward.Length);
                 writer.Write(buffer, 0, buffer.Length);
             }
         }
@@ -133,7 +133,7 @@ namespace SimionLogToOfflineTraining
                     data.Load(folder + "\\" + logDescriptor.BinaryLogFile);
                     if (data.SuccessfulLoad)
                     {
-                        if (sample.s.Length + sample.a.Length + sample.r.Length ==
+                        if (sample.State.Length + sample.Action.Length + sample.Reward.Length ==
                             logDescriptor.StateVariables.Count + logDescriptor.ActionVariables.Count + logDescriptor.RewardVariables.Count)
                         {
                             int totalNumSamples = GetTotalNumSamples(data);
