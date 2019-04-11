@@ -24,7 +24,7 @@ steps:
   displayName: 'Build all the C# projects'
   inputs:
     solution: '$(solution)' 
-    platform: 'AnyCPU'
+    platform: 'any cpu'
     configuration: 'Release'
 
 - task: VSBuild@1
@@ -45,7 +45,7 @@ steps:
   displayName: 'Run C# tests'
   inputs:
     solution: '$(solution)' 
-    platform: 'AnyCPU'
+    platform: 'any cpu'
     configuration: 'Release'
     testAssemblyVer2: '*.dll'
     searchFolder: tests\bin\Release\AnyCPU
