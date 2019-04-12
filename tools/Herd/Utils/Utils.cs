@@ -72,9 +72,9 @@ namespace Herd
             if (experimentFilePath != "")
             {
                 if (descriptor)
-                    return RemoveExtension(experimentFilePath, 1) + Extensions.LogDescriptorExtension;
+                    return RemoveExtension(experimentFilePath, 2) + Extensions.LogDescriptor;
                 else
-                    return RemoveExtension(experimentFilePath, 1) + Extensions.LogBinaryExtension;
+                    return RemoveExtension(experimentFilePath, 2) + Extensions.LogBinaryFile;
             }
 
             return "";

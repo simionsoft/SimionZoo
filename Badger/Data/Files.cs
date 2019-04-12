@@ -40,10 +40,10 @@ namespace Badger
 {
     public static class Files
     {
-        public const string ExperimentBatchFilter = "*" + Extensions.ExperimentBatchExtension;
-        public const string ProjectFilter = "*" + Extensions.ProjectExtension;
-        public const string ExperimentFilter = "*" + Extensions.ExperimentExtension;
-        public const string ReportFilter = "*" + Extensions.ReportExtension;
+        public const string ExperimentBatchFilter = "*" + Extensions.ExperimentBatch;
+        public const string ProjectFilter = "*" + Extensions.Project;
+        public const string ExperimentFilter = "*" + Extensions.Experiment;
+        public const string ReportFilter = "*" + Extensions.Report;
 
         public const string ExperimentFileTypeDescription = "Experiment";
         public const string ExperimentBatchDescription = "Batch";
@@ -111,7 +111,7 @@ namespace Badger
                     return -1;
                 }
             }
-            string batchFileDir = batchFilename.Remove(batchFilename.LastIndexOf(Extensions.ExperimentBatchExtension));
+            string batchFileDir = batchFilename.Remove(batchFilename.LastIndexOf(Extensions.ExperimentBatch));
             string batchFileName = Herd.Utils.GetFilename(batchFileDir);
             batchFileDir = Herd.Utils.GetRelativePathTo(Directory.GetCurrentDirectory(), batchFileDir);
             // Clean output directory if it exists
@@ -126,7 +126,7 @@ namespace Badger
                     return -1;
                 }
             }
-            string fullBatchFileName = batchFileDir + Herd.Files.Extensions.ExperimentBatchExtension;
+            string fullBatchFileName = batchFileDir + Herd.Files.Extensions.ExperimentBatch;
 
             progressUpdateFunction?.Invoke(0.0);
             int numExperimentalUnitsSaved = 0;
@@ -157,9 +157,9 @@ namespace Badger
 
                         string folderPath = batchFileDir + "/" + experimentName;
                         Directory.CreateDirectory(folderPath);
-                        string filePath = folderPath + "/" + experimentName + Extensions.ExperimentExtension;
+                        string filePath = folderPath + "/" + experimentName + Extensions.Experiment;
                         experimentViewModel.Save(filePath, SaveMode.AsExperimentalUnit);
-                        string relativePathToExperimentalUnit = batchFileName + "/" + experimentName + "/" + experimentName + Extensions.ExperimentExtension;
+                        string relativePathToExperimentalUnit = batchFileName + "/" + experimentName + "/" + experimentName + Extensions.Experiment;
 
                         // Save the experiment reference in the root batch file. Open 'EXPERIMENTAL-UNIT' tag
                         // with its corresponding attributes.
@@ -470,7 +470,7 @@ namespace Badger
         {
             //save the queries and the report (a set of log query results referencing the queries and the experiment batch)
             string nakedBatchFilename = Herd.Utils.RemoveDirectories(Herd.Utils.RemoveExtension(absBatchFilename, 2));
-            string reportFilename = absOutputFolder + "/" + nakedBatchFilename + Herd.Files.Extensions.ReportExtension;
+            string reportFilename = absOutputFolder + "/" + nakedBatchFilename + Extensions.Report;
             using (TextWriter writer = File.CreateText(reportFilename))
             {
                 //open the root node in the report

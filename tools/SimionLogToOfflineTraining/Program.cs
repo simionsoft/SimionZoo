@@ -1,8 +1,31 @@
-﻿using System;
+﻿/*
+	SimionZoo: A framework for online model-free Reinforcement Learning on continuous
+	control problems
+
+	Copyright (c) 2016 SimionSoft. https://github.com/simionsoft
+
+	Permission is hereby granted, free of charge, to any person obtaining a copy
+	of this software and associated documentation files (the "Software"), to deal
+	in the Software without restriction, including without limitation the rights
+	to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+	copies of the Software, and to permit persons to whom the Software is
+	furnished to do so, subject to the following conditions:
+
+	The above copyright notice and this permission notice shall be included in all
+	copies or substantial portions of the Software.
+
+	THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+	IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+	FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+	AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+	LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+	OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+	SOFTWARE.
+*/
+
+using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.IO;
-using System.Threading.Tasks;
 using Herd.Files;
 
 namespace SimionLogToOfflineTraining
@@ -16,8 +39,12 @@ namespace SimionLogToOfflineTraining
             public double[] State_p { get; } = null;
             public double[] Reward { get; } = null;
 
+            Log.Descriptor m_descriptor;
+
             public Tuple(Log.Descriptor descriptor)
             {
+                m_descriptor = descriptor;
+
                 State = new double[descriptor.StateVariables.Count];
                 Action = new double[descriptor.ActionVariables.Count];
                 State_p = new double[descriptor.StateVariables.Count];
@@ -57,7 +84,7 @@ namespace SimionLogToOfflineTraining
                 return true;
             }
 
-            public void SaveToFile(BinaryWriter writer)
+            public void SaveLastSampleToBinaryFile(BinaryWriter writer)
             {
                 int numElementsPerTuple = 2 * State.Length + Action.Length + Reward.Length;
                 byte[] buffer = new byte[sizeof(double) * numElementsPerTuple];
@@ -66,6 +93,25 @@ namespace SimionLogToOfflineTraining
                 Buffer.BlockCopy(State_p, 0, buffer, 0, sizeof(double) * State_p.Length);
                 Buffer.BlockCopy(Reward, 0, buffer, 0, sizeof(double) * Reward.Length);
                 writer.Write(buffer, 0, buffer.Length);
+            }
+
+            void SaveVariables(StreamWriter writer, string xmlTag, List<string> names)
+            {
+                foreach(string name in names)
+                    writer.WriteLine("  <" + xmlTag + ">" + name + "</" + xmlTag + ">");
+            }
+
+            public void SaveSampleFileDescriptor(string filename, string binaryFilename, int numSamples)
+            {
+                using (StreamWriter writer = File.CreateText(filename))
+                {
+                    writer.WriteLine("<" + XMLTags.sampleFiledescriptorRootNodeName + " " + XMLTags.descriptorBinaryDataFile + "=\"" + binaryFilename + "\" " 
+                        + XMLTags.sampleFileNumSamplesAttr + "=\"" + numSamples + "\">");
+                    SaveVariables(writer, XMLTags.descriptorStateVarNodeName, m_descriptor.StateVariables);
+                    SaveVariables(writer, XMLTags.descriptorActionVarNodeName, m_descriptor.ActionVariables);
+                    SaveVariables(writer, XMLTags.descriptorRewardVarNodeName, m_descriptor.RewardVariables);
+                    writer.WriteLine("</" + XMLTags.sampleFiledescriptorRootNodeName + ">");
+                }
             }
         }
 
@@ -89,6 +135,7 @@ namespace SimionLogToOfflineTraining
             string inputFolder = null;
             int numSamples = 0;
             string outputFilename = null;
+            string outputBinaryFilename = null;
 
             foreach(string arg in args)
             {
@@ -97,14 +144,20 @@ namespace SimionLogToOfflineTraining
                 if (arg.StartsWith(outputFileArg)) outputFilename = arg.Substring(outputFileArg.Length);
             }
 
+            //check all required arguments are set
             if (inputFolder == null || numSamples == 0 || outputFilename == null)
             {
                 Console.WriteLine("ERROR. Usage: SimionLogToOfflineTraining " + inputFolderArg + "<dir> " + numSamplesArg + "<numTuples> " + outputFileArg + "<outputFile>");
                 return;
             }
 
+            //check/set correct file extensions to output files
+            if (!outputFilename.EndsWith(Extensions.SampleFileDescriptor))
+                outputFilename += Extensions.SampleFileDescriptor;
+            outputBinaryFilename = Herd.Utils.RemoveExtension(outputFilename,2) + Extensions.SampleBinaryFile;
+
             //Traverse all the log files
-            string[] logDescriptorFiles = Directory.GetFiles(inputFolder, "*" + Herd.Files.Extensions.LogDescriptorExtension, SearchOption.AllDirectories);
+            string[] logDescriptorFiles = Directory.GetFiles(inputFolder, "*" + Herd.Files.Extensions.LogDescriptor, SearchOption.AllDirectories);
             int numFiles = logDescriptorFiles.Length;
 
             if (numFiles == 0)
@@ -119,9 +172,10 @@ namespace SimionLogToOfflineTraining
             Log.Descriptor commonDescriptor = new Log.Descriptor(logDescriptorFiles[0]);
             Tuple sample = new Tuple(commonDescriptor);
 
-            using (FileStream outputStream = File.Create(outputFilename))
+            using (FileStream outputStream = File.Create(outputBinaryFilename))
             {
                 BinaryWriter writer = new BinaryWriter(outputStream);
+                int numSavedSamples = 0;
 
                 Console.WriteLine("STARTED: Drawing " + numSamples + " samples from log files in folder " + inputFolder);
                 foreach (string logDescriptorFilename in logDescriptorFiles)
@@ -131,6 +185,7 @@ namespace SimionLogToOfflineTraining
 
                     Log.Data data = new Log.Data();
                     data.Load(folder + "\\" + logDescriptor.BinaryLogFile);
+
                     if (data.SuccessfulLoad)
                     {
                         if (sample.State.Length + sample.Action.Length + sample.Reward.Length ==
@@ -144,7 +199,10 @@ namespace SimionLogToOfflineTraining
                             for (int i = 0; i < actualNumSamples; i++)
                             {
                                 if (sample.DrawRandomSample(data))
-                                    sample.SaveToFile(writer);
+                                {
+                                    sample.SaveLastSampleToBinaryFile(writer);
+                                    numSavedSamples++;
+                                }
                             }
                             Console.WriteLine(string.Format(" sampled ({0:0.00}%)", percentSampled));
                         }
@@ -152,7 +210,11 @@ namespace SimionLogToOfflineTraining
                             Console.WriteLine("File " + logDescriptorFilename + "skipped (missmatched variables in log)");
                     }
                 }
-                Console.WriteLine("FINISHED: All " + numSamples + " samples were saved to " + outputFilename);
+                if (numSavedSamples > 0)
+                {
+                    sample.SaveSampleFileDescriptor(outputFilename, Path.GetFileName(outputBinaryFilename), numSavedSamples);
+                    Console.WriteLine("FINISHED: " + numSavedSamples + " samples were drawn from the log files and saved\nDescriptor: " + outputFilename + "\nBinary data: " + outputBinaryFilename);
+                }
             }
         }
     }

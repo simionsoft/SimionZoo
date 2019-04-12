@@ -426,7 +426,7 @@ namespace Badger.ViewModels
             svgExporter.ExportToFile(Plot, fileName);
 
             //2nd save data from the model for importing
-            fileName = baseFilename + Herd.Files.Extensions.PlotDataExtension;
+            fileName = baseFilename + Extensions.PlotData;
 
             using (TextWriter writer = File.CreateText(fileName))
             {
@@ -448,7 +448,7 @@ namespace Badger.ViewModels
                 }
                 writer.WriteLine("</" + XMLTags.PlotNodeTag + ">");
 
-                string relPlotFilename = Herd.Utils.RemoveSpecialCharacters(name) + Herd.Files.Extensions.PlotDataExtension;
+                string relPlotFilename = Herd.Utils.RemoveSpecialCharacters(name) + Extensions.PlotData;
                 outputFiles[relPlotFilename] = XMLTags.PlotNodeTag;
             }
         }
@@ -456,7 +456,7 @@ namespace Badger.ViewModels
         public void Import(string inputFolder)
         {
             XmlDocument xmlDoc = new XmlDocument();
-            xmlDoc.Load(inputFolder + Herd.Utils.RemoveSpecialCharacters(name) + Herd.Files.Extensions.PlotDataExtension);
+            xmlDoc.Load(inputFolder + Herd.Utils.RemoveSpecialCharacters(name) + Extensions.PlotData);
 
             XmlNode root = xmlDoc.FirstChild;
             string plotName = root.Attributes[XMLTags.nameAttribute].Value;

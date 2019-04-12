@@ -225,7 +225,7 @@ namespace Badger.ViewModels
             foreach (string filename in filenames)
             {
                 string fileExtension = Herd.Utils.GetExtension(filename, 2);
-                if (fileExtension == Herd.Files.Extensions.ExperimentExtension)
+                if (fileExtension == Extensions.Experiment)
                 {
                     ExperimentViewModel newExperiment =
                         Files.LoadExperiment(appDefinitions, filename);
@@ -238,7 +238,7 @@ namespace Badger.ViewModels
                     }
 
                 }
-                else if (fileExtension == Herd.Files.Extensions.ProjectExtension)
+                else if (fileExtension == Extensions.Project)
                 {
                     BindableCollection<ExperimentViewModel> newExperiments = new BindableCollection<ExperimentViewModel>();
                     Files.LoadExperiments(ref newExperiments, appDefinitions
@@ -348,8 +348,8 @@ namespace Badger.ViewModels
                     , progressBarDialogVM.UpdateProgressBar);
 
                 //Save the badger project to allow later changes and re-runs of the experiment
-                string badgerProjFileName = Herd.Utils.RemoveExtension(batchFileName, Herd.Utils.NumParts(Herd.Files.Extensions.ProjectExtension, '.'))
-                    + Herd.Files.Extensions.ProjectExtension;
+                string badgerProjFileName = Herd.Utils.RemoveExtension(batchFileName, Herd.Utils.NumParts(Extensions.Project, '.'))
+                    + Extensions.Project;
                 Files.SaveExperiments(ExperimentViewModels, badgerProjFileName);
 
                 progressBarDialogVM.TryClose();

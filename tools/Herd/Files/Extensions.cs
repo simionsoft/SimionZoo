@@ -28,12 +28,14 @@ namespace Herd.Files
 {
     public class Extensions
     {
-        public const string ExperimentExtension = ".simion.exp";
-        public const string ExperimentBatchExtension = ".simion.batch";
-        public const string ProjectExtension = ".simion.proj";
-        public const string ReportExtension = ".simion.report";
-        public const string PlotDataExtension = ".simion.plot";
-        public const string LogDescriptorExtension = ".log";
-        public const string LogBinaryExtension = ".log.bin";
+        public const string Experiment = ".simion.exp";
+        public const string ExperimentBatch = ".simion.batch";
+        public const string Project = ".simion.proj";
+        public const string Report = ".simion.report";
+        public const string PlotData = ".simion.plot";
+        public const string LogDescriptor = ".simion.log";
+        public const string LogBinaryFile = ".simion.log.bin";
+        public const string SampleFileDescriptor = ".simion.samples";
+        public const string SampleBinaryFile = ".simion.samples.bin";
     }
 }

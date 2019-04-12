@@ -280,7 +280,7 @@ namespace Badger.ViewModels
             }
 
             //Remove the extensions of the experiment file to give name to the experiment
-            int numExtensions = Herd.Utils.NumParts(Extensions.ProjectExtension, '.');
+            int numExtensions = Herd.Utils.NumParts(Extensions.Project, '.');
             Initialize(appDefinitionFileName, configRootNode, Herd.Utils.GetFilename(configFilename, true, numExtensions));
         }
 
@@ -373,7 +373,7 @@ namespace Badger.ViewModels
             //we save the experiment with the currently selected fork values
             int fileId = new Random().Next(1, 1000);
             string filename = Folders.tempRelativeDir + fileId.ToString() 
-                + Extensions.ExperimentExtension;
+                + Extensions.Experiment;
 
             if (!Directory.Exists(Folders.tempRelativeDir))
                 Directory.CreateDirectory(Folders.tempRelativeDir);

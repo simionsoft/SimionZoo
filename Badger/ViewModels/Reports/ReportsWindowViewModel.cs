@@ -241,9 +241,9 @@ namespace Badger.ViewModels
             {
                 string filename = filenames[0];
                 string fileExtension = Herd.Utils.GetExtension(filename, 2);
-                if (fileExtension == Herd.Files.Extensions.ExperimentBatchExtension)
+                if (fileExtension == Extensions.ExperimentBatch)
                     LoadExperimentBatch(filename);
-                else if (fileExtension == Herd.Files.Extensions.ReportExtension)
+                else if (fileExtension == Extensions.Report)
                     LoadReport(filename);
             }
         }
