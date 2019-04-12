@@ -78,6 +78,11 @@ SimionApp::SimionApp(ConfigNode* pConfigNode)
 	//Last, the SimGod was created to create and control all the simions
 	pSimGod = CHILD_OBJECT<SimGod>(pConfigNode, "SimGod"
 		, "The omniscient class that controls all aspects of the simulation process");
+
+	//m_bUseOfflineTraining = ;
+	m_offlineTrainingSampleFile = FILE_PATH_PARAM(pConfigNode, "Offline-Training-File", "Sample file used for training. Leave blank if you want to use online training", "");
+
+	m_bUseOfflineTraining = strlen(m_offlineTrainingSampleFile.get()) > 0;
 }
 
 SimionApp::~SimionApp()

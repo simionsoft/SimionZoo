@@ -135,6 +135,9 @@ private:
 
 	void updateScene(State* s, Action* a);
 
+	bool m_bUseOfflineTraining;
+	FILE_PATH_PARAM m_offlineTrainingSampleFile;
+
 public:
 	vector<FunctionSampler*> getFunctionSamplers() { return m_pFunctionSamplers; }
 };
