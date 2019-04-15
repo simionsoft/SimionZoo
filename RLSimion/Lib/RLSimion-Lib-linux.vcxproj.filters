@@ -208,6 +208,9 @@
     <ClCompile Include="run-time-requirements.cpp">
       <Filter>main-classes</Filter>
     </ClCompile>
+    <ClCompile Include="sample-file.cpp">
+      <Filter>logging</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="app.h">
@@ -398,6 +401,9 @@
     </ClInclude>
     <ClInclude Include="run-time-requirements.h">
       <Filter>main-classes</Filter>
+    </ClInclude>
+    <ClInclude Include="sample-file.h">
+      <Filter>logging</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

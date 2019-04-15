@@ -86,9 +86,6 @@
     <ClInclude Include="mesh.h">
       <Filter>graphics</Filter>
     </ClInclude>
-    <ClInclude Include="camera.h">
-      <Filter>graphics</Filter>
-    </ClInclude>
     <ClInclude Include="light.h">
       <Filter>graphics</Filter>
     </ClInclude>
@@ -134,6 +131,9 @@
     <ClInclude Include="resource.h" />
     <ClInclude Include="xml-tags.h">
       <Filter>aux</Filter>
+    </ClInclude>
+    <ClInclude Include="camera.h">
+      <Filter>graphics</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

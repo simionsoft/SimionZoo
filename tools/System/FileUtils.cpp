@@ -92,6 +92,7 @@ bool fileExists(const string& filename)
 #include <Windows.h>
 #else
 #include <unistd.h>
+#include <dirent.h>
 #endif
 
 bool changeWorkingDirectory(const string& directory)
@@ -134,7 +135,7 @@ void getFilesInDirectory(const string& directory, vector<string>& outFiles)
 	class dirent *ent;
 	class stat st;
 
-	dir = opendir(directory);
+	dir = opendir(directory.c_str());
 	while ((ent = readdir(dir)) != NULL)
 	{
 		const string file_name = ent->d_name;
@@ -151,7 +152,7 @@ void getFilesInDirectory(const string& directory, vector<string>& outFiles)
 		if (is_directory)
 			continue;
 
-		out.push_back(full_file_name);
+		outFiles.push_back(full_file_name);
 	}
 	closedir(dir);
 
