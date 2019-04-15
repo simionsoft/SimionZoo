@@ -76,7 +76,7 @@ void SampleFile::drawRandomSample(State* s, Action* a, State* s_p, double& rewar
 
 	int sampleIndex = rand() % m_numSamples;
 
-	//fseek(m_pBinaryFile, sampleIndex * sizeof(double) * m_sampleSize, SEEK_SET);
+	fseek(m_pBinaryFile, sampleIndex * sizeof(double) * m_sampleSize, SEEK_SET);
 	size_t res;
 	res= fread(s->getValueVector(), sizeof(double), m_numStateVariables, m_pBinaryFile);
 	res= fread(a->getValueVector(), sizeof(double), m_numActionVariables, m_pBinaryFile);
