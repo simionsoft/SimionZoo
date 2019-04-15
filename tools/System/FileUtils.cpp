@@ -92,6 +92,7 @@ bool fileExists(const string& filename)
 #include <Windows.h>
 #else
 #include <unistd.h>
+#include <dirent.h>
 #endif
 
 bool changeWorkingDirectory(const string& directory)
