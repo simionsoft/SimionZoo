@@ -135,7 +135,7 @@ void getFilesInDirectory(const string& directory, vector<string>& outFiles)
 	class dirent *ent;
 	class stat st;
 
-	dir = opendir(directory);
+	dir = opendir(directory.c_str());
 	while ((ent = readdir(dir)) != NULL)
 	{
 		const string file_name = ent->d_name;
@@ -152,7 +152,7 @@ void getFilesInDirectory(const string& directory, vector<string>& outFiles)
 		if (is_directory)
 			continue;
 
-		out.push_back(full_file_name);
+		outFiles.push_back(full_file_name);
 	}
 	closedir(dir);
 
