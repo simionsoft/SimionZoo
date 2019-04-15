@@ -132,7 +132,7 @@
     <ClInclude Include="xml-tags.h">
       <Filter>aux</Filter>
     </ClInclude>
-    <ClInclude Include="acamera.h">
+    <ClInclude Include="camera.h">
       <Filter>graphics</Filter>
     </ClInclude>
   </ItemGroup>

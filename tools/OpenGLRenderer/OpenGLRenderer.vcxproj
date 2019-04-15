@@ -210,7 +210,7 @@
     <ClInclude Include="basic-shapes-3d.h" />
     <ClInclude Include="bindings.h" />
     <ClInclude Include="graphic-object-2d.h" />
-    <ClInclude Include="acamera.h" />
+    <ClInclude Include="camera.h" />
     <ClInclude Include="collada-model.h" />
     <ClInclude Include="ogl-utils.h" />
     <ClInclude Include="resource.h" />
