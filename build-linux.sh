@@ -1,4 +1,4 @@
-echo mkdir tmp
+mkdir tmp
 
 echo Compiling freeglut3-linux...
 mkdir tmp/freeglut3-linux
