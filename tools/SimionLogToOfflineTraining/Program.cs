@@ -87,12 +87,24 @@ namespace SimionLogToOfflineTraining
             public void SaveLastSampleToBinaryFile(BinaryWriter writer)
             {
                 int numElementsPerTuple = 2 * State.Length + Action.Length + Reward.Length;
-                byte[] buffer = new byte[sizeof(double) * numElementsPerTuple];
-                Buffer.BlockCopy(State, 0, buffer, 0, sizeof(double) * State.Length);
-                Buffer.BlockCopy(Action, 0, buffer, 0, sizeof(double) * Action.Length);
-                Buffer.BlockCopy(State_p, 0, buffer, 0, sizeof(double) * State_p.Length);
-                Buffer.BlockCopy(Reward, 0, buffer, 0, sizeof(double) * Reward.Length);
-                writer.Write(buffer, 0, buffer.Length);
+                double[] sample = new double[numElementsPerTuple];
+                int bufferOffset = 0;
+                for (int i = 0; i < State.Length; i++) sample[bufferOffset + i] = State[i];
+                bufferOffset += State.Length;
+                for (int i = 0; i < Action.Length; i++) sample[bufferOffset + i] = Action[i];
+                bufferOffset += Action.Length;
+                for (int i = 0; i < State_p.Length; i++) sample[bufferOffset + i] = State_p[i];
+                bufferOffset += State_p.Length;
+                for (int i = 0; i < Reward.Length; i++) sample[bufferOffset + i] = Reward[i];
+                bufferOffset += Reward.Length;
+
+                byte [] result = new byte[sample.Length * sizeof(double)];
+                Buffer.BlockCopy(sample, 0, result, 0, result.Length);
+                writer.Write(result, 0, result.Length);
+
+                //var result2 = new double[result.Length / sizeof(double)];
+                //Buffer.BlockCopy(result, 0, result2, 0, result.Length);
+
             }
 
             void SaveVariables(StreamWriter writer, string xmlTag, List<string> names)
@@ -216,6 +228,13 @@ namespace SimionLogToOfflineTraining
                     Console.WriteLine("FINISHED: " + numSavedSamples + " samples were drawn from the log files and saved\nDescriptor: " + outputFilename + "\nBinary data: " + outputBinaryFilename);
                 }
             }
+            //Check that we have written properly
+            //using (FileStream inputBinaryFile = File.OpenRead(outputBinaryFilename))
+            //{
+            //    BinaryReader reader = new BinaryReader(inputBinaryFile);
+            //    double[] buffer = new double[100];
+            //    for (int i = 0; i < 100; i++) buffer[i] = reader.ReadDouble();
+            //}
         }
     }
 }

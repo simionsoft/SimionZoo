@@ -31,6 +31,7 @@
 #include "config.h"
 #include "utils.h"
 #include "function-sampler.h"
+#include "sample-file.h"
 #include "../Common/state-action-function.h"
 #include "../Common/wire.h"
 #include "../../tools/OpenGLRenderer/basic-shapes-2d.h"
@@ -310,9 +311,6 @@ void SimionApp::run()
 	State *s_p = pWorld->getDynamicModel()->getStateDescriptor().getInstance();
 	Action *a = pWorld->getDynamicModel()->getActionDescriptor().getInstance();
 
-	double r;
-	double probability;
-
 	//load stuff we don't want to be loaded in the constructors for faster construction
 	pSimGod->deferredLoad();
 	Logger::logMessage(MessageType::Info, "Deferred load step finished");
@@ -330,7 +328,21 @@ void SimionApp::run()
 		if (pLogger->areFunctionsLogged())
 			initFunctionSamplers(s, a);
 
-	Logger::logMessage(MessageType::Info, "Simulation begins");
+	if (!m_bUseOfflineTraining)
+		runOnlineTrainingLoop(s, a, s_p);
+	else
+		runOfflineTrainingLoop(s, a, s_p);
+
+	delete s;
+	delete s_p;
+	delete a;
+}
+
+void SimionApp::runOnlineTrainingLoop(State* s, Action* a, State* s_p)
+{
+	Logger::logMessage(MessageType::Info, "Online training simulation begins");
+
+	double probability, r;
 
 	//episodes
 	for (pExperiment->nextEpisode(); pExperiment->isValidEpisode(); pExperiment->nextEpisode())
@@ -364,10 +376,67 @@ void SimionApp::run()
 		}
 	}
 	Logger::logMessage(MessageType::Info, "Simulation finished");
+}
 
-	delete s;
-	delete s_p;
-	delete a;
+
+void SimionApp::runOfflineTrainingLoop(State* s, Action* a, State* s_p)
+{
+	Logger::logMessage(MessageType::Info, "Offline training simulation begins");
+
+	double probability, r;
+
+	SampleFile sampleFile(m_offlineTrainingSampleFile.get());
+
+	//episodes
+	for (pExperiment->nextEpisode(); pExperiment->isValidEpisode(); pExperiment->nextEpisode())
+	{
+		if (pExperiment->isEvaluationEpisode())
+		{
+			//Online evaluation of the agent: no call to update()
+			pWorld->reset(s);
+
+			//steps per episode
+			for (pExperiment->nextStep(); pExperiment->isValidStep(); pExperiment->nextStep())
+			{
+				//a= pi(s)
+				probability = pSimGod->selectAction(s, a);
+
+				//s_p= f(s,a); r= R(s');
+				r = pWorld->executeAction(s, a, s_p);
+
+				//log tuple <s,a,s',r> and stats
+				pExperiment->timestep(s, a, s_p, pWorld->getRewardVector());
+				//we need the complete reward vector for logging
+
+				if (!m_bRemoteExecution)
+					updateScene(s, a);
+
+				//s= s'
+				s->copy(s_p);
+			}
+		}
+		else
+		{
+			//Offline training using samples from file: no call to selectAction()/executeAction()
+			for (pExperiment->nextStep(); pExperiment->isValidStep(); pExperiment->nextStep())
+			{
+				sampleFile.drawRandomSample(s, a, s_p, r);
+
+				//update god's policy and value estimation
+				pSimGod->update(s, a, s_p, r, 1.0);
+
+				//log tuple <s,a,s',r> and stats
+				pExperiment->timestep(s, a, s_p, pWorld->getRewardVector()); //<- not relevant because we are training here, but this reward vector will not be the right one
+
+				//do experience replay if enabled
+				pSimGod->postUpdate();
+
+				if (!m_bRemoteExecution)
+					updateScene(s, a);
+			}
+		}
+	}
+	Logger::logMessage(MessageType::Info, "Simulation finished");
 }
 
 /// <summary>

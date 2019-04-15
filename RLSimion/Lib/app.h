@@ -138,6 +138,8 @@ private:
 	bool m_bUseOfflineTraining;
 	FILE_PATH_PARAM m_offlineTrainingSampleFile;
 
+	void runOnlineTrainingLoop(State* s, Action* a, State* s_p);
+	void runOfflineTrainingLoop(State* s, Action* a, State* s_p);
 public:
 	vector<FunctionSampler*> getFunctionSamplers() { return m_pFunctionSamplers; }
 };

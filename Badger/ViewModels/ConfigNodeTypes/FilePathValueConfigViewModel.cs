@@ -94,13 +94,18 @@ namespace Badger.ViewModels
                                 , dirPath)));
                     }
                 }
-
-                if (openFileDialog.ShowDialog()==true)
-                {
-                    content = Herd.Utils.GetRelativePathTo(Directory.GetCurrentDirectory(), openFileDialog.FileName);
-                }
-                content = content;
             }
+            else
+            {
+                string filter = "All Files (*.*)|*.*";
+                openFileDialog.Filter = filter;
+            }
+
+            if (openFileDialog.ShowDialog()==true)
+            {
+                content = Herd.Utils.GetRelativePathTo(Directory.GetCurrentDirectory(), openFileDialog.FileName);
+            }
+            content = content;
         }
     }
 }

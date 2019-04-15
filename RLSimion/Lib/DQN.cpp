@@ -145,7 +145,7 @@ double DQN::update(const State * s, const Action * a, const State * s_p, double 
 			//calculate arg max Q(s_p, a)
 			vector<double>::iterator itBegin = m_Q_s_p.begin() + i * m_numActionSteps.get();
 			vector<double>::iterator itEnd = m_Q_s_p.begin() + (i+1) * m_numActionSteps.get();
-			m_argMax[i] = distance(itBegin, max_element(itBegin, itEnd));
+			m_argMax[i] = (int) distance(itBegin, max_element(itBegin, itEnd));
 		}
 
 		//estimate Q(s_p, argMaxQ; target-weights or online-weights)

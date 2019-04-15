@@ -246,6 +246,7 @@
     <ClInclude Include="q-learners.h" />
     <ClInclude Include="reward.h" />
     <ClInclude Include="run-time-requirements.h" />
+    <ClInclude Include="sample-file.h" />
     <ClInclude Include="simgod.h" />
     <ClInclude Include="simion.h" />
     <ClInclude Include="single-dimension-grid.h" />
@@ -320,6 +321,7 @@
     <ClCompile Include="q-learners.cpp" />
     <ClCompile Include="reward.cpp" />
     <ClCompile Include="run-time-requirements.cpp" />
+    <ClCompile Include="sample-file.cpp" />
     <ClCompile Include="simgod.cpp" />
     <ClCompile Include="simion.cpp" />
     <ClCompile Include="single-dimension-grid.cpp" />
