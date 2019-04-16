@@ -119,7 +119,7 @@ g++ -c -fPIC -w -x c++ -std=c++11 tools/OpenGLRenderer/text.cpp -o tmp/OpenGLRen
 g++ -c -fPIC -w -x c++ -std=c++11 tools/OpenGLRenderer/texture-manager.cpp -o tmp/OpenGLRenderer-linux/texture-manager.o
 g++ -c -fPIC -w -x c++ -std=c++11 tools/OpenGLRenderer/viewport.cpp -o tmp/OpenGLRenderer-linux/viewport.o
 g++ -c -fPIC -w -x c++ -std=c++11 tools/OpenGLRenderer/xml-load.cpp -o tmp/OpenGLRenderer-linux/xml-load.o
-ar rcs tmp/OpenGLRenderer-linux/OpenGLRenderer-linux.a tmp/OpenGLRenderer-linux/*.o 
+ar rcs tmp/OpenGLRenderer-linux/OpenGLRenderer-linux.a tmp/OpenGLRenderer-linux/*.o  "tmp/freeglut3-linux/freeglut3-linux.a" "tmp/glew2-linux/glew2-linux.a" "tmp/SOIL-linux/SOIL-linux.a" "tmp/tinyxml2-linux/tinyxml2-linux.a" "tmp/GeometryLib-linux/GeometryLib-linux.a" "tmp/System-linux/System-linux.a"
 echo ...Finished
 
 echo Compiling Bullet3-linux...
@@ -294,7 +294,7 @@ echo Compiling RLSimion-Common-linux...
 mkdir tmp/RLSimion-Common-linux
 g++ -c -fPIC -w -x c++ -std=c++11 RLSimion/Common/named-var-set.cpp -o tmp/RLSimion-Common-linux/named-var-set.o
 g++ -c -fPIC -w -x c++ -std=c++11 RLSimion/Common/wire.cpp -o tmp/RLSimion-Common-linux/wire.o
-ar rcs tmp/RLSimion-Common-linux/RLSimion-Common-linux.a tmp/RLSimion-Common-linux/*.o 
+ar rcs tmp/RLSimion-Common-linux/RLSimion-Common-linux.a tmp/RLSimion-Common-linux/*.o  "tmp/System-linux/System-linux.a"
 echo ...Finished
 
 echo Compiling CNTKWrapper-linux...
@@ -320,7 +320,7 @@ g++ -c -fPIC -w -x c++ -std=c++11 RLSimion/CNTKWrapper/Network.cpp -o tmp/CNTKWr
 g++ -c -fPIC -w -x c++ -std=c++11 RLSimion/CNTKWrapper/NetworkArchitecture.cpp -o tmp/CNTKWrapper-linux/NetworkArchitecture.o
 g++ -c -fPIC -w -x c++ -std=c++11 RLSimion/CNTKWrapper/Parameter.cpp -o tmp/CNTKWrapper-linux/Parameter.o
 g++ -c -fPIC -w -x c++ -std=c++11 RLSimion/CNTKWrapper/ParameterValues.cpp -o tmp/CNTKWrapper-linux/ParameterValues.o
-g++ -o tmp/CNTKWrapper-linux/CNTKWrapper-linux.so tmp/CNTKWrapper-linux/*.o -Wl,--no-undefined -Wl,-z,relro -Wl,-z,now -Wl,-z,noexecstack -shared  "tmp/tinyxml2-linux/tinyxml2-linux.a" "tmp/System-linux/System-linux.a" "tmp/RLSimion-Common-linux/RLSimion-Common-linux.a" -l"Cntk.Core-2.5.1" -l"Cntk.Math-2.5.1" -l"Cntk.PerformanceProfiler-2.5.1" -l"iomp5" -l"mklml_intel" -l"pthread" -Wl,-L"RLSimion/CNTKWrapper/../../debug" -Wl,-L"RLSimion/CNTKWrapper/../../bin" -Wl,-L"tmp/CNTKWrapper-linux/" -Wl,-rpath='${ORIGIN}'
+g++ -o tmp/CNTKWrapper-linux/CNTKWrapper-linux.so tmp/CNTKWrapper-linux/*.o -Wl,--no-undefined -Wl,-z,relro -Wl,-z,now -Wl,-z,noexecstack -shared  "tmp/tinyxml2-linux/tinyxml2-linux.a" "tmp/RLSimion-Common-linux/RLSimion-Common-linux.a" "tmp/System-linux/System-linux.a" -l"Cntk.Core-2.5.1" -l"Cntk.Math-2.5.1" -l"Cntk.PerformanceProfiler-2.5.1" -l"iomp5" -l"mklml_intel" -l"pthread" -Wl,-L"RLSimion/CNTKWrapper/../../debug" -Wl,-L"RLSimion/CNTKWrapper/../../bin" -Wl,-L"tmp/CNTKWrapper-linux/" -Wl,-rpath='${ORIGIN}'
 echo ...Finished
 
 echo Compiling RLSimion-Lib-linux...
@@ -395,7 +395,7 @@ g++ -c -fPIC -w -x c++ -std=c++11 RLSimion/Lib/worlds/templatedConfigFile.cpp -o
 g++ -c -fPIC -w -x c++ -std=c++11 RLSimion/Lib/worlds/underwatervehicle.cpp -o tmp/RLSimion-Lib-linux/underwatervehicle.o
 g++ -c -fPIC -w -x c++ -std=c++11 RLSimion/Lib/worlds/windturbine.cpp -o tmp/RLSimion-Lib-linux/windturbine.o
 g++ -c -fPIC -w -x c++ -std=c++11 RLSimion/Lib/worlds/world.cpp -o tmp/RLSimion-Lib-linux/world.o
-ar rcs tmp/RLSimion-Lib-linux/RLSimion-Lib-linux.a tmp/RLSimion-Lib-linux/*.o 
+ar rcs tmp/RLSimion-Lib-linux/RLSimion-Lib-linux.a tmp/RLSimion-Lib-linux/*.o  "tmp/Bullet3-linux/Bullet3-linux.a" "tmp/tinyxml2-linux/tinyxml2-linux.a" "tmp/OpenGLRenderer-linux/OpenGLRenderer-linux.a" "tmp/CNTKWrapper-linux/CNTKWrapper-linux.so" "tmp/RLSimion-Common-linux/RLSimion-Common-linux.a"
 echo ...Finished
 
 echo Compiling RLSimion-linux...
