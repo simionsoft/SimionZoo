@@ -65,13 +65,13 @@ jobs:
     name: Hosted Ubuntu 1604
   steps:
   - script: |
-    echo Installing dependencies….
-    sudo apt-get install libgl1-mesa-dev libglew-dev libxi-dev
-    echo ...Finished
-    echo Downloading files stored with Git LFS...
-    rm bin/cntk-linux/*
-    git checkout .
-    echo ...Finished
+      echo Installing dependencies….
+      sudo apt-get install libgl1-mesa-dev libglew-dev libxi-dev
+      echo ...Finished
+      echo Downloading files stored with Git LFS...
+      rm bin/cntk-linux/*
+      git checkout .
+      echo ...Finished
     displayName: 'Install dependencies'
   - task: Bash@3
     displayName: 'Run linux build script'
@@ -80,8 +80,8 @@ jobs:
       filePath: './build-linux.sh'
       failOnStderr: true
   - script: |
-    echo Files in /bin:
-    ls -R -l bin
-    echo Files in /tmp:
-    ls -R -l tmp
+      echo Files in /bin:
+      ls -R -l bin
+      echo Files in /tmp:
+      ls -R -l tmp
     displayName: 'Show output files'
