@@ -65,14 +65,14 @@ jobs:
     name: Hosted Ubuntu 1604
   steps:
   - script:
-     echo Installing dependencies….
-     sudo apt-get install libgl1-mesa-dev libglew-dev libxi-dev
-     echo ...Finished
-     echo Downloading files stored with Git LFS...
-     rm bin/cntk-linux/*
-     git checkout .
-     echo ...Finished
-     displayName: Initialize
+    echo Installing dependencies….
+    sudo apt-get install libgl1-mesa-dev libglew-dev libxi-dev
+    echo ...Finished
+    echo Downloading files stored with Git LFS...
+    rm bin/cntk-linux/*
+    git checkout .
+    echo ...Finished
+    displayName: 'Install dependencies'
   - task: Bash@3
     displayName: 'Run linux build script'
     inputs:
