@@ -304,11 +304,10 @@ cp RLSimion/CNTKWrapper/../../bin/cntk-linux/libCntk.Math-2.5.1.so tmp/CNTKWrapp
 cp RLSimion/CNTKWrapper/../../bin/cntk-linux/libCntk.PerformanceProfiler-2.5.1.so tmp/CNTKWrapper-linux/
 cp RLSimion/CNTKWrapper/../../bin/cntk-linux/libiomp5.so tmp/CNTKWrapper-linux/
 cp RLSimion/CNTKWrapper/../../bin/cntk-linux/libmklml_intel.so tmp/CNTKWrapper-linux/
-cp RLSimion/CNTKWrapper/../../bin/cntk-linux/libmpi.so.1 tmp/CNTKWrapper-linux/
+cp RLSimion/CNTKWrapper/../../bin/cntk-linux/libmpi.so.12 tmp/CNTKWrapper-linux/
 cp RLSimion/CNTKWrapper/../../bin/cntk-linux/libmpi_cxx.so.1 tmp/CNTKWrapper-linux/
 cp RLSimion/CNTKWrapper/../../bin/cntk-linux/libopen-pal.so.13 tmp/CNTKWrapper-linux/
 cp RLSimion/CNTKWrapper/../../bin/cntk-linux/libopen-rte.so.12 tmp/CNTKWrapper-linux/
-cp RLSimion/CNTKWrapper/../../bin/cntk-linux/libmpi.so.12 tmp/CNTKWrapper-linux/
 g++ -c -fPIC -w -x c++ -std=c++11 RLSimion/CNTKWrapper/Chain.cpp -o tmp/CNTKWrapper-linux/Chain.o
 g++ -c -fPIC -w -x c++ -std=c++11 RLSimion/CNTKWrapper/CNTKWrapper.cpp -o tmp/CNTKWrapper-linux/CNTKWrapper.o
 g++ -c -fPIC -w -x c++ -std=c++11 RLSimion/CNTKWrapper/CNTKWrapperInternals.cpp -o tmp/CNTKWrapper-linux/CNTKWrapperInternals.o
@@ -366,6 +365,7 @@ g++ -c -fPIC -w -x c++ -std=c++11 RLSimion/Lib/policy-learner.cpp -o tmp/RLSimio
 g++ -c -fPIC -w -x c++ -std=c++11 RLSimion/Lib/q-learners.cpp -o tmp/RLSimion-Lib-linux/q-learners.o
 g++ -c -fPIC -w -x c++ -std=c++11 RLSimion/Lib/reward.cpp -o tmp/RLSimion-Lib-linux/reward.o
 g++ -c -fPIC -w -x c++ -std=c++11 RLSimion/Lib/run-time-requirements.cpp -o tmp/RLSimion-Lib-linux/run-time-requirements.o
+g++ -c -fPIC -w -x c++ -std=c++11 RLSimion/Lib/sample-file.cpp -o tmp/RLSimion-Lib-linux/sample-file.o
 g++ -c -fPIC -w -x c++ -std=c++11 RLSimion/Lib/simgod.cpp -o tmp/RLSimion-Lib-linux/simgod.o
 g++ -c -fPIC -w -x c++ -std=c++11 RLSimion/Lib/simion.cpp -o tmp/RLSimion-Lib-linux/simion.o
 g++ -c -fPIC -w -x c++ -std=c++11 RLSimion/Lib/single-dimension-grid.cpp -o tmp/RLSimion-Lib-linux/single-dimension-grid.o
