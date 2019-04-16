@@ -2,69 +2,86 @@ trigger:
 - master
 - develop
 
-pool:
-  vmImage: 'VS2017-Win2016'
+jobs:
+- job: Windows
+  pool:
+    vmImage: 'VS2017-Win2016'
+  variables:
+    solution: 'SimionZoo.sln'
+  steps:
+  - task: NuGetToolInstaller@0
+    displayName: 'Use NuGet 4.4.1'
+    inputs:
+      versionSpec: 4.4.1
+  - task: NuGetCommand@2
+    displayName: 'NuGet restore'
+    inputs:
+      restoreSolution: '$(solution)'
+  - task: VSBuild@1
+    displayName: 'Build all the C# projects'
+    inputs:
+      solution: '$(solution)' 
+      platform: 'any cpu'
+      configuration: 'Release'
+  - task: VSBuild@1
+    displayName: 'Build all the C++ projects (x86)'
+    inputs:
+      solution: '$(solution)' 
+      platform: 'x86'
+      configuration: 'Release'
+  - task: VSBuild@1
+    displayName: 'Build all the C++ projects (x64)'
+    inputs:
+      solution: '$(solution)'
+      platform: 'x64'
+      configuration: 'Release'
+  - task: VSTest@2
+    displayName: 'Run C# tests'
+    inputs:
+      solution: '$(solution)' 
+      platform: 'any cpu'
+      configuration: 'Release'
+      testAssemblyVer2: '*.dll'
+      searchFolder: tests\bin\Release\AnyCPU
+  - task: VSTest@2
+    displayName: 'Run C++ tests (x86)'
+    inputs:
+      solution: '$(solution)' 
+      platform: 'x86'
+      configuration: 'Release'
+      testAssemblyVer2: '*.dll'
+      searchFolder: tests\bin\Release\Win32
+  - task: VSTest@2
+    displayName: 'Run C++ tests (x64)'
+    inputs:
+      solution: '$(solution)'
+      platform: 'x64'
+      configuration: 'Release'
+      testAssemblyVer2: '*.dll'
+      searchFolder: tests\bin\Release\x64
 
-variables:
-  solution: 'SimionZoo.sln'
-
-steps:
-
-- task: NuGetToolInstaller@0
-  displayName: 'Use NuGet 4.4.1'
-  inputs:
-    versionSpec: 4.4.1
-
-- task: NuGetCommand@2
-  displayName: 'NuGet restore'
-  inputs:
-    restoreSolution: '$(solution)'
-
-- task: VSBuild@1
-  displayName: 'Build all the C# projects'
-  inputs:
-    solution: '$(solution)' 
-    platform: 'any cpu'
-    configuration: 'Release'
-
-- task: VSBuild@1
-  displayName: 'Build all the C++ projects (x86)'
-  inputs:
-    solution: '$(solution)' 
-    platform: 'x86'
-    configuration: 'Release'
-
-- task: VSBuild@1
-  displayName: 'Build all the C++ projects (x64)'
-  inputs:
-    solution: '$(solution)'
-    platform: 'x64'
-    configuration: 'Release'
-
-- task: VSTest@2
-  displayName: 'Run C# tests'
-  inputs:
-    solution: '$(solution)' 
-    platform: 'any cpu'
-    configuration: 'Release'
-    testAssemblyVer2: '*.dll'
-    searchFolder: tests\bin\Release\AnyCPU
-
-- task: VSTest@2
-  displayName: 'Run C++ tests (x86)'
-  inputs:
-    solution: '$(solution)' 
-    platform: 'x86'
-    configuration: 'Release'
-    testAssemblyVer2: '*.dll'
-    searchFolder: tests\bin\Release\Win32
-
-
-- task: VSTest@2
-  displayName: 'Run C++ tests (x64)'
-  inputs:
-    solution: '$(solution)'
-    platform: 'x64'
-    configuration: 'Release'
-    testAssemblyVer2: '*.dll'
-    searchFolder: tests\bin\Release\x64
+- job: Ubuntu
+  pool:
+    name: Hosted Ubuntu 1604
+  steps:
+  - script:
+     echo Installing dependencies….
+     sudo apt-get install libgl1-mesa-dev libglew-dev libxi-dev
+     echo ...Finished
+     echo Downloading files stored with Git LFS...
+     rm bin/cntk-linux/*
+     git checkout .
+     echo ...Finished
+     displayName: Initialize
+  - task: Bash@3
+    displayName: 'Run linux build script'
+    inputs:
+      targetType: filePath
+      filePath: './build-linux.sh'
+      failOnStderr: true
+  - script:
+    echo Files in /bin:
+    ls -R -l bin
+    echo Files in /tmp:
+    ls -R -l tmp
+    displayName: 'Show output files'
