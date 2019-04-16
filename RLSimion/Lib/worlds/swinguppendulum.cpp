@@ -89,7 +89,7 @@ double SwingupPendulumReward::getReward(const State* s, const Action* a, const S
 {
 	double angle = s_p->get("angle");
 
-	if (abs(angle) < 0.05)
+	if (std::abs(angle) < 0.05)
 		//measure the time within the target angle range
 		m_timeInGoal += 1.0 / (2.0 / SimionApp::get()->pWorld->getDT());
 	else
