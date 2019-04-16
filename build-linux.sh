@@ -401,6 +401,6 @@ echo ...Finished
 echo Compiling RLSimion-linux...
 mkdir tmp/RLSimion-linux
 g++ -w -x c++ -std=c++11 RLSimion/App/app-main.cpp -o tmp/RLSimion-linux/app-main.o
-g++ -o tmp/RLSimion-linux/RLSimion-linux.exe tmp/RLSimion-linux/*.o -Wl,--no-undefined "tmp/RLSimion-Lib-linux/RLSimion-Lib-linux.a"  "tmp/OpenGLRenderer-linux/OpenGLRenderer-linux.a" "tmp/Bullet3-linux/Bullet3-linux.a" "tmp/glew2-linux/glew2-linux.a" "tmp/SOIL-linux/SOIL-linux.a" "tmp/CNTKWrapper-linux/CNTKWrapper-linux.so" "tmp/tinyxml2-linux/tinyxml2-linux.a" "tmp/RLSimion-Common-linux/RLSimion-Common-linux.a" "tmp/System-linux/System-linux.a" -l"GL" -l"X11" -l"GLU" -l"dl"
+g++ -o tmp/RLSimion-linux/RLSimion-linux.exe tmp/RLSimion-linux/*.o -Wl,--no-undefined -Wl,-rpath='${ORIGIN}' "tmp/RLSimion-Lib-linux/RLSimion-Lib-linux.a"  "tmp/OpenGLRenderer-linux/OpenGLRenderer-linux.a" "tmp/Bullet3-linux/Bullet3-linux.a" "tmp/glew2-linux/glew2-linux.a" "tmp/SOIL-linux/SOIL-linux.a" "tmp/CNTKWrapper-linux/CNTKWrapper-linux.so" "tmp/tinyxml2-linux/tinyxml2-linux.a" "tmp/RLSimion-Common-linux/RLSimion-Common-linux.a" "tmp/System-linux/System-linux.a" -l"GL" -l"X11" -l"GLU" -l"dl"
 echo ...Finished
 
