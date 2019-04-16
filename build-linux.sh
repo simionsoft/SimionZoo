@@ -395,7 +395,7 @@ g++ -c -fPIC -w -x c++ -std=c++11 RLSimion/Lib/worlds/templatedConfigFile.cpp -o
 g++ -c -fPIC -w -x c++ -std=c++11 RLSimion/Lib/worlds/underwatervehicle.cpp -o tmp/RLSimion-Lib-linux/underwatervehicle.o
 g++ -c -fPIC -w -x c++ -std=c++11 RLSimion/Lib/worlds/windturbine.cpp -o tmp/RLSimion-Lib-linux/windturbine.o
 g++ -c -fPIC -w -x c++ -std=c++11 RLSimion/Lib/worlds/world.cpp -o tmp/RLSimion-Lib-linux/world.o
-ar rcs tmp/RLSimion-Lib-linux/RLSimion-Lib-linux.a tmp/RLSimion-Lib-linux/*.o  "tmp/Bullet3-linux/Bullet3-linux.a" "tmp/tinyxml2-linux/tinyxml2-linux.a" "tmp/OpenGLRenderer-linux/OpenGLRenderer-linux.a" "tmp/CNTKWrapper-linux/CNTKWrapper-linux.so" "tmp/RLSimion-Common-linux/RLSimion-Common-linux.a"
+ar rcs tmp/RLSimion-Lib-linux/RLSimion-Lib-linux.a tmp/RLSimion-Lib-linux/*.o  "tmp/Bullet3-linux/Bullet3-linux.a" "tmp/tinyxml2-linux/tinyxml2-linux.a" "tmp/OpenGLRenderer-linux/OpenGLRenderer-linux.a" "tmp/RLSimion-Common-linux/RLSimion-Common-linux.a"
 echo ...Finished
 
 echo Compiling RLSimion-linux...
