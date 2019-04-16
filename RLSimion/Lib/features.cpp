@@ -29,6 +29,8 @@
 #include "app.h"
 #include "../../tools/System/CrossPlatform.h"
 
+#include <cmath>
+
 #define FEATURE_BLOCK_SIZE 1024
 #define DEFAULT_FEATURE_THRESHOLD 0.000001
 
@@ -264,7 +266,7 @@ void FeatureList::applyThreshold(double threshold)
 
 	for (size_t i = 0; i < oldNumFeatures; i++)
 	{
-		if (std::abs(m_pFeatures[i].m_factor) < std::abs(threshold))
+		if (abs(m_pFeatures[i].m_factor) < abs(threshold))
 		{
 			if (firstUnderThreshold < 0) firstUnderThreshold = i;
 

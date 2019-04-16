@@ -32,7 +32,7 @@
 #include "../app.h"
 #include "../noise.h"
 #define _USE_MATH_DEFINES
-#include <math.h>
+#include <cmath>
 
 #define g 9.8
 #define m 1
