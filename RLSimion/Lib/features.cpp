@@ -264,7 +264,7 @@ void FeatureList::applyThreshold(double threshold)
 
 	for (size_t i = 0; i < oldNumFeatures; i++)
 	{
-		if (abs(m_pFeatures[i].m_factor) < abs(threshold))
+		if (std::abs(m_pFeatures[i].m_factor) < std::abs(threshold))
 		{
 			if (firstUnderThreshold < 0) firstUnderThreshold = i;
 

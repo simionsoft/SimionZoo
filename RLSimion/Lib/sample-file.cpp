@@ -27,6 +27,7 @@
 #include "../Common/named-var-set.h"
 #include "../../3rd-party/tinyxml2/tinyxml2.h"
 #include "../../tools/System/FileUtils.h"
+#include "../../tools/System/CrossPlatform.h"
 #include "logger.h"
 using namespace tinyxml2;
 
@@ -72,7 +73,7 @@ void SampleFile::drawRandomSample(State* s, Action* a, State* s_p, double& rewar
 		Logger::logMessage(MessageType::Error, "Missmatched sample size in offline training file");
 
 	if (m_pBinaryFile == nullptr)
-		fopen_s(&m_pBinaryFile, m_binaryFilename.c_str(), "rb");
+		CrossPlatform::Fopen_s(&m_pBinaryFile, m_binaryFilename.c_str(), "rb");
 
 	int sampleIndex = rand() % m_numSamples;
 
