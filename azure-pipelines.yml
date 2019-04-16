@@ -64,7 +64,7 @@ jobs:
   pool:
     name: Hosted Ubuntu 1604
   steps:
-  - script:
+  - script: |
     echo Installing dependencies….
     sudo apt-get install libgl1-mesa-dev libglew-dev libxi-dev
     echo ...Finished
@@ -79,7 +79,7 @@ jobs:
       targetType: filePath
       filePath: './build-linux.sh'
       failOnStderr: true
-  - script:
+  - script: |
     echo Files in /bin:
     ls -R -l bin
     echo Files in /tmp:
