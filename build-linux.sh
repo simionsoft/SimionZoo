@@ -320,7 +320,7 @@ g++ -c -fPIC -w -x c++ -std=c++11 RLSimion/CNTKWrapper/Network.cpp -o tmp/CNTKWr
 g++ -c -fPIC -w -x c++ -std=c++11 RLSimion/CNTKWrapper/NetworkArchitecture.cpp -o tmp/CNTKWrapper-linux/NetworkArchitecture.o
 g++ -c -fPIC -w -x c++ -std=c++11 RLSimion/CNTKWrapper/Parameter.cpp -o tmp/CNTKWrapper-linux/Parameter.o
 g++ -c -fPIC -w -x c++ -std=c++11 RLSimion/CNTKWrapper/ParameterValues.cpp -o tmp/CNTKWrapper-linux/ParameterValues.o
-g++ -o tmp/CNTKWrapper-linux/CNTKWrapper-linux.so tmp/CNTKWrapper-linux/*.o "tmp/tinyxml2-linux/tinyxml2-linux.a" "tmp/System-linux/System-linux.a" "tmp/RLSimion-Common-linux/RLSimion-Common-linux.a" -l"Cntk.Core-2.5.1" -l"Cntk.Math-2.5.1" -l"Cntk.PerformanceProfiler-2.5.1" -l"iomp5" -l"mklml_intel" -l"pthread" -Wl,-L"RLSimion/CNTKWrapper/../../debug" -Wl,-L"RLSimion/CNTKWrapper/../../bin" -Wl,-L"tmp/CNTKWrapper-linux/" -Wl,-rpath='${ORIGIN}'
+g++ -o tmp/CNTKWrapper-linux/CNTKWrapper-linux.so tmp/CNTKWrapper-linux/*.o -Wl,--no-undefined -Wl,-z,relro -Wl,-z,now -Wl,-z,noexecstack -shared  "tmp/tinyxml2-linux/tinyxml2-linux.a" "tmp/System-linux/System-linux.a" "tmp/RLSimion-Common-linux/RLSimion-Common-linux.a" -l"Cntk.Core-2.5.1" -l"Cntk.Math-2.5.1" -l"Cntk.PerformanceProfiler-2.5.1" -l"iomp5" -l"mklml_intel" -l"pthread" -Wl,-L"RLSimion/CNTKWrapper/../../debug" -Wl,-L"RLSimion/CNTKWrapper/../../bin" -Wl,-L"tmp/CNTKWrapper-linux/" -Wl,-rpath='${ORIGIN}'
 echo ...Finished
 
 echo Compiling RLSimion-Lib-linux...
@@ -401,6 +401,6 @@ echo ...Finished
 echo Compiling RLSimion-linux...
 mkdir tmp/RLSimion-linux
 g++ -w -x c++ -std=c++11 RLSimion/App/app-main.cpp -o tmp/RLSimion-linux/app-main.o
-g++ -o tmp/RLSimion-linux/RLSimion-linux.exe tmp/RLSimion-linux/*.o "tmp/Bullet3-linux/Bullet3-linux.a" "tmp/glew2-linux/glew2-linux.a" "tmp/SOIL-linux/SOIL-linux.a" "tmp/tinyxml2-linux/tinyxml2-linux.a" "tmp/OpenGLRenderer-linux/OpenGLRenderer-linux.a" "tmp/System-linux/System-linux.a" "tmp/CNTKWrapper-linux/CNTKWrapper-linux.so" "tmp/RLSimion-Common-linux/RLSimion-Common-linux.a" "tmp/RLSimion-Lib-linux/RLSimion-Lib-linux.a" -l"GL" -l"X11" -l"GLU" -l"dl"
+g++ -o tmp/RLSimion-linux/RLSimion-linux.exe tmp/RLSimion-linux/*.o -Wl,--no-undefined  "tmp/Bullet3-linux/Bullet3-linux.a" "tmp/glew2-linux/glew2-linux.a" "tmp/SOIL-linux/SOIL-linux.a" "tmp/tinyxml2-linux/tinyxml2-linux.a" "tmp/OpenGLRenderer-linux/OpenGLRenderer-linux.a" "tmp/System-linux/System-linux.a" "tmp/CNTKWrapper-linux/CNTKWrapper-linux.so" "tmp/RLSimion-Common-linux/RLSimion-Common-linux.a" "tmp/RLSimion-Lib-linux/RLSimion-Lib-linux.a" -l"GL" -l"X11" -l"GLU" -l"dl"
 echo ...Finished
 
