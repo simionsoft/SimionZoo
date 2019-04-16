@@ -24,6 +24,9 @@
 */
 
 #include "swinguppendulum.h"
+#define _USE_MATH_DEFINES
+#include <cmath>
+
 #include "../simgod.h"
 #include "../experiment.h"
 #include "../../Common/named-var-set.h"
@@ -31,8 +34,6 @@
 #include "../reward.h"
 #include "../app.h"
 #include "../noise.h"
-#define _USE_MATH_DEFINES
-#include <cmath>
 
 #define g 9.8
 #define m 1
