@@ -23,10 +23,9 @@
 	SOFTWARE.
 */
 
-#include "swinguppendulum.h"
 #define _USE_MATH_DEFINES
 #include <cmath>
-
+#include "swinguppendulum.h"
 #include "../simgod.h"
 #include "../experiment.h"
 #include "../../Common/named-var-set.h"
