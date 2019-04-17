@@ -56,32 +56,45 @@ SampleFile::SampleFile(string filename)
 			else if (!strcmp(pChild->Name(), "Reward-variable")) m_numRewardVariables++;
 			pChild = pChild->NextSiblingElement();
 		}
+		m_numElementsPerSample = 2 * m_numStateVariables + m_numActionVariables + m_numRewardVariables;
+		m_sampleSize = sizeof(double) * m_numElementsPerSample; //<s, a, s_p, r>
 
-		m_sampleSize = sizeof(double) * (2*m_numStateVariables + m_numActionVariables + m_numRewardVariables); //<s, a, s_p, r>
+		//Read file
+		m_data = vector<double>(m_numSamples * m_sampleSize);
+		FILE* binaryFile;
+		CrossPlatform::Fopen_s(&binaryFile, m_binaryFilename.c_str(), "rb");
+		if (binaryFile != nullptr)
+		{
+			int res= fread(m_data.data(), m_sampleSize, m_numSamples, binaryFile);
+			fclose(binaryFile);
+		}
+		else Logger::logMessage(MessageType::Error, "Failed to open offline sample file");
 	}
 }
 
 SampleFile::~SampleFile()
 {
-	if (m_pBinaryFile != nullptr)
-		fclose(m_pBinaryFile);
 }
 
 void SampleFile::drawRandomSample(State* s, Action* a, State* s_p, double& reward)
 {
-	if (s->getNumVars() != m_numStateVariables || a->getNumVars() != m_numActionVariables || s_p->getNumVars() != m_numStateVariables)
-		Logger::logMessage(MessageType::Error, "Missmatched sample size in offline training file");
+	int sampleOffset = m_numElementsPerSample * m_currentSampleIndex;
+	for (int i = 0; i < s->getNumVars(); i++) s->set(i, m_data[sampleOffset + i]);
+	sampleOffset += s->getNumVars();
+	for (int i = 0; i < a->getNumVars(); i++) a->set(i, m_data[sampleOffset + i]);
+	sampleOffset += a->getNumVars();
+	for (int i = 0; i < s_p->getNumVars(); i++) s_p->set(i, m_data[sampleOffset + i]);
+	sampleOffset += s_p->getNumVars();
+	reward = m_data[sampleOffset]; //We only take the first reward value. Should be enough for now
+	m_currentSampleIndex = ++m_currentSampleIndex % m_numSamples;
 
-	if (m_pBinaryFile == nullptr)
-		CrossPlatform::Fopen_s(&m_pBinaryFile, m_binaryFilename.c_str(), "rb");
+	//int sampleIndex = rand() % m_numSamples;
 
-	int sampleIndex = rand() % m_numSamples;
-
-	fseek(m_pBinaryFile, sampleIndex * sizeof(double) * m_sampleSize, SEEK_SET);
-	size_t res;
-	res= fread(s->getValueVector(), sizeof(double), m_numStateVariables, m_pBinaryFile);
-	res= fread(a->getValueVector(), sizeof(double), m_numActionVariables, m_pBinaryFile);
-	res= fread(s_p->getValueVector(), sizeof(double), m_numStateVariables, m_pBinaryFile);
-	res= fread(&reward, sizeof(double), 1, m_pBinaryFile); //We only take the first reward value. Should be enough for now
-	sampleIndex++;
+	//fseek(m_pBinaryFile, sampleIndex * sizeof(double) * m_sampleSize, SEEK_SET);
+	//size_t res;
+	//res= fread(s->getValueVector(), sizeof(double), m_numStateVariables, m_pBinaryFile);
+	//res= fread(a->getValueVector(), sizeof(double), m_numActionVariables, m_pBinaryFile);
+	//res= fread(s_p->getValueVector(), sizeof(double), m_numStateVariables, m_pBinaryFile);
+	//res= fread(&reward, sizeof(double), 1, m_pBinaryFile); //We only take the first reward value. Should be enough for now
+	//sampleIndex++;
 }
