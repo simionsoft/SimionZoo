@@ -23,16 +23,16 @@
 	SOFTWARE.
 */
 
+using Herd.Files;
 using System;
 using System.Collections.Generic;
 using System.IO;
-using Herd.Files;
 
 namespace SimionLogToOfflineTraining
 {
     class Program
     {
-        public class Tuple
+        public class Sampler
         {
             public double[] State { get; } = null;
             public double[] Action { get; } = null;
@@ -41,7 +41,10 @@ namespace SimionLogToOfflineTraining
 
             Log.Descriptor m_descriptor;
 
-            public Tuple(Log.Descriptor descriptor)
+            public int ElementsPerSample { get { return State.Length + Action.Length + State_p.Length + Reward.Length; } }
+            public long SampleSizeInBytes { get { return sizeof(double) * ElementsPerSample; } }
+
+            public Sampler(Log.Descriptor descriptor)
             {
                 m_descriptor = descriptor;
 
@@ -86,8 +89,7 @@ namespace SimionLogToOfflineTraining
 
             public void SaveLastSampleToBinaryFile(BinaryWriter writer)
             {
-                int numElementsPerTuple = 2 * State.Length + Action.Length + Reward.Length;
-                double[] sample = new double[numElementsPerTuple];
+                double[] sample = new double[ElementsPerSample];
                 int bufferOffset = 0;
                 for (int i = 0; i < State.Length; i++) sample[bufferOffset + i] = State[i];
                 bufferOffset += State.Length;
@@ -101,10 +103,6 @@ namespace SimionLogToOfflineTraining
                 byte [] result = new byte[sample.Length * sizeof(double)];
                 Buffer.BlockCopy(sample, 0, result, 0, result.Length);
                 writer.Write(result, 0, result.Length);
-
-                //var result2 = new double[result.Length / sizeof(double)];
-                //Buffer.BlockCopy(result, 0, result2, 0, result.Length);
-
             }
 
             void SaveVariables(StreamWriter writer, string xmlTag, List<string> names)
@@ -135,6 +133,36 @@ namespace SimionLogToOfflineTraining
                 totalNumSamples += episode.steps.Count - 1;
             }
             return totalNumSamples;
+        }
+
+        static void ShuffleSamplesInFile(string inputFilename, Sampler sampler)
+        {
+            string outputFilename = inputFilename + ".tmp";
+            FileInfo inputFileInfo = new FileInfo(inputFilename);
+            long numInputSamples = inputFileInfo.Length / sampler.SampleSizeInBytes;
+            Random randomGenerator = new Random();
+
+            byte[] buffer = new byte[sampler.SampleSizeInBytes];
+
+            using (FileStream inputStream = File.OpenRead(inputFilename))
+            {
+                BinaryReader inputReader = new BinaryReader(inputStream);
+                using (FileStream outputStream = File.Create(outputFilename))
+                {
+                    BinaryWriter writer = new BinaryWriter(outputStream);
+
+                    for (int i= 0; i<numInputSamples; i++)
+                    {
+                        long sampleIndex = randomGenerator.Next() % numInputSamples;
+                        inputStream.Seek(sampleIndex * sampler.SampleSizeInBytes, SeekOrigin.Begin);
+
+                        inputReader.Read(buffer, 0, buffer.Length);
+                        writer.Write(buffer, 0, buffer.Length);
+                    }
+                }
+            }
+            File.Delete(inputFilename);
+            File.Move(outputFilename, inputFilename);
         }
 
         static void Main(string[] args)
@@ -182,12 +210,13 @@ namespace SimionLogToOfflineTraining
 
             //We use the first descriptor as the common descriptor used for tuples. We are assuming they all have the same variables. BEWARE!!
             Log.Descriptor commonDescriptor = new Log.Descriptor(logDescriptorFiles[0]);
-            Tuple sample = new Tuple(commonDescriptor);
+            Sampler sampler = new Sampler(commonDescriptor);
+            int numSavedSamples = 0;
 
             using (FileStream outputStream = File.Create(outputBinaryFilename))
             {
                 BinaryWriter writer = new BinaryWriter(outputStream);
-                int numSavedSamples = 0;
+
 
                 Console.WriteLine("STARTED: Drawing " + numSamples + " samples from log files in folder " + inputFolder);
                 foreach (string logDescriptorFilename in logDescriptorFiles)
@@ -200,7 +229,7 @@ namespace SimionLogToOfflineTraining
 
                     if (data.SuccessfulLoad)
                     {
-                        if (sample.State.Length + sample.Action.Length + sample.Reward.Length ==
+                        if (sampler.State.Length + sampler.Action.Length + sampler.Reward.Length ==
                             logDescriptor.StateVariables.Count + logDescriptor.ActionVariables.Count + logDescriptor.RewardVariables.Count)
                         {
                             int totalNumSamples = GetTotalNumSamples(data);
@@ -210,9 +239,9 @@ namespace SimionLogToOfflineTraining
                             Console.Write("Log file " + Path.GetFileName(logDescriptorFilename) + ":");
                             for (int i = 0; i < actualNumSamples; i++)
                             {
-                                if (sample.DrawRandomSample(data))
+                                if (sampler.DrawRandomSample(data))
                                 {
-                                    sample.SaveLastSampleToBinaryFile(writer);
+                                    sampler.SaveLastSampleToBinaryFile(writer);
                                     numSavedSamples++;
                                 }
                             }
@@ -222,19 +251,17 @@ namespace SimionLogToOfflineTraining
                             Console.WriteLine("File " + logDescriptorFilename + "skipped (missmatched variables in log)");
                     }
                 }
-                if (numSavedSamples > 0)
-                {
-                    sample.SaveSampleFileDescriptor(outputFilename, Path.GetFileName(outputBinaryFilename), numSavedSamples);
-                    Console.WriteLine("FINISHED: " + numSavedSamples + " samples were drawn from the log files and saved\nDescriptor: " + outputFilename + "\nBinary data: " + outputBinaryFilename);
-                }
             }
-            //Check that we have written properly
-            //using (FileStream inputBinaryFile = File.OpenRead(outputBinaryFilename))
-            //{
-            //    BinaryReader reader = new BinaryReader(inputBinaryFile);
-            //    double[] buffer = new double[100];
-            //    for (int i = 0; i < 100; i++) buffer[i] = reader.ReadDouble();
-            //}
+            //Shuffle the samples in the file
+            Console.WriteLine("Shuffling samples in file");
+            ShuffleSamplesInFile(outputBinaryFilename, sampler);
+            //Save the descriptor
+            if (numSavedSamples > 0)
+            {
+                sampler.SaveSampleFileDescriptor(outputFilename, Path.GetFileName(outputBinaryFilename), numSavedSamples);
+                Console.WriteLine("FINISHED: " + numSavedSamples + " samples were drawn from the log files and saved\nDescriptor: " + outputFilename + "\nBinary data: " + outputBinaryFilename);
+            }
+
         }
     }
 }
