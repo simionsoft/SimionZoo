@@ -65,7 +65,8 @@ namespace Badger.ViewModels
 
         public override bool Validate()
         {
-            return File.Exists(content);
+            //this validates files that exist and paths that match the default (for example, if the default value is "", it is valid to leave it unset)
+            return content==m_default || File.Exists(content);
         }
 
 
