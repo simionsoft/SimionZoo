@@ -46,7 +46,7 @@ SampleFile::SampleFile(string filename)
 
 		folder = getDirectory(filename);
 		m_binaryFilename = folder + string(pRoot->Attribute("BinaryDataFile"));
-		m_numSamples = atoi(pRoot->Attribute("NumSamples"));
+		m_numSamplesInFile = atoi(pRoot->Attribute("NumSamples"));
 
 		XMLElement* pChild = pRoot->FirstChildElement();
 		while (pChild != nullptr)
@@ -57,44 +57,54 @@ SampleFile::SampleFile(string filename)
 			pChild = pChild->NextSiblingElement();
 		}
 		m_numElementsPerSample = 2 * m_numStateVariables + m_numActionVariables + m_numRewardVariables;
-		m_sampleSize = sizeof(double) * m_numElementsPerSample; //<s, a, s_p, r>
+		m_sampleSizeInBytes = sizeof(double) * m_numElementsPerSample; //<s, a, s_p, r>
 
-		//Read file
-		m_data = vector<double>(m_numSamples * m_sampleSize);
-		FILE* binaryFile;
-		CrossPlatform::Fopen_s(&binaryFile, m_binaryFilename.c_str(), "rb");
-		if (binaryFile != nullptr)
-		{
-			int res= fread(m_data.data(), m_sampleSize, m_numSamples, binaryFile);
-			fclose(binaryFile);
-		}
-		else Logger::logMessage(MessageType::Error, "Failed to open offline sample file");
+		//We are using an arbitrary data chunk size (10^5). With 100 variables per tuple, we would need 100*8*10^5= 80Mb of memory, which seems reasonable
+		m_dataChunkSizeInSamples= 10000;
+		m_dataChunkSizeInElements= m_dataChunkSizeInSamples * m_numElementsPerSample;
+		m_numChunksInFile = (m_numSamplesInFile / m_dataChunkSizeInSamples);
+		if (m_numSamplesInFile % m_dataChunkSizeInSamples != 0) m_numChunksInFile++;
+		m_cachedData = vector<double>(m_dataChunkSizeInSamples * m_sampleSizeInBytes);
+
+		//Open the sample file and read the first data chunk
+		m_currentChunk = 0;
+		CrossPlatform::Fopen_s((FILE **) &m_pBinaryFile, m_binaryFilename.c_str(), "rb");
+		if (m_pBinaryFile && m_numChunksInFile>0)
+			m_numValidSamplesInCache = fread(m_cachedData.data(), m_sampleSizeInBytes, m_dataChunkSizeInSamples, (FILE*)m_pBinaryFile);
 	}
 }
 
 SampleFile::~SampleFile()
 {
+	fclose((FILE *) m_pBinaryFile);
+}
+
+void SampleFile::loadNextDataChunkFromFile()
+{
+	//Read a data chunk from the sample file
+	if (m_pBinaryFile != nullptr && m_numChunksInFile>0)
+	{
+		m_currentChunk= ++m_currentChunk % m_numChunksInFile;
+
+		fseek((FILE*) m_pBinaryFile, m_currentChunk * (m_dataChunkSizeInSamples * m_sampleSizeInBytes), SEEK_SET);
+		m_numValidSamplesInCache = fread(m_cachedData.data(), m_sampleSizeInBytes, m_dataChunkSizeInSamples, (FILE*) m_pBinaryFile);
+	}
+	else Logger::logMessage(MessageType::Error, "Failed to open offline sample file");
 }
 
 void SampleFile::drawRandomSample(State* s, Action* a, State* s_p, double& reward)
 {
-	int sampleOffset = m_numElementsPerSample * m_currentSampleIndex;
-	for (int i = 0; i < s->getNumVars(); i++) s->set(i, m_data[sampleOffset + i]);
+	if (m_currentSampleIndex >= m_currentChunk * m_dataChunkSizeInSamples + m_numValidSamplesInCache)
+		loadNextDataChunkFromFile();
+
+	int sampleOffset = m_numElementsPerSample * (m_currentSampleIndex - m_currentChunk * m_dataChunkSizeInSamples);
+	for (int i = 0; i < s->getNumVars(); i++) s->set(i, m_cachedData[sampleOffset + i]);
 	sampleOffset += s->getNumVars();
-	for (int i = 0; i < a->getNumVars(); i++) a->set(i, m_data[sampleOffset + i]);
+	for (int i = 0; i < a->getNumVars(); i++) a->set(i, m_cachedData[sampleOffset + i]);
 	sampleOffset += a->getNumVars();
-	for (int i = 0; i < s_p->getNumVars(); i++) s_p->set(i, m_data[sampleOffset + i]);
+	for (int i = 0; i < s_p->getNumVars(); i++) s_p->set(i, m_cachedData[sampleOffset + i]);
 	sampleOffset += s_p->getNumVars();
-	reward = m_data[sampleOffset]; //We only take the first reward value. Should be enough for now
-	m_currentSampleIndex = ++m_currentSampleIndex % m_numSamples;
+	reward = m_cachedData[sampleOffset]; //We only take the first reward value. Should be enough for now
 
-	//int sampleIndex = rand() % m_numSamples;
-
-	//fseek(m_pBinaryFile, sampleIndex * sizeof(double) * m_sampleSize, SEEK_SET);
-	//size_t res;
-	//res= fread(s->getValueVector(), sizeof(double), m_numStateVariables, m_pBinaryFile);
-	//res= fread(a->getValueVector(), sizeof(double), m_numActionVariables, m_pBinaryFile);
-	//res= fread(s_p->getValueVector(), sizeof(double), m_numStateVariables, m_pBinaryFile);
-	//res= fread(&reward, sizeof(double), 1, m_pBinaryFile); //We only take the first reward value. Should be enough for now
-	//sampleIndex++;
+	m_currentSampleIndex = ++m_currentSampleIndex % m_numSamplesInFile;
 }
