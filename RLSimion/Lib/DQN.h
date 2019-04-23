@@ -24,7 +24,7 @@ protected:
 	ACTION_VARIABLE m_outputAction;
 	DOUBLE_PARAM m_learningRate;
 
-	int m_minibatchSize = 1;
+	INT_PARAM m_minibatchSize;
 
 	NN_DEFINITION m_pNNDefinition;
 	INetwork* m_pTargetQNetwork= nullptr;

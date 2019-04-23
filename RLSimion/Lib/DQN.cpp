@@ -54,6 +54,7 @@ DQN::~DQN()
 
 DQN::DQN(ConfigNode* pConfigNode)
 {
+	m_minibatchSize = INT_PARAM(pConfigNode, "Minibatch-Size", "The size in tuples of the minibatch", 100);
 	m_inputState = MULTI_VALUE_VARIABLE<STATE_VARIABLE>(pConfigNode, "Input-State", "Set of variables used as input of the QNetwork");
 	m_numActionSteps = INT_PARAM(pConfigNode, "Num-Action-Steps", "Number of discrete values used for the output action", 2);
 	m_outputAction = ACTION_VARIABLE(pConfigNode, "Output-Action", "The output action variable");
@@ -84,15 +85,16 @@ void DQN::deferredLoadStep()
 	//create the minibatch
 	//The size of the minibatch is the experience replay update size
 	//This is because we only perform updates in replaying-experience mode
-	m_minibatchSize = (int) SimionApp::get()->pSimGod->getExperienceReplayUpdateSize();
-	if (m_minibatchSize == 0)
-		Logger::logMessage(MessageType::Error, "Both DQN and Double-DQN require the use of the Experience Replay Buffer technique");
+	if ((int)SimionApp::get()->pSimGod->getExperienceReplayUpdateSize() == 0)
+		Logger::logMessage(MessageType::Error, "Both DQN and Double-DQN require the use of Experience Replay");
+	if (m_minibatchSize.get() <= 1)
+		Logger::logMessage(MessageType::Warning, "It is recommended to use a minimum minibatch size of 100 for better performance");
 
-	m_pMinibatch = m_pNNDefinition->createMinibatch(m_minibatchSize);
+	m_pMinibatch = m_pNNDefinition->createMinibatch(m_minibatchSize.get());
 
-	m_Q_s_p = vector<double>(m_minibatchSize * m_numActionSteps.get());
-	m_argMax = vector<int>(m_minibatchSize);
-	m_target = vector<double>(m_minibatchSize * m_numActionSteps.get());
+	m_Q_s_p = vector<double>(m_minibatchSize.get() * m_numActionSteps.get());
+	m_argMax = vector<int>(m_minibatchSize.get());
+	m_target = vector<double>(m_minibatchSize.get() * m_numActionSteps.get());
 }
 
 /// <summary>
@@ -140,7 +142,7 @@ double DQN::update(const State * s, const Action * a, const State * s_p, double 
 		getQNetworkForTargetActionSelection()->evaluate(m_pMinibatch->s_p(), m_pMinibatch->a(), m_Q_s_p);
 
 		//for each tuple in the minibatch
-		for (int i = 0; i < m_minibatchSize; i++)
+		for (int i = 0; i < m_minibatchSize.get(); i++)
 		{
 			//calculate arg max Q(s_p, a)
 			vector<double>::iterator itBegin = m_Q_s_p.begin() + i * m_numActionSteps.get();
@@ -159,7 +161,7 @@ double DQN::update(const State * s, const Action * a, const State * s_p, double 
 		m_pOnlineQNetwork->evaluate(m_pMinibatch->s(), m_pMinibatch->a(), m_target);
 
 		//for each tuple in the minibatch
-		for (int i = 0; i < m_minibatchSize; i++)
+		for (int i = 0; i < m_minibatchSize.get(); i++)
 		{
 			//calculate targetvalue= r + gamma*Q(s_p,a)
 			double targetValue = m_pMinibatch->r()[i] + gamma * m_Q_s_p[m_argMax[i]];
