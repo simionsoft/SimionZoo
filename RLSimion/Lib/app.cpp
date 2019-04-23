@@ -83,7 +83,7 @@ SimionApp::SimionApp(ConfigNode* pConfigNode)
 	//m_bUseOfflineTraining = ;
 	m_offlineTrainingSampleFile = FILE_PATH_PARAM(pConfigNode, "Offline-Training-File", "Sample file used for training. Leave blank if you want to use online training", "");
 
-	m_bUseOfflineTraining = strlen(m_offlineTrainingSampleFile.get()) > 0;
+	m_bUseOfflineTraining = m_offlineTrainingSampleFile.get() != nullptr && strlen(m_offlineTrainingSampleFile.get()) > 0;
 }
 
 SimionApp::~SimionApp()
