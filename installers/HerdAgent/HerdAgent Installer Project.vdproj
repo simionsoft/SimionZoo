@@ -34,68 +34,12 @@
     }
     "Configurations"
     {
-        "Linux-Debug"
-        {
-        "DisplayName" = "8:Linux-Debug"
-        "IsDebugOnly" = "11:FALSE"
-        "IsReleaseOnly" = "11:FALSE"
-        "OutputFilename" = "8:Linux-Debug\\HerdAgent Installer Project.msi"
-        "PackageFilesAs" = "3:2"
-        "PackageFileSize" = "3:-2147483648"
-        "CabType" = "3:1"
-        "Compression" = "3:2"
-        "SignOutput" = "11:FALSE"
-        "CertificateFile" = "8:"
-        "PrivateKeyFile" = "8:"
-        "TimeStampServer" = "8:"
-        "InstallerBootstrapper" = "3:2"
-            "BootstrapperCfg:{63ACBE69-63AA-4F98-B2B6-99F9E24495F2}"
-            {
-            "Enabled" = "11:TRUE"
-            "PromptEnabled" = "11:TRUE"
-            "PrerequisitesLocation" = "2:1"
-            "Url" = "8:"
-            "ComponentsUrl" = "8:"
-                "Items"
-                {
-                    "{EDC2488A-8267-493A-A98E-7D9C3B36CDF3}:.NETFramework,Version=v4.5.2"
-                    {
-                    "Name" = "8:Microsoft .NET Framework 4.5.2 (x86 and x64)"
-                    "ProductCode" = "8:.NETFramework,Version=v4.5.2"
-                    }
-                }
-            }
-        }
-        "Linux-Release"
-        {
-        "DisplayName" = "8:Linux-Release"
-        "IsDebugOnly" = "11:FALSE"
-        "IsReleaseOnly" = "11:FALSE"
-        "OutputFilename" = "8:Linux-Release\\HerdAgent Installer Project.msi"
-        "PackageFilesAs" = "3:2"
-        "PackageFileSize" = "3:-2147483648"
-        "CabType" = "3:1"
-        "Compression" = "3:2"
-        "SignOutput" = "11:FALSE"
-        "CertificateFile" = "8:"
-        "PrivateKeyFile" = "8:"
-        "TimeStampServer" = "8:"
-        "InstallerBootstrapper" = "3:2"
-            "BootstrapperCfg:{63ACBE69-63AA-4F98-B2B6-99F9E24495F2}"
-            {
-            "Enabled" = "11:TRUE"
-            "PromptEnabled" = "11:TRUE"
-            "PrerequisitesLocation" = "2:1"
-            "Url" = "8:"
-            "ComponentsUrl" = "8:"
-            }
-        }
         "Release"
         {
         "DisplayName" = "8:Release"
         "IsDebugOnly" = "11:FALSE"
         "IsReleaseOnly" = "11:TRUE"
-        "OutputFilename" = "8:..\\..\\bin\\HerdAgentInstaller.msi"
+        "OutputFilename" = "8:..\\HerdAgentInstaller.msi"
         "PackageFilesAs" = "3:2"
         "PackageFileSize" = "3:-2147483648"
         "CabType" = "3:1"
@@ -279,7 +223,7 @@
         "Subject" = "8:"
         "ARPCONTACT" = "8:SimionSoft (GIC - UPV/EHU)"
         "Keywords" = "8:"
-        "ARPCOMMENTS" = "8:HerdAgent service installer for distributed computation."
+        "ARPCOMMENTS" = "8:HerdAgent service installer for Windows."
         "ARPURLINFOABOUT" = "8:http://www.ehu.eus/ccwintco"
         "ARPPRODUCTICON" = "8:_C9FB232016A7471CB949E4F3BFD89E92"
         "ARPIconIndex" = "3:0"
