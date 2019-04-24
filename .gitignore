@@ -284,8 +284,6 @@ $RECYCLE.BIN/
 !bin/TurbSim.exe
 !bin/msvcp140.dll
 !bin/vcruntime140.dll
-!bin/HerdAgentInstaller-linux.sh
-!bin/herd-agent-daemon
 !bin/cntk-linux/libCntk.Core-2.5.1.so
 !bin/cntk-linux/libCntk.Math-2.5.1.so
 !bin/cntk-linux/libCntk.PerformanceProfiler-2.5.1.so
