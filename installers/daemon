@@ -1,0 +1,47 @@
+INSTALL_DIR=/usr/bin/herd-agent
+LOCK=/tmp/herd-agent
+
+start()
+{
+  echo -n "Starting Herd-Agent daemon..."
+  echo
+  if sudo [ -f $LOCK ]; then
+    PID=`cat $LOCK`
+    echo Herd-Agent already running: PID= $PID
+    exit 2;
+  else
+    sudo mono-service -d:$INSTALL_DIR -l:$LOCK HerdAgent.exe
+    echo "Done"
+  fi
+}
+
+stop ()
+{
+  echo -n "Shutting down Herd-Agent daemon..."
+  if sudo [ -f $LOCK ]; then
+    sudo kill `sudo cat $LOCK`
+    echo "Done"
+  else
+    echo "not runnning"
+  fi
+  echo
+  return 0
+}
+
+case "$1" in
+  start)
+    start
+    ;;
+  stop)
+    stop
+    ;;
+  restart)
+    stop
+    start
+    ;;
+  *)
+    echo "Usage: daemon (start|stop|restart)"
+    exit
+    ;;
+esac
+exit $?

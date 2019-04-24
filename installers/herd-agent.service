@@ -1,0 +1,13 @@
+[Unit]
+Description=Herd Agent service
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=forking
+ExecStart=/bin/bash /usr/bin/herd-agent/daemon start
+ExecStop=/bin/bash /usr/bin/herd-agent/daemon stop
+ExecReload=/bin/bash /usr/bin/herd-agent/daemon restart
+
+[Install]
+WantedBy=multi-user.target
