@@ -21,12 +21,13 @@ namespace Portable_Badger
 
             //Herd Agent
             //windows:
-            files.Add(inBaseRelPath + @"bin/HerdAgentInstaller.msi");
+            files.Add(inBaseRelPath + @"installers/HerdAgentInstaller.msi");
             //linux:
             files.Add(inBaseRelPath + @"bin/HerdAgent.exe");
             files.Add(inBaseRelPath + @"bin/Herd.dll");
-            files.Add(inBaseRelPath + @"bin/HerdAgentInstaller-linux.sh");
-            files.Add(inBaseRelPath + @"bin/herd-agent-daemon");
+            files.Add(inBaseRelPath + @"installers/herd-agent-installer.sh");
+            files.Add(inBaseRelPath + @"installers/herd-agent.service");
+            files.Add(inBaseRelPath + @"installers/daemon");
 
             //Badger
             files.Add(inBaseRelPath + @"bin/Badger.exe");
@@ -37,7 +38,11 @@ namespace Portable_Badger
 
             List<string> dependencyList = new List<string>();
             GetDependencies(inBaseRelPath + @"bin/", "Badger.exe", ref dependencyList);
-            files.AddRange(dependencyList);
+            foreach (string dependency in dependencyList)
+            {
+                if (!files.Contains(dependency))
+                    files.Add(dependency);
+            }
 
             //RLSimion
             files.Add(inBaseRelPath + @"bin/RLSimion.exe");
@@ -85,7 +90,7 @@ namespace Portable_Badger
 
             string outputFile = inBaseRelPath + @"SimionZoo-" + version + ".zip";
 
-            Console.WriteLine("Compressing files");
+            Console.WriteLine("Compressing {0} files", files.Count);
             Compress(outputFile, files);
             Console.WriteLine("Finished");
         }
@@ -129,8 +134,6 @@ namespace Portable_Badger
 
         public static void Compress(string outputFilename,List<string> files)
         {
-            uint numFilesAdded = 0;
-            double totalNumFiles = (double) files.Count;
             using (FileStream zipToOpen = new FileStream(outputFilename, FileMode.Create))
             {
                 using (ZipArchive archive = new ZipArchive(zipToOpen, ZipArchiveMode.Update))
@@ -139,14 +142,11 @@ namespace Portable_Badger
                     {
                         if (System.IO.File.Exists(file))
                         {
+                            Console.WriteLine("Adding file to bundle: " + file);
                             archive.CreateEntryFromFile(file, outBaseFolder + file.Substring(inBaseRelPath.Length));
-                            numFilesAdded++;
                         }
-                        else Console.WriteLine("Couldn't find file: {0}", file);
-
-                        Console.Write("\rProgress: {0:F2}%", 100.0*((double)numFilesAdded)/ totalNumFiles);
+                        else Console.WriteLine("ERROR: Couldn't find file {0}", file);
                     }
-                    Console.WriteLine("\nSaving {0} files in  {1}", numFilesAdded, Path.GetFullPath( outputFilename) );
                 }
             }
         }
