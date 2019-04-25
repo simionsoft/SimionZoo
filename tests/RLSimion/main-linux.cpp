@@ -5,235 +5,229 @@
 #include "NamedVarSets.cpp"
 #include "StateActionVFAs.cpp"
 #include "Utilities.cpp"
-using namespace ExperimentEpisodesSteps;
-using namespace VariableCircularity;
-using namespace MemManagerTest;
-using namespace CNamedVarSets;
-using namespace StateActionVFA;
-using namespace System;
 int main()
 {
   bool success= true;
 
   try
   {
-    ExperimentTest::Experiment_Episodes();
-    std::cout << "Passed ExperimentTest::Experiment_Episodes()\n";
+    ExperimentEpisodesSteps::ExperimentTest::Experiment_Episodes();
+    std::cout << "Passed Experiment_Episodes()\n";
   }
   catch(std::runtime_error error)
   {
     success= false;
-    std::cout << "Failed ExperimentTest::Experiment_Episodes()\n";
+    std::cout << "Failed Experiment_Episodes()\n";
   }
   try
   {
-    ExperimentTest::Experiment_Episodes2();
-    std::cout << "Passed ExperimentTest::Experiment_Episodes2()\n";
+    ExperimentEpisodesSteps::ExperimentTest::Experiment_Episodes2();
+    std::cout << "Passed Experiment_Episodes2()\n";
   }
   catch(std::runtime_error error)
   {
     success= false;
-    std::cout << "Failed ExperimentTest::Experiment_Episodes2()\n";
+    std::cout << "Failed Experiment_Episodes2()\n";
   }
   try
   {
-    ExperimentTest::Experiment_Progress();
-    std::cout << "Passed ExperimentTest::Experiment_Progress()\n";
+    ExperimentEpisodesSteps::ExperimentTest::Experiment_Progress();
+    std::cout << "Passed Experiment_Progress()\n";
   }
   catch(std::runtime_error error)
   {
     success= false;
-    std::cout << "Failed ExperimentTest::Experiment_Progress()\n";
+    std::cout << "Failed Experiment_Progress()\n";
   }
   try
   {
-    ExperimentTest::Experiment_OnlyOneEpisode();
-    std::cout << "Passed ExperimentTest::Experiment_OnlyOneEpisode()\n";
+    ExperimentEpisodesSteps::ExperimentTest::Experiment_OnlyOneEpisode();
+    std::cout << "Passed Experiment_OnlyOneEpisode()\n";
   }
   catch(std::runtime_error error)
   {
     success= false;
-    std::cout << "Failed ExperimentTest::Experiment_OnlyOneEpisode()\n";
+    std::cout << "Failed Experiment_OnlyOneEpisode()\n";
   }
   try
   {
-    UnitTest1::FeatureMap_RBFGrid_MapUnmapSweep();
-    std::cout << "Passed UnitTest1::FeatureMap_RBFGrid_MapUnmapSweep()\n";
+    VariableCircularity::UnitTest1::FeatureMap_RBFGrid_MapUnmapSweep();
+    std::cout << "Passed FeatureMap_RBFGrid_MapUnmapSweep()\n";
   }
   catch(std::runtime_error error)
   {
     success= false;
-    std::cout << "Failed UnitTest1::FeatureMap_RBFGrid_MapUnmapSweep()\n";
+    std::cout << "Failed FeatureMap_RBFGrid_MapUnmapSweep()\n";
   }
   try
   {
-    UnitTest1::FeatureMap_RBFGrid_VariableCircularity();
-    std::cout << "Passed UnitTest1::FeatureMap_RBFGrid_VariableCircularity()\n";
+    VariableCircularity::UnitTest1::FeatureMap_RBFGrid_VariableCircularity();
+    std::cout << "Passed FeatureMap_RBFGrid_VariableCircularity()\n";
   }
   catch(std::runtime_error error)
   {
     success= false;
-    std::cout << "Failed UnitTest1::FeatureMap_RBFGrid_VariableCircularity()\n";
+    std::cout << "Failed FeatureMap_RBFGrid_VariableCircularity()\n";
   }
   try
   {
-    UnitTest1::FeatureMap_Discrete_MapUnmapSweep();
-    std::cout << "Passed UnitTest1::FeatureMap_Discrete_MapUnmapSweep()\n";
+    VariableCircularity::UnitTest1::FeatureMap_Discrete_MapUnmapSweep();
+    std::cout << "Passed FeatureMap_Discrete_MapUnmapSweep()\n";
   }
   catch(std::runtime_error error)
   {
     success= false;
-    std::cout << "Failed UnitTest1::FeatureMap_Discrete_MapUnmapSweep()\n";
+    std::cout << "Failed FeatureMap_Discrete_MapUnmapSweep()\n";
   }
   try
   {
-    UnitTest1::FeatureMap_Discrete_VariableCircularity();
-    std::cout << "Passed UnitTest1::FeatureMap_Discrete_VariableCircularity()\n";
+    VariableCircularity::UnitTest1::FeatureMap_Discrete_VariableCircularity();
+    std::cout << "Passed FeatureMap_Discrete_VariableCircularity()\n";
   }
   catch(std::runtime_error error)
   {
     success= false;
-    std::cout << "Failed UnitTest1::FeatureMap_Discrete_VariableCircularity()\n";
+    std::cout << "Failed FeatureMap_Discrete_VariableCircularity()\n";
   }
   try
   {
-    UnitTest1::FeatureMap_TileCoding_MapUnmapSweep();
-    std::cout << "Passed UnitTest1::FeatureMap_TileCoding_MapUnmapSweep()\n";
+    VariableCircularity::UnitTest1::FeatureMap_TileCoding_MapUnmapSweep();
+    std::cout << "Passed FeatureMap_TileCoding_MapUnmapSweep()\n";
   }
   catch(std::runtime_error error)
   {
     success= false;
-    std::cout << "Failed UnitTest1::FeatureMap_TileCoding_MapUnmapSweep()\n";
+    std::cout << "Failed FeatureMap_TileCoding_MapUnmapSweep()\n";
   }
   try
   {
-    UnitTest1::MemManager_TotalAllocated();
-    std::cout << "Passed UnitTest1::MemManager_TotalAllocated()\n";
+    MemManagerTest::UnitTest1::MemManager_TotalAllocated();
+    std::cout << "Passed MemManager_TotalAllocated()\n";
   }
   catch(std::runtime_error error)
   {
     success= false;
-    std::cout << "Failed UnitTest1::MemManager_TotalAllocated()\n";
+    std::cout << "Failed MemManager_TotalAllocated()\n";
   }
   try
   {
-    UnitTest1::MemManager_InitValue();
-    std::cout << "Passed UnitTest1::MemManager_InitValue()\n";
+    MemManagerTest::UnitTest1::MemManager_InitValue();
+    std::cout << "Passed MemManager_InitValue()\n";
   }
   catch(std::runtime_error error)
   {
     success= false;
-    std::cout << "Failed UnitTest1::MemManager_InitValue()\n";
+    std::cout << "Failed MemManager_InitValue()\n";
   }
   try
   {
-    UnitTest1::MemManager_Copy();
-    std::cout << "Passed UnitTest1::MemManager_Copy()\n";
+    MemManagerTest::UnitTest1::MemManager_Copy();
+    std::cout << "Passed MemManager_Copy()\n";
   }
   catch(std::runtime_error error)
   {
     success= false;
-    std::cout << "Failed UnitTest1::MemManager_Copy()\n";
+    std::cout << "Failed MemManager_Copy()\n";
   }
   try
   {
-    UnitTest1::MemManager_UpperBound();
-    std::cout << "Passed UnitTest1::MemManager_UpperBound()\n";
+    MemManagerTest::UnitTest1::MemManager_UpperBound();
+    std::cout << "Passed MemManager_UpperBound()\n";
   }
   catch(std::runtime_error error)
   {
     success= false;
-    std::cout << "Failed UnitTest1::MemManager_UpperBound()\n";
+    std::cout << "Failed MemManager_UpperBound()\n";
   }
   try
   {
-    UnitTest1::MemManager_MemLimit();
-    std::cout << "Passed UnitTest1::MemManager_MemLimit()\n";
+    MemManagerTest::UnitTest1::MemManager_MemLimit();
+    std::cout << "Passed MemManager_MemLimit()\n";
   }
   catch(std::runtime_error error)
   {
     success= false;
-    std::cout << "Failed UnitTest1::MemManager_MemLimit()\n";
+    std::cout << "Failed MemManager_MemLimit()\n";
   }
   try
   {
-    UnitTest1::MemManager_MemDiskDump();
-    std::cout << "Passed UnitTest1::MemManager_MemDiskDump()\n";
+    MemManagerTest::UnitTest1::MemManager_MemDiskDump();
+    std::cout << "Passed MemManager_MemDiskDump()\n";
   }
   catch(std::runtime_error error)
   {
     success= false;
-    std::cout << "Failed UnitTest1::MemManager_MemDiskDump()\n";
+    std::cout << "Failed MemManager_MemDiskDump()\n";
   }
   try
   {
-    UnitTest1::NamedVarSet_Circularity();
-    std::cout << "Passed UnitTest1::NamedVarSet_Circularity()\n";
+    CNamedVarSets::UnitTest1::NamedVarSet_Circularity();
+    std::cout << "Passed NamedVarSet_Circularity()\n";
   }
   catch(std::runtime_error error)
   {
     success= false;
-    std::cout << "Failed UnitTest1::NamedVarSet_Circularity()\n";
+    std::cout << "Failed NamedVarSet_Circularity()\n";
   }
   try
   {
-    UnitTest1::LinearStateActionVFA_ArgMax();
-    std::cout << "Passed UnitTest1::LinearStateActionVFA_ArgMax()\n";
+    StateActionVFA::UnitTest1::LinearStateActionVFA_ArgMax();
+    std::cout << "Passed LinearStateActionVFA_ArgMax()\n";
   }
   catch(std::runtime_error error)
   {
     success= false;
-    std::cout << "Failed UnitTest1::LinearStateActionVFA_ArgMax()\n";
+    std::cout << "Failed LinearStateActionVFA_ArgMax()\n";
   }
   try
   {
-    UnitTest1::LinearStateActionVFA_FeatureMap();
-    std::cout << "Passed UnitTest1::LinearStateActionVFA_FeatureMap()\n";
+    StateActionVFA::UnitTest1::LinearStateActionVFA_FeatureMap();
+    std::cout << "Passed LinearStateActionVFA_FeatureMap()\n";
   }
   catch(std::runtime_error error)
   {
     success= false;
-    std::cout << "Failed UnitTest1::LinearStateActionVFA_FeatureMap()\n";
+    std::cout << "Failed LinearStateActionVFA_FeatureMap()\n";
   }
   try
   {
-    System_Windows::RLSimion_Utilities_getDirectory();
-    std::cout << "Passed System_Windows::RLSimion_Utilities_getDirectory()\n";
+    System::System_Windows::RLSimion_Utilities_getDirectory();
+    std::cout << "Passed RLSimion_Utilities_getDirectory()\n";
   }
   catch(std::runtime_error error)
   {
     success= false;
-    std::cout << "Failed System_Windows::RLSimion_Utilities_getDirectory()\n";
+    std::cout << "Failed RLSimion_Utilities_getDirectory()\n";
   }
   try
   {
-    System_Windows::RLSimion_Utilities_getFilename();
-    std::cout << "Passed System_Windows::RLSimion_Utilities_getFilename()\n";
+    System::System_Windows::RLSimion_Utilities_getFilename();
+    std::cout << "Passed RLSimion_Utilities_getFilename()\n";
   }
   catch(std::runtime_error error)
   {
     success= false;
-    std::cout << "Failed System_Windows::RLSimion_Utilities_getFilename()\n";
+    std::cout << "Failed RLSimion_Utilities_getFilename()\n";
   }
   try
   {
-    System_Windows::RLSimion_Utilities_removeExtension();
-    std::cout << "Passed System_Windows::RLSimion_Utilities_removeExtension()\n";
+    System::System_Windows::RLSimion_Utilities_removeExtension();
+    std::cout << "Passed RLSimion_Utilities_removeExtension()\n";
   }
   catch(std::runtime_error error)
   {
     success= false;
-    std::cout << "Failed System_Windows::RLSimion_Utilities_removeExtension()\n";
+    std::cout << "Failed RLSimion_Utilities_removeExtension()\n";
   }
   try
   {
-    System_Windows::RLSimion_Utilities_getLastBarPos();
-    std::cout << "Passed System_Windows::RLSimion_Utilities_getLastBarPos()\n";
+    System::System_Windows::RLSimion_Utilities_getLastBarPos();
+    std::cout << "Passed RLSimion_Utilities_getLastBarPos()\n";
   }
   catch(std::runtime_error error)
   {
     success= false;
-    std::cout << "Failed System_Windows::RLSimion_Utilities_getLastBarPos()\n";
+    std::cout << "Failed RLSimion_Utilities_getLastBarPos()\n";
   }
   return success;
 }

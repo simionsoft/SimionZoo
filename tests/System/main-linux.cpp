@@ -1,59 +1,58 @@
 #include <iostream>
 #include "Process.cpp"
-using namespace SystemTests;
 int main()
 {
   bool success= true;
 
   try
   {
-    System_Tests::Process_Run_Stop();
-    std::cout << "Passed System_Tests::Process_Run_Stop()\n";
+    SystemTests::System_Tests::Process_Run_Stop();
+    std::cout << "Passed Process_Run_Stop()\n";
   }
   catch(std::runtime_error error)
   {
     success= false;
-    std::cout << "Failed System_Tests::Process_Run_Stop()\n";
+    std::cout << "Failed Process_Run_Stop()\n";
   }
   try
   {
-    System_Tests::Process_Run_Wait();
-    std::cout << "Passed System_Tests::Process_Run_Wait()\n";
+    SystemTests::System_Tests::Process_Run_Wait();
+    std::cout << "Passed Process_Run_Wait()\n";
   }
   catch(std::runtime_error error)
   {
     success= false;
-    std::cout << "Failed System_Tests::Process_Run_Wait()\n";
+    std::cout << "Failed Process_Run_Wait()\n";
   }
   try
   {
-    System_Tests::NamedPipes();
-    std::cout << "Passed System_Tests::NamedPipes()\n";
+    SystemTests::System_Tests::NamedPipes();
+    std::cout << "Passed NamedPipes()\n";
   }
   catch(std::runtime_error error)
   {
     success= false;
-    std::cout << "Failed System_Tests::NamedPipes()\n";
+    std::cout << "Failed NamedPipes()\n";
   }
   try
   {
-    System_Tests::CrossPlatform_CStrings();
-    std::cout << "Passed System_Tests::CrossPlatform_CStrings()\n";
+    SystemTests::System_Tests::CrossPlatform_CStrings();
+    std::cout << "Passed CrossPlatform_CStrings()\n";
   }
   catch(std::runtime_error error)
   {
     success= false;
-    std::cout << "Failed System_Tests::CrossPlatform_CStrings()\n";
+    std::cout << "Failed CrossPlatform_CStrings()\n";
   }
   try
   {
-    System_Tests::CrossPlatform_Memory();
-    std::cout << "Passed System_Tests::CrossPlatform_Memory()\n";
+    SystemTests::System_Tests::CrossPlatform_Memory();
+    std::cout << "Passed CrossPlatform_Memory()\n";
   }
   catch(std::runtime_error error)
   {
     success= false;
-    std::cout << "Failed System_Tests::CrossPlatform_Memory()\n";
+    std::cout << "Failed CrossPlatform_Memory()\n";
   }
   return success;
 }
