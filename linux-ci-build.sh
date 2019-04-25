@@ -92,7 +92,7 @@ ar rcs tmp/System-linux/System-linux.a tmp/System-linux/*.o
 
 echo [GeometryLibTests]
 mkdir tmp/GeometryLibTests
-g++ -o tmp/GeometryLibTests/GeometryLibTests.exe -Itests/linux tests/GeometryLib/BasicGeometryChecks/main-linux.cpp -Wl,--no-undefined  "tmp/GeometryLib-linux/GeometryLib-linux.a" -Wl,-L"tests/GeometryLib/BasicGeometryChecks/$(VCInstallDir)UnitTest\lib"
+g++ -o tmp/GeometryLibTests/GeometryLibTests.exe -Itests/linux tests/GeometryLib/BasicGeometryChecks/main-linux.cpp -Wl,--no-undefined  "tmp/GeometryLib-linux/GeometryLib-linux.a"
 
 echo [OpenGLRenderer-linux]
 mkdir tmp/OpenGLRenderer-linux
@@ -394,11 +394,11 @@ ar rcs tmp/RLSimion-Lib-linux/RLSimion-Lib-linux.a tmp/RLSimion-Lib-linux/*.o
 
 echo [RLSimionTests]
 mkdir tmp/RLSimionTests
-g++ -o tmp/RLSimionTests/RLSimionTests.exe -Itests/linux tests/RLSimion/main-linux.cpp -Wl,--no-undefined  "tmp/RLSimion-Lib-linux/RLSimion-Lib-linux.a" "tmp/RLSimion-Common-linux/RLSimion-Common-linux.a" -Wl,-L"tests/RLSimion/$(VCInstallDir)UnitTest\lib"
+g++ -o tmp/RLSimionTests/RLSimionTests.exe -Itests/linux tests/RLSimion/main-linux.cpp -Wl,--no-undefined  "tmp/RLSimion-Lib-linux/RLSimion-Lib-linux.a" "tmp/RLSimion-Common-linux/RLSimion-Common-linux.a"
 
 echo [SystemTests]
 mkdir tmp/SystemTests
-g++ -o tmp/SystemTests/SystemTests.exe -Itests/linux tests/System/main-linux.cpp -Wl,--no-undefined  "tmp/System-linux/System-linux.a" -Wl,-L"tests/System/$(VCInstallDir)UnitTest\lib"
+g++ -o tmp/SystemTests/SystemTests.exe -Itests/linux tests/System/main-linux.cpp -Wl,--no-undefined  "tmp/System-linux/System-linux.a"
 
 echo #### 2. Run unit tests
 tmp/GeometryLibTests/GeometryLibTests.exe
