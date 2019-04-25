@@ -4,7 +4,7 @@ echo #### 1. Compile the projects
 echo [tinyxml2-linux]
 mkdir tmp/tinyxml2-linux
 g++ -c -g2 -gdwarf-2 -w -Wswitch -W"no-deprecated-declarations" -W"empty-body" -W"return-type" -Wparentheses -W"no-format" -Wuninitialized -W"unreachable-code" -W"unused-function" -W"unused-value" -W"unused-variable" -Wswitch -W"no-deprecated-declarations" -Wconversion -O0 -fno-strict-aliasing -fno-omit-frame-pointer -fthreadsafe-statics -fexceptions -frtti -x c++ -std=c++11 -fPIC 3rd-party/tinyxml2/tinyxml2.cpp -o tmp/tinyxml2-linux/tinyxml2.o
-ar rcs tmp/tinyxml2-linux/tinyxml2-linux.a tmp/tinyxml2-linux/*.o -Wl,--no-undefined -Wl,-z,relro -Wl,-z,now -Wl,-z,noexecstack -shared 
+ar rcs tmp/tinyxml2-linux/tinyxml2-linux.a tmp/tinyxml2-linux/*.o 
 
 echo [freeglut3-linux]
 mkdir tmp/freeglut3-linux
@@ -50,12 +50,12 @@ g++ -c -g2 -gdwarf-2 -w -Wswitch -W"no-deprecated-declarations" -W"empty-body" -
 g++ -c -g2 -gdwarf-2 -w -Wswitch -W"no-deprecated-declarations" -W"empty-body" -W"return-type" -Wparentheses -W"no-format" -Wuninitialized -W"unreachable-code" -W"unused-function" -W"unused-value" -W"unused-variable" -Wswitch -W"no-deprecated-declarations" -Wconversion -O0 -fno-strict-aliasing -fno-omit-frame-pointer -fthreadsafe-statics -fexceptions -frtti -x c -std=c11 -fPIC 3rd-party/freeglut3/src/x11/fg_window_x11.c -o tmp/freeglut3-linux/fg_window_x11.o
 g++ -c -g2 -gdwarf-2 -w -Wswitch -W"no-deprecated-declarations" -W"empty-body" -W"return-type" -Wparentheses -W"no-format" -Wuninitialized -W"unreachable-code" -W"unused-function" -W"unused-value" -W"unused-variable" -Wswitch -W"no-deprecated-declarations" -Wconversion -O0 -fno-strict-aliasing -fno-omit-frame-pointer -fthreadsafe-statics -fexceptions -frtti -x c -std=c11 -fPIC 3rd-party/freeglut3/src/x11/fg_window_x11_glx.c -o tmp/freeglut3-linux/fg_window_x11_glx.o
 g++ -c -g2 -gdwarf-2 -w -Wswitch -W"no-deprecated-declarations" -W"empty-body" -W"return-type" -Wparentheses -W"no-format" -Wuninitialized -W"unreachable-code" -W"unused-function" -W"unused-value" -W"unused-variable" -Wswitch -W"no-deprecated-declarations" -Wconversion -O0 -fno-strict-aliasing -fno-omit-frame-pointer -fthreadsafe-statics -fexceptions -frtti -x c -std=c11 -fPIC 3rd-party/freeglut3/src/x11/fg_xinput_x11.c -o tmp/freeglut3-linux/fg_xinput_x11.o
-ar rcs tmp/freeglut3-linux/freeglut3-linux.a tmp/freeglut3-linux/*.o -Wl,--no-undefined -Wl,-z,relro -Wl,-z,now -Wl,-z,noexecstack -shared 
+ar rcs tmp/freeglut3-linux/freeglut3-linux.a tmp/freeglut3-linux/*.o 
 
 echo [glew2-linux]
 mkdir tmp/glew2-linux
 g++ -c -g2 -gdwarf-2 -w -Wswitch -W"no-deprecated-declarations" -W"empty-body" -W"return-type" -Wparentheses -W"no-format" -Wuninitialized -W"unreachable-code" -W"unused-function" -W"unused-value" -W"unused-variable" -Wswitch -W"no-deprecated-declarations" -Wconversion -O0 -fno-strict-aliasing -fno-omit-frame-pointer -fthreadsafe-statics -fexceptions -frtti -x c -std=c11 -fPIC 3rd-party/glew2/src/glew.c -o tmp/glew2-linux/glew.o
-ar rcs tmp/glew2-linux/glew2-linux.a tmp/glew2-linux/*.o -Wl,--no-undefined -Wl,-z,relro -Wl,-z,now -Wl,-z,noexecstack -shared 
+ar rcs tmp/glew2-linux/glew2-linux.a tmp/glew2-linux/*.o 
 
 echo [GeometryLib-linux]
 mkdir tmp/GeometryLib-linux
@@ -69,7 +69,7 @@ g++ -c -g2 -gdwarf-2 -w -Wswitch -W"no-deprecated-declarations" -W"empty-body" -
 g++ -c -g2 -gdwarf-2 -w -Wswitch -W"no-deprecated-declarations" -W"empty-body" -W"return-type" -Wparentheses -W"no-format" -Wuninitialized -W"unreachable-code" -W"unused-function" -W"unused-value" -W"unused-variable" -Wswitch -W"no-deprecated-declarations" -Wconversion -O0 -fno-strict-aliasing -fno-omit-frame-pointer -fthreadsafe-statics -fexceptions -frtti -x c++ -std=c++11 -fPIC tools/GeometryLib/transform3d.cpp -o tmp/GeometryLib-linux/transform3d.o
 g++ -c -g2 -gdwarf-2 -w -Wswitch -W"no-deprecated-declarations" -W"empty-body" -W"return-type" -Wparentheses -W"no-format" -Wuninitialized -W"unreachable-code" -W"unused-function" -W"unused-value" -W"unused-variable" -Wswitch -W"no-deprecated-declarations" -Wconversion -O0 -fno-strict-aliasing -fno-omit-frame-pointer -fthreadsafe-statics -fexceptions -frtti -x c++ -std=c++11 -fPIC tools/GeometryLib/vector2d.cpp -o tmp/GeometryLib-linux/vector2d.o
 g++ -c -g2 -gdwarf-2 -w -Wswitch -W"no-deprecated-declarations" -W"empty-body" -W"return-type" -Wparentheses -W"no-format" -Wuninitialized -W"unreachable-code" -W"unused-function" -W"unused-value" -W"unused-variable" -Wswitch -W"no-deprecated-declarations" -Wconversion -O0 -fno-strict-aliasing -fno-omit-frame-pointer -fthreadsafe-statics -fexceptions -frtti -x c++ -std=c++11 -fPIC tools/GeometryLib/vector3d.cpp -o tmp/GeometryLib-linux/vector3d.o
-ar rcs tmp/GeometryLib-linux/GeometryLib-linux.a tmp/GeometryLib-linux/*.o -Wl,--no-undefined -Wl,-z,relro -Wl,-z,now -Wl,-z,noexecstack -shared 
+ar rcs tmp/GeometryLib-linux/GeometryLib-linux.a tmp/GeometryLib-linux/*.o 
 
 echo [SOIL-linux]
 mkdir tmp/SOIL-linux
@@ -77,7 +77,7 @@ g++ -c -g2 -gdwarf-2 -w -Wswitch -W"no-deprecated-declarations" -W"empty-body" -
 g++ -c -g2 -gdwarf-2 -w -Wswitch -W"no-deprecated-declarations" -W"empty-body" -W"return-type" -Wparentheses -W"no-format" -Wuninitialized -W"unreachable-code" -W"unused-function" -W"unused-value" -W"unused-variable" -Wswitch -W"no-deprecated-declarations" -Wconversion -O0 -fno-strict-aliasing -fno-omit-frame-pointer -fthreadsafe-statics -fexceptions -frtti -x c -std=c11 -fPIC 3rd-party/SOIL/src/image_helper.c -o tmp/SOIL-linux/image_helper.o
 g++ -c -g2 -gdwarf-2 -w -Wswitch -W"no-deprecated-declarations" -W"empty-body" -W"return-type" -Wparentheses -W"no-format" -Wuninitialized -W"unreachable-code" -W"unused-function" -W"unused-value" -W"unused-variable" -Wswitch -W"no-deprecated-declarations" -Wconversion -O0 -fno-strict-aliasing -fno-omit-frame-pointer -fthreadsafe-statics -fexceptions -frtti -x c -std=c11 -fPIC 3rd-party/SOIL/src/SOIL.c -o tmp/SOIL-linux/SOIL.o
 g++ -c -g2 -gdwarf-2 -w -Wswitch -W"no-deprecated-declarations" -W"empty-body" -W"return-type" -Wparentheses -W"no-format" -Wuninitialized -W"unreachable-code" -W"unused-function" -W"unused-value" -W"unused-variable" -Wswitch -W"no-deprecated-declarations" -Wconversion -O0 -fno-strict-aliasing -fno-omit-frame-pointer -fthreadsafe-statics -fexceptions -frtti -x c -std=c11 -fPIC 3rd-party/SOIL/src/stb_image_aug.c -o tmp/SOIL-linux/stb_image_aug.o
-ar rcs tmp/SOIL-linux/SOIL-linux.a tmp/SOIL-linux/*.o -Wl,--no-undefined -Wl,-z,relro -Wl,-z,now -Wl,-z,noexecstack -shared 
+ar rcs tmp/SOIL-linux/SOIL-linux.a tmp/SOIL-linux/*.o 
 
 echo [System-linux]
 mkdir tmp/System-linux
@@ -88,7 +88,7 @@ g++ -c -g2 -gdwarf-2 -w -Wswitch -W"no-deprecated-declarations" -W"empty-body" -
 g++ -c -g2 -gdwarf-2 -w -Wswitch -W"no-deprecated-declarations" -W"empty-body" -W"return-type" -Wparentheses -W"no-format" -Wuninitialized -W"unreachable-code" -W"unused-function" -W"unused-value" -W"unused-variable" -Wswitch -W"no-deprecated-declarations" -Wconversion -O0 -fno-strict-aliasing -fno-omit-frame-pointer -fthreadsafe-statics -fexceptions -frtti -x c++ -std=c++11 -fPIC tools/System/NamedPipe-linux.cpp -o tmp/System-linux/NamedPipe-linux.o
 g++ -c -g2 -gdwarf-2 -w -Wswitch -W"no-deprecated-declarations" -W"empty-body" -W"return-type" -Wparentheses -W"no-format" -Wuninitialized -W"unreachable-code" -W"unused-function" -W"unused-value" -W"unused-variable" -Wswitch -W"no-deprecated-declarations" -Wconversion -O0 -fno-strict-aliasing -fno-omit-frame-pointer -fthreadsafe-statics -fexceptions -frtti -x c++ -std=c++11 -fPIC tools/System/Process-linux.cpp -o tmp/System-linux/Process-linux.o
 g++ -c -g2 -gdwarf-2 -w -Wswitch -W"no-deprecated-declarations" -W"empty-body" -W"return-type" -Wparentheses -W"no-format" -Wuninitialized -W"unreachable-code" -W"unused-function" -W"unused-value" -W"unused-variable" -Wswitch -W"no-deprecated-declarations" -Wconversion -O0 -fno-strict-aliasing -fno-omit-frame-pointer -fthreadsafe-statics -fexceptions -frtti -x c++ -std=c++11 -fPIC tools/System/Timer.cpp -o tmp/System-linux/Timer.o
-ar rcs tmp/System-linux/System-linux.a tmp/System-linux/*.o -Wl,--no-undefined -Wl,-z,relro -Wl,-z,now -Wl,-z,noexecstack -shared 
+ar rcs tmp/System-linux/System-linux.a tmp/System-linux/*.o 
 
 echo [GeometryLibTests]
 mkdir tmp/GeometryLibTests
@@ -118,7 +118,7 @@ g++ -c -g2 -gdwarf-2 -w -Wswitch -W"no-deprecated-declarations" -W"empty-body" -
 g++ -c -g2 -gdwarf-2 -w -Wswitch -W"no-deprecated-declarations" -W"empty-body" -W"return-type" -Wparentheses -W"no-format" -Wuninitialized -W"unreachable-code" -W"unused-function" -W"unused-value" -W"unused-variable" -Wswitch -W"no-deprecated-declarations" -Wconversion -O0 -fno-strict-aliasing -fno-omit-frame-pointer -fthreadsafe-statics -fexceptions -frtti -x c++ -std=c++11 -fPIC tools/OpenGLRenderer/texture-manager.cpp -o tmp/OpenGLRenderer-linux/texture-manager.o
 g++ -c -g2 -gdwarf-2 -w -Wswitch -W"no-deprecated-declarations" -W"empty-body" -W"return-type" -Wparentheses -W"no-format" -Wuninitialized -W"unreachable-code" -W"unused-function" -W"unused-value" -W"unused-variable" -Wswitch -W"no-deprecated-declarations" -Wconversion -O0 -fno-strict-aliasing -fno-omit-frame-pointer -fthreadsafe-statics -fexceptions -frtti -x c++ -std=c++11 -fPIC tools/OpenGLRenderer/viewport.cpp -o tmp/OpenGLRenderer-linux/viewport.o
 g++ -c -g2 -gdwarf-2 -w -Wswitch -W"no-deprecated-declarations" -W"empty-body" -W"return-type" -Wparentheses -W"no-format" -Wuninitialized -W"unreachable-code" -W"unused-function" -W"unused-value" -W"unused-variable" -Wswitch -W"no-deprecated-declarations" -Wconversion -O0 -fno-strict-aliasing -fno-omit-frame-pointer -fthreadsafe-statics -fexceptions -frtti -x c++ -std=c++11 -fPIC tools/OpenGLRenderer/xml-load.cpp -o tmp/OpenGLRenderer-linux/xml-load.o
-ar rcs tmp/OpenGLRenderer-linux/OpenGLRenderer-linux.a tmp/OpenGLRenderer-linux/*.o -Wl,--no-undefined -Wl,-z,relro -Wl,-z,now -Wl,-z,noexecstack -shared 
+ar rcs tmp/OpenGLRenderer-linux/OpenGLRenderer-linux.a tmp/OpenGLRenderer-linux/*.o 
 
 echo [Bullet3-linux]
 mkdir tmp/Bullet3-linux
@@ -285,13 +285,13 @@ g++ -c -g2 -gdwarf-2 -w -Wswitch -W"no-deprecated-declarations" -W"empty-body" -
 g++ -c -g2 -gdwarf-2 -w -Wswitch -W"no-deprecated-declarations" -W"empty-body" -W"return-type" -Wparentheses -W"no-format" -Wuninitialized -W"unreachable-code" -W"unused-function" -W"unused-value" -W"unused-variable" -Wswitch -W"no-deprecated-declarations" -Wconversion -O0 -fno-strict-aliasing -fno-omit-frame-pointer -fthreadsafe-statics -fexceptions -frtti -x c++ -std=c++11 -fPIC 3rd-party/bullet3-2.86/src/BulletDynamics/Vehicle/btRaycastVehicle.cpp -o tmp/Bullet3-linux/btRaycastVehicle.o
 g++ -c -g2 -gdwarf-2 -w -Wswitch -W"no-deprecated-declarations" -W"empty-body" -W"return-type" -Wparentheses -W"no-format" -Wuninitialized -W"unreachable-code" -W"unused-function" -W"unused-value" -W"unused-variable" -Wswitch -W"no-deprecated-declarations" -Wconversion -O0 -fno-strict-aliasing -fno-omit-frame-pointer -fthreadsafe-statics -fexceptions -frtti -x c++ -std=c++11 -fPIC 3rd-party/bullet3-2.86/src/BulletDynamics/Vehicle/btWheelInfo.cpp -o tmp/Bullet3-linux/btWheelInfo.o
 g++ -c -g2 -gdwarf-2 -w -Wswitch -W"no-deprecated-declarations" -W"empty-body" -W"return-type" -Wparentheses -W"no-format" -Wuninitialized -W"unreachable-code" -W"unused-function" -W"unused-value" -W"unused-variable" -Wswitch -W"no-deprecated-declarations" -Wconversion -O0 -fno-strict-aliasing -fno-omit-frame-pointer -fthreadsafe-statics -fexceptions -frtti -x c++ -std=c++11 -fPIC 3rd-party/bullet3-2.86/src/BulletDynamics/Character/btKinematicCharacterController.cpp -o tmp/Bullet3-linux/btKinematicCharacterController.o
-ar rcs tmp/Bullet3-linux/Bullet3-linux.a tmp/Bullet3-linux/*.o -Wl,--no-undefined -Wl,-z,relro -Wl,-z,now -Wl,-z,noexecstack -shared 
+ar rcs tmp/Bullet3-linux/Bullet3-linux.a tmp/Bullet3-linux/*.o 
 
 echo [RLSimion-Common-linux]
 mkdir tmp/RLSimion-Common-linux
 g++ -c -g2 -gdwarf-2 -w -Wswitch -W"no-deprecated-declarations" -W"empty-body" -W"return-type" -Wparentheses -W"no-format" -Wuninitialized -W"unreachable-code" -W"unused-function" -W"unused-value" -W"unused-variable" -Wswitch -W"no-deprecated-declarations" -Wconversion -O0 -fno-strict-aliasing -fno-omit-frame-pointer -fthreadsafe-statics -fexceptions -frtti -x c++ -std=c++11 -fPIC RLSimion/Common/named-var-set.cpp -o tmp/RLSimion-Common-linux/named-var-set.o
 g++ -c -g2 -gdwarf-2 -w -Wswitch -W"no-deprecated-declarations" -W"empty-body" -W"return-type" -Wparentheses -W"no-format" -Wuninitialized -W"unreachable-code" -W"unused-function" -W"unused-value" -W"unused-variable" -Wswitch -W"no-deprecated-declarations" -Wconversion -O0 -fno-strict-aliasing -fno-omit-frame-pointer -fthreadsafe-statics -fexceptions -frtti -x c++ -std=c++11 -fPIC RLSimion/Common/wire.cpp -o tmp/RLSimion-Common-linux/wire.o
-ar rcs tmp/RLSimion-Common-linux/RLSimion-Common-linux.a tmp/RLSimion-Common-linux/*.o -Wl,--no-undefined -Wl,-z,relro -Wl,-z,now -Wl,-z,noexecstack -shared 
+ar rcs tmp/RLSimion-Common-linux/RLSimion-Common-linux.a tmp/RLSimion-Common-linux/*.o 
 
 echo [CNTKWrapper-linux]
 mkdir tmp/CNTKWrapper-linux
@@ -390,7 +390,7 @@ g++ -c -g2 -gdwarf-2 -w -Wswitch -W"no-deprecated-declarations" -W"empty-body" -
 g++ -c -g2 -gdwarf-2 -w -Wswitch -W"no-deprecated-declarations" -W"empty-body" -W"return-type" -Wparentheses -W"no-format" -Wuninitialized -W"unreachable-code" -W"unused-function" -W"unused-value" -W"unused-variable" -Wswitch -W"no-deprecated-declarations" -Wconversion -O0 -fno-strict-aliasing -fno-omit-frame-pointer -fthreadsafe-statics -fexceptions -frtti -x c++ -std=c++11 -fPIC RLSimion/Lib/worlds/underwatervehicle.cpp -o tmp/RLSimion-Lib-linux/underwatervehicle.o
 g++ -c -g2 -gdwarf-2 -w -Wswitch -W"no-deprecated-declarations" -W"empty-body" -W"return-type" -Wparentheses -W"no-format" -Wuninitialized -W"unreachable-code" -W"unused-function" -W"unused-value" -W"unused-variable" -Wswitch -W"no-deprecated-declarations" -Wconversion -O0 -fno-strict-aliasing -fno-omit-frame-pointer -fthreadsafe-statics -fexceptions -frtti -x c++ -std=c++11 -fPIC RLSimion/Lib/worlds/windturbine.cpp -o tmp/RLSimion-Lib-linux/windturbine.o
 g++ -c -g2 -gdwarf-2 -w -Wswitch -W"no-deprecated-declarations" -W"empty-body" -W"return-type" -Wparentheses -W"no-format" -Wuninitialized -W"unreachable-code" -W"unused-function" -W"unused-value" -W"unused-variable" -Wswitch -W"no-deprecated-declarations" -Wconversion -O0 -fno-strict-aliasing -fno-omit-frame-pointer -fthreadsafe-statics -fexceptions -frtti -x c++ -std=c++11 -fPIC RLSimion/Lib/worlds/world.cpp -o tmp/RLSimion-Lib-linux/world.o
-ar rcs tmp/RLSimion-Lib-linux/RLSimion-Lib-linux.a tmp/RLSimion-Lib-linux/*.o -Wl,--no-undefined -Wl,-z,relro -Wl,-z,now -Wl,-z,noexecstack -shared 
+ar rcs tmp/RLSimion-Lib-linux/RLSimion-Lib-linux.a tmp/RLSimion-Lib-linux/*.o 
 
 echo [RLSimionTests]
 mkdir tmp/RLSimionTests
