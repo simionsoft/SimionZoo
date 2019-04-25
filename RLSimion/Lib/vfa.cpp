@@ -149,11 +149,14 @@ void LinearVFA::add(const FeatureList* pFeatures, double alpha)
 			m_pPendingUpdates->add(pFeatures->m_pFeatures[i].m_index, inc);
 	}
 
-	if (bFreezeTarget && !SimionApp::get()->pSimGod->bReplayingExperience())
+	if (bFreezeTarget)
 	{
+		//we save the step where we did all the pending updates last to avoid doing it more than once (experience replay)
+		static int lastUpdateStep = -1;
+
 		experimentStep = SimionApp::get()->pExperiment->getExperimentStep();
 
-		if (experimentStep % vUpdateFreq == 0)
+		if (experimentStep % vUpdateFreq == 0 && experimentStep != lastUpdateStep)
 		{
 			for (unsigned int i = 0; i < m_pPendingUpdates->m_numFeatures; ++i)
 			{
@@ -161,6 +164,7 @@ void LinearVFA::add(const FeatureList* pFeatures, double alpha)
 					+= m_pPendingUpdates->m_pFeatures[i].m_factor;
 			}
 			m_pPendingUpdates->clear();
+			lastUpdateStep = experimentStep;
 		}
 	}
 }
