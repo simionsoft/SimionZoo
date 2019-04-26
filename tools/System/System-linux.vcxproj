@@ -63,11 +63,13 @@
     <ClCompile>
       <WarningLevel>TurnOffAllWarnings</WarningLevel>
       <PositionIndependentCode>true</PositionIndependentCode>
+      <AdditionalOptions>-lpthread</AdditionalOptions>
     </ClCompile>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Linux-Release|x64'">
     <ClCompile>
       <PositionIndependentCode>true</PositionIndependentCode>
+      <AdditionalOptions>-lpthread</AdditionalOptions>
     </ClCompile>
   </ItemDefinitionGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

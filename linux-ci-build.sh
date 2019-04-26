@@ -1,6 +1,6 @@
 mkdir tmp
 
-echo #### 1. Compile the projects
+echo "#### 1. Compile the projects"
 echo [tinyxml2-linux]
 mkdir tmp/tinyxml2-linux
 g++ -c -g2 -gdwarf-2 -w -Wswitch -W"no-deprecated-declarations" -W"empty-body" -W"return-type" -Wparentheses -W"no-format" -Wuninitialized -W"unreachable-code" -W"unused-function" -W"unused-value" -W"unused-variable" -Wswitch -W"no-deprecated-declarations" -Wconversion -O0 -fno-strict-aliasing -fno-omit-frame-pointer -fthreadsafe-statics -fexceptions -frtti -x c++ -std=c++11 -fPIC 3rd-party/tinyxml2/tinyxml2.cpp -o tmp/tinyxml2-linux/tinyxml2.o
@@ -92,7 +92,7 @@ ar rcs tmp/System-linux/System-linux.a tmp/System-linux/*.o
 
 echo [GeometryLibTests]
 mkdir tmp/GeometryLibTests
-g++ -o tmp/GeometryLibTests/GeometryLibTests.exe -Itests/linux tests/GeometryLib/BasicGeometryChecks/main-linux.cpp -Wl,--no-undefined  "tmp/GeometryLib-linux/GeometryLib-linux.a" "tmp/tinyxml2-linux/tinyxml2-linux.a"
+g++ -o tmp/GeometryLibTests/GeometryLibTests.exe -Itests/linux tests/GeometryLib/BasicGeometryChecks/main-linux.cpp -Wl,--no-undefined  "tmp/GeometryLib-linux/GeometryLib-linux.a" "tmp/tinyxml2-linux/tinyxml2-linux.a" 
 
 echo [OpenGLRenderer-linux]
 mkdir tmp/OpenGLRenderer-linux
@@ -399,13 +399,13 @@ g++ -o tmp/RLSimion-linux/RLSimion-linux.exe tmp/RLSimion-linux/*.o -Wl,--no-und
 
 echo [RLSimionTests]
 mkdir tmp/RLSimionTests
-g++ -o tmp/RLSimionTests/RLSimionTests.exe -Itests/linux tests/RLSimion/main-linux.cpp -Wl,--no-undefined  "tmp/RLSimion-Lib-linux/RLSimion-Lib-linux.a" "tmp/RLSimion-Common-linux/RLSimion-Common-linux.a" "tmp/Bullet3-linux/Bullet3-linux.a" "tmp/OpenGLRenderer-linux/OpenGLRenderer-linux.a" "tmp/System-linux/System-linux.a" "tmp/SOIL-linux/SOIL-linux.a" "tmp/GeometryLib-linux/GeometryLib-linux.a" "tmp/glew2-linux/glew2-linux.a" "tmp/freeglut3-linux/freeglut3-linux.a" "tmp/tinyxml2-linux/tinyxml2-linux.a" -l"GL" -l"X11" -l"GLU" -l"dl" -l"pthread"
+g++ -o tmp/RLSimionTests/RLSimionTests.exe -Itests/linux tests/RLSimion/main-linux.cpp -Wl,--no-undefined  "tmp/RLSimion-Lib-linux/RLSimion-Lib-linux.a" "tmp/RLSimion-Common-linux/RLSimion-Common-linux.a" "tmp/Bullet3-linux/Bullet3-linux.a" "tmp/OpenGLRenderer-linux/OpenGLRenderer-linux.a" "tmp/System-linux/System-linux.a" "tmp/SOIL-linux/SOIL-linux.a" "tmp/GeometryLib-linux/GeometryLib-linux.a" "tmp/glew2-linux/glew2-linux.a" "tmp/freeglut3-linux/freeglut3-linux.a" "tmp/tinyxml2-linux/tinyxml2-linux.a" -l"GL" -l"X11" -l"GLU" -l"dl" -l"pthread" -lpthread
 
 echo [SystemTests]
 mkdir tmp/SystemTests
-g++ -o tmp/SystemTests/SystemTests.exe -Itests/linux tests/System/main-linux.cpp -Wl,--no-undefined  "tmp/System-linux/System-linux.a"
+g++ -o tmp/SystemTests/SystemTests.exe -Itests/linux tests/System/main-linux.cpp -Wl,--no-undefined  "tmp/System-linux/System-linux.a" -lpthread
 
-echo #### 2. Run unit tests
+echo "#### 2. Run unit tests"
 tmp/GeometryLibTests/GeometryLibTests.exe
 tmp/RLSimionTests/RLSimionTests.exe
 tmp/SystemTests/SystemTests.exe
