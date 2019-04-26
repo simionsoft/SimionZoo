@@ -9,7 +9,7 @@ public:
 	~Process();
 
 	void stop();
-	bool spawn(const char* commandLine, bool bAwait= false, const char* args= nullptr);
+	bool spawn(const char* commandLine);
 	bool isRunning();
 	void wait();
 

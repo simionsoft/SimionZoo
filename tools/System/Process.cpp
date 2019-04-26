@@ -51,7 +51,7 @@ void Process::stop()
 	}
 }
 
-bool Process::spawn(const char* commandLine, bool bAwait, const char* args)
+bool Process::spawn(const char* commandLine)
 {
 	STARTUPINFO startupInfo;
 	PROCESS_INFORMATION processInformation;
@@ -65,8 +65,6 @@ bool Process::spawn(const char* commandLine, bool bAwait, const char* args)
 	{
 		if (m_bVerbose) cout << "Creating process: " << commandLine << "\n";
 		m_handle = (long long) processInformation.hProcess;
-
-		if (bAwait)	wait();
 	}
 	else if (m_bVerbose) cout << "Failed creating process: " << commandLine << "\n";
 

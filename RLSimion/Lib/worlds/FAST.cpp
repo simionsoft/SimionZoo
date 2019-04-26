@@ -209,7 +209,8 @@ void FASTWindTurbine::deferredLoadStep()
 				, m_evaluationMeanWindSpeeds[i]->get());						//URef
 
 			commandLine = exeFileName + string(" ") + outConfigFileName;
-			TurbSimProcess.spawn((char*)(commandLine).c_str(), true);
+			TurbSimProcess.spawn((char*)(commandLine).c_str());
+			TurbSimProcess.wait();
 		}
 		//set the number of episodes per evaluation
 		SimionApp::get()->pExperiment->setNumEpisodesPerEvaluation((int)m_evaluationMeanWindSpeeds.size());
@@ -225,7 +226,8 @@ void FASTWindTurbine::deferredLoadStep()
 				, m_trainingMeanWindSpeeds[i]->get());						//URef
 
 			commandLine = exeFileName + string(" ") + outConfigFileName;
-			TurbSimProcess.spawn((char*)(commandLine).c_str(), true);
+			TurbSimProcess.spawn((char*)(commandLine).c_str());
+			TurbSimProcess.wait();
 		}
 	}
 	//Load the template used to tell FAST which wind file to use

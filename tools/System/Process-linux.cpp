@@ -29,6 +29,7 @@
 #include <unistd.h>
 #include <wait.h>
 #include <iostream>
+#include <string.h>
 using namespace std;
 
 Process::Process()
@@ -51,9 +52,10 @@ void Process::stop()
 	}
 }
 
-bool Process::spawn(const char* commandLine, bool bAwait, const char* args)
+#define NUM_MAX_ARGUMENTS 5
+#define MAX_COMMAND_LINE_LENGTH 1024
+bool Process::spawn(const char* commandLine)
 {
-	int status;
 	int returnCode;
 
 	if (m_bVerbose) cout << "Forking process\n";
@@ -64,22 +66,33 @@ bool Process::spawn(const char* commandLine, bool bAwait, const char* args)
 	{
 		m_handle = (unsigned long long int) returnCode;
 
-		if (m_bVerbose) cout << "Parent process creating process: " << commandLine << " " << args << "\n";
-
-		if (bAwait)
-		{
-			if (m_bVerbose) cout << "Waiting for process to finish: " << commandLine << "\n";
-			waitpid((__pid_t)m_handle, &status, 0);
-			m_handle = 0;
-			if (m_bVerbose) cout << "Process finished\n";
-		}
+		if (m_bVerbose) cout << "Parent process creating process: " << commandLine << "\n";
 	}
 	else
 	{
-		if (args==nullptr)
-			returnCode= execl("System::Process", commandLine, NULL);
-		else
-			returnCode = execl("System::Process", commandLine, args, NULL);
+		//separate arguments
+		int numArguments = 0;
+		char* arguments[NUM_MAX_ARGUMENTS];
+		char commandLineCopy[MAX_COMMAND_LINE_LENGTH];
+		strncpy(commandLineCopy, commandLine, MAX_COMMAND_LINE_LENGTH);
+
+		for (size_t i = 1; i < strlen(commandLineCopy) && numArguments<NUM_MAX_ARGUMENTS-1; i++)
+		{
+			if (commandLineCopy[i] == ' ')
+			{
+				commandLineCopy[i] = 0;
+				if (i< strlen(commandLineCopy)-2)
+					arguments[numArguments] = &commandLineCopy[i + 1];
+			}
+		}
+		switch (numArguments)
+		{
+		case 0: returnCode = execl(commandLineCopy, commandLine, NULL); break;
+		case 2: returnCode = execl(commandLineCopy, commandLine, arguments[0], arguments[1], NULL); break;
+		case 3: returnCode = execl(commandLineCopy, commandLine, arguments[0], arguments[1], arguments[2], NULL); break;
+		case 4: returnCode = execl(commandLineCopy, commandLine, arguments[0], arguments[1], arguments[2], NULL); break;
+		case 5: default: returnCode = execl(commandLineCopy, commandLine, arguments[0], arguments[1], arguments[2], NULL); break;
+		}
 
 		if (returnCode < 0 && m_bVerbose) cout << "Failed creating process: " << commandLine << "\n";
 		_Exit(0);

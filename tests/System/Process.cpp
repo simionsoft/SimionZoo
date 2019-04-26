@@ -25,9 +25,9 @@ namespace SystemTests
 		{
 			Process process1;
 #ifdef _WIN32
-			process1.spawn("C://Windows//System32//cmd.exe", false);
+			process1.spawn("C://Windows//System32//cmd.exe");
 #else
-			process1.spawn("/bin/ls -R /", false);
+			process1.spawn("/bin/ls -R /");
 #endif
 			this_thread::sleep_for(chrono::milliseconds(200));
 			Assert::IsTrue(process1.isRunning());
@@ -41,9 +41,9 @@ namespace SystemTests
 		{
 			Process process1;
 #ifdef _WIN32
-			process1.spawn("C://Windows//System32//ping.exe 127.0.0.1 -n 2", false);
+			process1.spawn("C://Windows//System32//ping.exe 127.0.0.1 -n 2");
 #else
-			process1.spawn("/bin/ping 127.0.0.1 -c 2", false);
+			process1.spawn("/bin/ping 127.0.0.1 -c 2");
 #endif
 			Assert::IsTrue(process1.isRunning());
 
