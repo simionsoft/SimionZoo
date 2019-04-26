@@ -179,6 +179,9 @@
     <ClCompile Include="Utilities.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\..\RLSimion\App\RLSimion.vcxproj">
+      <Project>{55258748-663f-49f6-a6b8-125d6d80a444}</Project>
+    </ProjectReference>
     <ProjectReference Include="..\..\RLSimion\Common\RLSimion-Common.vcxproj">
       <Project>{e62aac98-a3aa-4f77-beb3-3d6e4b3c6ea5}</Project>
     </ProjectReference>
