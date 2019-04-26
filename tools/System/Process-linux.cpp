@@ -72,7 +72,6 @@ bool Process::spawn(const char* commandLine, bool bAwait, const char* args)
 			waitpid((__pid_t)m_handle, &status, 0);
 			m_handle = 0;
 			if (m_bVerbose) cout << "Process finished\n";
-			_Exit(0);
 		}
 	}
 	else
@@ -82,11 +81,8 @@ bool Process::spawn(const char* commandLine, bool bAwait, const char* args)
 		else
 			returnCode = execl(commandLine, commandLine, args, NULL);
 
-		if (returnCode < 0)
-		{
-			if (m_bVerbose) cout << "Failed creating process: " << commandLine << "\n";
-			return false;
-		}
+		if (returnCode < 0 && m_bVerbose) cout << "Failed creating process: " << commandLine << "\n";
+		_Exit(0);
 	}
 
 	return true;
