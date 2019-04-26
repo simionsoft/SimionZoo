@@ -84,7 +84,7 @@ bool Process::spawn(const char* commandLine)
 				if ((int)i - lastSpacePos > 1)
 				{
 					commandLineCopy[i] = 0;
-					if (i < strlen(commandLine) - 2)
+					if (i < strlen(commandLine) - 1)
 					{
 						arguments[numArguments] = &commandLineCopy[i + 1];
 						numArguments++;
@@ -93,9 +93,6 @@ bool Process::spawn(const char* commandLine)
 				lastSpacePos = i;
 			}
 		}
-		//add the last argument
-		if (i == strlen(commandLine) && numArguments > 0)
-			arguments[numArguments] = &commandLineCopy[lastSpacePos + 1];
 		switch (numArguments)
 		{
 		case 0: returnCode = execl(commandLineCopy, commandLine, NULL); break;
