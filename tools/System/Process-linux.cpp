@@ -77,9 +77,9 @@ bool Process::spawn(const char* commandLine, bool bAwait, const char* args)
 	else
 	{
 		if (args==nullptr)
-			returnCode= execl(commandLine, commandLine, NULL);
+			returnCode= execl("System::Process", commandLine, NULL);
 		else
-			returnCode = execl(commandLine, commandLine, args, NULL);
+			returnCode = execl("System::Process", commandLine, args, NULL);
 
 		if (returnCode < 0 && m_bVerbose) cout << "Failed creating process: " << commandLine << "\n";
 		_Exit(0);
