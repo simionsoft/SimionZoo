@@ -24,7 +24,11 @@ namespace SystemTests
 		TEST_METHOD(Process_Run_Stop)
 		{
 			Process process1;
+#ifdef _WIN32
 			process1.spawn("C://Windows//System32//cmd.exe", false);
+#else
+			process1.spawn("/bin/ls -R /", false);
+#endif
 
 			this_thread::sleep_for(chrono::milliseconds(400));
 			Assert::IsTrue(process1.isRunning());
@@ -38,8 +42,11 @@ namespace SystemTests
 		TEST_METHOD(Process_Run_Wait)
 		{
 			Process process1;
-			process1.spawn("C://Windows//System32//ping.exe 127.0.0.1 -n 1", false);
-
+#ifdef _WIN32
+			process1.spawn("C://Windows//System32//ping.exe 127.0.0.1 -n 2", false);
+#else
+			process1.spawn("/bin/ping 127.0.0.1 -c 2", false);
+#endif
 			Assert::IsTrue(process1.isRunning());
 
 			process1.wait();
@@ -92,7 +99,11 @@ namespace SystemTests
 
 			string command = "cd /home/bortx/";
 			CrossPlatform::ForceUseFolderCharacter(command);
+#ifdef _WIN32
 			Assert::AreEqual("cd \\home\\bortx\\", command.c_str());
+#else
+			Assert::AreEqual("cd /home/bortx/", command.c_str());
+#endif
 
 			CrossPlatform::Strcpy_s(buffer, BUFFER_SIZE, "Hello my darling!");
 			Assert::AreEqual("Hello my darling!", buffer);
