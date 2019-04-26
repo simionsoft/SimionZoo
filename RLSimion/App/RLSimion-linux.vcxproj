@@ -92,7 +92,7 @@
   </ItemGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Linux-Debug|x64'">
     <Link>
-      <LibraryDependencies>GL;X11;GLU;dl</LibraryDependencies>
+      <LibraryDependencies>GL;X11;GLU;dl;pthread</LibraryDependencies>
       <AdditionalOptions>
       </AdditionalOptions>
       <SharedLibrarySearchPath>.;%(Link.SharedLibrarySearchPath)</SharedLibrarySearchPath>
@@ -103,7 +103,7 @@
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Linux-Release|x64'">
     <Link>
-      <LibraryDependencies>GL;X11;GLU;dl</LibraryDependencies>
+      <LibraryDependencies>GL;X11;GLU;dl;pthread</LibraryDependencies>
       <SharedLibrarySearchPath>.;%(Link.SharedLibrarySearchPath)</SharedLibrarySearchPath>
     </Link>
   </ItemDefinitionGroup>
