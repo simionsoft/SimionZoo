@@ -65,7 +65,7 @@ jobs:
     name: Hosted Ubuntu 1604
   steps:
   - script: |
-      echo Installing dependencies….
+      echo Installing dependenciesï¿½.
       sudo apt-get install libgl1-mesa-dev libglew-dev libxi-dev
       echo ...Finished
       echo Downloading files stored with Git LFS...
@@ -77,7 +77,7 @@ jobs:
     displayName: 'Run linux build script'
     inputs:
       targetType: filePath
-      filePath: './build-linux.sh'
+      filePath: './linux-ci-build.sh'
       failOnStderr: true
   - script: |
       echo Files in /bin:
