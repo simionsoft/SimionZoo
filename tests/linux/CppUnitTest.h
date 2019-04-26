@@ -1,6 +1,6 @@
 #pragma once
-#include <string>
-#include <math.h>
+#include <string.h>
+#include <cmath>
 using namespace std;
 //license here
 namespace Microsoft
@@ -22,14 +22,36 @@ namespace Microsoft
         {
           if (expr) throw runtime_error("Assert failed");
         }
-        void Fail(std::wstring errorMessage)
+        void Fail(std::wstring errorMessage=L"")
         {
           throw runtime_error("Assert failed");
         }
         template <typename T>
-        void AreEqual(T expected, T actual, double tolerance= 0.0000001, wstring errorMessage= L"")
+        void AreEqual(T expected, T actual, T tolerance, wstring errorMessage)
         {
-          if (abs(expected - actual) > abs(tolerance))
+          if (std::abs(expected - actual) > tolerance)
+            throw runtime_error("Assert failed");
+        }
+        template <typename T>
+        void AreEqual(T expected, T actual, wstring errorMessage)
+        {
+          if (expected != actual)
+            throw runtime_error("Assert failed");
+        }
+        template <typename T>
+        void AreEqual(T expected, T actual)
+        {
+          if (expected != actual)
+            throw runtime_error("Assert failed");
+        }
+        void AreEqual(const char* expected, const char* actual, wstring errorMessage= L"")
+        {
+          if (strcmp(expected,actual))
+            throw runtime_error("Assert failed");
+        }
+        void AreEqual(string expected, string actual, wstring errorMessage= L"")
+        {
+          if (expected != actual)
             throw runtime_error("Assert failed");
         }
       }
