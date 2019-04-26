@@ -159,6 +159,7 @@ void NamedPipeServer::closeServer()
 {
 	logMessage("Destroying pipe server");
 	unlink(m_pipeFullName);
+	m_pipeHandle = 0;
 }
 
 //CNamedPipeClient
