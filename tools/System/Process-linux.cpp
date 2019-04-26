@@ -71,27 +71,38 @@ bool Process::spawn(const char* commandLine)
 	else
 	{
 		//separate arguments
+		int lastSpacePos = 0;
 		int numArguments = 0;
 		char* arguments[NUM_MAX_ARGUMENTS];
 		char commandLineCopy[MAX_COMMAND_LINE_LENGTH];
 		strncpy(commandLineCopy, commandLine, MAX_COMMAND_LINE_LENGTH);
-
-		for (size_t i = 1; i < strlen(commandLineCopy) && numArguments<NUM_MAX_ARGUMENTS-1; i++)
+		size_t i;
+		for (i = 0; i < strlen(commandLine) && numArguments < NUM_MAX_ARGUMENTS - 1; i++)
 		{
 			if (commandLineCopy[i] == ' ')
 			{
-				commandLineCopy[i] = 0;
-				if (i< strlen(commandLineCopy)-2)
-					arguments[numArguments] = &commandLineCopy[i + 1];
+				if ((int)i - lastSpacePos > 1)
+				{
+					commandLineCopy[i] = 0;
+					if (i < strlen(commandLine) - 2)
+					{
+						arguments[numArguments] = &commandLineCopy[i + 1];
+						numArguments++;
+					}
+				}
+				lastSpacePos = i;
 			}
 		}
+		//add the last argument
+		if (i == strlen(commandLine) && numArguments > 0)
+			arguments[numArguments] = &commandLineCopy[lastSpacePos + 1];
 		switch (numArguments)
 		{
 		case 0: returnCode = execl(commandLineCopy, commandLine, NULL); break;
 		case 2: returnCode = execl(commandLineCopy, commandLine, arguments[0], arguments[1], NULL); break;
 		case 3: returnCode = execl(commandLineCopy, commandLine, arguments[0], arguments[1], arguments[2], NULL); break;
-		case 4: returnCode = execl(commandLineCopy, commandLine, arguments[0], arguments[1], arguments[2], NULL); break;
-		case 5: default: returnCode = execl(commandLineCopy, commandLine, arguments[0], arguments[1], arguments[2], NULL); break;
+		case 4: returnCode = execl(commandLineCopy, commandLine, arguments[0], arguments[1], arguments[2], arguments[3], NULL); break;
+		case 5: default: returnCode = execl(commandLineCopy, commandLine, arguments[0], arguments[1], arguments[2], arguments[3], arguments[4], NULL); break;
 		}
 
 		if (returnCode < 0 && m_bVerbose) cout << "Failed creating process: " << commandLine << "\n";
