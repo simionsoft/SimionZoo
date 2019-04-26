@@ -48,6 +48,7 @@ void Process::stop()
 	{
 		if (m_bVerbose) cout << "Stopping process\n";
 		kill((__pid_t)m_handle, SIGTERM);
+		m_handle = 0;
 	}
 }
 
