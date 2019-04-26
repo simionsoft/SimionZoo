@@ -29,14 +29,12 @@ namespace SystemTests
 #else
 			process1.spawn("/bin/ls -R /", false);
 #endif
-
-			this_thread::sleep_for(chrono::milliseconds(400));
+			this_thread::sleep_for(chrono::milliseconds(200));
 			Assert::IsTrue(process1.isRunning());
 
-			this_thread::sleep_for(chrono::milliseconds(400));
 			process1.stop();
 
-			this_thread::sleep_for(chrono::milliseconds(400));
+			this_thread::sleep_for(chrono::milliseconds(200));
 			Assert::IsFalse(process1.isRunning());
 		}
 		TEST_METHOD(Process_Run_Wait)
