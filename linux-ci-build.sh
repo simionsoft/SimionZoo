@@ -92,7 +92,8 @@ ar rcs tmp/System-linux/System-linux.a tmp/System-linux/*.o
 
 echo [GeometryLibTests]
 mkdir tmp/GeometryLibTests
-g++ -o tmp/GeometryLibTests/GeometryLibTests.exe -Itests/linux tests/GeometryLib/BasicGeometryChecks/main-linux.cpp -x c++ -std=c++11 -Wl,--no-undefined  "tmp/GeometryLib-linux/GeometryLib-linux.a" "tmp/tinyxml2-linux/tinyxml2-linux.a" 
+g++ -c -x c++ -std=c++11 tests/GeometryLib/BasicGeometryChecks/main-linux.cpp -o tests/GeometryLib/BasicGeometryChecks/main-linux.cpp.o
+g++ -o tmp/GeometryLibTests/GeometryLibTests.exe -Itests/linux tests/GeometryLib/BasicGeometryChecks/main-linux.cpp.o -Wl,--no-undefined  "tmp/GeometryLib-linux/GeometryLib-linux.a" "tmp/tinyxml2-linux/tinyxml2-linux.a" 
 
 echo [OpenGLRenderer-linux]
 mkdir tmp/OpenGLRenderer-linux
@@ -399,11 +400,13 @@ g++ -o tmp/RLSimion-linux/RLSimion-linux.exe tmp/RLSimion-linux/*.o -Wl,--no-und
 
 echo [RLSimionTests]
 mkdir tmp/RLSimionTests
-g++ -o tmp/RLSimionTests/RLSimionTests.exe -Itests/linux tests/RLSimion/main-linux.cpp -x c++ -std=c++11 -Wl,--no-undefined  "tmp/RLSimion-Lib-linux/RLSimion-Lib-linux.a" "tmp/RLSimion-Common-linux/RLSimion-Common-linux.a" "tmp/Bullet3-linux/Bullet3-linux.a" "tmp/OpenGLRenderer-linux/OpenGLRenderer-linux.a" "tmp/System-linux/System-linux.a" "tmp/SOIL-linux/SOIL-linux.a" "tmp/GeometryLib-linux/GeometryLib-linux.a" "tmp/glew2-linux/glew2-linux.a" "tmp/freeglut3-linux/freeglut3-linux.a" "tmp/tinyxml2-linux/tinyxml2-linux.a" -l"GL" -l"X11" -l"GLU" -l"dl" -l"pthread" -lpthread
+g++ -c -x c++ -std=c++11 tests/RLSimion/main-linux.cpp -o tests/RLSimion/main-linux.cpp.o
+g++ -o tmp/RLSimionTests/RLSimionTests.exe -Itests/linux tests/RLSimion/main-linux.cpp.o -Wl,--no-undefined  "tmp/RLSimion-Lib-linux/RLSimion-Lib-linux.a" "tmp/RLSimion-Common-linux/RLSimion-Common-linux.a" "tmp/Bullet3-linux/Bullet3-linux.a" "tmp/OpenGLRenderer-linux/OpenGLRenderer-linux.a" "tmp/System-linux/System-linux.a" "tmp/SOIL-linux/SOIL-linux.a" "tmp/GeometryLib-linux/GeometryLib-linux.a" "tmp/glew2-linux/glew2-linux.a" "tmp/freeglut3-linux/freeglut3-linux.a" "tmp/tinyxml2-linux/tinyxml2-linux.a" -l"GL" -l"X11" -l"GLU" -l"dl" -l"pthread" -lpthread
 
 echo [SystemTests]
 mkdir tmp/SystemTests
-g++ -o tmp/SystemTests/SystemTests.exe -Itests/linux tests/System/main-linux.cpp -x c++ -std=c++11 -Wl,--no-undefined  "tmp/System-linux/System-linux.a" -lpthread
+g++ -c -x c++ -std=c++11 tests/System/main-linux.cpp -o tests/System/main-linux.cpp.o
+g++ -o tmp/SystemTests/SystemTests.exe -Itests/linux tests/System/main-linux.cpp.o -Wl,--no-undefined  "tmp/System-linux/System-linux.a" -lpthread
 
 echo "#### 2. Run unit tests"
 tmp/GeometryLibTests/GeometryLibTests.exe
