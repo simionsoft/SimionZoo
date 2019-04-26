@@ -72,6 +72,7 @@ bool Process::spawn(const char* commandLine, bool bAwait, const char* args)
 			waitpid((__pid_t)m_handle, &status, 0);
 			m_handle = 0;
 			if (m_bVerbose) cout << "Process finished\n";
+			_Exit(0);
 		}
 	}
 	else
