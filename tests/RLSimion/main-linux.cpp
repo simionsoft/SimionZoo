@@ -229,5 +229,5 @@ int main()
     success= false;
     std::cout << "Failed RLSimion_Utilities_getLastBarPos()\n";
   }
-  return success;
+  if (success) return 0; else return 1;
 }

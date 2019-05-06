@@ -54,5 +54,5 @@ int main()
     success= false;
     std::cout << "Failed CrossPlatform_Memory()\n";
   }
-  return success;
+  if (success) return 0; else return 1;
 }
