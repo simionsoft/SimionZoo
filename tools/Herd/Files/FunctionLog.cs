@@ -239,7 +239,7 @@ namespace Herd.Files
             Functions.Clear();
             using (FileStream logFileStream = File.OpenRead(filename))
             {
-                using (BinaryReader binaryReader = new BinaryReader(logFileStream))
+                using (BinaryReader binaryReader = new BinaryReader(logFileStream, System.Text.Encoding.ASCII))
                 {
                     int magicNumber = (int)binaryReader.ReadInt64();
                     if (magicNumber != FILE_HEADER)
