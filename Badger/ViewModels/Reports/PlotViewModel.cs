@@ -330,36 +330,29 @@ namespace Badger.ViewModels
                 minX = 0.0;
                 maxX = 1.0;
                 minY = 0.0;
-                minY = 1.0;
+                maxY = 1.0;
             }
+
+            //Set the upper/lower bounds
+            double yMargin = 0.001; //default values if the line series is flat or has no points
             if (maxY - minY > 0)
             {
-                Plot.Axes[1].Maximum = maxY;
-                Plot.Axes[1].Minimum = minY;
-                Plot.Axes[1].AbsoluteMaximum = maxY;
-                Plot.Axes[1].AbsoluteMinimum = minY;
+                double yRange = Math.Abs(maxY - minY);
+                yMargin = yRange * 0.05;//set the margin to 5% of the range
             }
-            else
-            {
-                Plot.Axes[1].Maximum = minY + 0.001;
-                Plot.Axes[1].Minimum = minY;
-                Plot.Axes[1].AbsoluteMaximum = minY + 0.001;
-                Plot.Axes[1].AbsoluteMinimum = minY;
-            }
-            if (maxX - minX > 0)
-            {
-                Plot.Axes[0].Maximum = maxX;
-                Plot.Axes[0].Minimum = minX;
-                Plot.Axes[0].AbsoluteMaximum = maxX;
-                Plot.Axes[0].AbsoluteMinimum = minX;
-            }
-            else
-            {
-                Plot.Axes[0].Maximum = minX + 0.001;
-                Plot.Axes[0].Minimum = minX;
-                Plot.Axes[0].AbsoluteMaximum = minX + 0.001;
-                Plot.Axes[0].AbsoluteMinimum = minX;
-            }
+            Plot.Axes[1].Maximum = maxY + yMargin;
+            Plot.Axes[1].Minimum = minY - yMargin;
+            Plot.Axes[1].AbsoluteMaximum = maxY + yMargin;
+            Plot.Axes[1].AbsoluteMinimum = minY - yMargin;
+
+            //Set the minimum/maximum x values
+            double xMargin = 0.0;
+            if (maxX == minX)
+                xMargin = 0.001;
+            Plot.Axes[0].Maximum = maxX + xMargin;
+            Plot.Axes[0].Minimum = minX - xMargin;
+            Plot.Axes[0].AbsoluteMaximum = maxX + xMargin;
+            Plot.Axes[0].AbsoluteMinimum = minX - xMargin;
         }
 
         private void UpdatePlotBounds(double x, double y)
