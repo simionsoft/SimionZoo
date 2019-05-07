@@ -197,6 +197,8 @@ namespace Badger.ViewModels
             Fonts.Add("Segoe UI");
             Fonts.Add("Times New Roman");
             Fonts.Add("Verdana");
+            Fonts.Add("CMU Serif");
+            Fonts.Add("CMU Sans Serif");
             SelectedFont = "Segoe UI";
         }
         /// <summary>
