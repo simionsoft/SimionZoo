@@ -223,6 +223,8 @@ namespace Badger.ViewModels
             get { return Variables; }
             set { Variables = value; NotifyOfPropertyChange(() => OrderByVariables); }
         }
+        [DataMember]
+        public bool AverageSelectedTracks { get; set; } = false;
 
         // Group By
         [DataMember]
@@ -654,6 +656,7 @@ namespace Badger.ViewModels
                 }
             }
         }
+
         public void SetNotifying(bool notifying)
         {
             IsNotifying = notifying;

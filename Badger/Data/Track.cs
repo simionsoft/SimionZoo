@@ -187,6 +187,44 @@ namespace Badger.Data
             }
             Values= resampled;
         }
+
+        /// <summary>
+        /// This method takes a list of series as input and outputs three series with, respectively the average, maximum and minimum. This method assumes all input series
+        /// have the same values in the X axis
+        /// </summary>
+        /// <param name="seriesList">Input series of values</param>
+        /// <param name="minimums">Output maximums for each sample in X</param>
+        /// <param name="maximums">Ouptut minimum for each sample in Y</param>
+        /// <returns></returns>
+        public static void AverageSeriesList(List<Series> seriesList, out Series averages, out Series minimums, out Series maximums)
+        {
+            averages = null;
+            minimums = null;
+            maximums = null;
+
+            if (seriesList.Count == 0) return;
+
+            int numValuesPerSeries = seriesList[0].Values.Count;
+
+            averages = new Series();
+            minimums = new Series();
+            maximums = new Series();
+
+            for (int sample= 0; sample< numValuesPerSeries; sample++)
+            {
+                double x, avgY= 0, minY= double.MaxValue, maxY= double.MinValue;
+                x = seriesList[0].Values[sample].X;
+                foreach (Series series in seriesList)
+                {
+                    avgY += series.Values[sample].Y;
+                    if (series.Values[sample].Y < minY) minY= series.Values[sample].Y;
+                    if (series.Values[sample].Y > maxY) maxY = series.Values[sample].Y;
+                }
+                averages.AddValue(x, avgY/seriesList.Count);
+                minimums.AddValue(x, minY);
+                maximums.AddValue(x, maxY);
+            }
+        }
     }
 
     /// <summary>

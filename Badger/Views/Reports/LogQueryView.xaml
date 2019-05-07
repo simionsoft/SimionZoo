@@ -77,7 +77,7 @@
                     </StackPanel>
                     <StackPanel>
                         <ComboBox x:Name="InGroupSelectionReportTypes" SelectedValue="{Binding InGroupSelectionReportType}"
-                                           Margin="110,0,0,0" Width="80" HorizontalAlignment="Left"/>
+                                           Margin="194,0,0,0" Width="80" HorizontalAlignment="Left"/>
                     </StackPanel>
                 </StackPanel>
             </GroupBox>
@@ -96,9 +96,13 @@
                         <ComboBox x:Name="OrderByVariables" SelectedValue="{Binding OrderByVariable}"
                                             Width="80" HorizontalAlignment="Center"/>
                     </StackPanel>
-                    <StackPanel>
+                    <StackPanel Orientation="Horizontal">
+                        <StackPanel Orientation="Horizontal" Width="100" Margin="10,0,0,0">
+                            <CheckBox VerticalAlignment="Center" IsChecked="{Binding Path=AverageSelectedTracks}"/>
+                            <Label  FontSize="10" Margin="0" Content="Average tracks"/>
+                        </StackPanel>
                         <ComboBox x:Name="OrderByReportTypes" SelectedValue="{Binding OrderByReportType}"
-                                           Margin="110,0,0,0" Width="80" HorizontalAlignment="Left"/>
+                                           Margin="84,0,0,0" Width="80" HorizontalAlignment="Left"/>
                     </StackPanel>
                 </StackPanel>
             </GroupBox>

@@ -89,50 +89,85 @@ namespace Badger.ViewModels
 
             //Create the plot
             PlotViewModel newPlot = new PlotViewModel(report.Name, "Time (s)", report.Name, false, true);
-            //Create the stats
-            StatsViewModel newStatGroup = new StatsViewModel(report.Name);
 
-            foreach (TrackGroup group in queryResultTracks)
+            if (!query.AverageSelectedTracks)
             {
-                //plot data
-                if (group.ConsolidatedTrack != null)
+                //Create the stats
+                StatsViewModel newStatGroup = new StatsViewModel(report.Name);
+
+                //Regular line series
+                foreach (TrackGroup group in queryResultTracks)
                 {
-                    SeriesGroup seriesGroup = group.ConsolidatedTrack.SeriesGroups[report];
-
-                    foreach (Series series in seriesGroup.SeriesList)
+                    if (group.ConsolidatedTrack != null)
                     {
-                        string seriesName;
-                        string description;
-                        if (seriesGroup.SeriesList.Count == 1)
+
+                        SeriesGroup seriesGroup = group.ConsolidatedTrack.SeriesGroups[report];
+
+                        foreach (Series series in seriesGroup.SeriesList)
                         {
-                            //only one series per track group, no multi-series track group
-                            seriesName = group.ConsolidatedTrack.TrackId;
-                            description = group.ConsolidatedTrack.FullTrackId;
+                            string seriesName;
+                            string description;
+                            if (seriesGroup.SeriesList.Count == 1)
+                            {
+                                //only one series per track group, no multi-series track group
+                                seriesName = group.ConsolidatedTrack.TrackId;
+                                description = group.ConsolidatedTrack.FullTrackId;
+                            }
+                            else
+                            {
+                                seriesName = group.ConsolidatedTrack.TrackId + "-" + series.Id;
+                                description = group.ConsolidatedTrack.FullTrackId + "-" + series.Id;
+                            }
+
+                            //add data to the plot
+                            int lineSeriesId = newPlot.AddLineSeries(seriesName, description);
+                            foreach (XYValue value in series.Values)
+                                newPlot.AddLineSeriesValue(lineSeriesId, value.X, value.Y);
+
+                            StatViewModel newStat =
+                                new StatViewModel(group.ExperimentId, seriesName, series.Stats
+                                    , group.ConsolidatedTrack.LogBinaryFile
+                                    , group.ConsolidatedTrack.LogDescriptorFile
+                                    , group.ConsolidatedTrack.ExperimentalUnitConfigFile);
+
+                            newStatGroup.addStat(newStat);
                         }
-                        else
-                        {
-                            seriesName = group.ConsolidatedTrack.TrackId + "-" + series.Id;
-                            description = group.ConsolidatedTrack.FullTrackId + "-" + series.Id;
-                        }
-
-                        //add data to the plot
-                        int lineSeriesId = newPlot.AddLineSeries(seriesName, description);
-                        foreach (XYValue value in series.Values)
-                            newPlot.AddLineSeriesValue(lineSeriesId, value.X, value.Y);
-
-                        StatViewModel newStat =
-                            new StatViewModel(group.ExperimentId, seriesName, series.Stats
-                                , group.ConsolidatedTrack.LogBinaryFile
-                                , group.ConsolidatedTrack.LogDescriptorFile
-                                , group.ConsolidatedTrack.ExperimentalUnitConfigFile);
-
-                        newStatGroup.addStat(newStat);
                     }
                 }
+                Stats = newStatGroup;
             }
-            Plot = newPlot;
-            Stats = newStatGroup;
-        }
+            else
+            {
+                List<Series> originalSeries = new List<Series>();
+                foreach (TrackGroup group in queryResultTracks)
+                {
+                    //Averaged line series: we need to average all the track groups
+                    SeriesGroup seriesGroup = group.ConsolidatedTrack.SeriesGroups[report];
 
+                    //take the first series
+                    originalSeries.Add(seriesGroup.SeriesList[0]);
+                }
+
+                Series.AverageSeriesList(originalSeries, out Series averages, out Series minimums, out Series maximums);
+
+                //only one series per track group, no multi-series track group
+                string seriesName = "Averaged series";
+                string description = "Averaged series";
+
+                //add a line series to the plot
+                int lineSeriesId = newPlot.AddLineSeries(seriesName, description);
+                int areaSeriesId = newPlot.AddAreaSeries(seriesName, description);
+
+                //all three output series must have the same number of elements
+                int sampleCount = averages.Values.Count;
+                for (int sample = 0; sample < sampleCount; sample++)
+                {
+                    newPlot.AddLineSeriesValue(lineSeriesId, averages.Values[sample].X, averages.Values[sample].Y);
+                    newPlot.AddAreaSeriesValue(areaSeriesId, averages.Values[sample].X, minimums.Values[sample].Y, maximums.Values[sample].Y);
+                }
+            }
+            
+            Plot = newPlot;
+        }
     }
 }

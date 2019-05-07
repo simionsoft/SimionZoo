@@ -133,12 +133,12 @@ namespace Badger.ViewModels
         {
             var xAxis = new OxyPlot.Axes.LinearAxis();
             xAxis.Position = AxisPosition.Bottom;
-            xAxis.MajorGridlineStyle = LineStyle.Solid;
+            xAxis.MajorGridlineStyle = LineStyle.None;
             Plot.Axes.Add(xAxis);
 
             var yAxis = new OxyPlot.Axes.LinearAxis();
             yAxis.Position = AxisPosition.Left;
-            yAxis.MajorGridlineStyle = LineStyle.Solid;
+            yAxis.MajorGridlineStyle = LineStyle.None;
             Plot.Axes.Add(yAxis);
 
             ResetAxes();
@@ -212,7 +212,10 @@ namespace Badger.ViewModels
                 Plot.InvalidatePlot(true);
         }
 
-        private object m_lineSeriesLock = new object();
+        private object m_lock = new object();
+
+        public List<OxyPlot.Series.LineSeries> m_lineSeries { get; private set; } = new List<OxyPlot.Series.LineSeries>();
+        public List<OxyPlot.Series.AreaSeries> m_areaSeries { get; private set; } = new List<OxyPlot.Series.AreaSeries>();
 
         /// <summary>
         /// Adds a line series to the plot
@@ -225,15 +228,16 @@ namespace Badger.ViewModels
         {
             //TODO: improve how to limit the number of plots
             //For now, we just ignore series after the max number has been reached
-            if (Plot.Series.Count < m_maxNumSeries)
+            if (m_lineSeries.Count < m_maxNumSeries)
             {
-                if (m_lineSeriesLock == null) //might be null if loaded from file
-                    m_lineSeriesLock = new object();
-                lock (m_lineSeriesLock)
+                if (m_lock == null) //might be null if loaded from file
+                    m_lock = new object();
+                lock (m_lock)
                 {
                     OxyPlot.Series.LineSeries newSeries = new OxyPlot.Series.LineSeries { Title = title, MarkerType = MarkerType.None };
                     newSeries.IsVisible = isVisible;
                     Plot.Series.Add(newSeries);
+                    m_lineSeries.Add(newSeries);
 
                     PlotLineSeriesPropertiesViewModel lineProps = Properties.LineSeriesByName(title);
 
@@ -242,29 +246,83 @@ namespace Badger.ViewModels
                     else
                         lineProps.LineSeries = newSeries;
 
-                    return Plot.Series.Count - 1; ;
+                    return m_lineSeries.Count - 1; ;
                 }
             }
             return -1;
         }
 
         /// <summary>
-        /// Adds a vale to a given line series
+        /// Adds a value to a given line series
         /// </summary>
         /// <param name="seriesIndex">Index of the series</param>
         /// <param name="xValue">The x value</param>
         /// <param name="yValue">The y value</param>
         public void AddLineSeriesValue(int seriesIndex, double xValue, double yValue)
         {
-            if (seriesIndex < 0 || seriesIndex >= Plot.Series.Count)
+            if (seriesIndex < 0 || seriesIndex >= m_lineSeries.Count)
             {
                 //TODO: at least, we should log the error
                 return;
             }
 
-            OxyPlot.Series.LineSeries series = (OxyPlot.Series.LineSeries)Plot.Series[seriesIndex];
+            OxyPlot.Series.LineSeries series = m_lineSeries[seriesIndex];
             UpdatePlotBounds(xValue, yValue);
             series.Points.Add(new DataPoint(xValue, yValue));
+        }
+
+        /// <summary>
+        /// Adds an area series to the plot
+        /// </summary>
+        /// <param name="title">The title of the series</param>
+        /// <param name="description">The description of the series</param>
+        /// <param name="isVisible">Initial visibility given to the series</param>
+        /// <returns>The id given to the new line series. -1 if it fails</returns>
+        public int AddAreaSeries(string title, string description = "", bool isVisible = true)
+        {
+            //TODO: improve how to limit the number of plots
+            //For now, we just ignore series after the max number has been reached
+            if (m_areaSeries.Count < m_maxNumSeries)
+            {
+                if (m_lock == null) //might be null if loaded from file
+                    m_lock = new object();
+                lock (m_lock)
+                {
+                    OxyPlot.Series.AreaSeries newSeries = new OxyPlot.Series.AreaSeries();
+                    newSeries.Fill = OxyPlot.OxyColor.FromAColor(120,Plot.DefaultColors[m_areaSeries.Count]);
+                    newSeries.StrokeThickness = 1;
+                    newSeries.Color = OxyPlot.OxyColor.FromAColor(120, Plot.DefaultColors[m_areaSeries.Count]);
+                    newSeries.Color2 = OxyPlot.OxyColor.FromAColor(120, Plot.DefaultColors[m_areaSeries.Count]);
+                    newSeries.IsVisible = isVisible;
+                    Plot.Series.Add(newSeries);
+                    m_areaSeries.Add(newSeries);
+
+                    return m_areaSeries.Count - 1; ;
+                }
+            }
+            return -1;
+        }
+
+        /// <summary>
+        /// Adds a value to a given area series
+        /// </summary>
+        /// <param name="seriesIndex">Index of the series</param>
+        /// <param name="xValue">The x value</param>
+        /// <param name="maxYValue">The upper y value</param>
+        /// <param name="minYValue">The lower y value</param>
+        public void AddAreaSeriesValue(int seriesIndex, double xValue, double maxYValue, double minYValue)
+        {
+            if (seriesIndex < 0 || seriesIndex >= m_areaSeries.Count)
+            {
+                //TODO: at least, we should log the error
+                return;
+            }
+
+            OxyPlot.Series.AreaSeries series = m_areaSeries[seriesIndex];
+            UpdatePlotBounds(xValue, maxYValue); //Not very efficient, but doesn't seem to be worth the effort right now
+            UpdatePlotBounds(xValue, minYValue);
+            series.Points.Add(new DataPoint(xValue, maxYValue));
+            series.Points2.Add(new DataPoint(xValue, minYValue));
         }
 
         /// <summary>
@@ -273,55 +331,58 @@ namespace Badger.ViewModels
         public void ClearLineSeries()
         {
             Plot.Series.Clear();
+            m_lineSeries.Clear();
+            m_areaSeries.Clear();
             ResetAxes();
             UpdateView();
             NotifyOfPropertyChange("Series");
         }
 
-        /// <summary>
-        ///     Identify which LineSeries is hovered and make a call to the dimLineSeriesColor method
-        ///     passing the correct LineSeriesProperties object as parameter.
-        ///     In order to highlight a LineSeries what we actually do is to dim, that is, apply
-        ///     certain opacity, to all the other LineSeries.
-        /// </summary>
-        /// <param name="seriesId">Id of the LineSeries to be highlighted</param>
-        public void HighlightLineSeries(int seriesId)
+        void CalculateSeriesBounds(out double minX, out double maxX, out double minY, out double maxY)
         {
-            if (seriesId < 0) ResetLineSeriesColors();
-
-            Properties.HighlightSeries(seriesId);
-        }
-
-        /// <summary>
-        ///     Reset all LineSeries color to its original, removing the opacity in case that some
-        ///     was applied before by the highlightLineSeries method.
-        /// </summary>
-        public void ResetLineSeriesColors()
-        {
-            foreach (PlotLineSeriesPropertiesViewModel p in Properties.LineSeriesProperties)
-                Properties.ResetLineSeriesOpacity(p);
-        }
-
-        private void UpdatePlotBoundsFromScratch()
-        {
-            double minY = double.MaxValue, maxY = double.MinValue;
-            double minX = double.MaxValue, maxX = double.MinValue;
+            minY = double.MaxValue;
+            maxY = double.MinValue;
+            minX = double.MaxValue;
+            maxX = double.MinValue;
             bool atLeastOneLineSeries = false;
-            foreach (OxyPlot.Series.LineSeries series in Plot.Series)
+            foreach (OxyPlot.Series.Series series in Plot.Series)
             {
-                if (series.IsVisible && series.Points.Count>0)
+
+                if (series is OxyPlot.Series.LineSeries)
                 {
-                    atLeastOneLineSeries = true;
-                    foreach (DataPoint dataPoint in series.Points)
+                    OxyPlot.Series.LineSeries lineSeries = series as OxyPlot.Series.LineSeries;
+                    if (lineSeries.IsVisible && lineSeries.Points.Count > 0)
                     {
-                        if (dataPoint.Y < minY)
-                            minY = dataPoint.Y;
-                        if (dataPoint.Y > maxY)
-                            maxY = dataPoint.Y;
-                        if (dataPoint.X < minX)
-                            minX = dataPoint.X;
-                        if (dataPoint.X > maxX)
-                            maxX = dataPoint.X;
+                        atLeastOneLineSeries = true;
+                        foreach (DataPoint dataPoint in lineSeries.Points)
+                        {
+                            if (dataPoint.Y < minY) minY = dataPoint.Y;
+                            if (dataPoint.Y > maxY) maxY = dataPoint.Y;
+                            if (dataPoint.X < minX) minX = dataPoint.X;
+                            if (dataPoint.X > maxX) maxX = dataPoint.X;
+                        }
+                    }
+                }
+
+                if (series is OxyPlot.Series.AreaSeries)
+                {
+                    OxyPlot.Series.AreaSeries areaSeries = series as OxyPlot.Series.AreaSeries;
+                    if (areaSeries.IsVisible && areaSeries.Points.Count > 0)
+                    { 
+                        foreach (DataPoint dataPoint in areaSeries.Points)
+                        {
+                            if (dataPoint.Y < minY) minY = dataPoint.Y;
+                            if (dataPoint.Y > maxY) maxY = dataPoint.Y;
+                            if (dataPoint.X < minX) minX = dataPoint.X;
+                            if (dataPoint.X > maxX) maxX = dataPoint.X;
+                        }
+                        foreach (DataPoint dataPoint in areaSeries.Points2)
+                        {
+                            if (dataPoint.Y < minY) minY = dataPoint.Y;
+                            if (dataPoint.Y > maxY) maxY = dataPoint.Y;
+                            if (dataPoint.X < minX) minX = dataPoint.X;
+                            if (dataPoint.X > maxX) maxX = dataPoint.X;
+                        }
                     }
                 }
             }
@@ -332,6 +393,11 @@ namespace Badger.ViewModels
                 minY = 0.0;
                 maxY = 1.0;
             }
+        }
+
+        private void UpdatePlotBoundsFromScratch()
+        {
+            CalculateSeriesBounds(out double minX, out double maxX, out double minY, out double maxY);
 
             //Set the upper/lower bounds
             double yMargin = 0.001; //default values if the line series is flat or has no points
