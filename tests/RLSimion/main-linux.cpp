@@ -8,7 +8,7 @@
 #include "Utilities.cpp"
 int main()
 {
-  bool success= true;
+  int retCode= 0;
 
   try
   {
@@ -17,7 +17,7 @@ int main()
   }
   catch(std::runtime_error error)
   {
-    success= false;
+    retCode= 1;
     std::cout << "Failed Experiment_Episodes()\n";
   }
   try
@@ -27,7 +27,7 @@ int main()
   }
   catch(std::runtime_error error)
   {
-    success= false;
+    retCode= 1;
     std::cout << "Failed Experiment_Episodes2()\n";
   }
   try
@@ -37,7 +37,7 @@ int main()
   }
   catch(std::runtime_error error)
   {
-    success= false;
+    retCode= 1;
     std::cout << "Failed Experiment_Progress()\n";
   }
   try
@@ -47,7 +47,7 @@ int main()
   }
   catch(std::runtime_error error)
   {
-    success= false;
+    retCode= 1;
     std::cout << "Failed Experiment_OnlyOneEpisode()\n";
   }
   try
@@ -57,7 +57,7 @@ int main()
   }
   catch(std::runtime_error error)
   {
-    success= false;
+    retCode= 1;
     std::cout << "Failed FeatureMap_RBFGrid_MapUnmapSweep()\n";
   }
   try
@@ -67,7 +67,7 @@ int main()
   }
   catch(std::runtime_error error)
   {
-    success= false;
+    retCode= 1;
     std::cout << "Failed FeatureMap_RBFGrid_VariableCircularity()\n";
   }
   try
@@ -77,7 +77,7 @@ int main()
   }
   catch(std::runtime_error error)
   {
-    success= false;
+    retCode= 1;
     std::cout << "Failed FeatureMap_Discrete_MapUnmapSweep()\n";
   }
   try
@@ -87,7 +87,7 @@ int main()
   }
   catch(std::runtime_error error)
   {
-    success= false;
+    retCode= 1;
     std::cout << "Failed FeatureMap_Discrete_VariableCircularity()\n";
   }
   try
@@ -97,7 +97,7 @@ int main()
   }
   catch(std::runtime_error error)
   {
-    success= false;
+    retCode= 1;
     std::cout << "Failed FeatureMap_TileCoding_MapUnmapSweep()\n";
   }
   try
@@ -107,7 +107,7 @@ int main()
   }
   catch(std::runtime_error error)
   {
-    success= false;
+    retCode= 1;
     std::cout << "Failed MemManager_TotalAllocated()\n";
   }
   try
@@ -117,7 +117,7 @@ int main()
   }
   catch(std::runtime_error error)
   {
-    success= false;
+    retCode= 1;
     std::cout << "Failed MemManager_InitValue()\n";
   }
   try
@@ -127,7 +127,7 @@ int main()
   }
   catch(std::runtime_error error)
   {
-    success= false;
+    retCode= 1;
     std::cout << "Failed MemManager_Copy()\n";
   }
   try
@@ -137,7 +137,7 @@ int main()
   }
   catch(std::runtime_error error)
   {
-    success= false;
+    retCode= 1;
     std::cout << "Failed MemManager_UpperBound()\n";
   }
   try
@@ -147,7 +147,7 @@ int main()
   }
   catch(std::runtime_error error)
   {
-    success= false;
+    retCode= 1;
     std::cout << "Failed MemManager_MemLimit()\n";
   }
   try
@@ -157,7 +157,7 @@ int main()
   }
   catch(std::runtime_error error)
   {
-    success= false;
+    retCode= 1;
     std::cout << "Failed MemManager_MemDiskDump()\n";
   }
   try
@@ -167,7 +167,7 @@ int main()
   }
   catch(std::runtime_error error)
   {
-    success= false;
+    retCode= 1;
     std::cout << "Failed NamedVarSet_Circularity()\n";
   }
   try
@@ -177,7 +177,7 @@ int main()
   }
   catch(std::runtime_error error)
   {
-    success= false;
+    retCode= 1;
     std::cout << "Failed SampleFile_Small()\n";
   }
   try
@@ -187,7 +187,7 @@ int main()
   }
   catch(std::runtime_error error)
   {
-    success= false;
+    retCode= 1;
     std::cout << "Failed SampleFile_Medium()\n";
   }
   try
@@ -197,7 +197,7 @@ int main()
   }
   catch(std::runtime_error error)
   {
-    success= false;
+    retCode= 1;
     std::cout << "Failed SampleFile_Larger()\n";
   }
   try
@@ -207,7 +207,7 @@ int main()
   }
   catch(std::runtime_error error)
   {
-    success= false;
+    retCode= 1;
     std::cout << "Failed LinearStateActionVFA_ArgMax()\n";
   }
   try
@@ -217,7 +217,7 @@ int main()
   }
   catch(std::runtime_error error)
   {
-    success= false;
+    retCode= 1;
     std::cout << "Failed LinearStateActionVFA_FeatureMap()\n";
   }
   try
@@ -227,7 +227,7 @@ int main()
   }
   catch(std::runtime_error error)
   {
-    success= false;
+    retCode= 1;
     std::cout << "Failed RLSimion_Utilities_getDirectory()\n";
   }
   try
@@ -237,7 +237,7 @@ int main()
   }
   catch(std::runtime_error error)
   {
-    success= false;
+    retCode= 1;
     std::cout << "Failed RLSimion_Utilities_getFilename()\n";
   }
   try
@@ -247,7 +247,7 @@ int main()
   }
   catch(std::runtime_error error)
   {
-    success= false;
+    retCode= 1;
     std::cout << "Failed RLSimion_Utilities_removeExtension()\n";
   }
   try
@@ -257,8 +257,8 @@ int main()
   }
   catch(std::runtime_error error)
   {
-    success= false;
+    retCode= 1;
     std::cout << "Failed RLSimion_Utilities_getLastBarPos()\n";
   }
-  return success;
+  return retCode;
 }

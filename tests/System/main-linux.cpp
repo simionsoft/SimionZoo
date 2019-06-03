@@ -2,7 +2,7 @@
 #include "Process.cpp"
 int main()
 {
-  bool success= true;
+  int retCode= 0;
 
   try
   {
@@ -11,7 +11,7 @@ int main()
   }
   catch(std::runtime_error error)
   {
-    success= false;
+    retCode= 1;
     std::cout << "Failed Process_Run_Stop()\n";
   }
   try
@@ -21,7 +21,7 @@ int main()
   }
   catch(std::runtime_error error)
   {
-    success= false;
+    retCode= 1;
     std::cout << "Failed Process_Run_Wait()\n";
   }
   try
@@ -31,7 +31,7 @@ int main()
   }
   catch(std::runtime_error error)
   {
-    success= false;
+    retCode= 1;
     std::cout << "Failed NamedPipes()\n";
   }
   try
@@ -41,7 +41,7 @@ int main()
   }
   catch(std::runtime_error error)
   {
-    success= false;
+    retCode= 1;
     std::cout << "Failed CrossPlatform_CStrings()\n";
   }
   try
@@ -51,8 +51,8 @@ int main()
   }
   catch(std::runtime_error error)
   {
-    success= false;
+    retCode= 1;
     std::cout << "Failed CrossPlatform_Memory()\n";
   }
-  return success;
+  return retCode;
 }

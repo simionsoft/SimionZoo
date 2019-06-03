@@ -2,7 +2,7 @@
 #include "unittest1.cpp"
 int main()
 {
-  bool success= true;
+  int retCode= 0;
 
   try
   {
@@ -11,7 +11,7 @@ int main()
   }
   catch(std::runtime_error error)
   {
-    success= false;
+    retCode= 1;
     std::cout << "Failed Geometry_BoundingBoxInsideFrustum()\n";
   }
   try
@@ -21,7 +21,7 @@ int main()
   }
   catch(std::runtime_error error)
   {
-    success= false;
+    retCode= 1;
     std::cout << "Failed Geometry_BoundingBoxInsideFrustum2()\n";
   }
   try
@@ -31,7 +31,7 @@ int main()
   }
   catch(std::runtime_error error)
   {
-    success= false;
+    retCode= 1;
     std::cout << "Failed Geometry_BoundingBoxInsideFrustum3()\n";
   }
   try
@@ -41,7 +41,7 @@ int main()
   }
   catch(std::runtime_error error)
   {
-    success= false;
+    retCode= 1;
     std::cout << "Failed Geometry_BoundingBoxInsideFrustum4()\n";
   }
   try
@@ -51,7 +51,7 @@ int main()
   }
   catch(std::runtime_error error)
   {
-    success= false;
+    retCode= 1;
     std::cout << "Failed Geometry_PointInsideFrustum()\n";
   }
   try
@@ -61,7 +61,7 @@ int main()
   }
   catch(std::runtime_error error)
   {
-    success= false;
+    retCode= 1;
     std::cout << "Failed Geometry_PointInsideFrustum2()\n";
   }
   try
@@ -71,7 +71,7 @@ int main()
   }
   catch(std::runtime_error error)
   {
-    success= false;
+    retCode= 1;
     std::cout << "Failed Geometry_EulerToQuaternion()\n";
   }
   try
@@ -81,7 +81,7 @@ int main()
   }
   catch(std::runtime_error error)
   {
-    success= false;
+    retCode= 1;
     std::cout << "Failed Geometry_RotationOnXYPlane()\n";
   }
   try
@@ -91,7 +91,7 @@ int main()
   }
   catch(std::runtime_error error)
   {
-    success= false;
+    retCode= 1;
     std::cout << "Failed Geometry_CameraTransformations()\n";
   }
   try
@@ -101,7 +101,7 @@ int main()
   }
   catch(std::runtime_error error)
   {
-    success= false;
+    retCode= 1;
     std::cout << "Failed Geometry_QuaternionInverse()\n";
   }
   try
@@ -111,7 +111,7 @@ int main()
   }
   catch(std::runtime_error error)
   {
-    success= false;
+    retCode= 1;
     std::cout << "Failed Geometry_QuaternionTimesPoint3D()\n";
   }
   try
@@ -121,7 +121,7 @@ int main()
   }
   catch(std::runtime_error error)
   {
-    success= false;
+    retCode= 1;
     std::cout << "Failed Geometry_QuaternionTimesVector3D()\n";
   }
   try
@@ -131,8 +131,8 @@ int main()
   }
   catch(std::runtime_error error)
   {
-    success= false;
+    retCode= 1;
     std::cout << "Failed Geometry_Rotation2Dvs3D()\n";
   }
-  return success;
+  return retCode;
 }
