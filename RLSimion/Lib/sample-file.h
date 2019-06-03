@@ -25,7 +25,7 @@ class SampleFile
 	int m_numChunksInFile;
 	int m_currentChunk;
 
-	void* m_pBinaryFile;
+	void* m_pBinaryFile= nullptr;
 
 	void loadNextDataChunkFromFile();
 public:

@@ -76,7 +76,8 @@ SampleFile::SampleFile(string filename)
 
 SampleFile::~SampleFile()
 {
-	fclose((FILE *) m_pBinaryFile);
+	if (m_pBinaryFile)
+		fclose((FILE *) m_pBinaryFile);
 }
 
 void SampleFile::loadNextDataChunkFromFile()
@@ -84,7 +85,7 @@ void SampleFile::loadNextDataChunkFromFile()
 	//Read a data chunk from the sample file
 	if (m_pBinaryFile != nullptr && m_numChunksInFile>0)
 	{
-		m_currentChunk= ++m_currentChunk % m_numChunksInFile;
+		m_currentChunk= m_currentSampleIndex / m_dataChunkSizeInSamples;
 
 		fseek((FILE*) m_pBinaryFile, m_currentChunk * (m_dataChunkSizeInSamples * m_sampleSizeInBytes), SEEK_SET);
 		m_numValidSamplesInCache = fread(m_cachedData.data(), m_sampleSizeInBytes, m_dataChunkSizeInSamples, (FILE*) m_pBinaryFile);
@@ -94,7 +95,8 @@ void SampleFile::loadNextDataChunkFromFile()
 
 void SampleFile::drawRandomSample(State* s, Action* a, State* s_p, double& reward)
 {
-	if (m_currentSampleIndex >= m_currentChunk * m_dataChunkSizeInSamples + m_numValidSamplesInCache)
+	if (m_currentSampleIndex >= m_currentChunk * m_dataChunkSizeInSamples + m_numValidSamplesInCache
+		|| m_currentSampleIndex < m_currentChunk * m_dataChunkSizeInSamples)
 		loadNextDataChunkFromFile();
 
 	int sampleOffset = m_numElementsPerSample * (m_currentSampleIndex - m_currentChunk * m_dataChunkSizeInSamples);

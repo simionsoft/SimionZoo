@@ -134,5 +134,5 @@ int main()
     success= false;
     std::cout << "Failed Geometry_Rotation2Dvs3D()\n";
   }
-  if (success) return 0; else return 1;
+  return success;
 }

@@ -169,6 +169,7 @@
     <ClCompile Include="MemManager.cpp" />
     <ClCompile Include="MemPool.cpp" />
     <ClCompile Include="NamedVarSets.cpp" />
+    <ClCompile Include="SampleFile.cpp" />
     <ClCompile Include="StateActionVFAs.cpp" />
     <ClCompile Include="stdafx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>

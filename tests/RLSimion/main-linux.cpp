@@ -3,6 +3,7 @@
 #include "FeatureMaps.cpp"
 #include "MemManager.cpp"
 #include "NamedVarSets.cpp"
+#include "SampleFile.cpp"
 #include "StateActionVFAs.cpp"
 #include "Utilities.cpp"
 int main()
@@ -171,6 +172,36 @@ int main()
   }
   try
   {
+    SampleFilesTests::SampleFileTest::SampleFile_Small();
+    std::cout << "Passed SampleFile_Small()\n";
+  }
+  catch(std::runtime_error error)
+  {
+    success= false;
+    std::cout << "Failed SampleFile_Small()\n";
+  }
+  try
+  {
+    SampleFilesTests::SampleFileTest::SampleFile_Medium();
+    std::cout << "Passed SampleFile_Medium()\n";
+  }
+  catch(std::runtime_error error)
+  {
+    success= false;
+    std::cout << "Failed SampleFile_Medium()\n";
+  }
+  try
+  {
+    SampleFilesTests::SampleFileTest::SampleFile_Larger();
+    std::cout << "Passed SampleFile_Larger()\n";
+  }
+  catch(std::runtime_error error)
+  {
+    success= false;
+    std::cout << "Failed SampleFile_Larger()\n";
+  }
+  try
+  {
     StateActionVFA::UnitTest1::LinearStateActionVFA_ArgMax();
     std::cout << "Passed LinearStateActionVFA_ArgMax()\n";
   }
@@ -229,5 +260,5 @@ int main()
     success= false;
     std::cout << "Failed RLSimion_Utilities_getLastBarPos()\n";
   }
-  if (success) return 0; else return 1;
+  return success;
 }
