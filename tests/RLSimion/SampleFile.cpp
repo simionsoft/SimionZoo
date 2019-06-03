@@ -8,17 +8,19 @@ using namespace std;
 
 using namespace Microsoft::VisualStudio::CppUnitTestFramework;
 
+string descriptor1 = "<SampleFileDescriptor BinaryDataFile=\"";
+string descriptor2 = "\" NumSamples=\"";
+string descriptor3 = "\"><State-variable>x</State-variable><Action-variable>u</Action-variable><Reward-variable>r</Reward-variable></SampleFileDescriptor>";
+int numVariables = 4;
+
 namespace SampleFilesTests
 {
 	TEST_CLASS(SampleFileTest)
 	{
 		//These tests check the functionality of the Experiment class
 	public:
-		string descriptor1 = "<SampleFileDescriptor BinaryDataFile=\"";
-		string descriptor2 = "\" NumSamples=\"";
-		string descriptor3 = "\"><State-variable>x</State-variable><Action-variable>u</Action-variable><Reward-variable>r</Reward-variable></SampleFileDescriptor>";
-		int numVariables = 4;
-		string createSampleFileDescriptor(string name, int numSamples)
+
+		static string createSampleFileDescriptor(string name, int numSamples)
 		{
 			string binFileName = name + ".bin";
 			FILE* file;
@@ -28,7 +30,7 @@ namespace SampleFilesTests
 			return binFileName;
 		}
 
-		void createSampleFileBin(string name, int numSamples, int numVariables)
+		static void createSampleFileBin(string name, int numSamples, int numVariables)
 		{
 			FILE* file;
 			CrossPlatform::Fopen_s(&file, name.c_str(), "wb");
@@ -44,7 +46,7 @@ namespace SampleFilesTests
 			fclose(file);
 		}
 
-		void checkSampleFile(string name, int numSamples)
+		static void checkSampleFile(string name, int numSamples)
 		{
 			SampleFile sampleFile(name);
 			Descriptor sDesc, aDesc, rDesc;
