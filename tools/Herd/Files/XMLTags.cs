@@ -25,13 +25,24 @@
 
 
 
+using System.Reflection;
+
 namespace Herd.Files
 {
     public class XMLTags
     {
-        public const string ExperimentConfigVersion = "1.0.0.0";
-        public const string BadgerProjectConfigVersion = "1.0.0.0";
-        public const string BatchConfigVersion = "1.0.0.0";
+        public static string SimionZooVersion
+        {
+            get
+            {
+                System.Version version = Assembly.GetExecutingAssembly().GetName().Version;
+                return version.Major + "." + version.Minor + "." + version.Build;
+            }
+        }
+
+        public static string ExperimentConfigVersion = SimionZooVersion;// "1.0.0.0";
+        public static string BadgerProjectConfigVersion = SimionZooVersion;// "1.0.0.0";
+        public static string BatchConfigVersion = SimionZooVersion;// "1.0.0.0";
 
         public const string DefinitionNodeTag = "DEFINITIONS";
         public const string ClassDefinitionNodeTag = "CLASS";
