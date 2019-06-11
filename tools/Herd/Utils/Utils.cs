@@ -88,8 +88,8 @@ namespace Herd
         /// <returns>The relative path</returns>
         public static string GetRelativePathTo(string absPath, string relTo)
         {
-            string[] absDirs = absPath.Split('/');
-            string[] relDirs = relTo.Split('/');
+            string[] absDirs = absPath.Split('/', '\\');
+            string[] relDirs = relTo.Split('/', '\\');
             // Get the shortest of the two paths 
             int len = absDirs.Length < relDirs.Length ? absDirs.Length : relDirs.Length;
             // Use to determine where in the loop we exited 

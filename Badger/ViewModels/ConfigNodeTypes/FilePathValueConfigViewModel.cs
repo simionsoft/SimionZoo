@@ -30,6 +30,8 @@ using System.Linq;
 using Microsoft.Win32;
 
 using Herd.Files;
+using System.Threading.Tasks;
+using System.Collections.Generic;
 
 namespace Badger.ViewModels
 {
@@ -70,7 +72,7 @@ namespace Badger.ViewModels
         }
 
 
-        public void selectFile()
+        public void SelectFile()
         {
             OpenFileDialog openFileDialog = new OpenFileDialog();
             if (m_default != "")
@@ -102,11 +104,41 @@ namespace Badger.ViewModels
                 openFileDialog.Filter = filter;
             }
 
+            string selectedFilePath= content;
             if (openFileDialog.ShowDialog()==true)
             {
-                content = Herd.Utils.GetRelativePathTo(Directory.GetCurrentDirectory(), openFileDialog.FileName);
+                selectedFilePath = Herd.Utils.GetRelativePathTo(Directory.GetCurrentDirectory(), openFileDialog.FileName);
+
+                //Outside the project folder??
+                if (Path.IsPathRooted(selectedFilePath) || selectedFilePath.StartsWith("../../"))
+                {
+                    //copy selected file and related files (exception need to be included for sample files with descriptor and binary file)
+                    //to a temp folder inside the root folder of the project so that it can be correctly sent to herd agents
+                    List<string> relatedFiles = new List<string>();
+                    if (selectedFilePath.EndsWith(Extensions.SampleFileDescriptor))
+                        relatedFiles.Add(selectedFilePath + ".bin");
+                    string dstTempFile = Folders.tempRelativeDir + Path.GetFileName(selectedFilePath);
+                    Task.Run(() =>
+                    {
+                        //copy related files
+                        string dstTempFileAux;
+                        foreach (string relatedFile in relatedFiles)
+                        {
+                            dstTempFileAux = Folders.tempRelativeDir + Path.GetFileName(relatedFile);
+                            if (File.Exists(dstTempFileAux))
+                                File.Delete(dstTempFileAux);
+                            File.Copy(relatedFile, dstTempFileAux);
+                        }
+                        //copy main file    
+                        if (File.Exists(dstTempFile))
+                            File.Delete(dstTempFile);
+                        File.Copy(selectedFilePath, dstTempFile);
+                        content = dstTempFile;
+                    });
+                }
+                else content = selectedFilePath;
             }
-            content = content;
+            else content = content; //force re-validation
         }
     }
 }
