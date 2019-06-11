@@ -97,9 +97,7 @@ namespace Portable_Badger
 
         public static string GetVersion(string file)
         {
-            FileVersionInfo fvi = FileVersionInfo.GetVersionInfo(file);
-
-            return fvi.FileVersion;
+            return Herd.Files.Version.SimionZoo;
         }
 
         public static void GetDependencies(string inFolder, string module, ref List<string> dependencyList, bool bRecursive= true)

@@ -31,18 +31,9 @@ namespace Herd.Files
 {
     public class XMLTags
     {
-        public static string SimionZooVersion
-        {
-            get
-            {
-                System.Version version = Assembly.GetExecutingAssembly().GetName().Version;
-                return version.Major + "." + version.Minor + "." + version.Build;
-            }
-        }
-
-        public static string ExperimentConfigVersion = SimionZooVersion;// "1.0.0.0";
-        public static string BadgerProjectConfigVersion = SimionZooVersion;// "1.0.0.0";
-        public static string BatchConfigVersion = SimionZooVersion;// "1.0.0.0";
+        public static string ExperimentConfigVersion = Version.SimionZoo;
+        public static string BadgerProjectConfigVersion = Version.SimionZoo;
+        public static string BatchConfigVersion = Version.SimionZoo;
 
         public const string DefinitionNodeTag = "DEFINITIONS";
         public const string ClassDefinitionNodeTag = "CLASS";

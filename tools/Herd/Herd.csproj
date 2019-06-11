@@ -52,6 +52,7 @@
     <Compile Include="Files\ExperimentalUnit.cs" />
     <Compile Include="Files\ForkValue.cs" />
     <Compile Include="Files\Requirements.cs" />
+    <Compile Include="Files\Version.cs" />
     <Compile Include="Network\JobDispatcher.cs" />
     <Compile Include="Network\HerdAgent.cs" />
     <Compile Include="Network\HerdAgentInfo.cs" />
