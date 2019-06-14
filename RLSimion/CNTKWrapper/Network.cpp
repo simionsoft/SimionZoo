@@ -66,6 +66,8 @@ void Network::buildNetwork(double learningRate)
 	m_output = vector<double>(m_pNetworkDefinition->getOutputSize());
 }
 
+INetworkDefinition* Network::getDefinition() { return m_pNetworkDefinition; }
+
 INetwork* Network::clone(bool bFreezeWeights) const
 {
 	Network* result = new Network(m_pNetworkDefinition);

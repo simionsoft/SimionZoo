@@ -251,6 +251,21 @@ const vector<string>& NetworkDefinition::getInputActionVariables()
 	return m_inputActionVariables;
 }
 
+void NetworkDefinition::inputStateVariablesToVector(const State* s, vector<double>& outState, size_t offset)
+{
+	const vector<string>& stateVars = getInputStateVariables();
+	size_t stateInputSize = stateVars.size();
+	for (size_t i = 0; i < stateInputSize; i++)
+		outState[offset*stateInputSize + i] = s->getNormalized(stateVars[i].c_str());
+}
+
+void NetworkDefinition::inputActionVariablesToVector(const Action* a, vector<double>& outAction, size_t offset)
+{
+	const vector<string>& actionVars = getInputActionVariables();
+	size_t actionInputSize = actionVars.size();
+	for (size_t i = 0; i < actionInputSize; i++)
+		outAction[offset*actionInputSize + i] = a->getNormalized(actionVars[i].c_str());
+}
 
 size_t NetworkDefinition::getInputSize()
 {

@@ -64,28 +64,12 @@ void Minibatch::addTuple(const State* s, const Action* a, const State* s_p, doub
 		return;
 
 	//copy input state s
-	const vector<string>& stateVars= m_pNetworkDefinition->getInputStateVariables();
-	size_t stateInputSize = stateVars.size();
-	for (size_t i = 0; i < stateInputSize; i++)
-	{
-		m_s[m_numTuples*stateInputSize + i] = s->getNormalized(stateVars[i].c_str());
-		m_s_p[m_numTuples*stateInputSize + i] = s_p->getNormalized(stateVars[i].c_str());
-	}
+	m_pNetworkDefinition->inputStateVariablesToVector(s, m_s, m_numTuples);
+	m_pNetworkDefinition->inputStateVariablesToVector(s_p, m_s_p, m_numTuples);
 
 	//copy input action a
-	const vector<string>& actionVars = m_pNetworkDefinition->getInputActionVariables();
-	size_t actionInputSize = actionVars.size();
-	if (actionInputSize > 0)
-	{
-		for (size_t i = 0; i < actionInputSize; i++)
-			m_a[m_numTuples*actionInputSize + i] = a->getNormalized(actionVars[i].c_str());
-	}
-	else
-	{	//no input action, we just save the action selected by the agent
-		//for now, we assume only one action
-		m_a[m_numTuples] = a->get((size_t) 0);
-	}
-
+	m_pNetworkDefinition->inputActionVariablesToVector(a, m_a, m_numTuples);
+	
 	//copy reward r
 	m_r[m_numTuples] = r;
 	

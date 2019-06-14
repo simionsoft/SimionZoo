@@ -37,6 +37,9 @@ public:
 	virtual void addInputActionVar(string name)= 0;
 	virtual const vector<string>& getInputActionVariables()= 0;
 
+	virtual void inputStateVariablesToVector(const State* s, vector<double>& outState, size_t offset = 0) = 0;
+	virtual void inputActionVariablesToVector(const Action* a, vector<double>& outAction, size_t offset = 0) = 0;
+
 	virtual void setScalarOutput() = 0;
 	virtual void setVectorOutput(size_t dimension) = 0;
 	virtual void setDiscretizedActionVectorOutput(size_t numOutputs, double minvalue, double maxvalue) = 0;
@@ -60,6 +63,8 @@ public:
 	virtual void destroy()= 0;
 
 	virtual void buildNetwork(double learningRate)= 0;
+
+	virtual INetworkDefinition* getDefinition() = 0;
 
 	virtual void save(string fileName)= 0;
 

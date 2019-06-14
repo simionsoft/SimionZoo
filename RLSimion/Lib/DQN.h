@@ -21,7 +21,7 @@ class DQN : public Simion, DeferredLoad
 protected:
 	MULTI_VALUE_VARIABLE<STATE_VARIABLE> m_inputState;
 	INT_PARAM m_numActionSteps;
-	ACTION_VARIABLE m_outputAction;
+	MULTI_VALUE_VARIABLE<ACTION_VARIABLE> m_outputAction;
 	DOUBLE_PARAM m_learningRate;
 
 	INT_PARAM m_minibatchSize;
@@ -37,7 +37,7 @@ protected:
 
 	CHILD_OBJECT_FACTORY<DiscreteDeepPolicy> m_policy;
 
-	virtual INetwork* getQNetworkForTargetActionSelection();
+	virtual INetwork* getTargetNetwork();
 	
 public:
 	~DQN();
@@ -57,7 +57,7 @@ class DoubleDQN : public DQN
 public:
 	DoubleDQN(ConfigNode* pParameters);
 	
-	virtual INetwork* getQNetworkForTargetActionSelection();
+	virtual INetwork* getTargetNetwork();
 };
 
 #endif

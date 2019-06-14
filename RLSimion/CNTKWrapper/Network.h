@@ -46,6 +46,8 @@ public:
 	void setOutputLayer(CNTK::FunctionPtr outputLayer);
 	void buildNetwork(double learningRate);
 
+	INetworkDefinition* getDefinition();
+
 	void save(string fileName);
 
 	INetwork* clone(bool bFreezeWeights= true) const;

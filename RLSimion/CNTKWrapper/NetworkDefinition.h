@@ -65,6 +65,9 @@ public:
 	void addInputActionVar(string name);
 	const vector<string>& getInputActionVariables();
 
+	void inputStateVariablesToVector(const State* s, vector<double>& outState, size_t offset);
+	void inputActionVariablesToVector(const Action* a, vector<double>& outAction, size_t offset);
+
 	size_t getInputSize();
 
 	void setDiscretizedActionVectorOutput(size_t numOutputs, double minvalue, double maxvalue);
