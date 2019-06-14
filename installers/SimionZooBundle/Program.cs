@@ -74,7 +74,7 @@ namespace Portable_Badger
             files.Add(inBaseRelPath + @"bin/mkldnn.dll");
             files.Add(inBaseRelPath + @"bin/nvml.dll");
             //linux:
-            files.Add(inBaseRelPath + @"bin/CNTKWrapper-linux.so");
+            files.Add(inBaseRelPath + @"bin/libCNTKWrapper-linux.so");
             files.Add(inBaseRelPath + @"bin/cntk-linux/libCntk.Core-2.5.1.so");
             files.Add(inBaseRelPath + @"bin/cntk-linux/libCntk.Math-2.5.1.so");
             files.Add(inBaseRelPath + @"bin/cntk-linux/libCntk.PerformanceProfiler-2.5.1.so");
