@@ -43,6 +43,8 @@
 #include "../../tools/System/FileUtils.h"
 #include "../../tools/System/CrossPlatform.h"
 
+#include <string>
+using namespace std;
 #include <algorithm>
 
 //Properties and xml tags
@@ -84,6 +86,13 @@ SimionApp::SimionApp(ConfigNode* pConfigNode)
 	m_offlineTrainingSampleFile = FILE_PATH_PARAM(pConfigNode, "Offline-Training-File", "Sample file used for training. Leave blank if you want to use online training", "");
 
 	m_bUseOfflineTraining = m_offlineTrainingSampleFile.get() != nullptr && strlen(m_offlineTrainingSampleFile.get()) > 0;
+	if (m_bUseOfflineTraining)
+	{
+		//Add sample file and binary data files to input file list
+		registerInputFile(m_offlineTrainingSampleFile.get());
+		//this is a little and quick hack that avoids having to load the file to set it as an input
+		registerInputFile((string(m_offlineTrainingSampleFile.get()) + string(".bin")).c_str());
+	}
 }
 
 SimionApp::~SimionApp()

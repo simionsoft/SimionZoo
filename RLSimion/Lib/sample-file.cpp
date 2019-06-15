@@ -29,6 +29,7 @@
 #include "../../tools/System/FileUtils.h"
 #include "../../tools/System/CrossPlatform.h"
 #include "logger.h"
+
 using namespace tinyxml2;
 
 SampleFile::SampleFile(string filename)
@@ -46,6 +47,7 @@ SampleFile::SampleFile(string filename)
 
 		folder = getDirectory(filename);
 		m_binaryFilename = folder + string(pRoot->Attribute("BinaryDataFile"));
+
 		m_numSamplesInFile = atoi(pRoot->Attribute("NumSamples"));
 
 		XMLElement* pChild = pRoot->FirstChildElement();
