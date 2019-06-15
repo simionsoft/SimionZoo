@@ -99,6 +99,8 @@ public:
 	virtual vector<double>& s_p() = 0;
 	virtual vector<double>& r() = 0;
 
+	virtual vector<double>& interleavedStateAction() = 0;
+
 	virtual bool isFull() const = 0;
 	virtual size_t size() const = 0;
 	virtual size_t outputSize() const = 0;

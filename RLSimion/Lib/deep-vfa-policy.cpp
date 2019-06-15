@@ -63,8 +63,8 @@ void DiscreteDeepPolicy::initialize(INetworkDefinition* pDefinition, Descriptor&
 	m_stateVector = vector<double>(stateVariables.size());
 	m_actionVector = vector<double>(actionVariables.size());
 
-	m_argMaxState = vector<double>( m_numArgMaxTotalSamples * stateVariables.size());
-	m_argMaxAction = vector<double>( m_numArgMaxTotalSamples * actionVariables.size());
+	m_argMaxStateAction = vector<double>( m_numArgMaxTotalSamples * (actionVariables.size() + stateVariables.size()));
+
 	m_argMaxQ = vector<double>(m_numArgMaxTotalSamples);
 
 	//initialize action values used for grid search of argMaxQ(s,a)
@@ -85,7 +85,7 @@ void DiscreteDeepPolicy::initialize(INetworkDefinition* pDefinition, Descriptor&
 				normDimensionValue = (double)actionDimensionIndex / double(m_numSamplesPerActionVariable - 1);
 			else normDimensionValue = 0.0;
 
-			m_argMaxAction[sample*actionVariables.size() + actionVar] = normDimensionValue;
+			m_argMaxStateAction[sample*(actionVariables.size() + stateVariables.size()) + stateVariables.size() + actionVar] = normDimensionValue;
 
 			sampleIndex = sampleIndex / m_numSamplesPerActionVariable;
 		}
@@ -100,10 +100,10 @@ void DiscreteDeepPolicy::maxValue(INetwork* pNetwork, const vector<double>& stat
 	for (int sample = 0; sample < m_numArgMaxTotalSamples; sample++)
 	{
 		for (int i = 0; i < numStateVariables; i++)
-			m_argMaxState[sample*numStateVariables + i] = state[tupleOffset*numStateVariables + i];
+			m_argMaxStateAction[sample*(numStateVariables+numActionVariables) + i] = state[tupleOffset*numStateVariables + i];
 	}
 
-	pNetwork->evaluate(m_argMaxState, m_argMaxAction, m_argMaxQ);
+	pNetwork->evaluate(m_argMaxStateAction, m_argMaxStateAction, m_argMaxQ);
 
 	size_t maxQSampleIndex = std::distance(m_argMaxQ.begin(), std::max_element(m_argMaxQ.begin(), m_argMaxQ.end()));
 
@@ -118,17 +118,17 @@ void DiscreteDeepPolicy::argMaxValue(INetwork* pNetwork, const vector<double>& s
 	for (int sample = 0; sample < m_numArgMaxTotalSamples; sample++)
 	{
 		for (int i = 0; i < numStateVariables; i++)
-			m_argMaxState[sample*numStateVariables + i] = state[tupleOffset*numStateVariables + i];
+			m_argMaxStateAction[sample*(numStateVariables + numActionVariables) + i] = state[tupleOffset*numStateVariables + i];
 	}
 
-	pNetwork->evaluate(m_argMaxState, m_argMaxAction, m_argMaxQ);
+	pNetwork->evaluate(m_argMaxStateAction, m_argMaxStateAction, m_argMaxQ);
 
 	size_t maxQSampleIndex= std::distance(m_argMaxQ.begin(), std::max_element(m_argMaxQ.begin(), m_argMaxQ.end()));
 
 	//copy action variables with maximum Q(s,a) to outArgMaxA
 	for (int i= 0; i < numActionVariables; i++)
 	{
-		outAction[tupleOffset*numActionVariables + i] = m_argMaxAction[maxQSampleIndex * numActionVariables + i];
+		outAction[tupleOffset*numActionVariables + i] = m_argMaxStateAction[maxQSampleIndex * (numStateVariables + numActionVariables) + numStateVariables + i];
 	}
 }
 

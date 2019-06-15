@@ -21,8 +21,7 @@ protected:
 	vector<double> m_actionVector;
 
 	vector<double> m_argMaxQ;
-	vector<double> m_argMaxState;
-	vector<double> m_argMaxAction;
+	vector<double> m_argMaxStateAction;
 
 	int m_numSamplesPerActionVariable = 0;
 	int m_numArgMaxTotalSamples = 0;

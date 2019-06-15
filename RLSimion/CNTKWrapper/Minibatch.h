@@ -16,6 +16,8 @@ class Minibatch: public IMinibatch
 	vector<double> m_s_p;
 	vector<double> m_r;
 
+	vector<double> m_stateActionBuffer;
+
 	size_t m_outputSize = 0;
 
 public:
@@ -29,6 +31,8 @@ public:
 	vector<double>& a();
 	vector<double>& s_p();
 	vector<double>& r();
+
+	vector<double>& interleavedStateAction();
 
 	void destroy();
 	bool isFull() const;

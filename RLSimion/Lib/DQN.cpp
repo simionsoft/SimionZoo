@@ -147,10 +147,10 @@ double DQN::update(const State * s, const Action * a, const State * s_p, double 
 		//We do the prediction step again only if using Double-DQN (the prediction network
 		//will be different to the online network)
 		if (getTargetNetwork() != m_pTargetQNetwork)
-			m_pTargetQNetwork->evaluate(m_pMinibatch->s_p(), m_pMinibatch->a(), m_Q_s_p);
+			m_pTargetQNetwork->evaluate(m_pMinibatch->interleavedStateAction(), m_pMinibatch->a(), m_Q_s_p);
 
 		//get the value of Q(s) for each tuple
-		m_pOnlineQNetwork->evaluate(m_pMinibatch->s(), m_pMinibatch->a(), m_target);
+		m_pOnlineQNetwork->evaluate(m_pMinibatch->interleavedStateAction(), m_pMinibatch->a(), m_target);
 
 		//for each tuple in the minibatch
 		for (int i = 0; i < m_minibatchSize.get(); i++)

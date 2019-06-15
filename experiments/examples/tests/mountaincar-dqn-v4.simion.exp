@@ -9,19 +9,19 @@
     <Log-Functions>true</Log-Functions>
   </Log>
   <World>
-    <Num-Integration-Steps>1</Num-Integration-Steps>
-    <Delta-T>0.1</Delta-T>
+    <Num-Integration-Steps>4</Num-Integration-Steps>
+    <Delta-T>0.25</Delta-T>
     <Dynamic-Model>
       <Model>
-        <Robot-control>
-        </Robot-control>
+        <Rain-car>
+        </Rain-car>
         </Model>
     </Dynamic-Model>
   </World>
   <Experiment>
     <Random-Seed>1</Random-Seed>
-    <Num-Episodes>10000</Num-Episodes>
-    <Eval-Freq>10</Eval-Freq>
+    <Num-Episodes>100</Num-Episodes>
+    <Eval-Freq>5</Eval-Freq>
     <Progress-Update-Freq>1.0</Progress-Update-Freq>
     <Episode-Length>100</Episode-Length>
   </Experiment>
@@ -38,13 +38,14 @@
       <Type>
         <DQN>
           <Minibatch-Size>100</Minibatch-Size>
-          <Num-Action-Steps>10</Num-Action-Steps>
+          <Num-Action-Steps>11</Num-Action-Steps>
           <Learning-Rate>0.000001</Learning-Rate>
-          <neural-network><Problem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+          <neural-network>
+<Problem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
 <Inputs>
 	<InputData ID="state-input" Name="State">
 		<Shape xsi:type="IntTuple1D">
-			<x1>5</x1>
+			<x1>4</x1>
 		</Shape>
 	</InputData>
 </Inputs>
@@ -59,26 +60,24 @@
 <ChainLinks>
 <LinkBase xsi:type="InputLayer" Name="Input Layer" ID="27F7D6DE"><Parameters><ParameterBase xsi:type="InputDataParameter" Name="Input Data">
 <Value>state-input</Value></ParameterBase></Parameters></LinkBase>
-<LinkBase xsi:type="DenseLayer" Name="Dense Layer" ID="2E139DBC"><Parameters><ParameterBase xsi:type="IntParameter" Name="Units"><Value>100</Value></ParameterBase><ParameterBase xsi:type="ActivationFunctionParameter" Name="Activation"><Value>relu</Value></ParameterBase></Parameters></LinkBase>
-<LinkBase xsi:type="DenseLayer" Name="Dense Layer" ID="EC2BDC65"><Parameters><ParameterBase xsi:type="IntParameter" Name="Units"><Value>100</Value></ParameterBase><ParameterBase xsi:type="ActivationFunctionParameter" Name="Activation"><Value>relu</Value></ParameterBase></Parameters></LinkBase>
-<LinkBase xsi:type="DenseLayer" Name="Dense Layer" ID="A50D99C1"><Parameters><ParameterBase xsi:type="IntParameter" Name="Units"><Value>100</Value></ParameterBase><ParameterBase xsi:type="ActivationFunctionParameter" Name="Activation"><Value>relu</Value></ParameterBase></Parameters></LinkBase>
+<LinkBase xsi:type="DenseLayer" Name="Dense Layer" ID="2E139DBC"><Parameters><ParameterBase xsi:type="IntParameter" Name="Units"><Value>20</Value></ParameterBase><ParameterBase xsi:type="ActivationFunctionParameter" Name="Activation"><Value>relu</Value></ParameterBase></Parameters></LinkBase>
+<LinkBase xsi:type="DenseLayer" Name="Dense Layer" ID="EC2BDC65"><Parameters><ParameterBase xsi:type="IntParameter" Name="Units"><Value>40</Value></ParameterBase><ParameterBase xsi:type="ActivationFunctionParameter" Name="Activation"><Value>relu</Value></ParameterBase></Parameters></LinkBase>
+<LinkBase xsi:type="DenseLayer" Name="Dense Layer" ID="A50D99C1"><Parameters><ParameterBase xsi:type="IntParameter" Name="Units"><Value>80</Value></ParameterBase><ParameterBase xsi:type="ActivationFunctionParameter" Name="Activation"><Value>relu</Value></ParameterBase></Parameters></LinkBase>
 <LinkBase xsi:type="DenseLayer" Name="output " ID="A7C3B867"><Parameters><ParameterBase xsi:type="IntParameter" Name="Units"><Value>1</Value></ParameterBase><ParameterBase xsi:type="ActivationFunctionParameter" Name="Activation"><Value>linear</Value></ParameterBase></Parameters></LinkBase>
 </ChainLinks></Chain></Chains>
 </NetworkArchitecture>
-</Problem></neural-network>          <Input-State>
-            <Input-State>robot1-x</Input-State>
+</Problem></neural-network>
+          <Input-State>
+            <Input-State>position</Input-State>
           </Input-State>
           <Input-State>
-            <Input-State>robot1-y</Input-State>
+            <Input-State>velocity</Input-State>
           </Input-State>
           <Input-State>
-            <Input-State>robot1-theta</Input-State>
+            <Input-State>position-deviation</Input-State>
           </Input-State>
           <Output-Action>
-            <Output-Action>robot1-v</Output-Action>
-          </Output-Action>
-          <Output-Action>
-            <Output-Action>robot1-omega</Output-Action>
+            <Output-Action>acceleration</Output-Action>
           </Output-Action>
           <Policy>
             <Policy>
@@ -87,30 +86,15 @@
                   <Noise>
                     <Ornstein-Uhlenbeck>
                       <Mu>0.0</Mu>
-                      <Sigma>1</Sigma>
-                      <Theta>0.5</Theta>
-                      <Scale>
-                        <Schedule>
-                          <Constant>
-                            <Value>1</Value>
-                          </Constant>
-                        </Schedule>
-                      </Scale>
-                    </Ornstein-Uhlenbeck>
-                    </Noise>
-                </Exploration-Noise>
-                <Exploration-Noise>
-                  <Noise>
-                    <Ornstein-Uhlenbeck>
-                      <Mu>0.0</Mu>
-                      <Sigma>0.1</Sigma>
+                      <Sigma>1.0</Sigma>
                       <Theta>0.1</Theta>
                       <Scale>
                         <Schedule>
-                          <Constant>
-                            <Value>1</Value>
-                          </Constant>
-                        </Schedule>
+                          <Simple-Linear-Decay>
+                            <Initial-Value>1</Initial-Value>
+                            <End-Value>0.0</End-Value>
+                          </Simple-Linear-Decay>
+                          </Schedule>
                       </Scale>
                     </Ornstein-Uhlenbeck>
                     </Noise>

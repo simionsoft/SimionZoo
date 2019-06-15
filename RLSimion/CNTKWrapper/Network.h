@@ -35,8 +35,7 @@ protected:
 
 	unordered_map<CNTK::Parameter, CNTK::FunctionPtr> m_weightTransitions;
 
-	void stateToVector(const State* s, vector<double>& stateVector);
-	void actionToVector(const Action* a, vector<double>& actionVector);
+	void stateActionToVector(const State* s, const Action* a, vector<double>& stateVector);
 public:
 	Network(NetworkDefinition* pNetworkDefinition);
 	~Network();

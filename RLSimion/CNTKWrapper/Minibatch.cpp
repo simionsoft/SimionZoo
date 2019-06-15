@@ -39,6 +39,9 @@ Minibatch::Minibatch(size_t size, NetworkDefinition* pNetworkDefinition, size_t 
 
 	m_a = vector<double>(size*numActions);
 	m_s_p = vector<double>(size*pNetworkDefinition->getInputStateVariables().size());
+
+	m_stateActionBuffer = vector<double>(size*(pNetworkDefinition->getInputStateVariables().size() + numActions));
+
 	m_r = vector<double>(size);
 
 	if (outputSize == 0)
@@ -94,6 +97,21 @@ vector<double>& Minibatch::s_p()
 vector<double>& Minibatch::r()
 {
 	return m_r;
+}
+
+vector<double>& Minibatch::interleavedStateAction()
+{
+	int numStateVariables = m_pNetworkDefinition->getInputStateVariables().size();
+	int numActionVariables = m_pNetworkDefinition->getInputActionVariables().size();
+	int tupleSize = numStateVariables + numActionVariables;
+	for (int i = 0; i < m_size; i++)
+	{
+		for (int stateVarIndex= 0; stateVarIndex<numStateVariables; stateVarIndex++)
+			m_stateActionBuffer[i*tupleSize + stateVarIndex] = m_s[i*numStateVariables + stateVarIndex];
+		for (int actionVarIndex = 0; actionVarIndex < numActionVariables; actionVarIndex++)
+			m_stateActionBuffer[i*tupleSize + numStateVariables + actionVarIndex] = m_a[i*numActionVariables + actionVarIndex];
+	}
+	return m_stateActionBuffer;
 }
 
 void Minibatch::destroy()
