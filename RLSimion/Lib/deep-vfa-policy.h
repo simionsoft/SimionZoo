@@ -16,28 +16,30 @@ class INetwork;
 class DiscreteDeepPolicy
 {
 protected:
-	//these two vectors are used to store a single state/action
+	//We store in this vector a vector the discretized values for each output action
+	vector<double> m_discretizedAction;
+	vector<double> m_argMaxAction; //only declared to use in evaluation of Q(s,a)
 	vector<double> m_stateVector;
-	vector<double> m_actionVector;
+	vector<double> m_argMaxQValues;
 
-	vector<double> m_argMaxQ;
-	vector<double> m_argMaxStateAction;
+	vector<string> m_outputActionVariables;
 
+	int m_numTotalActionSamples = 0;
 	int m_numSamplesPerActionVariable = 0;
-	int m_numArgMaxTotalSamples = 0;
-	int m_numTuplesInMinibatch = 0;
+	int m_numActionVariables = 0;
 
 	void randomActionSelection(INetwork* pNetwork, const State* s, Action* a);
 	void greedyActionSelection(INetwork* pNetwork, const State* s, Action* a);
+
+	size_t getActionVariableIndex(double value);
 public:
 	static std::shared_ptr<DiscreteDeepPolicy> getInstance(ConfigNode* pConfigNode);
 
 	DiscreteDeepPolicy(ConfigNode* pConfigNode);
 
-	void initialize(INetworkDefinition* pDefinition, Descriptor& aDesc, int numSamplesPerActionVariable);
+	void initialize(MULTI_VALUE<STATE_VARIABLE>& inputState, MULTI_VALUE<ACTION_VARIABLE>& outputActions, int numSamplesPerActionVariable);
 
-	void argMaxValue(INetwork* pNetwork, const vector<double>& state, vector<double>& outAction, int tupleOffset = 0);
-	void maxValue(INetwork* pNetwork, const vector<double>& state, double* pOutMaxQ, int tupleOffset = 0);
+	size_t getActionIndex(const vector<double>& action, int actionOffset);
 
 	virtual void selectAction(INetwork* pNetwork, const State* s, Action* a) = 0;
 };

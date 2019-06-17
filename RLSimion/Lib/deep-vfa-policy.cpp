@@ -49,98 +49,83 @@ DiscreteDeepPolicy::DiscreteDeepPolicy(ConfigNode * pConfigNode)
 {	
 }
 
-void DiscreteDeepPolicy::initialize(INetworkDefinition* pDefinition, Descriptor& actionDesc, int numSamplesPerActionVariable)
+void DiscreteDeepPolicy::initialize(MULTI_VALUE<STATE_VARIABLE>& inputState, MULTI_VALUE<ACTION_VARIABLE>& outputAction, int numSamplesPerActionVariable)
 {
-	const vector<string>& stateVariables = pDefinition->getInputStateVariables();
-	const vector<string>& actionVariables = pDefinition->getInputActionVariables();
-
 	m_numSamplesPerActionVariable = numSamplesPerActionVariable;
-
-	m_numArgMaxTotalSamples = 1;
-	for (int i = 0; i < actionVariables.size(); i++)
-		m_numArgMaxTotalSamples *= m_numSamplesPerActionVariable;
-
-	m_stateVector = vector<double>(stateVariables.size());
-	m_actionVector = vector<double>(actionVariables.size());
-
-	m_argMaxStateAction = vector<double>( m_numArgMaxTotalSamples * (actionVariables.size() + stateVariables.size()));
-
-	m_argMaxQ = vector<double>(m_numArgMaxTotalSamples);
-
-	//initialize action values used for grid search of argMaxQ(s,a)
-	//IMPORTANT: using normalized values here
-	for (int sample = 0; sample < m_numArgMaxTotalSamples; sample++)
+	m_numActionVariables = outputAction.size();
+	m_outputActionVariables = vector<string>(m_numActionVariables);
+	m_numTotalActionSamples = 1;
+	for (int i = 0; i < m_numActionVariables; i++)
 	{
-		int actionDimensionIndex;
-		int sampleIndex = sample;
-		double normDimensionValue;
-		NamedVarProperties* pProperties;
-		for (int actionVar = 0; actionVar < actionVariables.size(); actionVar++)
+		m_numTotalActionSamples *= m_numSamplesPerActionVariable;
+		m_outputActionVariables[i] = outputAction[i]->get();
+	}
+	m_argMaxQValues = vector<double>(m_numTotalActionSamples);
+	m_stateVector = vector<double>(inputState.size());
+	m_argMaxAction = vector<double>(outputAction.size());
+
+	//We use normalized values, so there is no need to replicate the same vector for all the action variables
+	m_discretizedAction = vector<double>(m_numSamplesPerActionVariable);
+	for (int sample = 0; sample < m_numSamplesPerActionVariable; sample++)
+	{
+		if (m_numSamplesPerActionVariable > 0)
+			m_discretizedAction[sample] = (double)sample / double(m_numSamplesPerActionVariable - 1);
+		else
+			throw runtime_error("The number of discretized steps must be greater than zero");
+	}
+}
+
+//This method works with normalized values so there is no need to denormalize them
+size_t DiscreteDeepPolicy::getActionIndex(const vector<double>& action, int actionOffset)
+{
+	size_t actionVarIndex;
+	size_t actionIndex = 0;
+	for (size_t i = 0; i < m_numActionVariables; i++)
+	{
+		actionVarIndex = getActionVariableIndex(action[actionOffset*m_numActionVariables + i]);
+		actionIndex = actionIndex * m_numSamplesPerActionVariable + actionVarIndex;
+	}
+	return actionIndex;
+}
+
+//This method works with normalized values so there is no need to denormalize them
+size_t DiscreteDeepPolicy::getActionVariableIndex(double value)
+{
+	size_t nearestIndex = 0;
+
+	double dist;
+	double closestDist = abs(value - m_discretizedAction[0]);
+
+	for (size_t i = 1; i < m_discretizedAction.size(); i++)
+	{
+		dist = abs(value - m_discretizedAction[i]);
+		//there is no special treatment for circular variables 
+		if (dist < closestDist)
 		{
-			actionDimensionIndex = sampleIndex % m_numSamplesPerActionVariable;
-
-			pProperties = actionDesc.getProperties(actionVariables[actionVar].c_str());
-
-			if (m_numSamplesPerActionVariable > 0)
-				normDimensionValue = (double)actionDimensionIndex / double(m_numSamplesPerActionVariable - 1);
-			else normDimensionValue = 0.0;
-
-			m_argMaxStateAction[sample*(actionVariables.size() + stateVariables.size()) + stateVariables.size() + actionVar] = normDimensionValue;
-
-			sampleIndex = sampleIndex / m_numSamplesPerActionVariable;
+			closestDist = dist;
+			nearestIndex = i;
 		}
 	}
+
+	return nearestIndex;
 }
 
-void DiscreteDeepPolicy::maxValue(INetwork* pNetwork, const vector<double>& state, double* pOutMaxQ, int tupleOffset)
-{
-	int numStateVariables = pNetwork->getInputStateVariables().size();
-	int numActionVariables = pNetwork->getInputActionVariables().size();
-
-	for (int sample = 0; sample < m_numArgMaxTotalSamples; sample++)
-	{
-		for (int i = 0; i < numStateVariables; i++)
-			m_argMaxStateAction[sample*(numStateVariables+numActionVariables) + i] = state[tupleOffset*numStateVariables + i];
-	}
-
-	pNetwork->evaluate(m_argMaxStateAction, m_argMaxStateAction, m_argMaxQ);
-
-	size_t maxQSampleIndex = std::distance(m_argMaxQ.begin(), std::max_element(m_argMaxQ.begin(), m_argMaxQ.end()));
-
-	*pOutMaxQ = m_argMaxQ[maxQSampleIndex];
-}
-
-void DiscreteDeepPolicy::argMaxValue(INetwork* pNetwork, const vector<double>& state, vector<double>& outAction, int tupleOffset)
-{
-	int numStateVariables = pNetwork->getInputStateVariables().size();
-	int numActionVariables = pNetwork->getInputActionVariables().size();
-
-	for (int sample = 0; sample < m_numArgMaxTotalSamples; sample++)
-	{
-		for (int i = 0; i < numStateVariables; i++)
-			m_argMaxStateAction[sample*(numStateVariables + numActionVariables) + i] = state[tupleOffset*numStateVariables + i];
-	}
-
-	pNetwork->evaluate(m_argMaxStateAction, m_argMaxStateAction, m_argMaxQ);
-
-	size_t maxQSampleIndex= std::distance(m_argMaxQ.begin(), std::max_element(m_argMaxQ.begin(), m_argMaxQ.end()));
-
-	//copy action variables with maximum Q(s,a) to outArgMaxA
-	for (int i= 0; i < numActionVariables; i++)
-	{
-		outAction[tupleOffset*numActionVariables + i] = m_argMaxStateAction[maxQSampleIndex * (numStateVariables + numActionVariables) + numStateVariables + i];
-	}
-}
 
 void DiscreteDeepPolicy::greedyActionSelection(INetwork* pNetwork, const State* s, Action* a)
 {
 	pNetwork->getDefinition()->inputStateVariablesToVector(s, m_stateVector, 0);
 
-	argMaxValue(pNetwork, m_stateVector, m_actionVector);
+	pNetwork->evaluate(m_stateVector, m_argMaxAction, m_argMaxQValues);
 
-	for (int i = 0; i < pNetwork->getDefinition()->getInputActionVariables().size(); i++)
+	size_t maxQActionIndex= std::distance(m_argMaxQValues.begin(), std::max_element(m_argMaxQValues.begin(), m_argMaxQValues.end()));
+
+	size_t actionVarIndex;
+
+	for (int i = m_numActionVariables -1; i >=0 ; i--)
 	{
-		a->setNormalized(pNetwork->getDefinition()->getInputActionVariables()[i].c_str(), m_actionVector[i]);
+		actionVarIndex = maxQActionIndex % m_numSamplesPerActionVariable;
+		a->setNormalized( m_outputActionVariables[i].c_str(), m_discretizedAction[actionVarIndex] );
+		maxQActionIndex /= m_numSamplesPerActionVariable;
 	}
 }
 
@@ -223,8 +208,12 @@ DiscreteExplorationDeepPolicy::DiscreteExplorationDeepPolicy(ConfigNode * pConfi
 void DiscreteExplorationDeepPolicy::selectAction(INetwork* pNetwork, const State* s, Action* a)
 {
 	//greedy action policy on evaluation
-	//if (SimionApp::get()->pExperiment->isEvaluationEpisode())
-	//	return (int) std::distance(values.begin(), std::max_element(values.begin(), values.end()));
+	if (SimionApp::get()->pExperiment->isEvaluationEpisode())
+	{
+		//Greedy selection
+		greedyActionSelection(pNetwork, s, a);
+		return;
+	}
 
 	//double randomNormNumber = (double)(rand() % 1000) / (double) 1000.0;
 	//if (randomNormNumber < m_epsilon)

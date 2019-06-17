@@ -64,6 +64,8 @@ void Network::buildNetwork(double learningRate)
 	FunctionPtr foundPtr = m_networkFunctionPtr->FindByName(m_pNetworkDefinition->getOutputLayer())->Output();
 
 	m_output = vector<double>(m_pNetworkDefinition->getOutputSize());
+	m_stateVector = vector<double>(m_pNetworkDefinition->getInputStateVariables().size());
+	m_actionVector = vector<double>(m_pNetworkDefinition->getInputActionVariables().size());
 }
 
 INetworkDefinition* Network::getDefinition() { return m_pNetworkDefinition; }
@@ -196,13 +198,13 @@ void Network::train(IMinibatch* pMinibatch, const vector<double>& target)
 	if (m_bInputStateUsed)
 	{
 		arguments[m_s] = CNTK::Value::CreateBatch(m_s.Shape()
-			, pMinibatch->interleavedStateAction(), CNTK::DeviceDescriptor::UseDefaultDevice());
+			, pMinibatch->s(), CNTK::DeviceDescriptor::UseDefaultDevice());
 	}
-	//if (m_bInputActionUsed)
-	//{
-	//	arguments[m_a] = CNTK::Value::CreateBatch(m_a.Shape()
-	//		, pMinibatch->a(), CNTK::DeviceDescriptor::UseDefaultDevice());
-	//}
+	if (m_bInputActionUsed)
+	{
+		arguments[m_a] = CNTK::Value::CreateBatch(m_a.Shape()
+			, pMinibatch->a(), CNTK::DeviceDescriptor::UseDefaultDevice());
+	}
 
 	//set target outputs
 	arguments[m_targetVariable] = CNTK::Value::CreateBatch(m_targetVariable.Shape()
@@ -218,28 +220,22 @@ void Network::setOutputLayer(CNTK::FunctionPtr outputLayer)
 	m_FunctionPtr = outputLayer;
 }
 
-void Network::stateActionToVector(const State* s, const Action* a, vector<double>& stateActionVector)
+void Network::stateToVector(const State* s, vector<double>& stateVector)
 {
 	const vector<string>& stateVars = m_pNetworkDefinition->getInputStateVariables();
 	int numStateVars = stateVars.size();
-	const vector<string>& actionVars = m_pNetworkDefinition->getInputActionVariables();
-	int numActionVars = actionVars.size();
 
-	stateActionVector = vector<double>(numStateVars + numActionVars);
 	for (size_t i = 0; i< numStateVars; i++)
-		stateActionVector[i] = s->getNormalized(stateVars[i].c_str());
-	
-	for (size_t i = 0; i < actionVars.size(); i++)
-		stateActionVector[numStateVars + i] = a->getNormalized(actionVars[i].c_str());
+		stateVector[i] = s->getNormalized(stateVars[i].c_str());
 }
 
-//void Network::actionToVector(const Action* a, vector<double>& actionVector, int vectorOffset)
-//{
-//	const vector<string>& actionVars = m_pNetworkDefinition->getInputActionVariables();
-//	actionVector = vector<double>(actionVars.size());
-//	for (size_t i = 0; i < actionVars.size(); i++)
-//		actionVector[vectorOffset + i] = a->getNormalized(actionVars[i].c_str());
-//}
+void Network::actionToVector(const Action* a, vector<double>& actionVector)
+{
+	const vector<string>& actionVars = m_pNetworkDefinition->getInputActionVariables();
+
+	for (size_t i = 0; i < actionVars.size(); i++)
+		actionVector[ i] = a->getNormalized(actionVars[i].c_str());
+}
 
 void Network::evaluate(const vector<double>& s, const vector<double>& a, vector<double>& output)
 {
@@ -253,9 +249,9 @@ void Network::evaluate(const vector<double>& s, const vector<double>& a, vector<
 	if (m_bInputStateUsed)
 		inputs[m_s] = CNTK::Value::CreateBatch(m_s.Shape(), s, CNTK::DeviceDescriptor::UseDefaultDevice());
 
-	//vector<double> inputAction;
-	//if (m_bInputActionUsed)
-	//	inputs[m_a] = CNTK::Value::CreateBatch(m_a.Shape(), a, CNTK::DeviceDescriptor::UseDefaultDevice());
+	vector<double> inputAction;
+	if (m_bInputActionUsed)
+		inputs[m_a] = CNTK::Value::CreateBatch(m_a.Shape(), a, CNTK::DeviceDescriptor::UseDefaultDevice());
 
 	m_FunctionPtr->Evaluate(inputs, outputs, CNTK::DeviceDescriptor::UseDefaultDevice());
 
@@ -277,19 +273,16 @@ vector<double>& Network::evaluate(const State* s, const Action* a)
 
 	unordered_map<CNTK::Variable, CNTK::ValuePtr> inputs = {};
 
-	vector<double> inputStateAction;
 	if (m_bInputStateUsed)
 	{
-		stateActionToVector(s, a, inputStateAction);
-		inputs[m_s] = CNTK::Value::CreateBatch(m_s.Shape(), inputStateAction, CNTK::DeviceDescriptor::UseDefaultDevice());
+		stateToVector(s, m_stateVector);
+		inputs[m_s] = CNTK::Value::CreateBatch(m_s.Shape(), m_stateVector, CNTK::DeviceDescriptor::UseDefaultDevice());
 	}
-	//vector<double> inputAction;
-	//if (m_bInputActionUsed)
-	//{
-	//	actionToVector(a, inputAction);
-	//	inputs[m_a] = CNTK::Value::CreateBatch(m_a.Shape()
-	//		, inputAction, CNTK::DeviceDescriptor::UseDefaultDevice());
-	//}
+	if (m_bInputActionUsed)
+	{
+		actionToVector(a, m_actionVector);
+		inputs[m_a] = CNTK::Value::CreateBatch(m_a.Shape(), m_actionVector, CNTK::DeviceDescriptor::UseDefaultDevice());
+	}
 
 	m_FunctionPtr->Evaluate(inputs, outputs, CNTK::DeviceDescriptor::UseDefaultDevice());
 

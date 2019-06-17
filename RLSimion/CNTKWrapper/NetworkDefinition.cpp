@@ -273,53 +273,12 @@ size_t NetworkDefinition::getInputSize()
 }
 
 
-void NetworkDefinition::setDiscretizedActionVectorOutput(size_t numOutputs, double minvalue, double maxvalue)
+void NetworkDefinition::setDiscretizedActionVectorOutput(size_t numSteps)
 {
-	double stepSize;
-
 	m_outputType = DiscretizedActionVector;
-	m_outputSize = numOutputs;
-
-	m_outputActionValues = vector<double>(numOutputs);
-	for (size_t i = 0; i < numOutputs; i++)
-	{
-		stepSize = (maxvalue - minvalue)/((int)numOutputs-1);
-		m_outputActionValues[i] = minvalue + stepSize * i;
-	}
+	m_outputSize = numSteps;
 }
 
-double NetworkDefinition::getActionIndexOutput(size_t actionIndex)
-{
-	if (m_outputType != DiscretizedActionVector)
-		throw std::runtime_error("Can only use getActionIndexOutput() with discretized action vector outputs");
-
-	actionIndex = std::max((size_t)0, std::min(m_outputActionValues.size() - 1, actionIndex));
-	return m_outputActionValues[actionIndex];
-}
-
-size_t NetworkDefinition::getClosestOutputIndex(double value)
-{
-	if (m_outputType != DiscretizedActionVector)
-		throw std::runtime_error("Can only use getClosestOutputIndex() with discretized action vector outputs");
-
-	size_t nearestIndex = 0;
-
-	double dist;
-	double closestDist = abs(value - m_outputActionValues[0]);
-
-	for (size_t i = 1; i < m_outputActionValues.size(); i++)
-	{
-		dist = abs(value - m_outputActionValues[i]);
-		//there is no special treatment for circular variables 
-		if (dist < closestDist)
-		{
-			closestDist = dist;
-			nearestIndex = i;
-		}
-	}
-
-	return nearestIndex;
-}
 
 size_t NetworkDefinition::getOutputSize()
 {

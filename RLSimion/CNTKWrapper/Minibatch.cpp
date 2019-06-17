@@ -99,21 +99,6 @@ vector<double>& Minibatch::r()
 	return m_r;
 }
 
-vector<double>& Minibatch::interleavedStateAction()
-{
-	int numStateVariables = m_pNetworkDefinition->getInputStateVariables().size();
-	int numActionVariables = m_pNetworkDefinition->getInputActionVariables().size();
-	int tupleSize = numStateVariables + numActionVariables;
-	for (int i = 0; i < m_size; i++)
-	{
-		for (int stateVarIndex= 0; stateVarIndex<numStateVariables; stateVarIndex++)
-			m_stateActionBuffer[i*tupleSize + stateVarIndex] = m_s[i*numStateVariables + stateVarIndex];
-		for (int actionVarIndex = 0; actionVarIndex < numActionVariables; actionVarIndex++)
-			m_stateActionBuffer[i*tupleSize + numStateVariables + actionVarIndex] = m_a[i*numActionVariables + actionVarIndex];
-	}
-	return m_stateActionBuffer;
-}
-
 void Minibatch::destroy()
 {
 	delete this;

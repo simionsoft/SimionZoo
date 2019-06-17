@@ -73,11 +73,12 @@ void DQN::deferredLoadStep()
 	//set the input-outputs
 	for (size_t i = 0; i < m_inputState.size(); ++i)
 		m_pNNDefinition->addInputStateVar(m_inputState[i]->get());
-	//Set the output actions as input to the network
-	for (size_t i = 0; i < m_outputAction.size(); i++)
-		m_pNNDefinition->addInputActionVar(m_outputAction[i]->get());
 
-	m_pNNDefinition->setScalarOutput();
+	//calculate the total number of discretized actions and set it
+	m_totalNumActionSteps = 1;
+	for (size_t i = 0; i < m_outputAction.size(); i++)
+		m_totalNumActionSteps *= m_numActionSteps.get();
+	m_pNNDefinition->setDiscretizedActionVectorOutput(m_totalNumActionSteps);
 
 	//create the networks
 	m_pOnlineQNetwork = m_pNNDefinition->createNetwork(m_learningRate.get());
@@ -95,10 +96,12 @@ void DQN::deferredLoadStep()
 	m_pMinibatch = m_pNNDefinition->createMinibatch(m_minibatchSize.get());
 
 	//initialize the policy
-	m_policy->initialize( m_pOnlineQNetwork->getDefinition(), SimionApp::get()->pWorld->getDynamicModel()->getActionDescriptor(), m_numActionSteps.get());
+	m_policy->initialize( m_inputState, m_outputAction, m_numActionSteps.get());
 
-	m_Q_s_p = vector<double>(m_minibatchSize.get());
-	m_target = vector<double>(m_minibatchSize.get());
+	m_Q_s_p = vector<double>(m_totalNumActionSteps * m_minibatchSize.get());
+	m_target = vector<double>(m_totalNumActionSteps * m_minibatchSize.get());
+	m_maxQValue = vector<double>(m_minibatchSize.get());
+	m_argMaxIndex = vector<int>(m_minibatchSize.get());
 }
 
 /// <summary>
@@ -138,25 +141,37 @@ double DQN::update(const State * s, const Action * a, const State * s_p, double 
 		double gamma = SimionApp::get()->pSimGod->getGamma();
 
 		//Calculate arg max a' Q(s_p,a') for all the tuples in the minibatch (target/online-weights)
+		getTargetNetwork()->evaluate(m_pMinibatch->s_p(), m_pMinibatch->a(), m_Q_s_p); //actions in the minibatch will be ignored
 
-		for (int tuple= 0; tuple<m_pMinibatch->size(); tuple++)
-			m_policy->maxValue(m_pTargetQNetwork, m_pMinibatch->s_p(), &m_Q_s_p[tuple], tuple);
+		//Find the index of the action with max Q-value for each tuple in the minibatch
+		for (int i = 0; i < m_minibatchSize.get(); i++)
+		{
+			//calculate arg max Q(s_p, a)
+			vector<double>::iterator itBegin = m_Q_s_p.begin() + i * m_totalNumActionSteps;
+			vector<double>::iterator itEnd = m_Q_s_p.begin() + (i + 1) * m_totalNumActionSteps;
+			m_argMaxIndex[i] = (int)distance(itBegin, max_element(itBegin, itEnd));
+		}
 
 		//estimate Q(s_p, argMaxQ; target-weights or online-weights)
 		//THIS is the only real difference between DQN and Double-DQN
 		//We do the prediction step again only if using Double-DQN (the prediction network
 		//will be different to the online network)
 		if (getTargetNetwork() != m_pTargetQNetwork)
-			m_pTargetQNetwork->evaluate(m_pMinibatch->interleavedStateAction(), m_pMinibatch->a(), m_Q_s_p);
+			m_pTargetQNetwork->evaluate(m_pMinibatch->s(), m_pMinibatch->a(), m_Q_s_p);
 
 		//get the value of Q(s) for each tuple
-		m_pOnlineQNetwork->evaluate(m_pMinibatch->interleavedStateAction(), m_pMinibatch->a(), m_target);
+		m_pOnlineQNetwork->evaluate(m_pMinibatch->s(), m_pMinibatch->a(), m_target);
 
 		//for each tuple in the minibatch
 		for (int i = 0; i < m_minibatchSize.get(); i++)
 		{
 			//calculate targetvalue= r + gamma*Q(s_p,a)
-			m_target[i] = m_pMinibatch->r()[i] + gamma * m_Q_s_p[i];
+			double targetValue = m_pMinibatch->r()[i] + gamma * m_Q_s_p[m_argMaxIndex[i]];
+
+			//change the target value only for the selected action, the rest remain the same
+			//store the index of the action taken
+			size_t selectedActionId = m_policy->getActionIndex( m_pMinibatch->a() , i );
+			m_target [i * m_totalNumActionSteps + selectedActionId ] = targetValue;
 		}
 
 		//train the network

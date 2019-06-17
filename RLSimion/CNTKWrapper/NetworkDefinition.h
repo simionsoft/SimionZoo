@@ -70,9 +70,8 @@ public:
 
 	size_t getInputSize();
 
-	void setDiscretizedActionVectorOutput(size_t numOutputs, double minvalue, double maxvalue);
-	size_t getClosestOutputIndex(double value);
-	double getActionIndexOutput(size_t actionIndex);
+	void setDiscretizedActionVectorOutput(size_t numSteps);
+
 	size_t getOutputSize();
 	OutputType getOutputType() { return m_outputType; }
 	void setScalarOutput();

@@ -42,10 +42,7 @@ public:
 
 	virtual void setScalarOutput() = 0;
 	virtual void setVectorOutput(size_t dimension) = 0;
-	virtual void setDiscretizedActionVectorOutput(size_t numOutputs, double minvalue, double maxvalue) = 0;
-	//These can only be used after calling setDiscretizedActionVectorOutput()
-	virtual size_t getClosestOutputIndex(double value)=  0;
-	virtual double getActionIndexOutput(size_t actionIndex) = 0;
+	virtual void setDiscretizedActionVectorOutput(size_t numSteps) = 0;
 
 	virtual IMinibatch* createMinibatch(size_t size, size_t outputSize= 0) = 0;
 
@@ -98,8 +95,6 @@ public:
 	virtual vector<double>& a() = 0;
 	virtual vector<double>& s_p() = 0;
 	virtual vector<double>& r() = 0;
-
-	virtual vector<double>& interleavedStateAction() = 0;
 
 	virtual bool isFull() const = 0;
 	virtual size_t size() const = 0;

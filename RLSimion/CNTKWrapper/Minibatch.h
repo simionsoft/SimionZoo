@@ -32,8 +32,6 @@ public:
 	vector<double>& s_p();
 	vector<double>& r();
 
-	vector<double>& interleavedStateAction();
-
 	void destroy();
 	bool isFull() const;
 	size_t size() const;

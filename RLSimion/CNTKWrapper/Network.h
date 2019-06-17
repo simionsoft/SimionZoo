@@ -17,6 +17,9 @@ class Network:public INetwork
 	const wstring m_networkName = L"Network";
 
 	void findInputsAndOutputs();
+
+	vector<double> m_stateVector;
+	vector<double> m_actionVector;
 protected:
 	bool m_bInputStateUsed = false;
 	CNTK::Variable m_s;
@@ -35,7 +38,8 @@ protected:
 
 	unordered_map<CNTK::Parameter, CNTK::FunctionPtr> m_weightTransitions;
 
-	void stateActionToVector(const State* s, const Action* a, vector<double>& stateVector);
+	void stateToVector(const State* s, vector<double>& stateVector);
+	void actionToVector(const Action* a, vector<double>& actionVector);
 public:
 	Network(NetworkDefinition* pNetworkDefinition);
 	~Network();

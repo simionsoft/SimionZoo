@@ -31,9 +31,11 @@ protected:
 	INetwork* m_pOnlineQNetwork= nullptr;
 	IMinibatch* m_pMinibatch = nullptr;
 
+	int m_totalNumActionSteps = 0;
 	vector<double> m_Q_s_p;
 	vector<double> m_target;
-	vector<int> m_argMax;
+	vector<double> m_maxQValue;
+	vector<int> m_argMaxIndex;
 
 	CHILD_OBJECT_FACTORY<DiscreteDeepPolicy> m_policy;
 
