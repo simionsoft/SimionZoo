@@ -281,8 +281,7 @@ vector<double>& Network::evaluate(const State* s, const Action* a)
 	if (m_bInputStateUsed)
 	{
 		stateActionToVector(s, a, inputStateAction);
-		inputs[m_s] = CNTK::Value::CreateBatch(m_s.Shape()
-			, inputStateAction, CNTK::DeviceDescriptor::UseDefaultDevice());
+		inputs[m_s] = CNTK::Value::CreateBatch(m_s.Shape(), inputStateAction, CNTK::DeviceDescriptor::UseDefaultDevice());
 	}
 	//vector<double> inputAction;
 	//if (m_bInputActionUsed)
@@ -296,11 +295,11 @@ vector<double>& Network::evaluate(const State* s, const Action* a)
 
 	outputValue = outputs[m_FunctionPtr];
 
-	CNTK::NDShape outputShape = m_FunctionPtr->Output().Shape().AppendShape({ 1
-		, m_output.size() / m_FunctionPtr->Output().Shape().TotalSize() });
+	size_t totalSize = m_FunctionPtr->Output().Shape().TotalSize();
 
-	CNTK::NDArrayViewPtr cpuArrayOutput = CNTK::MakeSharedObject<CNTK::NDArrayView>(outputShape
-		, m_output, false);
+	CNTK::NDShape outputShape = m_FunctionPtr->Output().Shape().AppendShape({ 1, m_output.size() / totalSize });
+
+	CNTK::NDArrayViewPtr cpuArrayOutput = CNTK::MakeSharedObject<CNTK::NDArrayView>(outputShape, m_output, false);
 	cpuArrayOutput->CopyFrom(*outputValue->Data());
 
 	return m_output;
@@ -329,8 +328,7 @@ void Network::gradientWrtAction(const vector<double>& s, const vector<double>& a
 	if (gradient->Shape().TotalSize() != outputGradient.size())
 		throw std::runtime_error("Missmatched length for output vector in gradients()");
 
-	NDArrayViewPtr qParameterGradientCpuArrayView =
-		MakeSharedObject<NDArrayView>(gradient->Shape(), outputGradient, false);
+	NDArrayViewPtr qParameterGradientCpuArrayView =	MakeSharedObject<NDArrayView>(gradient->Shape(), outputGradient, false);
 	qParameterGradientCpuArrayView->CopyFrom(*gradient->Data());
 }
 
