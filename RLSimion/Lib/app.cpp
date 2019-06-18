@@ -579,13 +579,22 @@ void SimionApp::initFunctionSamplers(State* s, Action* a)
 			for (string varName : functionIt.second->getInputActionVariables())
 				m_sampledVariables.push_back(make_pair(VariableSource::ActionSource, varName));
 
-			for (size_t outputIndex = 0; outputIndex < functionIt.second->getNumOutputs(); outputIndex++)
+			size_t numOutputsSampled = std::min((size_t)functionIt.second->getNumOutputs(), (size_t)2);
+			size_t outputStride = 1;
+			string functionName;
+			if (functionIt.second->getNumOutputs() > 2)
+				outputStride = functionIt.second->getNumOutputs() - 1;
+			for (size_t outputIndex = 0; outputIndex < functionIt.second->getNumOutputs(); outputIndex+= outputStride)
 			{
+				if (numOutputsSampled > 1)
+					functionName = functionIt.first + string("_") + to_string(outputIndex);
+				else
+					functionName = functionIt.first;
 				//3d sampler
 				if (numInputs > 1)
 				{
 					//create the 3D sampler: only the two first inputs will be used
-					FunctionSampler* pSampler = new FunctionSampler3D(functionIt.first, functionIt.second, outputIndex, m_numSamplesPerDim
+					FunctionSampler* pSampler = new FunctionSampler3D(functionName, functionIt.second, outputIndex, m_numSamplesPerDim
 						, s->getDescriptor(), a->getDescriptor(), m_sampledVariables[0].first, m_sampledVariables[0].second
 						, m_sampledVariables[1].first, m_sampledVariables[1].second);
 					m_pFunctionSamplers.push_back(pSampler);
@@ -594,7 +603,7 @@ void SimionApp::initFunctionSamplers(State* s, Action* a)
 				else if (numInputs == 1)
 				{
 					//create the 2D sampler: only one input
-					FunctionSampler* pSampler = new FunctionSampler2D(functionIt.first, functionIt.second, outputIndex, m_numSamplesPerDim
+					FunctionSampler* pSampler = new FunctionSampler2D(functionName, functionIt.second, outputIndex, m_numSamplesPerDim
 						, s->getDescriptor(), a->getDescriptor(), m_sampledVariables[0].first, m_sampledVariables[0].second);
 					m_pFunctionSamplers.push_back(pSampler);
 				}
