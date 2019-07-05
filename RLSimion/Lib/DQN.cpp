@@ -77,7 +77,10 @@ void DQN::deferredLoadStep()
 	//calculate the total number of discretized actions and set it
 	m_totalNumActionSteps = 1;
 	for (size_t i = 0; i < m_outputAction.size(); i++)
+	{
+		m_pNNDefinition->addInputActionVar(m_outputAction[i]->get());
 		m_totalNumActionSteps *= m_numActionSteps.get();
+	}
 	m_pNNDefinition->setDiscretizedActionVectorOutput(m_totalNumActionSteps);
 
 	//create the networks
@@ -93,7 +96,7 @@ void DQN::deferredLoadStep()
 	if (m_minibatchSize.get() <= 1)
 		Logger::logMessage(MessageType::Warning, "It is recommended to use a minimum minibatch size of 100 for better performance");
 
-	m_pMinibatch = m_pNNDefinition->createMinibatch(m_minibatchSize.get());
+	m_pMinibatch = m_pNNDefinition->createMinibatch(m_minibatchSize.get(), m_totalNumActionSteps, m_outputAction.size());
 
 	//initialize the policy
 	m_policy->initialize( m_inputState, m_outputAction, m_numActionSteps.get());
@@ -157,7 +160,7 @@ double DQN::update(const State * s, const Action * a, const State * s_p, double 
 		//We do the prediction step again only if using Double-DQN (the prediction network
 		//will be different to the online network)
 		if (getTargetNetwork() != m_pTargetQNetwork)
-			m_pTargetQNetwork->evaluate(m_pMinibatch->s(), m_pMinibatch->a(), m_Q_s_p);
+			getTargetNetwork()->evaluate(m_pMinibatch->s(), m_pMinibatch->a(), m_Q_s_p);
 
 		//get the value of Q(s) for each tuple
 		m_pOnlineQNetwork->evaluate(m_pMinibatch->s(), m_pMinibatch->a(), m_target);
@@ -182,7 +185,7 @@ double DQN::update(const State * s, const Action * a, const State * s_p, double 
 
 	SimGod* pSimGod = SimionApp::get()->pSimGod.ptr();
 
-	if (!pSimGod->bReplayingExperience() && pSimGod->bUpdateFrozenWeightsNow())
+	if (pSimGod->bUpdateFrozenWeightsNow())
 	{
 		if (m_pTargetQNetwork)
 			m_pTargetQNetwork->destroy();

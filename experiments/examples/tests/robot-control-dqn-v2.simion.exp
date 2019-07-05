@@ -62,7 +62,7 @@
 <LinkBase xsi:type="DenseLayer" Name="Dense Layer" ID="2E139DBC"><Parameters><ParameterBase xsi:type="IntParameter" Name="Units"><Value>100</Value></ParameterBase><ParameterBase xsi:type="ActivationFunctionParameter" Name="Activation"><Value>relu</Value></ParameterBase></Parameters></LinkBase>
 <LinkBase xsi:type="DenseLayer" Name="Dense Layer" ID="EC2BDC65"><Parameters><ParameterBase xsi:type="IntParameter" Name="Units"><Value>100</Value></ParameterBase><ParameterBase xsi:type="ActivationFunctionParameter" Name="Activation"><Value>relu</Value></ParameterBase></Parameters></LinkBase>
 <LinkBase xsi:type="DenseLayer" Name="Dense Layer" ID="A50D99C1"><Parameters><ParameterBase xsi:type="IntParameter" Name="Units"><Value>100</Value></ParameterBase><ParameterBase xsi:type="ActivationFunctionParameter" Name="Activation"><Value>relu</Value></ParameterBase></Parameters></LinkBase>
-<LinkBase xsi:type="DenseLayer" Name="output " ID="A7C3B867"><Parameters><ParameterBase xsi:type="IntParameter" Name="Units"><Value>1</Value></ParameterBase><ParameterBase xsi:type="ActivationFunctionParameter" Name="Activation"><Value>linear</Value></ParameterBase></Parameters></LinkBase>
+<LinkBase xsi:type="DenseLayer" Name="output " ID="A7C3B867"><Parameters><ParameterBase xsi:type="IntParameter" Name="Units"><Value>100</Value></ParameterBase><ParameterBase xsi:type="ActivationFunctionParameter" Name="Activation"><Value>linear</Value></ParameterBase></Parameters></LinkBase>
 </ChainLinks></Chain></Chains>
 </NetworkArchitecture>
 </Problem></neural-network>          <Input-State>

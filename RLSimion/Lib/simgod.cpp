@@ -195,10 +195,16 @@ int SimGod::getTargetFunctionUpdateFreq()
 /// -we are not replaying experience</returns>
 bool SimGod::bUpdateFrozenWeightsNow()
 {
-	int updateFreq = getTargetFunctionUpdateFreq();
+	static int lastUpdateStep = -1;
+
 	Experiment* pExperiment = SimionApp::get()->pExperiment.ptr();
-	return (updateFreq && !bReplayingExperience() && 
-		(pExperiment->getExperimentStep() % updateFreq == 0));
+	int currentStep = pExperiment->getExperimentStep();
+	int updateFreq = getTargetFunctionUpdateFreq();
+	
+	bool bMustUpdate= (updateFreq && lastUpdateStep != currentStep && (currentStep % updateFreq == 0));
+	if (bMustUpdate)
+		lastUpdateStep = currentStep;
+	return bMustUpdate;
 }
 
 bool SimGod::useSampleImportanceWeights()

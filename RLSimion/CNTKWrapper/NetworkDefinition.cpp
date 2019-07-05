@@ -297,9 +297,9 @@ void NetworkDefinition::setVectorOutput(size_t dimension)
 	m_outputSize = dimension;
 }
 
-IMinibatch* NetworkDefinition::createMinibatch(size_t sampleSize, size_t outputSize)
+IMinibatch* NetworkDefinition::createMinibatch(size_t sampleSize, size_t outputSize, size_t numActionVariables)
 {
-	return new Minibatch(sampleSize, this, outputSize);
+	return new Minibatch(sampleSize, this, outputSize, numActionVariables);
 }
 
 void NetworkDefinition::setStateInputLayer(wstring name)

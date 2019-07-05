@@ -44,7 +44,7 @@ public:
 	virtual void setVectorOutput(size_t dimension) = 0;
 	virtual void setDiscretizedActionVectorOutput(size_t numSteps) = 0;
 
-	virtual IMinibatch* createMinibatch(size_t size, size_t outputSize= 0) = 0;
+	virtual IMinibatch* createMinibatch(size_t size, size_t outputSize= 0, size_t numActionVariables= 0) = 0;
 
 	//for convenience we override the learning rate set in the network definition's parameters
 	virtual INetwork* createNetwork(double learningRate, bool inputsNeedGradient = false) = 0;

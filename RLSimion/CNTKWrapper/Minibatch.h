@@ -21,7 +21,7 @@ class Minibatch: public IMinibatch
 	size_t m_outputSize = 0;
 
 public:
-	Minibatch(size_t size, NetworkDefinition* pNetworkDefinition, size_t outputSize= 0);
+	Minibatch(size_t size, NetworkDefinition* pNetworkDefinition, size_t outputSize= 0, size_t numActionVariables= 0);
 	virtual ~Minibatch();
 
 	void clear();

@@ -77,7 +77,7 @@ public:
 	void setScalarOutput();
 	void setVectorOutput(size_t dimension);
 
-	IMinibatch* createMinibatch(size_t numSamples, size_t outputSize);
+	IMinibatch* createMinibatch(size_t numSamples, size_t outputSize, size_t numActionVariables);
 
 	INetwork* createNetwork(double learningRate, bool inputsNeedGradient);
 

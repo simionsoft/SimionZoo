@@ -28,14 +28,14 @@
 
 #include <stdexcept>
 
-Minibatch::Minibatch(size_t size, NetworkDefinition* pNetworkDefinition, size_t outputSize)
+Minibatch::Minibatch(size_t size, NetworkDefinition* pNetworkDefinition, size_t outputSize, size_t numActionVariables)
 {
 	m_pNetworkDefinition = pNetworkDefinition;
 	m_size = size;
 	m_s = vector<double>(size*pNetworkDefinition->getInputStateVariables().size());
 	size_t numActions = pNetworkDefinition->getInputActionVariables().size();
 	if (numActions == 0)
-		numActions = 1; //even if the network doesn't use any action as input, we may want to store the action taken by the agent each time-step. Only 1 output is assumed
+		numActions = numActionVariables;
 
 	m_a = vector<double>(size*numActions);
 	m_s_p = vector<double>(size*pNetworkDefinition->getInputStateVariables().size());
