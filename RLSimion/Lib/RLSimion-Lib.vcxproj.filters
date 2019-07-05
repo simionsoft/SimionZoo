@@ -193,6 +193,18 @@
     <ClInclude Include="sample-file.h">
       <Filter>logging</Filter>
     </ClInclude>
+    <ClInclude Include="deep-activation-functions.h">
+      <Filter>neural-networks</Filter>
+    </ClInclude>
+    <ClInclude Include="deep-function.h">
+      <Filter>neural-networks</Filter>
+    </ClInclude>
+    <ClInclude Include="deep-layer.h">
+      <Filter>neural-networks</Filter>
+    </ClInclude>
+    <ClInclude Include="deep-learner.h">
+      <Filter>neural-networks</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="actor.cpp">
@@ -404,6 +416,15 @@
     </ClCompile>
     <ClCompile Include="sample-file.cpp">
       <Filter>logging</Filter>
+    </ClCompile>
+    <ClCompile Include="deep-layer.cpp">
+      <Filter>neural-networks</Filter>
+    </ClCompile>
+    <ClCompile Include="deep-function.cpp">
+      <Filter>neural-networks</Filter>
+    </ClCompile>
+    <ClCompile Include="deep-learner.cpp">
+      <Filter>neural-networks</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
