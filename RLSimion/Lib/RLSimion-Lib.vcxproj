@@ -223,10 +223,9 @@
     <ClInclude Include="controller.h" />
     <ClInclude Include="critic.h" />
     <ClInclude Include="DDPG.h" />
-    <ClInclude Include="deep-activation-functions.h" />
+    <ClInclude Include="deep-cacla.h" />
     <ClInclude Include="deep-function.h" />
     <ClInclude Include="deep-layer.h" />
-    <ClInclude Include="deep-learner.h" />
     <ClInclude Include="deep-vfa-policy.h" />
     <ClInclude Include="deferred-load.h" />
     <ClInclude Include="DQN.h" />
@@ -301,10 +300,10 @@
     <ClCompile Include="critic-true-online-td-lambda.cpp" />
     <ClCompile Include="critic.cpp" />
     <ClCompile Include="DDPG.cpp" />
+    <ClCompile Include="deep-cacla.cpp" />
     <ClCompile Include="deep-function.cpp" />
     <ClCompile Include="deep-layer.cpp" />
     <ClCompile Include="deep-vfa-policy.cpp" />
-    <ClCompile Include="deep-learner.cpp" />
     <ClCompile Include="deferred-load.cpp" />
     <ClCompile Include="DQN.cpp" />
     <ClCompile Include="etraces.cpp" />

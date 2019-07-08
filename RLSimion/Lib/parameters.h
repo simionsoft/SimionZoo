@@ -14,6 +14,9 @@ enum class Distribution { linear, quadratic, cubic };
 enum class Interpolation { linear, quadratic, cubic };
 enum class TimeReference { episode, experiment };
 
+enum class Activation { ELU, ReLU, Sigmoid, SoftMax, SoftPlus, Tanh };
+enum class DeepLearner { SGD, MomentumSGD, Adam };
+
 template<typename DataType>
 class SimpleParam
 {
@@ -42,52 +45,44 @@ protected:
 	void initValue(ConfigNode* pConfigNode, TimeReference& value)
 	{
 		const char* strValue = pConfigNode->getConstString(m_name);
-		if (!strcmp(strValue, "episode"))
-		{
-			value = TimeReference::episode; return;
-		}
-		else if (!strcmp(strValue, "experiment"))
-		{
-			value = TimeReference::experiment; return;
-		}
-		value = m_default;
+		if (!strcmp(strValue, "episode")) value = TimeReference::episode;
+		else if (!strcmp(strValue, "experiment")) value = TimeReference::experiment;
+		else value = m_default;
 	}
 	void initValue(ConfigNode* pConfigNode, Distribution& value)
 	{
 		const char* strValue = pConfigNode->getConstString(m_name);
-		if (!strcmp(strValue, "linear"))
-		{
-			value = Distribution::linear;
-			return;
-		}
-		else if (!strcmp(strValue, "quadratic"))
-		{
-			value = Distribution::quadratic;
-			return;
-		}
-		else if (!strcmp(strValue, "cubic"))
-		{
-			value = Distribution::cubic;
-			return;
-		}
-		value = m_default;
+		if (!strcmp(strValue, "linear")) value = Distribution::linear;
+		else if (!strcmp(strValue, "quadratic")) value = Distribution::quadratic;
+		else if (!strcmp(strValue, "cubic")) value = Distribution::cubic;
+		else value = m_default;
 	}
 	void initValue(ConfigNode* pConfigNode, Interpolation& value)
 	{
 		const char* strValue = pConfigNode->getConstString(m_name);
-		if (!strcmp(strValue, "linear"))
-		{
-			value = Interpolation::linear; return;
-		}
-		else if (!strcmp(strValue, "quadratic"))
-		{
-			value = Interpolation::quadratic; return;
-		}
-		else if (!strcmp(strValue, "cubic"))
-		{
-			value = Interpolation::cubic; return;
-		}
-		value = m_default;
+		if (!strcmp(strValue, "linear")) value = Interpolation::linear;
+		else if (!strcmp(strValue, "quadratic")) value = Interpolation::quadratic;
+		else if (!strcmp(strValue, "cubic")) value = Interpolation::cubic;
+		else value = m_default;
+	}
+	void initValue(ConfigNode* pConfigNode, Activation& value)
+	{
+		const char* strValue = pConfigNode->getConstString(m_name);
+		if (!strcmp(strValue, "ELU")) value = Activation::ELU;
+		else if (!strcmp(strValue, "ReLU")) value = Activation::ReLU;
+		else if (!strcmp(strValue, "Sigmoid")) value = Activation::Sigmoid;
+		else if (!strcmp(strValue, "SoftMax")) value = Activation::SoftMax;
+		else if (!strcmp(strValue, "SoftPlus")) value = Activation::SoftPlus;
+		else if (!strcmp(strValue, "Tanh")) value = Activation::Tanh;
+		else value = m_default;
+	}
+	void initValue(ConfigNode* pConfigNode, DeepLearner& value)
+	{
+		const char* strValue = pConfigNode->getConstString(m_name);
+		if (!strcmp(strValue, "SGD")) value = DeepLearner::SGD;
+		else if (!strcmp(strValue, "MomentumSGD")) value = DeepLearner::MomentumSGD;
+		else if (!strcmp(strValue, "Adam")) value = DeepLearner::Adam;
+		else value = m_default;
 	}
 public:
 	SimpleParam() = default;

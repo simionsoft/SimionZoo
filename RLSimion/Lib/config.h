@@ -1,14 +1,13 @@
 #pragma once
-//#include <list>
+
 #include "../../3rd-party/tinyxml2/tinyxml2.h"
+
 class ConfigNode;
 
 
 class ConfigFile : public tinyxml2::XMLDocument
 {
-
 public:
-
 	ConfigNode* loadFile(const char* fileName, const char* nodeName= (const char*)0);
 	const char* getError();
 };

@@ -52,7 +52,7 @@ DiscreteDeepPolicy::DiscreteDeepPolicy(ConfigNode * pConfigNode)
 void DiscreteDeepPolicy::initialize(MULTI_VALUE<STATE_VARIABLE>& inputState, MULTI_VALUE<ACTION_VARIABLE>& outputAction, int numSamplesPerActionVariable)
 {
 	m_numSamplesPerActionVariable = numSamplesPerActionVariable;
-	m_numActionVariables = outputAction.size();
+	m_numActionVariables = (int) outputAction.size();
 	m_outputActionVariables = vector<string>(m_numActionVariables);
 	m_numTotalActionSamples = 1;
 	for (int i = 0; i < m_numActionVariables; i++)

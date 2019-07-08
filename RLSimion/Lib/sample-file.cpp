@@ -72,7 +72,7 @@ SampleFile::SampleFile(string filename)
 		m_currentChunk = 0;
 		CrossPlatform::Fopen_s((FILE **) &m_pBinaryFile, m_binaryFilename.c_str(), "rb");
 		if (m_pBinaryFile && m_numChunksInFile>0)
-			m_numValidSamplesInCache = fread(m_cachedData.data(), m_sampleSizeInBytes, m_dataChunkSizeInSamples, (FILE*)m_pBinaryFile);
+			m_numValidSamplesInCache = (int) fread(m_cachedData.data(), m_sampleSizeInBytes, m_dataChunkSizeInSamples, (FILE*)m_pBinaryFile);
 	}
 }
 
@@ -90,7 +90,7 @@ void SampleFile::loadNextDataChunkFromFile()
 		m_currentChunk= m_currentSampleIndex / m_dataChunkSizeInSamples;
 
 		fseek((FILE*) m_pBinaryFile, m_currentChunk * (m_dataChunkSizeInSamples * m_sampleSizeInBytes), SEEK_SET);
-		m_numValidSamplesInCache = fread(m_cachedData.data(), m_sampleSizeInBytes, m_dataChunkSizeInSamples, (FILE*) m_pBinaryFile);
+		m_numValidSamplesInCache = (int) fread(m_cachedData.data(), m_sampleSizeInBytes, m_dataChunkSizeInSamples, (FILE*) m_pBinaryFile);
 	}
 	else Logger::logMessage(MessageType::Error, "Failed to open offline sample file");
 }
@@ -103,11 +103,11 @@ void SampleFile::drawRandomSample(State* s, Action* a, State* s_p, double& rewar
 
 	int sampleOffset = m_numElementsPerSample * (m_currentSampleIndex - m_currentChunk * m_dataChunkSizeInSamples);
 	for (int i = 0; i < s->getNumVars(); i++) s->set(i, m_cachedData[sampleOffset + i]);
-	sampleOffset += s->getNumVars();
+	sampleOffset += (int) s->getNumVars();
 	for (int i = 0; i < a->getNumVars(); i++) a->set(i, m_cachedData[sampleOffset + i]);
-	sampleOffset += a->getNumVars();
+	sampleOffset += (int) a->getNumVars();
 	for (int i = 0; i < s_p->getNumVars(); i++) s_p->set(i, m_cachedData[sampleOffset + i]);
-	sampleOffset += s_p->getNumVars();
+	sampleOffset += (int) s_p->getNumVars();
 	reward = m_cachedData[sampleOffset]; //We only take the first reward value. Should be enough for now
 
 	m_currentSampleIndex = ++m_currentSampleIndex % m_numSamplesInFile;

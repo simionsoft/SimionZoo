@@ -31,6 +31,7 @@
 #include "q-learners.h"
 #include "DQN.h"
 #include "DDPG.h"
+#include "deep-cacla.h"
 //#include "async-deep-simion.h"
 
 std::shared_ptr<Simion> Simion::getInstance(ConfigNode* pConfigNode)
@@ -44,11 +45,12 @@ std::shared_ptr<Simion> Simion::getInstance(ConfigNode* pConfigNode)
 		{"Double-Q-Learning", CHOICE_ELEMENT_NEW<DoubleQLearning>},
 		{"SARSA", CHOICE_ELEMENT_NEW<SARSA>},
 		{"Inc-Natural-Actor-Critic", CHOICE_ELEMENT_NEW<IncrementalNaturalActorCritic>},
-		{"Off-Policy-Actor-Critic", CHOICE_ELEMENT_NEW<OffPolicyActorCritic>}
+		{"Off-Policy-Actor-Critic", CHOICE_ELEMENT_NEW<OffPolicyActorCritic>},
 #if defined(__linux__) || defined(_WIN64)
-		,{"DQN", CHOICE_ELEMENT_NEW<DQN>}
-		,{"Double-DQN", CHOICE_ELEMENT_NEW<DoubleDQN>}
-		,{ "DDPG", CHOICE_ELEMENT_NEW<DDPG> }
+		{"DQN", CHOICE_ELEMENT_NEW<DQN>},
+		{"Double-DQN", CHOICE_ELEMENT_NEW<DoubleDQN>},
+		{"DDPG", CHOICE_ELEMENT_NEW<DDPG>},
+		{"Deep-CACLA", CHOICE_ELEMENT_NEW<DeepCACLA>}
 #endif
 		/*,{ "Async-QL-earning", CHOICE_ELEMENT_NEW<AsyncQLearning > }*/
 	});
