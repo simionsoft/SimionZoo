@@ -39,9 +39,6 @@ Minibatch::Minibatch(size_t size, NetworkDefinition* pNetworkDefinition, size_t 
 
 	m_a = vector<double>(size*numActions);
 	m_s_p = vector<double>(size*pNetworkDefinition->getInputStateVariables().size());
-
-	m_stateActionBuffer = vector<double>(size*(pNetworkDefinition->getInputStateVariables().size() + numActions));
-
 	m_r = vector<double>(size);
 
 	if (outputSize == 0)

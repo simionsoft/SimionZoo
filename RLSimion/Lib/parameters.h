@@ -7,6 +7,7 @@
 #include <list>
 #include <tuple>
 #include "config.h"
+#include "deep-layer.h" //DeepLayer enum type is defined there
 
 using namespace std;
 //Enumerated types
@@ -14,7 +15,6 @@ enum class Distribution { linear, quadratic, cubic };
 enum class Interpolation { linear, quadratic, cubic };
 enum class TimeReference { episode, experiment };
 
-enum class Activation { ELU, ReLU, Sigmoid, SoftMax, SoftPlus, Tanh };
 enum class DeepLearner { SGD, MomentumSGD, Adam };
 
 template<typename DataType>
@@ -68,12 +68,8 @@ protected:
 	void initValue(ConfigNode* pConfigNode, Activation& value)
 	{
 		const char* strValue = pConfigNode->getConstString(m_name);
-		if (!strcmp(strValue, "ELU")) value = Activation::ELU;
-		else if (!strcmp(strValue, "ReLU")) value = Activation::ReLU;
-		else if (!strcmp(strValue, "Sigmoid")) value = Activation::Sigmoid;
-		else if (!strcmp(strValue, "SoftMax")) value = Activation::SoftMax;
-		else if (!strcmp(strValue, "SoftPlus")) value = Activation::SoftPlus;
-		else if (!strcmp(strValue, "Tanh")) value = Activation::Tanh;
+		if (strValue != null)
+			value = DeepLayer::activationFromFunctionName(strValue);
 		else value = m_default;
 	}
 	void initValue(ConfigNode* pConfigNode, DeepLearner& value)

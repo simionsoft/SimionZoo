@@ -62,6 +62,7 @@ DQN::DQN(ConfigNode* pConfigNode)
 
 	//The wrapper must be initialized before loading the NN definition
 	CNTK::WrapperClient::Load();
+	CNTK::WrapperClient::RegisterDependencies();
 	m_policy = CHILD_OBJECT_FACTORY<DiscreteDeepPolicy>(pConfigNode, "Policy", "The policy");
 	m_pNNDefinition = NN_DEFINITION(pConfigNode, "neural-network", "Neural Network Architecture");
 }

@@ -3,35 +3,42 @@
 #include "parameters.h"
 #include "parameters-numeric.h"
 #include "deep-layer.h"
-#include "deferred-load.h"
 #include "../Common/state-action-function.h"
 
-class DeepFunction: public DeferredLoad, StateActionFunction
+class IDeepNetwork;
+class DeepMinibatch;
+
+class DeepNetworkDefinition
 {
+protected:
 	MULTI_VALUE<DeepLayer> m_layers;
 	ENUM_PARAM<DeepLearner> m_learner;
 	BOOL_PARAM m_useMinibatchNormalization;
 	INT_PARAM m_minibatchSize;
 	CHILD_OBJECT_FACTORY<NumericValue> m_learningRate;
-protected:
-	int m_numOutputs = 0;
+
+	size_t m_numOutputs = 0;
 	vector<string> m_inputStateVariables;
 	vector<string> m_inputActionVariables;
-	DeepFunction() {}
+
+	string getLayersString();
+
+	DeepNetworkDefinition() {}
 public:
-	DeepFunction(ConfigNode* pConfigNode);
+	DeepNetworkDefinition(ConfigNode* pConfigNode);
 
-	//DeferredLoad
-	virtual void deferredLoadStep() = 0;
-
-	//StateActionFunction
-	//virtual unsigned int getNumOutputs() = 0;
-	//virtual vector<double>& evaluate(const State* s, const Action* a) = 0;
+	unsigned int getNumOutputs() { return (int)m_numOutputs; }
 	virtual const vector<string>& getInputStateVariables() { return m_inputStateVariables; }
 	virtual const vector<string>& getInputActionVariables() { return m_inputActionVariables; }
+
+	void stateToVector(const State* s, vector<double>& v, size_t numTuples);
+	void actionToVector(const Action* s, vector<double>& v, size_t numTuples);
+
+	virtual IDeepNetwork* getNetworkInstance() = 0;
+	DeepMinibatch* getMinibatch();
 };
 
-class DeepDiscreteQFunction: public DeepFunction
+class DeepDiscreteQFunction: public DeepNetworkDefinition
 {
 	MULTI_VALUE_VARIABLE<STATE_VARIABLE> m_inputState;
 	MULTI_VALUE_VARIABLE<ACTION_VARIABLE> m_outputAction;
@@ -41,10 +48,10 @@ public:
 	DeepDiscreteQFunction();
 	DeepDiscreteQFunction(ConfigNode* pConfigNode);
 
-	void deferredLoadStep();
+	IDeepNetwork* getNetworkInstance();
 };
 
-class DeepContinuousQFunction : public DeepFunction
+class DeepContinuousQFunction : public DeepNetworkDefinition
 {
 	MULTI_VALUE_VARIABLE<STATE_VARIABLE> m_inputState;
 	MULTI_VALUE_VARIABLE<ACTION_VARIABLE> m_inputAction;
@@ -52,24 +59,26 @@ public:
 	DeepContinuousQFunction();
 	DeepContinuousQFunction(ConfigNode* pConfigNode);
 
-	void deferredLoadStep();
+	IDeepNetwork* getNetworkInstance();
 };
 
-class DeepVFunction : public DeepFunction
+class DeepVFunction : public DeepNetworkDefinition
 {
 	MULTI_VALUE_VARIABLE<STATE_VARIABLE> m_inputState;
 public:
 	DeepVFunction();
 	DeepVFunction(ConfigNode* pConfigNode);
-	void deferredLoadStep();
+
+	IDeepNetwork* getNetworkInstance();
 };
 
-class DeepDeterministicPolicy : public DeepFunction
+class DeepDeterministicPolicy : public DeepNetworkDefinition
 {
 	MULTI_VALUE_VARIABLE<STATE_VARIABLE> m_inputState;
 	MULTI_VALUE_VARIABLE<ACTION_VARIABLE> m_outputAction;
 public:
 	DeepDeterministicPolicy();
 	DeepDeterministicPolicy(ConfigNode* pConfigNode);
-	void deferredLoadStep();
+
+	IDeepNetwork* getNetworkInstance();
 };

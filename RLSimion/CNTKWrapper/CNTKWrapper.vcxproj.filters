@@ -55,6 +55,9 @@
     <ClInclude Include="Minibatch.h">
       <Filter>Source</Filter>
     </ClInclude>
+    <ClInclude Include="cntk-network.h">
+      <Filter>Source</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Chain.cpp">
@@ -91,6 +94,9 @@
       <Filter>Source</Filter>
     </ClCompile>
     <ClCompile Include="Minibatch.cpp">
+      <Filter>Source</Filter>
+    </ClCompile>
+    <ClCompile Include="cntk-network.cpp">
       <Filter>Source</Filter>
     </ClCompile>
   </ItemGroup>

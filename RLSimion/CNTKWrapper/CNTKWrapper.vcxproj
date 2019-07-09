@@ -85,6 +85,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Chain.h" />
+    <ClInclude Include="cntk-network.h" />
     <ClInclude Include="CNTKWrapper.h" />
     <ClInclude Include="CNTKWrapperInternals.h" />
     <ClInclude Include="Exceptions.h" />
@@ -102,6 +103,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Chain.cpp" />
+    <ClCompile Include="cntk-network.cpp" />
     <ClCompile Include="CNTKWrapper.cpp" />
     <ClCompile Include="CNTKWrapperInternals.cpp" />
     <ClCompile Include="Minibatch.cpp" />

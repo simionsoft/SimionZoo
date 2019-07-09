@@ -224,8 +224,10 @@
     <ClInclude Include="critic.h" />
     <ClInclude Include="DDPG.h" />
     <ClInclude Include="deep-cacla.h" />
-    <ClInclude Include="deep-function.h" />
+    <ClInclude Include="deep-functions.h" />
     <ClInclude Include="deep-layer.h" />
+    <ClInclude Include="deep-minibatch.h" />
+    <ClInclude Include="deep-network.h" />
     <ClInclude Include="deep-vfa-policy.h" />
     <ClInclude Include="deferred-load.h" />
     <ClInclude Include="DQN.h" />
@@ -301,8 +303,9 @@
     <ClCompile Include="critic.cpp" />
     <ClCompile Include="DDPG.cpp" />
     <ClCompile Include="deep-cacla.cpp" />
-    <ClCompile Include="deep-function.cpp" />
+    <ClCompile Include="deep-functions.cpp" />
     <ClCompile Include="deep-layer.cpp" />
+    <ClCompile Include="deep-minibatch.cpp" />
     <ClCompile Include="deep-vfa-policy.cpp" />
     <ClCompile Include="deferred-load.cpp" />
     <ClCompile Include="DQN.cpp" />

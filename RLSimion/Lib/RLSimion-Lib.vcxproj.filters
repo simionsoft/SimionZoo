@@ -193,13 +193,21 @@
     <ClInclude Include="sample-file.h">
       <Filter>logging</Filter>
     </ClInclude>
-    <ClInclude Include="deep-function.h">
-      <Filter>neural-networks</Filter>
-    </ClInclude>
     <ClInclude Include="deep-layer.h">
       <Filter>neural-networks</Filter>
     </ClInclude>
-    <ClInclude Include="deep-cacla.h" />
+    <ClInclude Include="deep-cacla.h">
+      <Filter>neural-networks</Filter>
+    </ClInclude>
+    <ClInclude Include="deep-minibatch.h">
+      <Filter>neural-networks</Filter>
+    </ClInclude>
+    <ClInclude Include="deep-network.h">
+      <Filter>neural-networks</Filter>
+    </ClInclude>
+    <ClInclude Include="deep-functions.h">
+      <Filter>neural-networks</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="actor.cpp">
@@ -415,10 +423,15 @@
     <ClCompile Include="deep-layer.cpp">
       <Filter>neural-networks</Filter>
     </ClCompile>
-    <ClCompile Include="deep-function.cpp">
+    <ClCompile Include="deep-cacla.cpp">
       <Filter>neural-networks</Filter>
     </ClCompile>
-    <ClCompile Include="deep-cacla.cpp" />
+    <ClCompile Include="deep-minibatch.cpp">
+      <Filter>neural-networks</Filter>
+    </ClCompile>
+    <ClCompile Include="deep-functions.cpp">
+      <Filter>neural-networks</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="bullet3">

@@ -33,6 +33,10 @@
 	#ifdef __linux__
 		#define GET_NETWORK_DEFINITION_FUNC_NAME "getNetworkDefinition"
 		#define SET_DEVICE_FUNC_NAME "setDevice"
+		#define GET_DISCRETE_Q_FUNCTION_NETWORK_FUNC_NAME "getDiscreteQFunctionNetwork"
+		#define GET_CONTINUOUS_Q_FUNCTION_NETWORK_FUNC_NAME "getContinuousQFunctionNetwork"
+		#define GET_V_FUNCTION_NETWORK_FUNC_NAME "getVFunctionNetwork"
+		#define GET_DETERMINISTIC_POLICY_NETWORK_FUNC_NAME "getDeterministicPolicyNetwork"
 		#ifdef _DEBUG
 			#define CNTK_WRAPPER_LIB_PATH "./../debug/CNTKWrapper-linux.so"
 		#else
@@ -41,6 +45,11 @@
 	#else
 		#define GET_NETWORK_DEFINITION_FUNC_NAME "CNTKWrapper::getNetworkDefinition"
 		#define SET_DEVICE_FUNC_NAME "CNTKWrapper::setDevice"
+		#define GET_DISCRETE_Q_FUNCTION_NETWORK_FUNC_NAME "CNTKWrapper::getDiscreteQFunctionNetwork"
+		#define GET_CONTINUOUS_Q_FUNCTION_NETWORK_FUNC_NAME "CNTKWrapper::getContinuousQFunctionNetwork"
+		#define GET_V_FUNCTION_NETWORK_FUNC_NAME "CNTKWrapper::getVFunctionNetwork"
+		#define GET_DETERMINISTIC_POLICY_NETWORK_FUNC_NAME "CNTKWrapper::getDeterministicPolicyNetwork"
+
 		#ifdef _DEBUG
 			#define CNTK_WRAPPER_LIB_PATH "./../debug/CNTKWrapper.dll"
 		#else
@@ -60,22 +69,26 @@ namespace CNTK
 #endif
 
 	int NumNetworkInstances = 0;
-	WrapperClient::getNetworkDefinitionDLL WrapperClient::getNetworkDefinition = 0;
-	WrapperClient::setDeviceDLL WrapperClient::setDevice = 0;
+	WrapperClient::getNetworkDefinitionDLL WrapperClient::getNetworkDefinition = nullptr;
+	WrapperClient::setDeviceDLL WrapperClient::setDevice = nullptr;
 
-/// <summary>
-/// This loads the Cntk libraries. Only usable by x64 versions. We want to be able to know the requirements even
-/// if we are running Badger on a Win-32 machine so, the only thing we actually don't do on Win-32 is load the dll
-/// and retrieve the access point. Otherwise, it adds all the target-specific requirements with disregard to the
-/// platform on which the executable is being run
-/// </summary>
+	WrapperClient::getDiscreteQFunctionNetworkDll WrapperClient::getDiscreteQFunctionNetwork = nullptr;
+	WrapperClient::getContinuousQFunctionNetworkDll WrapperClient::getContinuousQFunctionNetwork = nullptr;
+	WrapperClient::getVFunctionNetworkDll WrapperClient::getVFunctionNetwork = nullptr;
+	WrapperClient::getDeterministicPolicyNetworkDll WrapperClient::getDeterministicPolicyNetwork = nullptr;
+
+	/// <summary>
+	/// This loads the Cntk libraries. Only usable by x64 versions. We want to be able to know the requirements even
+	/// if we are running Badger on a Win-32 machine so, the only thing we actually don't do on Win-32 is load the dll
+	/// and retrieve the access point. Otherwise, it adds all the target-specific requirements with disregard to the
+	/// platform on which the executable is being run
+	/// </summary>
 	void WrapperClient::Load()
 	{
 #if defined(__linux__) || defined(_WIN64)
 		NumNetworkInstances++;
 
 		if (!DynamicLibCNTK.IsLoaded())
-
 		{
 			//Set the number of CPU threads to "all"
 			SimionApp::get()->setNumCPUCores(0);
@@ -90,18 +103,46 @@ namespace CNTK
 
 			//get the address of the interface functions
 			getNetworkDefinition = (getNetworkDefinitionDLL)DynamicLibCNTK.GetFuncAddress(GET_NETWORK_DEFINITION_FUNC_NAME);
+			getDiscreteQFunctionNetwork = (getDiscreteQFunctionNetworkDll)DynamicLibCNTK.GetFuncAddress(GET_DISCRETE_Q_FUNCTION_NETWORK_FUNC_NAME);
+			getContinuousQFunctionNetwork = (getContinuousQFunctionNetworkDll)DynamicLibCNTK.GetFuncAddress(GET_CONTINUOUS_Q_FUNCTION_NETWORK_FUNC_NAME);
+			getVFunctionNetwork = (getVFunctionNetworkDll)DynamicLibCNTK.GetFuncAddress(GET_V_FUNCTION_NETWORK_FUNC_NAME);
+			getDeterministicPolicyNetwork = (getDeterministicPolicyNetworkDll)DynamicLibCNTK.GetFuncAddress(GET_DETERMINISTIC_POLICY_NETWORK_FUNC_NAME);
 
-			if (getNetworkDefinition == 0)
-				Logger::logMessage(MessageType::Error, "Failed to get a pointer to CNTKWrapper:getNetworkDefinition()");
+			if (getNetworkDefinition == nullptr || getDiscreteQFunctionNetwork == nullptr || getContinuousQFunctionNetwork == nullptr
+				|| getVFunctionNetwork == nullptr || getDeterministicPolicyNetwork == nullptr)
+				Logger::logMessage(MessageType::Error, "Failed to get a pointer to an interface of the CNTKWrapper");
 
-			setDevice = (setDeviceDLL) DynamicLibCNTK.GetFuncAddress(SET_DEVICE_FUNC_NAME);
+			setDevice = (setDeviceDLL)DynamicLibCNTK.GetFuncAddress(SET_DEVICE_FUNC_NAME);
 
 			if (setDevice == 0)
 				Logger::logMessage(MessageType::Error, "Failed to get a pointer to CNTKWrapper:setDevice()");
 		}
 #endif
+	}
 
-		//register dependencies
+	/// <summary>
+	/// Unloads Cntk libraries if all instances of the client have been destroyed. We need to keep track of them
+	/// because in an experiment we may be using more than one instance of Neural Network and we only want to unload
+	/// the libraries once al Neural Networks have been destroyed
+	/// </summary>
+	void WrapperClient::UnLoad()
+	{
+#if defined(__linux__) || defined(_WIN64)
+		NumNetworkInstances--;
+		if (NumNetworkInstances == 0 && DynamicLibCNTK.IsLoaded())
+		{
+			DynamicLibCNTK.Unload();
+		}
+#endif
+	}
+
+
+	/// <summary>
+	/// Registers the dependencies. It's separated from the loading function so that dependencies can be calculated without
+	/// actually loading Cntk libraries
+	/// </summary>
+	void WrapperClient::RegisterDependencies()
+	{
 		SimionApp::get()->registerTargetPlatformInputFile("Win-64", "../bin/CNTKWrapper.dll");
 
 		SimionApp::get()->registerTargetPlatformInputFile("Win-64", "../bin/Cntk.Composite-2.5.1.dll");
@@ -130,21 +171,5 @@ namespace CNTK
 		SimionApp::get()->registerTargetPlatformInputFile("Linux-64", "../bin/cntk-linux/libmpi_cxx.so.1", "../bin/libmpi_cxx.so.1");
 		SimionApp::get()->registerTargetPlatformInputFile("Linux-64", "../bin/cntk-linux/libopen-pal.so.13", "../bin/libopen-pal.so.13");
 		SimionApp::get()->registerTargetPlatformInputFile("Linux-64", "../bin/cntk-linux/libopen-rte.so.12", "../bin/libopen-rte.so.12");
-	}
-
-/// <summary>
-/// Unloads Cntk libraries if all instances of the client have been destroyed. We need to keep track of them
-/// because in an experiment we may be using more than one instance of Neural Network and we only want to unload
-/// the libraries once al Neural Networks have been destroyed
-/// </summary>
-	void WrapperClient::UnLoad()
-	{
-#if defined(__linux__) || defined(_WIN64)
-		NumNetworkInstances--;
-		if (NumNetworkInstances==0 && DynamicLibCNTK.IsLoaded())
-		{
-			DynamicLibCNTK.Unload();
-		}
-#endif
 	}
 }

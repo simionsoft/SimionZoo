@@ -58,6 +58,7 @@ DDPG::DDPG(ConfigNode * pConfigNode)
 {
 	//The wrapper must be initialized before loading the NN definition
 	CNTK::WrapperClient::Load();
+	CNTK::WrapperClient::RegisterDependencies();
 
 	m_CriticNetworkDefinition = NN_DEFINITION(pConfigNode, "Critic-Network", "Neural Network for the Critic -a Q function-");
 	m_ActorNetworkDefinition = NN_DEFINITION(pConfigNode, "Actor-Network", "Neural Network for the Actor -deterministic policy-");
