@@ -38,7 +38,7 @@
       <Type>
         <DQN>
           <Minibatch-Size>100</Minibatch-Size>
-          <Num-Action-Steps>11</Num-Action-Steps>
+          <Num-Action-Steps>3</Num-Action-Steps>
           <Learning-Rate>0.0001</Learning-Rate>
           <neural-network>
 <Problem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
@@ -60,10 +60,9 @@
 <ChainLinks>
 <LinkBase xsi:type="InputLayer" Name="Input Layer" ID="27F7D6DE"><Parameters><ParameterBase xsi:type="InputDataParameter" Name="Input Data">
 <Value>state-input</Value></ParameterBase></Parameters></LinkBase>
-<LinkBase xsi:type="DenseLayer" Name="Dense Layer" ID="2E139DBC"><Parameters><ParameterBase xsi:type="IntParameter" Name="Units"><Value>20</Value></ParameterBase><ParameterBase xsi:type="ActivationFunctionParameter" Name="Activation"><Value>relu</Value></ParameterBase></Parameters></LinkBase>
+<LinkBase xsi:type="DenseLayer" Name="Dense Layer" ID="2E139DBC"><Parameters><ParameterBase xsi:type="IntParameter" Name="Units"><Value>40</Value></ParameterBase><ParameterBase xsi:type="ActivationFunctionParameter" Name="Activation"><Value>relu</Value></ParameterBase></Parameters></LinkBase>
 <LinkBase xsi:type="DenseLayer" Name="Dense Layer" ID="EC2BDC65"><Parameters><ParameterBase xsi:type="IntParameter" Name="Units"><Value>40</Value></ParameterBase><ParameterBase xsi:type="ActivationFunctionParameter" Name="Activation"><Value>relu</Value></ParameterBase></Parameters></LinkBase>
-<LinkBase xsi:type="DenseLayer" Name="Dense Layer" ID="A50D99C1"><Parameters><ParameterBase xsi:type="IntParameter" Name="Units"><Value>80</Value></ParameterBase><ParameterBase xsi:type="ActivationFunctionParameter" Name="Activation"><Value>relu</Value></ParameterBase></Parameters></LinkBase>
-<LinkBase xsi:type="DenseLayer" Name="output " ID="A7C3B867"><Parameters><ParameterBase xsi:type="IntParameter" Name="Units"><Value>11</Value></ParameterBase><ParameterBase xsi:type="ActivationFunctionParameter" Name="Activation"><Value>linear</Value></ParameterBase></Parameters></LinkBase>
+<LinkBase xsi:type="DenseLayer" Name="output " ID="A7C3B867"><Parameters><ParameterBase xsi:type="IntParameter" Name="Units"><Value>3</Value></ParameterBase><ParameterBase xsi:type="ActivationFunctionParameter" Name="Activation"><Value>linear</Value></ParameterBase></Parameters></LinkBase>
 </ChainLinks></Chain></Chains>
 </NetworkArchitecture>
 </Problem></neural-network>
@@ -91,8 +90,8 @@
                       <Scale>
                         <Schedule>
                           <Simple-Linear-Decay>
-                            <Initial-Value>1</Initial-Value>
-                            <End-Value>0.0</End-Value>
+                            <Initial-Value>1.0</Initial-Value>
+                            <End-Value>1.0</End-Value>
                           </Simple-Linear-Decay>
                           </Schedule>
                       </Scale>

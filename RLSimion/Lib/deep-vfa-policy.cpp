@@ -243,14 +243,13 @@ void NoisePlusGreedyDeepPolicy::selectAction(INetwork* pNetwork, const State* s,
 		return;
 	}
 
-	const vector<string>& outputActions = pNetwork->getDefinition()->getInputActionVariables();
 	double noise;
-	for (int i = 0; i < outputActions.size(); i++)
+	for (int i = 0; i < m_outputActionVariables.size(); i++)
 	{
 		if (i < m_noiseSignals.size())
 		{
 			noise = m_noiseSignals[i]->getSample();
-			a->set(outputActions[i].c_str(),/* a->get(outputActions[i].c_str()) + */noise);
+			a->set(m_outputActionVariables[i].c_str(),/* a->get(outputActions[i].c_str()) + */noise);
 		}
 	}
 }

@@ -78,7 +78,6 @@ void DQN::deferredLoadStep()
 	m_totalNumActionSteps = 1;
 	for (size_t i = 0; i < m_outputAction.size(); i++)
 	{
-		m_pNNDefinition->addInputActionVar(m_outputAction[i]->get());
 		m_totalNumActionSteps *= m_numActionSteps.get();
 	}
 	m_pNNDefinition->setDiscretizedActionVectorOutput(m_totalNumActionSteps);
