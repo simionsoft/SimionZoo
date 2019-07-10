@@ -1,9 +1,13 @@
 #pragma once
 
+class IDiscreteQFunctionNetwork;
+class IContinuousQFunctionNetwork;
+class IVFunctionNetwork;
+class IDeterministicPolicyNetwork;
 
 class INetwork;
-class IDeepNetwork;
 class INetworkDefinition;
+
 #include "parameters.h"
 
 #include <string>
@@ -29,10 +33,10 @@ namespace CNTK
 		static setDeviceDLL setDevice;
 
 		//new interfaces
-		typedef IDeepNetwork* (CNTK_WRAPPER_DLL_API* getDiscreteQFunctionNetworkDll)(size_t numStateVariables, size_t totalNumActionSteps, string layers, DeepLearner learner, bool normalize);
-		typedef IDeepNetwork* (CNTK_WRAPPER_DLL_API* getContinuousQFunctionNetworkDll)(size_t numStateVariables, size_t numActionVariables, string layers, DeepLearner learner, bool normalize);
-		typedef IDeepNetwork* (CNTK_WRAPPER_DLL_API* getVFunctionNetworkDll)(size_t numStateVariables, string layers, DeepLearner learner, bool normalize);
-		typedef IDeepNetwork* (CNTK_WRAPPER_DLL_API* getDeterministicPolicyNetworkDll)(size_t numStateVariables, string layers, DeepLearner learner, bool normalize);
+		typedef IDiscreteQFunctionNetwork* (CNTK_WRAPPER_DLL_API* getDiscreteQFunctionNetworkDll)(size_t numStateVariables, size_t totalNumActionSteps, string layers, DeepLearner learner, bool normalize);
+		typedef IContinuousQFunctionNetwork* (CNTK_WRAPPER_DLL_API* getContinuousQFunctionNetworkDll)(size_t numStateVariables, size_t numActionVariables, string layers, DeepLearner learner, bool normalize);
+		typedef IVFunctionNetwork* (CNTK_WRAPPER_DLL_API* getVFunctionNetworkDll)(size_t numStateVariables, string layers, DeepLearner learner, bool normalize);
+		typedef IDeterministicPolicyNetwork* (CNTK_WRAPPER_DLL_API* getDeterministicPolicyNetworkDll)(size_t numStateVariables, string layers, DeepLearner learner, bool normalize);
 		static getDiscreteQFunctionNetworkDll getDiscreteQFunctionNetwork;
 		static getContinuousQFunctionNetworkDll getContinuousQFunctionNetwork;
 		static getVFunctionNetworkDll getVFunctionNetwork;

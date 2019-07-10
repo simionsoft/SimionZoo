@@ -24,7 +24,7 @@
 */
 
 #include "deep-minibatch.h"
-#include "deep-function.h"
+#include "deep-functions.h"
 #include <stdexcept>
 
 DeepMinibatch::DeepMinibatch(size_t minibatchSize, DeepNetworkDefinition* pDeepFunction)

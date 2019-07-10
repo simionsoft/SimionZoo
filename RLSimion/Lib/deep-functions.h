@@ -34,7 +34,6 @@ public:
 	void stateToVector(const State* s, vector<double>& v, size_t numTuples);
 	void actionToVector(const Action* s, vector<double>& v, size_t numTuples);
 
-	virtual IDeepNetwork* getNetworkInstance() = 0;
 	DeepMinibatch* getMinibatch();
 };
 
@@ -48,7 +47,7 @@ public:
 	DeepDiscreteQFunction();
 	DeepDiscreteQFunction(ConfigNode* pConfigNode);
 
-	IDeepNetwork* getNetworkInstance();
+	IDiscreteQFunctionNetwork* getNetworkInstance();
 };
 
 class DeepContinuousQFunction : public DeepNetworkDefinition
@@ -59,7 +58,7 @@ public:
 	DeepContinuousQFunction();
 	DeepContinuousQFunction(ConfigNode* pConfigNode);
 
-	IDeepNetwork* getNetworkInstance();
+	IContinuousQFunctionNetwork* getNetworkInstance();
 };
 
 class DeepVFunction : public DeepNetworkDefinition
@@ -69,7 +68,7 @@ public:
 	DeepVFunction();
 	DeepVFunction(ConfigNode* pConfigNode);
 
-	IDeepNetwork* getNetworkInstance();
+	IVFunctionNetwork* getNetworkInstance();
 };
 
 class DeepDeterministicPolicy : public DeepNetworkDefinition
@@ -80,5 +79,5 @@ public:
 	DeepDeterministicPolicy();
 	DeepDeterministicPolicy(ConfigNode* pConfigNode);
 
-	IDeepNetwork* getNetworkInstance();
+	IDeterministicPolicyNetwork* getNetworkInstance();
 };

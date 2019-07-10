@@ -1,10 +1,10 @@
 #pragma once
 
-#include "parameters.h"
+enum class Activation { ELU, ReLU, Sigmoid, SoftMax, SoftPlus, Tanh };
+class ConfigNode;
+
 #include <string>
 using namespace std;
-
-enum class Activation { ELU, ReLU, Sigmoid, SoftMax, SoftPlus, Tanh };
 
 class DeepLayer
 {

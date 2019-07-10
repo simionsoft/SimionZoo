@@ -35,6 +35,14 @@ DeepMinibatch* DeepNetworkDefinition::getMinibatch()
 }
 
 
+string DeepNetworkDefinition::getLayersString()
+{
+	if (m_layers.size() == 0) return string("");
+	string output = m_layers[0]->to_string();
+	for (int i = 1; i < m_layers.size(); i++)
+		output = output + m_layers[i]->to_string();
+}
+
 DeepDiscreteQFunction::DeepDiscreteQFunction() {}
 DeepDiscreteQFunction::DeepDiscreteQFunction(ConfigNode* pConfigNode) : DeepNetworkDefinition(pConfigNode)
 {
@@ -55,10 +63,10 @@ DeepDiscreteQFunction::DeepDiscreteQFunction(ConfigNode* pConfigNode) : DeepNetw
 	m_numOutputs = m_totalNumActionSteps;
 }
 
-IDeepNetwork* DeepDiscreteQFunction::getNetworkInstance()
+IDiscreteQFunctionNetwork* DeepDiscreteQFunction::getNetworkInstance()
 {
-	CNTK::WrapperClient::getDiscreteQFunctionNetwork(m_inputStateVariables.size(), m_totalNumActionSteps, getLayersString()
-		, m_learner.get(), m_useMinibatchNormalization.get());
+	return CNTK::WrapperClient::getDiscreteQFunctionNetwork(m_inputStateVariables.size(), m_totalNumActionSteps
+		, getLayersString(), m_learner.get(), m_useMinibatchNormalization.get());
 }
 
 DeepContinuousQFunction::DeepContinuousQFunction() {}
@@ -77,6 +85,13 @@ DeepContinuousQFunction::DeepContinuousQFunction(ConfigNode* pConfigNode) : Deep
 	m_numOutputs = 1;
 }
 
+IContinuousQFunctionNetwork* DeepContinuousQFunction::getNetworkInstance()
+{
+	return CNTK::WrapperClient::getContinuousQFunctionNetwork(m_inputStateVariables.size(), m_inputActionVariables.size()
+		, getLayersString(), m_learner.get(), m_useMinibatchNormalization.get());
+}
+
+
 DeepVFunction::DeepVFunction() {}
 DeepVFunction::DeepVFunction(ConfigNode* pConfigNode) : DeepNetworkDefinition(pConfigNode)
 {
@@ -89,6 +104,13 @@ DeepVFunction::DeepVFunction(ConfigNode* pConfigNode) : DeepNetworkDefinition(pC
 	//Only one output: V(s)
 	m_numOutputs = 1;
 }
+
+IVFunctionNetwork* DeepVFunction::getNetworkInstance()
+{
+	return CNTK::WrapperClient::getVFunctionNetwork(m_inputStateVariables.size()
+		, getLayersString(), m_learner.get(), m_useMinibatchNormalization.get());
+}
+
 
 DeepDeterministicPolicy::DeepDeterministicPolicy() {}
 DeepDeterministicPolicy::DeepDeterministicPolicy(ConfigNode* pConfigNode) : DeepNetworkDefinition(pConfigNode)
@@ -103,4 +125,10 @@ DeepDeterministicPolicy::DeepDeterministicPolicy(ConfigNode* pConfigNode) : Deep
 
 	//One output per output action: V(s)
 	m_numOutputs = m_outputAction.size();
+}
+
+IDeterministicPolicyNetwork* DeepDeterministicPolicy::getNetworkInstance()
+{
+	return CNTK::WrapperClient::getDeterministicPolicyNetwork(m_inputStateVariables.size()
+		, getLayersString(), m_learner.get(), m_useMinibatchNormalization.get());
 }

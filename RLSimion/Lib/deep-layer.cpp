@@ -23,6 +23,7 @@
 	SOFTWARE.
 */
 #include "deep-layer.h"
+#include "parameters.h"
 
 DeepLayer::DeepLayer(ConfigNode* pConfigNode)
 {
@@ -38,6 +39,11 @@ int DeepLayer::getNumUnits()
 Activation DeepLayer::getActivationFunction()
 {
 	return m_activationFunction;
+}
+
+string DeepLayer::to_string()
+{
+	return activationFunctionName(m_activationFunction) + "(" + std::to_string(m_numUnits) + ")";
 }
 
 string DeepLayer::activationFunctionName(Activation activation)

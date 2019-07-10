@@ -7,7 +7,7 @@
 #include <list>
 #include <tuple>
 #include "config.h"
-#include "deep-layer.h" //DeepLayer enum type is defined there
+#include "deep-layer.h" //Activation enum type is defined there
 
 using namespace std;
 //Enumerated types
@@ -68,7 +68,7 @@ protected:
 	void initValue(ConfigNode* pConfigNode, Activation& value)
 	{
 		const char* strValue = pConfigNode->getConstString(m_name);
-		if (strValue != null)
+		if (strValue != nullptr)
 			value = DeepLayer::activationFromFunctionName(strValue);
 		else value = m_default;
 	}

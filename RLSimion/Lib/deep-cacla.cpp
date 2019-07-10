@@ -49,13 +49,13 @@ double DeepCACLA::update(const State *s, const Action *a, const State *s_p, doub
 		double gamma = SimionApp::get()->pSimGod->getGamma();
 
 		//evaluate V(s)
-		m_pCriticNetwork->evaluate(m_pCriticMinibatch->s(), m_pCriticMinibatch->a(), m_V_s);
+		m_pCriticNetwork->evaluate(m_pCriticMinibatch->s(),m_V_s);
 
 		//evaluate V(s')
-		m_pCriticNetwork->evaluate(m_pCriticMinibatch->s_p(), m_pCriticMinibatch->a(), m_V_s_p);
+		m_pCriticNetwork->evaluate(m_pCriticMinibatch->s_p(), m_V_s_p);
 
 		//evalute pi(s)
-		m_pActorNetwork->evaluate(m_pActorMinibatch->s(), m_pActorMinibatch->a(), m_pActorMinibatch->target());
+		m_pActorNetwork->evaluate(m_pActorMinibatch->s(), m_pActorMinibatch->target());
 
 		//calculate the target of the critic: r + gamma * V(s) - V(s')
 		for (size_t tuple = 0; tuple < m_pCriticMinibatch->size(); tuple++)
@@ -73,9 +73,11 @@ double DeepCACLA::update(const State *s, const Action *a, const State *s_p, doub
 		//update the actor
 		m_pActorNetwork->train(m_pActorMinibatch, m_pActorMinibatch->target());
 	}
+	return 0.0;
 }
 
 double DeepCACLA::selectAction(const State *s, Action *a)
 {
-
+	//m_pActorNetwork->evaluate()
+	return 1.0;
 }

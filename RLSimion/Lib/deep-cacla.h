@@ -15,11 +15,11 @@ class DeepCACLA : public Simion, DeferredLoad
 {
 	//Actor
 	DeepMinibatch* m_pActorMinibatch;
-	IDeepNetwork* m_pActorNetwork;
+	IDeterministicPolicyNetwork* m_pActorNetwork;
 	CHILD_OBJECT<DeepDeterministicPolicy> m_actorPolicy;
 	//Critic
 	DeepMinibatch* m_pCriticMinibatch;
-	IDeepNetwork* m_pCriticNetwork;
+	IVFunctionNetwork* m_pCriticNetwork;
 	CHILD_OBJECT<DeepVFunction> m_criticVFunction;
 	vector<double> m_V_s;
 	vector<double> m_V_s_p;
