@@ -25,6 +25,7 @@
 
 #include "CrossPlatform.h"
 #include <algorithm>
+#include <sstream>
 
 namespace CrossPlatform
 {
@@ -35,7 +36,18 @@ namespace CrossPlatform
 #else
 		replace(commandLine.begin(), commandLine.end(), '\\', '/');
 #endif
+	}
 
+	vector<string> split(const string& s, char delimiter)
+	{
+		vector<string> tokens;
+		string token;
+		istringstream tokenStream(s);
+		while (std::getline(tokenStream, token, delimiter))
+		{
+			tokens.push_back(token);
+		}
+		return tokens;
 	}
 
 	void Fopen_s(FILE** pOutFile, const char* filename, const char* mode)

@@ -15,8 +15,6 @@ enum class Distribution { linear, quadratic, cubic };
 enum class Interpolation { linear, quadratic, cubic };
 enum class TimeReference { episode, experiment };
 
-enum class DeepLearner { SGD, MomentumSGD, Adam };
-
 template<typename DataType>
 class SimpleParam
 {
@@ -72,14 +70,7 @@ protected:
 			value = DeepLayer::activationFromFunctionName(strValue);
 		else value = m_default;
 	}
-	void initValue(ConfigNode* pConfigNode, DeepLearner& value)
-	{
-		const char* strValue = pConfigNode->getConstString(m_name);
-		if (!strcmp(strValue, "SGD")) value = DeepLearner::SGD;
-		else if (!strcmp(strValue, "MomentumSGD")) value = DeepLearner::MomentumSGD;
-		else if (!strcmp(strValue, "Adam")) value = DeepLearner::Adam;
-		else value = m_default;
-	}
+
 public:
 	SimpleParam() = default;
 	SimpleParam(ConfigNode* pConfigNode

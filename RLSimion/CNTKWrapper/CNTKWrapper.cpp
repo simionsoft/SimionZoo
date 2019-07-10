@@ -57,3 +57,21 @@ void CNTKWrapper::setDevice(bool useGPU)
 	else
 		CNTK::DeviceDescriptor::TrySetDefaultDevice(CNTK::DeviceDescriptor::CPUDevice());
 }
+
+IDiscreteQFunctionNetwork* getDiscreteQFunctionNetwork(DeepNetworkDefinition* pNetworkDefinition)
+{
+	return new CntkDiscreteQFunctionNetwork(pNetworkDefinition);
+}
+IContinuousQFunctionNetwork* getContinuousQFunctionNetwork(DeepNetworkDefinition* pNetworkDefinition)
+{
+	return new CntkContinuousQFunctionNetwork(pNetworkDefinition);
+}
+IVFunctionNetwork* getVFunctionNetwork(DeepNetworkDefinition* pNetworkDefinition)
+{
+	return new CntkVFunctionNetwork(pNetworkDefinition);
+}
+IDeterministicPolicyNetwork* getDeterministicPolicyNetwork(DeepNetworkDefinition* pNetworkDefinition)
+{
+	return new CntkDeterministicPolicyNetwork(pNetworkDefinition);
+}
+

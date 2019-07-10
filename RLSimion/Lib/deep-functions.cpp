@@ -6,7 +6,7 @@
 DeepNetworkDefinition::DeepNetworkDefinition(ConfigNode* pConfigNode)
 {
 	m_layers= MULTI_VALUE<DeepLayer>(pConfigNode, "Layers", "Layers of the Neural Network");
-	m_learner = ENUM_PARAM<DeepLearner>(pConfigNode, "Learner", "Learner used for this Neural Network", DeepLearner::Adam);
+	m_learner = CHILD_OBJECT_FACTORY<DeepLearner>(pConfigNode, "Learner", "Learner used for this Neural Network");
 	m_useMinibatchNormalization = BOOL_PARAM(pConfigNode, "Use-Normalization", "Use minibatch normalization", false);
 	m_minibatchSize = INT_PARAM(pConfigNode, "Minibatch-Size", "Number of tuples in each minibatch used in updates", 100);
 	m_learningRate = CHILD_OBJECT_FACTORY<NumericValue>(pConfigNode, "Learning-Rate", "Learning rate used to train the Neural Network");
@@ -18,15 +18,51 @@ void DeepNetworkDefinition::stateToVector(const State* s, vector<double>& v, siz
 	size_t numStateVars = stateVars.size();
 
 	for (size_t i = 0; i < numStateVars; i++)
-		v[i] = s->getNormalized(stateVars[i].c_str());
+		v[numStateVars*numTuples + i] = s->getNormalized(stateVars[i].c_str());
 }
 
 void DeepNetworkDefinition::actionToVector(const Action* a, vector<double>& v, size_t numTuples)
 {
 	const vector<string>& actionVars = getInputActionVariables();
+	size_t numActionVars = actionVars.size();
 
-	for (size_t i = 0; i < actionVars.size(); i++)
-		v[i] = a->getNormalized(actionVars[i].c_str());
+	for (size_t i = 0; i < numActionVars; i++)
+		v[numActionVars*numTuples + i] = a->getNormalized(actionVars[i].c_str());
+}
+
+void DeepNetworkDefinition::vectorToState(vector<double>& v, size_t numTuples, State* s)
+{
+	const vector<string>& stateVars = getInputStateVariables();
+	size_t numStateVars = stateVars.size();
+
+	for (size_t i = 0; i < numStateVars; i++)
+		s->setNormalized(stateVars[i].c_str(), v[numStateVars*numTuples + i]);
+}
+
+void DeepNetworkDefinition::vectorToAction(vector<double>& v, size_t numTuples, Action* s)
+{
+	const vector<string>& actionVars = getInputActionVariables();
+	size_t numActionVars = actionVars.size();
+
+	for (size_t i = 0; i < numActionVars; i++)
+		s->setNormalized(actionVars[i].c_str(), v[numActionVars*numTuples + i]);
+}
+
+string DeepNetworkDefinition::getLayersDefinition()
+{
+	if (m_layers.size() == 0) return string("");
+
+	string output = m_layers[0]->to_string();
+
+	for (int i = 1; i < m_layers.size(); i++)
+		output = output + layerDefinitionDelimiter + m_layers[i]->to_string();
+
+	return output;
+}
+
+string DeepNetworkDefinition::getLearnerDefinition()
+{
+	return m_learner->to_string();
 }
 
 DeepMinibatch* DeepNetworkDefinition::getMinibatch()
@@ -34,14 +70,6 @@ DeepMinibatch* DeepNetworkDefinition::getMinibatch()
 	return new DeepMinibatch(m_minibatchSize.get(), this);
 }
 
-
-string DeepNetworkDefinition::getLayersString()
-{
-	if (m_layers.size() == 0) return string("");
-	string output = m_layers[0]->to_string();
-	for (int i = 1; i < m_layers.size(); i++)
-		output = output + m_layers[i]->to_string();
-}
 
 DeepDiscreteQFunction::DeepDiscreteQFunction() {}
 DeepDiscreteQFunction::DeepDiscreteQFunction(ConfigNode* pConfigNode) : DeepNetworkDefinition(pConfigNode)
@@ -66,7 +94,7 @@ DeepDiscreteQFunction::DeepDiscreteQFunction(ConfigNode* pConfigNode) : DeepNetw
 IDiscreteQFunctionNetwork* DeepDiscreteQFunction::getNetworkInstance()
 {
 	return CNTK::WrapperClient::getDiscreteQFunctionNetwork(m_inputStateVariables.size(), m_totalNumActionSteps
-		, getLayersString(), m_learner.get(), m_useMinibatchNormalization.get());
+		, getLayersDefinition(), getLearnerDefinition(), m_useMinibatchNormalization.get());
 }
 
 DeepContinuousQFunction::DeepContinuousQFunction() {}
@@ -88,7 +116,7 @@ DeepContinuousQFunction::DeepContinuousQFunction(ConfigNode* pConfigNode) : Deep
 IContinuousQFunctionNetwork* DeepContinuousQFunction::getNetworkInstance()
 {
 	return CNTK::WrapperClient::getContinuousQFunctionNetwork(m_inputStateVariables.size(), m_inputActionVariables.size()
-		, getLayersString(), m_learner.get(), m_useMinibatchNormalization.get());
+		, getLayersDefinition(), getLearnerDefinition(), m_useMinibatchNormalization.get());
 }
 
 
@@ -108,7 +136,7 @@ DeepVFunction::DeepVFunction(ConfigNode* pConfigNode) : DeepNetworkDefinition(pC
 IVFunctionNetwork* DeepVFunction::getNetworkInstance()
 {
 	return CNTK::WrapperClient::getVFunctionNetwork(m_inputStateVariables.size()
-		, getLayersString(), m_learner.get(), m_useMinibatchNormalization.get());
+		, getLayersDefinition(), getLearnerDefinition(), m_useMinibatchNormalization.get());
 }
 
 
@@ -130,5 +158,5 @@ DeepDeterministicPolicy::DeepDeterministicPolicy(ConfigNode* pConfigNode) : Deep
 IDeterministicPolicyNetwork* DeepDeterministicPolicy::getNetworkInstance()
 {
 	return CNTK::WrapperClient::getDeterministicPolicyNetwork(m_inputStateVariables.size()
-		, getLayersString(), m_learner.get(), m_useMinibatchNormalization.get());
+		, getLayersDefinition(), getLearnerDefinition(), m_useMinibatchNormalization.get());
 }

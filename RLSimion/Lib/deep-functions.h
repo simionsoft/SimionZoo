@@ -3,6 +3,7 @@
 #include "parameters.h"
 #include "parameters-numeric.h"
 #include "deep-layer.h"
+#include "deep-learner.h"
 #include "../Common/state-action-function.h"
 
 class IDeepNetwork;
@@ -10,9 +11,14 @@ class DeepMinibatch;
 
 class DeepNetworkDefinition
 {
+public:
+	static const char layerDefinitionDelimiter = ';';
+	static const char layerParameterDelimiter = ',';
+	static const char learnerParameterDelimiter = ',';
+	
 protected:
 	MULTI_VALUE<DeepLayer> m_layers;
-	ENUM_PARAM<DeepLearner> m_learner;
+	CHILD_OBJECT_FACTORY<DeepLearner> m_learner;
 	BOOL_PARAM m_useMinibatchNormalization;
 	INT_PARAM m_minibatchSize;
 	CHILD_OBJECT_FACTORY<NumericValue> m_learningRate;
@@ -20,8 +26,6 @@ protected:
 	size_t m_numOutputs = 0;
 	vector<string> m_inputStateVariables;
 	vector<string> m_inputActionVariables;
-
-	string getLayersString();
 
 	DeepNetworkDefinition() {}
 public:
@@ -31,8 +35,13 @@ public:
 	virtual const vector<string>& getInputStateVariables() { return m_inputStateVariables; }
 	virtual const vector<string>& getInputActionVariables() { return m_inputActionVariables; }
 
+	string getLayersDefinition();
+	string getLearnerDefinition();
+
 	void stateToVector(const State* s, vector<double>& v, size_t numTuples);
 	void actionToVector(const Action* s, vector<double>& v, size_t numTuples);
+	void vectorToState(vector<double>& v, size_t numTuples, State* s);
+	void vectorToAction(vector<double>& v, size_t numTuples, Action* s);
 
 	DeepMinibatch* getMinibatch();
 };

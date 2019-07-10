@@ -101,9 +101,16 @@ public:
 	virtual size_t outputSize() const = 0;
 };
 
+#include "./cntk-network.h"
+
 namespace CNTKWrapper
 {
 	extern "C" {DLL_API INetworkDefinition* getNetworkDefinition(tinyxml2::XMLElement* pNode); }
 	extern "C" {DLL_API void setDevice(bool useGPU); }
+
+	extern "C" {DLL_API IDiscreteQFunctionNetwork* getDiscreteQFunctionNetwork(DeepNetworkDefinition* pNetworkDefinition); }
+	extern "C" {DLL_API IContinuousQFunctionNetwork* getContinuousQFunctionNetwork(DeepNetworkDefinition* pNetworkDefinition); }
+	extern "C" {DLL_API IVFunctionNetwork* getVFunctionNetwork(DeepNetworkDefinition* pNetworkDefinition); }
+	extern "C" {DLL_API IDeterministicPolicyNetwork* getDeterministicPolicyNetwork(DeepNetworkDefinition* pNetworkDefinition); }
 }
 

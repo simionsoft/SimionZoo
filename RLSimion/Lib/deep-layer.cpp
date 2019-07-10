@@ -55,7 +55,10 @@ string DeepLayer::activationFunctionName(Activation activation)
 	case Activation::Sigmoid: return "Sigmoid";
 	case Activation::SoftMax: return "SoftMax";
 	case Activation::SoftPlus: return "SoftPlus";
-	case Activation::Tanh: default: return "Tanh";
+	case Activation::Tanh: return "Tanh";
+	case Activation::Linear:
+	default:
+		return "Linear";
 	}
 }
 
@@ -67,5 +70,5 @@ Activation DeepLayer::activationFromFunctionName(string name)
 	else if (name == "SoftMax") return Activation::SoftMax;
 	else if (name == "SoftPlus") return Activation::SoftPlus;
 	else if (name == "Tanh") return Activation::Tanh;
-	return Activation::Tanh; //default value
+	return Activation::Linear; //default value
 }

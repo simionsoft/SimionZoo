@@ -226,6 +226,7 @@
     <ClInclude Include="deep-cacla.h" />
     <ClInclude Include="deep-functions.h" />
     <ClInclude Include="deep-layer.h" />
+    <ClInclude Include="deep-learner.h" />
     <ClInclude Include="deep-minibatch.h" />
     <ClInclude Include="deep-network.h" />
     <ClInclude Include="deep-vfa-policy.h" />
@@ -305,6 +306,7 @@
     <ClCompile Include="deep-cacla.cpp" />
     <ClCompile Include="deep-functions.cpp" />
     <ClCompile Include="deep-layer.cpp" />
+    <ClCompile Include="deep-learner.cpp" />
     <ClCompile Include="deep-minibatch.cpp" />
     <ClCompile Include="deep-vfa-policy.cpp" />
     <ClCompile Include="deferred-load.cpp" />

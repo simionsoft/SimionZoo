@@ -1,6 +1,6 @@
 #pragma once
 
-enum class Activation { ELU, ReLU, Sigmoid, SoftMax, SoftPlus, Tanh };
+enum class Activation { Linear, ELU, ReLU, Sigmoid, SoftMax, SoftPlus, Tanh };
 class ConfigNode;
 
 #include <string>

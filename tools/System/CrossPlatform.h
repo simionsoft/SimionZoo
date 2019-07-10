@@ -1,5 +1,6 @@
 #pragma once
 
+#include <vector>
 #include <string.h>
 #include <stdio.h>
 #include <stddef.h>
@@ -10,6 +11,8 @@ using namespace std;
 namespace CrossPlatform
 {
 	void ForceUseFolderCharacter(string& commandLine);
+
+	vector<string> split(const string& s, char delimiter);
 
 	template<typename ...Args>
 	int Sprintf_s(char* buffer, int bufferSize, const char* format, Args... args)

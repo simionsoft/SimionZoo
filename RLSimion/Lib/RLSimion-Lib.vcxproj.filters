@@ -208,6 +208,9 @@
     <ClInclude Include="deep-functions.h">
       <Filter>neural-networks</Filter>
     </ClInclude>
+    <ClInclude Include="deep-learner.h">
+      <Filter>neural-networks</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="actor.cpp">
@@ -430,6 +433,9 @@
       <Filter>neural-networks</Filter>
     </ClCompile>
     <ClCompile Include="deep-functions.cpp">
+      <Filter>neural-networks</Filter>
+    </ClCompile>
+    <ClCompile Include="deep-learner.cpp">
       <Filter>neural-networks</Filter>
     </ClCompile>
   </ItemGroup>
