@@ -70,7 +70,7 @@ public:
 	virtual void initSoftUpdate(double u, INetwork* pTargetNetwork) = 0;
 	virtual void softUpdate(INetwork* pTargetNetwork) = 0;
 
-	virtual void train(IMinibatch* pMinibatch, const vector<double>& target) = 0;
+	virtual void _train(IMinibatch* pMinibatch, const vector<double>& target) = 0;
 
 	virtual void gradientWrtAction(const vector<double>& s, const vector<double>& a, vector<double>& outputValues) = 0;
 	virtual void applyGradient(IMinibatch* pMinibatch, const vector<double>& target) = 0;

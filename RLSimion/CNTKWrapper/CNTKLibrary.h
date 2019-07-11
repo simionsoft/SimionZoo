@@ -5644,14 +5644,14 @@ namespace CNTK
     };
 
     ///
-    /// Construct a Trainer to train the specified 'model' with the specified 'trainingLoss' Variable as the training criterion
+    /// Construct a Trainer to _train the specified 'model' with the specified 'trainingLoss' Variable as the training criterion
     /// and using the specified set of 'parameterLearners' for updating the model's parameters using computed gradients.
     ///
     CNTK_API TrainerPtr CreateTrainer(const FunctionPtr& model, const FunctionPtr& lossFunction, const std::vector<LearnerPtr>& parameterLearners,
                                       const std::vector<ProgressWriterPtr>& progressWriters = {});
 
     ///
-    /// Construct a Trainer to train the specified 'model' with the specified 'trainingLoss' as the training criterion,
+    /// Construct a Trainer to _train the specified 'model' with the specified 'trainingLoss' as the training criterion,
     /// the specified 'evaluationFunction' as the criterion for evaluating the trained model's quality, and using the specified set
     /// of 'parameterLearners' for updating the model's parameters using computed gradients.
     ///

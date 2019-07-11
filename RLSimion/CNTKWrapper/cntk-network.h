@@ -10,8 +10,9 @@ class DeepNetworkDefinition;
 
 class CntkNetwork
 {
-	DeepNetworkDefinition* m_pDeepFunction; //needed to map states/actions to vectors
 protected:
+	DeepNetworkDefinition* m_pDefinition; //needed to map states/actions to vectors
+
 	const wstring m_stateInputVariableId = L"input-state";
 	const wstring m_actionInputVariableId = L"input-action";
 	const wstring m_targetVariableId = L"target";
@@ -21,7 +22,7 @@ protected:
 	const wstring m_fullNetworLearnerFunctionId = L"full-network-learner";
 
 	CNTK::Variable m_inputState;
-	CNTK::FunctionPtr m_targetVariable;
+	CNTK::Variable m_targetVariable;
 	CNTK::FunctionPtr m_networkOutput;
 	CNTK::FunctionPtr m_fullNetworkLearnerFunction;
 	CNTK::TrainerPtr m_trainer;
@@ -34,8 +35,17 @@ protected:
 	CNTK::FunctionPtr initNetworkLearner(CNTK::FunctionPtr networkOutput, string learnerDefinition);
 	CNTK::FunctionPtr initNetworkFromInputLayer(CNTK::FunctionPtr inputLayer);
 
+	//base functionality for networks using only the state as input to avoid replicating it
+	void _evaluate(const vector<double>& s, vector<double>& output);
+	virtual void _train(DeepMinibatch* pMinibatch, const vector<double>& target);
+
+	//used for single-tuple evaluations
+	vector<double>& _evaluate(const State* s);
+	vector<double> m_outputBuffer;
+	vector<double> m_stateBuffer;
+	void stateToVector(const State* s, vector<double>& stateVector);
 public:
-	CntkNetwork(DeepNetworkDefinition* pNetworkDefinition) { m_pDeepFunction = pNetworkDefinition; }
+	CntkNetwork(DeepNetworkDefinition* pNetworkDefinition);
 	
 	//StateActionFunction methods to be called from subclasses
 	unsigned int getNumOutputs();
@@ -52,12 +62,17 @@ public:
 	const vector<string>& getInputStateVariables() { return CntkNetwork::getInputStateVariables(); }
 	const vector<string>& getInputActionVariables() { return CntkNetwork::getInputActionVariables(); }
 	void destroy();
-	IDeepNetwork* clone(bool bFreezeWeights = true);
+	IDeepNetwork* clone(bool bFreezeWeights = true) const;
+	void train(DeepMinibatch* pMinibatch, const vector<double>& target);
+	void evaluate(const vector<double>& s, vector<double>& output);
+	vector<double>& evaluate(const State* s, const Action* a);
 };
 
 class CntkContinuousQFunctionNetwork : public IContinuousQFunctionNetwork, CntkNetwork
 {
 	CNTK::Variable m_inputAction;
+	vector<double> m_actionBuffer;
+	void actionToVector(const State* s, vector<double>& stateVector);
 public:
 	CntkContinuousQFunctionNetwork(DeepNetworkDefinition* pNetworkDefinition);
 
@@ -65,7 +80,10 @@ public:
 	const vector<string>& getInputStateVariables() { return CntkNetwork::getInputStateVariables(); }
 	const vector<string>& getInputActionVariables() { return CntkNetwork::getInputActionVariables(); }
 	void destroy();
-	IDeepNetwork* clone(bool bFreezeWeights = true);
+	IDeepNetwork* clone(bool bFreezeWeights = true) const;
+	void train(DeepMinibatch* pMinibatch, const vector<double>& target);
+	void evaluate(const vector<double>& s, const vector<double>& a, vector<double>& output);
+	vector<double>& evaluate(const State* s, const Action* a);
 };
 
 class CntkVFunctionNetwork : public IVFunctionNetwork, CntkNetwork
@@ -77,7 +95,10 @@ public:
 	const vector<string>& getInputStateVariables() { return CntkNetwork::getInputStateVariables(); }
 	const vector<string>& getInputActionVariables() { return CntkNetwork::getInputActionVariables(); }
 	void destroy();
-	IDeepNetwork* clone(bool bFreezeWeights = true);
+	IDeepNetwork* clone(bool bFreezeWeights = true) const;
+	void train(DeepMinibatch* pMinibatch, const vector<double>& target);
+	void evaluate(const vector<double>& s, vector<double>& output);
+	vector<double>& evaluate(const State* s, const Action* a);
 };
 
 class CntkDeterministicPolicyNetwork : public IDeterministicPolicyNetwork, CntkNetwork
@@ -89,5 +110,8 @@ public:
 	const vector<string>& getInputStateVariables() { return CntkNetwork::getInputStateVariables(); }
 	const vector<string>& getInputActionVariables() { return CntkNetwork::getInputActionVariables(); }
 	void destroy();
-	IDeepNetwork* clone(bool bFreezeWeights = true);
+	IDeepNetwork* clone(bool bFreezeWeights = true) const;
+	void train(DeepMinibatch* pMinibatch, const vector<double>& target);
+	void evaluate(const vector<double>& s, vector<double>& output);
+	vector<double>& evaluate(const State* s, const Action* a);
 };

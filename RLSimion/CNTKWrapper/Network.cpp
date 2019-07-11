@@ -190,7 +190,7 @@ void Network::save(string fileName)
 }
 
 
-void Network::train(IMinibatch* pMinibatch, const vector<double>& target)
+void Network::_train(IMinibatch* pMinibatch, const vector<double>& target)
 {
 	unordered_map<CNTK::Variable, CNTK::MinibatchData> arguments =
 		unordered_map<CNTK::Variable, CNTK::MinibatchData>();
@@ -209,7 +209,7 @@ void Network::train(IMinibatch* pMinibatch, const vector<double>& target)
 	//set target outputs
 	arguments[m_targetVariable] = CNTK::Value::CreateBatch(m_targetVariable.Shape()
 		, target, CNTK::DeviceDescriptor::UseDefaultDevice());
-	//train the network using the minibatch
+	//_train the network using the minibatch
 	m_trainer->TrainMinibatch(arguments, DeviceDescriptor::UseDefaultDevice());
 }
 

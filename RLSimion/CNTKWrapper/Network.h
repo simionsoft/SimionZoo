@@ -58,7 +58,7 @@ public:
 	void initSoftUpdate(double u, INetwork* pTargetNetwork);
 	void softUpdate(INetwork* pTargetNetwork);
 
-	void train(IMinibatch* pMinibatch, const vector<double>& target);
+	void _train(IMinibatch* pMinibatch, const vector<double>& target);
 
 	void gradientWrtAction(const vector<double>& s, const vector<double>& a, vector<double>& outputGradient);
 	void applyGradient(IMinibatch* pMinibatch, const vector<double>& target);
