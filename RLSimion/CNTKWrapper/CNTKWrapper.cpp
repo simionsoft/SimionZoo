@@ -58,20 +58,26 @@ void CNTKWrapper::setDevice(bool useGPU)
 		CNTK::DeviceDescriptor::TrySetDefaultDevice(CNTK::DeviceDescriptor::CPUDevice());
 }
 
-IDiscreteQFunctionNetwork* getDiscreteQFunctionNetwork(DeepNetworkDefinition* pNetworkDefinition)
+IDiscreteQFunctionNetwork* CNTKWrapper::getDiscreteQFunctionNetwork(vector<string> inputStateVariables, size_t numActionSteps
+	, string networkLayersDefinition, string learnerDefinition)
 {
-	return new CntkDiscreteQFunctionNetwork(pNetworkDefinition);
+#pragma EXPORT
+	return new CntkDiscreteQFunctionNetwork(inputStateVariables, numActionSteps, networkLayersDefinition, learnerDefinition);
 }
-IContinuousQFunctionNetwork* getContinuousQFunctionNetwork(DeepNetworkDefinition* pNetworkDefinition)
+IContinuousQFunctionNetwork* CNTKWrapper::getContinuousQFunctionNetwork(vector<string> inputStateVariables, vector<string> inputActionVariables
+	, string networkLayersDefinition, string learnerDefinition)
 {
-	return new CntkContinuousQFunctionNetwork(pNetworkDefinition);
+#pragma EXPORT
+	return new CntkContinuousQFunctionNetwork(inputStateVariables, inputActionVariables, networkLayersDefinition, learnerDefinition);
 }
-IVFunctionNetwork* getVFunctionNetwork(DeepNetworkDefinition* pNetworkDefinition)
+IVFunctionNetwork* CNTKWrapper::getVFunctionNetwork(vector<string> inputStateVariables, string networkLayersDefinition, string learnerDefinition)
 {
-	return new CntkVFunctionNetwork(pNetworkDefinition);
+#pragma EXPORT
+	return new CntkVFunctionNetwork(inputStateVariables, networkLayersDefinition, learnerDefinition);
 }
-IDeterministicPolicyNetwork* getDeterministicPolicyNetwork(DeepNetworkDefinition* pNetworkDefinition)
+IDeterministicPolicyNetwork* CNTKWrapper::getDeterministicPolicyNetwork(vector<string> inputStateVariables, string networkLayersDefinition, string learnerDefinition)
 {
-	return new CntkDeterministicPolicyNetwork(pNetworkDefinition);
+#pragma EXPORT
+	return new CntkDeterministicPolicyNetwork(inputStateVariables, networkLayersDefinition, learnerDefinition);
 }
 

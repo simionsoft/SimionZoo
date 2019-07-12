@@ -27,11 +27,11 @@ public:
 	void clear();
 	void addTuple(const State* s, const Action* a, const State* s_p, double r);
 
-	vector<double>& s();
-	vector<double>& a();
-	vector<double>& s_p();
-	vector<double>& r();
-	vector<double>& target();
+	vector<double>& s() { return m_s; }
+	vector<double>& a() { return m_a; }
+	vector<double>& s_p() { return m_s_p; }
+	vector<double>& r() { return m_r; }
+	vector<double>& target() { return m_target; }
 
 	void copyElement(vector<double>& src, vector<double>&dst, size_t index);
 

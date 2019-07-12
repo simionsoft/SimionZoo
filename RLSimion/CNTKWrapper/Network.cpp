@@ -190,7 +190,7 @@ void Network::save(string fileName)
 }
 
 
-void Network::_train(IMinibatch* pMinibatch, const vector<double>& target)
+void Network::train(IMinibatch* pMinibatch, const vector<double>& target)
 {
 	unordered_map<CNTK::Variable, CNTK::MinibatchData> arguments =
 		unordered_map<CNTK::Variable, CNTK::MinibatchData>();
@@ -209,7 +209,7 @@ void Network::_train(IMinibatch* pMinibatch, const vector<double>& target)
 	//set target outputs
 	arguments[m_targetVariable] = CNTK::Value::CreateBatch(m_targetVariable.Shape()
 		, target, CNTK::DeviceDescriptor::UseDefaultDevice());
-	//_train the network using the minibatch
+	//train the network using the minibatch
 	m_trainer->TrainMinibatch(arguments, DeviceDescriptor::UseDefaultDevice());
 }
 
@@ -223,7 +223,7 @@ void Network::setOutputLayer(CNTK::FunctionPtr outputLayer)
 void Network::stateToVector(const State* s, vector<double>& stateVector)
 {
 	const vector<string>& stateVars = m_pNetworkDefinition->getInputStateVariables();
-	int numStateVars = stateVars.size();
+	size_t numStateVars = stateVars.size();
 
 	for (size_t i = 0; i< numStateVars; i++)
 		stateVector[i] = s->getNormalized(stateVars[i].c_str());

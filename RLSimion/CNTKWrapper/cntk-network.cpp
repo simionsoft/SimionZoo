@@ -1,6 +1,6 @@
 #include "cntk-network.h"
-#include "../Lib/deep-functions.h"
 #include "../Lib/deep-minibatch.h"
+#include "../Lib/deep-functions.h"
 #include "CNTKLibrary.h"
 #include "CNTKWrapperInternals.h"
 #include "../../tools/System/CrossPlatform.h"
@@ -8,26 +8,32 @@
 
 // CntkNetwork
 
-CntkNetwork::CntkNetwork(DeepNetworkDefinition* pNetworkDefinition)
+CntkNetwork::CntkNetwork(vector<string> inputStateVariables, vector<string> inputActionVariables
+	,size_t numOutputs, string networkLayersDefinition, string learnerDefinition)
 {
-	m_pDefinition = pNetworkDefinition;
-	m_outputBuffer = vector<double>(pNetworkDefinition->getNumOutputs());
-	m_stateBuffer = vector<double>(pNetworkDefinition->getInputStateVariables().size());
+	m_inputStateVariables = inputStateVariables;
+	m_inputActionVariables = inputActionVariables;
+	m_numOutputs = numOutputs;
+	m_networkLayersDefinition = networkLayersDefinition;
+	m_learnerDefinition = learnerDefinition;
+
+	m_outputBuffer = vector<double>(numOutputs);
+	m_stateBuffer = vector<double>(m_inputStateVariables.size());
 }
 
 unsigned int CntkNetwork::getNumOutputs()
 {
-	return m_pDefinition->getNumOutputs();
+	return (unsigned int) m_numOutputs;
 }
 
 const vector<string>& CntkNetwork::getInputStateVariables()
 {
-	return m_pDefinition->getInputStateVariables();
+	return m_inputStateVariables;
 }
 
 const vector<string>& CntkNetwork::getInputActionVariables()
 {
-	return m_pDefinition->getInputActionVariables();
+	return m_inputActionVariables;
 }
 
 CNTK::FunctionPtr CntkNetwork::activationFunction(CNTK::FunctionPtr input, Activation activationFunction)
@@ -112,8 +118,7 @@ CNTK::TrainerPtr CntkNetwork::trainer(CNTK::FunctionPtr networkOutput, CNTK::Fun
 
 CNTK::FunctionPtr CntkNetwork::initNetworkLearner(CNTK::FunctionPtr networkOutput, string learnerDefinition)
 {
-	m_targetVariable = CNTK::InputVariable({ m_pDefinition->getNumOutputs() }
-										, CNTK::DataType::Double, m_targetVariableId);
+	m_targetVariable = CNTK::InputVariable({ m_numOutputs }, CNTK::DataType::Double, m_targetVariableId);
 	CNTK::FunctionPtr lossFunctionPtr = CNTK::SquaredError(m_networkOutput, m_targetVariable, m_lossVariableId);
 	CNTK::FunctionPtr evalFunctionPtr = CNTK::SquaredError(m_networkOutput, m_targetVariable, m_lossVariableId);
 	CNTK::FunctionPtr fullNetworkLearnerFunction = CNTK::Combine({ lossFunctionPtr, m_networkOutput }, m_fullNetworLearnerFunctionId);
@@ -126,9 +131,9 @@ CNTK::FunctionPtr CntkNetwork::initNetworkLearner(CNTK::FunctionPtr networkOutpu
 
 CNTK::FunctionPtr CntkNetwork::initNetworkFromInputLayer(CNTK::FunctionPtr inputLayer)
 {
-	CNTK::FunctionPtr lastLayer = initNetworkLayers(m_inputState, m_pDefinition->getLayersDefinition());
+	CNTK::FunctionPtr lastLayer = initNetworkLayers(m_inputState, m_networkLayersDefinition);
 	m_networkOutput = denseLayer(lastLayer, getNumOutputs());
-	return initNetworkLearner(m_networkOutput, m_pDefinition->getLearnerDefinition());
+	return initNetworkLearner(m_networkOutput, m_learnerDefinition);
 }
 
 void CntkNetwork::_train(DeepMinibatch* pMinibatch, const vector<double>& target)
@@ -141,6 +146,29 @@ void CntkNetwork::_train(DeepMinibatch* pMinibatch, const vector<double>& target
 	arguments[m_targetVariable] = CNTK::Value::CreateBatch(m_targetVariable.Shape(), target, CNTK::DeviceDescriptor::UseDefaultDevice());
 	//_train the network using the minibatch
 	m_trainer->TrainMinibatch(arguments, DeviceDescriptor::UseDefaultDevice());
+}
+
+void CntkNetwork::_clone(const CntkNetwork* pSource, bool bFreezeWeights)
+{
+	ParameterCloningMethod cloneMethod;
+	if (bFreezeWeights)
+		cloneMethod = ParameterCloningMethod::Freeze;
+	else
+		cloneMethod = ParameterCloningMethod::Clone;
+
+	m_fullNetworkLearnerFunction = pSource->m_fullNetworkLearnerFunction->Clone(cloneMethod);
+
+	for (auto input : pSource->m_fullNetworkLearnerFunction->Arguments())
+	{
+		wstring name = input.Name();
+		if (name == m_stateInputVariableId) m_inputState = input;
+		else if (name == m_targetVariableId) m_targetVariable = input;
+	}
+
+	m_networkOutput = pSource->m_fullNetworkLearnerFunction->FindByName(m_networkOutputId)->Output();
+
+	m_outputBuffer = vector<double>(m_numOutputs);
+	m_stateBuffer = vector<double>(m_inputStateVariables.size());
 }
 
 void CntkNetwork::_evaluate(const vector<double>& s, vector<double>& output)
@@ -174,7 +202,7 @@ vector<double>& CntkNetwork::_evaluate(const State* s)
 
 void CntkNetwork::stateToVector(const State* s, vector<double>& stateVector)
 {
-	const vector<string>& stateVars = m_pDefinition->getInputStateVariables();
+	const vector<string>& stateVars = getInputStateVariables();
 	size_t numStateVars = stateVars.size();
 
 	for (size_t i = 0; i < numStateVars; i++)
@@ -183,15 +211,22 @@ void CntkNetwork::stateToVector(const State* s, vector<double>& stateVector)
 
 // CntkDiscreteQFunctionNetwork
 
-CntkDiscreteQFunctionNetwork::CntkDiscreteQFunctionNetwork(DeepNetworkDefinition* pNetworkDefinition)
-	: CntkNetwork(pNetworkDefinition)
+CntkDiscreteQFunctionNetwork::CntkDiscreteQFunctionNetwork(vector<string> inputStateVariables, size_t numActionSteps
+	, string networkLayersDefinition, string learnerDefinition)
+	: CntkNetwork(inputStateVariables, {}, numActionSteps, networkLayersDefinition, learnerDefinition)
 {
-	m_inputState = CNTK::InputVariable({ pNetworkDefinition->getInputStateVariables().size() }
+	m_inputState = CNTK::InputVariable({ getInputStateVariables().size() }
 		, CNTK::DataType::Double, false, m_stateInputVariableId);
 	m_fullNetworkLearnerFunction = initNetworkFromInputLayer(m_inputState);
 }
 void CntkDiscreteQFunctionNetwork::destroy() { delete this;}
-IDeepNetwork* CntkDiscreteQFunctionNetwork::clone(bool bFreezeWeights) const { return nullptr; }
+IDeepNetwork* CntkDiscreteQFunctionNetwork::clone(bool bFreezeWeights) const
+{
+	CntkDiscreteQFunctionNetwork* pClone = new CntkDiscreteQFunctionNetwork(m_inputStateVariables
+		, m_numOutputs, m_networkLayersDefinition, m_learnerDefinition);
+	pClone->_clone(this, bFreezeWeights);
+	return pClone;
+}
 void CntkDiscreteQFunctionNetwork::train(DeepMinibatch* pMinibatch, const vector<double>& target)
 {
 	CntkNetwork::_train(pMinibatch, target);
@@ -207,14 +242,15 @@ vector<double>& CntkDiscreteQFunctionNetwork::evaluate(const State* s, const Act
 
 // CntkContinuousQFunctionNetwork
 
-CntkContinuousQFunctionNetwork::CntkContinuousQFunctionNetwork(DeepNetworkDefinition* pNetworkDefinition)
-	: CntkNetwork(pNetworkDefinition)
+CntkContinuousQFunctionNetwork::CntkContinuousQFunctionNetwork(vector<string> inputStateVariables, vector<string> inputActionVariables
+	, string networkLayersDefinition, string learnerDefinition)
+	: CntkNetwork(inputStateVariables, inputActionVariables, 1, networkLayersDefinition, learnerDefinition)
 {
-	m_actionBuffer = vector<double>(pNetworkDefinition->getInputActionVariables().size());
+	m_actionBuffer = vector<double>(getInputActionVariables().size());
 
-	m_inputState = CNTK::InputVariable({ pNetworkDefinition->getInputStateVariables().size() }
+	m_inputState = CNTK::InputVariable({ getInputStateVariables().size() }
 		, CNTK::DataType::Double, false, m_stateInputVariableId);
-	m_inputAction = CNTK::InputVariable({ pNetworkDefinition->getInputActionVariables().size() }
+	m_inputAction = CNTK::InputVariable({ getInputActionVariables().size() }
 		, CNTK::DataType::Double, false, m_actionInputVariableId);
 	CNTK::FunctionPtr inputMergeLayer = mergeLayer(m_inputState, m_inputAction);
 
@@ -222,7 +258,19 @@ CntkContinuousQFunctionNetwork::CntkContinuousQFunctionNetwork(DeepNetworkDefini
 }
 
 void CntkContinuousQFunctionNetwork::destroy() { delete this; }
-IDeepNetwork* CntkContinuousQFunctionNetwork::clone(bool bFreezeWeights) const { return nullptr; }
+IDeepNetwork* CntkContinuousQFunctionNetwork::clone(bool bFreezeWeights) const
+{
+	CntkContinuousQFunctionNetwork* pClone = new CntkContinuousQFunctionNetwork(m_inputStateVariables, m_inputActionVariables
+		, m_networkLayersDefinition, m_learnerDefinition);
+	pClone->_clone(this, bFreezeWeights);
+	//initialize CntkContinuousQFunctionNetwork-specific stuff
+	for (auto input : pClone->m_fullNetworkLearnerFunction->Arguments())
+	{
+		wstring name = input.Name();
+		if (name == m_actionInputVariableId) pClone->m_inputAction = input;
+	}
+	return pClone;
+}
 
 void CntkContinuousQFunctionNetwork::train(DeepMinibatch* pMinibatch, const vector<double>& target)
 {
@@ -262,7 +310,7 @@ void CntkContinuousQFunctionNetwork::evaluate(const vector<double>& s, const vec
 
 void CntkContinuousQFunctionNetwork::actionToVector(const Action* a, vector<double>& actionVector)
 {
-	const vector<string>& stateVars = m_pDefinition->getInputActionVariables();
+	const vector<string>& stateVars = getInputActionVariables();
 	size_t numActionVars = stateVars.size();
 
 	for (size_t i = 0; i < numActionVars; i++)
@@ -279,16 +327,22 @@ vector<double>& CntkContinuousQFunctionNetwork::evaluate(const State* s, const A
 
 // CntkVFunctionNetwork
 
-CntkVFunctionNetwork::CntkVFunctionNetwork(DeepNetworkDefinition* pNetworkDefinition)
-	: CntkNetwork(pNetworkDefinition)
+CntkVFunctionNetwork::CntkVFunctionNetwork(vector<string> inputStateVariables, string networkLayersDefinition, string learnerDefinition)
+	: CntkNetwork(inputStateVariables, {}, 1, networkLayersDefinition, learnerDefinition)
 {
-	m_inputState = CNTK::InputVariable({ pNetworkDefinition->getInputStateVariables().size() }
+	m_inputState = CNTK::InputVariable({ getInputStateVariables().size() }
 		, CNTK::DataType::Double, false, m_stateInputVariableId);
 	m_fullNetworkLearnerFunction = initNetworkFromInputLayer(m_inputState);
 }
 
 void CntkVFunctionNetwork::destroy() { delete this; }
-IDeepNetwork* CntkVFunctionNetwork::clone(bool bFreezeWeightse) const { return nullptr; }
+IDeepNetwork* CntkVFunctionNetwork::clone(bool bFreezeWeights) const
+{
+	CntkVFunctionNetwork* pClone = new CntkVFunctionNetwork(m_inputStateVariables
+		, m_networkLayersDefinition, m_learnerDefinition);
+	pClone->_clone(this, bFreezeWeights);
+	return pClone;
+}
 void CntkVFunctionNetwork::train(DeepMinibatch* pMinibatch, const vector<double>& target)
 {
 	CntkNetwork::_train(pMinibatch, target);
@@ -304,15 +358,21 @@ vector<double>& CntkVFunctionNetwork::evaluate(const State* s, const Action* a)
 
 // CntkDeterministicPolicyNetwork
 
-CntkDeterministicPolicyNetwork::CntkDeterministicPolicyNetwork(DeepNetworkDefinition* pNetworkDefinition)
-	: CntkNetwork(pNetworkDefinition)
+CntkDeterministicPolicyNetwork::CntkDeterministicPolicyNetwork(vector<string> inputStateVariables,string networkLayersDefinition, string learnerDefinition)
+	: CntkNetwork(inputStateVariables, {}, 1, networkLayersDefinition, learnerDefinition)
 {
-	m_inputState = CNTK::InputVariable({ pNetworkDefinition->getInputStateVariables().size() }
+	m_inputState = CNTK::InputVariable({ getInputStateVariables().size() }
 		, CNTK::DataType::Double, false, m_stateInputVariableId);
 	m_fullNetworkLearnerFunction = initNetworkFromInputLayer(m_inputState);
 }
 void CntkDeterministicPolicyNetwork::destroy() { delete this; }
-IDeepNetwork* CntkDeterministicPolicyNetwork::clone(bool bFreezeWeights) const { return nullptr; }
+IDeepNetwork* CntkDeterministicPolicyNetwork::clone(bool bFreezeWeights) const
+{
+	CntkDeterministicPolicyNetwork* pClone = new CntkDeterministicPolicyNetwork(m_inputStateVariables
+		, m_networkLayersDefinition, m_learnerDefinition);
+	pClone->_clone(this, bFreezeWeights);
+	return pClone;
+}
 void CntkDeterministicPolicyNetwork::train(DeepMinibatch* pMinibatch, const vector<double>& target)
 {
 	CntkNetwork::_train(pMinibatch, target);

@@ -70,7 +70,7 @@ public:
 	virtual void initSoftUpdate(double u, INetwork* pTargetNetwork) = 0;
 	virtual void softUpdate(INetwork* pTargetNetwork) = 0;
 
-	virtual void _train(IMinibatch* pMinibatch, const vector<double>& target) = 0;
+	virtual void train(IMinibatch* pMinibatch, const vector<double>& target) = 0;
 
 	virtual void gradientWrtAction(const vector<double>& s, const vector<double>& a, vector<double>& outputValues) = 0;
 	virtual void applyGradient(IMinibatch* pMinibatch, const vector<double>& target) = 0;
@@ -108,9 +108,11 @@ namespace CNTKWrapper
 	extern "C" {DLL_API INetworkDefinition* getNetworkDefinition(tinyxml2::XMLElement* pNode); }
 	extern "C" {DLL_API void setDevice(bool useGPU); }
 
-	extern "C" {DLL_API IDiscreteQFunctionNetwork* getDiscreteQFunctionNetwork(DeepNetworkDefinition* pNetworkDefinition); }
-	extern "C" {DLL_API IContinuousQFunctionNetwork* getContinuousQFunctionNetwork(DeepNetworkDefinition* pNetworkDefinition); }
-	extern "C" {DLL_API IVFunctionNetwork* getVFunctionNetwork(DeepNetworkDefinition* pNetworkDefinition); }
-	extern "C" {DLL_API IDeterministicPolicyNetwork* getDeterministicPolicyNetwork(DeepNetworkDefinition* pNetworkDefinition); }
+	extern "C" {DLL_API IDiscreteQFunctionNetwork* getDiscreteQFunctionNetwork(vector<string> inputStateVariables, size_t numActionSteps
+		, string networkLayersDefinition, string learnerDefinition); }
+	extern "C" {DLL_API IContinuousQFunctionNetwork* getContinuousQFunctionNetwork(vector<string> inputStateVariables, vector<string> inputActionVariables
+		, string networkLayersDefinition, string learnerDefinition); }
+	extern "C" {DLL_API IVFunctionNetwork* getVFunctionNetwork(vector<string> inputStateVariables, string networkLayersDefinition, string learnerDefinition); }
+	extern "C" {DLL_API IDeterministicPolicyNetwork* getDeterministicPolicyNetwork(vector<string> inputStateVariables, string networkLayersDefinition, string learnerDefinition); }
 }
 

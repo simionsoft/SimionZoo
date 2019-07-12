@@ -67,31 +67,6 @@ void DeepMinibatch::addTuple(const State* s, const Action* a, const State* s_p, 
 	m_numTuples++;
 }
 
-vector<double>& DeepMinibatch::s()
-{
-	return m_s;
-}
-
-vector<double>& DeepMinibatch::a()
-{
-	return m_a;
-}
-
-vector<double>& DeepMinibatch::s_p()
-{
-	return m_s_p;
-}
-
-vector<double>& DeepMinibatch::r()
-{
-	return m_r;
-}
-
-vector<double>& DeepMinibatch::target()
-{
-	return m_target;
-}
-
 void DeepMinibatch::copyElement(vector<double>& src, vector<double>&dst, size_t index)
 {
 	if (src.size() != dst.size())
