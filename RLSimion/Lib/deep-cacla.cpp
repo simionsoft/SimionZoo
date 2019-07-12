@@ -68,10 +68,10 @@ double DeepCACLA::update(const State *s, const Action *a, const State *s_p, doub
 		}
 
 		//update the critic
-		m_pCriticNetwork->train(m_pCriticMinibatch, m_pCriticMinibatch->target());
+		m_pCriticNetwork->train(m_pCriticMinibatch, m_pCriticMinibatch->target(), m_criticVFunction->getLearningRate());
 
 		//update the actor
-		m_pActorNetwork->train(m_pActorMinibatch, m_pActorMinibatch->target());
+		m_pActorNetwork->train(m_pActorMinibatch, m_pActorMinibatch->target(), m_actorPolicy->getLearningRate());
 	}
 	return 0.0;
 }

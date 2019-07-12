@@ -70,6 +70,11 @@ DeepMinibatch* DeepNetworkDefinition::getMinibatch()
 	return new DeepMinibatch(m_minibatchSize.get(), this);
 }
 
+double DeepNetworkDefinition::getLearningRate()
+{
+	return m_learningRate->get();
+}
+
 
 DeepDiscreteQFunction::DeepDiscreteQFunction() {}
 DeepDiscreteQFunction::DeepDiscreteQFunction(ConfigNode* pConfigNode) : DeepNetworkDefinition(pConfigNode)

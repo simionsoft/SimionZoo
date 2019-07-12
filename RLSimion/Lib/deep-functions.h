@@ -44,6 +44,7 @@ public:
 	void vectorToAction(vector<double>& v, size_t numTuples, Action* s);
 
 	DeepMinibatch* getMinibatch();
+	double getLearningRate();
 };
 
 class DeepDiscreteQFunction: public DeepNetworkDefinition
