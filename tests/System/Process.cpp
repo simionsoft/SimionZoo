@@ -118,5 +118,29 @@ namespace SystemTests
 			Assert::AreEqual((char)1, dstBuffer[1]);
 			Assert::AreEqual((char)27, dstBuffer[2]);
 		}
+
+		TEST_METHOD(CrossPlatform_Split)
+		{
+			vector<string> splitParts = CrossPlatform::split("oh my god what is this?", ' ');
+			Assert::AreEqual((size_t) 6, splitParts.size());
+			Assert::AreEqual("oh", splitParts[0].c_str());
+			Assert::AreEqual("my", splitParts[1].c_str());
+			Assert::AreEqual("god", splitParts[2].c_str());
+			Assert::AreEqual("what", splitParts[3].c_str());
+			Assert::AreEqual("is", splitParts[4].c_str());
+			Assert::AreEqual("this?", splitParts[5].c_str());
+
+			splitParts = CrossPlatform::split("oh my god what is this?", ',');
+			Assert::AreEqual((size_t)1, splitParts.size());
+
+			splitParts = CrossPlatform::split("", ' ');
+			Assert::AreEqual((size_t)0, splitParts.size());
+
+			splitParts = CrossPlatform::split("a::b", ':');
+			Assert::AreEqual((size_t)3, splitParts.size());
+			Assert::AreEqual("a", splitParts[0].c_str());
+			Assert::AreEqual("", splitParts[1].c_str());
+			Assert::AreEqual("b", splitParts[2].c_str());
+		}
 	};
 }
