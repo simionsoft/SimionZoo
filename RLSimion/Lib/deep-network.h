@@ -13,7 +13,7 @@ public:
 
 	virtual IDeepNetwork* clone(bool bFreezeWeights = true) const = 0;
 
-	virtual void train(DeepMinibatch* pMinibatch, const vector<double>& target) = 0;
+	virtual void train(DeepMinibatch* pMinibatch, const vector<double>& target, double learningRate) = 0;
 
 	virtual vector<double>& evaluate(const State* s, const Action* a) = 0;
 };
