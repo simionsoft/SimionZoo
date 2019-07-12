@@ -101,7 +101,10 @@ public:
 	virtual size_t outputSize() const = 0;
 };
 
-#include "./cntk-network.h"
+class IDiscreteQFunctionNetwork;
+class IContinuousQFunctionNetwork;
+class IVFunctionNetwork;
+class IDeterministicPolicyNetwork;
 
 namespace CNTKWrapper
 {
