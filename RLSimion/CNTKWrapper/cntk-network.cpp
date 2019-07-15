@@ -133,7 +133,6 @@ CNTK::FunctionPtr CntkNetwork::initNetworkFromInputLayer(CNTK::FunctionPtr input
 {
 	CNTK::FunctionPtr lastLayer = initNetworkLayers(m_inputState, m_networkLayersDefinition);
 	m_networkOutput = denseLayer(lastLayer, getNumOutputs(), m_networkOutputId);
-	FunctionPtr a = m_networkOutput->FindByName(m_networkOutputId);
 	return initNetworkLearner(m_networkOutput, m_learnerDefinition);
 }
 

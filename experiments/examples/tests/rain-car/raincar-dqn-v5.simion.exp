@@ -20,7 +20,7 @@
   </World>
   <Experiment>
     <Random-Seed>1</Random-Seed>
-    <Num-Episodes>100</Num-Episodes>
+    <Num-Episodes>1000</Num-Episodes>
     <Eval-Freq>5</Eval-Freq>
     <Progress-Update-Freq>1.0</Progress-Update-Freq>
     <Episode-Length>100</Episode-Length>
@@ -56,8 +56,8 @@
                   <Learning-Rate>
                     <Schedule>
                       <Simple-Linear-Decay>
-                        <Initial-Value>0.0001</Initial-Value>
-                        <End-Value>0.00000001</End-Value>
+                        <Initial-Value>0.00000001</Initial-Value>
+                        <End-Value>0.000000000001</End-Value>
                       </Simple-Linear-Decay>
                       </Schedule>
                   </Learning-Rate>

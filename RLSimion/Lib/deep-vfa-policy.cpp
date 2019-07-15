@@ -54,20 +54,18 @@ void DiscreteDeepPolicy::initialize(DeepDiscreteQFunction* pQFunctionDefinition)
 	m_pQFunctionDefinition = pQFunctionDefinition;
 
 	m_numSamplesPerActionVariable = pQFunctionDefinition->getNumOutputs();
+	if (m_numSamplesPerActionVariable <= 0)
+		throw runtime_error("The number of discretized steps must be greater than zero");
 
 	m_argMaxQValues = vector<double>(m_numTotalActionSamples);
 	m_stateVector = vector<double>(pQFunctionDefinition->getInputStateVariables().size());
 	m_argMaxAction = vector<double>(pQFunctionDefinition->getNumOutputActions());
+	m_outputActionVariables = pQFunctionDefinition->getOutputActionVariables();
 
 	//We use normalized values, so there is no need to replicate the same vector for all the action variables
 	m_discretizedAction = vector<double>(m_numSamplesPerActionVariable);
 	for (int sample = 0; sample < m_numSamplesPerActionVariable; sample++)
-	{
-		if (m_numSamplesPerActionVariable > 0)
-			m_discretizedAction[sample] = (double)sample / double(m_numSamplesPerActionVariable - 1);
-		else
-			throw runtime_error("The number of discretized steps must be greater than zero");
-	}
+		m_discretizedAction[sample] = (double)sample / double(m_numSamplesPerActionVariable - 1);
 }
 
 //This method works with normalized values so there is no need to denormalize them
@@ -237,12 +235,13 @@ void NoisePlusGreedyDeepPolicy::selectAction(IDiscreteQFunctionNetwork* pNetwork
 	}
 
 	double noise;
-	for (int i = 0; i < m_noiseSignals.size(); i++)
+	size_t noiseSignalIndex;
+	for (size_t i = 0; i < m_outputActionVariables.size(); i++)
 	{
-		if (i < m_noiseSignals.size())
-		{
-			noise = m_noiseSignals[i]->getSample();
-			a->set(m_outputActionVariables[i].c_str(),/* a->get(outputActions[i].c_str()) + */noise);
-		}
+		//if there are less noise signals than output action variables, just use the last one
+		noiseSignalIndex = std::min(i, m_noiseSignals.size() - 1);
+		
+		noise = m_noiseSignals[i]->getSample();
+		a->set(m_outputActionVariables[i].c_str(),/* a->get(outputActions[i].c_str()) + */noise);
 	}
 }

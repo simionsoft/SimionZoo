@@ -50,6 +50,7 @@ public:
 class DeepDiscreteQFunction: public DeepNetworkDefinition
 {
 	MULTI_VALUE_VARIABLE<STATE_VARIABLE> m_inputState;
+	vector <string> m_outputActionVariables;
 	MULTI_VALUE_VARIABLE<ACTION_VARIABLE> m_outputAction;
 	INT_PARAM m_numActionSteps;
 	int m_totalNumActionSteps = 0;
@@ -60,6 +61,7 @@ public:
 	size_t getNumStepsPerAction() const;
 	size_t getTotalNumActionSteps() const;
 	size_t getNumOutputActions() const;
+	vector<string>& getOutputActionVariables();
 	IDiscreteQFunctionNetwork* getNetworkInstance();
 };
 

@@ -91,6 +91,11 @@ DeepDiscreteQFunction::DeepDiscreteQFunction(ConfigNode* pConfigNode) : DeepNetw
 	for (size_t i = 0; i < m_inputState.size(); i++)
 		m_inputStateVariables.push_back(m_inputState[i]->get());
 
+	//add output action variables to the list stored by this subclassed
+	m_outputActionVariables = vector<string>(m_outputAction.size());
+	for (size_t i = 0; i < m_outputAction.size(); i++)
+		m_outputActionVariables[i] = m_outputAction[i]->get();
+
 	//calculate the total number of discretized actions and set it
 	m_totalNumActionSteps = 1;
 	for (size_t i = 0; i < m_outputAction.size(); i++)
@@ -109,6 +114,7 @@ IDiscreteQFunctionNetwork* DeepDiscreteQFunction::getNetworkInstance()
 size_t DeepDiscreteQFunction::getNumStepsPerAction() const { return (size_t) m_numActionSteps.get(); }
 size_t DeepDiscreteQFunction::getTotalNumActionSteps() const { return (size_t) m_totalNumActionSteps; }
 size_t DeepDiscreteQFunction::getNumOutputActions() const { return m_outputAction.size(); }
+vector<string>& DeepDiscreteQFunction::getOutputActionVariables() { return m_outputActionVariables; }
 
 DeepContinuousQFunction::DeepContinuousQFunction() {}
 DeepContinuousQFunction::DeepContinuousQFunction(ConfigNode* pConfigNode) : DeepNetworkDefinition(pConfigNode)
