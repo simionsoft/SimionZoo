@@ -11,6 +11,7 @@ class DeepNetworkDefinition;
 class CntkNetwork
 {
 protected:
+	bool m_useNormalization;
 	vector<string> m_inputStateVariables;
 	vector<string> m_inputActionVariables;
 	size_t m_numOutputs;
@@ -35,7 +36,7 @@ protected:
 	CNTK::TrainerPtr trainer(CNTK::FunctionPtr networkOutput, CNTK::FunctionPtr lossFunction, CNTK::FunctionPtr evalFunction, string learnerDefinition);
 	CNTK::FunctionPtr mergeLayer(CNTK::Variable var1, CNTK::Variable var2);
 	CNTK::FunctionPtr activationFunction(CNTK::FunctionPtr input, Activation activationFunction);
-	CNTK::FunctionPtr denseLayer(CNTK::FunctionPtr layerInput, size_t outputDim);
+	CNTK::FunctionPtr denseLayer(CNTK::FunctionPtr layerInput, size_t outputDim, wstring layerId= L"");
 	CNTK::FunctionPtr initNetworkLayers(CNTK::FunctionPtr networkInput, string layersDefinition);
 	CNTK::FunctionPtr initNetworkLearner(CNTK::FunctionPtr networkOutput, string learnerDefinition);
 	CNTK::FunctionPtr initNetworkFromInputLayer(CNTK::FunctionPtr inputLayer);
@@ -52,7 +53,7 @@ protected:
 	void stateToVector(const State* s, vector<double>& stateVector);
 
 	CntkNetwork(vector<string> inputStateVariables, vector<string> inputActionVariables
-		, size_t numOutputs, string networkLayersDefinition, string learnerDefinition);
+		, size_t numOutputs, string networkLayersDefinition, string learnerDefinition, bool useNormalization);
 public:
 	//StateActionFunction methods to be called from subclasses
 	unsigned int getNumOutputs();
@@ -64,7 +65,7 @@ class CntkDiscreteQFunctionNetwork: public IDiscreteQFunctionNetwork, CntkNetwor
 {
 public:
 	CntkDiscreteQFunctionNetwork(vector<string> inputStateVariables, size_t numActionSteps
-		, string networkLayersDefinition, string learnerDefinition);
+		, string networkLayersDefinition, string learnerDefinition, bool useNormalization);
 	
 	unsigned int getNumOutputs() { return CntkNetwork::getNumOutputs(); }
 	const vector<string>& getInputStateVariables() { return CntkNetwork::getInputStateVariables(); }
@@ -83,7 +84,7 @@ class CntkContinuousQFunctionNetwork : public IContinuousQFunctionNetwork, CntkN
 	void actionToVector(const Action* a, vector<double>& stateVector);
 public:
 	CntkContinuousQFunctionNetwork(vector<string> inputStateVariables, vector<string> inputActionVariables
-		, string networkLayersDefinition, string learnerDefinition);
+		, string networkLayersDefinition, string learnerDefinition, bool useNormalization);
 
 	unsigned int getNumOutputs() { return 1; }
 	const vector<string>& getInputStateVariables() { return CntkNetwork::getInputStateVariables(); }
@@ -98,7 +99,7 @@ public:
 class CntkVFunctionNetwork : public IVFunctionNetwork, CntkNetwork
 {
 public:
-	CntkVFunctionNetwork(vector<string> inputStateVariables, string networkLayersDefinition, string learnerDefinition);
+	CntkVFunctionNetwork(vector<string> inputStateVariables, string networkLayersDefinition, string learnerDefinition, bool useNormalization);
 
 	unsigned int getNumOutputs() { return 1; }
 	const vector<string>& getInputStateVariables() { return CntkNetwork::getInputStateVariables(); }
@@ -113,7 +114,7 @@ public:
 class CntkDeterministicPolicyNetwork : public IDeterministicPolicyNetwork, CntkNetwork
 {
 public:
-	CntkDeterministicPolicyNetwork(vector<string> inputStateVariables, string networkLayersDefinition, string learnerDefinition);
+	CntkDeterministicPolicyNetwork(vector<string> inputStateVariables, string networkLayersDefinition, string learnerDefinition, bool useNormalization);
 
 	unsigned int getNumOutputs() { return 1; }
 	const vector<string>& getInputStateVariables() { return CntkNetwork::getInputStateVariables(); }

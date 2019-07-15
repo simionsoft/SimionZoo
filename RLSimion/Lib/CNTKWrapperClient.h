@@ -33,10 +33,14 @@ namespace CNTK
 		static setDeviceDLL setDevice;
 
 		//new interfaces
-		typedef IDiscreteQFunctionNetwork* (CNTK_WRAPPER_DLL_API* getDiscreteQFunctionNetworkDll)(size_t numStateVariables, size_t totalNumActionSteps, string layers, string learner, bool normalize);
-		typedef IContinuousQFunctionNetwork* (CNTK_WRAPPER_DLL_API* getContinuousQFunctionNetworkDll)(size_t numStateVariables, size_t numActionVariables, string layers, string learner, bool normalize);
-		typedef IVFunctionNetwork* (CNTK_WRAPPER_DLL_API* getVFunctionNetworkDll)(size_t numStateVariables, string layers, string learner, bool normalize);
-		typedef IDeterministicPolicyNetwork* (CNTK_WRAPPER_DLL_API* getDeterministicPolicyNetworkDll)(size_t numStateVariables, string layers, string learner, bool normalize);
+		typedef IDiscreteQFunctionNetwork* (CNTK_WRAPPER_DLL_API* getDiscreteQFunctionNetworkDll)(vector<string> inputStateVariables, size_t numActionSteps
+			, string networkLayersDefinition, string learnerDefinition, bool useNormalization);
+		typedef IContinuousQFunctionNetwork* (CNTK_WRAPPER_DLL_API* getContinuousQFunctionNetworkDll)(vector<string> inputStateVariables, vector<string> inputActionVariables
+			, string networkLayersDefinition, string learnerDefinition, bool useNormalization);
+		typedef IVFunctionNetwork* (CNTK_WRAPPER_DLL_API* getVFunctionNetworkDll)(vector<string> inputStateVariables, string networkLayersDefinition
+			, string learnerDefinition, bool useNormalization);
+		typedef IDeterministicPolicyNetwork* (CNTK_WRAPPER_DLL_API* getDeterministicPolicyNetworkDll)(vector<string> inputStateVariables, string networkLayersDefinition
+			, string learnerDefinition, bool useNormalization);
 		static getDiscreteQFunctionNetworkDll getDiscreteQFunctionNetwork;
 		static getContinuousQFunctionNetworkDll getContinuousQFunctionNetwork;
 		static getVFunctionNetworkDll getVFunctionNetwork;

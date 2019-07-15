@@ -60,25 +60,25 @@ void CNTKWrapper::setDevice(bool useGPU)
 }
 
 IDiscreteQFunctionNetwork* CNTKWrapper::getDiscreteQFunctionNetwork(vector<string> inputStateVariables, size_t numActionSteps
-	, string networkLayersDefinition, string learnerDefinition)
+	, string networkLayersDefinition, string learnerDefinition, bool useNormalization)
 {
 #pragma EXPORT
-	return new CntkDiscreteQFunctionNetwork(inputStateVariables, numActionSteps, networkLayersDefinition, learnerDefinition);
+	return new CntkDiscreteQFunctionNetwork(inputStateVariables, numActionSteps, networkLayersDefinition, learnerDefinition, useNormalization);
 }
 IContinuousQFunctionNetwork* CNTKWrapper::getContinuousQFunctionNetwork(vector<string> inputStateVariables, vector<string> inputActionVariables
-	, string networkLayersDefinition, string learnerDefinition)
+	, string networkLayersDefinition, string learnerDefinition, bool useNormalization)
 {
 #pragma EXPORT
-	return new CntkContinuousQFunctionNetwork(inputStateVariables, inputActionVariables, networkLayersDefinition, learnerDefinition);
+	return new CntkContinuousQFunctionNetwork(inputStateVariables, inputActionVariables, networkLayersDefinition, learnerDefinition, useNormalization);
 }
-IVFunctionNetwork* CNTKWrapper::getVFunctionNetwork(vector<string> inputStateVariables, string networkLayersDefinition, string learnerDefinition)
+IVFunctionNetwork* CNTKWrapper::getVFunctionNetwork(vector<string> inputStateVariables, string networkLayersDefinition, string learnerDefinition, bool useNormalization)
 {
 #pragma EXPORT
-	return new CntkVFunctionNetwork(inputStateVariables, networkLayersDefinition, learnerDefinition);
+	return new CntkVFunctionNetwork(inputStateVariables, networkLayersDefinition, learnerDefinition, useNormalization);
 }
-IDeterministicPolicyNetwork* CNTKWrapper::getDeterministicPolicyNetwork(vector<string> inputStateVariables, string networkLayersDefinition, string learnerDefinition)
+IDeterministicPolicyNetwork* CNTKWrapper::getDeterministicPolicyNetwork(vector<string> inputStateVariables, string networkLayersDefinition, string learnerDefinition, bool useNormalization)
 {
 #pragma EXPORT
-	return new CntkDeterministicPolicyNetwork(inputStateVariables, networkLayersDefinition, learnerDefinition);
+	return new CntkDeterministicPolicyNetwork(inputStateVariables, networkLayersDefinition, learnerDefinition, useNormalization);
 }
 

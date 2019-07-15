@@ -64,6 +64,11 @@ string DeepNetworkDefinition::getLearnerDefinition()
 	return m_learner->to_string();
 }
 
+bool DeepNetworkDefinition::useNormalization()
+{
+	return m_useMinibatchNormalization.get();
+}
+
 DeepMinibatch* DeepNetworkDefinition::getMinibatch()
 {
 	return new DeepMinibatch(m_minibatchSize.get(), this);
@@ -97,7 +102,7 @@ DeepDiscreteQFunction::DeepDiscreteQFunction(ConfigNode* pConfigNode) : DeepNetw
 
 IDiscreteQFunctionNetwork* DeepDiscreteQFunction::getNetworkInstance()
 {
-	return CNTK::WrapperClient::getDiscreteQFunctionNetwork(m_inputStateVariables.size(), m_totalNumActionSteps
+	return CNTK::WrapperClient::getDiscreteQFunctionNetwork(m_inputStateVariables, m_totalNumActionSteps
 		, getLayersDefinition(), getLearnerDefinition(), m_useMinibatchNormalization.get());
 }
 
@@ -123,7 +128,7 @@ DeepContinuousQFunction::DeepContinuousQFunction(ConfigNode* pConfigNode) : Deep
 
 IContinuousQFunctionNetwork* DeepContinuousQFunction::getNetworkInstance()
 {
-	return CNTK::WrapperClient::getContinuousQFunctionNetwork(m_inputStateVariables.size(), m_inputActionVariables.size()
+	return CNTK::WrapperClient::getContinuousQFunctionNetwork(m_inputStateVariables, m_inputActionVariables
 		, getLayersDefinition(), getLearnerDefinition(), m_useMinibatchNormalization.get());
 }
 
@@ -143,7 +148,7 @@ DeepVFunction::DeepVFunction(ConfigNode* pConfigNode) : DeepNetworkDefinition(pC
 
 IVFunctionNetwork* DeepVFunction::getNetworkInstance()
 {
-	return CNTK::WrapperClient::getVFunctionNetwork(m_inputStateVariables.size()
+	return CNTK::WrapperClient::getVFunctionNetwork(m_inputStateVariables
 		, getLayersDefinition(), getLearnerDefinition(), m_useMinibatchNormalization.get());
 }
 
@@ -165,6 +170,6 @@ DeepDeterministicPolicy::DeepDeterministicPolicy(ConfigNode* pConfigNode) : Deep
 
 IDeterministicPolicyNetwork* DeepDeterministicPolicy::getNetworkInstance()
 {
-	return CNTK::WrapperClient::getDeterministicPolicyNetwork(m_inputStateVariables.size()
+	return CNTK::WrapperClient::getDeterministicPolicyNetwork(m_inputStateVariables
 		, getLayersDefinition(), getLearnerDefinition(), m_useMinibatchNormalization.get());
 }

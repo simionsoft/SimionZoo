@@ -237,7 +237,7 @@ void NoisePlusGreedyDeepPolicy::selectAction(IDiscreteQFunctionNetwork* pNetwork
 	}
 
 	double noise;
-	for (int i = 0; i < m_outputActionVariables.size(); i++)
+	for (int i = 0; i < m_noiseSignals.size(); i++)
 	{
 		if (i < m_noiseSignals.size())
 		{

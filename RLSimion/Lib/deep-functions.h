@@ -36,6 +36,7 @@ public:
 
 	string getLayersDefinition();
 	string getLearnerDefinition();
+	bool useNormalization();
 
 	void stateToVector(const State* s, vector<double>& v, size_t numTuples);
 	void actionToVector(const Action* s, vector<double>& v, size_t numTuples);

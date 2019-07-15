@@ -24,6 +24,7 @@
 */
 #include "deep-layer.h"
 #include "parameters.h"
+#include "deep-functions.h"
 
 DeepLayer::DeepLayer(ConfigNode* pConfigNode)
 {
@@ -43,5 +44,5 @@ Activation DeepLayer::getActivationFunction()
 
 string DeepLayer::to_string()
 {
-	return activationFunctionName(m_activationFunction) + "(" + std::to_string(m_numUnits) + ")";
+	return activationFunctionName(m_activationFunction) + DeepNetworkDefinition::layerParameterDelimiter + std::to_string(m_numUnits) ;
 }
