@@ -21,7 +21,6 @@ protected:
 	CHILD_OBJECT_FACTORY<DeepLearner> m_learner;
 	BOOL_PARAM m_useMinibatchNormalization;
 	INT_PARAM m_minibatchSize;
-	CHILD_OBJECT_FACTORY<NumericValue> m_learningRate;
 
 	size_t m_numOutputs = 0;
 	vector<string> m_inputStateVariables;
@@ -57,6 +56,9 @@ public:
 	DeepDiscreteQFunction();
 	DeepDiscreteQFunction(ConfigNode* pConfigNode);
 
+	size_t getNumStepsPerAction() const;
+	size_t getTotalNumActionSteps() const;
+	size_t getNumOutputActions() const;
 	IDiscreteQFunctionNetwork* getNetworkInstance();
 };
 

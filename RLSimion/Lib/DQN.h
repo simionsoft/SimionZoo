@@ -5,6 +5,7 @@
 #include "simion.h"
 #include "parameters.h"
 #include "deferred-load.h"
+#include "deep-functions.h"
 
 class INetwork;
 class DiscreteDeepPolicy;
@@ -19,27 +20,18 @@ class DQN : public Simion, DeferredLoad
 	Proceedings of the Thirtieth AAAI Conference on Artificial Intelligence (AAAI-16)
 	*/
 protected:
-	MULTI_VALUE_VARIABLE<STATE_VARIABLE> m_inputState;
-	INT_PARAM m_numActionSteps;
-	MULTI_VALUE_VARIABLE<ACTION_VARIABLE> m_outputAction;
-	DOUBLE_PARAM m_learningRate;
+	CHILD_OBJECT<DeepDiscreteQFunction> m_pQFunction;
+	IDiscreteQFunctionNetwork* m_pTargetQNetwork = nullptr;
+	IDiscreteQFunctionNetwork* m_pOnlineQNetwork = nullptr;
+	DeepMinibatch* m_pMinibatch = nullptr;
 
-	INT_PARAM m_minibatchSize;
-
-	NN_DEFINITION m_pNNDefinition;
-	INetwork* m_pTargetQNetwork= nullptr;
-	INetwork* m_pOnlineQNetwork= nullptr;
-	IMinibatch* m_pMinibatch = nullptr;
-
-	int m_totalNumActionSteps = 0;
 	vector<double> m_Q_s_p;
-	vector<double> m_target;
 	vector<double> m_maxQValue;
 	vector<int> m_argMaxIndex;
 
 	CHILD_OBJECT_FACTORY<DiscreteDeepPolicy> m_policy;
 
-	virtual INetwork* getTargetNetwork();
+	virtual IDiscreteQFunctionNetwork* getTargetNetwork();
 	
 public:
 	~DQN();
@@ -59,7 +51,7 @@ class DoubleDQN : public DQN
 public:
 	DoubleDQN(ConfigNode* pParameters);
 	
-	virtual INetwork* getTargetNetwork();
+	virtual IDiscreteQFunctionNetwork* getTargetNetwork();
 };
 
 #endif

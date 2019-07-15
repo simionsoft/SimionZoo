@@ -35,10 +35,12 @@ class NamedVarSet;
 using State = NamedVarSet;
 using Action = NamedVarSet;
 
-class INetwork;
+class DeepDiscreteQFunction;
+class DiscreteQFunctionNetwork;
 
 class DiscreteDeepPolicy
 {
+	DeepDiscreteQFunction* m_pQFunctionDefinition = nullptr;
 protected:
 	//We store in this vector a vector the discretized values for each output action
 	vector<double> m_discretizedAction;
@@ -52,8 +54,8 @@ protected:
 	int m_numSamplesPerActionVariable = 0;
 	int m_numActionVariables = 0;
 
-	void randomActionSelection(INetwork* pNetwork, const State* s, Action* a);
-	void greedyActionSelection(INetwork* pNetwork, const State* s, Action* a);
+	void randomActionSelection(IDiscreteQFunctionNetwork* pNetwork, const State* s, Action* a);
+	void greedyActionSelection(IDiscreteQFunctionNetwork* pNetwork, const State* s, Action* a);
 
 	size_t getActionVariableIndex(double value);
 public:
@@ -61,11 +63,11 @@ public:
 
 	DiscreteDeepPolicy(ConfigNode* pConfigNode);
 
-	void initialize(MULTI_VALUE<STATE_VARIABLE>& inputState, MULTI_VALUE<ACTION_VARIABLE>& outputActions, int numSamplesPerActionVariable);
+	void initialize(DeepDiscreteQFunction* pQFunctionDefinition);
 
 	size_t getActionIndex(const vector<double>& action, int actionOffset);
 
-	virtual void selectAction(INetwork* pNetwork, const State* s, Action* a) = 0;
+	virtual void selectAction(IDiscreteQFunctionNetwork* pNetwork, const State* s, Action* a) = 0;
 };
 
 class DiscreteEpsilonGreedyDeepPolicy : public DiscreteDeepPolicy
@@ -75,7 +77,7 @@ protected:
 public:
 	DiscreteEpsilonGreedyDeepPolicy(ConfigNode* pConfigNode);
 
-	virtual void selectAction(INetwork* pNetwork, const State* s, Action* a);
+	virtual void selectAction(IDiscreteQFunctionNetwork* pNetwork, const State* s, Action* a);
 };
 
 class DiscreteSoftmaxDeepPolicy : public DiscreteDeepPolicy
@@ -85,7 +87,7 @@ protected:
 public:
 	DiscreteSoftmaxDeepPolicy(ConfigNode* pConfigNode);
 
-	virtual void selectAction(INetwork* pNetwork, const State* s, Action* a);
+	virtual void selectAction(IDiscreteQFunctionNetwork* pNetwork, const State* s, Action* a);
 };
 
 class DiscreteExplorationDeepPolicy : public DiscreteDeepPolicy
@@ -96,7 +98,7 @@ protected:
 public:
 	DiscreteExplorationDeepPolicy(ConfigNode* pConfigNode);
 
-	virtual void selectAction(INetwork* pNetwork, const State* s, Action* a);
+	virtual void selectAction(IDiscreteQFunctionNetwork* pNetwork, const State* s, Action* a);
 };
 
 class NoisePlusGreedyDeepPolicy : public DiscreteDeepPolicy
@@ -105,5 +107,5 @@ class NoisePlusGreedyDeepPolicy : public DiscreteDeepPolicy
 public:
 	NoisePlusGreedyDeepPolicy(ConfigNode* pConfigNode);
 
-	virtual void selectAction(INetwork* pNetwork, const State* s, Action* a);
+	virtual void selectAction(IDiscreteQFunctionNetwork* pNetwork, const State* s, Action* a);
 };

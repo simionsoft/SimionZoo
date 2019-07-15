@@ -9,7 +9,6 @@ DeepNetworkDefinition::DeepNetworkDefinition(ConfigNode* pConfigNode)
 	m_learner = CHILD_OBJECT_FACTORY<DeepLearner>(pConfigNode, "Learner", "Learner used for this Neural Network");
 	m_useMinibatchNormalization = BOOL_PARAM(pConfigNode, "Use-Normalization", "Use minibatch normalization", false);
 	m_minibatchSize = INT_PARAM(pConfigNode, "Minibatch-Size", "Number of tuples in each minibatch used in updates", 100);
-	m_learningRate = CHILD_OBJECT_FACTORY<NumericValue>(pConfigNode, "Learning-Rate", "Learning rate used to train the Neural Network");
 }
 
 void DeepNetworkDefinition::stateToVector(const State* s, vector<double>& v, size_t numTuples)
@@ -72,7 +71,7 @@ DeepMinibatch* DeepNetworkDefinition::getMinibatch()
 
 double DeepNetworkDefinition::getLearningRate()
 {
-	return m_learningRate->get();
+	return m_learner->getLearningRate();
 }
 
 
@@ -101,6 +100,10 @@ IDiscreteQFunctionNetwork* DeepDiscreteQFunction::getNetworkInstance()
 	return CNTK::WrapperClient::getDiscreteQFunctionNetwork(m_inputStateVariables.size(), m_totalNumActionSteps
 		, getLayersDefinition(), getLearnerDefinition(), m_useMinibatchNormalization.get());
 }
+
+size_t DeepDiscreteQFunction::getNumStepsPerAction() const { return (size_t) m_numActionSteps.get(); }
+size_t DeepDiscreteQFunction::getTotalNumActionSteps() const { return (size_t) m_totalNumActionSteps; }
+size_t DeepDiscreteQFunction::getNumOutputActions() const { return m_outputAction.size(); }
 
 DeepContinuousQFunction::DeepContinuousQFunction() {}
 DeepContinuousQFunction::DeepContinuousQFunction(ConfigNode* pConfigNode) : DeepNetworkDefinition(pConfigNode)

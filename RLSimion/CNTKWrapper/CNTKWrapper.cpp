@@ -23,6 +23,7 @@
 	SOFTWARE.
 */
 
+#include "cntk-network.h"
 #include "CNTKWrapper.h"
 #include "Parameter.h"
 #include "Link.h"
