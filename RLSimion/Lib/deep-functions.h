@@ -33,6 +33,7 @@ public:
 	unsigned int getNumOutputs() { return (int)m_numOutputs; }
 	virtual const vector<string>& getInputStateVariables() { return m_inputStateVariables; }
 	virtual const vector<string>& getInputActionVariables() { return m_inputActionVariables; }
+	virtual const vector<string>& getUsedActionVariables() { return m_inputActionVariables; }
 
 	string getLayersDefinition();
 	string getLearnerDefinition();
@@ -63,6 +64,7 @@ public:
 	size_t getNumOutputActions() const;
 	vector<string>& getOutputActionVariables();
 	IDiscreteQFunctionNetwork* getNetworkInstance();
+	virtual const vector<string>& getUsedActionVariables() { return m_outputActionVariables; }
 };
 
 class DeepContinuousQFunction : public DeepNetworkDefinition

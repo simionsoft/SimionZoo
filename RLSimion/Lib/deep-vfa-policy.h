@@ -52,7 +52,6 @@ protected:
 
 	int m_numTotalActionSamples = 0;
 	int m_numSamplesPerActionVariable = 0;
-	int m_numActionVariables = 0;
 
 	void randomActionSelection(IDiscreteQFunctionNetwork* pNetwork, const State* s, Action* a);
 	void greedyActionSelection(IDiscreteQFunctionNetwork* pNetwork, const State* s, Action* a);
@@ -93,7 +92,6 @@ public:
 class DiscreteExplorationDeepPolicy : public DiscreteDeepPolicy
 {
 protected:
-	int m_lastAction = 0;
 	double m_epsilon = 0.98;
 public:
 	DiscreteExplorationDeepPolicy(ConfigNode* pConfigNode);

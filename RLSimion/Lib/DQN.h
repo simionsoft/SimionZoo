@@ -26,7 +26,6 @@ protected:
 	DeepMinibatch* m_pMinibatch = nullptr;
 
 	vector<double> m_Q_s_p;
-	vector<double> m_maxQValue;
 	vector<int> m_argMaxIndex;
 
 	CHILD_OBJECT_FACTORY<DiscreteDeepPolicy> m_policy;

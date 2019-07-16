@@ -73,9 +73,9 @@ size_t DiscreteDeepPolicy::getActionIndex(const vector<double>& action, int acti
 {
 	size_t actionVarIndex;
 	size_t actionIndex = 0;
-	for (size_t i = 0; i < m_numActionVariables; i++)
+	for (size_t i = 0; i < m_outputActionVariables.size(); i++)
 	{
-		actionVarIndex = getActionVariableIndex(action[actionOffset*m_numActionVariables + i]);
+		actionVarIndex = getActionVariableIndex(action[actionOffset*m_outputActionVariables.size() + i]);
 		actionIndex = actionIndex * m_numSamplesPerActionVariable + actionVarIndex;
 	}
 	return actionIndex;
@@ -112,7 +112,7 @@ void DiscreteDeepPolicy::greedyActionSelection(IDiscreteQFunctionNetwork* pNetwo
 
 	size_t actionVarIndex;
 
-	for (int i = m_numActionVariables -1; i >=0 ; i--)
+	for (int i = m_outputActionVariables.size() -1; i >=0 ; i--)
 	{
 		actionVarIndex = maxQActionIndex % m_numSamplesPerActionVariable;
 		a->setNormalized( m_outputActionVariables[i].c_str(), m_discretizedAction[actionVarIndex] );
@@ -206,17 +206,21 @@ void DiscreteExplorationDeepPolicy::selectAction(IDiscreteQFunctionNetwork* pNet
 		return;
 	}
 
-	//double randomNormNumber = (double)(rand() % 1000) / (double) 1000.0;
-	//if (randomNormNumber < m_epsilon)
-	//	return m_lastAction; //take the same action with probability epsilon
-	//if (randomNormNumber < (0.5 *(1.0 + m_epsilon)) && m_lastAction>0) //shift the output to the previous action step with probability (1-epsilon)*0.5
-	//{
-	//	m_lastAction--;
-	//	return m_lastAction;
-	//}
-	//if (m_lastAction < (int) values.size() - 1) //shift the output to the next action
-	//	m_lastAction++;
-	//return m_lastAction;
+	//shift the action variables up or down one by one
+	for (int i = 0; i < m_outputActionVariables.size(); i++)
+	{
+		const char* actionVariableName= m_outputActionVariables[i].c_str();
+		double currentValue = a->get(actionVariableName);
+		double randomNormNumber = (double)(rand() % 1000) / (double) 1000.0;
+		//leave the output action unchanged with probability epsilon
+		if (randomNormNumber > m_epsilon)
+		{
+			if (randomNormNumber < (0.5 *(1.0 + m_epsilon))) //shift the output to the next action step with probability (1-epsilon)*0.5
+				a->set(actionVariableName, currentValue + (1.0 / m_numSamplesPerActionVariable)); //shift the current value of the variable to the next step
+			else
+				a->set(actionVariableName, currentValue - (1.0 / m_numSamplesPerActionVariable)); //shift the current value of the variable to the previous step
+		}
+	}
 }
 
 NoisePlusGreedyDeepPolicy::NoisePlusGreedyDeepPolicy(ConfigNode* pConfigNode) : DiscreteDeepPolicy(pConfigNode)
@@ -242,6 +246,6 @@ void NoisePlusGreedyDeepPolicy::selectAction(IDiscreteQFunctionNetwork* pNetwork
 		noiseSignalIndex = std::min(i, m_noiseSignals.size() - 1);
 		
 		noise = m_noiseSignals[i]->getSample();
-		a->set(m_outputActionVariables[i].c_str(),/* a->get(outputActions[i].c_str()) + */noise);
+		a->set(m_outputActionVariables[i].c_str(), a->get(m_outputActionVariables[i].c_str()) + noise);
 	}
 }

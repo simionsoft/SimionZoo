@@ -33,7 +33,7 @@ DeepMinibatch::DeepMinibatch(size_t minibatchSize, DeepNetworkDefinition* pDeepF
 	m_size = minibatchSize;
 
 	m_s = vector<double>(minibatchSize*pDeepFunction->getInputStateVariables().size());
-	m_a = vector<double>(minibatchSize*pDeepFunction->getInputActionVariables().size());
+	m_a = vector<double>(minibatchSize*pDeepFunction->getUsedActionVariables().size());
 	m_s_p = vector<double>(minibatchSize*pDeepFunction->getInputStateVariables().size());
 	m_r = vector<double>(minibatchSize); //only scalar rewards so far
 	m_target = vector<double>(minibatchSize*pDeepFunction->getNumOutputs());

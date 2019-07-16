@@ -22,7 +22,7 @@ void DeepNetworkDefinition::stateToVector(const State* s, vector<double>& v, siz
 
 void DeepNetworkDefinition::actionToVector(const Action* a, vector<double>& v, size_t numTuples)
 {
-	const vector<string>& actionVars = getInputActionVariables();
+	const vector<string>& actionVars = getUsedActionVariables();
 	size_t numActionVars = actionVars.size();
 
 	for (size_t i = 0; i < numActionVars; i++)
@@ -40,7 +40,7 @@ void DeepNetworkDefinition::vectorToState(vector<double>& v, size_t numTuples, S
 
 void DeepNetworkDefinition::vectorToAction(vector<double>& v, size_t numTuples, Action* s)
 {
-	const vector<string>& actionVars = getInputActionVariables();
+	const vector<string>& actionVars = getUsedActionVariables();
 	size_t numActionVars = actionVars.size();
 
 	for (size_t i = 0; i < numActionVars; i++)

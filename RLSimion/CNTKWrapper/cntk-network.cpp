@@ -139,7 +139,7 @@ CNTK::FunctionPtr CntkNetwork::initNetworkFromInputLayer(CNTK::FunctionPtr input
 void CntkNetwork::_train(DeepMinibatch* pMinibatch, const vector<double>& target, double learningRate)
 {
 	//Reset the learning rate for this next batch
-	m_learner->ResetLearningRate(CNTK::TrainingParameterPerSampleSchedule(learningRate));
+	m_learner->SetLearningRateSchedule(CNTK::TrainingParameterPerSampleSchedule(learningRate));
 
 	unordered_map<CNTK::Variable, CNTK::MinibatchData> arguments = unordered_map<CNTK::Variable, CNTK::MinibatchData>();
 	//set the state input

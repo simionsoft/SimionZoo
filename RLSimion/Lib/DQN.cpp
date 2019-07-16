@@ -77,7 +77,6 @@ void DQN::deferredLoadStep()
 
 	//auxiliary vectors
 	m_Q_s_p = vector<double>(m_pQFunction->getNumOutputs() * m_pMinibatch->size());
-	m_maxQValue = vector<double>(m_pMinibatch->size());
 	m_argMaxIndex = vector<int>(m_pMinibatch->size());
 }
 
