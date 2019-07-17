@@ -91,7 +91,7 @@ DeepDiscreteQFunction::DeepDiscreteQFunction(ConfigNode* pConfigNode) : DeepNetw
 	for (size_t i = 0; i < m_inputState.size(); i++)
 		m_inputStateVariables.push_back(m_inputState[i]->get());
 
-	//add output action variables to the list stored by this subclassed
+	//add output action variables to the list stored by this subclass
 	m_outputActionVariables = vector<string>(m_outputAction.size());
 	for (size_t i = 0; i < m_outputAction.size(); i++)
 		m_outputActionVariables[i] = m_outputAction[i]->get();
@@ -169,6 +169,11 @@ DeepDeterministicPolicy::DeepDeterministicPolicy(ConfigNode* pConfigNode) : Deep
 	//add state variables to the list stored by the base-class DeepNetworkDefinition
 	for (size_t i = 0; i < m_inputState.size(); i++)
 		m_inputStateVariables.push_back(m_inputState[i]->get());
+
+	//add output action variables to the list stored by this subclassed
+	m_outputActionVariables = vector<string>(m_outputAction.size());
+	for (size_t i = 0; i < m_outputAction.size(); i++)
+		m_outputActionVariables[i] = m_outputAction[i]->get();
 
 	//One output per output action: V(s)
 	m_numOutputs = m_outputAction.size();

@@ -3,10 +3,16 @@
 #include "deep-minibatch.h"
 #include "simgod.h"
 #include "app.h"
+#include "noise.h"
+#include <algorithm>
+#include "app.h"
+#include "simion.h"
+#include "experiment.h"
 
 DeepCACLA::DeepCACLA(ConfigNode* pConfigNode)
 {
 	m_actorPolicy = CHILD_OBJECT<DeepDeterministicPolicy>(pConfigNode, "Policy", "Neural Network used to represent the actors policy");
+	m_noiseSignals = MULTI_VALUE_FACTORY<Noise>(pConfigNode, "Exploration-Noise", "Noise signals added to each of the outputs of the deterministic policy");
 	m_criticVFunction= CHILD_OBJECT<DeepVFunction>(pConfigNode, "Value-Function", "Value function learned by the critic");
 	CNTK::WrapperClient::RegisterDependencies();
 }
@@ -18,7 +24,8 @@ DeepCACLA::~DeepCACLA()
 	if (m_pActorNetwork) m_pActorNetwork->destroy();
 	
 	if (m_pCriticMinibatch) delete m_pCriticMinibatch;
-	if (m_pCriticNetwork) m_pCriticNetwork->destroy();
+	if (m_pCriticOnlineNetwork) m_pCriticOnlineNetwork->destroy();
+	if (m_pCriticTargetNetwork) m_pCriticTargetNetwork->destroy();
 
 	CNTK::WrapperClient::UnLoad();
 }
@@ -30,54 +37,86 @@ void DeepCACLA::deferredLoadStep()
 
 	m_pActorMinibatch = m_actorPolicy->getMinibatch();
 	m_pActorNetwork= m_actorPolicy->getNetworkInstance();
+	SimionApp::get()->registerStateActionFunction("Policy", m_pActorNetwork);
 
 	m_pCriticMinibatch = m_criticVFunction->getMinibatch();
-	m_pCriticNetwork = m_criticVFunction->getNetworkInstance();
-	m_V_s = vector<double>(m_pCriticMinibatch->size());
+	m_pCriticOnlineNetwork = m_criticVFunction->getNetworkInstance();
+	m_pCriticTargetNetwork = (IVFunctionNetwork*) m_pCriticOnlineNetwork->clone();
+	SimionApp::get()->registerStateActionFunction("V", m_pCriticOnlineNetwork);
+
 	m_V_s_p = vector<double>(m_pCriticMinibatch->size());
 }
 
 double DeepCACLA::update(const State *s, const Action *a, const State *s_p, double r, double probability)
 {
-	if (!m_pActorMinibatch->isFull() && !m_pCriticMinibatch->isFull())
+	double gamma = SimionApp::get()->pSimGod->getGamma();
+
+	//Actor network
+	if (!m_pActorMinibatch->isFull())
 	{
-		m_pActorMinibatch->addTuple(s, a, s_p, r);
-		m_pCriticMinibatch->addTuple(s, a, s_p, r);
+		//add only tuples that produced a positive temporal difference
+		double v_s= m_pCriticTargetNetwork->evaluate(s, a)[0];
+		double v_s_p= m_pCriticTargetNetwork->evaluate(s_p, a)[0];
+
+		double td = r + gamma * v_s_p - v_s;
+
+		if (td > 0)
+			m_pActorMinibatch->addTuple(s, a, s_p, r);
 	}
 	else
 	{
-		double gamma = SimionApp::get()->pSimGod->getGamma();
+		//update the actor: only actions with a positive TD are saved in the minibatch, so we can use them as target
+		m_pActorNetwork->train(m_pActorMinibatch, m_pActorMinibatch->a(), m_actorPolicy->getLearningRate());
+		m_pActorMinibatch->clear();
+	}
 
-		//evaluate V(s)
-		m_pCriticNetwork->evaluate(m_pCriticMinibatch->s(),m_V_s);
-
+	//Critic network
+	if (!m_pCriticMinibatch->isFull())
+		m_pCriticMinibatch->addTuple(s, a, s_p, r);
+	else
+	{
 		//evaluate V(s')
-		m_pCriticNetwork->evaluate(m_pCriticMinibatch->s_p(), m_V_s_p);
-
-		//evalute pi(s)
-		m_pActorNetwork->evaluate(m_pActorMinibatch->s(), m_pActorMinibatch->target());
+		m_pCriticOnlineNetwork->evaluate(m_pCriticMinibatch->s_p(), m_V_s_p);
 
 		//calculate the target of the critic: r + gamma * V(s) - V(s')
 		for (size_t tuple = 0; tuple < m_pCriticMinibatch->size(); tuple++)
-		{
-			m_pCriticMinibatch->target()[tuple] = m_pCriticMinibatch->r()[tuple] + gamma * m_V_s_p[tuple] - m_V_s[tuple];
-
-			//if delta_t > 0 shift the policy toward a_t, otherwise target the policy's output
-			if (m_pCriticMinibatch->target()[tuple] > 0)
-				m_pActorMinibatch->copyElement(m_pActorMinibatch->a(), m_pActorMinibatch->target(), tuple);
-		}
+			m_pCriticMinibatch->target()[tuple] = m_pCriticMinibatch->r()[tuple] + gamma * m_V_s_p[tuple];
 
 		//update the critic
-		m_pCriticNetwork->train(m_pCriticMinibatch, m_pCriticMinibatch->target(), m_criticVFunction->getLearningRate());
+		m_pCriticOnlineNetwork->train(m_pCriticMinibatch, m_pCriticMinibatch->target(), m_criticVFunction->getLearningRate());
+		m_pCriticMinibatch->clear();
+	}
 
-		//update the actor
-		m_pActorNetwork->train(m_pActorMinibatch, m_pActorMinibatch->target(), m_actorPolicy->getLearningRate());
+	SimGod* pSimGod = SimionApp::get()->pSimGod.ptr();
+
+	if (pSimGod->bUpdateFrozenWeightsNow())
+	{
+		if (m_pCriticTargetNetwork)
+			m_pCriticTargetNetwork->destroy();
+		m_pCriticTargetNetwork = (IVFunctionNetwork*)m_pCriticOnlineNetwork->clone();
 	}
 	return 0.0;
 }
 
 double DeepCACLA::selectAction(const State *s, Action *a)
 {
-	//m_pActorNetwork->evaluate()
+	vector<double>& policyOutput = m_pActorNetwork->evaluate(s, a);
+
+	if (SimionApp::get()->pExperiment->isEvaluationEpisode())
+		return 1.0;
+
+	size_t noiseSignalIndex;
+	double noise;
+
+	for (size_t i = 0; i < m_actorPolicy->getUsedActionVariables().size(); i++)
+	{
+		//if there are less noise signals than output action variables, just use the last one
+		noiseSignalIndex = std::min(i, m_noiseSignals.size() - 1);
+
+		noise = m_noiseSignals[i]->getSample();
+		a->set(m_actorPolicy->getUsedActionVariables()[i].c_str()
+			, policyOutput[i] + noise);
+	}
+
 	return 1.0;
 }

@@ -678,13 +678,10 @@ void SimionApp::update2DMeters(State* s, Action* a)
 
 void SimionApp::setPreferredDevice(Device device)
 {
-	//need to check whether CNTK has been loaded. Might not be used
-	if (CNTK::WrapperClient::setDevice != nullptr)
-	{
-		if (device==CPU)
-			Logger::logMessage(MessageType::Info, "Setting CPU as default device");
-		else
-			Logger::logMessage(MessageType::Info, "Setting GPU as default device");
-		CNTK::WrapperClient::setDevice(device == Device::GPU);
-	}
+	m_preferredDevice = device;
+}
+
+Device SimionApp::getPreferredDevice()
+{
+	return m_preferredDevice;
 }

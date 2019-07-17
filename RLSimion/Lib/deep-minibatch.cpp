@@ -54,17 +54,25 @@ void DeepMinibatch::addTuple(const State* s, const Action* a, const State* s_p, 
 	if (m_numTuples >= m_size)
 		return;
 
-	//copy input state s
-	m_pDeepFunction->stateToVector(s, m_s, m_numTuples);
-	m_pDeepFunction->stateToVector(s_p, m_s_p, m_numTuples);
-
-	//copy input action a
-	m_pDeepFunction->actionToVector(a, m_a, m_numTuples);
-
-	//copy reward r
-	m_r[m_numTuples] = r;
+	addTuple(s, a, s_p, r, m_numTuples);
 
 	m_numTuples++;
+}
+
+void DeepMinibatch::addTuple(const State* s, const Action* a, const State* s_p, double r, size_t index)
+{
+	if (index >= m_size)
+		return;
+
+	//copy input state s
+	m_pDeepFunction->stateToVector(s, m_s, index);
+	m_pDeepFunction->stateToVector(s_p, m_s_p, index);
+
+	//copy input action a
+	m_pDeepFunction->actionToVector(a, m_a, index);
+
+	//copy reward r
+	m_r[index] = r;
 }
 
 void DeepMinibatch::copyElement(vector<double>& src, vector<double>&dst, size_t index)
@@ -87,4 +95,9 @@ bool DeepMinibatch::isFull() const
 size_t DeepMinibatch::size() const
 {
 	return m_size;
+}
+
+size_t DeepMinibatch::numTuples() const
+{
+	return m_numTuples;
 }

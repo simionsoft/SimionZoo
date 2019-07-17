@@ -26,6 +26,7 @@ public:
 
 	void clear();
 	void addTuple(const State* s, const Action* a, const State* s_p, double r);
+	void addTuple(const State* s, const Action* a, const State* s_p, double r, size_t index);
 
 	vector<double>& s() { return m_s; }
 	vector<double>& a() { return m_a; }
@@ -37,4 +38,5 @@ public:
 
 	bool isFull() const;
 	size_t size() const;
+	size_t numTuples() const;
 };

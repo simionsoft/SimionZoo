@@ -1,7 +1,6 @@
 #pragma once
 
 #include "simion.h"
-#include "parameters.h"
 #include "parameters-numeric.h"
 #include "deep-functions.h"
 #include "deferred-load.h"
@@ -10,18 +9,20 @@
 using namespace std;
 
 class IDeepNetwork;
+class Noise;
 
 class DeepCACLA : public Simion, DeferredLoad
 {
 	//Actor
-	DeepMinibatch* m_pActorMinibatch;
-	IDeterministicPolicyNetwork* m_pActorNetwork;
+	DeepMinibatch* m_pActorMinibatch= nullptr;
+	IDeterministicPolicyNetwork* m_pActorNetwork= nullptr;
 	CHILD_OBJECT<DeepDeterministicPolicy> m_actorPolicy;
+	MULTI_VALUE_FACTORY<Noise> m_noiseSignals;
 	//Critic
-	DeepMinibatch* m_pCriticMinibatch;
-	IVFunctionNetwork* m_pCriticNetwork;
+	DeepMinibatch* m_pCriticMinibatch= nullptr;
+	IVFunctionNetwork* m_pCriticOnlineNetwork= nullptr;
+	IVFunctionNetwork* m_pCriticTargetNetwork= nullptr;
 	CHILD_OBJECT<DeepVFunction> m_criticVFunction;
-	vector<double> m_V_s;
 	vector<double> m_V_s_p;
 	
 public:

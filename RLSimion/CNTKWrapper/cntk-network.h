@@ -37,6 +37,7 @@ protected:
 	CNTK::FunctionPtr mergeLayer(CNTK::Variable var1, CNTK::Variable var2);
 	CNTK::FunctionPtr activationFunction(CNTK::FunctionPtr input, Activation activationFunction);
 	CNTK::FunctionPtr denseLayer(CNTK::FunctionPtr layerInput, size_t outputDim, wstring layerId= L"");
+	CNTK::FunctionPtr normalizationLayer(CNTK::FunctionPtr layerInput);
 	CNTK::FunctionPtr initNetworkLayers(CNTK::FunctionPtr networkInput, string layersDefinition);
 	CNTK::FunctionPtr initNetworkLearner(CNTK::FunctionPtr networkOutput, string learnerDefinition);
 	CNTK::FunctionPtr initNetworkFromInputLayer(CNTK::FunctionPtr inputLayer);

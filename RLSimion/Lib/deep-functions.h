@@ -63,8 +63,9 @@ public:
 	size_t getTotalNumActionSteps() const;
 	size_t getNumOutputActions() const;
 	vector<string>& getOutputActionVariables();
-	IDiscreteQFunctionNetwork* getNetworkInstance();
 	virtual const vector<string>& getUsedActionVariables() { return m_outputActionVariables; }
+
+	IDiscreteQFunctionNetwork* getNetworkInstance();
 };
 
 class DeepContinuousQFunction : public DeepNetworkDefinition
@@ -92,9 +93,12 @@ class DeepDeterministicPolicy : public DeepNetworkDefinition
 {
 	MULTI_VALUE_VARIABLE<STATE_VARIABLE> m_inputState;
 	MULTI_VALUE_VARIABLE<ACTION_VARIABLE> m_outputAction;
+	vector <string> m_outputActionVariables;
 public:
 	DeepDeterministicPolicy();
 	DeepDeterministicPolicy(ConfigNode* pConfigNode);
 
 	IDeterministicPolicyNetwork* getNetworkInstance();
+	vector<string>& getOutputActionVariables();
+	virtual const vector<string>& getUsedActionVariables() { return m_outputActionVariables; }
 };

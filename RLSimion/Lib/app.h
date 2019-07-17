@@ -44,6 +44,7 @@ private:
 
 	//Run-time requirements/support
 	unsigned int m_numCPUCores = 1;
+	Device m_preferredDevice = Device::CPU;
 
 	RunTimeRequirements m_commonRequirements;
 	unordered_map<string, RunTimeRequirements*> m_targetPlatformRequirements;
@@ -111,7 +112,7 @@ public:
 	unsigned int getNumCPUCores() { return m_numCPUCores; }
 	
 	void setPreferredDevice(Device device);
-
+	Device getPreferredDevice();
 private:
 	//Rendering
 	Timer m_timer;

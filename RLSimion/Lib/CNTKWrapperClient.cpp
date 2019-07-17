@@ -116,6 +116,8 @@ namespace CNTK
 
 			if (setDevice == 0)
 				Logger::logMessage(MessageType::Error, "Failed to get a pointer to CNTKWrapper:setDevice()");
+
+			setDevice(SimionApp::get()->getPreferredDevice());
 		}
 #endif
 	}

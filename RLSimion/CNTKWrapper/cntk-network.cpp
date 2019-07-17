@@ -64,12 +64,22 @@ CNTK::FunctionPtr CntkNetwork::denseLayer(CNTK::FunctionPtr layerInput, size_t o
 	size_t inputDim = layerInput->Output().Shape()[0];
 
 	auto timesParam = Parameter({ outputDim, inputDim }
-		, DataType::Double, GlorotUniformInitializer(DefaultParamInitScale
-			, SentinelValueForInferParamInitRank, SentinelValueForInferParamInitRank, 1));
+		, DataType::Double, GlorotUniformInitializer());
 	auto timesFunction = Times(timesParam, layerInput, L"times");
 
 	auto plusParam = Parameter({ outputDim }, 0.0);
 	return Plus(plusParam, timesFunction, layerId);
+}
+
+CNTK::FunctionPtr CntkNetwork::normalizationLayer(CNTK::FunctionPtr layerInput)
+{
+	Variable biasParams = Parameter({ NDShape::InferredDimension }, 0.0);
+	Variable scaleParams = Parameter({ NDShape::InferredDimension }, 0.0);
+	Variable runningMean = Parameter({ NDShape::InferredDimension }, 0.0);
+	Variable runningInvStd = Parameter({ NDShape::InferredDimension }, 0.0);
+	Variable runningCount = Parameter({ 1 }, 0.0);
+	
+	return BatchNormalization(layerInput, scaleParams, biasParams, runningMean, runningInvStd, runningCount, false);
 }
 
 CNTK::FunctionPtr CntkNetwork::initNetworkLayers(CNTK::FunctionPtr networkInput, string layersDefinition)
@@ -83,7 +93,16 @@ CNTK::FunctionPtr CntkNetwork::initNetworkLayers(CNTK::FunctionPtr networkInput,
 		{
 			Activation activation = DeepLayer::activationFromFunctionName(layerParameters[0].c_str());
 			int numUnits = std::atoi(layerParameters[1].c_str());
-			output = activationFunction(denseLayer(output, numUnits), activation);
+
+			if (!m_useNormalization)
+				output = activationFunction(denseLayer(output, numUnits), activation);
+			else
+			{
+				//If used, the batch normalization layer goes between the activation function and the dense layer:
+				//https://docs.microsoft.com/en-us/cognitive-toolkit/Hands-On-Labs-Image-Recognition#solution-3-adding-batchnormalization
+				//https://docs.microsoft.com/en-us/cognitive-toolkit/brainscript-layers-reference#batchnormalizationlayer-layernormalizationlayer-stabilizerlayer
+				output = activationFunction(normalizationLayer(denseLayer(output, numUnits)), activation);
+			}
 		}
 	}
 	return output;
