@@ -71,9 +71,14 @@ SampleFile::SampleFile(string filename)
 		//Open the sample file and read the first data chunk
 		m_currentChunk = 0;
 		CrossPlatform::Fopen_s((FILE **) &m_pBinaryFile, m_binaryFilename.c_str(), "rb");
-		if (m_pBinaryFile && m_numChunksInFile>0)
-			m_numValidSamplesInCache = (int) fread(m_cachedData.data(), m_sampleSizeInBytes, m_dataChunkSizeInSamples, (FILE*)m_pBinaryFile);
+		if (m_pBinaryFile && m_numChunksInFile > 0)
+		{
+			m_numValidSamplesInCache = (int)fread(m_cachedData.data(), m_sampleSizeInBytes, m_dataChunkSizeInSamples, (FILE*)m_pBinaryFile);
+			Logger::logMessage(MessageType::Error, (string("Sample file loaded: ") + filename).c_str());
+		}
+		else Logger::logMessage(MessageType::Error, (string("Error loading sample file: ") + filename).c_str());
 	}
+	else Logger::logMessage(MessageType::Error, (string("Could not load sample file: ") + filename).c_str());
 }
 
 SampleFile::~SampleFile()

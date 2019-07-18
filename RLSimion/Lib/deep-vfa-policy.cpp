@@ -53,7 +53,7 @@ void DiscreteDeepPolicy::initialize(DeepDiscreteQFunction* pQFunctionDefinition)
 {
 	m_pQFunctionDefinition = pQFunctionDefinition;
 
-	m_numSamplesPerActionVariable = pQFunctionDefinition->getNumOutputs();
+	m_numSamplesPerActionVariable = pQFunctionDefinition->getNumStepsPerAction();
 	if (m_numSamplesPerActionVariable <= 0)
 		throw runtime_error("The number of discretized steps must be greater than zero");
 
@@ -112,7 +112,7 @@ void DiscreteDeepPolicy::greedyActionSelection(IDiscreteQFunctionNetwork* pNetwo
 
 	size_t actionVarIndex;
 
-	for (int i = m_outputActionVariables.size() -1; i >=0 ; i--)
+	for (int i = (int) m_outputActionVariables.size() - 1; i >=0 ; i--)
 	{
 		actionVarIndex = maxQActionIndex % m_numSamplesPerActionVariable;
 		a->setNormalized( m_outputActionVariables[i].c_str(), m_discretizedAction[actionVarIndex] );
