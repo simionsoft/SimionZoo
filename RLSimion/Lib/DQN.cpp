@@ -53,7 +53,7 @@ DQN::DQN(ConfigNode* pConfigNode)
 	m_pQFunction = CHILD_OBJECT<DeepDiscreteQFunction>(pConfigNode, "Q-Network", "The definition of the Q-function learned by the agent");
 
 	//Only register dependencies. The wrapper is loaded on the deferred load step
-	CNTK::WrapperClient::RegisterDependencies();
+	CNTK::WrapperClient::SetRequirements();
 
 	m_policy = CHILD_OBJECT_FACTORY<DiscreteDeepPolicy>(pConfigNode, "Policy", "The policy");
 }

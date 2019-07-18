@@ -48,6 +48,6 @@ namespace CNTK
 
 		static void Load();
 		static void UnLoad();
-		static void RegisterDependencies();
+		static void SetRequirements();
 	};
 }

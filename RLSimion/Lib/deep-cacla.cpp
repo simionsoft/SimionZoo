@@ -14,7 +14,7 @@ DeepCACLA::DeepCACLA(ConfigNode* pConfigNode)
 	m_actorPolicy = CHILD_OBJECT<DeepDeterministicPolicy>(pConfigNode, "Policy", "Neural Network used to represent the actors policy");
 	m_noiseSignals = MULTI_VALUE_FACTORY<Noise>(pConfigNode, "Exploration-Noise", "Noise signals added to each of the outputs of the deterministic policy");
 	m_criticVFunction= CHILD_OBJECT<DeepVFunction>(pConfigNode, "Value-Function", "Value function learned by the critic");
-	CNTK::WrapperClient::RegisterDependencies();
+	CNTK::WrapperClient::SetRequirements();
 }
 
 

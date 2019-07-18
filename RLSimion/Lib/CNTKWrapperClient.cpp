@@ -90,9 +90,6 @@ namespace CNTK
 
 		if (!DynamicLibCNTK.IsLoaded())
 		{
-			//Set the number of CPU threads to "all"
-			SimionApp::get()->setNumCPUCores(0);
-
 			//Load the wrapper library
 			Logger::logMessage(MessageType::Info, "Loading CNTK library");
 
@@ -140,11 +137,14 @@ namespace CNTK
 
 
 	/// <summary>
-	/// Registers the dependencies. It's separated from the loading function so that dependencies can be calculated without
-	/// actually loading Cntk libraries
+	/// Sets the requirements linked to the Cntk libraries: it registers the library dependencies and sets the number of CPU cores to "all".
+	/// It's separated from the loading function so that dependencies can be calculated without actually loading Cntk libraries
 	/// </summary>
-	void WrapperClient::RegisterDependencies()
+	void WrapperClient::SetRequirements()
 	{
+		//Set the number of CPU threads to "all"
+		SimionApp::get()->setNumCPUCores(0);
+
 		SimionApp::get()->registerTargetPlatformInputFile("Win-64", "../bin/CNTKWrapper.dll");
 
 		SimionApp::get()->registerTargetPlatformInputFile("Win-64", "../bin/Cntk.Composite-2.5.1.dll");
