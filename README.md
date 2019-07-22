@@ -11,12 +11,7 @@ This project is mantained by the Group of Computational Intelligence (University
 
 Our goal is to build a Reinforcement Learning experimenting environment in which the user can conduct experiments using a GUI without needing to code, install any dependecies, or run a configuration process.
 
-The scope of the project is limited to:
-
-- Control problems with continuous action and states
-- State variables are numerical values
-
-The main features of the project can be summarized:
+The focus of the project is set on solving control problems with continuous action and states using Reinforcement Learning methods. The main features of the project can be summarized:
 
 - Parameter sweeps using 'forks' on the parameters
 - Real-time and off-line experiment visualization
