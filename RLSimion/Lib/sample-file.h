@@ -33,4 +33,6 @@ public:
 	~SampleFile();
 
 	void drawRandomSample(State* s, Action* a, State* s_p, double& reward);
+
+	vector<double> calculateAbsActionRanges();
 };

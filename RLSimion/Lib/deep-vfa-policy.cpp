@@ -33,6 +33,8 @@
 #include "../Common/named-var-set.h"
 #include "deep-functions.h"
 #include "deep-network.h"
+#include "sample-file.h"
+#include "worlds/world.h"
 
 std::shared_ptr<DiscreteDeepPolicy> DiscreteDeepPolicy::getInstance(ConfigNode* pConfigNode)
 {
@@ -62,10 +64,39 @@ void DiscreteDeepPolicy::initialize(DeepDiscreteQFunction* pQFunctionDefinition)
 	m_argMaxAction = vector<double>(pQFunctionDefinition->getNumOutputActions());
 	m_outputActionVariables = pQFunctionDefinition->getOutputActionVariables();
 
-	//We use normalized values, so there is no need to replicate the same vector for all the action variables
-	m_discretizedAction = vector<double>(m_numSamplesPerActionVariable);
-	for (int sample = 0; sample < m_numSamplesPerActionVariable; sample++)
-		m_discretizedAction[sample] = (double)sample / double(m_numSamplesPerActionVariable - 1);
+	//We use normalized values, but if we are using a sample file, the range of each variable may be different
+	//We store the discretized values for each action in a single vector: [a0_0, a0_1...a0_n, a1_0, a1_1, ...]
+	m_discretizedAction = vector<double>(m_numSamplesPerActionVariable * m_outputActionVariables.size());
+	SampleFile* pSampleFile = SimionApp::get()->getSampleFile();
+	if (pSampleFile == nullptr)
+	{
+		//no samples, same range for all the action variables: [0, 1]
+		for (size_t actionVarIndex = 0; actionVarIndex < m_outputActionVariables.size(); actionVarIndex++)
+		{
+			for (size_t sample = 0; sample < m_numSamplesPerActionVariable; sample++)
+				m_discretizedAction[actionVarIndex*m_numSamplesPerActionVariable + sample] = (double)sample / double(m_numSamplesPerActionVariable - 1);
+		}
+	}
+	else
+	{
+		//calculate the range of each action variable from the sample file and use them to initialize the ranges
+		vector<double> actionVariableRanges = pSampleFile->calculateAbsActionRanges();
+		Descriptor& actionDesc = SimionApp::get()->pWorld->getDynamicModel()->getActionDescriptor();
+		for (size_t actionVarIndex = 0; actionVarIndex < m_outputActionVariables.size(); actionVarIndex++)
+		{
+			//normalize the action variable range
+			actionVariableRanges[2 * actionVarIndex] = (actionVariableRanges[2 * actionVarIndex] - actionDesc[actionVarIndex].getMin()) / actionDesc[actionVarIndex].getRangeWidth();
+			actionVariableRanges[2 * actionVarIndex + 1] = (actionVariableRanges[2 * actionVarIndex + 1] - actionDesc[actionVarIndex].getMin()) / actionDesc[actionVarIndex].getRangeWidth();
+			double actionVarMin = actionVariableRanges[actionVarIndex * 2];
+			double actionVarMax = actionVariableRanges[actionVarIndex * 2 + 1];
+			double actionVarRange = actionVarMax - actionVarMin;
+			for (size_t sample = 0; sample < m_numSamplesPerActionVariable; sample++)
+			{
+				m_discretizedAction[actionVarIndex*m_numSamplesPerActionVariable + sample] =
+					actionVarMin + actionVarRange * ((double)sample / double(m_numSamplesPerActionVariable - 1));
+			}
+		}
+	}
 }
 
 //This method works with normalized values so there is no need to denormalize them
@@ -75,23 +106,24 @@ size_t DiscreteDeepPolicy::getActionIndex(const vector<double>& action, int acti
 	size_t actionIndex = 0;
 	for (size_t i = 0; i < m_outputActionVariables.size(); i++)
 	{
-		actionVarIndex = getActionVariableIndex(action[actionOffset*m_outputActionVariables.size() + i]);
+		actionVarIndex = getActionVariableIndex(action[actionOffset*m_outputActionVariables.size() + i], i);
 		actionIndex = actionIndex * m_numSamplesPerActionVariable + actionVarIndex;
 	}
 	return actionIndex;
 }
 
 //This method works with normalized values so there is no need to denormalize them
-size_t DiscreteDeepPolicy::getActionVariableIndex(double value)
+size_t DiscreteDeepPolicy::getActionVariableIndex(double value, size_t outputActionVariableIndex)
 {
 	size_t nearestIndex = 0;
 
 	double dist;
-	double closestDist = abs(value - m_discretizedAction[0]);
+	size_t actionVarOffset = m_numSamplesPerActionVariable * outputActionVariableIndex;
+	double closestDist = abs(value - m_discretizedAction[actionVarOffset]);
 
 	for (size_t i = 1; i < m_discretizedAction.size(); i++)
 	{
-		dist = abs(value - m_discretizedAction[i]);
+		dist = abs(value - m_discretizedAction[actionVarOffset + i]);
 		//there is no special treatment for circular variables 
 		if (dist < closestDist)
 		{

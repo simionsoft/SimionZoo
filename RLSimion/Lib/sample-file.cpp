@@ -67,14 +67,15 @@ SampleFile::SampleFile(string filename)
 		m_numChunksInFile = (m_numSamplesInFile / m_dataChunkSizeInSamples);
 		if (m_numSamplesInFile % m_dataChunkSizeInSamples != 0) m_numChunksInFile++;
 		m_cachedData = vector<double>(m_dataChunkSizeInSamples * m_sampleSizeInBytes);
-
-		//Open the sample file and read the first data chunk
 		m_currentChunk = 0;
-		CrossPlatform::Fopen_s((FILE **) &m_pBinaryFile, m_binaryFilename.c_str(), "rb");
+
+		CrossPlatform::Fopen_s((FILE **)&m_pBinaryFile, m_binaryFilename.c_str(), "rb");
 		if (m_pBinaryFile && m_numChunksInFile > 0)
 		{
+			//Open the sample file and read the first data chunk
 			m_numValidSamplesInCache = (int)fread(m_cachedData.data(), m_sampleSizeInBytes, m_dataChunkSizeInSamples, (FILE*)m_pBinaryFile);
-			Logger::logMessage(MessageType::Error, (string("Sample file loaded: ") + filename).c_str());
+			Logger::logMessage(MessageType::Info, (string("Sample file loaded: ") + filename).c_str());
+			return;
 		}
 		else Logger::logMessage(MessageType::Error, (string("Error loading sample file: ") + filename).c_str());
 	}
@@ -85,6 +86,51 @@ SampleFile::~SampleFile()
 {
 	if (m_pBinaryFile)
 		fclose((FILE *) m_pBinaryFile);
+}
+
+
+/// <summary>
+/// Reads the whole sample file and calculates the range of abosulte action variables (not normalized). This is useful if we want to use DQN: there is no point using the whole range
+/// of an action variable if we only have samples for a subrange. In fact, discrete actions that were not sampled may be given a higher Q(s,a) value after training
+/// than those actually sampled.
+/// </summary>
+/// <returns>A vector with two elements (min,max) per action variable: [min_0, max_0, min_1, max_1...]</returns>
+vector<double> SampleFile::calculateAbsActionRanges()
+{
+	vector<double> actionRanges= vector<double> ( 2 * m_numActionVariables);
+	vector<double> dataChunk = vector<double> (m_dataChunkSizeInElements);
+
+	//initialize the output action ranges
+	for (size_t actionVarIndex = 0; actionVarIndex < m_numActionVariables; actionVarIndex++)
+	{
+		actionRanges[2 * actionVarIndex] = std::numeric_limits<double>::max(); //min(i)= double.Max();
+		actionRanges[2 * actionVarIndex + 1] = std::numeric_limits<double>::lowest(); //max(i) = double.Min();
+	}
+
+	//position ourselves at the beginning
+	fseek((FILE*)m_pBinaryFile, 0, SEEK_SET);
+	//calculate the absolute ranges
+	for (size_t i = 0; i < m_numChunksInFile; i++)
+	{
+		//read a chunk
+		size_t numValidSamplesRead = fread(dataChunk.data(), m_sampleSizeInBytes, m_dataChunkSizeInSamples, (FILE*)m_pBinaryFile);
+		//udpate the ranges
+		size_t actionSampleOffset;
+		for (size_t sampleIndex = 0; sampleIndex < numValidSamplesRead; sampleIndex++)
+		{
+			actionSampleOffset = m_numElementsPerSample * sampleIndex + m_numStateVariables; //skip previous samples and the state
+			for (size_t actionVarIndex = 0; actionVarIndex < m_numActionVariables; actionVarIndex++)
+			{
+				if (dataChunk[actionSampleOffset + actionVarIndex] < actionRanges[2 * actionVarIndex])
+					actionRanges[2 * actionVarIndex] = dataChunk[actionSampleOffset + actionVarIndex]; //update the minimum
+
+				if (dataChunk[actionSampleOffset + actionVarIndex] > actionRanges[2 * actionVarIndex + 1])
+					actionRanges[2 * actionVarIndex + 1] = dataChunk[actionSampleOffset + actionVarIndex]; //update the maximum
+			}
+		}
+	}
+
+	return actionRanges;
 }
 
 void SampleFile::loadNextDataChunkFromFile()

@@ -50,13 +50,13 @@ protected:
 
 	vector<string> m_outputActionVariables;
 
-	int m_numTotalActionSamples = 0;
-	int m_numSamplesPerActionVariable = 0;
+	size_t m_numTotalActionSamples = 0;
+	size_t m_numSamplesPerActionVariable = 0;
 
 	void randomActionSelection(IDiscreteQFunctionNetwork* pNetwork, const State* s, Action* a);
 	void greedyActionSelection(IDiscreteQFunctionNetwork* pNetwork, const State* s, Action* a);
 
-	size_t getActionVariableIndex(double value);
+	size_t getActionVariableIndex(double value, size_t outputVariableIndex);
 public:
 	static std::shared_ptr<DiscreteDeepPolicy> getInstance(ConfigNode* pConfigNode);
 

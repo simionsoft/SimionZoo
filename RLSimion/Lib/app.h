@@ -27,6 +27,7 @@ class Experiment;
 class SimGod;
 class StateActionFunction;
 class Wire;
+class SampleFile;
 
 enum Device{ CPU, GPU };
 
@@ -60,6 +61,8 @@ private:
 #else
 	bool m_bRemoteExecution = true;
 #endif
+
+	SampleFile* m_pOfflineSampleFile = nullptr;
 
 	void addPlatform(string platform);
 
@@ -107,6 +110,8 @@ public:
 
 	void setExecutedRemotely(bool remote);
 	bool isExecutedRemotely();
+
+	SampleFile* getSampleFile() { return m_pOfflineSampleFile; }
 
 	void setNumCPUCores(unsigned int numCPUCores) { m_numCPUCores = numCPUCores; }
 	unsigned int getNumCPUCores() { return m_numCPUCores; }

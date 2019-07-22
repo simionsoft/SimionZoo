@@ -320,6 +320,10 @@ void SimionApp::run()
 	State *s_p = pWorld->getDynamicModel()->getStateDescriptor().getInstance();
 	Action *a = pWorld->getDynamicModel()->getActionDescriptor().getInstance();
 
+	//load the sample file used in offline-training. Do it before the deferred load so that data from the file can be used in value function initializations, i.e. DQN
+	if (m_bUseOfflineTraining)
+		m_pOfflineSampleFile = new SampleFile(m_offlineTrainingSampleFile.get());
+
 	//load stuff we don't want to be loaded in the constructors for faster construction
 	pSimGod->deferredLoad();
 	Logger::logMessage(MessageType::Info, "Deferred load step finished");
@@ -394,8 +398,6 @@ void SimionApp::runOfflineTrainingLoop(State* s, Action* a, State* s_p)
 
 	double probability, r;
 
-	SampleFile sampleFile(m_offlineTrainingSampleFile.get());
-
 	//episodes
 	for (pExperiment->nextEpisode(); pExperiment->isValidEpisode(); pExperiment->nextEpisode())
 	{
@@ -429,7 +431,7 @@ void SimionApp::runOfflineTrainingLoop(State* s, Action* a, State* s_p)
 			//Offline training using samples from file: no call to selectAction()/executeAction()
 			for (pExperiment->nextStep(); pExperiment->isValidStep(); pExperiment->nextStep())
 			{
-				sampleFile.drawRandomSample(s, a, s_p, r);
+				m_pOfflineSampleFile->drawRandomSample(s, a, s_p, r);
 
 				//update god's policy and value estimation
 				pSimGod->update(s, a, s_p, r, 1.0);
