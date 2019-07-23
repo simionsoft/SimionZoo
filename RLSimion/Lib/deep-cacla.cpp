@@ -1,6 +1,10 @@
 #include "deep-cacla.h"
+
+#if defined(__linux__) || defined(_WIN64)
+
 #include "deep-network.h"
 #include "deep-minibatch.h"
+#include "deep-functions.h"
 #include "simgod.h"
 #include "app.h"
 #include "noise.h"
@@ -35,10 +39,12 @@ void DeepCACLA::deferredLoadStep()
 {
 	CNTK::WrapperClient::Load();
 
+	//Initialize the actor
 	m_pActorMinibatch = m_actorPolicy->getMinibatch();
 	m_pActorNetwork= m_actorPolicy->getNetworkInstance();
 	SimionApp::get()->registerStateActionFunction("Policy", m_pActorNetwork);
 
+	//Initialise the critic
 	m_pCriticMinibatch = m_criticVFunction->getMinibatch();
 	m_pCriticOnlineNetwork = m_criticVFunction->getNetworkInstance();
 	m_pCriticTargetNetwork = (IVFunctionNetwork*) m_pCriticOnlineNetwork->clone();
@@ -103,7 +109,11 @@ double DeepCACLA::selectAction(const State *s, Action *a)
 	vector<double>& policyOutput = m_pActorNetwork->evaluate(s, a);
 
 	if (SimionApp::get()->pExperiment->isEvaluationEpisode())
+	{
+		//just copy the output of the policy to the action
+		m_actorPolicy->vectorToAction(policyOutput, 0, a);
 		return 1.0;
+	}
 
 	size_t noiseSignalIndex;
 	double noise;
@@ -120,3 +130,5 @@ double DeepCACLA::selectAction(const State *s, Action *a)
 
 	return 1.0;
 }
+
+#endif

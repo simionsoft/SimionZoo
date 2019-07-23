@@ -37,6 +37,6 @@ public:
 	void copyElement(vector<double>& src, vector<double>&dst, size_t index);
 
 	bool isFull() const;
-	size_t size() const;
+	size_t size() const { return m_size; }
 	size_t numTuples() const;
 };

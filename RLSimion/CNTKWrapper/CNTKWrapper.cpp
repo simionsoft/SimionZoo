@@ -76,9 +76,9 @@ IVFunctionNetwork* CNTKWrapper::getVFunctionNetwork(vector<string> inputStateVar
 #pragma EXPORT
 	return new CntkVFunctionNetwork(inputStateVariables, networkLayersDefinition, learnerDefinition, useNormalization);
 }
-IDeterministicPolicyNetwork* CNTKWrapper::getDeterministicPolicyNetwork(vector<string> inputStateVariables, string networkLayersDefinition, string learnerDefinition, bool useNormalization)
+IDeterministicPolicyNetwork* CNTKWrapper::getDeterministicPolicyNetwork(vector<string> inputStateVariables, vector<string> outputActionVariables, string networkLayersDefinition, string learnerDefinition, bool useNormalization)
 {
 #pragma EXPORT
-	return new CntkDeterministicPolicyNetwork(inputStateVariables, networkLayersDefinition, learnerDefinition, useNormalization);
+	return new CntkDeterministicPolicyNetwork(inputStateVariables, outputActionVariables, networkLayersDefinition, learnerDefinition, useNormalization);
 }
 

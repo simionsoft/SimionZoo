@@ -38,13 +38,13 @@ void DeepNetworkDefinition::vectorToState(vector<double>& v, size_t numTuples, S
 		s->setNormalized(stateVars[i].c_str(), v[numStateVars*numTuples + i]);
 }
 
-void DeepNetworkDefinition::vectorToAction(vector<double>& v, size_t numTuples, Action* s)
+void DeepNetworkDefinition::vectorToAction(vector<double>& v, size_t numTuples, Action* a)
 {
 	const vector<string>& actionVars = getUsedActionVariables();
 	size_t numActionVars = actionVars.size();
 
 	for (size_t i = 0; i < numActionVars; i++)
-		s->setNormalized(actionVars[i].c_str(), v[numActionVars*numTuples + i]);
+		a->setNormalized(actionVars[i].c_str(), v[numActionVars*numTuples + i]);
 }
 
 string DeepNetworkDefinition::getLayersDefinition()
@@ -126,7 +126,7 @@ DeepContinuousQFunction::DeepContinuousQFunction(ConfigNode* pConfigNode) : Deep
 	for (size_t i = 0; i < m_inputState.size(); i++)
 		m_inputStateVariables.push_back(m_inputState[i]->get());
 	for (size_t i = 0; i < m_inputAction.size(); i++)
-		m_inputActionVariables.push_back(m_inputState[i]->get());
+		m_inputActionVariables.push_back(m_inputAction[i]->get());
 
 	//Only one output: Q(s,a)
 	m_numOutputs = 1;
@@ -181,6 +181,6 @@ DeepDeterministicPolicy::DeepDeterministicPolicy(ConfigNode* pConfigNode) : Deep
 
 IDeterministicPolicyNetwork* DeepDeterministicPolicy::getNetworkInstance()
 {
-	return CNTK::WrapperClient::getDeterministicPolicyNetwork(m_inputStateVariables
+	return CNTK::WrapperClient::getDeterministicPolicyNetwork(m_inputStateVariables, m_outputActionVariables
 		, getLayersDefinition(), getLearnerDefinition(), m_useMinibatchNormalization.get());
 }

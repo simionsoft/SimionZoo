@@ -39,7 +39,7 @@ namespace CNTK
 			, string networkLayersDefinition, string learnerDefinition, bool useNormalization);
 		typedef IVFunctionNetwork* (CNTK_WRAPPER_DLL_API* getVFunctionNetworkDll)(vector<string> inputStateVariables, string networkLayersDefinition
 			, string learnerDefinition, bool useNormalization);
-		typedef IDeterministicPolicyNetwork* (CNTK_WRAPPER_DLL_API* getDeterministicPolicyNetworkDll)(vector<string> inputStateVariables, string networkLayersDefinition
+		typedef IDeterministicPolicyNetwork* (CNTK_WRAPPER_DLL_API* getDeterministicPolicyNetworkDll)(vector<string> inputStateVariables, vector<string> outputActionVariables, string networkLayersDefinition
 			, string learnerDefinition, bool useNormalization);
 		static getDiscreteQFunctionNetworkDll getDiscreteQFunctionNetwork;
 		static getContinuousQFunctionNetworkDll getContinuousQFunctionNetwork;

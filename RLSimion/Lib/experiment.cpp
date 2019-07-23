@@ -323,3 +323,12 @@ void Experiment::timestep(State* s, Action* a, State* s_p, Reward* r)
 	if (isLastEpisode() && (isLastStep()))
 		SimionApp::get()->pLogger->lastEpisode();
 }
+
+void Experiment::incNumUpdateSteps()
+{
+	m_numUpdates++;
+}
+unsigned int Experiment::getNumUpdateSteps()
+{
+	return m_numUpdates;
+}

@@ -16,6 +16,7 @@ public:
 	virtual void train(DeepMinibatch* pMinibatch, const vector<double>& target, double learningRate) = 0;
 
 	virtual vector<double>& evaluate(const State* s, const Action* a) = 0;
+	virtual void softUpdate(IDeepNetwork* pSourceNetwork, double alpha) = 0;
 };
 
 class IDiscreteQFunctionNetwork : public IDeepNetwork
@@ -23,6 +24,7 @@ class IDiscreteQFunctionNetwork : public IDeepNetwork
 public:
 	virtual void evaluate(const vector<double>& s, vector<double>& output) = 0;
 	virtual vector<double>& evaluate(const State* s, const Action* a) = 0;
+	virtual void softUpdate(IDeepNetwork* pSourceNetwork, double alpha) = 0;
 };
 
 class IContinuousQFunctionNetwork : public IDeepNetwork
@@ -30,6 +32,8 @@ class IContinuousQFunctionNetwork : public IDeepNetwork
 public:
 	virtual void evaluate(const vector<double>& s, const vector<double>& a, vector<double>& output) = 0;
 	virtual vector<double>& evaluate(const State* s, const Action* a) = 0;
+	virtual void gradientWrtAction(const vector<double>& s, const vector<double>&a, vector<double>& gradient)= 0;
+	virtual void softUpdate(IDeepNetwork* pSourceNetwork, double alpha) = 0;
 };
 
 class IVFunctionNetwork : public IDeepNetwork
@@ -37,6 +41,7 @@ class IVFunctionNetwork : public IDeepNetwork
 public:
 	virtual void evaluate(const vector<double>& s, vector<double>& output) = 0;
 	virtual vector<double>& evaluate(const State* s, const Action* a) = 0;
+	virtual void softUpdate(IDeepNetwork* pSourceNetwork, double alpha) = 0;
 };
 
 class IDeterministicPolicyNetwork : public IDeepNetwork
@@ -44,4 +49,6 @@ class IDeterministicPolicyNetwork : public IDeepNetwork
 public:
 	virtual void evaluate(const vector<double>& s, vector<double>& output) = 0;
 	virtual vector<double>& evaluate(const State* s, const Action* a) = 0;
+	virtual void softUpdate(IDeepNetwork* pSourceNetwork, double alpha) = 0;
+	virtual void applyGradient(DeepMinibatch* pMinibatch, const vector<double>& gradient)= 0;
 };

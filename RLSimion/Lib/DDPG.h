@@ -4,8 +4,12 @@
 #include "deferred-load.h"
 
 class Noise;
-class INetwork;
-class IMinibatch;
+class IDeepNetwork;
+class DeepMinibatch;
+class DeepDeterministicPolicy;
+class DeepContinuousQFunction;
+class IContinuousQFunctionNetwork;
+class IContinuousQFunctionNetwork;
 
 //This class implements Deep Deterministic Policy Gradient (DDPG)
 //Original paper: https://arxiv.org/abs/1509.02971
@@ -19,31 +23,25 @@ class IMinibatch;
 
 class DDPG : public Simion, DeferredLoad
 {
-	MULTI_VALUE_VARIABLE<STATE_VARIABLE> m_inputState;
-	MULTI_VALUE_VARIABLE<ACTION_VARIABLE> m_outputAction;
-	DOUBLE_PARAM m_learningRate;
-
-	NN_DEFINITION m_CriticNetworkDefinition;
-	INetwork* m_pCriticOnlineNetwork= nullptr;
-	INetwork* m_pCriticTargetNetwork= nullptr;
-	vector<double> m_criticTarget;
-
-	NN_DEFINITION m_ActorNetworkDefinition;
-	INetwork* m_pActorOnlineNetwork= nullptr;
-	INetwork* m_pActorTargetNetwork= nullptr;
-	vector<double> m_actorTarget;
-
-	IMinibatch* m_pMinibatch = nullptr;
-	size_t m_minibatchSize;
-
+	//Actor
+	DeepMinibatch* m_pActorMinibatch = nullptr;
+	IDeterministicPolicyNetwork* m_pActorOnlineNetwork = nullptr;
+	IDeterministicPolicyNetwork* m_pActorTargetNetwork = nullptr;
+	CHILD_OBJECT<DeepDeterministicPolicy> m_actorPolicy;
+	MULTI_VALUE_FACTORY<Noise> m_noiseSignals;
 	vector<double> m_pi_s;
 	vector<double> m_pi_s_p;
+	//Critic
+	DeepMinibatch* m_pCriticMinibatch = nullptr;
+	IContinuousQFunctionNetwork* m_pCriticOnlineNetwork = nullptr;
+	IContinuousQFunctionNetwork* m_pCriticTargetNetwork = nullptr;
+	CHILD_OBJECT<DeepContinuousQFunction> m_criticQFunction;
 	vector<double> m_Q_pi_s_p;
-	
-	vector<double> m_gradientWrtAction;
 
-	CHILD_OBJECT_FACTORY<Noise> m_policyNoise;
 	DOUBLE_PARAM m_tau;
+
+	size_t m_numUpdates = 0;
+	size_t m_targetFunctionUpdateFreq = 10;
 
 	//update policy network
 	void updateActor(const State* s, const Action* a, const State* s_p, double r);

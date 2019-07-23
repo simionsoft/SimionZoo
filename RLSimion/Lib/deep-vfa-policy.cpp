@@ -62,7 +62,7 @@ void DiscreteDeepPolicy::initialize(DeepDiscreteQFunction* pQFunctionDefinition)
 	m_argMaxQValues = vector<double>(m_numTotalActionSamples);
 	m_stateVector = vector<double>(pQFunctionDefinition->getInputStateVariables().size());
 	m_argMaxAction = vector<double>(pQFunctionDefinition->getNumOutputActions());
-	m_outputActionVariables = pQFunctionDefinition->getOutputActionVariables();
+	m_outputActionVariables = pQFunctionDefinition->getUsedActionVariables();
 
 	//We use normalized values, but if we are using a sample file, the range of each variable may be different
 	//We store the discretized values for each action in a single vector: [a0_0, a0_1...a0_n, a1_0, a1_1, ...]

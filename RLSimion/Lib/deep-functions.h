@@ -99,6 +99,5 @@ public:
 	DeepDeterministicPolicy(ConfigNode* pConfigNode);
 
 	IDeterministicPolicyNetwork* getNetworkInstance();
-	vector<string>& getOutputActionVariables();
 	virtual const vector<string>& getUsedActionVariables() { return m_outputActionVariables; }
 };

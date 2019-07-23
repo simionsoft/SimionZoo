@@ -92,11 +92,6 @@ bool DeepMinibatch::isFull() const
 	return m_numTuples == m_size;
 }
 
-size_t DeepMinibatch::size() const
-{
-	return m_size;
-}
-
 size_t DeepMinibatch::numTuples() const
 {
 	return m_numTuples;

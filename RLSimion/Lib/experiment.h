@@ -46,6 +46,8 @@ class Experiment
 	unsigned int m_experimentStep= 0;
 	bool m_bTerminalState;
 
+	unsigned int m_numUpdates = 0;
+
 	DOUBLE_PARAM m_progUpdateFreq; //in seconds: time between progress updates
 	Timer* m_pProgressTimer;
 
@@ -95,6 +97,9 @@ public:
 	unsigned int getNumSteps(){ return m_numSteps; }
 	void setNumSteps(int numSteps);
 	unsigned int getExperimentStep() { return m_experimentStep; } //returns the current step since the experiment began
+	
+	void incNumUpdateSteps();
+	unsigned int getNumUpdateSteps();
 
 	//Progress is normalized
 	double getExperimentProgress(); //[0,1]

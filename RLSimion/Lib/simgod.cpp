@@ -105,6 +105,8 @@ void SimGod::update(State* s, Action* a, State* s_p, double r, double probabilit
 		//direct update step
 		for (unsigned int i = 0; i < m_simions.size(); i++)
 			m_simions[i]->update(s, a, s_p, r, probability);
+		//increment the number of updates done so far
+		SimionApp::get()->pExperiment->incNumUpdateSteps();
 	}
 }
 
@@ -129,6 +131,8 @@ void SimGod::postUpdate()
 			for (size_t i = 0; i < m_simions.size(); i++)
 				m_simions[i]->update(pExperienceTuple->s, pExperienceTuple->a, pExperienceTuple->s_p
 					, pExperienceTuple->r, pExperienceTuple->probability);
+			//increment the number of updates done so far
+			SimionApp::get()->pExperiment->incNumUpdateSteps();
 		}
 	}
 }
@@ -192,18 +196,18 @@ int SimGod::getTargetFunctionUpdateFreq()
 /// <returns>It returns true if:
 /// -freeze target functions is enabled
 /// -current step is a multiple of the update freq
-/// -we are not replaying experience</returns>
+/// </returns>
 bool SimGod::bUpdateFrozenWeightsNow()
 {
 	static int lastUpdateStep = -1;
 
 	Experiment* pExperiment = SimionApp::get()->pExperiment.ptr();
-	int currentStep = pExperiment->getExperimentStep();
+	int numUpdateSteps = pExperiment->getNumUpdateSteps();
 	int updateFreq = getTargetFunctionUpdateFreq();
 	
-	bool bMustUpdate= (updateFreq && lastUpdateStep != currentStep && (currentStep % updateFreq == 0));
+	bool bMustUpdate= (updateFreq && (numUpdateSteps % updateFreq == 0));
 	if (bMustUpdate)
-		lastUpdateStep = currentStep;
+		lastUpdateStep = numUpdateSteps;
 	return bMustUpdate;
 }
 

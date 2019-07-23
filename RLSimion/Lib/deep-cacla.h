@@ -1,15 +1,20 @@
 #pragma once
-
+#if defined(__linux__) || defined(_WIN64)
 #include "simion.h"
 #include "parameters-numeric.h"
-#include "deep-functions.h"
 #include "deferred-load.h"
 
 #include <vector>
 using namespace std;
 
 class IDeepNetwork;
+class DeepDeterministicPolicy;
+class IDeterministicPolicyNetwork;
+class DeepVFunction;
+class IVFunctionNetwork;
 class Noise;
+class DeepMinibatch;
+
 
 class DeepCACLA : public Simion, DeferredLoad
 {
@@ -36,3 +41,4 @@ public:
 	void deferredLoadStep();
 };
 
+#endif

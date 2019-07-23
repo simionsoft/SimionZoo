@@ -25,6 +25,7 @@ protected:
 	const wstring m_lossVariableId = L"loss-variable";
 	const wstring m_networkLearnerCombinationId = L"network-learner";
 	const wstring m_fullNetworLearnerFunctionId = L"full-network-learner";
+	const wstring m_actionScaleFunctionId = L"scale-action";
 
 	CNTK::Variable m_inputState;
 	CNTK::Variable m_targetVariable;
@@ -46,6 +47,7 @@ protected:
 	void _evaluate(const vector<double>& s, vector<double>& output);
 	virtual void _train(DeepMinibatch* pMinibatch, const vector<double>& target, double learningRate);
 	void _clone(const CntkNetwork* pSource, bool bFreezeWeights = true);
+	void _softUpdate(CntkNetwork* pSource, double alpha);
 
 	//used for single-tuple evaluations
 	vector<double>& _evaluate(const State* s);
@@ -76,6 +78,7 @@ public:
 	void train(DeepMinibatch* pMinibatch, const vector<double>& target, double learningRate);
 	void evaluate(const vector<double>& s, vector<double>& output);
 	vector<double>& evaluate(const State* s, const Action* a);
+	void softUpdate(IDeepNetwork* pSource, double alpha);
 };
 
 class CntkContinuousQFunctionNetwork : public IContinuousQFunctionNetwork, CntkNetwork
@@ -95,6 +98,8 @@ public:
 	void train(DeepMinibatch* pMinibatch, const vector<double>& target, double learningRate);
 	void evaluate(const vector<double>& s, const vector<double>& a, vector<double>& output);
 	vector<double>& evaluate(const State* s, const Action* a);
+	void gradientWrtAction(const vector<double>& s, const vector<double>&a, vector<double>& gradient);
+	void softUpdate(IDeepNetwork* pSource, double alpha);
 };
 
 class CntkVFunctionNetwork : public IVFunctionNetwork, CntkNetwork
@@ -110,14 +115,16 @@ public:
 	void train(DeepMinibatch* pMinibatch, const vector<double>& target, double learningRate);
 	void evaluate(const vector<double>& s, vector<double>& output);
 	vector<double>& evaluate(const State* s, const Action* a);
+	void softUpdate(IDeepNetwork* pSource, double alpha);
 };
 
 class CntkDeterministicPolicyNetwork : public IDeterministicPolicyNetwork, CntkNetwork
 {
+	vector<string> m_outputActionVariables;
 public:
-	CntkDeterministicPolicyNetwork(vector<string> inputStateVariables, string networkLayersDefinition, string learnerDefinition, bool useNormalization);
+	CntkDeterministicPolicyNetwork(vector<string> inputStateVariables, vector<string> outputActionVariables, string networkLayersDefinition, string learnerDefinition, bool useNormalization);
 
-	unsigned int getNumOutputs() { return 1; }
+	unsigned int getNumOutputs();
 	const vector<string>& getInputStateVariables() { return CntkNetwork::getInputStateVariables(); }
 	const vector<string>& getInputActionVariables() { return CntkNetwork::getInputActionVariables(); }
 	void destroy();
@@ -125,4 +132,6 @@ public:
 	void train(DeepMinibatch* pMinibatch, const vector<double>& target, double learningRate);
 	void evaluate(const vector<double>& s, vector<double>& output);
 	vector<double>& evaluate(const State* s, const Action* a);
+	void softUpdate(IDeepNetwork* pSource, double alpha);
+	void applyGradient(DeepMinibatch* pMinibatch, const vector<double>& gradient);
 };
