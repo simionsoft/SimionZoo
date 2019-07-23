@@ -32,20 +32,20 @@
 #include "worlds/world.h"
 #include "app.h"
 #include "noise.h"
-#include "deep-vfa-policy.h"
+#include "deep-discrete-q-policy.h"
 #include "deep-minibatch.h"
 #include "parameters.h"
 #include <algorithm>
-#include "deep-vfa-policy.h"
 #include "config.h"
 #include "deep-network.h"
+#include "cntk-wrapper-loader.h"
 
 DQN::~DQN()
 {
 	if (m_pTargetQNetwork) m_pTargetQNetwork->destroy();
 	if (m_pOnlineQNetwork) m_pOnlineQNetwork->destroy();
 	if (m_pMinibatch) delete m_pMinibatch;
-	CNTK::WrapperClient::UnLoad();
+	CNTK::WrapperLoader::UnLoad();
 }
 
 DQN::DQN(ConfigNode* pConfigNode)
@@ -53,7 +53,7 @@ DQN::DQN(ConfigNode* pConfigNode)
 	m_pQFunction = CHILD_OBJECT<DeepDiscreteQFunction>(pConfigNode, "Q-Network", "The definition of the Q-function learned by the agent");
 
 	//Only register dependencies. The wrapper is loaded on the deferred load step
-	CNTK::WrapperClient::SetRequirements();
+	CNTK::WrapperLoader::SetRequirements();
 
 	m_policy = CHILD_OBJECT_FACTORY<DiscreteDeepPolicy>(pConfigNode, "Policy", "The policy");
 }
@@ -63,7 +63,7 @@ void DQN::deferredLoadStep()
 	//we defer all the heavy-weight initializing stuff and anything that depends on the SimGod
 	
 	//Load Cntk if we must
-	CNTK::WrapperClient::Load();
+	CNTK::WrapperLoader::Load();
 
 	//create the networks
 	m_pOnlineQNetwork = m_pQFunction->getNetworkInstance();

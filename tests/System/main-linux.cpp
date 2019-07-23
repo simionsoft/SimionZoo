@@ -54,5 +54,15 @@ int main()
     retCode= 1;
     std::cout << "Failed CrossPlatform_Memory()\n";
   }
+  try
+  {
+    SystemTests::System_Tests::CrossPlatform_Split();
+    std::cout << "Passed CrossPlatform_Split()\n";
+  }
+  catch(std::runtime_error error)
+  {
+    retCode= 1;
+    std::cout << "Failed CrossPlatform_Split()\n";
+  }
   return retCode;
 }

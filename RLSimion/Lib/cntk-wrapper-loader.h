@@ -23,7 +23,7 @@ namespace tinyxml2 { class XMLElement; }
 
 namespace CNTK
 {
-	class WrapperClient
+	class WrapperLoader
 	{
 	public:
 

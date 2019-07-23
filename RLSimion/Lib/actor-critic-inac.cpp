@@ -38,7 +38,7 @@
 #include "simgod.h"
 #include "logger.h"
 #include <iostream>
-#include "CNTKWrapperClient.h"
+
 #include "../../tools/System/CrossPlatform.h"
 
 IncrementalNaturalActorCritic::IncrementalNaturalActorCritic(ConfigNode* pConfigNode)

@@ -22,9 +22,6 @@
     <ClInclude Include="worlds\BulletPhysics.h">
       <Filter>bullet3</Filter>
     </ClInclude>
-    <ClInclude Include="CNTKWrapperClient.h">
-      <Filter>neural-networks</Filter>
-    </ClInclude>
     <ClInclude Include="DDPG.h">
       <Filter>neural-networks</Filter>
     </ClInclude>
@@ -42,9 +39,6 @@
     </ClInclude>
     <ClInclude Include="worlds\double-pendulum.h">
       <Filter>worlds</Filter>
-    </ClInclude>
-    <ClInclude Include="deep-vfa-policy.h">
-      <Filter>neural-networks</Filter>
     </ClInclude>
     <ClInclude Include="etraces.h">
       <Filter>linear-vfa-learning</Filter>
@@ -211,6 +205,12 @@
     <ClInclude Include="deep-learner.h">
       <Filter>neural-networks</Filter>
     </ClInclude>
+    <ClInclude Include="cntk-wrapper-loader.h">
+      <Filter>neural-networks</Filter>
+    </ClInclude>
+    <ClInclude Include="deep-discrete-q-policy.h">
+      <Filter>neural-networks</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="actor.cpp">
@@ -240,9 +240,6 @@
     <ClCompile Include="worlds\BulletPhysics.cpp">
       <Filter>bullet3</Filter>
     </ClCompile>
-    <ClCompile Include="CNTKWrapperClient.cpp">
-      <Filter>neural-networks</Filter>
-    </ClCompile>
     <ClCompile Include="DDPG.cpp">
       <Filter>neural-networks</Filter>
     </ClCompile>
@@ -269,9 +266,6 @@
     </ClCompile>
     <ClCompile Include="worlds\double-pendulum.cpp">
       <Filter>worlds</Filter>
-    </ClCompile>
-    <ClCompile Include="deep-vfa-policy.cpp">
-      <Filter>neural-networks</Filter>
     </ClCompile>
     <ClCompile Include="etraces.cpp">
       <Filter>linear-vfa-learning</Filter>
@@ -436,6 +430,12 @@
       <Filter>neural-networks</Filter>
     </ClCompile>
     <ClCompile Include="deep-learner.cpp">
+      <Filter>neural-networks</Filter>
+    </ClCompile>
+    <ClCompile Include="cntk-wrapper-loader.cpp">
+      <Filter>neural-networks</Filter>
+    </ClCompile>
+    <ClCompile Include="deep-discrete-q-policy.cpp">
       <Filter>neural-networks</Filter>
     </ClCompile>
   </ItemGroup>

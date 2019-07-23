@@ -5,6 +5,7 @@
 #include "deep-network.h"
 #include "deep-minibatch.h"
 #include "deep-functions.h"
+#include "cntk-wrapper-loader.h"
 #include "simgod.h"
 #include "app.h"
 #include "noise.h"
@@ -18,7 +19,7 @@ DeepCACLA::DeepCACLA(ConfigNode* pConfigNode)
 	m_actorPolicy = CHILD_OBJECT<DeepDeterministicPolicy>(pConfigNode, "Policy", "Neural Network used to represent the actors policy");
 	m_noiseSignals = MULTI_VALUE_FACTORY<Noise>(pConfigNode, "Exploration-Noise", "Noise signals added to each of the outputs of the deterministic policy");
 	m_criticVFunction= CHILD_OBJECT<DeepVFunction>(pConfigNode, "Value-Function", "Value function learned by the critic");
-	CNTK::WrapperClient::SetRequirements();
+	CNTK::WrapperLoader::SetRequirements();
 }
 
 
@@ -31,13 +32,13 @@ DeepCACLA::~DeepCACLA()
 	if (m_pCriticOnlineNetwork) m_pCriticOnlineNetwork->destroy();
 	if (m_pCriticTargetNetwork) m_pCriticTargetNetwork->destroy();
 
-	CNTK::WrapperClient::UnLoad();
+	CNTK::WrapperLoader::UnLoad();
 }
 
 
 void DeepCACLA::deferredLoadStep()
 {
-	CNTK::WrapperClient::Load();
+	CNTK::WrapperLoader::Load();
 
 	//Initialize the actor
 	m_pActorMinibatch = m_actorPolicy->getMinibatch();

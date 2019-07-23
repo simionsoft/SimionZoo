@@ -24,31 +24,10 @@
 */
 
 #include "cntk-network.h"
-#include "CNTKWrapper.h"
-#include "Parameter.h"
-#include "Link.h"
-#include "ParameterValues.h"
-#include "Chain.h"
-#include "NetworkArchitecture.h"
-#include "NetworkDefinition.h"
-#include "InputData.h"
-#include "OptimizerSetting.h"
-#include "Chain.h"
-#include "Exceptions.h"
-#include "Network.h"
+#include "cntk-wrapper.h"
 
-#include "../Common/named-var-set.h"
 
 #define EXPORT comment(linker, "/EXPORT:" __FUNCTION__ "=" __FUNCDNAME__)
-
-INetworkDefinition* CNTKWrapper::getNetworkDefinition(tinyxml2::XMLElement* pNode)
-{
-#pragma EXPORT
-	size_t maxNumCPUThreads = std::thread::hardware_concurrency();
-	CNTK::SetMaxNumCPUThreads(maxNumCPUThreads);
-
-	return NetworkDefinition::getInstance(pNode);
-}
 
 void CNTKWrapper::setDevice(bool useGPU)
 {

@@ -23,11 +23,11 @@
 	SOFTWARE.
 */
 
-#include "CNTKWrapperClient.h"
+#include "cntk-wrapper-loader.h"
 
 //so far, we only include CNTK-related stuff if we are under Windows-64 OR Linux architecture (so far, only Linux-64 is supported)
 #if defined(__linux__) || defined(_WIN64)
-	#include "../CNTKWrapper/CNTKWrapper.h"
+	#include "../CNTKWrapper/cntk-wrapper.h"
 	#include "../../tools/System/DynamicLib.h"
 
 	#ifdef __linux__
@@ -69,13 +69,13 @@ namespace CNTK
 #endif
 
 	int NumNetworkInstances = 0;
-	WrapperClient::getNetworkDefinitionDLL WrapperClient::getNetworkDefinition = nullptr;
-	WrapperClient::setDeviceDLL WrapperClient::setDevice = nullptr;
+	WrapperLoader::getNetworkDefinitionDLL WrapperLoader::getNetworkDefinition = nullptr;
+	WrapperLoader::setDeviceDLL WrapperLoader::setDevice = nullptr;
 
-	WrapperClient::getDiscreteQFunctionNetworkDll WrapperClient::getDiscreteQFunctionNetwork = nullptr;
-	WrapperClient::getContinuousQFunctionNetworkDll WrapperClient::getContinuousQFunctionNetwork = nullptr;
-	WrapperClient::getVFunctionNetworkDll WrapperClient::getVFunctionNetwork = nullptr;
-	WrapperClient::getDeterministicPolicyNetworkDll WrapperClient::getDeterministicPolicyNetwork = nullptr;
+	WrapperLoader::getDiscreteQFunctionNetworkDll WrapperLoader::getDiscreteQFunctionNetwork = nullptr;
+	WrapperLoader::getContinuousQFunctionNetworkDll WrapperLoader::getContinuousQFunctionNetwork = nullptr;
+	WrapperLoader::getVFunctionNetworkDll WrapperLoader::getVFunctionNetwork = nullptr;
+	WrapperLoader::getDeterministicPolicyNetworkDll WrapperLoader::getDeterministicPolicyNetwork = nullptr;
 
 	/// <summary>
 	/// This loads the Cntk libraries. Only usable by x64 versions. We want to be able to know the requirements even
@@ -83,7 +83,7 @@ namespace CNTK
 	/// and retrieve the access point. Otherwise, it adds all the target-specific requirements with disregard to the
 	/// platform on which the executable is being run
 	/// </summary>
-	void WrapperClient::Load()
+	void WrapperLoader::Load()
 	{
 #if defined(__linux__) || defined(_WIN64)
 		NumNetworkInstances++;
@@ -124,7 +124,7 @@ namespace CNTK
 	/// because in an experiment we may be using more than one instance of Neural Network and we only want to unload
 	/// the libraries once al Neural Networks have been destroyed
 	/// </summary>
-	void WrapperClient::UnLoad()
+	void WrapperLoader::UnLoad()
 	{
 #if defined(__linux__) || defined(_WIN64)
 		NumNetworkInstances--;
@@ -140,7 +140,7 @@ namespace CNTK
 	/// Sets the requirements linked to the Cntk libraries: it registers the library dependencies and sets the number of CPU cores to "all".
 	/// It's separated from the loading function so that dependencies can be calculated without actually loading Cntk libraries
 	/// </summary>
-	void WrapperClient::SetRequirements()
+	void WrapperLoader::SetRequirements()
 	{
 		//Set the number of CPU threads to "all"
 		SimionApp::get()->setNumCPUCores(0);

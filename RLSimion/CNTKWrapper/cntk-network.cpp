@@ -1,10 +1,12 @@
 #include "cntk-network.h"
 #include "../Lib/deep-minibatch.h"
 #include "../Lib/deep-functions.h"
-#include "CNTKLibrary.h"
-#include "CNTKWrapperInternals.h"
 #include "../../tools/System/CrossPlatform.h"
 #include <vector>
+
+#include "CNTKLibrary.h"
+using namespace CNTK;
+
 
 // CntkNetwork
 

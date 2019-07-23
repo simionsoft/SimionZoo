@@ -47,38 +47,11 @@
     <AdditionalSourcesToCopyMapping>../../bin/cntk-linux/libCntk.Core-2.5.1.so:=~/projects/SimionZoo/bin/libCntk.Core-2.5.1.so;../../bin/cntk-linux/libCntk.Math-2.5.1.so:=~/projects/SimionZoo/bin/libCntk.Math-2.5.1.so;../../bin/cntk-linux/libCntk.PerformanceProfiler-2.5.1.so:=~/projects/SimionZoo/bin/libCntk.PerformanceProfiler-2.5.1.so;../../bin/cntk-linux/libiomp5.so:=~/projects/SimionZoo/bin/libiomp5.so;../../bin/cntk-linux/libmklml_intel.so:=~/projects/SimionZoo/bin/libmklml_intel.so;../../bin/cntk-linux/libmpi.so.12:=~/projects/SimionZoo/bin/libmpi.so.12;../../bin/cntk-linux/libmpi_cxx.so.1:=~/projects/SimionZoo/bin/libmpi_cxx.so.1;../../bin/cntk-linux/libopen-pal.so.13:=~/projects/SimionZoo/bin/libopen-pal.so.13;../../bin/cntk-linux/libopen-rte.so.12:=~/projects/SimionZoo/bin/libopen-rte.so.12;</AdditionalSourcesToCopyMapping>
   </PropertyGroup>
   <ItemGroup>
-    <ClInclude Include="Chain.h" />
+    <ClInclude Include="cntk-network.h" />
+    <ClInclude Include="cntk-wrapper.h" />
     <ClInclude Include="CNTKLibrary.h" />
     <ClInclude Include="CNTKLibraryInternals.h" />
-    <ClInclude Include="CNTKWrapper.h" />
-    <ClInclude Include="CNTKWrapperInternals.h" />
-    <ClInclude Include="Exceptions.h" />
     <ClInclude Include="HalfConverter.hpp" />
-    <ClInclude Include="Minibatch.h" />
-    <ClInclude Include="OptimizerSetting.h" />
-    <ClInclude Include="NetworkDefinition.h" />
-    <ClInclude Include="InputData.h" />
-    <ClInclude Include="Link.h" />
-    <ClInclude Include="Network.h" />
-    <ClInclude Include="NetworkArchitecture.h" />
-    <ClInclude Include="Parameter.h" />
-    <ClInclude Include="ParameterValues.h" />
-    <ClInclude Include="targetver.h" />
-    <ClInclude Include="xmltags.h" />
-  </ItemGroup>
-  <ItemGroup>
-    <ClCompile Include="Chain.cpp" />
-    <ClCompile Include="CNTKWrapper.cpp" />
-    <ClCompile Include="CNTKWrapperInternals.cpp" />
-    <ClCompile Include="Minibatch.cpp" />
-    <ClCompile Include="OptimizerSetting.cpp" />
-    <ClCompile Include="NetworkDefinition.cpp" />
-    <ClCompile Include="InputData.cpp" />
-    <ClCompile Include="Link.cpp" />
-    <ClCompile Include="Network.cpp" />
-    <ClCompile Include="NetworkArchitecture.cpp" />
-    <ClCompile Include="Parameter.cpp" />
-    <ClCompile Include="ParameterValues.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\3rd-party\tinyxml2\tinyxml2-linux.vcxproj">
@@ -90,6 +63,10 @@
     <ProjectReference Include="..\Common\RLSimion-Common-linux.vcxproj">
       <Project>{1999e3bf-d76e-4347-802d-b9c0b1e014d5}</Project>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="cntk-network.cpp" />
+    <ClCompile Include="cntk-wrapper.cpp" />
   </ItemGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Linux-Debug|x64'">
     <ClCompile>

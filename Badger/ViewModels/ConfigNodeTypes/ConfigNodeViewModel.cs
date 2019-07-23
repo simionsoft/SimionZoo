@@ -384,10 +384,6 @@ namespace Badger.ViewModels
                 case XMLTags.WireTag:
                     return new WireConnectionViewModel(parentExperiment, parent, definitionNode, parentXPath, configNode);
 
-                case XMLTags.neuralNetworkNodeTag:
-                    return new NeuralNetworkProblemDescriptionConfigViewModel(parentExperiment, parent, definitionNode,
-                        parentXPath, configNode);
-
                 case XMLTags.integerNodeTag:
                     return new IntegerValueConfigViewModel(parentExperiment, parent, definitionNode,
                         parentXPath, configNode);

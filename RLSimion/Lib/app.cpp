@@ -676,7 +676,7 @@ void SimionApp::update2DMeters(State* s, Action* a)
 		m_pActionUIMeters[i]->setValue(a->get(i));
 }
 
-#include "CNTKWrapperClient.h"
+#include "cntk-wrapper-loader.h"
 
 void SimionApp::setPreferredDevice(Device device)
 {

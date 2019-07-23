@@ -9,7 +9,7 @@ class DeepMinibatch;
 class DeepDeterministicPolicy;
 class DeepContinuousQFunction;
 class IContinuousQFunctionNetwork;
-class IContinuousQFunctionNetwork;
+class IDeterministicPolicyNetwork;
 
 //This class implements Deep Deterministic Policy Gradient (DDPG)
 //Original paper: https://arxiv.org/abs/1509.02971

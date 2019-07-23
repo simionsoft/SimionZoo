@@ -387,30 +387,3 @@ shared_ptr<BaseClass> CHOICE(ConfigNode* pConfig, const char* choiceName, const 
 
 //quick and dirty hack to store the name of the dynamic world in a choice
 #define METADATA(name, value) m_name= value;
-
-
-#include "CNTKWrapperClient.h"
-class INetwork;
-
-//Because NN objects are created from the CNTKWrapper DLL, this objects needs to be created using "new" and cannot
-//use shared_ptr as in the rest of the objects
-//The copy assignment operator is overriden to avoid destroying m_pProblem and m_pNetwork after a copy-construct
-class NN_DEFINITION
-{
-protected:
-	INetworkDefinition* m_pDefinition= nullptr;
-
-	const char* m_name;
-	const char* m_comment;
-
-public:
-	NN_DEFINITION() = default;
-	NN_DEFINITION(ConfigNode* pConfigNode, const char* name, const char* comment);
-	NN_DEFINITION& operator=(const NN_DEFINITION& copied);
-	INetworkDefinition* operator->() { return m_pDefinition; }
-
-	~NN_DEFINITION();
-
-	//need to explicitly destroy the object allocated from the CNTK wrapper DLL
-	void destroy();
-};

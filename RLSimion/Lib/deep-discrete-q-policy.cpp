@@ -23,7 +23,7 @@
 	SOFTWARE.
 */
 
-#include "deep-vfa-policy.h"
+#include "deep-discrete-q-policy.h"
 #include "simgod.h"
 #include "app.h"
 #include "experiment.h"

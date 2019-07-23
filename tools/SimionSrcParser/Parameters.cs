@@ -128,17 +128,7 @@ namespace SimionSrcParser
         }
         public override string GetParameterType() { return "Dir"; }
     }
-    public class NeuralNetworkProblemDescriptionParameter : SimpleParameter
-    {
-        public NeuralNetworkProblemDescriptionParameter(string name, string comment)
-        {
-            m_name = name;
-            m_comment = comment;
-            m_default = "";
-            m_xmlTag = XMLTags.neuralNetworkNodeTag;
-        }
-        public override string GetParameterType() { return "NN Definition"; }
-    }
+
     public class EnumParameter : IParameter
     {
         string m_name, m_className, m_comment, m_default;

@@ -121,14 +121,7 @@ namespace SimionSrcParser
             parent.addParameter(new DirPathParameter(parsedArguments[1], parsedArguments[2], parsedArguments[3]));
         }
     }
-    public class NeuralNetworkParameterParser : Parser
-    {
-        public NeuralNetworkParameterParser() : base("NN_DEFINITION", false) { }
-        public override void processParameter(ParameterizedObject parent)
-        {
-            parent.addParameter(new NeuralNetworkProblemDescriptionParameter(parsedArguments[1], parsedArguments[2]));
-        }
-    }
+
     public class EnumParameterParser : Parser
     {
         public EnumParameterParser() : base("ENUM_PARAM", true) { }

@@ -10,93 +10,18 @@
     <Text Include="ReadMe.txt" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Chain.h">
-      <Filter>Source</Filter>
-    </ClInclude>
-    <ClInclude Include="CNTKWrapper.h">
-      <Filter>Source</Filter>
-    </ClInclude>
-    <ClInclude Include="CNTKWrapperInternals.h">
-      <Filter>Source</Filter>
-    </ClInclude>
-    <ClInclude Include="Exceptions.h">
-      <Filter>Source</Filter>
-    </ClInclude>
-    <ClInclude Include="InputData.h">
-      <Filter>Source</Filter>
-    </ClInclude>
-    <ClInclude Include="Link.h">
-      <Filter>Source</Filter>
-    </ClInclude>
-    <ClInclude Include="Network.h">
-      <Filter>Source</Filter>
-    </ClInclude>
-    <ClInclude Include="NetworkArchitecture.h">
-      <Filter>Source</Filter>
-    </ClInclude>
-    <ClInclude Include="NetworkDefinition.h">
-      <Filter>Source</Filter>
-    </ClInclude>
-    <ClInclude Include="OptimizerSetting.h">
-      <Filter>Source</Filter>
-    </ClInclude>
-    <ClInclude Include="Parameter.h">
-      <Filter>Source</Filter>
-    </ClInclude>
-    <ClInclude Include="ParameterValues.h">
-      <Filter>Source</Filter>
-    </ClInclude>
-    <ClInclude Include="targetver.h">
-      <Filter>Source</Filter>
-    </ClInclude>
-    <ClInclude Include="xmltags.h">
-      <Filter>Source</Filter>
-    </ClInclude>
-    <ClInclude Include="Minibatch.h">
-      <Filter>Source</Filter>
-    </ClInclude>
     <ClInclude Include="cntk-network.h">
+      <Filter>Source</Filter>
+    </ClInclude>
+    <ClInclude Include="cntk-wrapper.h">
       <Filter>Source</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="Chain.cpp">
-      <Filter>Source</Filter>
-    </ClCompile>
-    <ClCompile Include="Link.cpp">
-      <Filter>Source</Filter>
-    </ClCompile>
-    <ClCompile Include="Parameter.cpp">
-      <Filter>Source</Filter>
-    </ClCompile>
-    <ClCompile Include="NetworkArchitecture.cpp">
-      <Filter>Source</Filter>
-    </ClCompile>
-    <ClCompile Include="ParameterValues.cpp">
-      <Filter>Source</Filter>
-    </ClCompile>
-    <ClCompile Include="Network.cpp">
-      <Filter>Source</Filter>
-    </ClCompile>
-    <ClCompile Include="InputData.cpp">
-      <Filter>Source</Filter>
-    </ClCompile>
-    <ClCompile Include="CNTKWrapper.cpp">
-      <Filter>Source</Filter>
-    </ClCompile>
-    <ClCompile Include="OptimizerSetting.cpp">
-      <Filter>Source</Filter>
-    </ClCompile>
-    <ClCompile Include="CNTKWrapperInternals.cpp">
-      <Filter>Source</Filter>
-    </ClCompile>
-    <ClCompile Include="NetworkDefinition.cpp">
-      <Filter>Source</Filter>
-    </ClCompile>
-    <ClCompile Include="Minibatch.cpp">
-      <Filter>Source</Filter>
-    </ClCompile>
     <ClCompile Include="cntk-network.cpp">
+      <Filter>Source</Filter>
+    </ClCompile>
+    <ClCompile Include="cntk-wrapper.cpp">
       <Filter>Source</Filter>
     </ClCompile>
   </ItemGroup>

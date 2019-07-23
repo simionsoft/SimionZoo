@@ -34,9 +34,6 @@
     <ClCompile Include="worlds\BulletPhysics.cpp">
       <Filter>bullet3</Filter>
     </ClCompile>
-    <ClCompile Include="CNTKWrapperClient.cpp">
-      <Filter>neural-networks</Filter>
-    </ClCompile>
     <ClCompile Include="config.cpp">
       <Filter>config</Filter>
     </ClCompile>
@@ -56,9 +53,6 @@
       <Filter>linear-vfa-learning</Filter>
     </ClCompile>
     <ClCompile Include="DDPG.cpp">
-      <Filter>neural-networks</Filter>
-    </ClCompile>
-    <ClCompile Include="deep-vfa-policy.cpp">
       <Filter>neural-networks</Filter>
     </ClCompile>
     <ClCompile Include="deferred-load.cpp">
@@ -211,6 +205,27 @@
     <ClCompile Include="sample-file.cpp">
       <Filter>logging</Filter>
     </ClCompile>
+    <ClCompile Include="deep-cacla.cpp">
+      <Filter>neural-networks</Filter>
+    </ClCompile>
+    <ClCompile Include="deep-discrete-q-policy.cpp">
+      <Filter>neural-networks</Filter>
+    </ClCompile>
+    <ClCompile Include="deep-functions.cpp">
+      <Filter>neural-networks</Filter>
+    </ClCompile>
+    <ClCompile Include="deep-layer.cpp">
+      <Filter>neural-networks</Filter>
+    </ClCompile>
+    <ClCompile Include="deep-learner.cpp">
+      <Filter>neural-networks</Filter>
+    </ClCompile>
+    <ClCompile Include="deep-minibatch.cpp">
+      <Filter>neural-networks</Filter>
+    </ClCompile>
+    <ClCompile Include="cntk-wrapper-loader.cpp">
+      <Filter>neural-networks</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="app.h">
@@ -243,9 +258,6 @@
     <ClInclude Include="worlds\double-pendulum.h">
       <Filter>worlds</Filter>
     </ClInclude>
-    <ClInclude Include="CNTKWrapperClient.h">
-      <Filter>neural-networks</Filter>
-    </ClInclude>
     <ClInclude Include="DQN.h">
       <Filter>neural-networks</Filter>
     </ClInclude>
@@ -254,9 +266,6 @@
     </ClInclude>
     <ClInclude Include="config.h">
       <Filter>config</Filter>
-    </ClInclude>
-    <ClInclude Include="deep-vfa-policy.h">
-      <Filter>neural-networks</Filter>
     </ClInclude>
     <ClInclude Include="controller.h">
       <Filter>linear-vfa-learning</Filter>
@@ -404,6 +413,30 @@
     </ClInclude>
     <ClInclude Include="sample-file.h">
       <Filter>logging</Filter>
+    </ClInclude>
+    <ClInclude Include="deep-cacla.h">
+      <Filter>neural-networks</Filter>
+    </ClInclude>
+    <ClInclude Include="deep-discrete-q-policy.h">
+      <Filter>neural-networks</Filter>
+    </ClInclude>
+    <ClInclude Include="deep-functions.h">
+      <Filter>neural-networks</Filter>
+    </ClInclude>
+    <ClInclude Include="deep-layer.h">
+      <Filter>neural-networks</Filter>
+    </ClInclude>
+    <ClInclude Include="deep-learner.h">
+      <Filter>neural-networks</Filter>
+    </ClInclude>
+    <ClInclude Include="deep-minibatch.h">
+      <Filter>neural-networks</Filter>
+    </ClInclude>
+    <ClInclude Include="deep-network.h">
+      <Filter>neural-networks</Filter>
+    </ClInclude>
+    <ClInclude Include="cntk-wrapper-loader.h">
+      <Filter>neural-networks</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

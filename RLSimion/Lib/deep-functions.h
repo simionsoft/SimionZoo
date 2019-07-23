@@ -8,6 +8,10 @@
 
 class IDeepNetwork;
 class DeepMinibatch;
+class IDiscreteQFunctionNetwork;
+class IContinuousQFunctionNetwork;
+class IVFunctionNetwork;
+class IDeterministicPolicyNetwork;
 
 class DeepNetworkDefinition
 {

@@ -84,45 +84,17 @@
     <Text Include="ReadMe.txt" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Chain.h" />
     <ClInclude Include="cntk-network.h" />
-    <ClInclude Include="CNTKWrapper.h" />
-    <ClInclude Include="CNTKWrapperInternals.h" />
-    <ClInclude Include="Exceptions.h" />
-    <ClInclude Include="Minibatch.h" />
-    <ClInclude Include="OptimizerSetting.h" />
-    <ClInclude Include="NetworkDefinition.h" />
-    <ClInclude Include="InputData.h" />
-    <ClInclude Include="Link.h" />
-    <ClInclude Include="Network.h" />
-    <ClInclude Include="NetworkArchitecture.h" />
-    <ClInclude Include="Parameter.h" />
-    <ClInclude Include="ParameterValues.h" />
-    <ClInclude Include="targetver.h" />
-    <ClInclude Include="xmltags.h" />
+    <ClInclude Include="cntk-wrapper.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="Chain.cpp" />
     <ClCompile Include="cntk-network.cpp" />
-    <ClCompile Include="CNTKWrapper.cpp" />
-    <ClCompile Include="CNTKWrapperInternals.cpp" />
-    <ClCompile Include="Minibatch.cpp" />
-    <ClCompile Include="OptimizerSetting.cpp" />
-    <ClCompile Include="NetworkDefinition.cpp" />
-    <ClCompile Include="InputData.cpp" />
-    <ClCompile Include="Link.cpp" />
-    <ClCompile Include="Network.cpp" />
-    <ClCompile Include="NetworkArchitecture.cpp" />
-    <ClCompile Include="Parameter.cpp" />
-    <ClCompile Include="ParameterValues.cpp" />
+    <ClCompile Include="cntk-wrapper.cpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\3rd-party\tinyxml2\tinyxml2.vcxproj">
-      <Project>{d1c528b6-aa02-4d29-9d61-dc08e317a70d}</Project>
-    </ProjectReference>
     <ProjectReference Include="..\..\tools\System\System.vcxproj">
       <Project>{f32419bf-f083-4552-aa39-610898f34dbb}</Project>
     </ProjectReference>

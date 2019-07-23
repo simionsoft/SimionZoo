@@ -37,6 +37,7 @@ using Action = NamedVarSet;
 
 class DeepDiscreteQFunction;
 class DiscreteQFunctionNetwork;
+class IDiscreteQFunctionNetwork;
 
 class DiscreteDeepPolicy
 {

@@ -29,6 +29,7 @@
 #include "../../tools/System/FileUtils.h"
 #include "../../tools/System/CrossPlatform.h"
 #include "logger.h"
+#include <limits>
 
 using namespace tinyxml2;
 

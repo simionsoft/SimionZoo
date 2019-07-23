@@ -218,7 +218,7 @@
     <ClInclude Include="actor-critic.h" />
     <ClInclude Include="actor.h" />
     <ClInclude Include="app.h" />
-    <ClInclude Include="CNTKWrapperClient.h" />
+    <ClInclude Include="cntk-wrapper-loader.h" />
     <ClInclude Include="config.h" />
     <ClInclude Include="controller.h" />
     <ClInclude Include="critic.h" />
@@ -229,7 +229,7 @@
     <ClInclude Include="deep-learner.h" />
     <ClInclude Include="deep-minibatch.h" />
     <ClInclude Include="deep-network.h" />
-    <ClInclude Include="deep-vfa-policy.h" />
+    <ClInclude Include="deep-discrete-q-policy.h" />
     <ClInclude Include="deferred-load.h" />
     <ClInclude Include="DQN.h" />
     <ClInclude Include="etraces.h" />
@@ -295,7 +295,7 @@
     <ClCompile Include="actor-regular.cpp" />
     <ClCompile Include="actor.cpp" />
     <ClCompile Include="app.cpp" />
-    <ClCompile Include="CNTKWrapperClient.cpp" />
+    <ClCompile Include="cntk-wrapper-loader.cpp" />
     <ClCompile Include="config.cpp" />
     <ClCompile Include="controller.cpp" />
     <ClCompile Include="critic-td-lambda.cpp" />
@@ -308,7 +308,7 @@
     <ClCompile Include="deep-layer.cpp" />
     <ClCompile Include="deep-learner.cpp" />
     <ClCompile Include="deep-minibatch.cpp" />
-    <ClCompile Include="deep-vfa-policy.cpp" />
+    <ClCompile Include="deep-discrete-q-policy.cpp" />
     <ClCompile Include="deferred-load.cpp" />
     <ClCompile Include="DQN.cpp" />
     <ClCompile Include="etraces.cpp" />

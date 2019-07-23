@@ -34,6 +34,7 @@
 #include "logger.h"
 #include "experiment.h"
 #include "worlds/world.h"
+#include "cntk-wrapper-loader.h"
 #include <algorithm>
 
 DDPG::DDPG(ConfigNode * pConfigNode)
@@ -43,7 +44,7 @@ DDPG::DDPG(ConfigNode * pConfigNode)
 	m_criticQFunction= CHILD_OBJECT<DeepContinuousQFunction>(pConfigNode, "Q-Value-Function", "Value function learned by the critic");
 	m_tau = DOUBLE_PARAM(pConfigNode, "Tau", "Parameter controlling the soft-updates of the online network", 0.001);
 
-	CNTK::WrapperClient::SetRequirements();
+	CNTK::WrapperLoader::SetRequirements();
 }
 
 DDPG::~DDPG()
@@ -60,12 +61,12 @@ DDPG::~DDPG()
 	if (m_pActorTargetNetwork != nullptr)
 		m_pActorTargetNetwork->destroy();
 
-	CNTK::WrapperClient::UnLoad();
+	CNTK::WrapperLoader::UnLoad();
 }
 
 void DDPG::deferredLoadStep()
 {
-	CNTK::WrapperClient::Load();
+	CNTK::WrapperLoader::Load();
 
 	//Initialize the actor
 	m_pActorMinibatch = m_actorPolicy->getMinibatch();
