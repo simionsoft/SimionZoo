@@ -121,7 +121,7 @@ size_t DiscreteDeepPolicy::getActionVariableIndex(double value, size_t outputAct
 	size_t actionVarOffset = m_numSamplesPerActionVariable * outputActionVariableIndex;
 	double closestDist = abs(value - m_discretizedAction[actionVarOffset]);
 
-	for (size_t i = 1; i < m_discretizedAction.size(); i++)
+	for (size_t i = 1; i < m_numSamplesPerActionVariable; i++)
 	{
 		dist = abs(value - m_discretizedAction[actionVarOffset + i]);
 		//there is no special treatment for circular variables 

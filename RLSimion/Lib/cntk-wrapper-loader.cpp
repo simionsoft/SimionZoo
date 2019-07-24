@@ -31,7 +31,6 @@
 	#include "../../tools/System/DynamicLib.h"
 
 	#ifdef __linux__
-		#define GET_NETWORK_DEFINITION_FUNC_NAME "getNetworkDefinition"
 		#define SET_DEVICE_FUNC_NAME "setDevice"
 		#define GET_DISCRETE_Q_FUNCTION_NETWORK_FUNC_NAME "getDiscreteQFunctionNetwork"
 		#define GET_CONTINUOUS_Q_FUNCTION_NETWORK_FUNC_NAME "getContinuousQFunctionNetwork"
@@ -43,7 +42,6 @@
 			#define CNTK_WRAPPER_LIB_PATH "./../bin/CNTKWrapper-linux.so"
 		#endif
 	#else
-		#define GET_NETWORK_DEFINITION_FUNC_NAME "CNTKWrapper::getNetworkDefinition"
 		#define SET_DEVICE_FUNC_NAME "CNTKWrapper::setDevice"
 		#define GET_DISCRETE_Q_FUNCTION_NETWORK_FUNC_NAME "CNTKWrapper::getDiscreteQFunctionNetwork"
 		#define GET_CONTINUOUS_Q_FUNCTION_NETWORK_FUNC_NAME "CNTKWrapper::getContinuousQFunctionNetwork"
@@ -69,7 +67,7 @@ namespace CNTK
 #endif
 
 	int NumNetworkInstances = 0;
-	WrapperLoader::getNetworkDefinitionDLL WrapperLoader::getNetworkDefinition = nullptr;
+
 	WrapperLoader::setDeviceDLL WrapperLoader::setDevice = nullptr;
 
 	WrapperLoader::getDiscreteQFunctionNetworkDll WrapperLoader::getDiscreteQFunctionNetwork = nullptr;
@@ -99,13 +97,12 @@ namespace CNTK
 				Logger::logMessage(MessageType::Error, "Failed to load dynamic library: CNTKWrapper");
 
 			//get the address of the interface functions
-			getNetworkDefinition = (getNetworkDefinitionDLL)DynamicLibCNTK.GetFuncAddress(GET_NETWORK_DEFINITION_FUNC_NAME);
 			getDiscreteQFunctionNetwork = (getDiscreteQFunctionNetworkDll)DynamicLibCNTK.GetFuncAddress(GET_DISCRETE_Q_FUNCTION_NETWORK_FUNC_NAME);
 			getContinuousQFunctionNetwork = (getContinuousQFunctionNetworkDll)DynamicLibCNTK.GetFuncAddress(GET_CONTINUOUS_Q_FUNCTION_NETWORK_FUNC_NAME);
 			getVFunctionNetwork = (getVFunctionNetworkDll)DynamicLibCNTK.GetFuncAddress(GET_V_FUNCTION_NETWORK_FUNC_NAME);
 			getDeterministicPolicyNetwork = (getDeterministicPolicyNetworkDll)DynamicLibCNTK.GetFuncAddress(GET_DETERMINISTIC_POLICY_NETWORK_FUNC_NAME);
 
-			if (getNetworkDefinition == nullptr || getDiscreteQFunctionNetwork == nullptr || getContinuousQFunctionNetwork == nullptr
+			if (getDiscreteQFunctionNetwork == nullptr || getContinuousQFunctionNetwork == nullptr
 				|| getVFunctionNetwork == nullptr || getDeterministicPolicyNetwork == nullptr)
 				Logger::logMessage(MessageType::Error, "Failed to get a pointer to an interface of the CNTKWrapper");
 
