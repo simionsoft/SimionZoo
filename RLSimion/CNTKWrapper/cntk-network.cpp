@@ -137,7 +137,7 @@ CNTK::TrainerPtr CntkNetwork::trainer(CNTK::FunctionPtr networkOutput, CNTK::Fun
 	return CreateTrainer(networkOutput, lossFunction, evalFunction, { m_learner });
 }
 
-CNTK::FunctionPtr CntkNetwork::initNetworkLearner(CNTK::FunctionPtr networkOutput, string learnerDefinition)
+CNTK::FunctionPtr CntkNetwork::initNetworkLearner(string learnerDefinition)
 {
 	m_targetVariable = CNTK::InputVariable({ m_numOutputs }, CNTK::DataType::Double, m_targetVariableId);
 	CNTK::FunctionPtr lossFunctionPtr = CNTK::SquaredError(m_networkOutput, m_targetVariable, m_lossVariableId);
@@ -153,8 +153,7 @@ CNTK::FunctionPtr CntkNetwork::initNetworkLearner(CNTK::FunctionPtr networkOutpu
 CNTK::FunctionPtr CntkNetwork::initNetworkFromInputLayer(CNTK::FunctionPtr inputLayer)
 {
 	CNTK::FunctionPtr lastLayer = initNetworkLayers(inputLayer, m_networkLayersDefinition);
-	m_networkOutput = denseLayer(lastLayer, getNumOutputs(), m_networkOutputId);
-	return m_networkOutput;
+	return denseLayer(lastLayer, getNumOutputs(), m_networkOutputId);
 }
 
 void CntkNetwork::_train(DeepMinibatch* pMinibatch, const vector<double>& target, double learningRate)
@@ -251,7 +250,7 @@ CntkDiscreteQFunctionNetwork::CntkDiscreteQFunctionNetwork(vector<string> inputS
 	m_inputState = CNTK::InputVariable({ getInputStateVariables().size() }
 		, CNTK::DataType::Double, false, m_stateInputVariableId);
 	m_networkOutput = initNetworkFromInputLayer(m_inputState);
-	m_fullNetworkLearnerFunction = initNetworkLearner(m_networkOutput, m_learnerDefinition);
+	m_fullNetworkLearnerFunction = initNetworkLearner(m_learnerDefinition);
 }
 void CntkDiscreteQFunctionNetwork::destroy() { delete this;}
 IDeepNetwork* CntkDiscreteQFunctionNetwork::clone(bool bFreezeWeights) const
@@ -284,10 +283,9 @@ CntkContinuousQFunctionNetwork::CntkContinuousQFunctionNetwork(vector<string> in
 	, string networkLayersDefinition, string learnerDefinition, bool useNormalization)
 	: CntkNetwork(inputStateVariables, inputActionVariables, 1, networkLayersDefinition, learnerDefinition, useNormalization)
 {
-	//3 main differences in this constructor:
+	//2 main differences in this constructor:
 	// 1. We use the action as input and we need the gradient wrt to it
 	// 2. We use a merge layer to merge state and action inputs
-	// 3. The output goes through a sigmoid function so that the output is scaled to [0,1]
 	m_actionBuffer = vector<double>(getInputActionVariables().size());
 
 	m_inputState = CNTK::InputVariable({ getInputStateVariables().size() }
@@ -296,9 +294,9 @@ CntkContinuousQFunctionNetwork::CntkContinuousQFunctionNetwork(vector<string> in
 		, CNTK::DataType::Double, true, m_actionInputVariableId ); //<- we will need the gradient wrt action for DDPG
 	
 	CNTK::FunctionPtr inputMergeLayer = mergeLayer(m_inputState, m_inputAction);
-	m_networkOutput = CNTK::Sigmoid(initNetworkFromInputLayer(inputMergeLayer), m_actionScaleFunctionId);
+	m_networkOutput = initNetworkFromInputLayer(inputMergeLayer);
 
-	m_fullNetworkLearnerFunction = initNetworkLearner(m_networkOutput, m_learnerDefinition);
+	m_fullNetworkLearnerFunction = initNetworkLearner(m_learnerDefinition);
 }
 
 void CntkContinuousQFunctionNetwork::destroy() { delete this; }
@@ -408,7 +406,7 @@ CntkVFunctionNetwork::CntkVFunctionNetwork(vector<string> inputStateVariables, s
 	m_inputState = CNTK::InputVariable({ getInputStateVariables().size() }
 		, CNTK::DataType::Double, false, m_stateInputVariableId);
 	m_networkOutput = initNetworkFromInputLayer(m_inputState);
-	m_fullNetworkLearnerFunction = initNetworkLearner(m_networkOutput, m_learnerDefinition);
+	m_fullNetworkLearnerFunction = initNetworkLearner(m_learnerDefinition);
 }
 
 void CntkVFunctionNetwork::destroy() { delete this; }
@@ -445,8 +443,9 @@ CntkDeterministicPolicyNetwork::CntkDeterministicPolicyNetwork(vector<string> in
 	m_outputActionVariables = outputActionVariables;
 	m_inputState = CNTK::InputVariable({ getInputStateVariables().size() }
 		, CNTK::DataType::Double, false, m_stateInputVariableId);
-	m_networkOutput = initNetworkFromInputLayer(m_inputState);
-	m_fullNetworkLearnerFunction = initNetworkLearner(m_networkOutput, m_learnerDefinition);
+	// Because we are using normalized action, we send the network output through a sigmoid function so that the output is scaled to [0,1]
+	m_networkOutput = CNTK::Sigmoid(initNetworkFromInputLayer(m_inputState), m_actionScaleFunctionId);
+	m_fullNetworkLearnerFunction = initNetworkLearner(m_learnerDefinition);
 }
 void CntkDeterministicPolicyNetwork::destroy() { delete this; }
 IDeepNetwork* CntkDeterministicPolicyNetwork::clone(bool bFreezeWeights) const
@@ -454,6 +453,9 @@ IDeepNetwork* CntkDeterministicPolicyNetwork::clone(bool bFreezeWeights) const
 	CntkDeterministicPolicyNetwork* pClone = new CntkDeterministicPolicyNetwork(m_inputStateVariables
 		, m_outputActionVariables, m_networkLayersDefinition, m_learnerDefinition, m_useNormalization);
 	pClone->_clone(this, bFreezeWeights);
+
+	//Fix the output: with deterministic policy networks, the layer named "output" is not the real output because we are using an additional sigmoid function after it
+	pClone->m_networkOutput = pClone->m_fullNetworkLearnerFunction->FindByName(m_actionScaleFunctionId)->Output();
 	return pClone;
 }
 unsigned int CntkDeterministicPolicyNetwork::getNumOutputs()

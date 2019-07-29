@@ -40,7 +40,7 @@ protected:
 	CNTK::FunctionPtr denseLayer(CNTK::FunctionPtr layerInput, size_t outputDim, wstring layerId= L"");
 	CNTK::FunctionPtr normalizationLayer(CNTK::FunctionPtr layerInput);
 	CNTK::FunctionPtr initNetworkLayers(CNTK::FunctionPtr networkInput, string layersDefinition);
-	CNTK::FunctionPtr initNetworkLearner(CNTK::FunctionPtr networkOutput, string learnerDefinition);
+	CNTK::FunctionPtr initNetworkLearner(string learnerDefinition);
 	CNTK::FunctionPtr initNetworkFromInputLayer(CNTK::FunctionPtr inputLayer);
 
 	//base functionality for networks using only the state as input to avoid replicating it
