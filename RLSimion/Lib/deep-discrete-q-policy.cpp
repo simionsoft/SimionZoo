@@ -138,7 +138,7 @@ size_t DiscreteDeepPolicy::getActionVariableIndex(double value, size_t outputAct
 
 void DiscreteDeepPolicy::greedyActionSelection(IDiscreteQFunctionNetwork* pNetwork, const State* s, Action* a)
 {
-	vector<double> qValues = pNetwork->evaluate(s, a);
+	vector<double>& qValues = pNetwork->evaluate(s, a);
 
 	size_t maxQActionIndex= std::distance(qValues.begin(), std::max_element(qValues.begin(), qValues.end()));
 

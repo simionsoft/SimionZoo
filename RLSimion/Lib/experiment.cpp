@@ -127,6 +127,32 @@ bool Experiment::isEvaluationEpisode()
 }
 
 /// <summary>
+/// Returns whether the current is an online training episode
+/// </summary>
+/// <returns>True if it is an online training episode</returns>
+bool Experiment::isOnlineTrainingEpisode()
+{
+	if (isEvaluationEpisode()) return false;
+
+	if (m_trainingEpisodeIndex <= m_numOfflineTrainingEpisodes.get()) //indices start from 1
+		return false;
+	return true;
+}
+
+/// <summary>
+/// Returns whether the current is an offline training episode
+/// </summary>
+/// <returns>True if it is an offline training episode</returns>
+bool Experiment::isOfflineTrainingEpisode()
+{
+	if (isEvaluationEpisode()) return false;
+
+	if (m_trainingEpisodeIndex <= m_numOfflineTrainingEpisodes.get()) //indices start from 1
+		return true;
+	return false;
+}
+
+/// <summary>
 /// Returns the index of the last evaluation episode done. Training episodes are ignored to calculate the index
 /// </summary>
 unsigned int Experiment::getEpisodeInEvaluationIndex()
@@ -273,6 +299,7 @@ Experiment::Experiment(ConfigNode* pConfigNode)
 	m_randomSeed = INT_PARAM(pConfigNode, "Random-Seed", "Random seed used to generate random sequences of numbers", 1);
 
 	m_numTrainingEpisodes = INT_PARAM(pConfigNode, "Num-Episodes", "Number of episodes. Zero if we only want to run one evaluation episode", 1000);
+	m_numOfflineTrainingEpisodes = INT_PARAM(pConfigNode, "Num-Offline-Episodes", "Number of offline episodes. Must be less than Num-Episodes", 0);
 	m_evalFreq = INT_PARAM(pConfigNode, "Eval-Freq", "Evaluation frequency (in episodes). If zero then only training episodes will be run", 10);
 
 	m_episodeLength = DOUBLE_PARAM(pConfigNode, "Episode-Length", "Length of an episode(seconds)", 10.0);

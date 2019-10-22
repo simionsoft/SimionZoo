@@ -141,11 +141,12 @@ private:
 
 	void updateScene(State* s, Action* a);
 
-	bool m_bUseOfflineTraining;
+	bool m_bValidOfflineTraining;
 	FILE_PATH_PARAM m_offlineTrainingSampleFile;
 
-	void runOnlineTrainingLoop(State* s, Action* a, State* s_p);
-	void runOfflineTrainingLoop(State* s, Action* a, State* s_p);
+	void runEvaluationEpisode(State* s, Action* a, State* s_p);
+	void runOnlineTrainingEpisode(State* s, Action* a, State* s_p);
+	void runOfflineTrainingEpisode(State* s, Action* a, State* s_p);
 public:
 	vector<FunctionSampler*> getFunctionSamplers() { return m_pFunctionSamplers; }
 };

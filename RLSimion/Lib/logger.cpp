@@ -573,10 +573,8 @@ void Logger::logMessage(MessageType type, const char* message)
 		case Warning:
 			printf("WARNING: %s\n", message); break;
 		case Progress:
-			//extra spaces to avoid overwriting only partially previous message
-			printf("PROGRESS: %s                     \r", message); break;
+			printf("PROGRESS: %s\n", message); break;
 		case Evaluation:
-			//extra spaces to avoid overwriting only partially previous message
 			printf("EVALUATION: %s\n", message); break;
 		case Info:
 			printf("%s\n", message); break;

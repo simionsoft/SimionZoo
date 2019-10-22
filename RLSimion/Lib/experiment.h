@@ -38,6 +38,7 @@ class Experiment
 	DOUBLE_PARAM m_episodeLength;			//length in seconds of an episode
 	unsigned int m_totalNumEpisodes= 0;		//total number of episodes (training + evaluation)
 	INT_PARAM m_numTrainingEpisodes;		//total number of training episodes
+	INT_PARAM m_numOfflineTrainingEpisodes; //how many of the training episodes should be offline? m_numOfflineTrainingEpisodes < m_numTrainingEpisodes
 	unsigned int m_numEvaluations= 0;	//total number of evaluation episodes
 	unsigned int m_numEpisodesPerEvaluation= 1;//number of episodes in each evaluation
 	INT_PARAM m_evalFreq;					//frequeny (in episodes) at which an evaluation episode will be done
@@ -86,6 +87,8 @@ public:
 	bool isLastEpisode();
 	bool isValidEpisode();
 	bool isEvaluationEpisode();
+	bool isOnlineTrainingEpisode();
+	bool isOfflineTrainingEpisode();
 
 	unsigned int getNumEvaluations(){ return m_numEvaluations; }
 	void setEvaluationFreq(int evalFreq);

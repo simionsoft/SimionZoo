@@ -142,7 +142,7 @@ double DQN::update(const State * s, const Action * a, const State * s_p, double 
 		for (int i = 0; i < m_pMinibatch->size(); i++)
 		{
 			//calculate targetvalue= r + gamma*Q(s_p,a)
-			double targetValue = m_pMinibatch->r()[i] + gamma * m_Q_s_p[m_argMaxIndex[i]];
+			double targetValue = m_pMinibatch->r()[i] + gamma * m_Q_s_p[i * m_pQFunction->getNumOutputs() + m_argMaxIndex[i]];
 
 			//change the target value only for the selected action, the rest remain the same
 			//store the index of the action taken
