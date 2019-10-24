@@ -15,6 +15,12 @@
     {
         "Entry"
         {
+        "MsmKey" = "8:_13C9D626DA71458FB581AC9820D65B93"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
         "MsmKey" = "8:_C9FB232016A7471CB949E4F3BFD89E92"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
@@ -27,8 +33,20 @@
         }
         "Entry"
         {
+        "MsmKey" = "8:_EA93B8CA5C0C51E5DCA155397C1AB4A0"
+        "OwnerKey" = "8:_13C9D626DA71458FB581AC9820D65B93"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
         "MsmKey" = "8:_UNDEFINED"
-        "OwnerKey" = "8:_A23ACCBAA27A42E6BABAE3B8961EF4FF"
+        "OwnerKey" = "8:_EA93B8CA5C0C51E5DCA155397C1AB4A0"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_UNDEFINED"
+        "OwnerKey" = "8:_13C9D626DA71458FB581AC9820D65B93"
         "MsmSig" = "8:_UNDEFINED"
         }
     }
@@ -71,31 +89,31 @@
     {
         "CustomAction"
         {
-            "{4AA51A2D-7D85-4A59-BA75-B0809FC8B380}:_13FE20FAE1DA4124A586550638E40609"
+            "{4AA51A2D-7D85-4A59-BA75-B0809FC8B380}:_0474954C5C8C48D8ADAFA8079DD0E56E"
             {
             "Name" = "8:Primary output from HerdAgent (Release Any CPU)"
             "Condition" = "8:"
-            "Object" = "8:_A23ACCBAA27A42E6BABAE3B8961EF4FF"
-            "FileType" = "3:2"
-            "InstallAction" = "3:1"
-            "Arguments" = "8:"
-            "EntryPoint" = "8:"
-            "Sequence" = "3:1"
-            "Identifier" = "8:_DC8D935B_115F_47DF_8B72_4257D07655F0"
-            "InstallerClass" = "11:TRUE"
-            "CustomActionData" = "8:"
-            }
-            "{4AA51A2D-7D85-4A59-BA75-B0809FC8B380}:_D4A21F726B624D36AEEAF9D767E516B8"
-            {
-            "Name" = "8:Primary output from HerdAgent (Release Any CPU)"
-            "Condition" = "8:"
-            "Object" = "8:_A23ACCBAA27A42E6BABAE3B8961EF4FF"
+            "Object" = "8:_13C9D626DA71458FB581AC9820D65B93"
             "FileType" = "3:2"
             "InstallAction" = "3:4"
             "Arguments" = "8:"
             "EntryPoint" = "8:"
             "Sequence" = "3:1"
-            "Identifier" = "8:_2BF04076_C03F_4717_A806_A1189A70C659"
+            "Identifier" = "8:_B3BE687A_EC3F_483D_87BE_BE05395EAF40"
+            "InstallerClass" = "11:TRUE"
+            "CustomActionData" = "8:"
+            }
+            "{4AA51A2D-7D85-4A59-BA75-B0809FC8B380}:_0E93E5836D714C76B069A2F8FF6F65F5"
+            {
+            "Name" = "8:Primary output from HerdAgent (Release Any CPU)"
+            "Condition" = "8:"
+            "Object" = "8:_13C9D626DA71458FB581AC9820D65B93"
+            "FileType" = "3:2"
+            "InstallAction" = "3:1"
+            "Arguments" = "8:"
+            "EntryPoint" = "8:"
+            "Sequence" = "3:1"
+            "Identifier" = "8:_69CE8D2D_09A4_4AC5_8BDD_2B87B19CB454"
             "InstallerClass" = "11:TRUE"
             "CustomActionData" = "8:"
             }
@@ -162,6 +180,37 @@
             "IsDependency" = "11:FALSE"
             "IsolateTo" = "8:"
             }
+            "{9F6F8455-1EF1-4B85-886A-4223BCC8E7F7}:_EA93B8CA5C0C51E5DCA155397C1AB4A0"
+            {
+            "AssemblyRegister" = "3:1"
+            "AssemblyIsInGAC" = "11:FALSE"
+            "AssemblyAsmDisplayName" = "8:Herd, Version=1.4.2.0, Culture=neutral, processorArchitecture=MSIL"
+                "ScatterAssemblies"
+                {
+                    "_EA93B8CA5C0C51E5DCA155397C1AB4A0"
+                    {
+                    "Name" = "8:Herd.dll"
+                    "Attributes" = "3:512"
+                    }
+                }
+            "SourcePath" = "8:Herd.dll"
+            "TargetName" = "8:"
+            "Tag" = "8:"
+            "Folder" = "8:_25E3F76F56964AC892C056BACBDB9A77"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:TRUE"
+            "IsolateTo" = "8:"
+            }
         }
         "FileType"
         {
@@ -207,15 +256,15 @@
         {
         "Name" = "8:Microsoft Visual Studio"
         "ProductName" = "8:HerdAgent"
-        "ProductCode" = "8:{9FCD7399-2349-4AB9-B726-157036931102}"
-        "PackageCode" = "8:{E599B07B-E7DA-444B-8B55-D5F870BD13AE}"
+        "ProductCode" = "8:{713293AB-E118-4DE1-80E8-D989799C710E}"
+        "PackageCode" = "8:{1B188D2B-CF78-43A6-B36C-487EA4EC3ADC}"
         "UpgradeCode" = "8:{836F307A-52F0-4BA7-A3C7-7D44954226A0}"
         "AspNetVersion" = "8:4.0.30319.0"
         "RestartWWWService" = "11:FALSE"
         "RemovePreviousVersions" = "11:TRUE"
         "DetectNewerInstalledVersion" = "11:TRUE"
         "InstallAllUsers" = "11:TRUE"
-        "ProductVersion" = "8:1.0.0"
+        "ProductVersion" = "8:1.4.2"
         "Manufacturer" = "8:SimionSoft (GIC - UPV/EHU)"
         "ARPHELPTELEPHONE" = "8:"
         "ARPHELPLINK" = "8:"
@@ -737,7 +786,7 @@
         }
         "ProjectOutput"
         {
-            "{5259A561-127C-4D43-A0A1-72F10C7B3BF8}:_A23ACCBAA27A42E6BABAE3B8961EF4FF"
+            "{5259A561-127C-4D43-A0A1-72F10C7B3BF8}:_13C9D626DA71458FB581AC9820D65B93"
             {
             "SourcePath" = "8:..\\..\\tools\\HerdAgent\\obj\\Release\\HerdAgent.exe"
             "TargetName" = "8:"
