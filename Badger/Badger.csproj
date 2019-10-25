@@ -64,21 +64,17 @@
     <Reference Include="Caliburn.Micro.Platform.Core, Version=3.2.0.0, Culture=neutral, PublicKeyToken=8e5891231f2ed21f, processorArchitecture=MSIL">
       <HintPath>..\packages\Caliburn.Micro.3.2.0\lib\net45\Caliburn.Micro.Platform.Core.dll</HintPath>
     </Reference>
-    <Reference Include="GongSolutions.Wpf.DragDrop, Version=1.1.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\gong-wpf-dragdrop.1.1.0\lib\net45\GongSolutions.Wpf.DragDrop.dll</HintPath>
-      <Private>True</Private>
+    <Reference Include="OxyPlot, Version=2.0.0.0, Culture=neutral, PublicKeyToken=638079a8f0bd61e9, processorArchitecture=MSIL">
+      <HintPath>..\packages\OxyPlot.Core.2.0.0\lib\net45\OxyPlot.dll</HintPath>
     </Reference>
-    <Reference Include="OxyPlot, Version=1.0.0.0, Culture=neutral, PublicKeyToken=638079a8f0bd61e9, processorArchitecture=MSIL">
-      <HintPath>..\packages\OxyPlot.Core.1.0.0\lib\net45\OxyPlot.dll</HintPath>
-      <Private>True</Private>
+    <Reference Include="OxyPlot.Wpf, Version=2.0.0.0, Culture=neutral, PublicKeyToken=75e952ba404cdbb0, processorArchitecture=MSIL">
+      <HintPath>..\packages\OxyPlot.Wpf.2.0.0\lib\net45\OxyPlot.Wpf.dll</HintPath>
     </Reference>
-    <Reference Include="OxyPlot.Wpf, Version=1.0.0.0, Culture=neutral, PublicKeyToken=75e952ba404cdbb0, processorArchitecture=MSIL">
-      <HintPath>..\packages\OxyPlot.Wpf.1.0.0\lib\net45\OxyPlot.Wpf.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
+    <Reference Include="ReachFramework" />
     <Reference Include="System" />
     <Reference Include="System.Configuration.Install" />
     <Reference Include="System.Drawing" />
+    <Reference Include="System.Printing" />
     <Reference Include="System.Runtime.Serialization" />
     <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Windows.Interactivity, Version=4.5.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
@@ -94,23 +90,20 @@
     <Reference Include="WindowsBase" />
     <Reference Include="PresentationCore" />
     <Reference Include="PresentationFramework" />
-    <Reference Include="Xceed.Wpf.AvalonDock, Version=3.3.0.0, Culture=neutral, PublicKeyToken=3e4669d2f30244f4, processorArchitecture=MSIL">
-      <HintPath>..\packages\Extended.Wpf.Toolkit.3.3.0\lib\net40\Xceed.Wpf.AvalonDock.dll</HintPath>
+    <Reference Include="Xceed.Wpf.AvalonDock, Version=3.6.0.0, Culture=neutral, PublicKeyToken=3e4669d2f30244f4, processorArchitecture=MSIL">
+      <HintPath>..\packages\Extended.Wpf.Toolkit.3.6.0\lib\net40\Xceed.Wpf.AvalonDock.dll</HintPath>
     </Reference>
-    <Reference Include="Xceed.Wpf.AvalonDock.Themes.Aero, Version=3.3.0.0, Culture=neutral, PublicKeyToken=3e4669d2f30244f4, processorArchitecture=MSIL">
-      <HintPath>..\packages\Extended.Wpf.Toolkit.3.3.0\lib\net40\Xceed.Wpf.AvalonDock.Themes.Aero.dll</HintPath>
+    <Reference Include="Xceed.Wpf.AvalonDock.Themes.Aero, Version=3.6.0.0, Culture=neutral, PublicKeyToken=3e4669d2f30244f4, processorArchitecture=MSIL">
+      <HintPath>..\packages\Extended.Wpf.Toolkit.3.6.0\lib\net40\Xceed.Wpf.AvalonDock.Themes.Aero.dll</HintPath>
     </Reference>
-    <Reference Include="Xceed.Wpf.AvalonDock.Themes.Metro, Version=3.3.0.0, Culture=neutral, PublicKeyToken=3e4669d2f30244f4, processorArchitecture=MSIL">
-      <HintPath>..\packages\Extended.Wpf.Toolkit.3.3.0\lib\net40\Xceed.Wpf.AvalonDock.Themes.Metro.dll</HintPath>
+    <Reference Include="Xceed.Wpf.AvalonDock.Themes.Metro, Version=3.6.0.0, Culture=neutral, PublicKeyToken=3e4669d2f30244f4, processorArchitecture=MSIL">
+      <HintPath>..\packages\Extended.Wpf.Toolkit.3.6.0\lib\net40\Xceed.Wpf.AvalonDock.Themes.Metro.dll</HintPath>
     </Reference>
-    <Reference Include="Xceed.Wpf.AvalonDock.Themes.VS2010, Version=3.3.0.0, Culture=neutral, PublicKeyToken=3e4669d2f30244f4, processorArchitecture=MSIL">
-      <HintPath>..\packages\Extended.Wpf.Toolkit.3.3.0\lib\net40\Xceed.Wpf.AvalonDock.Themes.VS2010.dll</HintPath>
+    <Reference Include="Xceed.Wpf.AvalonDock.Themes.VS2010, Version=3.6.0.0, Culture=neutral, PublicKeyToken=3e4669d2f30244f4, processorArchitecture=MSIL">
+      <HintPath>..\packages\Extended.Wpf.Toolkit.3.6.0\lib\net40\Xceed.Wpf.AvalonDock.Themes.VS2010.dll</HintPath>
     </Reference>
-    <Reference Include="Xceed.Wpf.DataGrid, Version=3.3.0.0, Culture=neutral, PublicKeyToken=3e4669d2f30244f4, processorArchitecture=MSIL">
-      <HintPath>..\packages\Extended.Wpf.Toolkit.3.3.0\lib\net40\Xceed.Wpf.DataGrid.dll</HintPath>
-    </Reference>
-    <Reference Include="Xceed.Wpf.Toolkit, Version=3.3.0.0, Culture=neutral, PublicKeyToken=3e4669d2f30244f4, processorArchitecture=MSIL">
-      <HintPath>..\packages\Extended.Wpf.Toolkit.3.3.0\lib\net40\Xceed.Wpf.Toolkit.dll</HintPath>
+    <Reference Include="Xceed.Wpf.Toolkit, Version=3.6.0.0, Culture=neutral, PublicKeyToken=3e4669d2f30244f4, processorArchitecture=MSIL">
+      <HintPath>..\packages\Extended.Wpf.Toolkit.3.6.0\lib\net40\Xceed.Wpf.Toolkit.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>
