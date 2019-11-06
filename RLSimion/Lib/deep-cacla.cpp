@@ -124,9 +124,11 @@ double DeepCACLA::selectAction(const State *s, Action *a)
 		//if there are less noise signals than output action variables, just use the last one
 		noiseSignalIndex = std::min(i, m_noiseSignals.size() - 1);
 
-		noise = m_noiseSignals[i]->getSample();
+		noise = m_noiseSignals[noiseSignalIndex]->getSample();
+		double scaleFactor = a->getProperties(m_actorPolicy->getUsedActionVariables()[i].c_str())->getRangeWidth() * 0.5;
+		double scaledNoise = noise * scaleFactor;
 		a->set(m_actorPolicy->getUsedActionVariables()[i].c_str()
-			, policyOutput[i] + noise);
+			, policyOutput[i] + scaledNoise);
 	}
 
 	return 1.0;
