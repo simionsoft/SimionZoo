@@ -9,7 +9,7 @@ namespace SimionZooBundler
 {
     class Program
     {
-        public static string inBaseRelPath = @"../../../../";
+        public static string inBaseRelPath = @"../";
         public static string outBaseFolder;
 
         static void AddFile(ref List<string> fileList, string newFile)
