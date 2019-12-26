@@ -755,9 +755,9 @@ Global
 		{4F4FF6FA-64F5-4E5B-81A1-7E6B82D2C7F4}.Linux-Release|x64.ActiveCfg = Release|x86
 		{4F4FF6FA-64F5-4E5B-81A1-7E6B82D2C7F4}.Linux-Release|x86.ActiveCfg = Release|x86
 		{4F4FF6FA-64F5-4E5B-81A1-7E6B82D2C7F4}.Release|Any CPU.ActiveCfg = Release|x86
-		{4F4FF6FA-64F5-4E5B-81A1-7E6B82D2C7F4}.Release|Any CPU.Build.0 = Release|x86
 		{4F4FF6FA-64F5-4E5B-81A1-7E6B82D2C7F4}.Release|x64.ActiveCfg = Release|x86
 		{4F4FF6FA-64F5-4E5B-81A1-7E6B82D2C7F4}.Release|x86.ActiveCfg = Release|x86
+		{4F4FF6FA-64F5-4E5B-81A1-7E6B82D2C7F4}.Release|x86.Build.0 = Release|x86
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
