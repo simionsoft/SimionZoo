@@ -5,11 +5,11 @@
            UpgradeCode="a83452d9-7e16-46c7-8711-c53ca3c8e2e9">
 		<Package InstallerVersion="300" Compressed="yes" InstallScope="perMachine" />
 
-    <Icon Id="HerdAgentIcon" SourceFile="..\..\..\..\Tools\HerdAgent\herdagent.ico"/>
+    <Icon Id="HerdAgentIcon" SourceFile="..\..\Tools\HerdAgent\herdagent.ico"/>
     <Property Id="ARPPRODUCTICON" Value="HerdAgentIcon" />
     
     
-		<MajorUpgrade DowngradeErrorMessage="A newer version of [ProductName] is already installed." />
+		<MajorUpgrade DowngradeErrorMessage="A newer version of HerdAgent is already installed." />
 		<MediaTemplate />
 
 		<Feature Id="ProductFeature" Title="HerdAgentInstaller" Level="1">
@@ -30,10 +30,10 @@
 	<Fragment>
 		<ComponentGroup Id="ProductComponents" Directory="INSTALLFOLDER">
       <Component Id="Herd">
-        <File Id='HerdDLL' Name='Herd.dll' Source='..\..\bin\Herd.dll'  KeyPath='yes'/>
+        <File Id='HerdDLL' Name="$(var.Herd.TargetFileName)" Source="$(var.Herd.TargetPath)"  KeyPath='yes'/>
       </Component>
 			<Component Id="HerdAgent">
-        <File Id='HerdAgentEXE' Name='HerdAgent.exe' Source='..\..\bin\HerdAgent.exe'  KeyPath='yes'/>
+        <File Id='HerdAgentEXE' Name="$(var.HerdAgent.TargetFileName)" Source="$(var.HerdAgent.TargetPath)"  KeyPath='yes'/>
         <ServiceInstall Id="ServiceInstaller" Type="ownProcess" Name="HerdAgent"
           DisplayName="HerdAgent"
           Description="SimionZoo remote execution agent"
