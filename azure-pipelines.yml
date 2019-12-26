@@ -56,6 +56,24 @@ jobs:
       testAssemblyVer2: '*.dll'
       searchFolder: tests\bin\Release\x64
 
+  - task: CmdLine@2
+    inputs:
+      displayName: 'Bundle SimionZoo files (Windows)'
+      script: 'bin\\SimionZooBundler.exe -only-windows' 
+      workingDirectory: # Optional. If none specified, the solution directory
+      failOnStderr: true # Optional
+
+  - task: CopyFiles@2
+    inputs:
+      sourceFolder: '$(Build.SourcesDirectory)'
+      contents: '*.zip'
+      TargetFolder: '$(Build.ArtifactStagingDirectory)'
+
+  - task: PublishBuildArtifacts@1
+    inputs:
+      pathtoPublish: '$(Build.ArtifactStagingDirectory)'
+      artifactName: SimionZoo-win
+
 - job: Ubuntu
   pool:
     name: Hosted Ubuntu 1604
