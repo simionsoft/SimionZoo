@@ -5,14 +5,39 @@ using System.IO.Compression;
 using System.Collections.Generic;
 using System.Diagnostics;
 
-namespace Portable_Badger
+namespace SimionZooBundler
 {
     class Program
     {
         public static string inBaseRelPath = @"../../../../";
         public static string outBaseFolder;
-        public static void Main()
+
+        static void AddFile(ref List<string> fileList, string newFile)
         {
+            if (!fileList.Contains(newFile))
+                fileList.Add(newFile);
+        }
+
+        public static void Main(string [] args)
+        {
+            bool includeWindowsFiles = true;
+            bool includeLinuxFiles = true;
+            string osName = "";
+
+            foreach(string arg in args)
+            {
+                string lowerCaseArg = arg.ToLower();
+                if (lowerCaseArg == "-only-windows")
+                {
+                    includeLinuxFiles = false;
+                    osName = "win-";
+                }
+                else if (lowerCaseArg == "-only-linux")
+                {
+                    includeWindowsFiles = false;
+                    osName = "linux-";
+                }
+            }
             List<string> files= new List<string>();
             string version;
 
@@ -21,65 +46,76 @@ namespace Portable_Badger
 
             //Herd Agent
             //windows:
-            files.Add(inBaseRelPath + @"installers/HerdAgentInstaller.msi");
+            if (includeWindowsFiles)
+            {
+                AddFile(ref files, inBaseRelPath + @"installers/HerdAgentInstaller.msi");
+                AddFile(ref files, inBaseRelPath + @"bin/HerdAgent.exe");
+                AddFile(ref files, inBaseRelPath + @"bin/Herd.dll");
+            }
             //linux:
-            files.Add(inBaseRelPath + @"bin/HerdAgent.exe");
-            files.Add(inBaseRelPath + @"bin/Herd.dll");
-            files.Add(inBaseRelPath + @"installers/herd-agent-installer.sh");
-            files.Add(inBaseRelPath + @"installers/herd-agent.service");
-            files.Add(inBaseRelPath + @"installers/daemon");
+            if (includeLinuxFiles)
+            {
+                AddFile(ref files, inBaseRelPath + @"bin/HerdAgent.exe");
+                AddFile(ref files, inBaseRelPath + @"bin/Herd.dll");
+                AddFile(ref files, inBaseRelPath + @"installers/herd-agent-installer.sh");
+                AddFile(ref files, inBaseRelPath + @"installers/herd-agent.service");
+                AddFile(ref files, inBaseRelPath + @"installers/daemon");
+            }
 
             //Badger
-            files.Add(inBaseRelPath + @"bin/Badger.exe");
-            files.Add(inBaseRelPath + @"bin/BadgerConsole.exe");
+            AddFile(ref files, inBaseRelPath + @"bin/BadgerConsole.exe");
 
-            //Badger - SimionLogViewer
-            files.Add(inBaseRelPath + @"bin/SimionLogViewer.exe");
-
-            List<string> dependencyList = new List<string>();
-            GetDependencies(inBaseRelPath + @"bin/", "Badger.exe", ref dependencyList);
-            foreach (string dependency in dependencyList)
+            if (includeWindowsFiles)
             {
-                if (!files.Contains(dependency))
-                    files.Add(dependency);
+                AddFile(ref files, inBaseRelPath + @"bin/Badger.exe");
+                //Badger - SimionLogViewer
+                AddFile(ref files, inBaseRelPath + @"bin/SimionLogViewer.exe");
+
+                List<string> dependencyList = new List<string>();
+                GetDependencies(inBaseRelPath + @"bin/", "Badger.exe", ref dependencyList);
+                foreach (string dependency in dependencyList)
+                {
+                    if (!files.Contains(dependency))
+                        AddFile(ref files, dependency);
+                }
             }
 
             //RLSimion
-            files.Add(inBaseRelPath + @"bin/RLSimion.exe");
-            files.Add(inBaseRelPath + @"bin/RLSimion-x64.exe");
-            files.Add(inBaseRelPath + @"bin/RLSimion-linux-x64.exe");
+            AddFile(ref files, inBaseRelPath + @"bin/RLSimion.exe");
+            AddFile(ref files, inBaseRelPath + @"bin/RLSimion-x64.exe");
+            AddFile(ref files, inBaseRelPath + @"bin/RLSimion-linux-x64.exe");
             //FAST
-            files.Add(inBaseRelPath + @"bin/openfast_Win32.exe");
-            files.Add(inBaseRelPath + @"bin/TurbSim.exe");
-            files.Add(inBaseRelPath + @"bin/MAP_Win32.dll");
-            files.Add(inBaseRelPath + @"bin/FASTDimensionalPortal.dll");
+            AddFile(ref files, inBaseRelPath + @"bin/openfast_Win32.exe");
+            AddFile(ref files, inBaseRelPath + @"bin/TurbSim.exe");
+            AddFile(ref files, inBaseRelPath + @"bin/MAP_Win32.dll");
+            AddFile(ref files, inBaseRelPath + @"bin/FASTDimensionalPortal.dll");
 
             //C++ Runtime libraries: x86 and x64 versions
-            files.Add(inBaseRelPath + @"bin/vcruntime140.dll");
-            files.Add(inBaseRelPath + @"bin/msvcp140.dll");
-            files.Add(inBaseRelPath + @"bin/x64/vcruntime140.dll");
-            files.Add(inBaseRelPath + @"bin/x64/msvcp140.dll");
+            AddFile(ref files, inBaseRelPath + @"bin/vcruntime140.dll");
+            AddFile(ref files, inBaseRelPath + @"bin/msvcp140.dll");
+            AddFile(ref files, inBaseRelPath + @"bin/x64/vcruntime140.dll");
+            AddFile(ref files, inBaseRelPath + @"bin/x64/msvcp140.dll");
             //CNTK library and dependencies
             //windows:
-            files.Add(inBaseRelPath + @"bin/CNTKWrapper.dll");
-            files.Add(inBaseRelPath + @"bin/Cntk.Composite-2.5.1.dll");
-            files.Add(inBaseRelPath + @"bin/Cntk.Core-2.5.1.dll");
-            files.Add(inBaseRelPath + @"bin/Cntk.Math-2.5.1.dll");
-            files.Add(inBaseRelPath + @"bin/Cntk.PerformanceProfiler-2.5.1.dll");
-            files.Add(inBaseRelPath + @"bin/cublas64_90.dll");
-            files.Add(inBaseRelPath + @"bin/cudart64_90.dll");
-            files.Add(inBaseRelPath + @"bin/cudnn64_7.dll");
-            files.Add(inBaseRelPath + @"bin/libiomp5md.dll");
-            files.Add(inBaseRelPath + @"bin/mklml.dll");
-            files.Add(inBaseRelPath + @"bin/mkldnn.dll");
-            files.Add(inBaseRelPath + @"bin/nvml.dll");
+            AddFile(ref files, inBaseRelPath + @"bin/CNTKWrapper.dll");
+            AddFile(ref files, inBaseRelPath + @"bin/Cntk.Composite-2.5.1.dll");
+            AddFile(ref files, inBaseRelPath + @"bin/Cntk.Core-2.5.1.dll");
+            AddFile(ref files, inBaseRelPath + @"bin/Cntk.Math-2.5.1.dll");
+            AddFile(ref files, inBaseRelPath + @"bin/Cntk.PerformanceProfiler-2.5.1.dll");
+            AddFile(ref files, inBaseRelPath + @"bin/cublas64_90.dll");
+            AddFile(ref files, inBaseRelPath + @"bin/cudart64_90.dll");
+            AddFile(ref files, inBaseRelPath + @"bin/cudnn64_7.dll");
+            AddFile(ref files, inBaseRelPath + @"bin/libiomp5md.dll");
+            AddFile(ref files, inBaseRelPath + @"bin/mklml.dll");
+            AddFile(ref files, inBaseRelPath + @"bin/mkldnn.dll");
+            AddFile(ref files, inBaseRelPath + @"bin/nvml.dll");
             //linux:
-            files.Add(inBaseRelPath + @"bin/libCNTKWrapper-linux.so");
-            files.Add(inBaseRelPath + @"bin/cntk-linux/libCntk.Core-2.5.1.so");
-            files.Add(inBaseRelPath + @"bin/cntk-linux/libCntk.Math-2.5.1.so");
-            files.Add(inBaseRelPath + @"bin/cntk-linux/libCntk.PerformanceProfiler-2.5.1.so");
-            files.Add(inBaseRelPath + @"bin/cntk-linux/libmklml_intel.so");
-            files.Add(inBaseRelPath + @"bin/cntk-linux/libiomp5.so");
+            AddFile(ref files, inBaseRelPath + @"bin/libCNTKWrapper-linux.so");
+            AddFile(ref files, inBaseRelPath + @"bin/cntk-linux/libCntk.Core-2.5.1.so");
+            AddFile(ref files, inBaseRelPath + @"bin/cntk-linux/libCntk.Math-2.5.1.so");
+            AddFile(ref files, inBaseRelPath + @"bin/cntk-linux/libCntk.PerformanceProfiler-2.5.1.so");
+            AddFile(ref files, inBaseRelPath + @"bin/cntk-linux/libmklml_intel.so");
+            AddFile(ref files, inBaseRelPath + @"bin/cntk-linux/libiomp5.so");
 
             //Config files and example experiments
             files.AddRange(GetFilesInFolder(inBaseRelPath + @"experiments/examples", true, @"*.simion.exp"));
@@ -88,7 +124,7 @@ namespace Portable_Badger
             files.AddRange(GetFilesInFolder(inBaseRelPath + @"config/", true));
 
 
-            string outputFile = inBaseRelPath + @"SimionZoo-" + version + ".zip";
+            string outputFile = inBaseRelPath + @"SimionZoo-" + osName + version + ".zip";
 
             Console.WriteLine("Compressing {0} files", files.Count);
             Compress(outputFile, files);

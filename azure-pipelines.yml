@@ -1,7 +1,3 @@
-trigger:
-- master
-- develop
-
 jobs:
 - job: Windows
   pool:
@@ -10,27 +6,27 @@ jobs:
     solution: 'SimionZoo.sln'
   steps:
   - task: NuGetToolInstaller@0
-    displayName: 'Use NuGet 4.4.1'
+    displayName: 'Install NuGet 4.4.1'
     inputs:
       versionSpec: 4.4.1
   - task: NuGetCommand@2
-    displayName: 'NuGet restore'
+    displayName: 'Restore NuGet packages'
     inputs:
       restoreSolution: '$(solution)'
   - task: VSBuild@1
-    displayName: 'Build all the C# projects'
+    displayName: 'Build C# projects'
     inputs:
       solution: '$(solution)' 
       platform: 'any cpu'
       configuration: 'Release'
   - task: VSBuild@1
-    displayName: 'Build all the C++ projects (x86)'
+    displayName: 'Build C++ projects (x86)'
     inputs:
       solution: '$(solution)' 
       platform: 'x86'
       configuration: 'Release'
   - task: VSBuild@1
-    displayName: 'Build all the C++ projects (x64)'
+    displayName: 'Build C++ projects (x64)'
     inputs:
       solution: '$(solution)'
       platform: 'x64'
@@ -65,7 +61,7 @@ jobs:
     name: Hosted Ubuntu 1604
   steps:
   - script: |
-      echo Installing dependencies�.
+      echo Installing dependencies...
       sudo apt-get install libgl1-mesa-dev libglew-dev libxi-dev
       echo ...Finished
       echo Downloading files stored with Git LFS...
