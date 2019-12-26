@@ -30,13 +30,13 @@
 	<Fragment>
 		<ComponentGroup Id="ProductComponents" Directory="INSTALLFOLDER">
       <Component Id="Herd">
-        <File Id='HerdDLL' Name='Herd.dll' DiskId='1' Source='..\..\..\..\bin\Herd.dll'  KeyPath='yes'/>
+        <File Id='HerdDLL' Name='Herd.dll' Source='..\..\bin\Herd.dll'  KeyPath='yes'/>
       </Component>
 			<Component Id="HerdAgent">
-        <File Id='HerdAgentEXE' Name='HerdAgent.exe' DiskId='1' Source='..\..\..\..\bin\HerdAgent.exe'  KeyPath='yes'/>
+        <File Id='HerdAgentEXE' Name='HerdAgent.exe' Source='..\..\bin\HerdAgent.exe'  KeyPath='yes'/>
         <ServiceInstall Id="ServiceInstaller" Type="ownProcess" Name="HerdAgent"
           DisplayName="HerdAgent"
-          Description="SimionZoo distributed execution agent"
+          Description="SimionZoo remote execution agent"
           Start="auto"
           Account="[SERVICEACCOUNT]"
           Password="[SERVICEPASSWORD]"
