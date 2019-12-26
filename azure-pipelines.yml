@@ -31,12 +31,6 @@ jobs:
       solution: '$(solution)'
       platform: 'x64'
       configuration: 'Release'
-  - task: BuildInstaller@1
-    displayName: 'Build HerdAgent installer (.msi)'
-    inputs:
-      installTaskMode: 'solution'
-      SlnPath: 'SimionZoo.sln'
-      VsVersion: 'VS2017'
   - task: VSTest@2
     displayName: 'Run C# tests'
     inputs:
