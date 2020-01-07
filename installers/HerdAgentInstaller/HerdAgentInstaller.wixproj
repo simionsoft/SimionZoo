@@ -17,22 +17,26 @@
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|x86' ">
     <OutputPath>..\..\installers\</OutputPath>
     <IntermediateOutputPath>obj\$(Configuration)\</IntermediateOutputPath>
+    <CompilerAdditionalOptions>
+    </CompilerAdditionalOptions>
+    <LinkerAdditionalOptions>
+    </LinkerAdditionalOptions>
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="Product.wxs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\tools\HerdAgent\HerdAgent.csproj">
-      <Name>HerdAgent</Name>
-      <Project>{3917ef51-812d-40c0-a742-db73cafc0918}</Project>
+    <ProjectReference Include="..\..\tools\Herd\Herd.csproj">
+      <Name>Herd</Name>
+      <Project>{75640896-f22e-4295-bb90-560cb48bb2b2}</Project>
       <Private>True</Private>
       <DoNotHarvest>True</DoNotHarvest>
       <RefProjectOutputGroups>Binaries;Content;Satellites</RefProjectOutputGroups>
       <RefTargetDir>INSTALLFOLDER</RefTargetDir>
     </ProjectReference>
-    <ProjectReference Include="..\..\tools\Herd\Herd.csproj">
-      <Name>Herd</Name>
-      <Project>{75640896-f22e-4295-bb90-560cb48bb2b2}</Project>
+    <ProjectReference Include="..\..\tools\HerdAgent\HerdAgent.csproj">
+      <Name>HerdAgent</Name>
+      <Project>{3917ef51-812d-40c0-a742-db73cafc0918}</Project>
       <Private>True</Private>
       <DoNotHarvest>True</DoNotHarvest>
       <RefProjectOutputGroups>Binaries;Content;Satellites</RefProjectOutputGroups>
