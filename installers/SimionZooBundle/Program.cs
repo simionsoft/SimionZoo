@@ -9,7 +9,7 @@ namespace SimionZooBundler
 {
     class Program
     {
-        public static string inBaseRelPath = @"../";
+        public static string inBaseRelPath = null;
         public static string outBaseFolder;
 
         static void AddFile(ref List<string> fileList, string newFile)
@@ -24,7 +24,9 @@ namespace SimionZooBundler
             bool includeLinuxFiles = true;
             string osName = "";
 
-            foreach(string arg in args)
+            inBaseRelPath = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location) + "/../";
+
+            foreach (string arg in args)
             {
                 string lowerCaseArg = arg.ToLower();
                 if (lowerCaseArg == "-only-windows")

@@ -219,9 +219,9 @@ namespace Herd.Files
                         }
                     }
                 }
-                catch (Exception ex)
+                catch (Exception)
                 {
-                    Console.WriteLine("ERROR. Could not open log file: " + LogFileName);
+                    Console.WriteLine("ERROR. Could not open log file " + LogFileName);
                     SuccessfulLoad = false;
                 }
                 return SuccessfulLoad;
