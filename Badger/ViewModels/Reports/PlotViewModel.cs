@@ -146,7 +146,7 @@ namespace Badger.ViewModels
             Plot.LegendBorder = OxyColors.Black;
             Plot.LegendBackground = OxyColors.White;
 
-            Properties.Title = Herd.Utils.OxyPlotMathNotation(title);
+            Properties.PlotTitle = Herd.Utils.OxyPlotMathNotation(title);
             Properties.XAxisName = Herd.Utils.OxyPlotMathNotation(xAxisName);
             Properties.YAxisName = Herd.Utils.OxyPlotMathNotation(yAxisName);
 
@@ -180,7 +180,7 @@ namespace Badger.ViewModels
             Plot.Axes[0].Title = Properties.XAxisName;
             Plot.Axes[1].Title = Properties.YAxisName;
 
-            Plot.Title = Properties.Title;
+            Plot.Title = Properties.PlotTitle;
             //font
             Plot.DefaultFont = Properties.SelectedFont;
 

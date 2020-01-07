@@ -157,10 +157,10 @@ namespace Badger.ViewModels
         //Texts
         private string m_title = "N/A";
         [DataMember]
-        public string Title
+        public string PlotTitle
         {
             get { return m_title; }
-            set { m_title = value; NotifyOfPropertyChange(() => Title); }
+            set { m_title = value; NotifyOfPropertyChange(() => PlotTitle); }
         }
         private string m_xAxisName = "N/A";
         [DataMember]

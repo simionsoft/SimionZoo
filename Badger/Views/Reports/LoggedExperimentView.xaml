@@ -18,7 +18,7 @@
             <CheckBox IsChecked="{Binding IsSelected}" VerticalAlignment="Center"
                           Visibility="{Binding Path=IsCheckVisible,Converter={StaticResource BoolToVis}}"
                           Margin="0"/>
-            <Label x:Name="Name" FontWeight="Bold" Margin="0"/>
+            <Label x:Name="ExperimentName" FontWeight="Bold" Margin="0"/>
         </StackPanel>
         <StackPanel Margin="10,0,0,0">
             <ItemsControl x:Name="Forks" Padding="0"/>

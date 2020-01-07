@@ -410,7 +410,7 @@ namespace Badger.ViewModels
         {
             foreach (LoggedVariableViewModel variableVM in VariablesVM)
             {
-                if (variableVM.Name == variable)
+                if (variableVM.VariableName == variable)
                 {
                     return variableVM.SelectedProcessFunc;
                 }
@@ -426,7 +426,7 @@ namespace Badger.ViewModels
         {
             foreach (LoggedVariableViewModel variableVM in VariablesVM)
             {
-                if (variableVM.Name == variable)
+                if (variableVM.VariableName == variable)
                 {
                     if (variableVM.IsSelected)
                     {
@@ -478,7 +478,7 @@ namespace Badger.ViewModels
         {
             foreach (LoggedVariableViewModel variableVM in VariablesVM)
             {
-                if (variableVM.Name == variable)
+                if (variableVM.VariableName == variable)
                     return true;
             }
             return false;
@@ -589,7 +589,7 @@ namespace Badger.ViewModels
                         resultTrackGroup = null;
                         if (GroupByForks.Count != 0)
                         {
-                            resultTrackGroup = GetTrackGroup(resultTracks, expUnit.ForkValues, exp.Name);
+                            resultTrackGroup = GetTrackGroup(resultTracks, expUnit.ForkValues, exp.ExperimentName);
                             if (resultTrackGroup != null)
                             {
                                 //the track exists and we are using forks to group results
@@ -610,7 +610,7 @@ namespace Badger.ViewModels
                         {
                             //No groups (each experimental unit is a track) or the track doesn't exist
                             //Either way, we create a new track
-                            TrackGroup newResultTrackGroup = new TrackGroup(exp.Name);
+                            TrackGroup newResultTrackGroup = new TrackGroup(exp.ExperimentName);
 
                             if (GroupByForks.Count == 0)
                                 newResultTrackGroup.ForkValues= expUnit.ForkValues;
@@ -621,7 +621,7 @@ namespace Badger.ViewModels
                                     if (expUnit.ForkValues.ContainsKey(forkName))
                                         newResultTrackGroup.ForkValues[forkName] = expUnit.ForkValues[forkName];
                                     else if (forkName == ReportsWindowViewModel.GroupByExperimentId)
-                                        newResultTrackGroup.ForkValues[forkName] = exp.Name;
+                                        newResultTrackGroup.ForkValues[forkName] = exp.ExperimentName;
                             }
 
                             //load data from the log file

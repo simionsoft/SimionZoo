@@ -52,7 +52,7 @@
                 <StackPanel Orientation="Vertical">
                     <StackPanel Orientation="Horizontal">
                         <Label Width="80">Title</Label>
-                        <TextBox Width="120" x:Name="Title"></TextBox>
+                        <TextBox Width="120" x:Name="PlotTitle"></TextBox>
                     </StackPanel>
                     <StackPanel Orientation="Horizontal">
                         <Label Width="80">X Axis name</Label>

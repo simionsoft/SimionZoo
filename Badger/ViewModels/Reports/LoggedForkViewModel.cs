@@ -35,7 +35,7 @@ namespace Badger.ViewModels
     {
         Fork m_model;
 
-        public string Name
+        public string ForkName
         {
             get { return m_model.Name; }
         }

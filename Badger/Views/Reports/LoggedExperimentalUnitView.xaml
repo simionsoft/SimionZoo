@@ -9,5 +9,5 @@
     <UserControl.Resources>
         <BooleanToVisibilityConverter x:Key="BoolToVis" />
     </UserControl.Resources>
-    <Label x:Name="Name" FontWeight="Light" ToolTip="{Binding ForkValuesAsString}" Padding="2"/>
+    <Label x:Name="ExpUnitName" FontWeight="Light" ToolTip="{Binding ForkValuesAsString}" Padding="2"/>
 </UserControl>

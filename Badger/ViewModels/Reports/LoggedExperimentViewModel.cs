@@ -37,7 +37,7 @@ namespace Badger.ViewModels
         private Experiment m_model = null;
         public Experiment Model { get { return m_model; } }
 
-        public string Name { get { return m_model.Name; } set { m_model.Name = value; } }
+        public string ExperimentName { get { return m_model.Name; } set { m_model.Name = value; } }
 
         public List<AppVersion> AppVersions { get { return m_model.AppVersions; } }
 
@@ -88,7 +88,7 @@ namespace Badger.ViewModels
                     {
                         foreach (string forkName in expUnit.ForkValues.Keys)
                         {
-                            if (forkName == forkValue.Parent.Name && expUnit.ForkValues[forkName] == forkValue.Value)
+                            if (forkName == forkValue.Parent.ForkName && expUnit.ForkValues[forkName] == forkValue.Value)
                             {
                                 forkValue.ExpUnits.Add(expUnit);
                             }

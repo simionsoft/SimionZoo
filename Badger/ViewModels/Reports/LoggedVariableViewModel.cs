@@ -87,13 +87,13 @@ namespace Badger.ViewModels
 
         private string m_name;
         [DataMember]
-        public string Name
+        public string VariableName
         {
             get { return m_name; }
             set
             {
                 m_name = value;
-                NotifyOfPropertyChange(() => Name);
+                NotifyOfPropertyChange(() => VariableName);
             }
         }
 

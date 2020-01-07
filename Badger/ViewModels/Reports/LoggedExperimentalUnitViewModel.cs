@@ -40,7 +40,7 @@ namespace Badger.ViewModels
         ExperimentalUnit m_model;
         public ExperimentalUnit Model { get { return m_model; } }
 
-        public string Name
+        public string ExpUnitName
         {
             get { return m_model.Name; }
         }

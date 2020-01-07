@@ -49,7 +49,7 @@ namespace Badger.Data
                     {
                         if ((type & variable.SelectedPlotType) != ReportType.Undefined)
                         {
-                            Report trackParameters = new Report(variable.Name
+                            Report trackParameters = new Report(variable.VariableName
                                 , type, variable.SelectedProcessFunc);
                             trackParameterList.Add(trackParameters);
                         }
