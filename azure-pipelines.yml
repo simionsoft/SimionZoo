@@ -98,5 +98,5 @@ jobs:
     inputs:
       solution: installers/Bundlers/Bundler.csproj
       platform: AnyCpu
-      configuration: release
+      configuration: Linux-Release
       restoreNugetPackages: true

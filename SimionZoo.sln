@@ -757,7 +757,6 @@ Global
 		{5A01128A-6491-41D0-B4DC-0B575117409A}.Release|x64.ActiveCfg = Release|Any CPU
 		{5A01128A-6491-41D0-B4DC-0B575117409A}.Release|x64.Build.0 = Release|Any CPU
 		{5A01128A-6491-41D0-B4DC-0B575117409A}.Release|x86.ActiveCfg = Release|Any CPU
-		{5A01128A-6491-41D0-B4DC-0B575117409A}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
