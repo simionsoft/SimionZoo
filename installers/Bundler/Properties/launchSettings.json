@@ -1,0 +1,8 @@
+{
+  "profiles": {
+    "Bundler": {
+      "commandName": "Project",
+      "commandLineArgs": "-only-windows"
+    }
+  }
+}

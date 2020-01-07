@@ -59,7 +59,7 @@ jobs:
   - task: CmdLine@2
     inputs:
       displayName: 'Bundle SimionZoo files (Windows)'
-      script: 'bin\\SimionZooBundler.exe -only-windows' 
+      script: 'dotnet bin\\netcoreapp2.1\\SimionZooBundler.dll -only-windows' 
       workingDirectory: # Optional. If none specified, the solution directory
       failOnStderr: true # Optional
 
@@ -93,9 +93,10 @@ jobs:
       targetType: filePath
       filePath: './linux-ci-build.sh'
       failOnStderr: true
-  - script: |
-      echo Files in /bin:
-      ls -R -l bin
-      echo Files in /tmp:
-      ls -R -l tmp
-    displayName: 'Show output files'
+  - task: MSBuild@1
+    displayName: 'Build SimionZoo bundler'
+    inputs:
+      solution: installers/Bundlers/Bundler.csproj
+      platform: AnyCpu
+      configuration: release
+      restoreNugetPackages: true
