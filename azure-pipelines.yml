@@ -93,10 +93,10 @@ jobs:
       targetType: filePath
       filePath: './linux-ci-build.sh'
       failOnStderr: true
-  - task: MSBuild@1
+  - task: DotNetCoreCLI@2
     displayName: 'Build SimionZoo bundler'
     inputs:
-      solution: installers/Bundlers/Bundler.csproj
+      solution: installers/Bundler/Bundler.csproj
       platform: AnyCpu
       configuration: Linux-Release
       restoreNugetPackages: true
