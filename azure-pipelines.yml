@@ -77,6 +77,8 @@ jobs:
       artifactName: SimionZoo-win
 
 - job: Ubuntu
+  variables:
+    solution: 'SimionZoo.sln'
   pool:
     name: Hosted Ubuntu 1604
   steps:
@@ -101,7 +103,7 @@ jobs:
     inputs:
       solution: '$(solution)'
       platform: AnyCpu
-      #configuration: Linux-Release
+      configuration: Linux-Release
       restoreNugetPackages: true
 
   - task: CmdLine@2
