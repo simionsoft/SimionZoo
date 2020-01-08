@@ -183,13 +183,11 @@ Global
 		{B0E022B0-0A52-4BBE-B6FB-44B78003C510}.Debug|x64.ActiveCfg = Debug|Any CPU
 		{B0E022B0-0A52-4BBE-B6FB-44B78003C510}.Debug|x86.ActiveCfg = Debug|Any CPU
 		{B0E022B0-0A52-4BBE-B6FB-44B78003C510}.Linux-Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{B0E022B0-0A52-4BBE-B6FB-44B78003C510}.Linux-Debug|Any CPU.Build.0 = Debug|Any CPU
 		{B0E022B0-0A52-4BBE-B6FB-44B78003C510}.Linux-Debug|x64.ActiveCfg = Debug|Any CPU
 		{B0E022B0-0A52-4BBE-B6FB-44B78003C510}.Linux-Debug|x64.Build.0 = Debug|Any CPU
 		{B0E022B0-0A52-4BBE-B6FB-44B78003C510}.Linux-Debug|x86.ActiveCfg = Debug|Any CPU
 		{B0E022B0-0A52-4BBE-B6FB-44B78003C510}.Linux-Debug|x86.Build.0 = Debug|Any CPU
 		{B0E022B0-0A52-4BBE-B6FB-44B78003C510}.Linux-Release|Any CPU.ActiveCfg = Release|Any CPU
-		{B0E022B0-0A52-4BBE-B6FB-44B78003C510}.Linux-Release|Any CPU.Build.0 = Release|Any CPU
 		{B0E022B0-0A52-4BBE-B6FB-44B78003C510}.Linux-Release|x64.ActiveCfg = Release|Any CPU
 		{B0E022B0-0A52-4BBE-B6FB-44B78003C510}.Linux-Release|x64.Build.0 = Release|Any CPU
 		{B0E022B0-0A52-4BBE-B6FB-44B78003C510}.Linux-Release|x86.ActiveCfg = Release|Any CPU
@@ -761,9 +759,7 @@ Global
 		{7D509B33-B297-4C5E-BDE8-F47C2BDF6EA4}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{7D509B33-B297-4C5E-BDE8-F47C2BDF6EA4}.Release|Any CPU.Build.0 = Release|Any CPU
 		{7D509B33-B297-4C5E-BDE8-F47C2BDF6EA4}.Release|x64.ActiveCfg = Release|Any CPU
-		{7D509B33-B297-4C5E-BDE8-F47C2BDF6EA4}.Release|x64.Build.0 = Release|Any CPU
 		{7D509B33-B297-4C5E-BDE8-F47C2BDF6EA4}.Release|x86.ActiveCfg = Release|Any CPU
-		{7D509B33-B297-4C5E-BDE8-F47C2BDF6EA4}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
