@@ -57,19 +57,21 @@ jobs:
       searchFolder: tests\bin\Release\x64
 
   - task: CmdLine@2
+    displayName: 'Bundle SimionZoo files (Windows)'
     inputs:
-      displayName: 'Bundle SimionZoo files (Windows)'
       script: 'bin\\SimionZooBundler.exe -only-windows' 
       workingDirectory: # Optional. If none specified, the solution directory
       failOnStderr: true # Optional
 
   - task: CopyFiles@2
+    displayName: 'Copy Bundle to artifact staging directory'
     inputs:
       sourceFolder: '$(Build.SourcesDirectory)'
       contents: '*.zip'
       TargetFolder: '$(Build.ArtifactStagingDirectory)'
 
   - task: PublishBuildArtifacts@1
+    displayName: 'Publish SimionZoo-win artifact'
     inputs:
       pathtoPublish: '$(Build.ArtifactStagingDirectory)'
       artifactName: SimionZoo-win
@@ -93,16 +95,31 @@ jobs:
       targetType: filePath
       filePath: './linux-ci-build.sh'
       failOnStderr: true
+
   - task: MSBuild@1
     displayName: 'Build SimionZoo bundler (Linux)'
     inputs:
       solution: '$(solution)'
       platform: AnyCpu
-      configuration: Linux-Release
+      #configuration: Linux-Release
       restoreNugetPackages: true
+
   - task: CmdLine@2
+    displayName: 'Bundle SimionZoo files (Linux)'
     inputs:
-      displayName: 'Bundle SimionZoo files (Linux)'
-      script: 'bin\SimionZooBundler.exe -only-linux' 
+      script: 'bin/SimionZooBundler.exe -only-linux' 
       workingDirectory: # Optional. If none specified, the solution directory
       failOnStderr: true # Optional
+
+  - task: CopyFiles@2
+    displayName: 'Copy Bundle to artifact staging directory'
+    inputs:
+      sourceFolder: '$(Build.SourcesDirectory)'
+      contents: '*.zip'
+      TargetFolder: '$(Build.ArtifactStagingDirectory)'
+
+  - task: PublishBuildArtifacts@1
+    displayName: 'Publish SimionZoo-linux artifact'
+    inputs:
+      pathtoPublish: '$(Build.ArtifactStagingDirectory)'
+      artifactName: SimionZoo-linux
