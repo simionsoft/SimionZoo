@@ -94,9 +94,15 @@ jobs:
       filePath: './linux-ci-build.sh'
       failOnStderr: true
   - task: DotNetCoreCLI@2
-    displayName: 'Build SimionZoo bundler'
+    displayName: 'Build SimionZoo bundler (Linux)'
     inputs:
       solution: installers/Bundler/Bundler.csproj
       platform: AnyCpu
       configuration: Linux-Release
       restoreNugetPackages: true
+  - task: CmdLine@2
+    inputs:
+      displayName: 'Bundle SimionZoo files (Linux)'
+      script: 'dotnet bin\\netcoreapp2.1\\SimionZooBundler.dll -only-linux' 
+      workingDirectory: # Optional. If none specified, the solution directory
+      failOnStderr: true # Optional
