@@ -135,7 +135,8 @@ namespace SimionZooBundler
 
         public static string GetVersion(string file)
         {
-            return Herd.Files.Version.SimionZoo;
+            System.Version version = Assembly.GetExecutingAssembly().GetName().Version;
+            return version.Major + "." + version.Minor + "." + version.Build;
         }
 
         public static void GetDependencies(string inFolder, string module, ref List<string> dependencyList, bool bRecursive= true)

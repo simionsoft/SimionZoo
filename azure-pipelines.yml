@@ -100,7 +100,7 @@ jobs:
     displayName: 'Build SimionZoo bundler (Linux)'
     inputs:
       solution: 'installers/SimionZooBundler/SimionZooBundle.csproj'
-      platform: AnyCpu
+      platform: 'Any Cpu'
       configuration: Release
       restoreNugetPackages: true
 
