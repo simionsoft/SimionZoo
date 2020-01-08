@@ -77,8 +77,6 @@ jobs:
       artifactName: SimionZoo-win
 
 - job: Ubuntu
-  variables:
-    solution: 'SimionZoo.sln'
   pool:
     name: Hosted Ubuntu 1604
   steps:
@@ -101,9 +99,9 @@ jobs:
   - task: MSBuild@1
     displayName: 'Build SimionZoo bundler (Linux)'
     inputs:
-      solution: '$(solution)'
+      solution: 'installers/SimionZooBundler/SimionZooBundle.csproj'
       platform: AnyCpu
-      configuration: Linux-Release
+      configuration: Release
       restoreNugetPackages: true
 
   - task: CmdLine@2
