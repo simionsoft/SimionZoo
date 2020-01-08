@@ -59,7 +59,7 @@ jobs:
   - task: CmdLine@2
     inputs:
       displayName: 'Bundle SimionZoo files (Windows)'
-      script: 'dotnet bin\\netcoreapp2.1\\SimionZooBundler.dll -only-windows' 
+      script: 'bin\\SimionZooBundler.exe -only-windows' 
       workingDirectory: # Optional. If none specified, the solution directory
       failOnStderr: true # Optional
 
@@ -93,16 +93,16 @@ jobs:
       targetType: filePath
       filePath: './linux-ci-build.sh'
       failOnStderr: true
-  - task: DotNetCoreCLI@2
+  - task: MSBuild@2
     displayName: 'Build SimionZoo bundler (Linux)'
     inputs:
-      solution: installers/Bundler/Bundler.csproj
+      solution: installers/SimionZooBundler/SimionZooBundler.csproj
       platform: AnyCpu
       configuration: Linux-Release
       restoreNugetPackages: true
   - task: CmdLine@2
     inputs:
       displayName: 'Bundle SimionZoo files (Linux)'
-      script: 'dotnet bin\\netcoreapp2.1\\SimionZooBundler.dll -only-linux' 
+      script: 'bin\SimionZooBundler.exe -only-linux' 
       workingDirectory: # Optional. If none specified, the solution directory
       failOnStderr: true # Optional
