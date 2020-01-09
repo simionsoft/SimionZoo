@@ -83,7 +83,7 @@ namespace SimionZooBundler
                 AddFile(ref files, inBaseRelPath + @"bin/RLSimion.exe");
                 AddFile(ref files, inBaseRelPath + @"bin/RLSimion-x64.exe");
             }
-            if (includeWindowsFiles)
+            if (includeLinuxFiles)
                 AddFile(ref files, inBaseRelPath + @"bin/RLSimion-linux-x64.exe");
             //FAST
             if (includeWindowsFiles)
