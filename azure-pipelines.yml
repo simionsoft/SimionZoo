@@ -104,12 +104,10 @@ jobs:
       configuration: Release
       restoreNugetPackages: true
 
-  - task: CmdLine@2
-    displayName: 'Bundle SimionZoo files (Linux)'
-    inputs:
-      script: 'bin/SimionZooBundler.exe -only-linux' 
-      workingDirectory: # Optional. If none specified, the solution directory
-      failOnStderr: true # Optional
+  - script: |
+      echo Bundling SimionZoo files (Linux)
+      chmod 777 bin/SimionZooBundler.exe
+      bin/SimionZooBundler.exe -only-linux
 
   - task: CopyFiles@2
     displayName: 'Copy Bundle to artifact staging directory'
