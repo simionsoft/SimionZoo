@@ -57,18 +57,15 @@ namespace SimionZooBundler
             //linux:
             if (includeLinuxFiles)
             {
-                AddFile(ref files, inBaseRelPath + @"bin/HerdAgent.exe");
-                AddFile(ref files, inBaseRelPath + @"bin/Herd.dll");
                 AddFile(ref files, inBaseRelPath + @"installers/herd-agent-installer.sh");
                 AddFile(ref files, inBaseRelPath + @"installers/herd-agent.service");
                 AddFile(ref files, inBaseRelPath + @"installers/daemon");
             }
 
             //Badger
-            AddFile(ref files, inBaseRelPath + @"bin/BadgerConsole.exe");
-
             if (includeWindowsFiles)
             {
+                AddFile(ref files, inBaseRelPath + @"bin/BadgerConsole.exe");
                 AddFile(ref files, inBaseRelPath + @"bin/Badger.exe");
                 //Badger - SimionLogViewer
                 AddFile(ref files, inBaseRelPath + @"bin/SimionLogViewer.exe");
@@ -83,47 +80,61 @@ namespace SimionZooBundler
             }
 
             //RLSimion
-            AddFile(ref files, inBaseRelPath + @"bin/RLSimion.exe");
-            AddFile(ref files, inBaseRelPath + @"bin/RLSimion-x64.exe");
-            AddFile(ref files, inBaseRelPath + @"bin/RLSimion-linux-x64.exe");
+            if (includeWindowsFiles)
+            {
+                AddFile(ref files, inBaseRelPath + @"bin/RLSimion.exe");
+                AddFile(ref files, inBaseRelPath + @"bin/RLSimion-x64.exe");
+            }
+            if (includeWindowsFiles)
+                AddFile(ref files, inBaseRelPath + @"bin/RLSimion-linux-x64.exe");
             //FAST
-            AddFile(ref files, inBaseRelPath + @"bin/openfast_Win32.exe");
-            AddFile(ref files, inBaseRelPath + @"bin/TurbSim.exe");
-            AddFile(ref files, inBaseRelPath + @"bin/MAP_Win32.dll");
-            AddFile(ref files, inBaseRelPath + @"bin/FASTDimensionalPortal.dll");
+            if (includeWindowsFiles)
+            {
+                AddFile(ref files, inBaseRelPath + @"bin/openfast_Win32.exe");
+                AddFile(ref files, inBaseRelPath + @"bin/TurbSim.exe");
+                AddFile(ref files, inBaseRelPath + @"bin/MAP_Win32.dll");
+                AddFile(ref files, inBaseRelPath + @"bin/FASTDimensionalPortal.dll");
 
-            //C++ Runtime libraries: x86 and x64 versions
-            AddFile(ref files, inBaseRelPath + @"bin/vcruntime140.dll");
-            AddFile(ref files, inBaseRelPath + @"bin/msvcp140.dll");
-            AddFile(ref files, inBaseRelPath + @"bin/x64/vcruntime140.dll");
-            AddFile(ref files, inBaseRelPath + @"bin/x64/msvcp140.dll");
-            //CNTK library and dependencies
-            //windows:
-            AddFile(ref files, inBaseRelPath + @"bin/CNTKWrapper.dll");
-            AddFile(ref files, inBaseRelPath + @"bin/Cntk.Composite-2.5.1.dll");
-            AddFile(ref files, inBaseRelPath + @"bin/Cntk.Core-2.5.1.dll");
-            AddFile(ref files, inBaseRelPath + @"bin/Cntk.Math-2.5.1.dll");
-            AddFile(ref files, inBaseRelPath + @"bin/Cntk.PerformanceProfiler-2.5.1.dll");
-            AddFile(ref files, inBaseRelPath + @"bin/cublas64_90.dll");
-            AddFile(ref files, inBaseRelPath + @"bin/cudart64_90.dll");
-            AddFile(ref files, inBaseRelPath + @"bin/cudnn64_7.dll");
-            AddFile(ref files, inBaseRelPath + @"bin/libiomp5md.dll");
-            AddFile(ref files, inBaseRelPath + @"bin/mklml.dll");
-            AddFile(ref files, inBaseRelPath + @"bin/mkldnn.dll");
-            AddFile(ref files, inBaseRelPath + @"bin/nvml.dll");
+
+                //C++ Runtime libraries: x86 and x64 versions
+                AddFile(ref files, inBaseRelPath + @"bin/vcruntime140.dll");
+                AddFile(ref files, inBaseRelPath + @"bin/msvcp140.dll");
+                AddFile(ref files, inBaseRelPath + @"bin/x64/vcruntime140.dll");
+                AddFile(ref files, inBaseRelPath + @"bin/x64/msvcp140.dll");
+                //CNTK library and dependencies
+                //windows:
+                AddFile(ref files, inBaseRelPath + @"bin/CNTKWrapper.dll");
+                AddFile(ref files, inBaseRelPath + @"bin/Cntk.Composite-2.5.1.dll");
+                AddFile(ref files, inBaseRelPath + @"bin/Cntk.Core-2.5.1.dll");
+                AddFile(ref files, inBaseRelPath + @"bin/Cntk.Math-2.5.1.dll");
+                AddFile(ref files, inBaseRelPath + @"bin/Cntk.PerformanceProfiler-2.5.1.dll");
+                AddFile(ref files, inBaseRelPath + @"bin/cublas64_90.dll");
+                AddFile(ref files, inBaseRelPath + @"bin/cudart64_90.dll");
+                AddFile(ref files, inBaseRelPath + @"bin/cudnn64_7.dll");
+                AddFile(ref files, inBaseRelPath + @"bin/libiomp5md.dll");
+                AddFile(ref files, inBaseRelPath + @"bin/mklml.dll");
+                AddFile(ref files, inBaseRelPath + @"bin/mkldnn.dll");
+                AddFile(ref files, inBaseRelPath + @"bin/nvml.dll");
+            }
             //linux:
-            AddFile(ref files, inBaseRelPath + @"bin/libCNTKWrapper-linux.so");
-            AddFile(ref files, inBaseRelPath + @"bin/cntk-linux/libCntk.Core-2.5.1.so");
-            AddFile(ref files, inBaseRelPath + @"bin/cntk-linux/libCntk.Math-2.5.1.so");
-            AddFile(ref files, inBaseRelPath + @"bin/cntk-linux/libCntk.PerformanceProfiler-2.5.1.so");
-            AddFile(ref files, inBaseRelPath + @"bin/cntk-linux/libmklml_intel.so");
-            AddFile(ref files, inBaseRelPath + @"bin/cntk-linux/libiomp5.so");
+            if (includeLinuxFiles)
+            {
+                AddFile(ref files, inBaseRelPath + @"bin/libCNTKWrapper-linux.so");
+                AddFile(ref files, inBaseRelPath + @"bin/cntk-linux/libCntk.Core-2.5.1.so");
+                AddFile(ref files, inBaseRelPath + @"bin/cntk-linux/libCntk.Math-2.5.1.so");
+                AddFile(ref files, inBaseRelPath + @"bin/cntk-linux/libCntk.PerformanceProfiler-2.5.1.so");
+                AddFile(ref files, inBaseRelPath + @"bin/cntk-linux/libmklml_intel.so");
+                AddFile(ref files, inBaseRelPath + @"bin/cntk-linux/libiomp5.so");
+            }
 
             //Config files and example experiments
-            files.AddRange(GetFilesInFolder(inBaseRelPath + @"experiments/examples", true, @"*.simion.exp"));
-            files.AddRange(GetFilesInFolder(inBaseRelPath + @"experiments/examples", true, @"*.simion.proj"));
+            if (includeWindowsFiles)
+            {
+                files.AddRange(GetFilesInFolder(inBaseRelPath + @"experiments/examples", true, @"*.simion.exp"));
+                files.AddRange(GetFilesInFolder(inBaseRelPath + @"experiments/examples", true, @"*.simion.proj"));
 
-            files.AddRange(GetFilesInFolder(inBaseRelPath + @"config/", true));
+                files.AddRange(GetFilesInFolder(inBaseRelPath + @"config/", true));
+            }
 
 
             string outputFile = inBaseRelPath + @"SimionZoo-" + osName + version + ".zip";

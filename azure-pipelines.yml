@@ -105,9 +105,12 @@ jobs:
       restoreNugetPackages: true
 
   - script: |
-      echo 'Bundling SimionZoo files (Linux)'
+      cp tmp/RLSimion-linux/RLSimion-linux.exe bin/RLSimion-linux-x64.exe
+      cp tmp/CNTKWrapper-linux/CNTKWrapper-linux.so bin/libCNTKWrapper-linux.so
       chmod 777 bin/SimionZooBundler.exe
       bin/SimionZooBundler.exe -only-linux
+    displayName: 'Bundle SimionZoo files (Linux)'
+
 
   - task: CopyFiles@2
     displayName: 'Copy Bundle to artifact staging directory'
