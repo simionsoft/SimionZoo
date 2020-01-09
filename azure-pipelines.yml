@@ -97,11 +97,11 @@ jobs:
       failOnStderr: true
 
   - task: MSBuild@1
-    displayName: 'Build SimionZoo bundler (Linux)'
+    displayName: 'Build SimionZoo bundler'
     inputs:
-      solution: 'installers/SimionZooBundler/SimionZooBundle.csproj'
-      platform: 'Any Cpu'
-      configuration: Release
+      solution: SimionZoo.sln
+      platform: 'Any CPU'
+      configuration: 'Linux-Release'
       restoreNugetPackages: true
 
   - script: |
