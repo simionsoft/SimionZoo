@@ -32,19 +32,17 @@ namespace SimionZooBundler
                 if (lowerCaseArg == "-only-windows")
                 {
                     includeLinuxFiles = false;
-                    osName = "win-";
+                    osName = "-win";
                 }
                 else if (lowerCaseArg == "-only-linux")
                 {
                     includeWindowsFiles = false;
-                    osName = "linux-";
+                    osName = "-linux";
                 }
             }
             List<string> files= new List<string>();
-            string version;
-
-            version = GetVersion(inBaseRelPath + @"bin/Badger.exe");
-            outBaseFolder = @"SimionZoo-" + version + @"/";
+            
+            outBaseFolder = @"SimionZoo/";
 
             //Herd Agent
             //windows:
@@ -137,17 +135,11 @@ namespace SimionZooBundler
             }
 
 
-            string outputFile = inBaseRelPath + @"SimionZoo-" + osName + version + ".zip";
+            string outputFile = inBaseRelPath + @"SimionZoo" + osName + ".zip";
 
             Console.WriteLine("Compressing {0} files", files.Count);
             Compress(outputFile, files);
             Console.WriteLine("Finished");
-        }
-
-        public static string GetVersion(string file)
-        {
-            System.Version version = Assembly.GetExecutingAssembly().GetName().Version;
-            return version.Major + "." + version.Minor + "." + version.Build;
         }
 
         public static void GetDependencies(string inFolder, string module, ref List<string> dependencyList, bool bRecursive= true)
