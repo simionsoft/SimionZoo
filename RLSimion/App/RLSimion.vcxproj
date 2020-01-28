@@ -159,10 +159,8 @@
       </DelayLoadDLLs>
     </Link>
     <CustomBuildStep>
-      <Command>
-      </Command>
-      <Message>
-      </Message>
+      <Command>signtool sign /a $(TargetPath)</Command>
+      <Message>Sign RLSimion.exe</Message>
       <Outputs>
       </Outputs>
       <Inputs>
