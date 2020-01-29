@@ -2,35 +2,58 @@ jobs:
 - job: Windows
   pool:
     vmImage: 'VS2017-Win2016'
+
   variables:
-    solution: 'SimionZoo.sln'
+  - group: code-signing-certificate
+  - name: solution
+    value: 'SimionZoo.sln'
+
   steps:
   - task: NuGetToolInstaller@0
     displayName: 'Install NuGet 4.4.1'
     inputs:
       versionSpec: 4.4.1
+
   - task: NuGetCommand@2
     displayName: 'Restore NuGet packages'
     inputs:
       restoreSolution: '$(solution)'
+
   - task: VSBuild@1
     displayName: 'Build C# projects'
     inputs:
       solution: '$(solution)' 
       platform: 'any cpu'
       configuration: 'Release'
+
   - task: VSBuild@1
     displayName: 'Build C++ projects (x86)'
     inputs:
       solution: '$(solution)' 
       platform: 'x86'
       configuration: 'Release'
+
   - task: VSBuild@1
     displayName: 'Build C++ projects (x64)'
     inputs:
       solution: '$(solution)'
       platform: 'x64'
       configuration: 'Release'
+
+  - task: DownloadSecureFile@1
+    displayName: 'Download code signing certificate'
+    inputs:
+      secureFile: '2020-code-signing-certificate.p12'
+
+  - task: codesigning@2
+    displayName: 'Sign executables'
+    inputs:
+      secureFileId: '2020-code-signing-certificate.p12'
+      signCertPassword: '$(certificatePassword)'
+      files: '**/*.exe'
+      timeServer: 'http://timestamp.digicert.com'
+      hashingAlgorithm: 'SHA256'
+
   - task: VSTest@2
     displayName: 'Run C# tests'
     inputs:
@@ -39,6 +62,7 @@ jobs:
       configuration: 'Release'
       testAssemblyVer2: '*.dll'
       searchFolder: tests\bin\Release\AnyCPU
+
   - task: VSTest@2
     displayName: 'Run C++ tests (x86)'
     inputs:
@@ -47,6 +71,7 @@ jobs:
       configuration: 'Release'
       testAssemblyVer2: '*.dll'
       searchFolder: tests\bin\Release\Win32
+
   - task: VSTest@2
     displayName: 'Run C++ tests (x64)'
     inputs:
