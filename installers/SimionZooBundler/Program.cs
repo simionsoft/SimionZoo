@@ -49,6 +49,7 @@ namespace SimionZooBundler
             if (includeWindowsFiles)
             {
                 AddFile(ref files, inBaseRelPath + @"installers/HerdAgentInstaller.msi");
+                AddFile(ref files, inBaseRelPath + @"installers/cab1.cab");
                 AddFile(ref files, inBaseRelPath + @"bin/HerdAgent.exe");
                 AddFile(ref files, inBaseRelPath + @"bin/Herd.dll");
             }
