@@ -33,7 +33,7 @@ using Caliburn.Micro;
 using Badger.Data;
 
 using Herd.Files;
-
+using System;
 
 namespace Badger.ViewModels
 {
@@ -144,8 +144,16 @@ namespace Badger.ViewModels
 
                 LoadedBatch = "Running query";
 
-                Query.Execute(LoggedExperiments, OnExperimentalUnitProcessed, out List<TrackGroup> queryResultTracks, out List<Report> queryReports);
-
+                List<TrackGroup> queryResultTracks = null;
+                List<Report> queryReports = null;
+                try
+                {
+                    Query.Execute(LoggedExperiments, OnExperimentalUnitProcessed, out queryResultTracks, out queryReports);
+                }
+                catch (Exception ex)
+                {
+                    string exception = ex.ToString();
+                }
                 //Clone the query
                 LogQueryViewModel clonedQuery = Serialiazer.Clone(Query);
 

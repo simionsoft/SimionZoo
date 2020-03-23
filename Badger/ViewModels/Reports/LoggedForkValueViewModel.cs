@@ -42,8 +42,8 @@ namespace Badger.ViewModels
         private BindableCollection<LoggedForkViewModel> m_forks = new BindableCollection<LoggedForkViewModel>();
         public BindableCollection<LoggedForkViewModel> Forks
         {
-            get { return m_forks; }
-            set { m_forks = value; NotifyOfPropertyChange(() => Forks); }
+            get { HasChildrenForks = m_forks.Count != 0; return m_forks; }
+            set { m_forks = value; NotifyOfPropertyChange(() => Forks); HasChildrenForks = m_forks.Count != 0; }
         }
 
         //this is used to hide the space given to display children forks in case there is none
@@ -62,6 +62,9 @@ namespace Badger.ViewModels
         {
             m_model = model;
             Parent = parent;
+
+            foreach (Fork fork in model.Forks)
+                Forks.Add(new LoggedForkViewModel(fork));
 
             //hide the area used to display children forks?
             HasChildrenForks = Forks.Count != 0;
