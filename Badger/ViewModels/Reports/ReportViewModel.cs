@@ -121,6 +121,11 @@ namespace Badger.ViewModels
 
                             //add data to the plot
                             int lineSeriesId = newPlot.AddLineSeries(seriesName, description);
+
+                            //force resampling if point count is over 100
+                            if (series.Values.Count > 100)
+                                series.Resample(100);
+
                             foreach (XYValue value in series.Values)
                                 newPlot.AddLineSeriesValue(lineSeriesId, value.X, value.Y);
 
