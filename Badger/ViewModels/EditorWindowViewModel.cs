@@ -328,7 +328,12 @@ namespace Badger.ViewModels
             var sfd = Files.SaveFileDialog(Files.ExperimentBatchDescription, Files.ExperimentBatchFilter, suggestedBatchFileName);
             if (sfd.ShowDialog() == DialogResult.OK)
             {
-                batchFileName = sfd.FileName;
+                //When using multiple extensions, they are duplicated
+                //To fix this behavior, we remove from the first extension, then add it back
+                if (sfd.FileName.Contains(Extensions.ExperimentBatch))
+                    batchFileName = sfd.FileName.Substring(0, sfd.FileName.IndexOf(Extensions.ExperimentBatch)) + Extensions.ExperimentBatch;
+                else
+                    batchFileName = sfd.FileName + Extensions.ExperimentBatch;
             }
             else
             {
@@ -348,7 +353,7 @@ namespace Badger.ViewModels
                     , progressBarDialogVM.UpdateProgressBar);
 
                 //Save the badger project to allow later changes and re-runs of the experiment
-                string badgerProjFileName = Herd.Utils.RemoveExtension(batchFileName, Herd.Utils.NumParts(Extensions.Project, '.'))
+                string badgerProjFileName = Herd.Utils.RemoveExtension(batchFileName, Herd.Utils.NumParts(Extensions.ExperimentBatch, '.'))
                     + Extensions.Project;
                 Files.SaveExperiments(ExperimentViewModels, badgerProjFileName);
 

@@ -103,7 +103,12 @@ namespace Badger
                 var sfd = SaveFileDialog(ExperimentBatchDescription, ExperimentBatchFilter);
                 if (sfd.ShowDialog() == DialogResult.OK)
                 {
-                    batchFilename = sfd.FileName;
+                    //When using multiple extensions, they are duplicated
+                    //To fix this behavior, we remove from the first extension, then add it back
+                    if (sfd.FileName.Contains(Extensions.ExperimentBatch))
+                        batchFilename = sfd.FileName.Substring(0, sfd.FileName.IndexOf(Extensions.ExperimentBatch)) + Extensions.ExperimentBatch;
+                    else
+                        batchFilename = sfd.FileName + Extensions.ExperimentBatch;
                 }
                 else
                 {
@@ -111,27 +116,27 @@ namespace Badger
                     return -1;
                 }
             }
-            string batchFileDir = batchFilename.Remove(batchFilename.LastIndexOf(Extensions.ExperimentBatch));
-            string batchFileName = Herd.Utils.GetFilename(batchFileDir);
-            batchFileDir = Herd.Utils.GetRelativePathTo(Directory.GetCurrentDirectory(), batchFileDir);
+            string relPathToBatchDir = batchFilename.Remove(batchFilename.LastIndexOf(Extensions.ExperimentBatch));
+            string bareBatchName = Herd.Utils.GetFilename(relPathToBatchDir);
+            relPathToBatchDir = Herd.Utils.GetRelativePathTo(Directory.GetCurrentDirectory(), relPathToBatchDir);
             // Clean output directory if it exists
-            if (Directory.Exists(batchFileDir))
+            if (Directory.Exists(relPathToBatchDir))
             {
-                try { Directory.Delete(batchFileDir, true); }
+                try { Directory.Delete(relPathToBatchDir, true); }
                 catch
                 {
                     Data.CaliburnUtility.ShowWarningDialog("It has not been possible to remove the directory: "
-                        + batchFileDir + ". Make sure that it's not been using for other app.", "ERROR");
+                        + relPathToBatchDir + ". Make sure that it's not been using for other app.", "ERROR");
                     log("Error saving the experiment queue");
                     return -1;
                 }
             }
-            string fullBatchFileName = batchFileDir + Herd.Files.Extensions.ExperimentBatch;
+            string relPathToBatchFile = relPathToBatchDir + Extensions.ExperimentBatch;
 
             progressUpdateFunction?.Invoke(0.0);
             int numExperimentalUnitsSaved = 0;
 
-            using (StreamWriter batchFileWriter = new StreamWriter(fullBatchFileName))
+            using (StreamWriter batchFileWriter = new StreamWriter(relPathToBatchFile))
             {
                 // Write batch file header (i.e. open 'EXPERIMENT-BATCH' tag)
                 batchFileWriter.WriteLine("<" + XMLTags.ExperimentBatchNodeTag + ">");
@@ -155,17 +160,17 @@ namespace Badger
                         // Save the combination of forks as a new experiment
                         string experimentName = experimentViewModel.setForkCombination(i);
 
-                        string folderPath = batchFileDir + "/" + experimentName;
-                        Directory.CreateDirectory(folderPath);
-                        string filePath = folderPath + "/" + experimentName + Extensions.Experiment;
-                        experimentViewModel.Save(filePath, SaveMode.AsExperimentalUnit);
-                        string relativePathToExperimentalUnit = batchFileName + "/" + experimentName + "/" + experimentName + Extensions.Experiment;
+                        string relPathToExpUnitDir = relPathToBatchDir + "/" + experimentName;
+                        Directory.CreateDirectory(relPathToExpUnitDir);
+                        string relPathToExpUnitFile = relPathToExpUnitDir + "/" + experimentName + Extensions.Experiment;
+                        experimentViewModel.Save(relPathToExpUnitFile, SaveMode.AsExperimentalUnit);
+                        string relPathToExpUnitFileFromBatchDir = bareBatchName + "/" + experimentName + "/" + experimentName + Extensions.Experiment;
 
                         // Save the experiment reference in the root batch file. Open 'EXPERIMENTAL-UNIT' tag
                         // with its corresponding attributes.
                         batchFileWriter.WriteLine("    <" + XMLTags.ExperimentalUnitNodeTag + " "
                             + XMLTags.nameAttribute + "=\"" + experimentName + "\" "
-                            + XMLTags.pathAttribute + "=\"" + relativePathToExperimentalUnit + "\">");
+                            + XMLTags.pathAttribute + "=\"" + relPathToExpUnitFileFromBatchDir + "\">");
                         // Write fork values in between
                         experimentViewModel.SaveToStream(batchFileWriter, SaveMode.ForkValues, "\t");
                         // Close 'EXPERIMENTAL-UNIT' tag
