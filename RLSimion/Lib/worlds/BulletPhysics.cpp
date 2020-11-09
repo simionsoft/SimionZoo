@@ -88,6 +88,17 @@ void BulletPhysics::add(BulletBody* pBulletObject)
 	m_bulletObjects.push_back(pBulletObject);
 }
 
+void BulletPhysics::add(btCollisionShape* shape, btRigidBody* rig)
+{
+	m_collisionShapes.push_back(shape);
+	m_dynamicsWorld->addRigidBody(rig);
+}
+
+void BulletPhysics::addBody(BulletBody * pBulletBody)
+{
+	m_bulletObjects.push_back(pBulletBody);
+}
+
 // Step the simulation 
 void BulletPhysics::simulate(double dt, int maxSubSteps)
 {

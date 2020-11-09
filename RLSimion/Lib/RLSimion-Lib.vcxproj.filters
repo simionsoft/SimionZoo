@@ -211,6 +211,12 @@
     <ClInclude Include="deep-discrete-q-policy.h">
       <Filter>neural-networks</Filter>
     </ClInclude>
+    <ClInclude Include="worlds\drone-6-dof.h">
+      <Filter>worlds</Filter>
+    </ClInclude>
+    <ClInclude Include="worlds\drone-6-dof-control.h">
+      <Filter>worlds</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="actor.cpp">
@@ -437,6 +443,12 @@
     </ClCompile>
     <ClCompile Include="deep-discrete-q-policy.cpp">
       <Filter>neural-networks</Filter>
+    </ClCompile>
+    <ClCompile Include="worlds\drone-6-dof.cpp">
+      <Filter>worlds</Filter>
+    </ClCompile>
+    <ClCompile Include="worlds\drone-6-dof-control.cpp">
+      <Filter>worlds</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

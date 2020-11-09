@@ -60,6 +60,8 @@ public:
 	std::vector<btSoftBody*>* getSoftBodiesArray();
 
 	void add(BulletBody* pBulletBody);
+	void add(btCollisionShape* col,btRigidBody* rig);
+	void addBody(BulletBody* pBulletBody);
 	void reset(State* s);
 	void updateState(State* s);
 	void updateBulletState(State* s, const Action* a, double dt);

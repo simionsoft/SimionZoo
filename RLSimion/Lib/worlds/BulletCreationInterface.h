@@ -7,7 +7,7 @@
 
 struct BulletCreationInterface
 {
-	///inicialización
+	///inicializaciï¿½n
 	btAlignedObjectArray<btCollisionShape*>	m_collisionShapes;
 	btBroadphaseInterface*	m_broadphase;
 	btCollisionDispatcher*	m_dispatcher;
@@ -57,7 +57,7 @@ struct BulletCreationInterface
 		getSoftBodyWorldInfo()->m_sparsesdf.Initialize();
 	}
 
-	/// inicialización, todo por defecto
+	/// inicializaciï¿½n, todo por defecto
 	virtual void createEmptyDynamicsWorld()
 	{
 		m_collisionConfiguration = new btDefaultCollisionConfiguration();
