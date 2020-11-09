@@ -115,11 +115,12 @@ double DeepCACLA::update(const State *s, const Action *a, const State *s_p, doub
 double DeepCACLA::selectAction(const State *s, Action *a)
 {
 	vector<double>& policyOutput = m_pActorNetwork->evaluate(s, a);
+	m_actorPolicy->vectorToAction(policyOutput, 0, a);
 
 	if (SimionApp::get()->pExperiment->isEvaluationEpisode())
 	{
 		//just copy the output of the policy to the action
-		m_actorPolicy->vectorToAction(policyOutput, 0, a);
+
 		return 1.0;
 	}
 
@@ -134,8 +135,8 @@ double DeepCACLA::selectAction(const State *s, Action *a)
 		noise = m_noiseSignals[noiseSignalIndex]->getSample();
 		double scaleFactor = a->getProperties(m_actorPolicy->getUsedActionVariables()[i].c_str())->getRangeWidth() * 0.5;
 		double scaledNoise = noise * scaleFactor;
-		a->set(m_actorPolicy->getUsedActionVariables()[i].c_str()
-			, policyOutput[i] + scaledNoise);
+		const char* outputAction = m_actorPolicy->getUsedActionVariables()[i].c_str();
+		a->set(outputAction, a->get(outputAction) + scaledNoise);
 	}
 
 	return 1.0;
