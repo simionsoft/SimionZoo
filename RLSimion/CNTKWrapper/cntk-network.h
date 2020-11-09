@@ -23,6 +23,7 @@ protected:
 	const wstring m_targetVariableId = L"target";
 	const wstring m_networkOutputId = L"output";
 	const wstring m_lossVariableId = L"loss-variable";
+	const wstring m_evalVariableId = L"eval-variable";
 	const wstring m_networkLearnerCombinationId = L"network-learner";
 	const wstring m_fullNetworLearnerFunctionId = L"full-network-learner";
 	const wstring m_actionScaleFunctionId = L"scale-action";

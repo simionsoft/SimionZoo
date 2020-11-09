@@ -141,7 +141,7 @@ CNTK::FunctionPtr CntkNetwork::initNetworkLearner(string learnerDefinition)
 {
 	m_targetVariable = CNTK::InputVariable({ m_numOutputs }, CNTK::DataType::Double, m_targetVariableId);
 	CNTK::FunctionPtr lossFunctionPtr = CNTK::SquaredError(m_networkOutput, m_targetVariable, m_lossVariableId);
-	CNTK::FunctionPtr evalFunctionPtr = CNTK::SquaredError(m_networkOutput, m_targetVariable, m_lossVariableId);
+	CNTK::FunctionPtr evalFunctionPtr = CNTK::SquaredError(m_networkOutput, m_targetVariable, m_evalVariableId);
 	CNTK::FunctionPtr fullNetworkLearnerFunction = CNTK::Combine({ lossFunctionPtr, m_networkOutput }, m_fullNetworLearnerFunctionId);
 
 	//Create the trainer for the network
@@ -444,7 +444,8 @@ CntkDeterministicPolicyNetwork::CntkDeterministicPolicyNetwork(vector<string> in
 	m_inputState = CNTK::InputVariable({ getInputStateVariables().size() }
 		, CNTK::DataType::Double, false, m_stateInputVariableId);
 	// Because we are using normalized action, we send the network output through a sigmoid function so that the output is scaled to [0,1]
-	m_networkOutput = CNTK::Sigmoid(initNetworkFromInputLayer(m_inputState), m_actionScaleFunctionId);
+	//m_networkOutput = CNTK::Sigmoid(initNetworkFromInputLayer(m_inputState), m_actionScaleFunctionId);
+	m_networkOutput = initNetworkFromInputLayer(m_inputState);
 	m_fullNetworkLearnerFunction = initNetworkLearner(m_learnerDefinition);
 }
 void CntkDeterministicPolicyNetwork::destroy() { delete this; }

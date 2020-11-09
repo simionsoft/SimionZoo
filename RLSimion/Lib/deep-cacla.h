@@ -29,7 +29,7 @@ class DeepCACLA : public Simion, DeferredLoad
 	IVFunctionNetwork* m_pCriticTargetNetwork= nullptr;
 	CHILD_OBJECT<DeepVFunction> m_criticVFunction;
 	vector<double> m_V_s_p;
-	
+	vector<double> m_V_s;
 public:
 	DeepCACLA(ConfigNode* pConfigNode);
 	virtual ~DeepCACLA();
