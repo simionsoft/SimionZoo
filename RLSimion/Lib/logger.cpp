@@ -279,6 +279,9 @@ void Logger::firstStep()
 	//initialise the episode reward
 	m_episodeRewardSum = 0.0;
 
+	//reset stats
+	resetAvgLogData();
+
 	//set episode start time
 	m_pEpisodeTimer->start();
 
