@@ -26,7 +26,7 @@
 #include "world.h"
 #include "../../Common/named-var-set.h"
 #include "windturbine.h"
-#include "underwatervehicle.h"
+//#include "underwatervehicle.h"
 #include "pitchcontrol.h"
 #include "balancingpole.h"
 #include "swinguppendulum.h"
@@ -45,6 +45,7 @@
 #include "../simgod.h"
 #include "../logger.h"
 #include "../experiment.h"
+#include "drone-6-dof-control.h"
 
 CHILD_OBJECT_FACTORY<DynamicModel> World::m_pDynamicModel;
 
@@ -300,7 +301,7 @@ std::shared_ptr<DynamicModel> DynamicModel::getInstance(ConfigNode* pConfigNode)
 	{
 		{make_tuple("Wind-turbine",CHOICE_ELEMENT_NEW<WindTurbine>,"World=Wind-turbine")},
 		{make_tuple("FAST-Wind-turbine",CHOICE_ELEMENT_NEW<FASTWindTurbine>,"World=FAST-Wind-turbine") },
-		{make_tuple("Underwater-vehicle", CHOICE_ELEMENT_NEW<UnderwaterVehicle>,"World=Underwater-vehicle")},
+		//{make_tuple("Underwater-vehicle", CHOICE_ELEMENT_NEW<UnderwaterVehicle>,"World=Underwater-vehicle")},
 		{make_tuple("Pitch-control",CHOICE_ELEMENT_NEW<PitchControl>,"World=Pitch-control")},
 		{make_tuple("Balancing-pole",CHOICE_ELEMENT_NEW<BalancingPole>,"World=Balancing-pole")},
 		{make_tuple("Push-Box-2",CHOICE_ELEMENT_NEW<PushBox2>,"World=Push-Box-2")},
@@ -311,7 +312,8 @@ std::shared_ptr<DynamicModel> DynamicModel::getInstance(ConfigNode* pConfigNode)
 		{make_tuple("Mountain-car",CHOICE_ELEMENT_NEW<MountainCar>,"World=Mountain-car") },
 		{make_tuple("Swing-up-pendulum",CHOICE_ELEMENT_NEW<SwingupPendulum>,"World=Swing-up-pendulum") },
 		{make_tuple("Double-pendulum",CHOICE_ELEMENT_NEW<DoublePendulum>,"World=Double-pendulum") },
-		{make_tuple("Rain-car",CHOICE_ELEMENT_NEW<RainCar>,"World=Rain-car") }
+		{make_tuple("Rain-car",CHOICE_ELEMENT_NEW<RainCar>,"World=Rain-car") },
+		{make_tuple("Drone-control",CHOICE_ELEMENT_NEW<Drone6DOFControl>,"World=Drone-control") }
 	});
 }
 
