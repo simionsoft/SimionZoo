@@ -64,7 +64,8 @@ double DeepCACLA::update(const State *s, const Action *a, const State *s_p, doub
 	if (!m_pActorMinibatch->isFull())
 	{
 		//add only tuples that produced a positive temporal difference
-		double v_s= m_pCriticTargetNetwork->evaluate(s, a)[0];
+		double v_s= m_pCriticOnlineNetwork->evaluate(s, a)[0];
+		
 		double v_s_p= m_pCriticTargetNetwork->evaluate(s_p, a)[0];
 
 		double td = r + gamma * v_s_p - v_s;
@@ -84,11 +85,11 @@ double DeepCACLA::update(const State *s, const Action *a, const State *s_p, doub
 		m_pCriticMinibatch->addTuple(s, a, s_p, r);
 	else
 	{
+		//evaluate V(s)
+		m_pCriticOnlineNetwork->evaluate(m_pCriticMinibatch->s(), m_V_s);
+
 		//evaluate V(s')
 		m_pCriticTargetNetwork->evaluate(m_pCriticMinibatch->s_p(), m_V_s_p);
-
-		//evaluate V(s)
-		m_pCriticTargetNetwork->evaluate(m_pCriticMinibatch->s_p(), m_V_s);
 
 		//calculate the target of the critic: r + gamma * V(s) - V(s')
 		for (size_t tuple = 0; tuple < m_pCriticMinibatch->size(); tuple++)
@@ -120,19 +121,18 @@ double DeepCACLA::selectAction(const State *s, Action *a)
 	if (SimionApp::get()->pExperiment->isEvaluationEpisode())
 	{
 		//just copy the output of the policy to the action
-
 		return 1.0;
 	}
 
 	size_t noiseSignalIndex;
 	double noise;
+	//if there are less noise signals than output action variables, just use the last one
+	noiseSignalIndex = std::min((size_t) 0, m_noiseSignals.size() - 1);
+	noise = m_noiseSignals[noiseSignalIndex]->getSample();
 
 	for (size_t i = 0; i < m_actorPolicy->getUsedActionVariables().size(); i++)
 	{
-		//if there are less noise signals than output action variables, just use the last one
-		noiseSignalIndex = std::min(i, m_noiseSignals.size() - 1);
-
-		noise = m_noiseSignals[noiseSignalIndex]->getSample();
+		
 		double scaleFactor = a->getProperties(m_actorPolicy->getUsedActionVariables()[i].c_str())->getRangeWidth() * 0.5;
 		double scaledNoise = noise * scaleFactor;
 		const char* outputAction = m_actorPolicy->getUsedActionVariables()[i].c_str();
