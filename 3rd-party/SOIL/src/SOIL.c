@@ -19,7 +19,8 @@
 	#define WIN32_LEAN_AND_MEAN
 	#include <windows.h>
 	#include <wingdi.h>
-	#include <GL/gl.h>
+	//#include <GL/gl.h>
+	#include "../../glew2/include/glew.h"
 #elif defined(__APPLE__) || defined(__APPLE_CC__)
 	/*	I can't test this Apple stuff!	*/
 	#include <OpenGL/gl.h>
@@ -1842,7 +1843,7 @@ unsigned int SOIL_direct_load_DDS(
 		result_string_pointer = "NULL filename";
 		return 0;
 	}
-	f= fopen( filename, "rb" );
+	fopen_s(&f, filename, "rb" );
 	if( NULL == f )
 	{
 		/*	the file doesn't seem to exist (or be open-able)	*/

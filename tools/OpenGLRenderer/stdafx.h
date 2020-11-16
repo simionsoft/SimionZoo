@@ -21,7 +21,7 @@
 #include "../../3rd-party/freeglut3/include/GL/freeglut.h"
 
 #ifdef _WIN32
-	#pragma comment (lib,"opengl32.lib")
+#pragma comment (lib,"opengl32.lib")
 #endif
 
 //tinyxml2
