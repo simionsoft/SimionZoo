@@ -72,6 +72,25 @@ public:
 	double evaluate(const State* s, const Action *a, unsigned int output);
 };
 
+class PIDDroneController : public Controller
+{
+	CHILD_OBJECT_FACTORY<NumericValue> m_pKP_V;
+	CHILD_OBJECT_FACTORY<NumericValue> m_pKP_F;
+	CHILD_OBJECT_FACTORY<NumericValue> m_pKD_V;
+	CHILD_OBJECT_FACTORY<NumericValue> m_pKD_F;
+
+	double m_intError;
+
+public:
+	PIDDroneController(ConfigNode* pConfigNode);
+	virtual ~PIDDroneController();
+
+	unsigned int getNumOutputs();
+	const char* getOutputAction(size_t output);
+
+	double evaluate(const State* s, const Action *a, unsigned int output);
+};
+
 class WindTurbineVidalController : public Controller
 {
 protected:

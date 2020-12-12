@@ -150,7 +150,7 @@ public:
 	static constexpr double altura=10.0;
 	Drone6DOF (BulletPhysics* ownerWorld,
 				const btVector3& positionOffset);
-	void subir();
+	
 	void init();
 	void setActionIds(const char* f11, const char* f12, const char* f13, const char* f14,
 		const char* f21, const char* f22, const char* f23, const char* f24, 

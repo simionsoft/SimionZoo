@@ -36,7 +36,7 @@
 
 
 Drone6DOFControl::Drone6DOFControl(ConfigNode* pConfigNode)
-{
+{	
 	METADATA("World", "Drone-control");
 	  
 	m_error = addStateVariable("error-z", "m", -60.0, 60.0);
@@ -51,81 +51,82 @@ Drone6DOFControl::Drone6DOFControl(ConfigNode* pConfigNode)
 	m_base_Y = addStateVariable("base-y", "m", -60.0, 60.0);
 	m_base_Z = addStateVariable("base-z", "m", -60.0, 60.0);
 
-	m_rotacion_base_X = addStateVariable("base-rot-x", "rad", -8.0, 8.0);
-	m_rotacion_base_Y = addStateVariable("base-rot-y", "rad", -8.0, 8.0);
-	m_rotacion_base_Z = addStateVariable("base-rot-z", "rad", -8.0, 8.0);
+	m_rotacion_base_X = addStateVariable("base-rot-x", "rad", -3.1415, 3.1415, true);
+	m_rotacion_base_Y = addStateVariable("base-rot-y", "rad", -3.1415, 3.1415, true);
+	m_rotacion_base_Z = addStateVariable("base-rot-z", "rad", -3.1415, 3.1415, true);
 
 	m_angular_base_X = addStateVariable("base-angular-x", "rad/s", -8.0, 8.0);
 	m_angular_base_Y = addStateVariable("base-angular-y", "rad/s", -8.0, 8.0);
 	m_angular_base_Z = addStateVariable("base-angular-z", "rad/s", -8.0, 8.0);
 
-	m_linear_base_X = addStateVariable("base-linear-x", "m/s", -8.0, 8.0);
-	m_linear_base_Y = addStateVariable("base-linear-y", "m/s", -8.0, 8.0);
-	m_linear_base_Z = addStateVariable("base-linear-z", "m/s", -8.0, 8.0);
-
+	m_linear_base_X = addStateVariable("base-linear-x", "m/s", -15.0, 15.0);
+	m_linear_base_Y = addStateVariable("base-linear-y", "m/s", -15.0, 15.0);
+	m_linear_base_Z = addStateVariable("base-linear-z", "m/s", -15.0, 15.0);
 
 	m_drone1_X = addStateVariable("drone1-x", "m", -60.0, 60.0);
 	m_drone1_Y = addStateVariable("drone1-y", "m", -60.0, 60.0);
 	m_drone1_Z = addStateVariable("drone1-z", "m", -60.0, 60.0);
 
-	m_rotacion_drone1_X = addStateVariable("drone1-rot-x", "rad", -8.0, 8.0);
-	m_rotacion_drone1_Y = addStateVariable("drone1-rot-y", "rad", -8.0, 8.0);
-	m_rotacion_drone1_Z = addStateVariable("drone1-rot-z", "rad", -8.0, 8.0);
+	m_rotacion_drone1_X = addStateVariable("drone1-rot-x", "rad", -3.1415, 3.1415, true);
+	m_rotacion_drone1_Y = addStateVariable("drone1-rot-y", "rad", -3.1415, 3.1415, true);
+	m_rotacion_drone1_Z = addStateVariable("drone1-rot-z", "rad", -3.1415, 3.1415, true);
 
 	m_angular_drone1_X = addStateVariable("drone1-angular-x", "rad/s", -8.0, 8.0);
 	m_angular_drone1_Y = addStateVariable("drone1-angular-y", "rad/s", -8.0, 8.0);
 	m_angular_drone1_Z = addStateVariable("drone1-angular-z", "rad/s", -8.0, 8.0);
 
-	m_linear_drone1_X = addStateVariable("drone1-linear-x", "m/s", -8.0, 8.0);
-	m_linear_drone1_Y = addStateVariable("drone1-linear-y", "m/s", -8.0, 8.0);
-	m_linear_drone1_Z = addStateVariable("drone1-linear-z", "m/s", -8.0, 8.0);
+	m_linear_drone1_X = addStateVariable("drone1-linear-x", "m/s", -15.0, 15.0);
+	m_linear_drone1_Y = addStateVariable("drone1-linear-y", "m/s", -15.0, 15.0);
+	m_linear_drone1_Z = addStateVariable("drone1-linear-z", "m/s", -15.0, 15.0);
 
 	m_drone2_X = addStateVariable("drone2-x", "m", -60.0, 60.0);
 	m_drone2_Y = addStateVariable("drone2-y", "m", -60.0, 60.0);
 	m_drone2_Z = addStateVariable("drone2-z", "m", -60.0, 60.0);
 
-	m_rotacion_drone2_X = addStateVariable("drone2-rot-x", "rad", -8.0, 8.0);
-	m_rotacion_drone2_Y = addStateVariable("drone2-rot-y", "rad", -8.0, 8.0);
-	m_rotacion_drone2_Z = addStateVariable("drone2-rot-z", "rad", -8.0, 8.0);
+	m_rotacion_drone2_X = addStateVariable("drone2-rot-x", "rad", -3.1415, 3.1415, true);
+	m_rotacion_drone2_Y = addStateVariable("drone2-rot-y", "rad", -3.1415, 3.1415, true);
+	m_rotacion_drone2_Z = addStateVariable("drone2-rot-z", "rad", -3.1415, 3.1415, true);
 
 	m_angular_drone2_X = addStateVariable("drone2-angular-x", "rad/s", -8.0, 8.0);
 	m_angular_drone2_Y = addStateVariable("drone2-angular-y", "rad/s", -8.0, 8.0);
 	m_angular_drone2_Z = addStateVariable("drone2-angular-z", "rad/s", -8.0, 8.0);
-	m_linear_drone2_X = addStateVariable("drone2-linear-x", "m/s", -8.0, 8.0);
-	m_linear_drone2_Y = addStateVariable("drone2-linear-y", "m/s", -8.0, 8.0);
-	m_linear_drone2_Z = addStateVariable("drone2-linear-z", "m/s", -8.0, 8.0);
 
+	m_linear_drone2_X = addStateVariable("drone2-linear-x", "m/s", -15.0, 15.0);
+	m_linear_drone2_Y = addStateVariable("drone2-linear-y", "m/s", -15.0, 15.0);
+	m_linear_drone2_Z = addStateVariable("drone2-linear-z", "m/s", -15.0, 15.0);
 
 	m_drone3_X = addStateVariable("drone3-x", "m", -60.0, 60.0);
 	m_drone3_Y = addStateVariable("drone3-y", "m", -60.0, 60.0);
 	m_drone3_Z = addStateVariable("drone3-z", "m", -60.0, 60.0);
 
-	m_rotacion_drone3_X = addStateVariable("drone3-rot-x", "rad", -8.0, 8.0);
-	m_rotacion_drone3_Y = addStateVariable("drone3-rot-y", "rad", -8.0, 8.0);
-	m_rotacion_drone3_Z = addStateVariable("drone3-rot-z", "rad", -8.0, 8.0);
+	m_rotacion_drone3_X = addStateVariable("drone3-rot-x", "rad", -3.1415, 3.1415, true);
+	m_rotacion_drone3_Y = addStateVariable("drone3-rot-y", "rad", -3.1415, 3.1415, true);
+	m_rotacion_drone3_Z = addStateVariable("drone3-rot-z", "rad", -3.1415, 3.1415, true);
 
 	m_angular_drone3_X = addStateVariable("drone3-angular-x", "rad/s", -8.0, 8.0);
 	m_angular_drone3_Y = addStateVariable("drone3-angular-y", "rad/s", -8.0, 8.0);
 	m_angular_drone3_Z = addStateVariable("drone3-angular-z", "rad/s", -8.0, 8.0);
-	m_linear_drone3_X = addStateVariable("drone3-linear-x", "m/s", -8.0, 8.0);
-	m_linear_drone3_Y = addStateVariable("drone3-linear-y", "m/s", -8.0, 8.0);
-	m_linear_drone3_Z = addStateVariable("drone3-linear-z", "m/s", -8.0, 8.0);
+	
+	m_linear_drone3_X = addStateVariable("drone3-linear-x", "m/s", -15.0, 15.0);
+	m_linear_drone3_Y = addStateVariable("drone3-linear-y", "m/s", -15.0, 15.0);
+	m_linear_drone3_Z = addStateVariable("drone3-linear-z", "m/s", -15.0, 15.0);
 
 
 	m_drone4_X = addStateVariable("drone4-x", "m", -60.0, 60.0);
 	m_drone4_Y = addStateVariable("drone4-y", "m", -60.0, 60.0);
 	m_drone4_Z = addStateVariable("drone4-z", "m", -60.0, 60.0);
 
-	m_rotacion_drone4_X = addStateVariable("drone4-rot-x", "rad", -8.0, 8.0);
-	m_rotacion_drone4_Y = addStateVariable("drone4-rot-y", "rad", -8.0, 8.0);
-	m_rotacion_drone4_Z = addStateVariable("drone4-rot-z", "rad", -8.0, 8.0);
+	m_rotacion_drone4_X = addStateVariable("drone4-rot-x", "rad", -3.1415, 3.1415, true);
+	m_rotacion_drone4_Y = addStateVariable("drone4-rot-y", "rad", -3.1415, 3.1415, true);
+	m_rotacion_drone4_Z = addStateVariable("drone4-rot-z", "rad", -3.1415, 3.1415, true);
 
 	m_angular_drone4_X = addStateVariable("drone4-angular-x", "rad/s", -8.0, 8.0);
 	m_angular_drone4_Y = addStateVariable("drone4-angular-y", "rad/s", -8.0, 8.0);
 	m_angular_drone4_Z = addStateVariable("drone4-angular-z", "rad/s", -8.0, 8.0);
-	m_linear_drone4_X = addStateVariable("drone4-linear-x", "m/s", -8.0, 8.0);
-	m_linear_drone4_Y = addStateVariable("drone4-linear-y", "m/s", -8.0, 8.0);
-	m_linear_drone4_Z = addStateVariable("drone4-linear-z", "m/s", -8.0, 8.0);
+
+	m_linear_drone4_X = addStateVariable("drone4-linear-x", "m/s", -15.0, 15.0);
+	m_linear_drone4_Y = addStateVariable("drone4-linear-y", "m/s", -15.0, 15.0);
+	m_linear_drone4_Z = addStateVariable("drone4-linear-z", "m/s", -15.0, 15.0);
 
 	m_d_error = addStateVariable("d-error-z", "m/s", -2000, 2000);
 	
@@ -217,8 +218,31 @@ void Drone6DOFControl::reset(State *s)
 void Drone6DOFControl::executeAction(State *s, const Action *a, double dt)
 {
 	btTransform trans;
-	//balioa t-1
-	double error_z_previo = s->get("error-z");
+
+	//Some values need to be calculated here: z-error, linear speed
+	double prev_error_z = s->get("error-z");
+	
+	//double prev_base_x = s->get("base-x");
+	//double prev_base_y = s->get("base-y");
+	//double prev_base_z = s->get("base-z");
+
+	//double prev_drone1_x = s->get("drone1-x");
+	//double prev_drone1_y = s->get("drone1-y");
+	//double prev_drone1_z = s->get("drone1-z");
+
+	//double prev_drone2_x = s->get("drone2-x");
+	//double prev_drone2_y = s->get("drone2-y");
+	//double prev_drone2_z = s->get("drone2-z");
+
+	//double prev_drone3_x = s->get("drone3-x");
+	//double prev_drone3_y = s->get("drone3-y");
+	//double prev_drone3_z = s->get("drone3-z");
+
+	//double prev_drone4_x = s->get("drone4-x");
+	//double prev_drone4_y = s->get("drone4-y");
+	//double prev_drone4_z = s->get("drone4-z");
+
+	
 	m_pBulletPhysics->updateBulletState(s, a, dt);
 
 	//Update Drone
@@ -227,11 +251,30 @@ void Drone6DOFControl::executeAction(State *s, const Action *a, double dt)
 	//Update
 	m_pBulletPhysics->updateState(s);
 
-	//eguneratu
-	double error_z = s->get("error-z");
-	double d_error_z = (error_z - error_z_previo) / SimionApp::get()->pWorld->getDT();
-	s->set("d-error-z", d_error_z);
+	//Set state values calculated by hand
+	double dtInv = 1.0 / SimionApp::get()->pWorld->getDT();
 
+	s->set("d-error-z", (s->get("error-z") - prev_error_z) * dtInv);
+
+	//s->set("base-linear-x", (s->get("base-x") - prev_base_x) * dtInv);
+	//s->set("base-linear-y", (s->get("base-y") - prev_base_y) * dtInv);
+	//s->set("base-linear-z", (s->get("base-z") - prev_base_z) * dtInv);
+
+	//s->set("drone1-linear-x", (s->get("drone1-x") - prev_drone1_x) * dtInv);
+	//s->set("drone1-linear-y", (s->get("drone1-y") - prev_drone1_y) * dtInv);
+	//s->set("drone1-linear-z", (s->get("drone1-z") - prev_drone1_z) * dtInv);
+
+	//s->set("drone2-linear-x", (s->get("drone2-x") - prev_drone2_x) * dtInv);
+	//s->set("drone2-linear-y", (s->get("drone2-y") - prev_drone2_y) * dtInv);
+	//s->set("drone2-linear-z", (s->get("drone2-z") - prev_drone2_z) * dtInv);
+
+	//s->set("drone3-linear-x", (s->get("drone3-x") - prev_drone3_x) * dtInv);
+	//s->set("drone3-linear-y", (s->get("drone3-y") - prev_drone3_y) * dtInv);
+	//s->set("drone3-linear-z", (s->get("drone3-z") - prev_drone3_z) * dtInv);
+
+	//s->set("drone4-linear-x", (s->get("drone4-x") - prev_drone4_x) * dtInv);
+	//s->set("drone4-linear-y", (s->get("drone4-y") - prev_drone4_y) * dtInv);
+	//s->set("drone4-linear-z", (s->get("drone4-z") - prev_drone4_z) * dtInv);
 }
 
 Drone6DOFControl::~Drone6DOFControl()

@@ -201,30 +201,7 @@ btRigidBody* Drone6DOF::localCreateRigidBody (btScalar mass, const btTransform& 
 	return body;
 }
 
-void Drone6DOF::subir() {
-	
-	for (size_t i = 1; i < MASS_COUNT; i++)
-	{
-		btVector3 relativeForce = btVector3(0., 11., 0.);
-		btMatrix3x3& boxRot = m_bodies[i]->getWorldTransform().getBasis();
 
-		btVector3 correctedForce = boxRot * relativeForce;
-		
-		m_bodies[i]->activate(true);
-
-		m_bodies[i]->applyForce(correctedForce, btVector3(0.3, 0.0, 0.3));
-	
-		m_bodies[i]->applyForce(correctedForce, btVector3(-0.3, 0.0, 0.3));
-	
-		m_bodies[i]->applyForce(correctedForce, btVector3(0.3, 0.0, -0.3));
-		
-		m_bodies[i]->applyForce(correctedForce, btVector3(-0.3, 0.0, -0.3));
-	
-
-		
-	}
-
-}
 
 void Drone6DOF::init()
 {
@@ -415,9 +392,6 @@ void Drone6DOF::reset(State * s)
 void Drone6DOF::updateState(State * s)
 {
 	btTransform transform = m_bodies[MASS_COMP]->getWorldTransform();
-	btVector3 velocidad = m_bodies[MASS_COMP]->getAngularVelocity();
-
-	double baseY = transform.getOrigin().y();
 	
 	s->set(m_xId, transform.getOrigin().x());
 	s->set(m_yId, transform.getOrigin().y());
@@ -437,49 +411,43 @@ void Drone6DOF::updateState(State * s)
 	s->set(m_rotXId, x);
 	s->set(m_rotYId, y);
 	s->set(m_rotZId, z);
-	/*
-	s->set(m_rotXId, transform.getRotation().getX());
-	s->set(m_rotYId, transform.getRotation().getY());
-	s->set(m_rotZId, transform.getRotation().getZ());
 
-	*/
+	btVector3 velocity = m_bodies[MASS_COMP]->getAngularVelocity();
+	s->set(m_angularVXId, velocity.x());
+	s->set(m_angularVYId, velocity.y());
+	s->set(m_angularVZId, velocity.z());
 
-	s->set(m_angularVXId, velocidad.x());
-	s->set(m_angularVYId, velocidad.y());
-	s->set(m_angularVZId, velocidad.z());
-
-	velocidad = m_bodies[MASS_COMP]->getLinearVelocity();
-	s->set(m_linearVXId, velocidad.x());
-	s->set(m_linearVYId, velocidad.y());
-	s->set(m_linearVZId, velocidad.z());
+	velocity = m_bodies[MASS_COMP]->getLinearVelocity();
+	s->set(m_linearVXId, velocity.x());
+	s->set(m_linearVYId, velocity.y());
+	s->set(m_linearVZId, velocity.z());
 
 
 
 	for (size_t i = 1; i < MASS_COUNT; i++)
 	{
 		transform = m_bodies[i]->getWorldTransform();
-		velocidad = m_bodies[i]->getAngularVelocity();
+		
 		s->set((string("drone") + to_string(i) + string("-x")).c_str(), transform.getOrigin().x());
 		s->set((string("drone") + to_string(i) + string("-y")).c_str(), transform.getOrigin().y());
 		s->set((string("drone") + to_string(i) + string("-z")).c_str(), transform.getOrigin().z());
 
 		boxRot = transform.getBasis();
 		boxRot.getEulerZYX(z, y, x);
-		
 
 		s->set((string("drone") + to_string(i) + string("-rot-x")).c_str(), x);
 		s->set((string("drone") + to_string(i) + string("-rot-y")).c_str(), y);
 		s->set((string("drone") + to_string(i) + string("-rot-z")).c_str(), z);
 		
+		velocity = m_bodies[i]->getAngularVelocity();
+		s->set((string("drone") + to_string(i) + string("-angular-x")).c_str(), velocity.x());
+		s->set((string("drone") + to_string(i) + string("-angular-y")).c_str(), velocity.y());
+		s->set((string("drone") + to_string(i) + string("-angular-z")).c_str(), velocity.z());
 
-		s->set((string("drone") + to_string(i) + string("-angular-x")).c_str(), velocidad.x());
-		s->set((string("drone") + to_string(i) + string("-angular-y")).c_str(), velocidad.y());
-		s->set((string("drone") + to_string(i) + string("-angular-z")).c_str(), velocidad.z());
-
-		velocidad = m_bodies[i]->getLinearVelocity();
-		s->set((string("drone") + to_string(i) + string("-linear-x")).c_str(), velocidad.x());
-		s->set((string("drone") + to_string(i) + string("-linear-y")).c_str(), velocidad.y());
-		s->set((string("drone") + to_string(i) + string("-linear-z")).c_str(), velocidad.z());
+		velocity = m_bodies[i]->getLinearVelocity();
+		s->set((string("drone") + to_string(i) + string("-linear-x")).c_str(), velocity.x());
+		s->set((string("drone") + to_string(i) + string("-linear-y")).c_str(), velocity.y());
+		s->set((string("drone") + to_string(i) + string("-linear-z")).c_str(), velocity.z());
 		
 	}
 	

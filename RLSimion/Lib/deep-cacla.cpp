@@ -64,8 +64,10 @@ double DeepCACLA::update(const State *s, const Action *a, const State *s_p, doub
 	if (!m_pActorMinibatch->isFull())
 	{
 		//add only tuples that produced a positive temporal difference
-		double v_s= m_pCriticOnlineNetwork->evaluate(s, a)[0];
-		
+		//evaluate V(s)
+		double v_s= m_pCriticTargetNetwork->evaluate(s, a)[0];
+
+		//evaluate V(s')
 		double v_s_p= m_pCriticTargetNetwork->evaluate(s_p, a)[0];
 
 		double td = r + gamma * v_s_p - v_s;
