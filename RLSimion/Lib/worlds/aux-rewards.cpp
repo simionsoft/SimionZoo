@@ -96,8 +96,6 @@ double DistanceReward3D::getReward(const State * s, const Action * a, const Stat
 {
 	double error = abs(s_p->get(m_error));
 
-	error= std::max(error, 0.0001);
-
 	double reward = 1. - error / m_maxDist;
 
 	reward = std::max(reward, getMin());

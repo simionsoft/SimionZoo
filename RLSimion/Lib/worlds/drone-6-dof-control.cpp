@@ -199,19 +199,19 @@ Drone6DOFControl::Drone6DOFControl(ConfigNode* pConfigNode)
 void Drone6DOFControl::reset(State *s)
 {
 	double x;
-	if (SimionApp::get()->pExperiment->isEvaluationEpisode())
+	//if (SimionApp::get()->pExperiment->isEvaluationEpisode())
 	{
 		//fixed setting in evaluation episodes
 		x = 0.0;
 		s->set("base-y", x);
 	}
-	else
+	/*else
 	{
 		//random setting in training episodes
 		//aldatu 
 		x = getRandomValue()*59.95+0.05;    //[0.05, 60.00]
 		s->set("base-y", x); 
-	}
+	}*/
 	m_pBulletPhysics->reset(s);
 }
 
