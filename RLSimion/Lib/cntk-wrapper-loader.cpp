@@ -155,7 +155,6 @@ namespace CNTK
 
 		SimionApp::get()->registerTargetPlatformInputFile("Win-64", "../bin/libiomp5md.dll");
 		SimionApp::get()->registerTargetPlatformInputFile("Win-64", "../bin/mklml.dll");
-		SimionApp::get()->registerTargetPlatformInputFile("Win-64", "../bin/mkl_cntk_p.dll");
 		SimionApp::get()->registerTargetPlatformInputFile("Win-64", "../bin/mkldnn.dll");
 		SimionApp::get()->registerTargetPlatformInputFile("Win-64", "../bin/nvml.dll");
 
