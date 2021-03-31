@@ -37,7 +37,7 @@
 ConfigNode* ConfigFile::loadFile(const char* fileName, const char* nodeName)
 {
 	LoadFile(fileName);
-	if (Error()) throw std::runtime_error((std::string("Couldn't load file: ") + std::string(fileName)).c_str());
+	if (Error()) throw std::exception((std::string("Couldn't load file: ") + std::string(fileName)).c_str());
 
 	if (nodeName)
 		return (ConfigNode*) (this->FirstChildElement(nodeName));
