@@ -152,6 +152,8 @@ namespace CNTK
 		SimionApp::get()->registerTargetPlatformInputFile("Win-64", "../bin/cublas64_90.dll");
 		SimionApp::get()->registerTargetPlatformInputFile("Win-64", "../bin/cudart64_90.dll");
 		SimionApp::get()->registerTargetPlatformInputFile("Win-64", "../bin/cudnn64_7.dll");
+		SimionApp::get()->registerTargetPlatformInputFile("Win-64", "../bin/curand64_90.dll");
+		SimionApp::get()->registerTargetPlatformInputFile("Win-64", "../bin/cusparse64_90.dll");
 
 		SimionApp::get()->registerTargetPlatformInputFile("Win-64", "../bin/libiomp5md.dll");
 		SimionApp::get()->registerTargetPlatformInputFile("Win-64", "../bin/mklml.dll");
