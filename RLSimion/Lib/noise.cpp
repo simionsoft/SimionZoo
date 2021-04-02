@@ -31,6 +31,7 @@
 #define _USE_MATH_DEFINES
 #include <math.h>
 #include <algorithm>
+#include <stdexcept>
 
 #define MARGINAL_SIGMA 0.1
 #define MINIMAL_PROBABILITY 0.000001

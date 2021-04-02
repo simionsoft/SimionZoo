@@ -35,6 +35,7 @@
 #include "deep-network.h"
 #include "sample-file.h"
 #include "worlds/world.h"
+#include <stdexcept>
 
 std::shared_ptr<DiscreteDeepPolicy> DiscreteDeepPolicy::getInstance(ConfigNode* pConfigNode)
 {

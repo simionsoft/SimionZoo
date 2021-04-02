@@ -29,6 +29,7 @@
 #include "mem-manager.h"
 #include <string>
 #include <algorithm>
+#include <stdexcept>
 
 SimpleMemPool::SimpleMemPool(BUFFER_SIZE elementCount) {}
 SimpleMemPool::~SimpleMemPool()

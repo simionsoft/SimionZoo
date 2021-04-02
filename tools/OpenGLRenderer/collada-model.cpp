@@ -32,6 +32,7 @@
 #include "mesh.h"
 #include "../GeometryLib/bounding-cylinder.h"
 #include <algorithm>
+#include <stdexcept>
 #include "../System/FileUtils.h"
 
 

@@ -32,6 +32,7 @@
 #include "experiment.h"
 #include <algorithm>
 #include <math.h>
+#include <stdexcept>
 
 vector<double>& Controller::evaluate(const State* s, const Action* a)
 {

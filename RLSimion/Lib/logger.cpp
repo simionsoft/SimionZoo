@@ -35,6 +35,7 @@
 #include "utils.h"
 #include "experiment.h"
 #include <algorithm>
+#include <stdexcept>
 
 FILE *Logger::m_logFile = 0;
 MessageOutputMode Logger::m_messageOutputMode = MessageOutputMode::Console;

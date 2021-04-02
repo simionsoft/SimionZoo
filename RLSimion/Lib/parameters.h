@@ -8,6 +8,7 @@
 #include <tuple>
 #include "config.h"
 #include "deep-layer.h" //Activation enum type is defined there
+#include <stdexcept>
 
 using namespace std;
 //Enumerated types

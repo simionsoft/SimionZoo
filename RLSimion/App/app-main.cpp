@@ -30,6 +30,7 @@
 #include "../Lib/logger.h"
 #include "../Lib/config.h"
 #include "../../tools/System/FileUtils.h"
+#include <stdexcept>
 
 int main(int argc, char* argv[])
 {

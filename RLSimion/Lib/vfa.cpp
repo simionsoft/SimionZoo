@@ -32,6 +32,7 @@
 #include "experiment.h"
 #include <assert.h>
 #include <algorithm>
+#include <stdexcept>
 #include "mem-manager.h"
 
 //LINEAR VFA. Common functionalities: getSample (FeatureList*), saturate, save, load, ....

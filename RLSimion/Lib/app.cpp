@@ -46,6 +46,7 @@
 #include <string>
 using namespace std;
 #include <algorithm>
+#include <stdexcept>
 
 //Properties and xml tags
 #define APP_REQUIREMENTS_XML_TAG "Requirements"
