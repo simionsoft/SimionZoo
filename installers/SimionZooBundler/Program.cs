@@ -112,6 +112,8 @@ namespace SimionZooBundler
                 AddFile(ref files, inBaseRelPath + @"bin/cublas64_90.dll");
                 AddFile(ref files, inBaseRelPath + @"bin/cudart64_90.dll");
                 AddFile(ref files, inBaseRelPath + @"bin/cudnn64_7.dll");
+                AddFile(ref files, inBaseRelPath + @"bin/curand64_90.dll");
+                AddFile(ref files, inBaseRelPath + @"bin/cusparse64_90.dll");
                 AddFile(ref files, inBaseRelPath + @"bin/libiomp5md.dll");
                 AddFile(ref files, inBaseRelPath + @"bin/mklml.dll");
                 AddFile(ref files, inBaseRelPath + @"bin/mkldnn.dll");
