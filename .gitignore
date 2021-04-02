@@ -279,6 +279,8 @@ $RECYCLE.BIN/
 # EXE/DLL we need to run distributed experiments. They are versioned to make things easier
 !bin/x64/msvcp140.dll
 !bin/x64/vcruntime140.dll
+!bin/x64/vccorlib140.dll
+!bin/vcomp140.dll
 !bin/MAP_Win32.dll
 !bin/openfast_Win32.exe
 !bin/TurbSim.exe
