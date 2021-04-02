@@ -43,12 +43,12 @@ jobs:
   - task: DownloadSecureFile@1
     displayName: 'Download code signing certificate'
     inputs:
-      secureFile: '2020-code-signing-certificate.p12'
+      secureFile: '2021-code-signing-certificate.p12'
 
   - task: codesigning@2
     displayName: 'Sign executables'
     inputs:
-      secureFileId: '2020-code-signing-certificate.p12'
+      secureFileId: '2021-code-signing-certificate.p12'
       signCertPassword: '$(certificatePassword)'
       files: '**/*.exe'
       timeServer: 'http://timestamp.digicert.com'
