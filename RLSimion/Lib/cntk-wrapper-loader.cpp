@@ -157,6 +157,7 @@ namespace CNTK
 		SimionApp::get()->registerTargetPlatformInputFile("Win-64", "../bin/mklml.dll");
 		SimionApp::get()->registerTargetPlatformInputFile("Win-64", "../bin/mkldnn.dll");
 		SimionApp::get()->registerTargetPlatformInputFile("Win-64", "../bin/nvml.dll");
+		SimionApp::get()->registerTargetPlatformInputFile("Win-64", "../bin/vcomp140.dll");
 
 		SimionApp::get()->registerTargetPlatformInputFile("Linux-64", "../bin/CNTKWrapper-linux.so");
 

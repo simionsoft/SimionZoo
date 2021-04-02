@@ -5,6 +5,7 @@
     <Requirements>
       <Input-File Rename="../bin/msvcp140.dll">../bin/x64/msvcp140.dll</Input-File>
       <Input-File Rename="../bin/vcruntime140.dll">../bin/x64/vcruntime140.dll</Input-File>
+      <Input-File Rename="../bin/vccorlib140.dll">../bin/x64/vccorlib140.dll</Input-File>
       <Architecture>Win-64</Architecture>
     </Requirements>
   </Version>
