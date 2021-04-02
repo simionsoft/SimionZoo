@@ -220,7 +220,7 @@ double* SimionMemPool::tryToAllocateMem(BUFFER_SIZE blockSize)
 		pNewMemBlock= new double[blockSize];
 		return pNewMemBlock;
 	}
-	catch(std::exception ex)
+	catch(std::runtime_error ex)
 	{
 		return nullptr;
 	}

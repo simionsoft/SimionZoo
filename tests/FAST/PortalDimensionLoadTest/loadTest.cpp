@@ -24,7 +24,7 @@ namespace PortalDimensionLoadTest
 				avrSwap[0] = 0.0;//iStatus
 				DISCON(avrSwap, &aviFAIL, inConfigFILE, outName, outMsg);
 			}
-			catch(std::exception ex)
+			catch(std::runtime_error ex)
 			{
 				Assert::Fail(L"Failed trying to load the DLL");
 			}

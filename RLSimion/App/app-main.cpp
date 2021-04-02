@@ -92,7 +92,7 @@ int main(int argc, char* argv[])
 		}
 		else throw std::runtime_error("Wrong experiment configuration file");
 	}
-	catch (std::exception& e)
+	catch (std::runtime_error& e)
 	{
 		Logger::logMessage(MessageType::Error, e.what());
 	}
