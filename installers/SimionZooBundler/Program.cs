@@ -101,7 +101,7 @@ namespace SimionZooBundler
                 AddFile(ref files, inBaseRelPath + @"bin/x64/vcruntime140.dll");
                 AddFile(ref files, inBaseRelPath + @"bin/x64/msvcp140.dll");
                 AddFile(ref files, inBaseRelPath + @"bin/x64/vccorlib140.dll");
-                AddFile(ref files, inBaseRelPath + @"bin/x64/vcomp140.dll");
+                AddFile(ref files, inBaseRelPath + @"bin/vcomp140.dll");
                 //CNTK library and dependencies
                 //windows:
                 AddFile(ref files, inBaseRelPath + @"bin/CNTKWrapper.dll");
