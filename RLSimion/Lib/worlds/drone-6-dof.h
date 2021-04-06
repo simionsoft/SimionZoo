@@ -147,7 +147,7 @@ class Drone6DOF:public BulletBody
 	btRigidBody* localCreateRigidBody (btScalar mass, const btTransform& startTransform, btCollisionShape* shape);
 
 public:
-	static constexpr double altura=10.0;
+	static constexpr double height=10.0;
 	Drone6DOF (BulletPhysics* ownerWorld,
 				const btVector3& positionOffset);
 	

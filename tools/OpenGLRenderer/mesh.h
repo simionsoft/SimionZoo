@@ -9,15 +9,15 @@ class ColladaModel;
 class Geometry;
 namespace tinyxml2 { class XMLElement; }
 #include <string>
+#include <vector>
 using namespace std;
-
 
 class Mesh
 {
-	unsigned int m_primitiveType = GL_TRIANGLES; //fans and strips not yet supported
-										//indices to vertices
-	unsigned int* m_pIndices = 0;
-	unsigned int m_numIndices = 0;
+	unsigned int m_primitiveType = GL_TRIANGLES;
+
+	vector<unsigned int> m_pIndices;
+	vector<unsigned int> m_pVerticesPerPolygon;
 	unsigned int m_numIndicesPerVertex = 1;
 	//vertices
 	unsigned int m_posOffset = 0;
@@ -49,7 +49,7 @@ public:
 	void allocPositions(unsigned int numElements) { m_pPositions = new Point3D[numElements]; m_numPositions = numElements; }
 	void allocNormals(unsigned int numElements) { m_pNormals = new Vector3D[numElements]; m_numNormals = numElements;}
 	void allocTexCoords(unsigned int numElements) { m_pTexCoords = new Vector2D[numElements]; m_numTexCoords = numElements;}
-	void allocIndices(unsigned int numElements) { m_pIndices = new unsigned int[numElements]; m_numIndices = numElements; }
+
 	Point3D* getPosArray() { return m_pPositions; }
 	Vector3D* getNormalArray() { return m_pNormals; }
 	Vector2D* getTexCoordArray() { return m_pTexCoords; }
@@ -65,13 +65,16 @@ public:
 	void setNormalOffset(unsigned int offset) { m_normalOffset = offset; }
 	void setTexCoordOffset(unsigned int offset) { m_texCoordOffset = offset; }
 	void setNumIndicesPerVertex(unsigned int numIndices) { m_numIndicesPerVertex = numIndices; }
-	unsigned int* getIndexArray() { return m_pIndices; }
-	void setNumIndices(unsigned int actualNum) { if (actualNum < m_numIndices) m_numIndices = actualNum; }
-	int getNumIndices() const { return m_numIndices; }
+	
+	vector<unsigned int>& getIndexArray() { return m_pIndices; }
+	int getNumIndices() const { return m_pIndices.size(); }
+	vector<unsigned int>& getVertexCountArray() { return m_pVerticesPerPolygon; }
 
 	void flipYZAxis();
 	void flipVTexCoord();
 	void reorderIndices();
 
 	void setPrimitiveType(unsigned int type) { m_primitiveType = type; }
+
+	void allocIndices(unsigned int numIndices) { m_pIndices = vector<unsigned int>(numIndices); }
 };

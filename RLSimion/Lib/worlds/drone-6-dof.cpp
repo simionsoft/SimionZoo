@@ -397,7 +397,7 @@ void Drone6DOF::updateState(State * s)
 	s->set(m_yId, transform.getOrigin().y());
 	s->set(m_zId, transform.getOrigin().z());
 
-	s->set(m_error, altura- transform.getOrigin().y() );
+	s->set(m_error, height- transform.getOrigin().y() );
 	s->set("errorX", origenes[0]->x()- transform.getOrigin().x());
 	s->set("errorY", origenes[0]->z() - transform.getOrigin().z());
 

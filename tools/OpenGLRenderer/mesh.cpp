@@ -35,7 +35,6 @@ Mesh::Mesh()
 	m_pPositions = 0;
 	m_pNormals = 0;
 	m_pTexCoords = 0;
-	m_pIndices = 0;
 	m_pMaterial = 0;
 }
 
@@ -47,8 +46,6 @@ Mesh::~Mesh()
 		delete[] m_pNormals;
 	if (m_pTexCoords != nullptr)
 		delete[] m_pTexCoords;
-	if (m_pIndices != nullptr)
-		delete[] m_pIndices;
 	if (m_pMaterial != nullptr)
 		delete m_pMaterial;
 }
@@ -60,21 +57,23 @@ void Mesh::draw()
 		m_pMaterial->set();
 
 	glBegin(m_primitiveType);
-
-	for (unsigned int i = 0; i<m_numIndices; i+=m_numIndicesPerVertex)
+	for (unsigned int i = 0; i < getNumIndices(); i += m_numIndicesPerVertex)
 	{
-		if (m_pNormals)
+		if (i + m_posOffset < getNumIndices())
 		{
-			int normalIndex = m_pIndices[i + m_normalOffset];
-			glNormal3d(m_pNormals[normalIndex].x(), m_pNormals[normalIndex].y(), m_pNormals[normalIndex].z());
+			if (m_pNormals && i + m_normalOffset < getNumIndices())
+			{
+				int normalIndex = m_pIndices[i + m_normalOffset];
+				glNormal3d(m_pNormals[normalIndex].x(), m_pNormals[normalIndex].y(), m_pNormals[normalIndex].z());
+			}
+			if (m_pTexCoords && i + m_texCoordOffset < getNumIndices())
+			{
+				int texCoordIndex = m_pIndices[i + m_texCoordOffset];
+				glTexCoord2d(m_pTexCoords[texCoordIndex].s(), m_pTexCoords[texCoordIndex].t());
+			}
+			int posIndex = m_pIndices[i + m_posOffset];
+			glVertex3d(m_pPositions[posIndex].x(), m_pPositions[posIndex].y(), m_pPositions[posIndex].z());
 		}
-		if (m_pTexCoords)
-		{
-			int texCoordIndex = m_pIndices[i + m_texCoordOffset];
-			glTexCoord2d(m_pTexCoords[texCoordIndex].s(), m_pTexCoords[texCoordIndex].t());
-		}
-		int posIndex = m_pIndices[i + m_posOffset];
-		glVertex3d(m_pPositions[posIndex].x(), m_pPositions[posIndex].y(), m_pPositions[posIndex].z());
 	}
 	glEnd();
 }
@@ -123,7 +122,7 @@ void Mesh::flipVTexCoord()
 void Mesh::reorderIndices()
 {
 	int tmp;
-	for (unsigned int i = 0; i < m_numIndices/(3*m_numIndicesPerVertex); i+=3*m_numIndicesPerVertex)
+	for (unsigned int i = 0; i < getNumIndices() /(3*m_numIndicesPerVertex); i+=3*m_numIndicesPerVertex)
 	{
 		tmp = m_pIndices[i*m_numIndicesPerVertex + m_posOffset];
 		m_pIndices[i*m_numIndicesPerVertex + m_posOffset] = m_pIndices[(i+2)*m_numIndicesPerVertex + m_posOffset];

@@ -59,7 +59,7 @@
         </Translation>
       </Transform>
     </Box>
-    <Collada-Model Name="Drone" Path="R2D2/R2D2.dae">
+    <Collada-Model Name="Drone" Path="drone/drone-v2.dae">
       <Transform>
         <Translation>
           <X Bind="base-x"/>
@@ -82,6 +82,110 @@
           <X>0.5</X>
           <Y>0.5</Y>
           <Z>0.5</Z>
+        </Max>
+      </Fit-BoundingBox>
+    </Collada-Model>
+    <Collada-Model Name="Drone" Path="drone/drone-v2.dae">
+      <Transform>
+        <Translation>
+          <X Bind="drone1-x"/>
+          <Y Bind="drone1-y"/>
+          <Z Bind="drone1-z"/>
+        </Translation>
+        <Rotation>
+          <Yaw Bind="drone1-rot-x"/>
+          <Pitch Bind="drone1-rot-y"/>
+          <Roll Bind="drone1-rot-z"/>
+        </Rotation>
+      </Transform>
+      <Fit-BoundingBox>
+        <Min>
+          <X>-0.25</X>
+          <Y>-0.25</Y>
+          <Z>-0.01</Z>
+        </Min>
+        <Max>
+          <X>0.25</X>
+          <Y>0.25</Y>
+          <Z>0.01</Z>
+        </Max>
+      </Fit-BoundingBox>
+    </Collada-Model>
+    <Collada-Model Name="Drone" Path="drone/drone-v2.dae">
+      <Transform>
+        <Translation>
+          <X Bind="drone2-x"/>
+          <Y Bind="drone2-y"/>
+          <Z Bind="drone2-z"/>
+        </Translation>
+        <Rotation>
+          <Yaw Bind="drone2-rot-x"/>
+          <Pitch Bind="drone2-rot-y"/>
+          <Roll Bind="drone2-rot-z"/>
+        </Rotation>
+      </Transform>
+      <Fit-BoundingBox>
+        <Min>
+          <X>-0.25</X>
+          <Y>-0.25</Y>
+          <Z>-0.01</Z>
+        </Min>
+        <Max>
+          <X>0.25</X>
+          <Y>0.25</Y>
+          <Z>0.01</Z>
+        </Max>
+      </Fit-BoundingBox>
+    </Collada-Model>
+    <Collada-Model Name="Drone" Path="drone/drone-v2.dae">
+      <Transform>
+        <Translation>
+          <X Bind="drone3-x"/>
+          <Y Bind="drone3-y"/>
+          <Z Bind="drone3-z"/>
+        </Translation>
+        <Rotation>
+          <Yaw Bind="drone3-rot-x"/>
+          <Pitch Bind="drone3-rot-y"/>
+          <Roll Bind="drone3-rot-z"/>
+        </Rotation>
+      </Transform>
+      <Fit-BoundingBox>
+        <Min>
+          <X>-0.25</X>
+          <Y>-0.25</Y>
+          <Z>-0.01</Z>
+        </Min>
+        <Max>
+          <X>0.25</X>
+          <Y>0.25</Y>
+          <Z>0.01</Z>
+        </Max>
+      </Fit-BoundingBox>
+    </Collada-Model>
+    <Collada-Model Name="Drone" Path="drone/drone-v2.dae">
+      <Transform>
+        <Translation>
+          <X Bind="drone4-x"/>
+          <Y Bind="drone4-y"/>
+          <Z Bind="drone4-z"/>
+        </Translation>
+        <Rotation>
+          <Yaw Bind="drone4-rot-x"/>
+          <Pitch Bind="drone4-rot-y"/>
+          <Roll Bind="drone4-rot-z"/>
+        </Rotation>
+      </Transform>
+      <Fit-BoundingBox>
+        <Min>
+          <X>-0.25</X>
+          <Y>-0.25</Y>
+          <Z>-0.01</Z>
+        </Min>
+        <Max>
+          <X>0.25</X>
+          <Y>0.25</Y>
+          <Z>0.01</Z>
         </Max>
       </Fit-BoundingBox>
     </Collada-Model>
