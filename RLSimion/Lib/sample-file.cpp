@@ -63,7 +63,7 @@ SampleFile::SampleFile(string filename)
 		m_sampleSizeInBytes = sizeof(double) * m_numElementsPerSample; //<s, a, s_p, r>
 
 		//We are using an arbitrary data chunk size (10^5). With 100 variables per tuple, we would need 100*8*10^5= 80Mb of memory, which seems reasonable
-		m_dataChunkSizeInSamples= 10000;
+		m_dataChunkSizeInSamples= 2000;
 		m_dataChunkSizeInElements= m_dataChunkSizeInSamples * m_numElementsPerSample;
 		m_numChunksInFile = (m_numSamplesInFile / m_dataChunkSizeInSamples);
 		if (m_numSamplesInFile % m_dataChunkSizeInSamples != 0) m_numChunksInFile++;
