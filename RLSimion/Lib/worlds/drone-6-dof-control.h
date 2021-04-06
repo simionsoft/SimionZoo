@@ -3,9 +3,11 @@
 #include "world.h"
 #include "../../../3rd-party/bullet3-2.86/src/btBulletDynamicsCommon.h"
 
+
 class Robot;
 class BulletBody;
 class BulletPhysics;
+class SetPoint;
 
 //Move box with 2 robots
 class Drone6DOFControl : public DynamicModel
@@ -16,12 +18,12 @@ class Drone6DOFControl : public DynamicModel
 	double MASS_GROUND;
 
 	/// State variables
-	size_t m_error,m_error_x,m_error_y;
+	size_t m_error, m_error_x, m_error_y;
 
 	size_t m_d_error;
 
 	size_t m_target_X, m_target_Y, m_target_Z;
-	size_t m_base_X, m_base_Y,m_base_Z;
+	size_t m_base_X, m_base_Y, m_base_Z;
 	size_t m_rotacion_base_X, m_rotacion_base_Y, m_rotacion_base_Z;
 	size_t m_angular_base_X, m_angular_base_Y, m_angular_base_Z;
 	size_t m_linear_base_X, m_linear_base_Y, m_linear_base_Z;
@@ -48,32 +50,33 @@ class Drone6DOFControl : public DynamicModel
 
 
 	// Action variables
-	size_t m_fuerza_1_1;
-	size_t m_fuerza_1_2;
-	size_t m_fuerza_1_3;
-	size_t m_fuerza_1_4;
-	size_t m_fuerza_2_1;
-	size_t m_fuerza_2_2;
-	size_t m_fuerza_2_3;
-	size_t m_fuerza_2_4;
-	size_t m_fuerza_3_1;
-	size_t m_fuerza_3_2;
-	size_t m_fuerza_3_3;
-	size_t m_fuerza_3_4;
-	size_t m_fuerza_4_1;
-	size_t m_fuerza_4_2;
-	size_t m_fuerza_4_3;
-	size_t m_fuerza_4_4;
+	size_t m_force_1_1;
+	size_t m_force_1_2;
+	size_t m_force_1_3;
+	size_t m_force_1_4;
+	size_t m_force_2_1;
+	size_t m_force_2_2;
+	size_t m_force_2_3;
+	size_t m_force_2_4;
+	size_t m_force_3_1;
+	size_t m_force_3_2;
+	size_t m_force_3_3;
+	size_t m_force_3_4;
+	size_t m_force_4_1;
+	size_t m_force_4_2;
+	size_t m_force_4_3;
+	size_t m_force_4_4;
 
 
 	///inicializaci�n
 	BulletPhysics* m_pBulletPhysics;
+	SetPoint* m_pSetpoint;
 
 public:
 	Drone6DOFControl(ConfigNode* pParameters);
 	virtual ~Drone6DOFControl();
-	void reset(State *s);
-	void executeAction(State *s, const Action *a, double dt);
+	void reset(State* s);
+	void executeAction(State* s, const Action* a, double dt);
 
 };
 

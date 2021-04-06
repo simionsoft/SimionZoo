@@ -81,7 +81,7 @@ class Drone6DOF:public BulletBody
 	const char* m_f4_4Id;
 
 	const char* m_error;
-	const char* m_fuerza = NULL;
+	const char* m_force = NULL;
 
 	const char* m_x1Id;
 	const char* m_y1Id;
@@ -140,7 +140,7 @@ class Drone6DOF:public BulletBody
 	btCollisionShape* m_shapes[BODYPART_COUNT];
 	btRigidBody* m_bodies[MASS_COUNT];
 	btGeneric6DofSpringConstraint* m_joints[JOINT_COUNT];
-	double* fuerzas[FORCE_COUNT];
+	double* forces[FORCE_COUNT];
 	btScalar* masas[MASS_COUNT];
 	btVector3* origenes[MASS_COUNT];
 	

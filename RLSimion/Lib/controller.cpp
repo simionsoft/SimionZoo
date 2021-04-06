@@ -203,37 +203,37 @@ const char* PIDDroneController::getOutputAction(size_t output)
 {
 	switch (output) {
 	case 0:
-		return "fuerza1-1";
+		return "force1-1";
 	case 1:
-		return "fuerza1-2";
+		return "force1-2";
 	case 2:
-		return "fuerza1-3";
+		return "force1-3";
 	case 3:
-		return "fuerza1-4";
+		return "force1-4";
 	case 4:
-		return "fuerza2-1";
+		return "force2-1";
 	case 5:
-		return "fuerza2-2";
+		return "force2-2";
 	case 6:
-		return "fuerza2-3";
+		return "force2-3";
 	case 7:
-		return "fuerza2-4";
+		return "force2-4";
 	case 8:
-		return "fuerza3-1";
+		return "force3-1";
 	case 9:
-		return "fuerza3-2";
+		return "force3-2";
 	case 10:
-		return "fuerza3-3";
+		return "force3-3";
 	case 11:
-		return "fuerza3-4";
+		return "force3-4";
 	case 12:
-		return "fuerza4-1";
+		return "force4-1";
 	case 13:
-		return "fuerza4-2";
+		return "force4-2";
 	case 14:
-		return "fuerza4-3";
+		return "force4-3";
 	case 15:
-		return "fuerza4-4";
+		return "force4-4";
 
 	}
 

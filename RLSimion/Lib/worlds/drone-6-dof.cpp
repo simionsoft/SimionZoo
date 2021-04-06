@@ -51,7 +51,7 @@ Drone6DOF::Drone6DOF (BulletPhysics* physics, const btVector3& positionOffset) :
 	origenes[MASS_RIGHT_LOW] = new btVector3(positionOffset + btVector3(2.8, 0.61, -2.8));
 
 	for (int i = 0; i < FORCE_COUNT; i++)
-		fuerzas[i] = new double(0.0);
+		forces[i] = new double(0.0);
 	
 
 	btCompoundShape* base = new btCompoundShape();
@@ -180,7 +180,7 @@ Drone6DOF::~Drone6DOF()
 	}
 	for (i = 0; i < FORCE_COUNT; ++i)
 	{
-		delete fuerzas[i]; fuerzas[i] = 0;
+		delete forces[i]; forces[i] = 0;
 	}
 	
 }
@@ -259,77 +259,77 @@ void Drone6DOF::setErrorStateVarId(const char * id)
 
 void Drone6DOF::setPIDActionId(const char * id)
 {
-	m_fuerza = id;
+	m_force = id;
 }
 
 void Drone6DOF::updateBulletState(State * s, const Action * a, double dt)
 {
-	if (m_fuerza!=NULL)
+	if (m_force!=NULL)
 	{
-		*fuerzas[F1_1] = a->get(m_fuerza);
-		*fuerzas[F1_2] = a->get(m_fuerza);
-		*fuerzas[F1_3] = a->get(m_fuerza);
-		*fuerzas[F1_4] = a->get(m_fuerza);
+		*forces[F1_1] = a->get(m_force);
+		*forces[F1_2] = a->get(m_force);
+		*forces[F1_3] = a->get(m_force);
+		*forces[F1_4] = a->get(m_force);
 
-		*fuerzas[F2_1] = a->get(m_fuerza);
-		*fuerzas[F2_2] = a->get(m_fuerza);
-		*fuerzas[F2_3] = a->get(m_fuerza);
-		*fuerzas[F2_4] = a->get(m_fuerza);
+		*forces[F2_1] = a->get(m_force);
+		*forces[F2_2] = a->get(m_force);
+		*forces[F2_3] = a->get(m_force);
+		*forces[F2_4] = a->get(m_force);
 
-		*fuerzas[F3_1] = a->get(m_fuerza);
-		*fuerzas[F3_2] = a->get(m_fuerza);
-		*fuerzas[F3_3] = a->get(m_fuerza);
-		*fuerzas[F3_4] = a->get(m_fuerza);
+		*forces[F3_1] = a->get(m_force);
+		*forces[F3_2] = a->get(m_force);
+		*forces[F3_3] = a->get(m_force);
+		*forces[F3_4] = a->get(m_force);
 
-		*fuerzas[F4_1] = a->get(m_fuerza);
-		*fuerzas[F4_2] = a->get(m_fuerza);
-		*fuerzas[F4_3] = a->get(m_fuerza);
-		*fuerzas[F4_4] = a->get(m_fuerza);
+		*forces[F4_1] = a->get(m_force);
+		*forces[F4_2] = a->get(m_force);
+		*forces[F4_3] = a->get(m_force);
+		*forces[F4_4] = a->get(m_force);
 	}
 	else {
 
 
-		*fuerzas[F1_1] = a->get(m_f1_1Id);
-		*fuerzas[F1_2] = a->get(m_f1_1Id);
-		*fuerzas[F1_3] = a->get(m_f1_1Id);
-		*fuerzas[F1_4] = a->get(m_f1_1Id);
+		*forces[F1_1] = a->get(m_f1_1Id);
+		*forces[F1_2] = a->get(m_f1_1Id);
+		*forces[F1_3] = a->get(m_f1_1Id);
+		*forces[F1_4] = a->get(m_f1_1Id);
 
-		*fuerzas[F2_1] = a->get(m_f1_1Id);
-		*fuerzas[F2_2] = a->get(m_f1_1Id);
-		*fuerzas[F2_3] = a->get(m_f1_1Id);
-		*fuerzas[F2_4] = a->get(m_f1_1Id);
+		*forces[F2_1] = a->get(m_f1_1Id);
+		*forces[F2_2] = a->get(m_f1_1Id);
+		*forces[F2_3] = a->get(m_f1_1Id);
+		*forces[F2_4] = a->get(m_f1_1Id);
 
-		*fuerzas[F3_1] = a->get(m_f1_1Id);
-		*fuerzas[F3_2] = a->get(m_f1_1Id);
-		*fuerzas[F3_3] = a->get(m_f1_1Id);
-		*fuerzas[F3_4] = a->get(m_f1_1Id);
+		*forces[F3_1] = a->get(m_f1_1Id);
+		*forces[F3_2] = a->get(m_f1_1Id);
+		*forces[F3_3] = a->get(m_f1_1Id);
+		*forces[F3_4] = a->get(m_f1_1Id);
 
-		*fuerzas[F4_1] = a->get(m_f1_1Id);
-		*fuerzas[F4_2] = a->get(m_f1_1Id);
-		*fuerzas[F4_3] = a->get(m_f1_1Id);
-		*fuerzas[F4_4] = a->get(m_f1_1Id);
+		*forces[F4_1] = a->get(m_f1_1Id);
+		*forces[F4_2] = a->get(m_f1_1Id);
+		*forces[F4_3] = a->get(m_f1_1Id);
+		*forces[F4_4] = a->get(m_f1_1Id);
 
 		/*
 
-		*fuerzas[F1_1] = a->get(m_f1_1Id);
-		*fuerzas[F1_2] = a->get(m_f1_2Id);
-		*fuerzas[F1_3] = a->get(m_f1_3Id);
-		*fuerzas[F1_4] = a->get(m_f1_4Id);
+		*forces[F1_1] = a->get(m_f1_1Id);
+		*forces[F1_2] = a->get(m_f1_2Id);
+		*forces[F1_3] = a->get(m_f1_3Id);
+		*forces[F1_4] = a->get(m_f1_4Id);
 
-		*fuerzas[F2_1] = a->get(m_f2_1Id);
-		*fuerzas[F2_2] = a->get(m_f2_2Id);
-		*fuerzas[F2_3] = a->get(m_f2_3Id);
-		*fuerzas[F2_4] = a->get(m_f2_4Id);
+		*forces[F2_1] = a->get(m_f2_1Id);
+		*forces[F2_2] = a->get(m_f2_2Id);
+		*forces[F2_3] = a->get(m_f2_3Id);
+		*forces[F2_4] = a->get(m_f2_4Id);
 
-		*fuerzas[F3_1] = a->get(m_f3_1Id);
-		*fuerzas[F3_2] = a->get(m_f3_2Id);
-		*fuerzas[F3_3] = a->get(m_f3_3Id);
-		*fuerzas[F3_4] = a->get(m_f3_4Id);
+		*forces[F3_1] = a->get(m_f3_1Id);
+		*forces[F3_2] = a->get(m_f3_2Id);
+		*forces[F3_3] = a->get(m_f3_3Id);
+		*forces[F3_4] = a->get(m_f3_4Id);
 
-		*fuerzas[F4_1] = a->get(m_f4_1Id);
-		*fuerzas[F4_2] = a->get(m_f4_2Id);
-		*fuerzas[F4_3] = a->get(m_f4_3Id);
-		*fuerzas[F4_4] = a->get(m_f4_4Id);
+		*forces[F4_1] = a->get(m_f4_1Id);
+		*forces[F4_2] = a->get(m_f4_2Id);
+		*forces[F4_3] = a->get(m_f4_3Id);
+		*forces[F4_4] = a->get(m_f4_4Id);
 		*/
 	}
 	
@@ -341,19 +341,19 @@ void Drone6DOF::updateBulletState(State * s, const Action * a, double dt)
 		
 		//m_bodies[i]->activate(true);
 
-		m_bodies[i]->applyForce(boxRot *(relativeForce**fuerzas[j]), btVector3(0.3, 0.0, 0.3));
+		m_bodies[i]->applyForce(boxRot *(relativeForce**forces[j]), btVector3(0.3, 0.0, 0.3));
 		 
 		j++;
 
-		m_bodies[i]->applyForce(boxRot *(relativeForce**fuerzas[j]), btVector3(0.3, 0.0, -0.3));
+		m_bodies[i]->applyForce(boxRot *(relativeForce**forces[j]), btVector3(0.3, 0.0, -0.3));
 
 		j++;
 
-		m_bodies[i]->applyForce(boxRot *(relativeForce**fuerzas[j]), btVector3(-0.3, 0.0, 0.3));
+		m_bodies[i]->applyForce(boxRot *(relativeForce**forces[j]), btVector3(-0.3, 0.0, 0.3));
 
 		j++;
 
-		m_bodies[i]->applyForce(boxRot *(relativeForce**fuerzas[j]), btVector3(-0.3, 0.0, -0.3));
+		m_bodies[i]->applyForce(boxRot *(relativeForce**forces[j]), btVector3(-0.3, 0.0, -0.3));
 
 		j++;
 
