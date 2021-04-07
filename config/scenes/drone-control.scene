@@ -59,8 +59,20 @@
         </Translation>
       </Transform>
     </Box>
-    <Collada-Model Name="Drone" Path="drone/drone-v2.dae">
+    <Box Name="Drone">
+      <Material>
+        <Color-Material>
+          <R>1.0</R>
+          <G>1.0</G>
+          <B>1.0</B>
+        </Color-Material>
+      </Material>
       <Transform>
+        <Scale>
+          <X>6</X>
+          <Y>0.1</Y>
+          <Z>6</Z>
+        </Scale>
         <Translation>
           <X Bind="base-x"/>
           <Y Bind="base-y"/>
@@ -72,20 +84,8 @@
           <Roll Bind="base-rot-z"/>
         </Rotation>
       </Transform>
-      <Fit-BoundingBox>
-        <Min>
-          <X>-0.5</X>
-          <Y>-0.5</Y>
-          <Z>-0.5</Z>
-        </Min>
-        <Max>
-          <X>0.5</X>
-          <Y>0.5</Y>
-          <Z>0.5</Z>
-        </Max>
-      </Fit-BoundingBox>
-    </Collada-Model>
-    <Collada-Model Name="Drone" Path="drone/drone-v2.dae">
+    </Box>
+    <Collada-Model Name="Drone1" Path="drone/drone-v2.dae">
       <Transform>
         <Translation>
           <X Bind="drone1-x"/>
@@ -100,18 +100,18 @@
       </Transform>
       <Fit-BoundingBox>
         <Min>
-          <X>-0.25</X>
-          <Y>-0.25</Y>
-          <Z>-0.01</Z>
+          <X>-3</X>
+          <Y>-1</Y>
+          <Z>-3</Z>
         </Min>
         <Max>
-          <X>0.25</X>
-          <Y>0.25</Y>
-          <Z>0.01</Z>
+          <X>3</X>
+          <Y>1</Y>
+          <Z>3</Z>
         </Max>
       </Fit-BoundingBox>
     </Collada-Model>
-    <Collada-Model Name="Drone" Path="drone/drone-v2.dae">
+    <Collada-Model Name="Drone2" Path="drone/drone-v2.dae">
       <Transform>
         <Translation>
           <X Bind="drone2-x"/>
@@ -126,18 +126,18 @@
       </Transform>
       <Fit-BoundingBox>
         <Min>
-          <X>-0.25</X>
-          <Y>-0.25</Y>
-          <Z>-0.01</Z>
+          <X>-3</X>
+          <Y>-1</Y>
+          <Z>-3</Z>
         </Min>
         <Max>
-          <X>0.25</X>
-          <Y>0.25</Y>
-          <Z>0.01</Z>
+          <X>3</X>
+          <Y>1</Y>
+          <Z>3</Z>
         </Max>
       </Fit-BoundingBox>
     </Collada-Model>
-    <Collada-Model Name="Drone" Path="drone/drone-v2.dae">
+    <Collada-Model Name="Drone3" Path="drone/drone-v2.dae">
       <Transform>
         <Translation>
           <X Bind="drone3-x"/>
@@ -152,18 +152,18 @@
       </Transform>
       <Fit-BoundingBox>
         <Min>
-          <X>-0.25</X>
-          <Y>-0.25</Y>
-          <Z>-0.01</Z>
+          <X>-3</X>
+          <Y>-1</Y>
+          <Z>-3</Z>
         </Min>
         <Max>
-          <X>0.25</X>
-          <Y>0.25</Y>
-          <Z>0.01</Z>
+          <X>3</X>
+          <Y>1</Y>
+          <Z>3</Z>
         </Max>
       </Fit-BoundingBox>
     </Collada-Model>
-    <Collada-Model Name="Drone" Path="drone/drone-v2.dae">
+    <Collada-Model Name="Drone4" Path="drone/drone-v2.dae">
       <Transform>
         <Translation>
           <X Bind="drone4-x"/>
@@ -178,14 +178,14 @@
       </Transform>
       <Fit-BoundingBox>
         <Min>
-          <X>-0.25</X>
-          <Y>-0.25</Y>
-          <Z>-0.01</Z>
+          <X>-3</X>
+          <Y>-1</Y>
+          <Z>-3</Z>
         </Min>
         <Max>
-          <X>0.25</X>
-          <Y>0.25</Y>
-          <Z>0.01</Z>
+          <X>3</X>
+          <Y>1</Y>
+          <Z>3</Z>
         </Max>
       </Fit-BoundingBox>
     </Collada-Model>

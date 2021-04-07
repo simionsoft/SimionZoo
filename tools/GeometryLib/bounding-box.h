@@ -27,6 +27,7 @@ public:
 	Point3D getMinMax(unsigned int index) const;
 
 	bool bSet() const { return m_bSet; }
+	void set(bool set) { m_bSet = set; }
 };
 
 class BoundingBox2D
@@ -50,5 +51,6 @@ public:
 	Point2D center() const;
 
 	bool bSet() const { return m_bSet; }
+	void set(bool set) { m_bSet = set; }
 };
 

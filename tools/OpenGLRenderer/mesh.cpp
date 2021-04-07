@@ -129,3 +129,18 @@ void Mesh::reorderIndices()
 		m_pIndices[(i + 2)*m_numIndicesPerVertex + m_posOffset] = tmp;
 	}
 }
+
+void Mesh::ignoreTexCoordsAndNormals()
+{
+	if (m_pTexCoords)
+	{
+		delete[] m_pTexCoords;
+		m_pTexCoords = nullptr;
+	}
+	if (m_pNormals)
+	{
+		delete[] m_pNormals;
+		m_pNormals = nullptr;
+	}
+	m_numIndicesPerVertex = 1;
+}

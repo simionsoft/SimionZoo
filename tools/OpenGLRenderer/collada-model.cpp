@@ -35,7 +35,7 @@
 #include <stdexcept>
 #include "../System/FileUtils.h"
 
-void addValues(vector<unsigned int> source, unsigned int sourceOffset, unsigned int numValues, vector<unsigned int> dest)
+void addValues(vector<unsigned int> source, unsigned int sourceOffset, unsigned int numValues, vector<unsigned int>& dest)
 {
 	for (int i = 0; i < numValues; i++)
 		dest.push_back(source[sourceOffset + i]);
@@ -262,8 +262,6 @@ Mesh* ColladaModel::loadMesh(tinyxml2::XMLElement* pRoot, tinyxml2::XMLElement* 
 
 	m_numIndicesPerPrimitive = std::max(1, m_numIndicesPerPrimitive);
 	int numIndices = atoi(pNode->Attribute(XML_TAG_COLLADA_COUNT_ATTR));
-	if (pNode->Attribute(XML_TAG_COLLADA_COUNT_ATTR) != nullptr)
-		numIndices = 3 * m_numIndicesPerPrimitive * atoi(pNode->Attribute(XML_TAG_COLLADA_COUNT_ATTR));
 
 	//check if there is a <vcount> element with the number of vertices per polygon
 	tinyxml2::XMLElement* pVertexCounts = pNode->FirstChildElement(XML_TAG_COLLADA_VERTEX_COUNT);
@@ -272,9 +270,6 @@ Mesh* ColladaModel::loadMesh(tinyxml2::XMLElement* pRoot, tinyxml2::XMLElement* 
 	{
 		char* pCharArray = (char*)pVertexCounts->GetText();
 		parseIntArray(pCharArray, pMesh->getVertexCountArray());
-		numIndices = 0;
-		for (int i = 0; i < pMesh->getVertexCountArray().size(); i++)
-			numIndices += pMesh->getVertexCountArray()[i];
 	}
 
 
@@ -298,28 +293,30 @@ Mesh* ColladaModel::loadMesh(tinyxml2::XMLElement* pRoot, tinyxml2::XMLElement* 
 
 		if (pMesh->getVertexCountArray().size() > 0)
 		{
-			int primitiveOffset = 0;
+			//pMesh->ignoreTexCoordsAndNormals(); //so far, all models with <vcount> have only an index per vertex even if they should have more
+			
+			int primitiveIndicesOffset = 0;
 			for (int i = 0; i < pMesh->getVertexCountArray().size(); i++)
 			{
 				if (pMesh->getVertexCountArray()[i] == 3)
 				{
 					//triangle
-					pMesh->getIndexArray().push_back(parsedIndices[primitiveOffset]);
-					pMesh->getIndexArray().push_back(parsedIndices[primitiveOffset + 1]);
-					pMesh->getIndexArray().push_back(parsedIndices[primitiveOffset + 2]);
+					addValues(parsedIndices, primitiveIndicesOffset, 1, pMesh->getIndexArray());
+					addValues(parsedIndices, primitiveIndicesOffset + 1, 1, pMesh->getIndexArray());
+					addValues(parsedIndices, primitiveIndicesOffset + 2, 1, pMesh->getIndexArray());
 				}
 				else if (pMesh->getVertexCountArray()[i] == 4)
 				{
 					//quad
-					pMesh->getIndexArray().push_back(parsedIndices[primitiveOffset]);
-					pMesh->getIndexArray().push_back(parsedIndices[primitiveOffset + 1]);
-					pMesh->getIndexArray().push_back(parsedIndices[primitiveOffset + 2]);
+					addValues(parsedIndices, primitiveIndicesOffset, 1, pMesh->getIndexArray());
+					addValues(parsedIndices, primitiveIndicesOffset + 1, 1, pMesh->getIndexArray());
+					addValues(parsedIndices, primitiveIndicesOffset + 2, 1, pMesh->getIndexArray());
 
-					pMesh->getIndexArray().push_back(parsedIndices[primitiveOffset]);
-					pMesh->getIndexArray().push_back(parsedIndices[primitiveOffset + 2]);
-					pMesh->getIndexArray().push_back(parsedIndices[primitiveOffset + 3]);
+					addValues(parsedIndices, primitiveIndicesOffset, 1, pMesh->getIndexArray());
+					addValues(parsedIndices, primitiveIndicesOffset + 2, 1, pMesh->getIndexArray());
+					addValues(parsedIndices, primitiveIndicesOffset + 3, 1, pMesh->getIndexArray());
 				}
-				primitiveOffset += pMesh->getVertexCountArray()[i];
+				primitiveIndicesOffset += pMesh->getVertexCountArray()[i];
 			}
 		}
 		else
@@ -546,6 +543,7 @@ ColladaModel::ColladaModel(tinyxml2::XMLElement* pNode): GraphicObject3D(pNode)
 	if (pChild)
 	{
 		XML::load(pChild, fitBB);
+		fitBB.set(true); //mark bounding box as set
 		fitToBoundingBox(&fitBB);
 	}
 	BoundingCylinder fitBC;

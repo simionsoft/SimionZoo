@@ -77,4 +77,6 @@ public:
 	void setPrimitiveType(unsigned int type) { m_primitiveType = type; }
 
 	void allocIndices(unsigned int numIndices) { m_pIndices = vector<unsigned int>(numIndices); }
+
+	void ignoreTexCoordsAndNormals();
 };
