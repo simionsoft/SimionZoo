@@ -10,26 +10,12 @@ class Drone6DOF:public BulletBody
 	
 	enum
 	{
-		BODYPART_BASE = 0,
-		UNION_LEFT_UPP,
-		UNION_LEFT_LOW,
-		UNION_RIGHT_UPP,
-		UNION_RIGHT_LOW,
-		BODYPART_COMP,
-		BODYPART_LEFT_UPP,
-		BODYPART_LEFT_LOW,
-		BODYPART_RIGHT_UPP,
-		BODYPART_RIGHT_LOW,
-		BODYPART_COUNT
-	};
-	enum
-	{
-		MASS_COMP = 0,
-		MASS_LEFT_UPP,
-		MASS_LEFT_LOW,
-		MASS_RIGHT_UPP,
-		MASS_RIGHT_LOW,
-		MASS_COUNT
+		BASE = 0,
+		DRONE_1,
+		DRONE_2,
+		DRONE_3,
+		DRONE_4,
+		DRONE_ELEMENT_COUNT
 	};
 
 	enum
@@ -56,10 +42,10 @@ class Drone6DOF:public BulletBody
 
 	enum
 	{
-		JOINT_LEFT_UP=0,
-		JOINT_LEFT_DOWN,
-		JOINT_RIGHT_UP,
-		JOINT_RIGHT_DOWN,
+		JOINT_DRONE_1 = 0,
+		JOINT_DRONE_2,
+		JOINT_DRONE_3,
+		JOINT_DRONE_4,
 		JOINT_COUNT
 	};
 	
@@ -81,7 +67,6 @@ class Drone6DOF:public BulletBody
 	const char* m_f4_4Id;
 
 	const char* m_error;
-	const char* m_force = NULL;
 
 	const char* m_x1Id;
 	const char* m_y1Id;
@@ -135,16 +120,26 @@ class Drone6DOF:public BulletBody
 	const char* m_angularVY4Id;
 	const char* m_angularVZ4Id;
 
+	static const int m_numDrones = 4;
 
-	BulletPhysics* fisicas;
-	btCollisionShape* m_shapes[BODYPART_COUNT];
-	btRigidBody* m_bodies[MASS_COUNT];
-	btGeneric6DofSpringConstraint* m_joints[JOINT_COUNT];
-	double* forces[FORCE_COUNT];
-	btScalar* masas[MASS_COUNT];
-	btVector3* origenes[MASS_COUNT];
+	BulletPhysics* m_physics;
+	btCollisionShape* m_shapes[DRONE_ELEMENT_COUNT];
+	btRigidBody* m_bodies[DRONE_ELEMENT_COUNT];
+	btGeneric6DofSpringConstraint* m_joints[m_numDrones];
+	double m_forces[FORCE_COUNT];
+	btScalar m_masses[DRONE_ELEMENT_COUNT];
+	btVector3 m_origins[DRONE_ELEMENT_COUNT];
 	
 	btRigidBody* localCreateRigidBody (btScalar mass, const btTransform& startTransform, btCollisionShape* shape);
+
+	const double m_droneRelPosY = 3.0;
+	const double m_baseHalfWidth = 3.0;
+	const double m_baseHalfHeight = 0.1;
+	const double m_jointPositionOffset = m_baseHalfWidth - 0.2;
+	const double m_droneHeight = 0.02;
+	const double m_droneWidth = 0.5;
+	const double m_baseMass = 10.0;
+	const double m_droneMass = 1.0;
 
 public:
 	static constexpr double height=10.0;

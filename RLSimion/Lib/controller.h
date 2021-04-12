@@ -80,7 +80,9 @@ class PIDDroneController : public Controller
 	CHILD_OBJECT_FACTORY<NumericValue> m_pKD_F;
 
 	double m_intError;
-
+	double droneRotorForceOffset(unsigned int output);
+	unsigned int droneIndex(unsigned int output);
+	unsigned int droneRotorIndex(unsigned output);
 public:
 	PIDDroneController(ConfigNode* pConfigNode);
 	virtual ~PIDDroneController();

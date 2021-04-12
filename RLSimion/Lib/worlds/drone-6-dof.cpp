@@ -24,133 +24,111 @@ Written by: Marten Svanfeldt
 
 Drone6DOF::Drone6DOF (BulletPhysics* physics, const btVector3& positionOffset) :BulletBody(positionOffset)
 {
-	fisicas = physics;
+	m_physics = physics;
 		
 	// Setup the geometry
-	m_shapes[BODYPART_BASE] = new btBoxShape(btVector3(btScalar(3.0),btScalar( 0.1),btScalar(3.0)));
-	m_shapes[BODYPART_LEFT_UPP] = new btBoxShape(btVector3(btScalar(0.5 ), btScalar(0.02 ), btScalar( 0.5)));
-	m_shapes[BODYPART_RIGHT_UPP] = new btBoxShape(btVector3(btScalar(0.5 ), btScalar(0.02 ), btScalar( 0.5)));
-	m_shapes[BODYPART_LEFT_LOW] = new btBoxShape(btVector3(btScalar(0.5 ), btScalar(0.02 ), btScalar( 0.5)));
-	m_shapes[BODYPART_RIGHT_LOW] = new btBoxShape(btVector3(btScalar(0.5 ), btScalar(0.02 ), btScalar( 0.5)));
-	m_shapes[UNION_LEFT_UPP] = new btConeShape(0.1, 0.5);
-	m_shapes[UNION_LEFT_LOW] = new btConeShape(0.1, 0.5);
-	m_shapes[UNION_RIGHT_UPP] = new btConeShape(0.1, 0.5);
-	m_shapes[UNION_RIGHT_LOW] = new btConeShape(0.1, 0.5);
 
-	
-	masas[MASS_COMP] = new btScalar(1000.0);
-	masas[MASS_LEFT_LOW] = new btScalar(10.);
-	masas[MASS_RIGHT_LOW] = new btScalar(10.);
-	masas[MASS_LEFT_UPP] = new btScalar(10.);
-	masas[MASS_RIGHT_UPP] = new btScalar(10.);
+	m_shapes[BASE] = new btBoxShape(btVector3(btScalar(m_baseHalfWidth), btScalar(m_baseHalfHeight),btScalar(m_baseHalfWidth)));
+	m_shapes[DRONE_1] = new btBoxShape(btVector3(btScalar(m_droneWidth), btScalar(m_droneHeight), btScalar(m_droneWidth)));
+	m_shapes[DRONE_2] = new btBoxShape(btVector3(btScalar(m_droneWidth), btScalar(m_droneHeight), btScalar(m_droneWidth)));
+	m_shapes[DRONE_3] = new btBoxShape(btVector3(btScalar(m_droneWidth), btScalar(m_droneHeight), btScalar(m_droneWidth)));
+	m_shapes[DRONE_4] = new btBoxShape(btVector3(btScalar(m_droneWidth), btScalar(m_droneHeight), btScalar(m_droneWidth)));
 
-	origenes[MASS_COMP] = new btVector3(positionOffset);
-	origenes[MASS_LEFT_UPP] = new btVector3(positionOffset + btVector3(-2.8, 0.61, 2.8));
-	origenes[MASS_LEFT_LOW] = new btVector3(positionOffset + btVector3(-2.8, 0.61, -2.8));
-	origenes[MASS_RIGHT_UPP] = new btVector3(positionOffset + btVector3(2.8, 0.61, 2.8));
-	origenes[MASS_RIGHT_LOW] = new btVector3(positionOffset + btVector3(2.8, 0.61, -2.8));
+	m_masses[BASE] = btScalar(m_baseMass);
+	m_masses[DRONE_1] = btScalar(m_droneMass);
+	m_masses[DRONE_2] = btScalar(m_droneMass);
+	m_masses[DRONE_3] = btScalar(m_droneMass);
+	m_masses[DRONE_4] = btScalar(m_droneMass);
+
+	m_origins[BASE] = btVector3(positionOffset);
+	m_origins[DRONE_1] = btVector3(positionOffset + btVector3(-m_jointPositionOffset, m_droneRelPosY, -m_jointPositionOffset));
+	m_origins[DRONE_2] = btVector3(positionOffset + btVector3(-m_jointPositionOffset, m_droneRelPosY, m_jointPositionOffset));
+	m_origins[DRONE_3] = btVector3(positionOffset + btVector3(m_jointPositionOffset, m_droneRelPosY, m_jointPositionOffset));
+	m_origins[DRONE_4] = btVector3(positionOffset + btVector3(m_jointPositionOffset, m_droneRelPosY, -m_jointPositionOffset));
 
 	for (int i = 0; i < FORCE_COUNT; i++)
-		forces[i] = new double(0.0);
+		m_forces[i] = 0.0;
 	
-
-	btCompoundShape* base = new btCompoundShape();
-	btTransform transformada;
-	transformada.setIdentity();
-	transformada.setOrigin(btVector3(0, 0.05, 0));
-	base->addChildShape(transformada, m_shapes[BODYPART_BASE]);
-	transformada.setIdentity();
-	transformada.setOrigin(btVector3(2.8, 0.35, 2.8));
-	base->addChildShape(transformada, m_shapes[UNION_RIGHT_UPP]);
-	transformada.setIdentity();
-	transformada.setOrigin(btVector3(-2.8, 0.35, 2.8));
-	base->addChildShape(transformada, m_shapes[UNION_LEFT_UPP]);
-	transformada.setIdentity();
-	transformada.setOrigin(btVector3(-2.8, 0.35, -2.8));
-	base->addChildShape(transformada, m_shapes[UNION_LEFT_LOW]);
-	transformada.setIdentity();
-	transformada.setOrigin(btVector3(2.8, 0.35, -2.8));
-	base->addChildShape(transformada, m_shapes[UNION_RIGHT_LOW]);
 	btTransform transform;
 	transform.setIdentity();
-	transform.setOrigin(*origenes[MASS_COMP]);
-	btRigidBody* rigidBase = localCreateRigidBody(btScalar(10.), transform, base);
-	m_shapes[BODYPART_COMP] = base;
-	m_bodies[MASS_COMP] = rigidBase;
-
+	transform.setOrigin(m_origins[BASE]);
+	m_bodies[BASE] = localCreateRigidBody(btScalar(10.), transform, m_shapes[BASE]);
 
 	transform.setIdentity();
-	transform.setOrigin(*origenes[MASS_LEFT_UPP]);
-	m_bodies[MASS_LEFT_UPP] = localCreateRigidBody(btScalar(0.5), transform, m_shapes[BODYPART_LEFT_UPP]);
+	transform.setOrigin(m_origins[DRONE_1]);
+	m_bodies[DRONE_1] = localCreateRigidBody(btScalar(0.5), transform, m_shapes[DRONE_1]);
 	
 	transform.setIdentity();
-	transform.setOrigin(*origenes[MASS_LEFT_LOW]);
-	m_bodies[MASS_LEFT_LOW] = localCreateRigidBody(btScalar(0.5), transform, m_shapes[BODYPART_LEFT_LOW]);
+	transform.setOrigin(m_origins[DRONE_2]);
+	m_bodies[DRONE_2] = localCreateRigidBody(btScalar(0.5), transform, m_shapes[DRONE_2]);
 
 	transform.setIdentity();
-	transform.setOrigin(*origenes[MASS_RIGHT_UPP]);
-	m_bodies[MASS_RIGHT_UPP] = localCreateRigidBody(btScalar(0.5), transform, m_shapes[BODYPART_RIGHT_UPP]);
+	transform.setOrigin(m_origins[DRONE_3]);
+	m_bodies[DRONE_3] = localCreateRigidBody(btScalar(0.5), transform, m_shapes[DRONE_3]);
 
 	transform.setIdentity();
-	transform.setOrigin(*origenes[MASS_RIGHT_LOW]);
-	m_bodies[MASS_RIGHT_LOW] = localCreateRigidBody(btScalar(0.5), transform, m_shapes[BODYPART_RIGHT_LOW]);
+	transform.setOrigin(m_origins[DRONE_4]);
+	m_bodies[DRONE_4] = localCreateRigidBody(btScalar(0.5), transform, m_shapes[DRONE_4]);
 
-
-///////////////////////////// SETTING THE CONSTRAINTS /////////////////////////////////////////////7777
+	
+///////////////////////////// CONSTRAINTS /////////////////////////////////////////////7777
 	
 	btGeneric6DofSpringConstraint* joint;
 	btTransform localA, localB;
 	bool useLinearReferenceFrameA = true;
-/// ******* SPINE HEAD ******** ///
+	const double angularLowerLimitXZ = -SIMD_HALF_PI * 0.3;
+	const double angularUpperLimitXZ = SIMD_HALF_PI * 0.3;
+	const double angularLowerLimitY = -SIMD_HALF_PI * 0.3;
+	const double angularUpperLimitY = SIMD_HALF_PI * 0.3;
+	const double linearUpperLimit = 0 + 0.1;
+	const double linearLowerLimit = 0;
+
 	
 	{
 		localA.setIdentity(); localB.setIdentity();
-		localA.setOrigin(btVector3(btScalar(2.8), btScalar(0.6), btScalar(2.8)));
-		localB.setOrigin(btVector3(btScalar(0.), btScalar(-0.02), btScalar(0.)));
-		joint = new btGeneric6DofSpringConstraint(*rigidBase, *m_bodies[MASS_RIGHT_UPP], localA, localB,useLinearReferenceFrameA);
-		joint->setAngularLowerLimit(btVector3(-SIMD_HALF_PI * 0.1, -SIMD_HALF_PI * 0.0, -SIMD_HALF_PI * 0.1));
-		joint->setAngularUpperLimit(btVector3(SIMD_HALF_PI * 0.1, SIMD_HALF_PI * 0.0, SIMD_HALF_PI * 0.1));
-		joint->setLinearLowerLimit(btVector3(0., 0., 0.));
-		joint->setLinearUpperLimit(btVector3(0., 0., 0.)); 
-		m_joints[JOINT_RIGHT_UP] = joint;
-		fisicas->getDynamicsWorld()->addConstraint(m_joints[JOINT_RIGHT_UP], true);
-
+		localA.setOrigin(btVector3(btScalar(-m_jointPositionOffset), btScalar(m_droneRelPosY), btScalar(-m_jointPositionOffset)));
+		localB.setOrigin(btVector3(btScalar(0.), btScalar(-m_droneHeight), btScalar(0.)));
+		joint = new btGeneric6DofSpringConstraint(*m_bodies[BASE], *m_bodies[DRONE_1], localA, localB, useLinearReferenceFrameA);
+		joint->setAngularLowerLimit(btVector3(angularLowerLimitXZ, angularLowerLimitY, angularLowerLimitXZ));
+		joint->setAngularUpperLimit(btVector3(angularUpperLimitXZ, angularUpperLimitY, angularUpperLimitXZ));
+		joint->setLinearLowerLimit(btVector3(linearLowerLimit, linearLowerLimit, linearLowerLimit));
+		joint->setLinearUpperLimit(btVector3(linearUpperLimit, linearUpperLimit, linearUpperLimit));
+		m_joints[JOINT_DRONE_1] = joint;
+		physics->getDynamicsWorld()->addConstraint(m_joints[JOINT_DRONE_1], true);
+				
+		localA.setIdentity(); localB.setIdentity();
+		localA.setOrigin(btVector3(btScalar(-m_jointPositionOffset), btScalar(m_droneRelPosY), btScalar(m_jointPositionOffset)));
+		localB.setOrigin(btVector3(btScalar(0.), btScalar(-m_droneHeight), btScalar(0.)));
+		joint = new btGeneric6DofSpringConstraint(*m_bodies[BASE], *m_bodies[DRONE_2], localA, localB, useLinearReferenceFrameA);
+		joint->setAngularLowerLimit(btVector3(angularLowerLimitXZ, angularLowerLimitY, angularLowerLimitXZ));
+		joint->setAngularUpperLimit(btVector3(angularUpperLimitXZ, angularUpperLimitY, angularUpperLimitXZ));
+		joint->setLinearLowerLimit(btVector3(linearLowerLimit, linearLowerLimit, linearLowerLimit));
+		joint->setLinearUpperLimit(btVector3(linearUpperLimit, linearUpperLimit, linearUpperLimit));
+		m_joints[JOINT_DRONE_2] = joint;
+		physics->getDynamicsWorld()->addConstraint(m_joints[JOINT_DRONE_2], true);
 
 		localA.setIdentity(); localB.setIdentity();
-		localA.setOrigin(btVector3(btScalar(-2.8), btScalar(0.6), btScalar(2.8)));
-		localB.setOrigin(btVector3(btScalar(0.), btScalar(-0.02), btScalar(0.)));
-		joint = new btGeneric6DofSpringConstraint(*rigidBase, *m_bodies[MASS_LEFT_UPP], localA, localB, useLinearReferenceFrameA);
-		joint->setAngularLowerLimit(btVector3(-SIMD_HALF_PI * 0.1, -SIMD_HALF_PI * 0.0, -SIMD_HALF_PI * 0.1));
-		joint->setAngularUpperLimit(btVector3(SIMD_HALF_PI * 0.1, SIMD_HALF_PI * 0.0, SIMD_HALF_PI * 0.1));
-		joint->setLinearLowerLimit(btVector3(0., 0., 0.));
-		joint->setLinearUpperLimit(btVector3(0., 0., 0.));
-		m_joints[JOINT_LEFT_UP] = joint;
-		fisicas->getDynamicsWorld()->addConstraint(m_joints[JOINT_LEFT_UP], true);
+		localA.setOrigin(btVector3(btScalar(m_jointPositionOffset), btScalar(m_droneRelPosY), btScalar(m_jointPositionOffset)));
+		localB.setOrigin(btVector3(btScalar(0.), btScalar(-m_droneHeight), btScalar(0.)));
+		joint = new btGeneric6DofSpringConstraint(*m_bodies[BASE], *m_bodies[DRONE_3], localA, localB, useLinearReferenceFrameA);
+		joint->setAngularLowerLimit(btVector3(angularLowerLimitXZ, angularLowerLimitY, angularLowerLimitXZ));
+		joint->setAngularUpperLimit(btVector3(angularUpperLimitXZ, angularUpperLimitY, angularUpperLimitXZ));
+		joint->setLinearLowerLimit(btVector3(linearLowerLimit, linearLowerLimit, linearLowerLimit));
+		joint->setLinearUpperLimit(btVector3(linearUpperLimit, linearUpperLimit, linearUpperLimit));
+		m_joints[JOINT_DRONE_3] = joint;
+		physics->getDynamicsWorld()->addConstraint(m_joints[JOINT_DRONE_3], true);
 
 		localA.setIdentity(); localB.setIdentity();
-		localA.setOrigin(btVector3(btScalar(-2.8), btScalar(0.6), btScalar(-2.8)));
-		localB.setOrigin(btVector3(btScalar(0.), btScalar(-0.02), btScalar(0.)));
-		joint = new btGeneric6DofSpringConstraint(*rigidBase, *m_bodies[MASS_LEFT_LOW], localA, localB, useLinearReferenceFrameA);
-		joint->setAngularLowerLimit(btVector3(-SIMD_HALF_PI * 0.1, -SIMD_HALF_PI * 0.0, -SIMD_HALF_PI * 0.1));
-		joint->setAngularUpperLimit(btVector3(SIMD_HALF_PI * 0.1, SIMD_HALF_PI * 0.0, SIMD_HALF_PI * 0.1));
-		joint->setLinearLowerLimit(btVector3(0., 0., 0.));
-		joint->setLinearUpperLimit(btVector3(0., 0., 0.));
-		m_joints[JOINT_LEFT_DOWN] = joint;
-		fisicas->getDynamicsWorld()->addConstraint(m_joints[JOINT_LEFT_DOWN], true);
-
-		localA.setIdentity(); localB.setIdentity();
-		localA.setOrigin(btVector3(btScalar(2.8), btScalar(0.6), btScalar(-2.8)));
-		localB.setOrigin(btVector3(btScalar(0.), btScalar(-0.02), btScalar(0.)));
-		joint = new btGeneric6DofSpringConstraint(*rigidBase, *m_bodies[MASS_RIGHT_LOW], localA, localB, useLinearReferenceFrameA);
-		joint->setAngularLowerLimit(btVector3(-SIMD_HALF_PI * 0.1, -SIMD_HALF_PI * 0.0, -SIMD_HALF_PI * 0.1));
-		joint->setAngularUpperLimit(btVector3(SIMD_HALF_PI * 0.1, SIMD_HALF_PI * 0.0, SIMD_HALF_PI * 0.1));
-		joint->setLinearLowerLimit(btVector3(0., 0., 0.));
-		joint->setLinearUpperLimit(btVector3(0., 0., 0.));
-		m_joints[JOINT_RIGHT_DOWN] = joint;
-		fisicas->getDynamicsWorld()->addConstraint(m_joints[JOINT_RIGHT_DOWN], true);
-
+		localA.setOrigin(btVector3(btScalar(m_jointPositionOffset), btScalar(m_droneRelPosY), btScalar(-m_jointPositionOffset)));
+		localB.setOrigin(btVector3(btScalar(0.), btScalar(-m_droneHeight), btScalar(0.)));
+		joint = new btGeneric6DofSpringConstraint(*m_bodies[BASE], *m_bodies[DRONE_4], localA, localB, useLinearReferenceFrameA);
+		joint->setAngularLowerLimit(btVector3(angularLowerLimitXZ, angularLowerLimitY, angularLowerLimitXZ));
+		joint->setAngularUpperLimit(btVector3(angularUpperLimitXZ, angularUpperLimitY, angularUpperLimitXZ));
+		joint->setLinearLowerLimit(btVector3(linearLowerLimit, linearLowerLimit, linearLowerLimit));
+		joint->setLinearUpperLimit(btVector3(linearUpperLimit, linearUpperLimit, linearUpperLimit));
+		m_joints[JOINT_DRONE_4] = joint;
+		physics->getDynamicsWorld()->addConstraint(m_joints[JOINT_DRONE_4], true);
 	}
-	
 }
 
 Drone6DOF::~Drone6DOF()
@@ -160,62 +138,35 @@ Drone6DOF::~Drone6DOF()
 	// Remove all constraints
 	for (i = 0; i < JOINT_COUNT; ++i)
 	{
-		fisicas->getDynamicsWorld()->removeConstraint(m_joints[i]);
+		m_physics->getDynamicsWorld()->removeConstraint(m_joints[i]);
 		delete m_joints[i]; m_joints[i] = 0;
 	}
 	
-	// Remove all shapes used to construct btCompound. Other shapes are removed by other destructor
-	for (i = 0; i < 5; ++i)
-	{
-		delete m_shapes[i]; m_shapes[i] = 0;
-	}
 	// Remove all bodies
-	for (i = 0; i < MASS_COUNT; ++i)
+	for (i = 0; i < DRONE_ELEMENT_COUNT; ++i)
 	{
-		fisicas->getDynamicsWorld()->removeRigidBody(m_bodies[i]);
+		m_physics->getDynamicsWorld()->removeRigidBody(m_bodies[i]);
 		delete m_bodies[i]->getMotionState();
 		delete m_bodies[i]; m_bodies[i] = 0;
-		delete masas[i]; masas[i] = 0;
-		delete origenes[i];origenes[i] = 0;
 	}
-	for (i = 0; i < FORCE_COUNT; ++i)
-	{
-		delete forces[i]; forces[i] = 0;
-	}
-	
 }
 
 
 btRigidBody* Drone6DOF::localCreateRigidBody (btScalar mass, const btTransform& startTransform, btCollisionShape* shape)
 {
-	bool isDynamic = (mass != 0.f);
 	btVector3 localInertia(0,0,0);
+	bool isDynamic = (mass != 0.f);
 	if (isDynamic)
-		shape->calculateLocalInertia(mass,localInertia);
+		shape->calculateLocalInertia(mass, localInertia);
+
 	btDefaultMotionState* myMotionState = new btDefaultMotionState(startTransform);
-	btRigidBody::btRigidBodyConstructionInfo rbInfo(mass,myMotionState,shape,localInertia);
+	btRigidBody::btRigidBodyConstructionInfo rbInfo(mass, myMotionState, shape, localInertia);
 	rbInfo.m_additionalDamping = true;
 	btRigidBody* body = new btRigidBody(rbInfo);
 	body->setActivationState(DISABLE_DEACTIVATION);
-	fisicas->add(shape, body);
+	m_physics->add(shape, body);
 	return body;
 }
-
-
-
-void Drone6DOF::init()
-{
-	btMatrix3x3 original = m_bodies[0]->getWorldTransform().getBasis();
-	for (size_t i = 1; i < MASS_COUNT; i++)
-	{
-		btTransform aux = m_bodies[i]->getWorldTransform();
-		aux.setBasis(original);
-		m_bodies[i]->setWorldTransform(aux);
-		
-	}	
-}
-
-
 
 
 void Drone6DOF::setAbsoluteStateVarIds(const char * xId, const char * yId, const char * zId, const char * rotXId, const char * rotYId, const char * rotZId, const char * angularVXId, const char * angularVYId, const char * angularVZId, const char * linearVXId, const char * linearVYId, const char * linearVZId,
@@ -257,126 +208,68 @@ void Drone6DOF::setErrorStateVarId(const char * id)
 	m_error = id;
 }
 
-void Drone6DOF::setPIDActionId(const char * id)
-{
-	m_force = id;
-}
-
 void Drone6DOF::updateBulletState(State * s, const Action * a, double dt)
 {
-	if (m_force!=NULL)
-	{
-		*forces[F1_1] = a->get(m_force);
-		*forces[F1_2] = a->get(m_force);
-		*forces[F1_3] = a->get(m_force);
-		*forces[F1_4] = a->get(m_force);
+	m_forces[F1_1] = a->get(m_f1_1Id);
+	m_forces[F1_2] = a->get(m_f1_2Id);
+	m_forces[F1_3] = a->get(m_f1_3Id);
+	m_forces[F1_4] = a->get(m_f1_4Id);
+		
+	m_forces[F2_1] = a->get(m_f2_1Id);
+	m_forces[F2_2] = a->get(m_f2_2Id);
+	m_forces[F2_3] = a->get(m_f2_3Id);
+	m_forces[F2_4] = a->get(m_f2_4Id);
 
-		*forces[F2_1] = a->get(m_force);
-		*forces[F2_2] = a->get(m_force);
-		*forces[F2_3] = a->get(m_force);
-		*forces[F2_4] = a->get(m_force);
+	m_forces[F3_1] = a->get(m_f3_1Id);
+	m_forces[F3_2] = a->get(m_f3_2Id);
+	m_forces[F3_3] = a->get(m_f3_3Id);
+	m_forces[F3_4] = a->get(m_f3_4Id);
 
-		*forces[F3_1] = a->get(m_force);
-		*forces[F3_2] = a->get(m_force);
-		*forces[F3_3] = a->get(m_force);
-		*forces[F3_4] = a->get(m_force);
-
-		*forces[F4_1] = a->get(m_force);
-		*forces[F4_2] = a->get(m_force);
-		*forces[F4_3] = a->get(m_force);
-		*forces[F4_4] = a->get(m_force);
-	}
-	else {
-
-
-		*forces[F1_1] = a->get(m_f1_1Id);
-		*forces[F1_2] = a->get(m_f1_1Id);
-		*forces[F1_3] = a->get(m_f1_1Id);
-		*forces[F1_4] = a->get(m_f1_1Id);
-
-		*forces[F2_1] = a->get(m_f1_1Id);
-		*forces[F2_2] = a->get(m_f1_1Id);
-		*forces[F2_3] = a->get(m_f1_1Id);
-		*forces[F2_4] = a->get(m_f1_1Id);
-
-		*forces[F3_1] = a->get(m_f1_1Id);
-		*forces[F3_2] = a->get(m_f1_1Id);
-		*forces[F3_3] = a->get(m_f1_1Id);
-		*forces[F3_4] = a->get(m_f1_1Id);
-
-		*forces[F4_1] = a->get(m_f1_1Id);
-		*forces[F4_2] = a->get(m_f1_1Id);
-		*forces[F4_3] = a->get(m_f1_1Id);
-		*forces[F4_4] = a->get(m_f1_1Id);
-
-		/*
-
-		*forces[F1_1] = a->get(m_f1_1Id);
-		*forces[F1_2] = a->get(m_f1_2Id);
-		*forces[F1_3] = a->get(m_f1_3Id);
-		*forces[F1_4] = a->get(m_f1_4Id);
-
-		*forces[F2_1] = a->get(m_f2_1Id);
-		*forces[F2_2] = a->get(m_f2_2Id);
-		*forces[F2_3] = a->get(m_f2_3Id);
-		*forces[F2_4] = a->get(m_f2_4Id);
-
-		*forces[F3_1] = a->get(m_f3_1Id);
-		*forces[F3_2] = a->get(m_f3_2Id);
-		*forces[F3_3] = a->get(m_f3_3Id);
-		*forces[F3_4] = a->get(m_f3_4Id);
-
-		*forces[F4_1] = a->get(m_f4_1Id);
-		*forces[F4_2] = a->get(m_f4_2Id);
-		*forces[F4_3] = a->get(m_f4_3Id);
-		*forces[F4_4] = a->get(m_f4_4Id);
-		*/
-	}
+	m_forces[F4_1] = a->get(m_f4_1Id);
+	m_forces[F4_2] = a->get(m_f4_2Id);
+	m_forces[F4_3] = a->get(m_f4_3Id);
+	m_forces[F4_4] = a->get(m_f4_4Id);
 	
 	int j = 0;
-	for (size_t i = 1; i < MASS_COUNT; i++)
+	for (size_t i = 1; i < DRONE_ELEMENT_COUNT; i++)
 	{
 		btVector3 relativeForce = btVector3(0., 1.0, 0.);
 		btMatrix3x3& boxRot = m_bodies[i]->getWorldTransform().getBasis();
 		
-		//m_bodies[i]->activate(true);
+		btVector3 forceVector = boxRot * (relativeForce * m_forces[j]);
+		m_bodies[i]->applyForce(forceVector, btVector3(-0.3, -m_droneHeight, -0.3));
+		j ++;
 
-		m_bodies[i]->applyForce(boxRot *(relativeForce**forces[j]), btVector3(0.3, 0.0, 0.3));
-		 
+		forceVector = boxRot * (relativeForce * m_forces[j]);
+		m_bodies[i]->applyForce(forceVector, btVector3(-0.3, -m_droneHeight, 0.3));
 		j++;
 
-		m_bodies[i]->applyForce(boxRot *(relativeForce**forces[j]), btVector3(0.3, 0.0, -0.3));
-
+		forceVector = boxRot * (relativeForce * m_forces[j]);
+		m_bodies[i]->applyForce(forceVector, btVector3(0.3, -m_droneHeight, 0.3));
 		j++;
 
-		m_bodies[i]->applyForce(boxRot *(relativeForce**forces[j]), btVector3(-0.3, 0.0, 0.3));
-
+		forceVector = boxRot * (relativeForce * m_forces[j]);
+		m_bodies[i]->applyForce(forceVector, btVector3(0.3, -m_droneHeight, -0.3));
 		j++;
-
-		m_bodies[i]->applyForce(boxRot *(relativeForce**forces[j]), btVector3(-0.3, 0.0, -0.3));
-
-		j++;
-
-
 	}
 
 
 }
 void Drone6DOF::reset(State * s)
 {
-	double altura = s->get("base-y");
+	double height = s->get("base-y");
 	s->set("d-error-z", 0);
 	btTransform bodyTransform;
 	btQuaternion orientation;
 	btVector3 zeroVector(0, 0, 0);
-	for (size_t i = 0; i < MASS_COUNT; i++)
+	for (size_t i = 0; i < DRONE_ELEMENT_COUNT; i++)
 	{
 		m_bodies[i]->clearForces();
 		m_bodies[i]->setLinearVelocity(zeroVector);
 		m_bodies[i]->setAngularVelocity(zeroVector);
 
 		bodyTransform = m_bodies[i]->getWorldTransform();
-		bodyTransform.setOrigin(*origenes[i]+btVector3(0.0,altura,0.0));
+		bodyTransform.setOrigin(m_origins[i] + btVector3(0.0, height, 0.0));
 		orientation.setEuler(0.0, 0.0, 0.0);
 		bodyTransform.setRotation(orientation);
 
@@ -384,22 +277,22 @@ void Drone6DOF::reset(State * s)
 		m_bodies[i]->getMotionState()->setWorldTransform(bodyTransform);
 
 		btVector3 localInertia(0, 0, 0);
-		m_bodies[i]->getCollisionShape()->calculateLocalInertia(*masas[i], localInertia);
+		m_bodies[i]->getCollisionShape()->calculateLocalInertia(m_masses[i], localInertia);
 	}
 	
 	updateState(s);
 }
 void Drone6DOF::updateState(State * s)
 {
-	btTransform transform = m_bodies[MASS_COMP]->getWorldTransform();
+	btTransform transform = m_bodies[BASE]->getWorldTransform();
 	
 	s->set(m_xId, transform.getOrigin().x());
 	s->set(m_yId, transform.getOrigin().y());
 	s->set(m_zId, transform.getOrigin().z());
 
 	s->set(m_error, height- transform.getOrigin().y() );
-	s->set("errorX", origenes[0]->x()- transform.getOrigin().x());
-	s->set("errorY", origenes[0]->z() - transform.getOrigin().z());
+	s->set("errorX", m_origins[0].x() - transform.getOrigin().x());
+	s->set("errorY", m_origins[0].z() - transform.getOrigin().z());
 
 
 	btMatrix3x3& boxRot = transform.getBasis();
@@ -412,19 +305,17 @@ void Drone6DOF::updateState(State * s)
 	s->set(m_rotYId, y);
 	s->set(m_rotZId, z);
 
-	btVector3 velocity = m_bodies[MASS_COMP]->getAngularVelocity();
+	btVector3 velocity = m_bodies[BASE]->getAngularVelocity();
 	s->set(m_angularVXId, velocity.x());
 	s->set(m_angularVYId, velocity.y());
 	s->set(m_angularVZId, velocity.z());
 
-	velocity = m_bodies[MASS_COMP]->getLinearVelocity();
+	velocity = m_bodies[BASE]->getLinearVelocity();
 	s->set(m_linearVXId, velocity.x());
 	s->set(m_linearVYId, velocity.y());
 	s->set(m_linearVZId, velocity.z());
 
-
-
-	for (size_t i = 1; i < MASS_COUNT; i++)
+	for (size_t i = 1; i < DRONE_ELEMENT_COUNT; i++)
 	{
 		transform = m_bodies[i]->getWorldTransform();
 		

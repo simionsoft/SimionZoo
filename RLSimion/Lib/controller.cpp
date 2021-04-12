@@ -201,7 +201,8 @@ unsigned int PIDDroneController::getNumOutputs()
 }
 const char* PIDDroneController::getOutputAction(size_t output)
 {
-	switch (output) {
+	switch (output)
+	{
 	case 0:
 		return "force1-1";
 	case 1:
@@ -251,32 +252,9 @@ const char* PIDDroneController::getOutputAction(size_t output)
 /// <returns>The output value</returns>
 double PIDDroneController::evaluate(const State* s, const Action* a, unsigned int output)
 {
-	/*
 	if (SimionApp::get()->pWorld->getEpisodeSimTime() == 0.0)
 		m_intError = 0.0;
-	double error = s->get("error-z");
-	double dError = error * SimionApp::get()->pWorld->getDT();
-	m_intError += error * SimionApp::get()->pWorld->getDT();
-	double velocidad = s->get("base-linear-y");
-	if(error > 8.8)
-		return 9.0 + error * m_pKP->get();
-	if (error > 0.0)
-	{
-		if(velocidad>0.0)
-			return 1.5+error * m_pKP->get();
-		else
-			return 22.0 + error * m_pKP->get();
-	}
-	else {
-		if (velocidad > 0.0)
-			return 0.1;
-		else
-			return 3.5;
-	}
-	return error * m_pKP->get() + m_intError * m_pKI->get() + dError * m_pKD->get();
-	*/
-	if (SimionApp::get()->pWorld->getEpisodeSimTime() == 0.0)
-		m_intError = 0.0;
+
 	double error = s->get("error-z");
 	double velocidad = s->get("base-linear-y");
 	double d_error = s->get("d-error-z");
@@ -284,11 +262,47 @@ double PIDDroneController::evaluate(const State* s, const Action* a, unsigned in
 	double v_error = (target_v_y - velocidad);
 	double d_v_error = (v_error) / SimionApp::get()->pWorld->getDT();
 	double force = m_pKP_F->get() * v_error + m_pKD_F->get()*d_v_error;
-	//informazio gehitu s-en????????
-	return force;
 
+	force = std::max(a->getProperties(output)->getMin(), force);
+	force = std::min(a->getProperties(output)->getMax(), force);
+	
+	if (SimionApp::get()->pExperiment->isEvaluationEpisode())
+		return force;
 
+	return force + droneRotorForceOffset(output);
 }
+
+double PIDDroneController::droneRotorForceOffset(unsigned int output)
+{
+	const unsigned int numSetups = 6;
+	const unsigned int numRotors = 16;
+	const double soft = 1;
+	const double none = 0;
+	const double progressPhaseLength = 0.00001;
+	double setups[numSetups*numRotors] =
+	{
+		none, none, none, none, none, none, none, none, none, none, none, none, none, none, none, none,
+		soft, soft, -soft, -soft, soft, soft, -soft, -soft, -soft, -soft, -soft, -soft, -soft, -soft, -soft, -soft,
+		soft, soft, -soft, -soft, soft, soft, -soft, -soft, soft, soft, -soft, -soft, soft, soft, -soft, -soft,
+		soft, -soft, -soft, soft, soft, -soft, -soft, soft, soft, -soft, -soft, soft, soft, -soft, -soft, soft,
+		-soft, -soft, soft, soft, -soft, -soft, soft, soft, -soft, -soft, soft, soft, -soft, -soft, soft, soft,
+		-soft, soft, soft, -soft, -soft, soft, soft, -soft, -soft, soft, soft, -soft, -soft, soft, soft, -soft,
+	};
+	double progress = SimionApp::get()->pExperiment->getTrainingProgress();
+	int setupId = progress / progressPhaseLength;
+	setupId = setupId % numSetups;
+	return setups[setupId*numRotors + output];
+}
+
+unsigned int PIDDroneController::droneIndex(unsigned int output)
+{
+	return output / 4;
+}
+unsigned int PIDDroneController::droneRotorIndex(unsigned output)
+{
+	return output % 4;
+}
+
 
 
 
