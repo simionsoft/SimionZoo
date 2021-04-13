@@ -274,24 +274,33 @@ double PIDDroneController::evaluate(const State* s, const Action* a, unsigned in
 
 double PIDDroneController::droneRotorForceOffset(unsigned int output)
 {
-	const unsigned int numSetups = 6;
-	const unsigned int numRotors = 16;
+	const unsigned int numVariationsPerRotor = 1 + 7 + 7;
+	const unsigned int numDrones = 4;
 	const double soft = 1;
 	const double none = 0;
 	const double progressPhaseLength = 0.00001;
-	double setups[numSetups*numRotors] =
+	double setups[numVariationsPerRotor] =
 	{
-		none, none, none, none, none, none, none, none, none, none, none, none, none, none, none, none,
-		soft, soft, -soft, -soft, soft, soft, -soft, -soft, -soft, -soft, -soft, -soft, -soft, -soft, -soft, -soft,
-		soft, soft, -soft, -soft, soft, soft, -soft, -soft, soft, soft, -soft, -soft, soft, soft, -soft, -soft,
-		soft, -soft, -soft, soft, soft, -soft, -soft, soft, soft, -soft, -soft, soft, soft, -soft, -soft, soft,
-		-soft, -soft, soft, soft, -soft, -soft, soft, soft, -soft, -soft, soft, soft, -soft, -soft, soft, soft,
-		-soft, soft, soft, -soft, -soft, soft, soft, -soft, -soft, soft, soft, -soft, -soft, soft, soft, -soft,
+		none, none, none, none,
+		soft, soft, soft, -soft,
+		soft, soft, -soft, soft,
+		soft, soft, -soft, -soft,
+		soft, -soft, soft, soft,
+		soft, -soft, soft, -soft,
+		soft, -soft, -soft, soft,
+		soft, -soft, -soft, -soft,
+		-soft, soft, soft, soft,
+		-soft, soft, soft, -soft,
+		-soft, soft, -soft, soft,
+		-soft, soft, -soft, -soft,
+		-soft, -soft, soft, soft,
+		-soft, -soft, soft, -soft,
+		-soft, -soft, -soft, soft
 	};
 	double progress = SimionApp::get()->pExperiment->getTrainingProgress();
 	int setupId = progress / progressPhaseLength;
-	setupId = setupId % numSetups;
-	return setups[setupId*numRotors + output];
+	setupId = setupId % numVariationsPerRotor;
+	return setups[setupId*numDrones + output];
 }
 
 unsigned int PIDDroneController::droneIndex(unsigned int output)
