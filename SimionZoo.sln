@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 15
-VisualStudioVersion = 15.0.27130.2036
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.31129.286
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tools", "tools", "{78D64C99-9407-468F-9581-D5C97CBDF7C7}"
 EndProject
@@ -305,7 +305,6 @@ Global
 		{53399A66-B859-4CB6-BCAC-A9A15B80DFD4}.Linux-Release|x86.ActiveCfg = Release|Win32
 		{53399A66-B859-4CB6-BCAC-A9A15B80DFD4}.Release|Any CPU.ActiveCfg = Release|Win32
 		{53399A66-B859-4CB6-BCAC-A9A15B80DFD4}.Release|x64.ActiveCfg = Release|x64
-		{53399A66-B859-4CB6-BCAC-A9A15B80DFD4}.Release|x64.Build.0 = Release|x64
 		{53399A66-B859-4CB6-BCAC-A9A15B80DFD4}.Release|x86.ActiveCfg = Release|Win32
 		{53399A66-B859-4CB6-BCAC-A9A15B80DFD4}.Release|x86.Build.0 = Release|Win32
 		{61D2AC28-EB09-4DAA-B717-CEA7BA358077}.Debug|Any CPU.ActiveCfg = Linux-Release|x64
