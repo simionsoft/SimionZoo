@@ -96,12 +96,12 @@ namespace SimionZooBundler
 
 
                 //C++ Runtime libraries: x86 and x64 versions
-                AddFile(ref files, inBaseRelPath + @"bin/vcruntime140.dll");
-                AddFile(ref files, inBaseRelPath + @"bin/msvcp140.dll");
-                AddFile(ref files, inBaseRelPath + @"bin/x64/vcruntime140.dll");
-                AddFile(ref files, inBaseRelPath + @"bin/x64/msvcp140.dll");
-                AddFile(ref files, inBaseRelPath + @"bin/x64/vccorlib140.dll");
-                AddFile(ref files, inBaseRelPath + @"bin/vcomp140.dll");
+                //AddFile(ref files, inBaseRelPath + @"bin/vcruntime140.dll");
+                //AddFile(ref files, inBaseRelPath + @"bin/msvcp140.dll");
+                //AddFile(ref files, inBaseRelPath + @"bin/x64/vcruntime140.dll");
+                //AddFile(ref files, inBaseRelPath + @"bin/x64/msvcp140.dll");
+                //AddFile(ref files, inBaseRelPath + @"bin/x64/vccorlib140.dll");
+                //AddFile(ref files, inBaseRelPath + @"bin/vcomp140.dll");
                 //CNTK library and dependencies
                 //windows:
                 AddFile(ref files, inBaseRelPath + @"bin/CNTKWrapper.dll");
