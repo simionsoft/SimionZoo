@@ -333,7 +333,7 @@ void FASTWindTurbine::reset(State *s)
 
 	commandLine= string("../bin/openfast_Win32.exe");
 
-	commandLine+= string(" ") + string(SimionApp::get()->getOutputDirectory())+ string("/")
+	commandLine+= string(" ") + string(SimionApp::get()->getOutputDirectory())
 		+ string(FAST_CONFIG_FILE);
 	bool bSpawned= FASTprocess.spawn((char*)(commandLine).c_str());
 	//wait for the client (FASTDimensionalPortal DLL) to connect
