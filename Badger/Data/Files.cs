@@ -220,8 +220,12 @@ namespace Badger
             }
 
             XmlNode configNode;
-            foreach (XmlNode experiment in fileRoot.ChildNodes)
+            foreach (XmlNode experimentNode in fileRoot.ChildNodes)
             {
+                XmlElement experiment = experimentNode as XmlElement;
+                if (experiment == null)
+                    continue;
+
                 if (experiment.Name == XMLTags.ExperimentNodeTag && experiment.ChildNodes.Count > 0)
                 {
                     configNode = experiment.FirstChild;

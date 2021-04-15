@@ -241,8 +241,12 @@ namespace Badger.ViewModels
                         m_version = "0.0.0.0";
                     }
 
-                    foreach (XmlNode child in rootChild.ChildNodes)
+                    foreach (XmlNode childNode in rootChild.ChildNodes)
                     {
+                        XmlElement child = childNode as XmlElement;
+                        if (child == null)
+                            continue;
+
                         if (child.Name == Herd.Network.XmlTags.Version)
                             m_appVersions.Add(new AppVersion(child));
                         else if (child.Name == Herd.Network.XmlTags.Include)

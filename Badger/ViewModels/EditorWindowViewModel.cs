@@ -227,8 +227,7 @@ namespace Badger.ViewModels
                 string fileExtension = Herd.Utils.GetExtension(filename, 2);
                 if (fileExtension == Extensions.Experiment)
                 {
-                    ExperimentViewModel newExperiment =
-                        Files.LoadExperiment(appDefinitions, filename);
+                    ExperimentViewModel newExperiment = Files.LoadExperiment(appDefinitions, filename);
 
                     if (newExperiment != null)
                     {
@@ -242,8 +241,7 @@ namespace Badger.ViewModels
                 {
                     BindableCollection<ExperimentViewModel> newExperiments = new BindableCollection<ExperimentViewModel>();
                     Files.LoadExperiments(ref newExperiments, appDefinitions
-                        , MainWindowViewModel.Instance.LogToFile
-                        , filename);
+                        , MainWindowViewModel.Instance.LogToFile, filename);
                     ExperimentViewModels.AddRange(newExperiments);
 
                     if (ExperimentViewModels.Count > 0)

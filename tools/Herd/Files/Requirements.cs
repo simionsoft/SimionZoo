@@ -82,8 +82,12 @@ namespace Herd.Files
         public void CommonInit(XmlNode node)
         {
             //Read from the output of the app itself (run with "-requirements" flag)
-            foreach (XmlElement child in node.ChildNodes)
+            foreach (XmlNode childNode in node.ChildNodes)
             {
+                XmlElement child = childNode as XmlElement;
+                if (child == null)
+                    continue;
+
                 //parse input files
                 if (child.Name == XmlTags.Input)
                 {

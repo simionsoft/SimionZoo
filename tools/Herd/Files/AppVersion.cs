@@ -61,8 +61,12 @@ namespace Herd.Files
             if (node.Attributes.GetNamedItem(XMLTags.nameAttribute) != null)
                 m_name = node.Attributes[XMLTags.nameAttribute].Value;
 
-            foreach (XmlElement child in node.ChildNodes)
+            foreach (XmlNode childNode in node.ChildNodes)
             {
+                XmlElement child = childNode as XmlElement;
+                if (child == null)
+                    continue;
+
                 //Only Exe and AppVersionRequirements (i/o files and architecture)
                 if (child.Name == XmlTags.Exe)
                     m_exeFile = child.InnerText;
