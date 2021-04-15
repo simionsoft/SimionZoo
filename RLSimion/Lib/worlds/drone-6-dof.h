@@ -5,7 +5,7 @@
 using namespace std;
 
 
-class Drone6DOF:public BulletBody
+class Drone6DOF : public BulletBody
 {
 	
 	enum
@@ -66,60 +66,6 @@ class Drone6DOF:public BulletBody
 	const char* m_f4_3Id;
 	const char* m_f4_4Id;
 
-	const char* m_error;
-
-	const char* m_x1Id;
-	const char* m_y1Id;
-	const char* m_z1Id;
-	const char* m_rotX1Id;
-	const char* m_rotY1Id;
-	const char* m_rotZ1Id;
-	const char* m_linearVX1Id;
-	const char* m_linearVY1Id;
-	const char* m_linearVZ1Id;
-	const char* m_angularVX1Id;
-	const char* m_angularVY1Id;
-	const char* m_angularVZ1Id;
-
-	const char* m_x2Id;
-	const char* m_y2Id;
-	const char* m_z2Id;
-	const char* m_rotX2Id;
-	const char* m_rotY2Id;
-	const char* m_rotZ2Id;
-	const char* m_linearVX2Id;
-	const char* m_linearVY2Id;
-	const char* m_linearVZ2Id;
-	const char* m_angularVX2Id;
-	const char* m_angularVY2Id;
-	const char* m_angularVZ2Id;
-
-	const char* m_x3Id;
-	const char* m_y3Id;
-	const char* m_z3Id;
-	const char* m_rotX3Id;
-	const char* m_rotY3Id;
-	const char* m_rotZ3Id;
-	const char* m_linearVX3Id;
-	const char* m_linearVY3Id;
-	const char* m_linearVZ3Id;
-	const char* m_angularVX3Id;
-	const char* m_angularVY3Id;
-	const char* m_angularVZ3Id;
-
-	const char* m_x4Id;
-	const char* m_y4Id;
-	const char* m_z4Id;
-	const char* m_rotX4Id;
-	const char* m_rotY4Id;
-	const char* m_rotZ4Id;
-	const char* m_linearVX4Id;
-	const char* m_linearVY4Id;
-	const char* m_linearVZ4Id;
-	const char* m_angularVX4Id;
-	const char* m_angularVY4Id;
-	const char* m_angularVZ4Id;
-
 	static const int m_numDrones = 4;
 
 	BulletPhysics* m_physics;
@@ -142,9 +88,7 @@ class Drone6DOF:public BulletBody
 	const double m_droneMass = 1.0;
 
 public:
-	static constexpr double height=10.0;
-	Drone6DOF (BulletPhysics* ownerWorld,
-				const btVector3& positionOffset);
+	Drone6DOF (BulletPhysics* ownerWorld);
 	
 	void init();
 	void setActionIds(const char* f11, const char* f12, const char* f13, const char* f14,
@@ -157,29 +101,27 @@ public:
 		m_f1_3Id = f13;
 		m_f1_4Id = f14;
 
-		m_f2_1Id = f11;
-		m_f2_2Id = f12;
-		m_f2_3Id = f13;
-		m_f2_4Id = f14;
+		m_f2_1Id = f21;
+		m_f2_2Id = f22;
+		m_f2_3Id = f23;
+		m_f2_4Id = f24;
 
-		m_f3_1Id = f11;
-		m_f3_2Id = f12;
-		m_f3_3Id = f13;
-		m_f3_4Id = f14;
+		m_f3_1Id = f31;
+		m_f3_2Id = f32;
+		m_f3_3Id = f33;
+		m_f3_4Id = f34;
 
-		m_f4_1Id = f11;
-		m_f4_2Id = f12;
-		m_f4_3Id = f13;
-		m_f4_4Id = f14;
+		m_f4_1Id = f41;
+		m_f4_2Id = f42;
+		m_f4_3Id = f43;
+		m_f4_4Id = f44;
 		
 	}
-	void setAbsoluteStateVarIds(const char * xId, const char * yId, const char * zId, const char * rotXId, const char * rotYId, const char * rotZId, const char * angularVXId, const char * angularVYId, const char * angularVZId, const char * linearVXId, const char * linearVYId, const char * linearVZId,
-		const char * x1Id, const char * y1Id, const char * z1Id, const char * rotX1Id, const char * rotY1Id, const char * rotZ1Id, const char * angularVX1Id, const char * angularVY1Id, const char * angularVZ1Id, const char * linearVX1Id, const char * linearVY1Id, const char * linearVZ1Id,
-		const char * x2Id, const char * y2Id, const char * z2Id, const char * rotX2Id, const char * rotY2Id, const char * rotZ2Id, const char * angularVX2Id, const char * angularVY2Id, const char * angularVZ2Id, const char * linearVX2Id, const char * linearVY2Id, const char * linearVZ2Id,
-		const char * x3Id, const char * y3Id, const char * z3Id, const char * rotX3Id, const char * rotY3Id, const char * rotZ3Id, const char * angularVX3Id, const char * angularVY3Id, const char * angularVZ3Id, const char * linearVX3Id, const char * linearVY3Id, const char * linearVZ3Id,
-		const char * x4Id, const char * y4Id, const char * z4Id, const char * rotX4Id, const char * rotY4Id, const char * rotZ4Id, const char * angularVX4Id, const char * angularVY4Id, const char * angularVZ4Id, const char * linearVX4Id, const char * linearVY4Id, const char * linearVZ4Id)override;//override error
-	void setErrorStateVarId(const char* id);
-	void setPIDActionId(const char* id);
+	void setAbsoluteStateVarIds(const char * xId, const char * yId, const char * zId,
+		const char * rotXId, const char * rotYId, const char * rotZId,
+		const char * angularVXId, const char * angularVYId, const char * angularVZId,
+		const char * linearVXId, const char * linearVYId, const char * linearVZId);
+
 	void updateBulletState(State* s, const Action* a, double dt) override;
 	void reset(State* s) override;
 	void updateState(State* s) override;

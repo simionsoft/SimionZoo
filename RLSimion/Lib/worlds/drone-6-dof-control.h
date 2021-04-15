@@ -18,35 +18,35 @@ class Drone6DOFControl : public DynamicModel
 	double MASS_GROUND;
 
 	/// State variables
-	size_t m_error, m_error_x, m_error_y;
+	size_t m_error_z, m_error_x, m_error_y;
 
-	size_t m_d_error;
+	size_t m_d_error_x, m_d_error_y, m_d_error_z;
 
-	size_t m_target_X, m_target_Y, m_target_Z;
-	size_t m_base_X, m_base_Y, m_base_Z;
-	size_t m_rotacion_base_X, m_rotacion_base_Y, m_rotacion_base_Z;
-	size_t m_angular_base_X, m_angular_base_Y, m_angular_base_Z;
-	size_t m_linear_base_X, m_linear_base_Y, m_linear_base_Z;
+	size_t m_target_x, m_target_y, m_target_z;
+	size_t m_base_x, m_base_y, m_base_z;
+	size_t m_base_rot_x, m_base_rot_y, m_base_rot_z;
+	size_t m_base_angular_x, m_base_angular_y, m_base_angular_z;
+	size_t m_base_linear_x, m_base_linear_y, m_base_linear_z;
 
-	size_t m_drone1_X, m_drone1_Y, m_drone1_Z;
-	size_t m_rotacion_drone1_X, m_rotacion_drone1_Y, m_rotacion_drone1_Z;
+	size_t m_drone1_x, m_drone1_y, m_drone1_Z;
+	size_t m_drone1_rot_x, m_drone1_rot_y, m_drone1_rot_z;
 	size_t m_angular_drone1_X, m_angular_drone1_Y, m_angular_drone1_Z;
-	size_t m_linear_drone1_X, m_linear_drone1_Y, m_linear_drone1_Z;
+	size_t m_drone1_linear_x, m_drone1_linear_y, m_drone1_linear_z;
 
-	size_t m_drone2_X, m_drone2_Y, m_drone2_Z;
-	size_t m_rotacion_drone2_X, m_rotacion_drone2_Y, m_rotacion_drone2_Z;
-	size_t m_linear_drone2_X, m_linear_drone2_Y, m_linear_drone2_Z;
-	size_t m_angular_drone2_X, m_angular_drone2_Y, m_angular_drone2_Z;
+	size_t m_drone2_x, m_drone2_y, m_drone2_z;
+	size_t m_drone2_rot_x, m_drone2_rot_y, m_drone2_rot_z;
+	size_t m_drone2_linear_x, m_drone2_linear_y, m_drone2_linear_z;
+	size_t m_drone2_angular_x, m_drone2_angular_y, m_drone2_angular_z;
 
-	size_t m_drone3_X, m_drone3_Y, m_drone3_Z;
-	size_t m_rotacion_drone3_X, m_rotacion_drone3_Y, m_rotacion_drone3_Z;
-	size_t m_angular_drone3_X, m_angular_drone3_Y, m_angular_drone3_Z;
-	size_t m_linear_drone3_X, m_linear_drone3_Y, m_linear_drone3_Z;
+	size_t m_drone3_x, m_drone3_y, m_drone3_z;
+	size_t m_drone3_rot_x, m_drone3_rot_y, m_drone3_rot_z;
+	size_t m_drone3_angular_x, m_drone3_angular_y, m_drone3_angular_z;
+	size_t m_drone3_linear_x, m_drone3_linear_y, m_drone3_linear_z;
 
-	size_t m_drone4_X, m_drone4_Y, m_drone4_Z;
-	size_t m_rotacion_drone4_X, m_rotacion_drone4_Y, m_rotacion_drone4_Z;
-	size_t m_linear_drone4_X, m_linear_drone4_Y, m_linear_drone4_Z;
-	size_t m_angular_drone4_X, m_angular_drone4_Y, m_angular_drone4_Z;
+	size_t m_drone4_x, m_drone4_y, m_drone4_z;
+	size_t m_drone4_rot_x, m_drone4_rot_y, m_drone4_rot_z;
+	size_t m_drone4_linear_x, m_drone4_linear_y, m_drone4_linear_z;
+	size_t m_drone4_angular_x, m_drone4_angular_y, m_drone4_angular_z;
 
 
 	// Action variables

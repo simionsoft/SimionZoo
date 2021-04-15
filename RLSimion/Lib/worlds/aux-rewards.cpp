@@ -76,26 +76,23 @@ double DistanceReward2D::getMax()
 	return 1.0;
 }
 
-DistanceReward3D::DistanceReward3D(Descriptor & stateDescr, const char * var1xName, const char * var1yName, const char * var1zName, const char * var1rotxName, const char * var1rotzName, const char* var1vlinearyName, const char * var2xName, const char * var2yName, const char * errorName)
+DistanceReward3D::DistanceReward3D(Descriptor & stateDescr,
+	const char * errorVarNameX, const char * errorVarNameY, const char * errorVarNameZ, double toleranceDistance)
 {
-	m_error = errorName;
+	m_errorVarNameX = errorVarNameX;
+	m_errorVarNameY = errorVarNameY;
+	m_errorVarNameZ = errorVarNameZ;
 
-	m_var1xId = var1xName;
-	m_var1yId = var1yName;
-	m_var1zId = var1zName;
-	m_var1rotxId = var1rotxName;
-	m_var1rotzId = var1rotzName;
-	m_var1vlinearId = var1vlinearyName;
-	m_var2xId = var2xName;
-	m_var2yId = var2yName;
-
-	m_maxDist = 1.0;// stateDescr.getProperties(m_error)->getRangeWidth();
+	m_maxDist = toleranceDistance;// stateDescr.getProperties(m_error)->getRangeWidth();
 }
 
 double DistanceReward3D::getReward(const State * s, const Action * a, const State * s_p)
 {
-	double error = abs(s_p->get(m_error));
+	double error_x = s_p->get(m_errorVarNameX);
+	double error_y = s_p->get(m_errorVarNameY);
+	double error_z = s_p->get(m_errorVarNameZ);
 
+	double error = sqrt(error_x * error_x + error_y * error_y + error_z * error_z);
 	double reward = 1. - error / m_maxDist;
 
 	reward = std::max(reward, getMin());

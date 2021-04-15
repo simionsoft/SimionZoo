@@ -274,12 +274,16 @@ double PIDDroneController::evaluate(const State* s, const Action* a, unsigned in
 
 double PIDDroneController::droneRotorForceOffset(unsigned int output)
 {
-	const unsigned int numVariationsPerRotor = 1 + 7 + 7;
-	const unsigned int numDrones = 4;
-	const double soft = 1;
+	const int numDrones = 4;
+	const int numRotorsPerDrone = 4;
+	const int numVariationsPerDrone = (1 + 7 + 7);
+	const int numValues = numVariationsPerDrone * numRotorsPerDrone;
+	const int numVariations = numValues * numDrones;
+	
+	const double soft = 0.1;
 	const double none = 0;
 	const double progressPhaseLength = 0.00001;
-	double setups[numVariationsPerRotor] =
+	double setups[numValues] =
 	{
 		none, none, none, none,
 		soft, soft, soft, -soft,
@@ -298,9 +302,17 @@ double PIDDroneController::droneRotorForceOffset(unsigned int output)
 		-soft, -soft, -soft, soft
 	};
 	double progress = SimionApp::get()->pExperiment->getTrainingProgress();
-	int setupId = progress / progressPhaseLength;
-	setupId = setupId % numVariationsPerRotor;
-	return setups[setupId*numDrones + output];
+	int variationId = ((unsigned int)(progress / progressPhaseLength)) % numVariations;
+
+	int drone = droneIndex(output);
+	int rotor = droneRotorIndex(output);
+
+	for (int i = 0; i < drone; i++)
+		variationId /= numVariationsPerDrone;
+
+	variationId = variationId % numVariationsPerDrone;
+
+	return setups[variationId * numRotorsPerDrone + rotor];
 }
 
 unsigned int PIDDroneController::droneIndex(unsigned int output)
