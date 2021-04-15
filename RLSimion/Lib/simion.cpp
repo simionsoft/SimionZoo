@@ -32,7 +32,12 @@
 #include "DQN.h"
 #include "DDPG.h"
 #include "deep-cacla.h"
-//#include "async-deep-simion.h"
+
+
+Simion::Simion(ConfigNode* pParameters)
+{
+	m_useAsController = ENUM_PARAM<UseAsController>(pParameters, "Use-As-Controller", "Determines in which types of episodes this simion will be used as controller", UseAsController::Always);
+}
 
 std::shared_ptr<Simion> Simion::getInstance(ConfigNode* pConfigNode)
 {

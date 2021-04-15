@@ -14,7 +14,7 @@
 #include "simion.h"
 #include "experiment.h"
 
-DeepCACLA::DeepCACLA(ConfigNode* pConfigNode)
+DeepCACLA::DeepCACLA(ConfigNode* pConfigNode) : Simion(pConfigNode)
 {
 	m_actorPolicy = CHILD_OBJECT<DeepDeterministicPolicy>(pConfigNode, "Policy", "Neural Network used to represent the actors policy");
 	m_noiseSignals = MULTI_VALUE_FACTORY<Noise>(pConfigNode, "Exploration-Noise", "Noise signals added to each of the outputs of the deterministic policy");

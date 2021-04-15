@@ -15,6 +15,7 @@ using namespace std;
 enum class Distribution { linear, quadratic, cubic };
 enum class Interpolation { linear, quadratic, cubic };
 enum class TimeReference { episode, experiment };
+enum class UseAsController { Always, OnTraining, OnEvaluations };
 
 template<typename DataType>
 class SimpleParam
@@ -69,6 +70,14 @@ protected:
 		const char* strValue = pConfigNode->getConstString(m_name);
 		if (strValue != nullptr)
 			value = DeepLayer::activationFromFunctionName(strValue);
+		else value = m_default;
+	}
+	void initValue(ConfigNode* pConfigNode, UseAsController& value)
+	{
+		const char* strValue = pConfigNode->getConstString(m_name);
+		if (!strcmp(strValue, "Always")) value = UseAsController::Always;
+		else if (!strcmp(strValue, "OnTraining")) value = UseAsController::OnTraining;
+		else if (!strcmp(strValue, "OnEvaluations")) value = UseAsController::OnEvaluations;
 		else value = m_default;
 	}
 

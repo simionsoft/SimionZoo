@@ -48,7 +48,7 @@ DQN::~DQN()
 	CNTK::WrapperLoader::UnLoad();
 }
 
-DQN::DQN(ConfigNode* pConfigNode)
+DQN::DQN(ConfigNode* pConfigNode) : Simion(pConfigNode)
 {
 	m_pQFunction = CHILD_OBJECT<DeepDiscreteQFunction>(pConfigNode, "Q-Network", "The definition of the Q-function learned by the agent");
 

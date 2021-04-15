@@ -239,7 +239,7 @@ double QLearningCritic::update(const State *s, const Action *a, const State *s_p
 	else return td;
 }
 
-QLearning::QLearning(ConfigNode* pConfigNode): QLearningCritic(pConfigNode)
+QLearning::QLearning(ConfigNode* pConfigNode): QLearningCritic(pConfigNode), Simion(pConfigNode)
 {
 	m_pQPolicy= CHILD_OBJECT_FACTORY<QPolicy>(pConfigNode, "Policy", "The policy to be followed");
 	m_bUseVFunctionAsBaseline = false;

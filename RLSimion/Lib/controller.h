@@ -9,13 +9,14 @@ typedef NamedVarSet Action;
 class ConfigNode;
 class NumericValue;
 
-class Controller : public Simion//, public StateActionFunction
+class Controller : public Simion
 {
 protected:
 	vector<string> m_inputStateVariables;
 	vector<string> m_inputActionVariables;
 	vector<double> m_output;
 public:
+	Controller(ConfigNode* pConfigNode);
 	virtual ~Controller(){}
 
 	virtual unsigned int getNumOutputs() = 0;

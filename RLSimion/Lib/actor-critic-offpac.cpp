@@ -38,7 +38,7 @@
 #include "simgod.h"
 #include "logger.h"
 
-OffPolicyActorCritic::OffPolicyActorCritic(ConfigNode* pConfigNode)
+OffPolicyActorCritic::OffPolicyActorCritic(ConfigNode* pConfigNode) : Simion(pConfigNode)
 {
 	SimionApp::get()->pLogger->addVarToStats("TD-error", "TD-error", m_td);
 	SimionApp::get()->pLogger->addVarToStats("m_rho", "m_rho", m_rho);

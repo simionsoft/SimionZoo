@@ -67,7 +67,8 @@ std::shared_ptr<Controller> Controller::getInstance(ConfigNode* pConfigNode)
 	});
 }
 
-
+Controller::Controller(ConfigNode* pConfigNode) : Simion(pConfigNode)
+{}
 
 //LQR//////////////////////////////////////////////////////////////////////////
 
@@ -77,7 +78,7 @@ LQRGain::LQRGain(ConfigNode* pConfigNode)
 	m_gain = DOUBLE_PARAM(pConfigNode, "Gain", "The gain applied to the input state variable", 0.1);
 }
 
-LQRController::LQRController(ConfigNode* pConfigNode)
+LQRController::LQRController(ConfigNode* pConfigNode) : Controller(pConfigNode)
 {
 	m_outputAction = ACTION_VARIABLE(pConfigNode, "Output-Action", "The output action");
 	m_gains = MULTI_VALUE<LQRGain>(pConfigNode, "LQR-Gain", "An LQR gain on an input state variable");
@@ -126,7 +127,7 @@ const char* LQRController::getOutputAction(size_t output)
 //PID//////////////////////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////////////////////
 
-PIDController::PIDController(ConfigNode* pConfigNode)
+PIDController::PIDController(ConfigNode* pConfigNode) : Controller(pConfigNode)
 {
 	m_outputAction= ACTION_VARIABLE(pConfigNode, "Output-Action", "The output action");
 	m_pKP = CHILD_OBJECT_FACTORY<NumericValue>(pConfigNode, "KP", "Proportional gain");
@@ -176,7 +177,7 @@ double PIDController::evaluate(const State* s, const Action* a, unsigned int out
 }
 
 
-PIDDroneController::PIDDroneController(ConfigNode* pConfigNode)
+PIDDroneController::PIDDroneController(ConfigNode* pConfigNode) : Controller(pConfigNode)
 {
 	m_pKP_V = CHILD_OBJECT_FACTORY<NumericValue>(pConfigNode, "KPV", "Proportional gain v");
 	m_pKP_F = CHILD_OBJECT_FACTORY<NumericValue>(pConfigNode, "KPF", "Proportional gain f");
@@ -335,7 +336,7 @@ WindTurbineVidalController::~WindTurbineVidalController()
 {
 }
 
-WindTurbineVidalController::WindTurbineVidalController(ConfigNode* pConfigNode)
+WindTurbineVidalController::WindTurbineVidalController(ConfigNode* pConfigNode) : Controller(pConfigNode)
 {
 	m_pA= CHILD_OBJECT_FACTORY<NumericValue>(pConfigNode, "A", "A parameter of the torque controller", new ConstantValue(1.0));
 	m_pK_alpha = CHILD_OBJECT_FACTORY<NumericValue>(pConfigNode,  "K_alpha", "K_alpha parameter of the torque controller", new ConstantValue(5000000));
@@ -429,7 +430,7 @@ WindTurbineBoukhezzarController::~WindTurbineBoukhezzarController()
 
 }
 
-WindTurbineBoukhezzarController::WindTurbineBoukhezzarController(ConfigNode* pConfigNode)
+WindTurbineBoukhezzarController::WindTurbineBoukhezzarController(ConfigNode* pConfigNode) : Controller(pConfigNode)
 {
 	m_pC_0	= CHILD_OBJECT_FACTORY<NumericValue>(pConfigNode,"C_0", "C_0 parameter", new ConstantValue(1.0) );
 	m_pKP = CHILD_OBJECT_FACTORY<NumericValue>(pConfigNode,"KP", "Proportional gain of the pitch controller", new ConstantValue(1.0) );
@@ -512,7 +513,7 @@ WindTurbineJonkmanController::~WindTurbineJonkmanController()
 {
 }
 
-WindTurbineJonkmanController::WindTurbineJonkmanController(ConfigNode* pConfigNode)
+WindTurbineJonkmanController::WindTurbineJonkmanController(ConfigNode* pConfigNode) : Controller(pConfigNode)
 {
 	//GENERATOR SPEED FILTER PARAMETERS
 	m_CornerFreq = DOUBLE_PARAM(pConfigNode, "CornerFreq", "Corner Freq. parameter", 1.570796);

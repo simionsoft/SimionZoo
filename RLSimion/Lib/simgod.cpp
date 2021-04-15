@@ -79,8 +79,17 @@ double SimGod::selectAction(State* s, Action* a)
 	double probability = 1.0;
 
 	for (unsigned int i = 0; i < m_simions.size(); i++)
-		probability*= m_simions[i]->selectAction(s, a);
+	{
+		UseAsController useAsController = m_simions[i]->getUseAsController();
+		bool evaluation = SimionApp::get()->pExperiment->isEvaluationEpisode();
 
+		if (useAsController == UseAsController::Always ||
+			(useAsController == UseAsController::OnEvaluations && evaluation) ||
+			(useAsController == UseAsController::OnTraining && !evaluation))
+		{
+			probability *= m_simions[i]->selectAction(s, a);
+		}
+	}
 	return probability;
 }
 

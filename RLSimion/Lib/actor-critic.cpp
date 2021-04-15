@@ -33,7 +33,7 @@
 
 #define MIN_PROBABILITY 0.00001
 
-ActorCritic::ActorCritic(ConfigNode* pConfigNode)
+ActorCritic::ActorCritic(ConfigNode* pConfigNode) : Simion(pConfigNode)
 {
 	m_td = 0.0;
 	SimionApp::get()->pLogger->addVarToStats<double>("TD-error", "TD-error", m_td);

@@ -41,7 +41,7 @@
 //Implementation according to
 //http://proceedings.mlr.press/v32/silver14.pdf
 
-OffPolicyDeterministicActorCritic::OffPolicyDeterministicActorCritic(ConfigNode* pConfigNode)
+OffPolicyDeterministicActorCritic::OffPolicyDeterministicActorCritic(ConfigNode* pConfigNode) : Simion(pConfigNode)
 {
 
 	SimionApp::get()->pLogger->addVarToStats("TD-error", "TD-error", m_td);

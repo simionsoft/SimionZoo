@@ -41,7 +41,7 @@
 
 #include "../../tools/System/CrossPlatform.h"
 
-IncrementalNaturalActorCritic::IncrementalNaturalActorCritic(ConfigNode* pConfigNode)
+IncrementalNaturalActorCritic::IncrementalNaturalActorCritic(ConfigNode* pConfigNode) : Simion(pConfigNode)
 {
 	cout.precision(5);
 	m_td = 0.0;

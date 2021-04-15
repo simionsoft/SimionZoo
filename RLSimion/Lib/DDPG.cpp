@@ -37,7 +37,7 @@
 #include "cntk-wrapper-loader.h"
 #include <algorithm>
 
-DDPG::DDPG(ConfigNode * pConfigNode)
+DDPG::DDPG(ConfigNode * pConfigNode) : Simion(pConfigNode)
 {
 	m_actorPolicy= CHILD_OBJECT<DeepDeterministicPolicy>(pConfigNode, "Policy", "Policy represented as a Neural Network learned by the actor");
 	m_noiseSignals = MULTI_VALUE_FACTORY<Noise>(pConfigNode, "Exploration-Noise", "Noise signals added to each of the outputs of the deterministic policy");
