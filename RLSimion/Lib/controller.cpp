@@ -176,7 +176,7 @@ double PIDController::evaluate(const State* s, const Action* a, unsigned int out
 	return error * m_pKP->get() + m_intError * m_pKI->get() + dError * m_pKD->get();
 }
 
-
+#include "noise.h"
 PIDDroneController::PIDDroneController(ConfigNode* pConfigNode) : Controller(pConfigNode)
 {
 	m_pKP_V = CHILD_OBJECT_FACTORY<NumericValue>(pConfigNode, "KPV", "Proportional gain v");
@@ -190,7 +190,10 @@ PIDDroneController::PIDDroneController(ConfigNode* pConfigNode) : Controller(pCo
 	m_inputStateVariables.push_back("error-z");
 	m_output = vector<double>(16);
 
-	//SimionApp::get()->registerStateActionFunction("PID", this);
+	for (int i = 0; i < 16; i++)
+	{
+		m_noise[i] = new OrnsteinUhlenbeckNoise(1.0, 0.1, 0.0, SimionApp::get()->pWorld->getDT());
+	}
 }
 
 PIDDroneController::~PIDDroneController()
@@ -275,6 +278,7 @@ double PIDDroneController::evaluate(const State* s, const Action* a, unsigned in
 
 double PIDDroneController::droneRotorForceOffset(unsigned int output)
 {
+	/*
 	const int numDrones = 4;
 	const int numRotorsPerDrone = 4;
 	const int numVariationsPerDrone = (1 + 7 + 7);
@@ -313,7 +317,37 @@ double PIDDroneController::droneRotorForceOffset(unsigned int output)
 
 	variationId = variationId % numVariationsPerDrone;
 
-	return setups[variationId * numRotorsPerDrone + rotor];
+	return setups[variationId * numRotorsPerDrone + rotor];*/
+	
+	const unsigned int numVariationsPerRotor = 1 + 7 + 7;
+	const unsigned int numDrones = 4;
+	const double soft = 1;
+	const double none = 0;
+	const double progressPhaseLength = 0.00001;
+	double setups[numVariationsPerRotor*numDrones] =
+	{
+		none, none, none, none,
+		soft, soft, soft, -soft,
+		soft, soft, -soft, soft,
+		soft, soft, -soft, -soft,
+		soft, -soft, soft, soft,
+		soft, -soft, soft, -soft,
+		soft, -soft, -soft, soft,
+		soft, -soft, -soft, -soft,
+		-soft, soft, soft, soft,
+		-soft, soft, soft, -soft,
+		-soft, soft, -soft, soft,
+		-soft, soft, -soft, -soft,
+		-soft, -soft, soft, soft,
+		-soft, -soft, soft, -soft,
+		-soft, -soft, -soft, soft
+	};
+	double progress = SimionApp::get()->pExperiment->getTrainingProgress();
+	int setupId = progress / progressPhaseLength;
+	setupId = setupId % numVariationsPerRotor;
+	return setups[setupId * numDrones + output] + m_noise[output]->getSample();
+
+	//return m_noise[output]->getSample();
 }
 
 unsigned int PIDDroneController::droneIndex(unsigned int output)

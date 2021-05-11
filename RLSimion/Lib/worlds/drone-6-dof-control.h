@@ -7,7 +7,7 @@
 class Robot;
 class BulletBody;
 class BulletPhysics;
-class SetPoint;
+class FileSetPoint;
 
 //Move box with 2 robots
 class Drone6DOFControl : public DynamicModel
@@ -48,7 +48,6 @@ class Drone6DOFControl : public DynamicModel
 	size_t m_drone4_linear_x, m_drone4_linear_y, m_drone4_linear_z;
 	size_t m_drone4_angular_x, m_drone4_angular_y, m_drone4_angular_z;
 
-
 	// Action variables
 	size_t m_force_1_1;
 	size_t m_force_1_2;
@@ -67,10 +66,10 @@ class Drone6DOFControl : public DynamicModel
 	size_t m_force_4_3;
 	size_t m_force_4_4;
 
-
-	///inicializaci�n
 	BulletPhysics* m_pBulletPhysics;
-	SetPoint* m_pSetpoint;
+	FileSetPoint* m_pSetpointX;
+	FileSetPoint* m_pSetpointY;
+	FileSetPoint* m_pSetpointZ;
 
 public:
 	Drone6DOFControl(ConfigNode* pParameters);

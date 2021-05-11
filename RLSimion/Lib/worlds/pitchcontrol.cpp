@@ -62,7 +62,7 @@ void PitchControl::reset(State *s)
 
 	if (SimionApp::get()->pExperiment->isEvaluationEpisode())
 		//setpoint file in case we're evaluating
-		s->set(m_sSetpointPitch,m_pSetpoint->getPointSet(0.0));
+		s->set(m_sSetpointPitch,m_pSetpoint->getSetPoint(0.0));
 	else
 	{
 		//random point in [-0.5,0.5]
@@ -72,7 +72,7 @@ void PitchControl::reset(State *s)
 	s->set(m_sAttackAngle,0.0);
 	s->set(m_sPitch,0.0);
 	s->set(m_sPitchRate,0.0);
-	s->set(m_sControlDeviation,m_pSetpoint->getPointSet(0.0));
+	s->set(m_sControlDeviation,m_pSetpoint->getSetPoint(0.0));
 }
 
 void PitchControl::executeAction(State *s, const Action *a, double dt)
@@ -81,7 +81,7 @@ void PitchControl::executeAction(State *s, const Action *a, double dt)
 	
 	if (SimionApp::get()->pExperiment->isEvaluationEpisode())
 	{
-		setpoint_pitch = m_pSetpoint->getPointSet(SimionApp::get()->pWorld->getEpisodeSimTime());
+		setpoint_pitch = m_pSetpoint->getSetPoint(SimionApp::get()->pWorld->getEpisodeSimTime());
 		s->set(m_sSetpointPitch, setpoint_pitch);
 	}
 	else

@@ -8,7 +8,7 @@ public:
 	SetPoint(){}
 	virtual ~SetPoint(){}
 
-	virtual double getPointSet(double time)= 0;
+	virtual double getSetPoint(double time)= 0;
 };
 
 class FileSetPoint: public SetPoint
@@ -23,7 +23,8 @@ public:
 	FileSetPoint(const char* filename);
 	virtual ~FileSetPoint();
 
-	double getPointSet(double time);
+	double getSetPoint(double time);
+	double getTotalTime() { return m_totalTime; }
 };
 
 class HHFileSetPoint : public FileSetPoint
@@ -44,5 +45,5 @@ public:
 	FixedStepSizeSetPoint(double stepTime, double min, double max);
 	virtual ~FixedStepSizeSetPoint();
 
-	double getPointSet(double time);
+	double getSetPoint(double time);
 };

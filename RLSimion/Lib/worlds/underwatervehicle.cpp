@@ -60,14 +60,14 @@ UnderwaterVehicle::~UnderwaterVehicle()
 
 void UnderwaterVehicle::reset(State *s)
 {
-	s->set(m_sVSetpoint,m_pSetpoint->getPointSet(0.0));
-	s->set(m_sVDeviation,m_pSetpoint->getPointSet(0.0));
+	s->set(m_sVSetpoint,m_pSetpoint->getSetPoint(0.0));
+	s->set(m_sVDeviation,m_pSetpoint->getSetPoint(0.0));
 	s->set(m_sV,0.0);
 }
 
 void UnderwaterVehicle::executeAction(State *s,const Action *a,double dt)
 {
-	double newSetpoint = m_pSetpoint->getPointSet(SimionApp::get()->pWorld->getEpisodeSimTime());
+	double newSetpoint = m_pSetpoint->getSetPoint(SimionApp::get()->pWorld->getEpisodeSimTime());
 	double v= s->get(m_sV);
 	double u= a->get(m_aUThrust); //thrust
 	double dot_v= (u*(-0.5*tanh((fabs((1.2+0.2*sin(fabs(v)))*v*fabs(v) - u) -30.0)*0.1) + 0.5) 

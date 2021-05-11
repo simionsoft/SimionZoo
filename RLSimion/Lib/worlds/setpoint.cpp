@@ -114,7 +114,7 @@ FileSetPoint::~FileSetPoint()
 	}
 }
 
-double FileSetPoint::getPointSet(double time)
+double FileSetPoint::getSetPoint(double time)
 {
 	int i= 0;
 
@@ -198,7 +198,7 @@ FixedStepSizeSetPoint::FixedStepSizeSetPoint(double stepTime, double min, double
 
 FixedStepSizeSetPoint::~FixedStepSizeSetPoint(){}
 
-double FixedStepSizeSetPoint::getPointSet(double time)
+double FixedStepSizeSetPoint::getSetPoint(double time)
 {
 	if (time==0.0 || (time-m_lastStepTime>m_stepTime))
 	{

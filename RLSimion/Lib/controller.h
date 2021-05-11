@@ -73,8 +73,11 @@ public:
 	double evaluate(const State* s, const Action *a, unsigned int output);
 };
 
+class OrnsteinUhlenbeckNoise;
+
 class PIDDroneController : public Controller
 {
+	OrnsteinUhlenbeckNoise* m_noise[16];
 	CHILD_OBJECT_FACTORY<NumericValue> m_pKP_V;
 	CHILD_OBJECT_FACTORY<NumericValue> m_pKP_F;
 	CHILD_OBJECT_FACTORY<NumericValue> m_pKD_V;

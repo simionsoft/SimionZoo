@@ -221,7 +221,7 @@ void WindTurbine::reset(State *s)
 
 	s->set("T_a",aerodynamicTorque(tsr,initial_blade_angle,initial_wind_speed));
 	s->set("P_a", s->get("T_a")*initial_rotor_speed);
-	s->set("P_s",m_pPowerSetpoint->getPointSet(0.0));
+	s->set("P_s",m_pPowerSetpoint->getSetPoint(0.0));
 
 	s->set("P_e", getConstant("RatedPower"));
 	s->set("E_p", s->get("P_e") - s->get("P_s"));
@@ -245,8 +245,8 @@ void WindTurbine::reset(State *s)
 
 void WindTurbine::executeAction(State *s, const Action *a, double dt)
 {
-	s->set("P_s", m_pPowerSetpoint->getPointSet(SimionApp::get()->pWorld->getEpisodeSimTime()));
-	s->set("v",m_pCurrentWindData->getPointSet(SimionApp::get()->pWorld->getEpisodeSimTime()));
+	s->set("P_s", m_pPowerSetpoint->getSetPoint(SimionApp::get()->pWorld->getEpisodeSimTime()));
+	s->set("v",m_pCurrentWindData->getSetPoint(SimionApp::get()->pWorld->getEpisodeSimTime()));
 
 	double lastBeta = s->get("beta");
 	double lastTorque = s->get("T_g");

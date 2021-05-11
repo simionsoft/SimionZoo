@@ -188,8 +188,12 @@ Drone6DOFControl::Drone6DOFControl(ConfigNode* pConfigNode)
 
 	}
 
-	FILE_PATH_PARAM filename = FILE_PATH_PARAM(pConfigNode, "Set-Point-File", "The setpoint file", "../config/world/drone6DOF/setpoint.txt");
-	m_pSetpoint = new FileSetPoint(filename.get());
+	FILE_PATH_PARAM setpointFileX = FILE_PATH_PARAM(pConfigNode, "Set-Point-File-X", "The setpoint file for the x coordinate", "../config/world/drone6DOF/setpoint-x.txt");
+	FILE_PATH_PARAM setpointFileY = FILE_PATH_PARAM(pConfigNode, "Set-Point-File-Y", "The setpoint file for the y coordinate", "../config/world/drone6DOF/setpoint-y.txt");
+	FILE_PATH_PARAM setpointFileZ = FILE_PATH_PARAM(pConfigNode, "Set-Point-File-Z", "The setpoint file for the z coordinate", "../config/world/drone6DOF/setpoint-z.txt");
+	m_pSetpointX = new FileSetPoint(setpointFileX.get());
+	m_pSetpointY = new FileSetPoint(setpointFileY.get());
+	m_pSetpointZ = new FileSetPoint(setpointFileZ.get());
 
 	//the reward function
 	m_pRewardFunction->addRewardComponent(new DistanceReward3D(getStateDescriptor(), "error-x", "error-y", "error-z", 1.0));
@@ -200,16 +204,25 @@ void Drone6DOFControl::reset(State* s)
 {
 	double start_x, start_y, start_z;
 	double target_x, target_y, target_z;
-	const double randomRange = 10.0;
+	double randomRange;
+	const double minRandomRange = 1.0;
+	const double maxRandomRange = 10.0;
 
 	if (SimionApp::get()->pExperiment->isEvaluationEpisode())
 	{
-		//fixed setting in evaluation episodes
-		start_x = 10.0; start_y = 5.0; start_z = 10.0;
-		target_x = -3.0; target_y = 10.0; target_z = 2;
+		//start from the setpoint start point
+		start_x = m_pSetpointX->getSetPoint(0.0);
+		start_y = m_pSetpointY->getSetPoint(0.0);
+		start_z = m_pSetpointZ->getSetPoint(0.0);
+		target_x = m_pSetpointX->getSetPoint(0.0);
+		target_y = m_pSetpointY->getSetPoint(0.0);
+		target_z = m_pSetpointZ->getSetPoint(0.0);
 	}
 	else
 	{
+		randomRange = minRandomRange + (maxRandomRange - minRandomRange) 
+			* SimionApp::get()->pExperiment->getExperimentProgress();
+
 		//random settings in training episodes
 		start_x = -(randomRange * 0.5) + getRandomValue() * randomRange;
 		start_y = getRandomValue() * randomRange * 2.0;
@@ -233,19 +246,21 @@ void Drone6DOFControl::reset(State* s)
 
 void Drone6DOFControl::executeAction(State* s, const Action* a, double dt)
 {
-	//if (SimionApp::get()->pExperiment->isEvaluationEpisode())
-	//{
-	//	double setpoint_pitch = m_pSetpoint->getPointSet(SimionApp::get()->pWorld->getEpisodeSimTime());
-	//	s->set(m_target_z, setpoint_pitch);
-	//}
-	//else
-	//{
-	//	double setpoint_pitch = m_pSetpoint->getPointSet(SimionApp::get()->pWorld->getEpisodeSimTime());
-	//	s->set(m_target_z, setpoint_pitch);
-	//}
+	if (SimionApp::get()->pExperiment->isEvaluationEpisode())
+	{
+		double setpointX = m_pSetpointX->getSetPoint(SimionApp::get()->pWorld->getEpisodeSimTime());
+		double setpointY = m_pSetpointY->getSetPoint(SimionApp::get()->pWorld->getEpisodeSimTime());
+		double setpointZ = m_pSetpointZ->getSetPoint(SimionApp::get()->pWorld->getEpisodeSimTime());
+		s->set(m_target_x, setpointX);
+		s->set(m_target_y, setpointY);
+		s->set(m_target_z, setpointZ);
+	}
+
 	btTransform trans;
-	//balioa t-1
-	double error_z_previo = s->get("error-z");
+	
+	double lastXError = s->get("error-x");
+	double lastYError = s->get("error-y");
+	double lastZError = s->get("error-z");
 	m_pBulletPhysics->updateBulletState(s, a, dt);
 
 	//Update Drone
@@ -254,9 +269,16 @@ void Drone6DOFControl::executeAction(State* s, const Action* a, double dt)
 	//Update
 	m_pBulletPhysics->updateState(s);
 
-	//eguneratu
+	//calculate error derivatives
+	double error_x = s->get("error-x");
+	double error_y = s->get("error-y");
 	double error_z = s->get("error-z");
-	double d_error_z = (error_z - error_z_previo) / SimionApp::get()->pWorld->getDT();
+
+	double d_error_x = (error_x - lastXError) / SimionApp::get()->pWorld->getDT();
+	s->set("d-error-x", d_error_x);
+	double d_error_y = (error_y - lastYError) / SimionApp::get()->pWorld->getDT();
+	s->set("d-error-y", d_error_y);
+	double d_error_z = (error_z - lastZError) / SimionApp::get()->pWorld->getDT();
 	s->set("d-error-z", d_error_z);
 
 }
@@ -264,6 +286,6 @@ void Drone6DOFControl::executeAction(State* s, const Action* a, double dt)
 Drone6DOFControl::~Drone6DOFControl()
 {
 	delete m_pBulletPhysics;
-	delete m_pSetpoint;
+	delete m_pSetpointX;
 }
 
