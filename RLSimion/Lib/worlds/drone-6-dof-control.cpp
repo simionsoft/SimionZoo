@@ -204,6 +204,7 @@ void Drone6DOFControl::reset(State* s)
 {
 	double start_x, start_y, start_z;
 	double target_x, target_y, target_z;
+	double start_rot_x, start_rot_y, start_rot_z;
 	double randomRange;
 	const double minRandomRange = 1.0;
 	const double maxRandomRange = 10.0;
@@ -217,6 +218,9 @@ void Drone6DOFControl::reset(State* s)
 		target_x = m_pSetpointX->getSetPoint(0.0);
 		target_y = m_pSetpointY->getSetPoint(0.0);
 		target_z = m_pSetpointZ->getSetPoint(0.0);
+		start_rot_x = 0.0;
+		start_rot_y = 0.0;
+		start_rot_z = 0.0;
 	}
 	else
 	{
@@ -229,7 +233,11 @@ void Drone6DOFControl::reset(State* s)
 		start_z = -(randomRange * 0.5) + getRandomValue() * randomRange;
 		target_x = -(randomRange * 0.5) + getRandomValue() * randomRange;
 		target_y = getRandomValue() * randomRange * 2.0;
-		target_z = -(randomRange * 0.5) + getRandomValue() * randomRange ;
+		target_z = -(randomRange * 0.5) + getRandomValue() * randomRange;
+
+		start_rot_x = -0.1 + getRandomValue() * 0.2;
+		start_rot_y = getRandomValue() * 3.1416;
+		start_rot_z = -0.1 + getRandomValue() * 0.2;
 	}
 	s->set("base-x", start_x);
 	s->set("base-y", start_y);
@@ -240,6 +248,9 @@ void Drone6DOFControl::reset(State* s)
 	s->set("error-x", target_x - start_x);
 	s->set("error-y", target_y - start_y);
 	s->set("error-z", target_z - start_z);
+	s->set("base-rot-x", start_rot_x);
+	s->set("base-rot-y", start_rot_y);
+	s->set("base-rot-z", start_rot_z);
 
 	m_pBulletPhysics->reset(s);
 }

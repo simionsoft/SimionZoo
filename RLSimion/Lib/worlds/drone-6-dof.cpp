@@ -219,6 +219,9 @@ void Drone6DOF::reset(State * s)
 	double pos_x = s->get("base-x");
 	double pos_y = s->get("base-y");
 	double pos_z = s->get("base-z");
+	double rot_x = s->get("base-rot-x");
+	double rot_y = s->get("base-rot-y");
+	double rot_z = s->get("base-rot-z");
 	
 	btTransform bodyTransform;
 	btQuaternion orientation;
@@ -231,7 +234,8 @@ void Drone6DOF::reset(State * s)
 
 		bodyTransform = m_bodies[i]->getWorldTransform();
 		bodyTransform.setOrigin(m_origins[i] + btVector3(pos_x, pos_y, pos_z));
-		orientation.setEuler(0.0, 0.0, 0.0);
+
+		orientation.setEuler(rot_x, rot_y, rot_z);
 		bodyTransform.setRotation(orientation);
 
 		m_bodies[i]->setWorldTransform(bodyTransform);

@@ -345,7 +345,7 @@ double PIDDroneController::droneRotorForceOffset(unsigned int output)
 	double progress = SimionApp::get()->pExperiment->getTrainingProgress();
 	int setupId = progress / progressPhaseLength;
 	setupId = setupId % numVariationsPerRotor;
-	return setups[setupId * numDrones + output] + m_noise[output]->getSample();
+	return setups[setupId * numDrones + output];// +m_noise[output]->getSample();
 
 	//return m_noise[output]->getSample();
 }
