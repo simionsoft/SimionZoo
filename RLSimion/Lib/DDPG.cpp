@@ -95,10 +95,12 @@ double DDPG::selectAction(const State * s, Action * a)
 {
 	vector<double>& policyOutput = m_pActorTargetNetwork->evaluate(s, a);
 
+	//copy the output of the policy to the action
+	m_actorPolicy->vectorToAction(policyOutput, 0, a);
+
 	if (SimionApp::get()->pExperiment->isEvaluationEpisode())
 	{
-		//just copy the output of the policy to the action
-		m_actorPolicy->vectorToAction(policyOutput, 0, a);
+		//No need to add noise
 		return 1.0;
 	}
 
@@ -111,8 +113,8 @@ double DDPG::selectAction(const State * s, Action * a)
 		noiseSignalIndex = std::min(i, m_noiseSignals.size() - 1);
 
 		noise = m_noiseSignals[i]->getSample();
-		a->set(m_actorPolicy->getUsedActionVariables()[i].c_str()
-			, policyOutput[i] + noise);
+		const char* variableName = m_actorPolicy->getUsedActionVariables()[i].c_str();
+		a->set(variableName, a->get(variableName) + noise);
 	}
 
 	return 1.0;
@@ -153,6 +155,39 @@ void DDPG::updateActor(const State* s, const Action* a, const State* s_p, double
 
 	double gamma = SimionApp::get()->pSimGod->getGamma();
 
+	int episode = SimionApp::get()->pExperiment->getEpisodeIndex();
+	static int lastEpisode = -1;
+	if (episode % 10 == 0 && episode != lastEpisode)
+	{
+		vector<double> test_s = vector<double>(8);
+		test_s[0] = 10;
+		test_s[1] = -2;
+		test_s[2] = 10;
+		test_s[3] = 2;
+		test_s[4] = 40;
+		test_s[5] = -2;
+		test_s[6] = 40;
+		test_s[7] = 2;
+
+		vector<double> test_a = vector<double>(4);
+		test_a[0] = 0.25;
+		test_a[1] = 0.75;
+		test_a[2] = 0.25;
+		test_a[3] = 0.75;
+		vector<double> test_pi = vector<double>(4);
+		vector<double> test_pi_2 = vector<double>(4);
+		m_pActorOnlineNetwork->evaluate(test_s, test_pi);
+
+		vector<double> gradient = vector<double>(4);
+		m_pCriticTargetNetwork->gradientWrtAction(test_s, test_a, gradient);
+
+		for (size_t i = 0; i < gradient.size(); i++)
+			gradient[i] *= -1.0;
+
+		m_pActorOnlineNetwork->applyGradient(m_pActorMinibatch->s(), gradient);
+		m_pActorOnlineNetwork->evaluate(test_s, test_pi_2);
+	}
+
 	//get pi(s)
 	m_pActorTargetNetwork->evaluate( m_pActorMinibatch->s(), m_pi_s);
 
@@ -163,7 +198,7 @@ void DDPG::updateActor(const State* s, const Action* a, const State* s_p, double
 	for (size_t i = 0; i < m_pActorMinibatch->target().size(); i++)
 		m_pActorMinibatch->target()[i] *= -1.0;
 
-	m_pActorOnlineNetwork->applyGradient(m_pActorMinibatch, m_pActorMinibatch->target());
+	m_pActorOnlineNetwork->applyGradient(m_pActorMinibatch->s(), m_pActorMinibatch->target());
 
 	if (m_numUpdates % m_targetFunctionUpdateFreq == 0)
 	{
@@ -180,6 +215,29 @@ void DDPG::updateCritic(const State* s, const Action* a, const State* s_p, doubl
 
 	double gamma = pSimGod->getGamma();
 
+	int episode = SimionApp::get()->pExperiment->getEpisodeIndex();
+	static int lastEpisode = -1;
+	if (episode % 10 == 0 && episode != lastEpisode)
+	{
+		lastEpisode = episode;
+		vector<double> test_s = vector<double>(8);
+		test_s[0] = 0.25;
+		test_s[1] = 0.5;
+		test_s[2] = 0.25;
+		test_s[3] = 0.5;
+		test_s[4] = 0.75;
+		test_s[5] = 0.5;
+		test_s[6] = 0.75;
+		test_s[7] = 0.5;
+		vector<double> test_a = vector<double>(4);
+		test_a[0] = 0.25;
+		test_a[1] = 0.75;
+		test_a[2] = 0.25;
+		test_a[3] = 0.75;
+		vector<double> test_Q_sa = vector<double>(4);
+		m_pCriticOnlineNetwork->evaluate(test_s, test_a, test_Q_sa);
+	}
+
 	//calculate pi(s_p)
 	m_pActorTargetNetwork->evaluate(m_pActorMinibatch->s_p(), m_pi_s_p);
 
@@ -189,7 +247,7 @@ void DDPG::updateCritic(const State* s, const Action* a, const State* s_p, doubl
 	for (int i = 0; i < m_pCriticMinibatch->size(); i++)
 	{
 		//calculate targetvalue= r + gamma*Q(s_p,a)
-		m_pCriticMinibatch->target()[i] = r + gamma * m_Q_pi_s_p[i];
+		m_pCriticMinibatch->target()[i] = m_pCriticMinibatch->r()[i] + gamma * m_Q_pi_s_p[i];
 	}
 
 	//update the network finally

@@ -443,9 +443,9 @@ CntkDeterministicPolicyNetwork::CntkDeterministicPolicyNetwork(vector<string> in
 	m_outputActionVariables = outputActionVariables;
 	m_inputState = CNTK::InputVariable({ getInputStateVariables().size() }
 		, CNTK::DataType::Double, false, m_stateInputVariableId);
-	// Because we are using normalized action, we send the network output through a sigmoid function so that the output is scaled to [0,1]
-	//m_networkOutput = CNTK::Sigmoid(initNetworkFromInputLayer(m_inputState), m_actionScaleFunctionId);
-	m_networkOutput = initNetworkFromInputLayer(m_inputState);
+	// Because we are using normalized actions, we send the network output through a sigmoid function so that the output is scaled to [0,1]
+	m_networkOutput = CNTK::Sigmoid(initNetworkFromInputLayer(m_inputState), m_actionScaleFunctionId);
+	//m_networkOutput = initNetworkFromInputLayer(m_inputState);
 	m_fullNetworkLearnerFunction = initNetworkLearner(m_learnerDefinition);
 }
 void CntkDeterministicPolicyNetwork::destroy() { delete this; }
@@ -481,7 +481,7 @@ void CntkDeterministicPolicyNetwork::softUpdate(IDeepNetwork* pSource, double al
 	CntkNetwork::_softUpdate((CntkNetwork*)pSource, alpha);
 }
 
-void CntkDeterministicPolicyNetwork::applyGradient(DeepMinibatch* pMinibatch, const vector<double>& gradient)
+void CntkDeterministicPolicyNetwork::applyGradient(const vector<double>& s, const vector<double>& gradient)
 {
 	//Similar to the actual training function in https://github.com/Microsoft/CNTK/blob/94e6582d2f63ce3bb048b9da01679abeacda877f/Source/CNTKv2LibraryDll/Trainer.cpp#L193
 	//but with a different root value (taken from the minibatch) that, in the case of DDPG, should be -dQ(s,a)/da
@@ -489,19 +489,19 @@ void CntkDeterministicPolicyNetwork::applyGradient(DeepMinibatch* pMinibatch, co
 	unordered_map<Variable, ValuePtr> arguments = {};
 	unordered_map<Variable, ValuePtr> output = {};
 
-	arguments[m_inputState] = CNTK::Value::CreateBatch(m_inputState.Shape(), pMinibatch->s(), CNTK::DeviceDescriptor::UseDefaultDevice());
+	arguments[m_inputState] = CNTK::Value::CreateBatch(m_inputState.Shape(), s, CNTK::DeviceDescriptor::UseDefaultDevice());
 
 	output[m_networkOutput] = nullptr;
 
 	auto backPropState = m_networkOutput->Forward(arguments, output, DeviceDescriptor::UseDefaultDevice(), { m_networkOutput });
 
 	//Backward pass
-	vector<double> RootValue = vector<double>(pMinibatch->size() * m_outputActionVariables.size());
+	vector<double> RootValue = vector<double>(s.size() * m_outputActionVariables.size());
 	auto RootGradientValue = MakeSharedObject<Value>(MakeSharedObject<NDArrayView>(
 		m_networkOutput->Output().Shape().AppendShape({ 1, RootValue.size() / m_networkOutput->Output().Shape().TotalSize() })
 		, RootValue, false));
 
-	for (int i = 0; i < pMinibatch->target().size(); i++)
+	for (int i = 0; i < gradient.size(); i++)
 		RootValue[i] = gradient[i];
 
 	unordered_map<Variable, ValuePtr> parameterGradients = {};
@@ -517,6 +517,6 @@ void CntkDeterministicPolicyNetwork::applyGradient(DeepMinibatch* pMinibatch, co
 		for (const auto& parameter : learner->Parameters())
 			gradientsData[parameter] = parameterGradients[parameter]->Data();
 
-		learner->Update(gradientsData, pMinibatch->size(), false);
+		learner->Update(gradientsData, gradient.size(), false);
 	}
 }
