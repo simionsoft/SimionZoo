@@ -31,6 +31,7 @@ class DDPG : public Simion, DeferredLoad
 	MULTI_VALUE_FACTORY<Noise> m_noiseSignals;
 	vector<double> m_pi_s;
 	vector<double> m_pi_s_p;
+	vector<double> m_gradient;
 	//Critic
 	DeepMinibatch* m_pCriticMinibatch = nullptr;
 	IContinuousQFunctionNetwork* m_pCriticOnlineNetwork = nullptr;

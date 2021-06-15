@@ -134,5 +134,5 @@ public:
 	void evaluate(const vector<double>& s, vector<double>& output);
 	vector<double>& evaluate(const State* s, const Action* a);
 	void softUpdate(IDeepNetwork* pSource, double alpha);
-	void applyGradient(const vector<double>& s, const vector<double>& gradient);
+	void applyGradient(const vector<double>& s, const vector<double>& target);
 };

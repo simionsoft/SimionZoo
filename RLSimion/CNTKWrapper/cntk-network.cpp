@@ -238,7 +238,43 @@ void CntkNetwork::stateToVector(const State* s, vector<double>& stateVector)
 
 void CntkNetwork::_softUpdate(CntkNetwork* pSource, double alpha)
 {
+	int parameterLearnerIndex = 0;
+	int parameterIndex = 0;
 
+	vector<Parameter> sourceParams = pSource->m_networkOutput->Parameters();
+	vector<Parameter> targetParams = m_networkOutput->Parameters();
+
+	for (const Parameter& targetParameter: m_networkOutput->Parameters())
+	{
+	//	for (const Parameter& targetParameter : learner->Parameters())
+		{
+			//if (!targetParameter.IsInput() && !targetParameter.IsOutput())
+			{
+				Parameter sourceParameter = sourceParams[parameterIndex];
+
+				NDShape shape = sourceParameter.Shape();
+				vector<double> sourceParameterValue = vector<double>(shape.TotalSize());
+				NDArrayViewPtr sourceParameterView =
+					MakeSharedObject<NDArrayView>(sourceParameter.Shape(), sourceParameterValue, false);
+				sourceParameterView->CopyFrom(*sourceParameter.GetValue());
+
+				size_t targetParameterSize = targetParameter.Shape().TotalSize();
+				vector<double> targetParameterValue = vector<double>(targetParameterSize);
+				NDArrayViewPtr targetParameterView =
+					MakeSharedObject<NDArrayView>(targetParameter.Shape(), targetParameterValue, false);
+				targetParameterView->CopyFrom(*targetParameter.GetValue());
+
+				for (int i = 0; i < sourceParameterValue.size(); i++)
+					targetParameterValue[i] = targetParameterValue[i] * (1 - alpha) + sourceParameterValue[i] * (alpha);
+
+				targetParameter.Value()->CopyFrom(*targetParameterView);
+				//qParameterGradientCpuArrayView->CopyFrom(*gradientPtr->Data());
+			}
+
+			parameterIndex++;
+		}
+		parameterLearnerIndex++;
+	}
 }
 
 // CntkDiscreteQFunctionNetwork
@@ -274,7 +310,7 @@ vector<double>& CntkDiscreteQFunctionNetwork::evaluate(const State* s, const Act
 }
 void CntkDiscreteQFunctionNetwork::softUpdate(IDeepNetwork* pSource, double alpha)
 {
-	CntkNetwork::_softUpdate((CntkNetwork*) pSource, alpha);
+	CntkNetwork::_softUpdate((CntkDiscreteQFunctionNetwork*) pSource, alpha);
 }
 
 // CntkContinuousQFunctionNetwork
@@ -395,7 +431,7 @@ void CntkContinuousQFunctionNetwork::gradientWrtAction(const vector<double>& s, 
 
 void CntkContinuousQFunctionNetwork::softUpdate(IDeepNetwork* pSource, double alpha)
 {
-	CntkNetwork::_softUpdate((CntkNetwork*)pSource, alpha);
+	CntkNetwork::_softUpdate((CntkContinuousQFunctionNetwork*)pSource, alpha);
 }
 
 // CntkVFunctionNetwork
@@ -432,7 +468,7 @@ vector<double>& CntkVFunctionNetwork::evaluate(const State* s, const Action* a)
 
 void CntkVFunctionNetwork::softUpdate(IDeepNetwork* pSource, double alpha)
 {
-	CntkNetwork::_softUpdate((CntkNetwork*)pSource, alpha);
+	CntkNetwork::_softUpdate((CntkVFunctionNetwork*)pSource, alpha);
 }
 
 // CntkDeterministicPolicyNetwork
@@ -445,7 +481,7 @@ CntkDeterministicPolicyNetwork::CntkDeterministicPolicyNetwork(vector<string> in
 		, CNTK::DataType::Double, false, m_stateInputVariableId);
 	// Because we are using normalized actions, we send the network output through a sigmoid function so that the output is scaled to [0,1]
 	m_networkOutput = CNTK::Sigmoid(initNetworkFromInputLayer(m_inputState), m_actionScaleFunctionId);
-	//m_networkOutput = initNetworkFromInputLayer(m_inputState);
+	
 	m_fullNetworkLearnerFunction = initNetworkLearner(m_learnerDefinition);
 }
 void CntkDeterministicPolicyNetwork::destroy() { delete this; }
@@ -478,10 +514,10 @@ vector<double>& CntkDeterministicPolicyNetwork::evaluate(const State* s, const A
 
 void CntkDeterministicPolicyNetwork::softUpdate(IDeepNetwork* pSource, double alpha)
 {
-	CntkNetwork::_softUpdate((CntkNetwork*)pSource, alpha);
+	CntkNetwork::_softUpdate((CntkDeterministicPolicyNetwork*)pSource, alpha);
 }
 
-void CntkDeterministicPolicyNetwork::applyGradient(const vector<double>& s, const vector<double>& gradient)
+void CntkDeterministicPolicyNetwork::applyGradient(const vector<double>& s, const vector<double>& target)
 {
 	//Similar to the actual training function in https://github.com/Microsoft/CNTK/blob/94e6582d2f63ce3bb048b9da01679abeacda877f/Source/CNTKv2LibraryDll/Trainer.cpp#L193
 	//but with a different root value (taken from the minibatch) that, in the case of DDPG, should be -dQ(s,a)/da
@@ -496,15 +532,16 @@ void CntkDeterministicPolicyNetwork::applyGradient(const vector<double>& s, cons
 	auto backPropState = m_networkOutput->Forward(arguments, output, DeviceDescriptor::UseDefaultDevice(), { m_networkOutput });
 
 	//Backward pass
-	vector<double> RootValue = vector<double>(s.size() * m_outputActionVariables.size());
+	vector<double> RootValue = vector<double>(target.size());
 	auto RootGradientValue = MakeSharedObject<Value>(MakeSharedObject<NDArrayView>(
 		m_networkOutput->Output().Shape().AppendShape({ 1, RootValue.size() / m_networkOutput->Output().Shape().TotalSize() })
 		, RootValue, false));
 
-	for (int i = 0; i < gradient.size(); i++)
-		RootValue[i] = gradient[i];
+	for (int i = 0; i < target.size(); i++)
+		RootValue[i] = target[i];
 
 	unordered_map<Variable, ValuePtr> parameterGradients = {};
+	//parameterGradients[m_inputState] = nullptr;
 	for (const LearnerPtr& learner : m_trainer->ParameterLearners())
 		for (const Parameter& parameter : learner->Parameters())
 			parameterGradients[parameter] = nullptr;
@@ -517,6 +554,6 @@ void CntkDeterministicPolicyNetwork::applyGradient(const vector<double>& s, cons
 		for (const auto& parameter : learner->Parameters())
 			gradientsData[parameter] = parameterGradients[parameter]->Data();
 
-		learner->Update(gradientsData, gradient.size(), false);
+		learner->Update(gradientsData, target.size(), false);
 	}
 }

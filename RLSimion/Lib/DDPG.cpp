@@ -71,17 +71,20 @@ void DDPG::deferredLoadStep()
 	//Initialize the actor
 	m_pActorMinibatch = m_actorPolicy->getMinibatch();
 	m_pActorOnlineNetwork = m_actorPolicy->getNetworkInstance();
-	m_pActorTargetNetwork = (IDeterministicPolicyNetwork*) m_pActorOnlineNetwork->clone();
-	SimionApp::get()->registerStateActionFunction("Policy", m_pActorOnlineNetwork);
+	m_pActorTargetNetwork = (IDeterministicPolicyNetwork*) m_pActorOnlineNetwork->clone(false);
+	SimionApp::get()->registerStateActionFunction("Online Policy", m_pActorOnlineNetwork);
+	SimionApp::get()->registerStateActionFunction("Target Policy", m_pActorTargetNetwork);
 
 	m_pi_s = vector<double>(m_actorPolicy->getNumOutputs() * m_pActorMinibatch->size());
 	m_pi_s_p = vector<double>(m_actorPolicy->getNumOutputs() * m_pActorMinibatch->size());
+	m_gradient = vector<double>(m_actorPolicy->getNumOutputs() * m_pActorMinibatch->size());
 
 	//Initialise the critic
 	m_pCriticMinibatch = m_criticQFunction->getMinibatch();
 	m_pCriticOnlineNetwork = m_criticQFunction->getNetworkInstance();
-	m_pCriticTargetNetwork = (IContinuousQFunctionNetwork*) m_pCriticOnlineNetwork->clone();
-	SimionApp::get()->registerStateActionFunction("Q", m_pCriticOnlineNetwork);
+	m_pCriticTargetNetwork = (IContinuousQFunctionNetwork*) m_pCriticOnlineNetwork->clone(false);
+	SimionApp::get()->registerStateActionFunction("Online Q", m_pCriticOnlineNetwork);
+	SimionApp::get()->registerStateActionFunction("Target Q", m_pCriticTargetNetwork);
 
 	m_Q_pi_s_p = vector<double>(m_pCriticMinibatch->size());
 }
@@ -155,7 +158,7 @@ void DDPG::updateActor(const State* s, const Action* a, const State* s_p, double
 
 	double gamma = SimionApp::get()->pSimGod->getGamma();
 
-	int episode = SimionApp::get()->pExperiment->getEpisodeIndex();
+	/*int episode = SimionApp::get()->pExperiment->getEpisodeIndex();
 	static int lastEpisode = -1;
 	if (episode % 10 == 0 && episode != lastEpisode)
 	{
@@ -179,34 +182,35 @@ void DDPG::updateActor(const State* s, const Action* a, const State* s_p, double
 		m_pActorOnlineNetwork->evaluate(test_s, test_pi);
 
 		vector<double> gradient = vector<double>(4);
+		vector<double> target = vector<double>(4);
 		m_pCriticTargetNetwork->gradientWrtAction(test_s, test_a, gradient);
 
-		for (size_t i = 0; i < gradient.size(); i++)
-			gradient[i] *= -1.0;
+		for (size_t i = 0; i < target.size(); i++)
+			target[i] = -gradient[i];
 
-		m_pActorOnlineNetwork->applyGradient(m_pActorMinibatch->s(), gradient);
+		m_pActorOnlineNetwork->applyGradient(test_s, target);
 		m_pActorOnlineNetwork->evaluate(test_s, test_pi_2);
-	}
+	}*/
 
 	//get pi(s)
 	m_pActorTargetNetwork->evaluate( m_pActorMinibatch->s(), m_pi_s);
 
 	//gradient = critic->gradient(s, pi(s))
-	m_pCriticTargetNetwork->gradientWrtAction( m_pCriticMinibatch->s(), m_pi_s, m_pActorMinibatch->target());
+	m_pCriticTargetNetwork->gradientWrtAction( m_pCriticMinibatch->s(), m_pi_s, m_gradient);
 
 	//gradient = -gradient
 	for (size_t i = 0; i < m_pActorMinibatch->target().size(); i++)
-		m_pActorMinibatch->target()[i] *= -1.0;
+		m_pActorMinibatch->target()[i] = - m_gradient[i];
 
 	m_pActorOnlineNetwork->applyGradient(m_pActorMinibatch->s(), m_pActorMinibatch->target());
 
-	if (m_numUpdates % m_targetFunctionUpdateFreq == 0)
+	/*if (m_numUpdates % m_targetFunctionUpdateFreq == 0)
 	{
 		m_pActorTargetNetwork->destroy();
 		m_pActorTargetNetwork = (IDeterministicPolicyNetwork*) m_pActorOnlineNetwork->clone();
-	}
+	}*/
 
-	//m_pActorTargetNetwork->softUpdate(m_pActorOnlineNetwork);
+	m_pActorTargetNetwork->softUpdate(m_pActorOnlineNetwork, m_tau.get());
 }
 
 void DDPG::updateCritic(const State* s, const Action* a, const State* s_p, double r)
@@ -215,7 +219,7 @@ void DDPG::updateCritic(const State* s, const Action* a, const State* s_p, doubl
 
 	double gamma = pSimGod->getGamma();
 
-	int episode = SimionApp::get()->pExperiment->getEpisodeIndex();
+	/*int episode = SimionApp::get()->pExperiment->getEpisodeIndex();
 	static int lastEpisode = -1;
 	if (episode % 10 == 0 && episode != lastEpisode)
 	{
@@ -236,7 +240,7 @@ void DDPG::updateCritic(const State* s, const Action* a, const State* s_p, doubl
 		test_a[3] = 0.75;
 		vector<double> test_Q_sa = vector<double>(4);
 		m_pCriticOnlineNetwork->evaluate(test_s, test_a, test_Q_sa);
-	}
+	}*/
 
 	//calculate pi(s_p)
 	m_pActorTargetNetwork->evaluate(m_pActorMinibatch->s_p(), m_pi_s_p);
@@ -254,13 +258,13 @@ void DDPG::updateCritic(const State* s, const Action* a, const State* s_p, doubl
 	m_pCriticOnlineNetwork->train(m_pCriticMinibatch, m_pCriticMinibatch->target(), m_criticQFunction->getLearningRate());
 
 	//move the target weights toward the online weights
-	//m_pCriticTargetNetwork->softUpdate(m_pCriticOnlineNetwork);
-
+	m_pCriticTargetNetwork->softUpdate(m_pCriticOnlineNetwork, m_tau.get());
+	/*
 	if (m_numUpdates % m_targetFunctionUpdateFreq == 0)
 	{
 		m_pCriticTargetNetwork->destroy();
 		m_pCriticTargetNetwork = (IContinuousQFunctionNetwork*) m_pCriticOnlineNetwork->clone();
-	}
+	}*/
 }
 
 #endif

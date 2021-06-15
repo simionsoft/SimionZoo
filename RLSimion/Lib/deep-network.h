@@ -50,5 +50,5 @@ public:
 	virtual void evaluate(const vector<double>& s, vector<double>& output) = 0;
 	virtual vector<double>& evaluate(const State* s, const Action* a) = 0;
 	virtual void softUpdate(IDeepNetwork* pSourceNetwork, double alpha) = 0;
-	virtual void applyGradient(const vector<double>& s, const vector<double>& gradient)= 0;
+	virtual void applyGradient(const vector<double>& s, const vector<double>& target)= 0;
 };
