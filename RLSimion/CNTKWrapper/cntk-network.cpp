@@ -246,34 +246,27 @@ void CntkNetwork::_softUpdate(CntkNetwork* pSource, double alpha)
 
 	for (const Parameter& targetParameter: m_networkOutput->Parameters())
 	{
-	//	for (const Parameter& targetParameter : learner->Parameters())
-		{
-			//if (!targetParameter.IsInput() && !targetParameter.IsOutput())
-			{
-				Parameter sourceParameter = sourceParams[parameterIndex];
+		Parameter sourceParameter = sourceParams[parameterIndex];
 
-				NDShape shape = sourceParameter.Shape();
-				vector<double> sourceParameterValue = vector<double>(shape.TotalSize());
-				NDArrayViewPtr sourceParameterView =
-					MakeSharedObject<NDArrayView>(sourceParameter.Shape(), sourceParameterValue, false);
-				sourceParameterView->CopyFrom(*sourceParameter.GetValue());
+		NDShape shape = sourceParameter.Shape();
+		vector<double> sourceParameterValue = vector<double>(shape.TotalSize());
+		NDArrayViewPtr sourceParameterView =
+			MakeSharedObject<NDArrayView>(sourceParameter.Shape(), sourceParameterValue, false);
+		sourceParameterView->CopyFrom(*sourceParameter.GetValue());
 
-				size_t targetParameterSize = targetParameter.Shape().TotalSize();
-				vector<double> targetParameterValue = vector<double>(targetParameterSize);
-				NDArrayViewPtr targetParameterView =
-					MakeSharedObject<NDArrayView>(targetParameter.Shape(), targetParameterValue, false);
-				targetParameterView->CopyFrom(*targetParameter.GetValue());
+		size_t targetParameterSize = targetParameter.Shape().TotalSize();
+		vector<double> targetParameterValue = vector<double>(targetParameterSize);
+		NDArrayViewPtr targetParameterView =
+			MakeSharedObject<NDArrayView>(targetParameter.Shape(), targetParameterValue, false);
+		targetParameterView->CopyFrom(*targetParameter.GetValue());
 
-				for (int i = 0; i < sourceParameterValue.size(); i++)
-					targetParameterValue[i] = targetParameterValue[i] * (1 - alpha) + sourceParameterValue[i] * (alpha);
+		for (int i = 0; i < sourceParameterValue.size(); i++)
+			targetParameterValue[i] = targetParameterValue[i] * (1 - alpha) + sourceParameterValue[i] * (alpha);
 
-				targetParameter.Value()->CopyFrom(*targetParameterView);
-				//qParameterGradientCpuArrayView->CopyFrom(*gradientPtr->Data());
-			}
+		targetParameter.Value()->CopyFrom(*targetParameterView);
 
-			parameterIndex++;
-		}
-		parameterLearnerIndex++;
+		parameterIndex++;
+
 	}
 }
 
