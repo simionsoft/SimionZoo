@@ -25,6 +25,8 @@
 
 #include "bounding-box.h"
 #include <algorithm>
+#include <stddef.h>
+#include <limits.h>
 
 BoundingBox3D::BoundingBox3D()
 {
