@@ -43,7 +43,7 @@ jobs:
   - task: DownloadSecureFile@1
     displayName: 'Download code signing certificate'
     inputs:
-      secureFile: '2021-code-signing-certificate.p12'
+      secureFile: '2022-code-signing-certificate.p12'
 
   - task: codesigning@2
     displayName: 'Sign executables'
