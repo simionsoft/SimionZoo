@@ -26,6 +26,7 @@
 #include "stats.h"
 #include <algorithm>
 #include <math.h>
+#include <limits>
 
 #define MAX_KEY_SIZE 128
 

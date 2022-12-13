@@ -28,6 +28,7 @@
 #include "wire-handler.h"
 #include <algorithm>
 #include <stdexcept>
+#include <limits>
 
 #include "../../tools/System/CrossPlatform.h"
 

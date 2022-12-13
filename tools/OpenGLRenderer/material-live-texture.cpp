@@ -27,6 +27,7 @@
 #include "material.h"
 #include <algorithm>
 #include <stdexcept>
+#include <limits>
 
 UnlitLiveTextureMaterial::UnlitLiveTextureMaterial(unsigned int sizeX, unsigned int sizeY)
 {

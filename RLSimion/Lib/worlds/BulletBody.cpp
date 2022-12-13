@@ -146,8 +146,8 @@ void BulletBody::updateState(State* s)
 	{
 		m_pBody->getMotionState()->getWorldTransform(trans);
 
-		if (m_xId >= 0) s->set(m_xId, float(trans.getOrigin().getX()));
-		if (m_yId >= 0) s->set(m_yId, float(trans.getOrigin().getZ()));
+		if (m_xId >= nullptr) s->set(m_xId, float(trans.getOrigin().getX()));
+		if (m_yId >= nullptr) s->set(m_yId, float(trans.getOrigin().getZ()));
 		updateYawState(s);
 	}
 	if (areRelVariablesSet())

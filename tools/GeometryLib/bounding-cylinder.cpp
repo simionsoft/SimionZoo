@@ -26,6 +26,7 @@
 #include "bounding-cylinder.h"
 #include "vector3d.h"
 #include <algorithm>
+#include <limits>
 
 BoundingCylinder::BoundingCylinder()
 {
