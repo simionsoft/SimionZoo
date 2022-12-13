@@ -48,7 +48,7 @@ jobs:
   - task: codesigning@2
     displayName: 'Sign executables'
     inputs:
-      secureFileId: '2021-code-signing-certificate.p12'
+      secureFileId: '2022-code-signing-certificate.p12'
       signCertPassword: '$(certificatePassword)'
       files: '**/*.exe'
       timeServer: 'http://timestamp.digicert.com'
