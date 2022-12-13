@@ -103,7 +103,7 @@ jobs:
 
 - job: Ubuntu
   pool:
-    name: Hosted Ubuntu 1604
+    vmImage: 'ubuntu-latest'
   steps:
   - script: |
       echo Installing dependencies...
