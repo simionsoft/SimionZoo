@@ -1,7 +1,7 @@
 jobs:
 - job: Windows
   pool:
-    vmImage: 'windows-2019'
+    vmImage: 'windows-latest'
 
   variables:
   - group: code-signing-certificate
@@ -103,7 +103,7 @@ jobs:
 
 - job: Ubuntu
   pool:
-    name: Hosted Ubuntu 1604
+    vmImage: 'ubuntu-latest'
   steps:
   - script: |
       echo Installing dependencies...
