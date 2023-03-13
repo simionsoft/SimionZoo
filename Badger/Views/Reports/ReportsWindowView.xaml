@@ -67,16 +67,19 @@
         <Separator Style="{StaticResource {x:Static ToolBar.SeparatorStyleKey}}" 
                    BorderBrush="LightGray" BorderThickness="1" Grid.Column="1" Grid.Row="2" Grid.RowSpan="3"/>
 
-        <StackPanel Background="Transparent" Grid.Row="2" Visibility="{Binding LogsLoaded,Converter={StaticResource BoolToVis}}">
+        <DockPanel Background="Transparent" Grid.Row="2" Grid.Column="0"
+                    Visibility="{Binding LogsLoaded,Converter={StaticResource BoolToVis}}">
             <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Auto">
-                <ItemsControl x:Name="LoggedExperiments"/>
+                <StackPanel Orientation="Vertical" Visibility="{Binding LogsLoaded,Converter={StaticResource BoolToVis}}">
+                    <ItemsControl x:Name="LoggedExperiments"/>
+                </StackPanel>
             </ScrollViewer>
-        </StackPanel>
-    
+        </DockPanel>
+
         <StackPanel Orientation="Vertical" Grid.Row="4" Grid.Column="0" Visibility="{Binding LogsLoaded,Converter={StaticResource BoolToVis}}">
             <ContentControl x:Name="Query"/>
         </StackPanel>
-  
+
         <TabControl Grid.Row="2" Grid.Column="2" Grid.RowSpan="3" Margin="0" Padding="0"  x:Name="LogQueryResults" BorderThickness="0"
                         SelectedItem="{Binding SelectedLogQueryResult}">
             <TabControl.ItemTemplate>

@@ -11,17 +11,20 @@
     </UserControl.Resources>
 
     <StackPanel Orientation="Vertical">
-        <StackPanel Orientation="Horizontal" Margin="0,0,0,0" ><!--Background="#e0e0e0"-->
-            <Button x:Name="ToggleIsExpanded" Style="{StaticResource BadgerButtonStyle}" Width="24" Height="24">
-                <Path Data="{StaticResource Experiment}" Width="16" Height="16" Stretch="Fill" Fill="#89000000" />
-            </Button>
-            <CheckBox IsChecked="{Binding IsSelected}" VerticalAlignment="Center"
-                          Visibility="{Binding Path=IsCheckVisible,Converter={StaticResource BoolToVis}}"
-                          Margin="0"/>
-            <Label x:Name="ExperimentName" FontWeight="Bold" Margin="0"/>
-        </StackPanel>
+                <StackPanel Orientation="Horizontal" Margin="0,0,0,0" >
+                    <!--Background="#e0e0e0"-->
+                    <Button x:Name="ToggleIsExpanded" Style="{StaticResource BadgerButtonStyle}" Width="24" Height="24">
+                        <Path Data="{StaticResource Experiment}" Width="16" Height="16" Stretch="Fill" Fill="#89000000" />
+                    </Button>
+                    <CheckBox IsChecked="{Binding IsSelected}" VerticalAlignment="Center"
+                              Visibility="{Binding Path=IsCheckVisible,Converter={StaticResource BoolToVis}}"
+                              Margin="0"/>
+                    <Label x:Name="ExperimentName" FontWeight="Bold" Margin="0"/>
+                </StackPanel>
         <StackPanel Margin="10,0,0,0">
-            <ItemsControl x:Name="Forks" Padding="0"/>
+            <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Auto">
+                <ItemsControl x:Name="Forks" Padding="0"/>
+            </ScrollViewer>
         </StackPanel>
     </StackPanel>
 </UserControl>

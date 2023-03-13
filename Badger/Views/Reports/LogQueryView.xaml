@@ -9,10 +9,10 @@
         <BooleanToVisibilityConverter x:Key="BoolToVis" />
     </UserControl.Resources>
     <StackPanel >
-        <StackPanel Grid.Row="1" Orientation="Vertical" Margin="2">
+        <StackPanel Orientation="Vertical" Margin="2">
             <GroupBox Header="Variable selection" BorderThickness="0,1,0,1" BorderBrush="Gray" Margin="0,2,0,2" ToolTip="Which variables do we want to display?"
                                         Height="120" MinHeight="50">
-                <ScrollViewer VerticalScrollBarVisibility="Auto">
+                <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Auto">
                     <ItemsControl x:Name="VariablesVM"/>
                 </ScrollViewer>
             </GroupBox>
