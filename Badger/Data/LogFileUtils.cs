@@ -50,7 +50,7 @@ namespace Badger.Data
 
             foreach (Log.Step step in episode.steps)
             {
-                if (step.episodeSimTime >= trackParameters.TimeOffset)
+                if (step.episodeSimTime >= trackParameters.TimeOffset && (trackParameters.TimeEnd == 0 || step.episodeSimTime <= trackParameters.TimeEnd))
                     data.AddValue(step.episodeSimTime
                      , ProcessFunc.Get(trackParameters.ProcessFunc, step.data[variableIndex]));
             }
@@ -79,7 +79,7 @@ namespace Badger.Data
             if (episode.steps.Count == 0) return 0.0;
             foreach (Log.Step step in episode.steps)
             {
-                if (step.episodeSimTime >= trackParameters.TimeOffset)
+                if (step.episodeSimTime >= trackParameters.TimeOffset && (trackParameters.TimeEnd == 0 || step.episodeSimTime <= trackParameters.TimeEnd))
                 {
                     avg += ProcessFunc.Get(trackParameters.ProcessFunc, step.data[variableIndex]);
                     count++;

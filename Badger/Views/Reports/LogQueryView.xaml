@@ -29,8 +29,10 @@
                     <Label  Width="120" FontSize="10" Margin="0,0,10,0" Content="Use fork selection" HorizontalContentAlignment="Left"/>
                 </StackPanel>
                 <StackPanel Orientation="Horizontal" ToolTip="Time offset from which logged data will begin (in seconds). Data before the offset will be discarded">
-                    <Label  FontSize="10" Margin="0,0,10,0" Content="Time offset" HorizontalContentAlignment="Left"/>
+                    <Label  FontSize="10" Margin="0,0,7,0" Content="Time offset/end" Width="80" HorizontalContentAlignment="Left"/>
                     <TextBox Text="{Binding Path=TimeOffset, Mode=TwoWay, StringFormat='N1'}" FontSize="10" Width="30"
+                             VerticalAlignment="Center"/>
+                    <TextBox Text="{Binding Path=TimeEnd, Mode=TwoWay, StringFormat='N1'}" FontSize="10" Width="30"
                              VerticalAlignment="Center"/>
                 </StackPanel>
             </StackPanel>
@@ -42,7 +44,7 @@
                                              IsEnabled="{Binding ResampleData,Converter={StaticResource BoolToVis}}"/>
                 </StackPanel>
                 <StackPanel Orientation="Horizontal" Margin="10,0,0,0" ToolTip="Minimum length to discard early finished experiments (in seconds).">
-                    <Label  FontSize="10" Margin="0,0,7,0" Content="Min. Length" HorizontalContentAlignment="Left"/>
+                    <Label  FontSize="10" Margin="0,0,7,0" Content="Min. Length" HorizontalContentAlignment="Left" Width="80"/>
                     <TextBox Text="{Binding Path=MinEpisodeLength, Mode=TwoWay, StringFormat='N1'}" FontSize="10" Width="30"
                              VerticalAlignment="Center"/>
                 </StackPanel>

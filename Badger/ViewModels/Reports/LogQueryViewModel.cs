@@ -130,6 +130,10 @@ namespace Badger.ViewModels
 
         [DataMember]
         public double TimeOffset { get; set; } = 0.0;
+
+        [DataMember]
+        public double TimeEnd { get; set; } = 0.0;
+
         [DataMember]
         public double MinEpisodeLength { get; set; } = 0.0;
 
@@ -573,6 +577,7 @@ namespace Badger.ViewModels
                 report.Resample = ResampleData;
                 report.NumSamples = ResamplingNumPoints;
                 report.TimeOffset = TimeOffset;
+                report.TimeEnd = TimeEnd;
                 report.MinEpisodeLength = MinEpisodeLength;
             }
 

@@ -60,6 +60,7 @@ namespace Badger.Data
         public string ProcessFunc;
         public bool Resample = false;
         public double TimeOffset = 0.0;
+        public double TimeEnd = 0.0;
         public double MinEpisodeLength = 0.0;
         public int NumSamples= 0;
         public Report(string varName, ReportType type, string processFunc)
